@@ -636,6 +636,19 @@ void SpellFxRenderer::sparklesOnActorAfterItCastsBuff(Actor *pActor, Color uDiff
     }
 }
 
+void SpellFxRenderer::addFireParticle(Vec3f pos) {
+    Particle_sw particle;
+    particle.type = ParticleType_Bitmap | ParticleType_Rotating | ParticleType_Ascending;
+    particle.uDiffuse = colorTable.OrangeyRed;
+    particle.x = pos.x;
+    particle.y = pos.y;
+    particle.z = pos.z;
+    particle.particle_size = 1.0f;
+    particle.timeToLive = Duration::randomRealtimeSeconds(vrng, 1, 2); // was either 1 or 2 secs, we made it into [1, 2).
+    particle.texture = effpar01;
+    particle_engine->AddParticle(&particle);
+}
+
 //----- (004A7F74) --------------------------------------------------------
 void SpellFxRenderer::_4A7F74(int x, int y, int z) {
     signed int v6;        // edi@1

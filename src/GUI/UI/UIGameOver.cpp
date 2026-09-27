@@ -11,7 +11,7 @@
 
 #include "Application/GameOver.h"
 
-GUIWindow_GameOver::GUIWindow_GameOver(UIMessageType releaseEvent) : GUIWindow(WINDOW_GameOverWindow, {0, 0}, render->GetRenderDimensions()), _releaseEvent(releaseEvent) {
+GUIWindow_GameOver::GUIWindow_GameOver(UIMessageType releaseEvent) : GUIWindow(WINDOW_GAME_OVER, {0, 0}, render->GetRenderDimensions()), _releaseEvent(releaseEvent) {
     gameTimer->setPaused(true);
     prev_screen_type = current_screen_type;
     current_screen_type = SCREEN_GAMEOVER_WINDOW;
@@ -27,7 +27,7 @@ GUIWindow_GameOver::GUIWindow_GameOver(UIMessageType releaseEvent) : GUIWindow(W
 void GUIWindow_GameOver::Update() {
     // draw winners certificate background
     assert(_winnerCert);
-    render->DrawQuad2D(_winnerCert, {0, 0});
+    render->DrawQuad2D(_winnerCert.get(), {0, 0});
 
     // draw pop up box
     if (_showPopUp) {
@@ -42,8 +42,6 @@ GUIWindow_GameOver::~GUIWindow_GameOver() {
     current_screen_type = prev_screen_type;
     GameOverNoSound = false;
     gameTimer->setPaused(false);
-
-    _winnerCert->release();
 }
 
 bool GUIWindow_GameOver::toggleAndTestFinished() {

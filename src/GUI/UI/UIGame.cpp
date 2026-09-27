@@ -30,7 +30,7 @@
 #include "Engine/Tables/MapTable.h"
 #include "Engine/Objects/Actor.h"
 #include "Engine/Objects/Chest.h"
-#include "Engine/Objects/ObjectList.h"
+#include "Engine/Tables/ObjectTable.h"
 #include "Engine/Objects/SpriteObject.h"
 #include "Engine/Objects/NPC.h"
 #include "Engine/Party.h"
@@ -180,7 +180,7 @@ extern std::unordered_map<InputAction, PlatformKey> curr_key_map;
 
 
 GUIWindow_GameMenu::GUIWindow_GameMenu()
-    : GUIWindow(WINDOW_GameMenu, {0, 0}, render->GetRenderDimensions()) {
+    : GUIWindow(WINDOW_GAME_MENU, {0, 0}, render->GetRenderDimensions()) {
     game_ui_menu_options = assets->getImage_ColorKey("options");
     game_ui_menu_new = assets->getImage_ColorKey("new1");
     game_ui_menu_load = assets->getImage_ColorKey("load1");
@@ -270,7 +270,7 @@ static Color GameMenuUI_GetKeyBindingColor(InputAction action) {
 }
 
 GUIWindow_GameKeyBindings::GUIWindow_GameKeyBindings()
-    : GUIWindow(WINDOW_KeyMappingOptions, {0, 0}, render->GetPresentDimensions()) {
+    : GUIWindow(WINDOW_KEY_MAPPING_OPTIONS, {0, 0}, render->GetPresentDimensions()) {
     game_ui_options_controls[0] = assets->getImage_ColorKey("optkb");
     game_ui_options_controls[1] = assets->getImage_ColorKey("optkb_h");
     game_ui_options_controls[2] = assets->getImage_ColorKey("resume1");
@@ -363,7 +363,7 @@ void GUIWindow_GameKeyBindings::Update() {
 }
 
 GUIWindow_GameVideoOptions::GUIWindow_GameVideoOptions()
-    : GUIWindow(WINDOW_VideoOptions, {0, 0}, render->GetRenderDimensions()) {
+    : GUIWindow(WINDOW_VIDEO_OPTIONS, {0, 0}, render->GetRenderDimensions()) {
     // -------------------------------------
     // GameMenuUI_OptionsVideo_Load --- part
     game_ui_menu_options_video_background = assets->getImage_ColorKey("optvid");
@@ -403,11 +403,6 @@ GUIWindow_GameVideoOptions::GUIWindow_GameVideoOptions()
     }
 
     // update gamma preview
-    if (gamma_preview_image) {
-        gamma_preview_image->release();
-        gamma_preview_image = nullptr;
-    }
-
     gamma_preview_image = GraphicsImage::Create(render->MakeViewportScreenshot(155, 117));
 }
 
@@ -423,7 +418,7 @@ void GUIWindow_GameVideoOptions::Update() {
         render->DrawQuad2D(game_ui_menu_options_video_gamma_positions[gammalevel], {17 * gammalevel + 42, 162});
 
         if (gamma_preview_image)
-            render->DrawQuad2D(gamma_preview_image, {274, 169});
+            render->DrawQuad2D(gamma_preview_image.get(), {274, 169});
 
         Recti msg_window(22, 190, 211, 79);
         DrawTitleText(
@@ -443,12 +438,12 @@ void GUIWindow_GameVideoOptions::Update() {
 OptionsMenuSkin options_menu_skin;  // 507C60
 
 void OptionsMenuSkin::Release() {
-#define RELEASE(img)        \
-    {                       \
-        if (img) {          \
-            img->release(); \
-            img = nullptr;  \
-        }                   \
+#define RELEASE(img)                   \
+    {                                  \
+        if (img) {                     \
+            assets->releaseImage(img); \
+            img = nullptr;             \
+        }                              \
     }
 
     RELEASE(uTextureID_Background);
@@ -465,7 +460,7 @@ void OptionsMenuSkin::Release() {
 }
 
 GUIWindow_GameOptions::GUIWindow_GameOptions()
-    : GUIWindow(WINDOW_GameOptions, {0, 0}, render->GetRenderDimensions()) {
+    : GUIWindow(WINDOW_GAME_OPTIONS, {0, 0}, render->GetRenderDimensions()) {
     options_menu_skin.uTextureID_Background = assets->getImage_ColorKey("ControlBG");
     options_menu_skin.uTextureID_TurnSpeed[2] = assets->getImage_ColorKey("con_16x");
     options_menu_skin.uTextureID_TurnSpeed[1] = assets->getImage_ColorKey("con_32x");
@@ -601,7 +596,7 @@ void GameUI_OnPlayerPortraitLeftClick(int uPlayerID) {
 
     if (current_screen_type == SCREEN_CHEST) {
         if (pParty->activeCharacterIndex() == uPlayerID) {
-            current_character_screen_window = WINDOW_CharacterWindow_Inventory;
+            current_character_screen_window = WINDOW_CHARACTER_INVENTORY;
             current_screen_type = SCREEN_CHEST_INVENTORY;
             return;
         }
@@ -621,7 +616,7 @@ void GameUI_OnPlayerPortraitLeftClick(int uPlayerID) {
             return;
         }
         if (pParty->activeCharacterIndex() == uPlayerID) {
-            current_character_screen_window = WINDOW_CharacterWindow_Inventory;
+            current_character_screen_window = WINDOW_CHARACTER_INVENTORY;
             current_screen_type = SCREEN_CHEST_INVENTORY;
             pParty->setActiveCharacterIndex(uPlayerID);
             return;
@@ -643,7 +638,7 @@ void GameUI_OnPlayerPortraitLeftClick(int uPlayerID) {
 
     if (window_SpeakInHouse->currentDialogue() == DIALOGUE_SHOP_BUY_STANDARD ||
         window_SpeakInHouse->currentDialogue() == DIALOGUE_SHOP_BUY_SPECIAL) {
-        current_character_screen_window = WINDOW_CharacterWindow_Inventory;
+        current_character_screen_window = WINDOW_CHARACTER_INVENTORY;
         pGUIWindow_CurrentMenu = std::make_unique<GUIWindow_CharacterRecord>(SCREEN_SHOP_INVENTORY);
         return;
     }
@@ -723,19 +718,19 @@ void GameUI_DrawRightPanelItems() {
     }
 
     if (current_screen_type ==  SCREEN_BOOKS) {
-        if (pGUIWindow_CurrentMenu->eWindowType == WINDOW_QuestBook) {
+        if (pGUIWindow_CurrentMenu->eWindowType == WINDOW_QUEST_BOOK) {
             render->DrawQuad2D(game_ui_tome_quests, {493, 355});
         }
-        if (pGUIWindow_CurrentMenu->eWindowType == WINDOW_AutonotesBook) {
+        if (pGUIWindow_CurrentMenu->eWindowType == WINDOW_AUTONOTES_BOOK) {
             render->DrawQuad2D(game_ui_tome_autonotes, {527, 353});
         }
-        if (pGUIWindow_CurrentMenu->eWindowType == WINDOW_JournalBook) {
+        if (pGUIWindow_CurrentMenu->eWindowType == WINDOW_JOURNAL_BOOK) {
             render->DrawQuad2D(game_ui_tome_storyline, {600, 361});
         }
-        if (pGUIWindow_CurrentMenu->eWindowType == WINDOW_MapsBook) {
+        if (pGUIWindow_CurrentMenu->eWindowType == WINDOW_MAPS_BOOK) {
             render->DrawQuad2D(game_ui_tome_maps, {546, 353});
         }
-        if (pGUIWindow_CurrentMenu->eWindowType == WINDOW_CalendarBook) {
+        if (pGUIWindow_CurrentMenu->eWindowType == WINDOW_CALENDAR_BOOK) {
             render->DrawQuad2D(game_ui_tome_calendar, {570, 353});
         }
     }
@@ -851,7 +846,7 @@ void GameUI_WritePointedObjectStatusString() {
         return;
 
     auto shouldMirror = [&](GUIWindow *pWindow) -> bool {
-        if (pWindow->eWindowType != WINDOW_Dialogue) {
+        if (pWindow->eWindowType != WINDOW_DIALOGUE) {
             return true;
         }
         if (current_screen_type == SCREEN_NPC_DIALOGUE) {
@@ -879,7 +874,7 @@ void GameUI_WritePointedObjectStatusString() {
             Vis_PIDAndDepth pickedObject = engine->PickMouseForInfo();
             pickedObjectID = (signed)pickedObject.pid.id();
             if (pickedObject.pid.type() == OBJECT_Sprite) {
-                if (pObjectList->pObjects[pSpriteObjects[pickedObjectID].uObjectDescID].uFlags & OBJECT_DESC_UNPICKABLE) {
+                if (pObjectTable->pObjects[pSpriteObjects[pickedObjectID].uObjectDescID].uFlags & OBJECT_DESC_UNPICKABLE) {
                     engine->_statusBar->clearPermanent();
                     uLastPointedObjectID = Pid();
                     return;
@@ -956,7 +951,7 @@ void GameUI_WritePointedObjectStatusString() {
         // (window->GetHeight() - 1) * 0.73125) {
         if (current_screen_type == SCREEN_CHARACTERS) {
             if (current_character_screen_window ==
-                WINDOW_CharacterWindow_Inventory) {
+                WINDOW_CHARACTER_INVENTORY) {
                 if (pParty->hasActiveCharacter() && pY > 0 && pY < 350 && pX >= 13 &&
                     pX <= 462) {  // inventory poitned
                     // inventoryYCoord = (pY - 17) / 32;
@@ -1313,7 +1308,7 @@ void GameUI_DrawMinimap(const Recti &rect, int zoom) {
 
     bool bWizardEyeActive = pParty->wizardEyeActive();
     Mastery uWizardEyeSkillLevel = pParty->wizardEyeSkillLevel();
-    if (CheckHiredNPCSpeciality(Cartographer)) {
+    if (CheckHiredNPCSpeciality(NPC_PROFESSION_CARTOGRAPHER)) {
         bWizardEyeActive = true;
         uWizardEyeSkillLevel = uWizardEyeSkillLevel > MASTERY_EXPERT ? uWizardEyeSkillLevel : MASTERY_EXPERT;
     }
@@ -1324,15 +1319,12 @@ void GameUI_DrawMinimap(const Recti &rect, int zoom) {
     }
 
     if (uCurrentlyLoadedLevelType == LEVEL_OUTDOOR) {
-        static GraphicsImage *minimaptemp = nullptr;
+        // TODO(captainurist): function-local static that owns a texture, make it a member.
+        static std::unique_ptr<GraphicsImage> minimaptemp;
 
         bool partymoved = true;  // TODO(pskelton): actually check for party movement
 
         if (partymoved) {
-            if (minimaptemp) {
-                minimaptemp->release();
-            }
-
             int imageWidth = viewparams->location_minimap->width(); // Assume a square image.
 
             // Party position in fixpoint image coordinates.
@@ -1358,10 +1350,10 @@ void GameUI_DrawMinimap(const Recti &rect, int zoom) {
 
             // draw image
             minimaptemp = GraphicsImage::Create(std::move(minimapImage));
-            render->DrawQuad2D(minimaptemp, rect.topLeft());
+            render->DrawQuad2D(minimaptemp.get(), rect.topLeft());
         } else {
             // no need to update map - just redraw
-            render->DrawQuad2D(minimaptemp, rect.topLeft());
+            render->DrawQuad2D(minimaptemp.get(), rect.topLeft());
         }
         render->BeginLines2D();
     } else if (uCurrentlyLoadedLevelType == LEVEL_INDOOR) {
@@ -1435,7 +1427,7 @@ void GameUI_DrawMinimap(const Recti &rect, int zoom) {
                 //     pPoint_Y >= render->raster_clip_y && pPoint_Y <=
                 //     render->raster_clip_w)
                 {
-                    if (pObjectList->pObjects[pSpriteObjects[i].uObjectDescID]
+                    if (pObjectTable->pObjects[pSpriteObjects[i].uObjectDescID]
                             .uFlags &
                         OBJECT_DESC_UNPICKABLE) {
                         render->RasterLine2D(Pointi(pPoint_X, pPoint_Y), Pointi(pPoint_X + 1, pPoint_Y + 1),

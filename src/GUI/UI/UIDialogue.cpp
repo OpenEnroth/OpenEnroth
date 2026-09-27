@@ -107,10 +107,10 @@ void initializeNPCDialogue(int npcId, int bPlayerSaysHello, Actor *actor) {
     }
 }
 
-GUIWindow_Dialogue::GUIWindow_Dialogue(DialogWindowType type) : GUIWindow(WINDOW_Dialogue, {0, 0}, render->GetRenderDimensions()) {
+GUIWindow_Dialogue::GUIWindow_Dialogue(DialogWindowType type) : GUIWindow(WINDOW_DIALOGUE, {0, 0}, render->GetRenderDimensions()) {
     prev_screen_type = current_screen_type;
     current_screen_type = SCREEN_NPC_DIALOGUE;
-    pBtn_ExitCancel = CreateButton("Dialogue_Exit", {0x1D7u, 0x1BDu}, {0xA9u, 0x23u}, BUTTON_TYPE_NORMAL, 0, UIMSG_Escape, 0, INPUT_ACTION_INVALID,
+    pBtn_ExitCancel = CreateButton("NpcDialogue_Exit", {0x1D7u, 0x1BDu}, {0xA9u, 0x23u}, BUTTON_TYPE_NORMAL, 0, UIMSG_Escape, 0, INPUT_ACTION_INVALID,
                                    localization->str(LSTR_EXIT_DIALOGUE), {ui_exit_cancel_button_background});
 
     int text_line_height = assets->pFontArrus->GetHeight() - 3;
@@ -124,12 +124,12 @@ GUIWindow_Dialogue::GUIWindow_Dialogue(DialogWindowType type) : GUIWindow(WINDOW
             optionList = {DIALOGUE_PROFESSION_DETAILS, DIALOGUE_HIRE_FIRE};
         }
         if (speakingNPC->Hired() && !speakingNPC->hasUsedAbility) {
-            if (speakingNPC->profession == Healer || speakingNPC->profession == ExpertHealer ||
-                speakingNPC->profession == MasterHealer || speakingNPC->profession == Cook ||
-                speakingNPC->profession == Chef || speakingNPC->profession == WindMaster ||
-                speakingNPC->profession == WaterMaster || speakingNPC->profession == GateMaster ||
-                speakingNPC->profession == Acolyte ||  // or Chaplain? mb discrepancy between game versions?
-                speakingNPC->profession == Piper || speakingNPC->profession == FallenWizard) {
+            if (speakingNPC->profession == NPC_PROFESSION_HEALER || speakingNPC->profession == NPC_PROFESSION_EXPERT_HEALER ||
+                speakingNPC->profession == NPC_PROFESSION_MASTER_HEALER || speakingNPC->profession == NPC_PROFESSION_COOK ||
+                speakingNPC->profession == NPC_PROFESSION_CHEF || speakingNPC->profession == NPC_PROFESSION_WIND_MASTER ||
+                speakingNPC->profession == NPC_PROFESSION_WATER_MASTER || speakingNPC->profession == NPC_PROFESSION_GATE_MASTER ||
+                speakingNPC->profession == NPC_PROFESSION_CHAPLAIN ||
+                speakingNPC->profession == NPC_PROFESSION_PIPER || speakingNPC->profession == NPC_PROFESSION_FALLEN_WIZARD) {
                 optionList.push_back(DIALOGUE_USE_HIRED_NPC_ABILITY);
                 // TODO(Nik-RE-dev): this is for compatability. Previously when NPC can use ability, dialogue allocated 4 buttons unconditionally.
                 //                   Without it many test will fail because of changed buttons positions.
@@ -144,7 +144,7 @@ GUIWindow_Dialogue::GUIWindow_Dialogue(DialogWindowType type) : GUIWindow(WINDOW
         optionList.push_back(DIALOGUE_HIRE_FIRE);
     }
     for (int i = 0; i < optionList.size(); i++) {
-        CreateButton(fmt::format("Dialogue_Option{}", i), {480, 130 + i * text_line_height}, {140, text_line_height}, BUTTON_TYPE_NORMAL, 0,
+        CreateButton(fmt::format("NpcDialogue_Option{}", i), {480, 130 + i * text_line_height}, {140, text_line_height}, BUTTON_TYPE_NORMAL, 0,
                      UIMSG_SelectNPCDialogueOption, std::to_underlying(optionList[i]), INPUT_ACTION_INVALID, "");
     }
     setKeyboardControlGroup(optionList.size(), false, 0, 1);
@@ -154,12 +154,12 @@ GUIWindow_Dialogue::GUIWindow_Dialogue(DialogWindowType type) : GUIWindow(WINDOW
 
 GUIWindow_Dialogue::~GUIWindow_Dialogue() {
     if (houseNpcs[0].icon) {
-        houseNpcs[0].icon->release();
+        assets->releaseImage(houseNpcs[0].icon);
     }
     houseNpcs.clear();
 
     if (game_ui_dialogue_background) {
-        game_ui_dialogue_background->release();
+        assets->releaseImage(game_ui_dialogue_background);
         game_ui_dialogue_background = nullptr;
     }
 
@@ -332,11 +332,11 @@ void selectNPCDialogueOption(DialogueId option) {
             std::vector<DialogueId> topics = listNPCDialogueOptions(newTopic);
             ((GUIWindow_Dialogue*)pDialogueWindow.get())->setDisplayedDialogueType(newTopic);
             pDialogueWindow->DeleteButtons();
-            pBtn_ExitCancel = pDialogueWindow->CreateButton("Dialogue_Exit", {471, 445}, {0xA9u, 0x23u}, BUTTON_TYPE_NORMAL, 0, UIMSG_Escape, 0, INPUT_ACTION_INVALID,
+            pBtn_ExitCancel = pDialogueWindow->CreateButton("NpcDialogue_Exit", {471, 445}, {0xA9u, 0x23u}, BUTTON_TYPE_NORMAL, 0, UIMSG_Escape, 0, INPUT_ACTION_INVALID,
                                                             localization->str(LSTR_EXIT_DIALOGUE), {ui_exit_cancel_button_background});
 
             for (int i = 0; i < topics.size(); i++) {
-                pDialogueWindow->CreateButton(fmt::format("Dialogue_Option{}", i), {480, 160 + i * 30}, {140, 30}, BUTTON_TYPE_NORMAL, 0,
+                pDialogueWindow->CreateButton(fmt::format("NpcDialogue_Option{}", i), {480, 160 + i * 30}, {140, 30}, BUTTON_TYPE_NORMAL, 0,
                                               UIMSG_SelectNPCDialogueOption, std::to_underlying(topics[i]), INPUT_ACTION_INVALID, "");
             }
             pDialogueWindow->setKeyboardControlGroup(topics.size(), false, 0, 1);

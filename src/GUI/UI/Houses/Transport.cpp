@@ -20,6 +20,7 @@
 #include "Engine/Tables/MapTable.h"
 #include "Engine/Party.h"
 #include "Engine/Engine.h"
+#include "Engine/EngineGlobals.h"
 
 #include "Media/Audio/AudioPlayer.h"
 
@@ -162,7 +163,7 @@ void GUIWindow_Transport::transportDialogue() {
             autoSave();
             engine->_pendingTransition = MapDestination(pTravel->uMapInfoID, PartyPlacement(pTravel->arrivalPos, pTravel->arrival_view_yaw, 0, 0));
 
-            dword_6BE364_game_settings_1 |= GAME_SETTINGS_SKIP_WORLD_UPDATE;
+            engineFlags |= ENGINE_SKIP_NEXT_WORLD_UPDATE;
             uGameState = GAME_STATE_CHANGE_LOCATION;
         } else {
             // travelling to map we are already in
@@ -227,17 +228,17 @@ std::vector<DialogueId> GUIWindow_Transport::listDialogueOptions() {
 int GUIWindow_Transport::getTravelTimeTransportDays(int schedule_id) {
     int travel_time = transportSchedule[schedule_id].uTravelTime;
     if (isBoat(houseId())) {
-        if (CheckHiredNPCSpeciality(Sailor))
+        if (CheckHiredNPCSpeciality(NPC_PROFESSION_SAILOR))
             travel_time -= 2;
-        if (CheckHiredNPCSpeciality(Navigator))
+        if (CheckHiredNPCSpeciality(NPC_PROFESSION_NAVIGATOR))
             travel_time -= 3;
-        if (CheckHiredNPCSpeciality(Pirate))
+        if (CheckHiredNPCSpeciality(NPC_PROFESSION_PIRATE))
             travel_time -= 2;
     } else {
-        if (CheckHiredNPCSpeciality(Horseman))
+        if (CheckHiredNPCSpeciality(NPC_PROFESSION_HORSEMAN))
             travel_time -= 2;
     }
-    if (CheckHiredNPCSpeciality(Explorer))
+    if (CheckHiredNPCSpeciality(NPC_PROFESSION_EXPLORER))
         travel_time -= 1;
     if (travel_time < 1)
         travel_time = 1;

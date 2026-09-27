@@ -1,6 +1,7 @@
 #include <string>
 
 #include "Engine/Engine.h"
+#include "Engine/EngineGlobals.h"
 #include "Engine/Graphics/Renderer/Renderer.h"
 #include "Engine/Localization.h"
 #include "Engine/Party.h"
@@ -42,7 +43,7 @@ IndexedArray<int, MASTERY_NONE, MASTERY_LAST> masteryToMaxBeacons = {
 
 GUIWindow_LloydsBook::GUIWindow_LloydsBook(Pid casterPid, SpellCastFlags castFlags)
         : _casterPid(casterPid), _castFlags(castFlags) {
-    this->eWindowType = WindowType::WINDOW_LloydsBeacon;
+    this->eWindowType = WINDOW_LLOYDS_BEACON;
 
     _recallingBeacon = false;
 
@@ -73,7 +74,7 @@ GUIWindow_LloydsBook::GUIWindow_LloydsBook(Pid casterPid, SpellCastFlags castFla
     }
 
     for (int i = 0; i < _maxBeacons; ++i) {
-        CreateButton({lloydsBeaconsPreviewXs[i], lloydsBeaconsPreviewYs[i]}, {92, 68}, BUTTON_TYPE_NORMAL, UIMSG_HintBeaconSlot, UIMSG_InstallOrRecallBeacon, i);
+        CreateButton(fmt::format("LloydsBook_Slot{}", i), {lloydsBeaconsPreviewXs[i], lloydsBeaconsPreviewYs[i]}, {92, 68}, BUTTON_TYPE_NORMAL, UIMSG_HintBeaconSlot, UIMSG_InstallOrRecallBeacon, i);
     }
 
     // purges expired beacons
@@ -112,7 +113,7 @@ void GUIWindow_LloydsBook::Update() {
 
         if (pPlayer->vBeacons[beaconId]) {
             LloydBeacon &beacon = pPlayer->vBeacons[beaconId].value();
-            render->DrawQuad2D(beacon.image, {lloydsBeaconsPreviewXs[beaconId], lloydsBeaconsPreviewYs[beaconId]});
+            render->DrawQuad2D(beacon.image.get(), {lloydsBeaconsPreviewXs[beaconId], lloydsBeaconsPreviewYs[beaconId]});
             std::string Str = pMapTable->pInfos[beacon.mapId].name;
             int pTextHeight = assets->pFontBookLloyds->CalcTextHeight(Str, pWindow.w, 0);
             pWindow.y -= 6 + pTextHeight;
@@ -196,7 +197,7 @@ void GUIWindow_LloydsBook::installOrRecallBeacon(int beaconId) {
             autoSave();
             onMapLeave();
             engine->_pendingTransition = MapDestination(beacon.mapId, PartyPlacement(beacon._partyPos, beacon._partyViewYaw, beacon._partyViewPitch, 0));
-            dword_6BE364_game_settings_1 |= GAME_SETTINGS_SKIP_WORLD_UPDATE;
+            engineFlags |= ENGINE_SKIP_NEXT_WORLD_UPDATE;
             uGameState = GAME_STATE_CHANGE_LOCATION;
         } else {
             pParty->pos = beacon._partyPos;

@@ -16,7 +16,7 @@
 #include "Engine/Random/Random.h"
 
 #include "Engine/Objects/Actor.h"
-#include "Engine/Objects/ObjectList.h"
+#include "Engine/Tables/ObjectTable.h"
 #include "Engine/Objects/Decoration.h"
 #include "Engine/Objects/MonsterEnumFunctions.h"
 #include "Engine/Objects/SpriteEnumFunctions.h"
@@ -114,18 +114,16 @@ int SpriteObject::Create(int yaw, int pitch, int speed, int which_char) {
 }
 
 static void createSpriteTrailParticle(Vec3f pos, ObjectDescFlags flags) {
+    if (flags & OBJECT_DESC_TRAIL_FIRE) {
+        spell_fx_renderer->addFireParticle(pos);
+        return;
+    }
+
     Particle_sw particle;
     particle.x = pos.x;
     particle.y = pos.y;
     particle.z = pos.z;
-    if (flags & OBJECT_DESC_TRAIL_FIRE) {
-        particle.type = ParticleType_Bitmap | ParticleType_Rotating | ParticleType_Ascending;
-        particle.uDiffuse = colorTable.OrangeyRed;
-        particle.timeToLive = Duration::randomRealtimeSeconds(vrng, 1, 2); // was either 1 or 2 secs, we made it into [1, 2).
-        particle.texture = spell_fx_renderer->effpar01;
-        particle.particle_size = 1.0f;
-        particle_engine->AddParticle(&particle);
-    } else if (flags & OBJECT_DESC_TRAIL_LINE) {
+    if (flags & OBJECT_DESC_TRAIL_LINE) {
         particle.type = ParticleType_Line;
         particle.uDiffuse = Color(vrng->random(0x100), vrng->random(0x100), 0, 0); // TODO(captainurist): TBH this makes no sense, investigate
         particle.timeToLive = 64_ticks;
@@ -143,7 +141,7 @@ static void createSpriteTrailParticle(Vec3f pos, ObjectDescFlags flags) {
 }
 
 void SpriteObject::updateObjectODM(unsigned int uLayingItemID) {
-    ObjectDesc *object = &pObjectList->pObjects[pSpriteObjects[uLayingItemID].uObjectDescID];
+    ObjectData *object = &pObjectTable->pObjects[pSpriteObjects[uLayingItemID].uObjectDescID];
     bool isHighSlope = pOutdoor->pTerrain.isSlopeTooHighByPos(pSpriteObjects[uLayingItemID].vPosition);
     int floorFaceId = -1;
     bool onWater = false;
@@ -327,7 +325,7 @@ void SpriteObject::updateObjectODM(unsigned int uLayingItemID) {
 //----- (0047136C) --------------------------------------------------------
 void SpriteObject::updateObjectBLV(unsigned int uLayingItemID) {
     SpriteObject *pSpriteObject = &pSpriteObjects[uLayingItemID];
-    ObjectDesc *pObject = &pObjectList->pObjects[pSpriteObject->uObjectDescID];
+    ObjectData *pObject = &pObjectTable->pObjects[pSpriteObject->uObjectDescID];
 
     // Break early if we're out of bounds.
     if (std::abs(pSpriteObject->vPosition.x) > 32767 ||
@@ -547,27 +545,27 @@ void SpriteObject::explosionTraps() {
 }
 
 Duration SpriteObject::GetLifetime() {
-    ObjectDesc *pObjectDesc = &pObjectList->pObjects[uObjectDescID];
-    return pObjectDesc->uLifetime;
+    ObjectData *objectData = &pObjectTable->pObjects[uObjectDescID];
+    return objectData->uLifetime;
 }
 
 SpriteFrame *SpriteObject::spriteFrame() {
-    ObjectDesc *pObjectDesc = &pObjectList->pObjects[uObjectDescID];
-    return pSpriteFrameTable->GetFrame(pObjectDesc->uSpriteID, timeSinceCreated);
+    ObjectData *objectData = &pObjectTable->pObjects[uObjectDescID];
+    return pSpriteFrameTable->GetFrame(objectData->uSpriteID, timeSinceCreated);
 }
 
 bool SpriteObject::IsUnpickable() {
-    ObjectDesc *pObjectDesc = &pObjectList->pObjects[uObjectDescID];
-    return ((pObjectDesc->uFlags & OBJECT_DESC_UNPICKABLE) == OBJECT_DESC_UNPICKABLE);
+    ObjectData *objectData = &pObjectTable->pObjects[uObjectDescID];
+    return ((objectData->uFlags & OBJECT_DESC_UNPICKABLE) == OBJECT_DESC_UNPICKABLE);
 }
 
 bool SpriteObject::HasSprite() {
-    ObjectDesc *pObjectDesc = &pObjectList->pObjects[uObjectDescID];
-    return !pObjectDesc->NoSprite();
+    ObjectData *objectData = &pObjectTable->pObjects[uObjectDescID];
+    return !objectData->NoSprite();
 }
 
 Color SpriteObject::GetParticleTrailColor() {
-    return pObjectList->pObjects[uObjectDescID].uParticleTrailColor;
+    return pObjectTable->pObjects[uObjectDescID].uParticleTrailColor;
 }
 
 void SpriteObject::Remove(unsigned int uLayingItemID) {
@@ -622,7 +620,7 @@ void SpriteObject::InitializeSpriteObjects() {
         // Vanilla also removed SPRITE_DROPPED_BY_PLAYER sprites here. In MM6, MM7 and MM8 an item left on the ground
         // was gone once the party left the map and came back, while a save load on the same map kept it. OE keeps
         // such items.
-        if (item->uObjectDescID && pObjectList->pObjects[item->uObjectDescID].uFlags & OBJECT_DESC_UNPICKABLE) {
+        if (item->uObjectDescID && pObjectTable->pObjects[item->uObjectDescID].uFlags & OBJECT_DESC_UNPICKABLE) {
             SpriteObject::Remove(i);
         }
     }
@@ -658,7 +656,7 @@ bool SpriteObject::dropItemAt(SpriteId sprite, Vec3f pos, int speed, int count,
     SpriteObject pSpellObject;
 
     pSpellObject.spriteId = sprite;
-    pSpellObject.uObjectDescID = pObjectList->ObjectIDByItemID(sprite);
+    pSpellObject.uObjectDescID = pObjectTable->ObjectIDByItemID(sprite);
     pSpellObject.vPosition = pos;
     pSpellObject.uAttributes = attributes;
     pSpellObject.uSectorID = pIndoor->GetSector(pos);
@@ -696,7 +694,7 @@ void SpriteObject::createSplashObject(Vec3f pos) {
     SpriteObject sprite;
     sprite.containing_item.Reset();
     sprite.spriteId = SPRITE_WATER_SPLASH;
-    sprite.uObjectDescID = pObjectList->ObjectIDByItemID(sprite.spriteId);
+    sprite.uObjectDescID = pObjectTable->ObjectIDByItemID(sprite.spriteId);
     sprite.vPosition = pos;
     sprite.uSectorID = pIndoor->GetSector(pos);
     int objID = sprite.Create(0, 0, 0, 0);
@@ -707,12 +705,12 @@ void SpriteObject::createSplashObject(Vec3f pos) {
 
 static void updateSpriteOnImpact(SpriteObject *object) {
     object->spriteId = impactSprite(object->spriteId);
-    object->uObjectDescID = pObjectList->ObjectIDByItemID(object->spriteId);
+    object->uObjectDescID = pObjectTable->ObjectIDByItemID(object->spriteId);
 }
 
 bool processSpellImpact(unsigned int uLayingItemID, Pid pid) {
     SpriteObject *object = &pSpriteObjects[uLayingItemID];
-    ObjectDesc *objectDesc = &pObjectList->pObjects[object->uObjectDescID];
+    ObjectData *objectData = &pObjectTable->pObjects[object->uObjectDescID];
 
     if (pid.type() == OBJECT_Actor) {
         if (object->spell_caster_pid.type() == OBJECT_Actor && pActors[object->spell_caster_pid.id()].GetActorsRelation(&pActors[pid.id()]) == HOSTILITY_FRIENDLY) {
@@ -796,12 +794,12 @@ bool processSpellImpact(unsigned int uLayingItemID, Pid pid) {
                 return 0;
             }
             object->spriteId = SPRITE_OBJECT_EXPLODE;
-            object->uObjectDescID = pObjectList->ObjectIDByItemID(SPRITE_OBJECT_EXPLODE);
+            object->uObjectDescID = pObjectTable->ObjectIDByItemID(SPRITE_OBJECT_EXPLODE);
             if (object->uObjectDescID == 0) {
                 SpriteObject::Remove(uLayingItemID);
             }
             object->spellSpriteStop();
-            object->uObjectDescID = pObjectList->ObjectIDByItemID(object->spriteId);
+            object->uObjectDescID = pObjectTable->ObjectIDByItemID(object->spriteId);
             if (object->uObjectDescID == 0) {
                 SpriteObject::Remove(uLayingItemID);
             }
@@ -812,16 +810,16 @@ bool processSpellImpact(unsigned int uLayingItemID, Pid pid) {
 
         case SPRITE_OBJECT_EXPLODE: {  // actor death explode
             object->spriteId = SPRITE_OBJECT_EXPLODE_IMPACT;
-            object->uObjectDescID = pObjectList->ObjectIDByItemID(SPRITE_OBJECT_EXPLODE_IMPACT);
+            object->uObjectDescID = pObjectTable->ObjectIDByItemID(SPRITE_OBJECT_EXPLODE_IMPACT);
             if (object->uObjectDescID == 0) {
                 SpriteObject::Remove(uLayingItemID);
             }
             object->spellSpriteStop();
             pushAoeAttack(Pid(OBJECT_Sprite, uLayingItemID), engine->config->gameplay.AoeDamageDistance.value(),
                     pSpriteObjects[uLayingItemID].vPosition, ABILITY_ATTACK1);
-            if (objectDesc->uFlags & OBJECT_DESC_TRAIL_PARTICLE) {
+            if (objectData->uFlags & OBJECT_DESC_TRAIL_PARTICLE) {
                 trail_particle_generator.GenerateTrailParticles(object->vPosition.x, object->vPosition.y, object->vPosition.z,
-                                                                objectDesc->uParticleTrailColor);
+                                                                objectData->uParticleTrailColor);
             }
             pAudioPlayer->playSound(SOUND_fireBall, SOUND_MODE_PID, Pid(OBJECT_Sprite, uLayingItemID));
             return 0;
@@ -856,7 +854,7 @@ bool processSpellImpact(unsigned int uLayingItemID, Pid pid) {
 
         case SPRITE_SPELL_WATER_ICE_BLAST: {
             object->spriteId = SPRITE_SPELL_WATER_ICE_BLAST_FALLOUT;
-            object->uObjectDescID = pObjectList->ObjectIDByItemID(SPRITE_SPELL_WATER_ICE_BLAST_FALLOUT);
+            object->uObjectDescID = pObjectTable->ObjectIDByItemID(SPRITE_SPELL_WATER_ICE_BLAST_FALLOUT);
             if (object->uObjectDescID == 0) {
                 SpriteObject::Remove(uLayingItemID);
             }
@@ -875,7 +873,7 @@ bool processSpellImpact(unsigned int uLayingItemID, Pid pid) {
 
         case SPRITE_SPELL_WATER_ICE_BLAST_FALLOUT: {
             object->spriteId = SPRITE_SPELL_WATER_ICE_BLAST_IMPACT;
-            object->uObjectDescID = pObjectList->ObjectIDByItemID(SPRITE_SPELL_WATER_ICE_BLAST_IMPACT);
+            object->uObjectDescID = pObjectTable->ObjectIDByItemID(SPRITE_SPELL_WATER_ICE_BLAST_IMPACT);
             if (object->uObjectDescID == 0) {
                 SpriteObject::Remove(uLayingItemID);
             }
@@ -902,7 +900,7 @@ bool processSpellImpact(unsigned int uLayingItemID, Pid pid) {
 
         case SPRITE_SPELL_EARTH_DEATH_BLOSSOM: {
             object->spriteId = SPRITE_SPELL_EARTH_DEATH_BLOSSOM_FALLOUT;
-            object->uObjectDescID = pObjectList->ObjectIDByItemID(SPRITE_SPELL_EARTH_DEATH_BLOSSOM_FALLOUT);
+            object->uObjectDescID = pObjectTable->ObjectIDByItemID(SPRITE_SPELL_EARTH_DEATH_BLOSSOM_FALLOUT);
             if (object->uObjectDescID == 0) {
                 SpriteObject::Remove(uLayingItemID);
             }
@@ -922,7 +920,7 @@ bool processSpellImpact(unsigned int uLayingItemID, Pid pid) {
 
         case SPRITE_SPELL_EARTH_DEATH_BLOSSOM_FALLOUT: {
             object->spriteId = SPRITE_SPELL_EARTH_DEATH_BLOSSOM_IMPACT;
-            object->uObjectDescID = pObjectList->ObjectIDByItemID(SPRITE_SPELL_EARTH_DEATH_BLOSSOM_IMPACT);
+            object->uObjectDescID = pObjectTable->ObjectIDByItemID(SPRITE_SPELL_EARTH_DEATH_BLOSSOM_IMPACT);
             if (object->uObjectDescID == 0) {
                 SpriteObject::Remove(uLayingItemID);
             }
@@ -1072,10 +1070,10 @@ bool processSpellImpact(unsigned int uLayingItemID, Pid pid) {
             object->spellSpriteStop();
             pushAoeAttack(Pid(OBJECT_Sprite, uLayingItemID), engine->config->gameplay.AoeDamageDistance.value(),
                     pSpriteObjects[uLayingItemID].vPosition, object->spellCasterAbility);
-            if (objectDesc->uFlags & OBJECT_DESC_TRAIL_PARTICLE) {
+            if (objectData->uFlags & OBJECT_DESC_TRAIL_PARTICLE) {
                 trail_particle_generator.GenerateTrailParticles(
                     object->vPosition.x, object->vPosition.y, object->vPosition.z,
-                    objectDesc->uParticleTrailColor);
+                    objectData->uParticleTrailColor);
             }
             pAudioPlayer->playSpellSound(object->uSpellID, true, SOUND_MODE_PID, Pid(OBJECT_Sprite, uLayingItemID));
             return 0;
@@ -1113,7 +1111,7 @@ void UpdateObjects() {
         if (pSpriteObjects[i].uAttributes & SPRITE_SKIP_A_FRAME) {
             pSpriteObjects[i].uAttributes &= ~SPRITE_SKIP_A_FRAME;
         } else {
-            ObjectDesc *object = &pObjectList->pObjects[pSpriteObjects[i].uObjectDescID];
+            ObjectData *object = &pObjectTable->pObjects[pSpriteObjects[i].uObjectDescID];
             if (pSpriteObjects[i].attachedToActor()) {
                 int actorId = pSpriteObjects[i].spell_target_pid.id();
                 if (actorId > pActors.size()) {
@@ -1182,7 +1180,7 @@ void UpdateObjects() {
 
 unsigned int collideWithActor(unsigned int uLayingItemID, Pid pid) {
     unsigned int result = uLayingItemID;
-    if (pObjectList->pObjects[pSpriteObjects[uLayingItemID].uObjectDescID].uFlags & OBJECT_DESC_UNPICKABLE) {
+    if (pObjectTable->pObjects[pSpriteObjects[uLayingItemID].uObjectDescID].uFlags & OBJECT_DESC_UNPICKABLE) {
         result = processSpellImpact(uLayingItemID, pid);
     }
     return result;

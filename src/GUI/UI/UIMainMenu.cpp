@@ -14,7 +14,7 @@
 #include "Io/Mouse.h"
 
 GUIWindow_MainMenu::GUIWindow_MainMenu() :
-    GUIWindow(WINDOW_MainMenu, {0, 0}, render->GetRenderDimensions()) {
+    GUIWindow(WINDOW_MAIN_MENU, {0, 0}, render->GetRenderDimensions()) {
     main_menu_background = assets->getImage_PCXFromIconsLOD("title.pcx");
 
     ui_mainmenu_new = assets->getImage_ColorKey("title_new");
@@ -33,11 +33,11 @@ GUIWindow_MainMenu::GUIWindow_MainMenu() :
 }
 
 GUIWindow_MainMenu::~GUIWindow_MainMenu() {
-    ui_mainmenu_new->release();
-    ui_mainmenu_load->release();
-    ui_mainmenu_credits->release();
-    ui_mainmenu_exit->release();
-    main_menu_background->release();
+    assets->releaseImage(ui_mainmenu_new);
+    assets->releaseImage(ui_mainmenu_load);
+    assets->releaseImage(ui_mainmenu_credits);
+    assets->releaseImage(ui_mainmenu_exit);
+    assets->releaseImage(main_menu_background);
 }
 
 void GUIWindow_MainMenu::Update() {

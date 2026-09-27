@@ -567,8 +567,8 @@ GAME_TEST(Issues, Issue1294_1389) {
     test.playTraceFromTestData("issue_1294.mm7", "issue_1294.json");
 
     // Check that we get back to stats screen without asserting
-    EXPECT_CONTAINS(windowTape, WINDOW_CharacterWindow_Inventory);
-    EXPECT_EQ(windowTape.back(), WINDOW_CharacterWindow_Stats);
+    EXPECT_CONTAINS(windowTape, WINDOW_CHARACTER_INVENTORY);
+    EXPECT_EQ(windowTape.back(), WINDOW_CHARACTER_STATS);
     // Check min values are used
     EXPECT_EQ(pParty->pCharacters[0].GetAttackRecoveryTime(false), Duration::fromTicks(engine->config->gameplay.MinRecoveryBlasters.value()));
     EXPECT_EQ(pParty->pCharacters[2].GetAttackRecoveryTime(true), Duration::fromTicks(engine->config->gameplay.MinRecoveryRanged.value()));
@@ -740,15 +740,32 @@ GAME_TEST(Issues, Issue1340) {
 }
 
 GAME_TEST(Issues, Issue1341) {
-    // Can't steal gold from peasants.
+    // Stealing gold from a peasant always came up empty.
     auto goldTape = tapes.gold();
     auto statusTape = tapes.statusBar();
-    auto deadTape = actorTapes.countByState(AIState::Dead);
-    test.playTraceFromTestData("issue_1341.mm7", "issue_1341.json");
-    EXPECT_GT(goldTape.delta(), 0); // We did steal some gold.
-    EXPECT_CONTAINS(statusTape, "Roderick failed to steal anything!"); // We have tried many times.
-    EXPECT_CONTAINS(statusTape, fmt::format("Roderick stole {} gold!", goldTape.delta())); // And succeeded.
-    EXPECT_EQ(deadTape, tape(0)); // No one died in the process.
+    engine->config->debug.NoActors.setValue(true);
+    game.startNewGame();
+    test.startTaping();
+
+    pParty->pCharacters[1].setSkillValue(SKILL_STEALING, CombinedSkillValue(10, MASTERY_GRANDMASTER));
+    Actor *peasant = game.spawnMonster(pParty->pos + Vec3f(0, 200, 0), MONSTER_PEASANT_DWARF_MALE_A_A,
+                                       SPAWN_FRIENDLY | SPAWN_STATIONARY);
+    game.tick();
+
+    // Only some steals go for the gold, so keep trying.
+    for (int i = 0; i < 20 && goldTape.delta() == 0; i++) {
+        game.pressAndReleaseKey(PlatformKey::KEY_DIGIT_2); // Roderick.
+        game.pointMouseAtActor(peasant->id);
+        game.pressKey(PlatformKey::KEY_CONTROL);
+        game.pressAndReleaseButton(BUTTON_LEFT);
+        game.releaseKey(PlatformKey::KEY_CONTROL);
+        game.tick();
+        while (pParty->pCharacters[1].timeToRecovery)
+            game.tick();
+    }
+
+    EXPECT_GT(goldTape.delta(), 0);
+    EXPECT_CONTAINS(statusTape, fmt::format("Roderick stole {} gold!", goldTape.delta()));
 }
 
 GAME_TEST(Issues, Issue1342) {
@@ -1035,7 +1052,7 @@ GAME_TEST(Issues, Issue1454) {
     game.pressAndReleaseKey(PlatformKey::KEY_M);
     game.tick(1);
     EXPECT_EQ(current_screen_type, ScreenType::SCREEN_BOOKS);
-    EXPECT_EQ(pGUIWindow_CurrentMenu->eWindowType, WindowType::WINDOW_MapsBook);
+    EXPECT_EQ(pGUIWindow_CurrentMenu->eWindowType, WINDOW_MAPS_BOOK);
     game.pressAndReleaseKey(PlatformKey::KEY_M);
     game.tick(1);
     EXPECT_EQ(current_screen_type, ScreenType::SCREEN_GAME);

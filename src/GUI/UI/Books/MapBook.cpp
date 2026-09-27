@@ -30,7 +30,7 @@ void DrawBook_Map_sub(int tl_x, int tl_y, int br_x, int br_y);
 GraphicsImage *ui_book_map_background = nullptr;
 
 GUIWindow_MapBook::GUIWindow_MapBook() {
-    this->eWindowType = WindowType::WINDOW_MapsBook;
+    this->eWindowType = WINDOW_MAPS_BOOK;
     viewparams->sViewCenterX = pParty->pos.x;
     viewparams->sViewCenterY = pParty->pos.y;
     viewparams->ClampMapViewPosition();
@@ -175,10 +175,8 @@ void DrawBook_Map_sub(int tl_x, int tl_y, int br_x, int br_y) {
             ((double)(-center.y - maxPartyAxisDistance / (viewparams->uMapBookMapZoom / 384) + 32768) / MapSizeScale) << 16;
         int scaled_posY = stepY_r >> 16;
 
-        static GraphicsImage *minimaptemp = nullptr;
-        if (minimaptemp) {
-            minimaptemp->release();
-        }
+        // TODO(captainurist): function-local static that owns a texture, make it a member.
+        static std::unique_ptr<GraphicsImage> minimaptemp;
 
         RgbaImage minimapImage = RgbaImage::solid(Color(), screenWidth, screenHeight);
         Color *minitempix = minimapImage.pixels().data();
@@ -216,7 +214,7 @@ void DrawBook_Map_sub(int tl_x, int tl_y, int br_x, int br_y) {
         }
 
         minimaptemp = GraphicsImage::Create(std::move(minimapImage));
-        render->DrawQuad2D(minimaptemp, {tl_x, tl_y});
+        render->DrawQuad2D(minimaptemp.get(), {tl_x, tl_y});
     } else {  // indoors
         if (!pIndoor->mapOutlines.empty()) {
             render->BeginLines2D();

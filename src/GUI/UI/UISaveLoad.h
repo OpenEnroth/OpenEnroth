@@ -1,6 +1,7 @@
 #pragma once
 
 #include <cassert>
+#include <memory>
 #include <string>
 #include <string_view>
 #include <vector>
@@ -13,7 +14,7 @@
 struct SavegameSlot {
     std::string fileName;
     SaveGameHeader header;
-    GraphicsImagePtr thumbnail;
+    std::unique_ptr<GraphicsImage> thumbnail;
 };
 
 class GUIWindow_SaveLoad : public GUIWindow {

@@ -78,7 +78,7 @@ static std::vector<SavegameSlot> loadMenuSlots() {
             slot.header.name = slot.fileName.substr(0, slot.fileName.size() - 4);
 
         try {
-            slot.thumbnail.reset(GraphicsImage::Create(pcx::decode(save.thumbnail))); // TODO(captainurist): lazy-load.
+            slot.thumbnail = GraphicsImage::Create(pcx::decode(save.thumbnail)); // TODO(captainurist): lazy-load.
 
             if (slot.thumbnail->width() == 0)
                 slot.thumbnail = nullptr;
@@ -230,7 +230,7 @@ void GUIWindow_SaveLoad::drawSaveLoad() {
     }
 }
 
-GUIWindow_Save::GUIWindow_Save() : GUIWindow_SaveLoad(WINDOW_Save, {0, 0}, render->GetRenderDimensions()) {
+GUIWindow_Save::GUIWindow_Save() : GUIWindow_SaveLoad(WINDOW_SAVE, {0, 0}, render->GetRenderDimensions()) {
     saveload_ui_loadsave = assets->getImage_ColorKey("loadsave");
     saveload_ui_save_up = assets->getImage_ColorKey("save_up");
     saveload_ui_saveu = assets->getImage_ColorKey("LS_saveU");
@@ -289,7 +289,7 @@ void GUIWindow_Save::slotClicked(int slotIndex, bool isDoubleClick) {
     }
 }
 
-GUIWindow_Load::GUIWindow_Load(bool ingame) : GUIWindow_SaveLoad(WINDOW_Load, {0, 0}, {0, 0}) {
+GUIWindow_Load::GUIWindow_Load(bool ingame) : GUIWindow_SaveLoad(WINDOW_LOAD, {0, 0}, {0, 0}) {
     current_screen_type = SCREEN_LOADGAME;
 
     saveload_ui_loadsave = assets->getImage_ColorKey("loadsave");

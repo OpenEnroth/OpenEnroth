@@ -421,7 +421,7 @@ void OutdoorLocation::Release() {
     render->ReleaseTerrain();
 
     if (viewparams->location_minimap)
-        viewparams->location_minimap->release();
+        assets->releaseImage(viewparams->location_minimap);
     viewparams->location_minimap = nullptr;
 }
 
@@ -445,7 +445,7 @@ void OutdoorLocation::Load(std::string_view filename, int days_played, int respa
 
     std::string_view minimap_filename = filename.substr(0, filename.length() - 4);
     if (viewparams->location_minimap)
-        viewparams->location_minimap->release();
+        assets->releaseImage(viewparams->location_minimap);
     viewparams->location_minimap = assets->getImage_Solid(minimap_filename);
 
     std::string odm_filename = std::string(filename);
@@ -479,7 +479,7 @@ void OutdoorLocation::Load(std::string_view filename, int days_played, int respa
             if (delta.header.info.lastRespawnDay == 0)
                 respawnInitial = true;
 
-            if (dword_6BE364_game_settings_1 & GAME_SETTINGS_LOADING_SAVEGAME_SKIP_RESPAWN)
+            if (engineFlags & ENGINE_LOADING_SAVEGAME)
                 respawn_interval_days = 0x1BAF800;
 
             if (!respawnInitial && days_played - delta.header.info.lastRespawnDay >= respawn_interval_days)
@@ -660,10 +660,6 @@ bool OutdoorLocation::InitalizeActors(MapId a1) {
     }
 
     pGameLoadingUI_ProgressBar->Progress();
-    // no use for this
-    //  Actor thisa;
-    //  thisa.pMonsterInfo.uID = 45;
-    //  thisa.PrepareSprites(0);
     return 1;
 }
 
@@ -875,11 +871,11 @@ void ODM_UpdateUserInputAndOther() {
 //----- (0041F54A) --------------------------------------------------------
 void OutdoorLocation::LoadActualSkyFrame() {
     if (rest_ui_sky_frame_current) {
-        rest_ui_sky_frame_current->release();
+        assets->releaseImage(rest_ui_sky_frame_current);
         rest_ui_sky_frame_current = nullptr;
     }
     if (rest_ui_hourglass_frame_current) {
-        rest_ui_hourglass_frame_current->release();
+        assets->releaseImage(rest_ui_hourglass_frame_current);
         rest_ui_hourglass_frame_current = nullptr;
     }
 
@@ -1758,11 +1754,11 @@ static void loadAndPrepareODMInternal(MapId mapid) {
     pOutdoor->weather.flags &= ~MAP_WEATHER_FOGGY;
     pOutdoor->Initialize(mapFilename, pParty->GetPlayingTime().toDays() + 1, respawn_interval, &outdoor_was_respawned);
 
-    if (!(dword_6BE364_game_settings_1 & GAME_SETTINGS_LOADING_SAVEGAME_SKIP_RESPAWN)) {
+    if (!(engineFlags & ENGINE_LOADING_SAVEGAME)) {
         Actor::InitializeActors();
         SpriteObject::InitializeSpriteObjects();
     }
-    dword_6BE364_game_settings_1 &= ~GAME_SETTINGS_LOADING_SAVEGAME_SKIP_RESPAWN;
+    engineFlags &= ~ENGINE_LOADING_SAVEGAME;
 
     if (outdoor_was_respawned) {
         for (unsigned i = 0; i < pOutdoor->pSpawnPoints.size(); ++i) {

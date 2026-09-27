@@ -36,6 +36,7 @@
 
 #include "Media/Audio/AudioPlayer.h"
 
+#include "Utility/IndexedArray.h"
 #include "Utility/MapAccess.h"
 
 void CharacterUI_LoadPaperdollTextures();
@@ -200,102 +201,49 @@ GraphicsImage *paperdoll_drhs[4];
 GraphicsImage *paperdoll_dlhus[4];
 GraphicsImage *paperdoll_dlhs[4];
 GraphicsImage *paperdoll_dbods[5];
-GraphicsImage *paperdoll_armor_texture[4][17][3];  // 0x511294
+IndexedArray<std::array<std::array<GraphicsImage *, 3>, 17>, BODY_TYPE_FIRST, BODY_TYPE_LAST> paperdoll_armor_texture;  // 0x511294
 // int paperdoll_array_51132C[165];
 GraphicsImage *paperdoll_dlaus[5];
 GraphicsImage *paperdoll_dlads[4];
 GraphicsImage *paperdoll_flying_feet[22];      // 005115E0
-GraphicsImage *paperdoll_boots_texture[4][6];  // 511638
-GraphicsImage *paperdoll_cloak_collar_texture[4][10];
-GraphicsImage *paperdoll_cloak_texture[4][10];
-GraphicsImage *paperdoll_helm_texture[2][16];  // 511698
-GraphicsImage *paperdoll_belt_texture[4][7];   // 511718
+IndexedArray<std::array<GraphicsImage *, 6>, BODY_TYPE_FIRST, BODY_TYPE_LAST> paperdoll_boots_texture;  // 511638
+IndexedArray<std::array<GraphicsImage *, 10>, BODY_TYPE_FIRST, BODY_TYPE_LAST> paperdoll_cloak_collar_texture;
+IndexedArray<std::array<GraphicsImage *, 10>, BODY_TYPE_FIRST, BODY_TYPE_LAST> paperdoll_cloak_texture;
+IndexedArray<std::array<GraphicsImage *, 16>, BODY_TYPE_HUMAN_MALE, BODY_TYPE_HUMAN_FEMALE> paperdoll_helm_texture;  // 511698
+IndexedArray<std::array<GraphicsImage *, 7>, BODY_TYPE_FIRST, BODY_TYPE_LAST> paperdoll_belt_texture;  // 511718
 
-const int paperdoll_Weapon[4][16][2] = {
-    // 4E4C30
-    {{128, 205},
-     {30, 144},
-     {88, 85},
-     {0, 0},
-     {0, 0},
-     {0, 0},
-     {17, 104},
-     {0, 0},
-     {0, 0},
-     {0, 0},
-     {0, 0},
-     {0, 0},
-     {0, 0},
-     {0, 0},
-     {0, 0},
-     {0, 0}},
-    {{131, 201},
-     {38, 158},
-     {98, 87},
-     {0, 0},
-     {0, 0},
-     {0, 0},
-     {21, 100},
-     {0, 0},
-     {0, 0},
-     {0, 0},
-     {0, 0},
-     {0, 0},
-     {0, 0},
-     {0, 0},
-     {0, 0},
-     {0, 0}},
-    {{131, 216},
-     {29, 186},
-     {88, 119},
-     {0, 0},
-     {0, 0},
-     {0, 0},
-     {0, 0},
-     {0, 0},
-     {0, 0},
-     {0, 0},
-     {0, 0},
-     {0, 0},
-     {0, 0},
-     {0, 0},
-     {0, 0},
-     {0, 0}},
-    {{123, 216},
-     {35, 184},
-     {98, 119},
-     {0, 0},
-     {0, 0},
-     {0, 0},
-     {0, 0},
-     {0, 0},
-     {0, 0},
-     {0, 0},
-     {0, 0},
-     {0, 0},
-     {0, 0},
-     {0, 0},
-     {0, 0},
-     {0, 0}},
+const IndexedArray<std::array<std::array<int, 2>, 16>, BODY_TYPE_FIRST, BODY_TYPE_LAST> paperdoll_Weapon = {  // 4E4C30
+    {BODY_TYPE_HUMAN_MALE, {{
+        {128, 205}, {30, 144}, {88, 85}, {0, 0}, {0, 0}, {0, 0}, {17, 104}, {0, 0},
+        {0, 0}, {0, 0}, {0, 0}, {0, 0}, {0, 0}, {0, 0}, {0, 0}, {0, 0},
+    }}},
+    {BODY_TYPE_HUMAN_FEMALE, {{
+        {131, 201}, {38, 158}, {98, 87}, {0, 0}, {0, 0}, {0, 0}, {21, 100}, {0, 0},
+        {0, 0}, {0, 0}, {0, 0}, {0, 0}, {0, 0}, {0, 0}, {0, 0}, {0, 0},
+    }}},
+    {BODY_TYPE_DWARF_MALE, {{
+        {131, 216}, {29, 186}, {88, 119}, {0, 0}, {0, 0}, {0, 0}, {0, 0}, {0, 0},
+        {0, 0}, {0, 0}, {0, 0}, {0, 0}, {0, 0}, {0, 0}, {0, 0}, {0, 0},
+    }}},
+    {BODY_TYPE_DWARF_FEMALE, {{
+        {123, 216}, {35, 184}, {98, 119}, {0, 0}, {0, 0}, {0, 0}, {0, 0}, {0, 0},
+        {0, 0}, {0, 0}, {0, 0}, {0, 0}, {0, 0}, {0, 0}, {0, 0}, {0, 0},
+    }}},
 };
 
-// body complexion, item index, x/y position
-const int paperdoll_Boot[4][7][2] = {  // 4E5490
-    // human/goblin/elf male
-    0x0E, 0x11D, 0x0D, 0x11D, 0x0C, 0x10A, 0x0A, 0xFF,  0x0D, 0xF9,
-    0x0C, 0x10E, 0x0D, 0x137,
-
-    // human/goblin/elf female
-    0x14, 0x125, 0x13, 0x122, 0x15, 0x120, 0x15, 0x114, 0x13, 0x10A,
-    0x11, 0x116, 0x11, 0x13E,
-
-    // dwarf male
-    0x1D, 0x121, 0x1C, 0x11F, 0x1B, 0x11B, 0x1C, 0x117, 0x16, 0x116,
-    0x1B, 0x11B, 0x1B, 0x137,
-
-    // dwarf female
-    0x1F, 0x127, 0x1F, 0x122, 0x1B, 0x11B, 0x1D, 0x117, 0x1D, 0x116,
-    0x1B, 0x11F, 0x1D, 0x137,
+const IndexedArray<std::array<std::array<int, 2>, 7>, BODY_TYPE_FIRST, BODY_TYPE_LAST> paperdoll_Boot = {  // 4E5490
+    {BODY_TYPE_HUMAN_MALE, {{
+        {0x0E, 0x11D}, {0x0D, 0x11D}, {0x0C, 0x10A}, {0x0A, 0xFF}, {0x0D, 0xF9}, {0x0C, 0x10E}, {0x0D, 0x137},
+    }}},
+    {BODY_TYPE_HUMAN_FEMALE, {{
+        {0x14, 0x125}, {0x13, 0x122}, {0x15, 0x120}, {0x15, 0x114}, {0x13, 0x10A}, {0x11, 0x116}, {0x11, 0x13E},
+    }}},
+    {BODY_TYPE_DWARF_MALE, {{
+        {0x1D, 0x121}, {0x1C, 0x11F}, {0x1B, 0x11B}, {0x1C, 0x117}, {0x16, 0x116}, {0x1B, 0x11B}, {0x1B, 0x137},
+    }}},
+    {BODY_TYPE_DWARF_FEMALE, {{
+        {0x1F, 0x127}, {0x1F, 0x122}, {0x1B, 0x11B}, {0x1D, 0x117}, {0x1D, 0x116}, {0x1B, 0x11F}, {0x1D, 0x137},
+    }}},
 };
 const std::unordered_map<ItemId, int> paperdoll_boots_indexByType = {
     {ITEM_LEATHER_BOOTS, 0},
@@ -308,18 +256,23 @@ const std::unordered_map<ItemId, int> paperdoll_boots_indexByType = {
 };
 const std::unordered_map<int, ItemId> paperdoll_boots_typeByIndex = inverted(paperdoll_boots_indexByType);
 
-const int paperdoll_Cloak[4][10][2] = {  // 4E5570
-    0x11, 0x68, 0x0F, 0x68, 0x14, 0x71, 0x19, 0x6B, 0x21, 0x6F, 0x05, 0x68,
-    0x05, 0x68, 0x14, 0x71, 0x03, 0x6B, 0x0F, 0x6F,
-
-    0x15, 0x64, 0xB,  0x6B, 0x0E, 0x67, 0x15, 0x6B, 0x1B, 0x6F, 0x03, 0x6B,
-    0,    0x6B, 0xE,  0x67, 0,    0x6B, 0x3,  0x6F,
-
-    0x10, 0x8A, 0x9,  0x8B, 0x18, 0x98, 0x25, 0x91, 0x29, 0x90, 0x08, 0x8A,
-    0x9,  0x8B, 0x18, 0x98, 0x3,  0x91, 0x3,  0x90,
-
-    0x14, 0x92, 0x10, 0x92, 0x15, 0x98, 0x1F, 0x91, 0x22, 0x90, 0x08, 0x92,
-    0x0C, 0x92, 0x15, 0x98, 0x03, 0x91, 0x03, 0x90,
+const IndexedArray<std::array<std::array<int, 2>, 10>, BODY_TYPE_FIRST, BODY_TYPE_LAST> paperdoll_Cloak = {  // 4E5570
+    {BODY_TYPE_HUMAN_MALE, {{
+        {0x11, 0x68}, {0x0F, 0x68}, {0x14, 0x71}, {0x19, 0x6B}, {0x21, 0x6F}, {0x05, 0x68}, {0x05, 0x68}, {0x14, 0x71},
+        {0x03, 0x6B}, {0x0F, 0x6F},
+    }}},
+    {BODY_TYPE_HUMAN_FEMALE, {{
+        {0x15, 0x64}, {0xB, 0x6B}, {0x0E, 0x67}, {0x15, 0x6B}, {0x1B, 0x6F}, {0x03, 0x6B}, {0, 0x6B}, {0xE, 0x67},
+        {0, 0x6B}, {0x3, 0x6F},
+    }}},
+    {BODY_TYPE_DWARF_MALE, {{
+        {0x10, 0x8A}, {0x9, 0x8B}, {0x18, 0x98}, {0x25, 0x91}, {0x29, 0x90}, {0x08, 0x8A}, {0x9, 0x8B}, {0x18, 0x98},
+        {0x3, 0x91}, {0x3, 0x90},
+    }}},
+    {BODY_TYPE_DWARF_FEMALE, {{
+        {0x14, 0x92}, {0x10, 0x92}, {0x15, 0x98}, {0x1F, 0x91}, {0x22, 0x90}, {0x08, 0x92}, {0x0C, 0x92}, {0x15, 0x98},
+        {0x03, 0x91}, {0x03, 0x90},
+    }}},
 };
 const std::unordered_map<ItemId, int> paperdoll_cloak_indexByType = {
     {ITEM_LEATHER_CLOAK, 0},
@@ -335,32 +288,38 @@ const std::unordered_map<ItemId, int> paperdoll_cloak_indexByType = {
 };
 const std::unordered_map<int, ItemId> paperdoll_cloak_typeByIndex = inverted(paperdoll_cloak_indexByType);
 
-const int paperdoll_CloakCollar[4][10][2] = {  // 4E56B0
-    0,    0,    0x34, 0x64, 0x21, 0x69, 0x1D, 0x67, 0x20, 0x67, 0x21, 0x68,
-    0x34, 0x64, 0x21, 0x69, 0x1D, 0x67, 0x1F, 0x67,
-
-    0,    0,    0x35, 0x66, 0x29, 0x68, 0x1F, 0x68, 0x1F, 0x6A, 0x21, 0x6A,
-    0x2B, 0x66, 0x26, 0x68, 0x1F, 0x68, 0x1F, 0x6A,
-
-    0,    0,    0x30, 0x87, 0x1E, 0x86, 0x1B, 0x86, 0x1C, 0x8A, 0x21, 0x87,
-    0x30, 0x87, 0x1E, 0x86, 0x1B, 0x86, 0x1C, 0x8A,
-
-    0,    0,    0x38, 0x8A, 0x24, 0x8B, 0x1D, 0x8B, 0x21, 0x8C, 0x27, 0x8A,
-    0x34, 0x8A, 0x24, 0x8B, 0x25, 0x8B, 0x21, 0x8C,
+const IndexedArray<std::array<std::array<int, 2>, 10>, BODY_TYPE_FIRST, BODY_TYPE_LAST> paperdoll_CloakCollar = {  // 4E56B0
+    {BODY_TYPE_HUMAN_MALE, {{
+        {0, 0}, {0x34, 0x64}, {0x21, 0x69}, {0x1D, 0x67}, {0x20, 0x67}, {0x21, 0x68}, {0x34, 0x64}, {0x21, 0x69},
+        {0x1D, 0x67}, {0x1F, 0x67},
+    }}},
+    {BODY_TYPE_HUMAN_FEMALE, {{
+        {0, 0}, {0x35, 0x66}, {0x29, 0x68}, {0x1F, 0x68}, {0x1F, 0x6A}, {0x21, 0x6A}, {0x2B, 0x66}, {0x26, 0x68},
+        {0x1F, 0x68}, {0x1F, 0x6A},
+    }}},
+    {BODY_TYPE_DWARF_MALE, {{
+        {0, 0}, {0x30, 0x87}, {0x1E, 0x86}, {0x1B, 0x86}, {0x1C, 0x8A}, {0x21, 0x87}, {0x30, 0x87}, {0x1E, 0x86},
+        {0x1B, 0x86}, {0x1C, 0x8A},
+    }}},
+    {BODY_TYPE_DWARF_FEMALE, {{
+        {0, 0}, {0x38, 0x8A}, {0x24, 0x8B}, {0x1D, 0x8B}, {0x21, 0x8C}, {0x27, 0x8A}, {0x34, 0x8A}, {0x24, 0x8B},
+        {0x25, 0x8B}, {0x21, 0x8C},
+    }}},
 };
 // int dword_4E56B4;
-const int paperdoll_Belt[4][7][2] = {  // 4E57F0
-    0x3A, 0xB6, 0x37, 0xB2, 0x34, 0xB9, 0x3A, 0xB9, 0x37, 0xB7, 0x38, 0xAC,
-    0x37, 0xB7,
-
-    0x3E, 0xAD, 0x3A, 0xAC, 0x37, 0xB0, 0x3A, 0xB1, 0x39, 0xB0, 0x3C, 0xA5,
-    0x39, 0xB0,
-
-    0x3B, 0xD5, 0x37, 0xD2, 0x31, 0xD5, 0x39, 0xD6, 0x37, 0xD8, 0x37, 0xD1,
-    0x37, 0xD8,
-
-    0x42, 0xD2, 0x3F, 0xD0, 0x3B, 0xD7, 0x3C, 0xD5, 0x3B, 0xD6, 0x3E, 0xCF,
-    0x36, 0xD6,
+const IndexedArray<std::array<std::array<int, 2>, 7>, BODY_TYPE_FIRST, BODY_TYPE_LAST> paperdoll_Belt = {  // 4E57F0
+    {BODY_TYPE_HUMAN_MALE, {{
+        {0x3A, 0xB6}, {0x37, 0xB2}, {0x34, 0xB9}, {0x3A, 0xB9}, {0x37, 0xB7}, {0x38, 0xAC}, {0x37, 0xB7},
+    }}},
+    {BODY_TYPE_HUMAN_FEMALE, {{
+        {0x3E, 0xAD}, {0x3A, 0xAC}, {0x37, 0xB0}, {0x3A, 0xB1}, {0x39, 0xB0}, {0x3C, 0xA5}, {0x39, 0xB0},
+    }}},
+    {BODY_TYPE_DWARF_MALE, {{
+        {0x3B, 0xD5}, {0x37, 0xD2}, {0x31, 0xD5}, {0x39, 0xD6}, {0x37, 0xD8}, {0x37, 0xD1}, {0x37, 0xD8},
+    }}},
+    {BODY_TYPE_DWARF_FEMALE, {{
+        {0x42, 0xD2}, {0x3F, 0xD0}, {0x3B, 0xD7}, {0x3C, 0xD5}, {0x3B, 0xD6}, {0x3E, 0xCF}, {0x36, 0xD6},
+    }}},
 };
 const std::unordered_map<ItemId, int> paperdoll_belt_indexByType = {
     {ITEM_LEATHER_BELT, 0},
@@ -373,22 +332,23 @@ const std::unordered_map<ItemId, int> paperdoll_belt_indexByType = {
 };
 const std::unordered_map<int, ItemId> paperdoll_belt_typeByIndex = inverted(paperdoll_belt_indexByType);
 
-const int paperdoll_Helm[4][16][2] = {  // 4E58D0
-    0x3E, 0x1F, 0x41, 0x2C, 0x37, 0x2F, 0x31, 0x32, 0x37, 0x2A, 0x39, 0x28,
-    0x36, 0x34, 0x41, 0x38, 0x40, 0x31, 0x40, 0x21, 0x40, 0x31, 0x3C, 0x33,
-    0x3D, 0x24, 0x3A, 0x1A, 0x37, 0x2A, 0x41, 0x48,
-
-    0x41, 0x1E, 0x42, 0x2B, 0x37, 0x2F, 0x34, 0x30, 0x39, 0x29, 0x3A, 0x26,
-    0x36, 0x34, 0x41, 0x37, 0x42, 0x32, 0x40, 0x21, 0x40, 0x31, 0x40, 0x2F,
-    0x3E, 0x22, 0x3B, 0x1A, 0x39, 0x29, 0x42, 0x47,
-
-    0x3F, 0x47, 0x41, 0x56, 0x37, 0x59, 0x32, 0x5E, 0x37, 0x58, 0x39, 0x54,
-    0x34, 0x61, 0x40, 0x61, 0x41, 0x5D, 0x3E, 0x4F, 0x3E, 0x5B, 0x3D, 0x5B,
-    0x3F, 0x4C, 0x3B, 0x45, 0x37, 0x58, 0x41, 0x74,
-
-    0x45, 0x45, 0x46, 0x54, 0x3A, 0x55, 0x38, 0x58, 0x3C, 0x54, 0x3F, 0x52,
-    0x39, 0x5B, 0x45, 0x5C, 0x47, 0x5C, 0x44, 0x4B, 0x44, 0x57, 0x43, 0x55,
-    0x44, 0x4A, 0x3E, 0x45, 0x3C, 0x54, 0x47, 0x70,
+const IndexedArray<std::array<std::array<int, 2>, 16>, BODY_TYPE_FIRST, BODY_TYPE_LAST> paperdoll_Helm = {  // 4E58D0
+    {BODY_TYPE_HUMAN_MALE, {{
+        {0x3E, 0x1F}, {0x41, 0x2C}, {0x37, 0x2F}, {0x31, 0x32}, {0x37, 0x2A}, {0x39, 0x28}, {0x36, 0x34}, {0x41, 0x38},
+        {0x40, 0x31}, {0x40, 0x21}, {0x40, 0x31}, {0x3C, 0x33}, {0x3D, 0x24}, {0x3A, 0x1A}, {0x37, 0x2A}, {0x41, 0x48},
+    }}},
+    {BODY_TYPE_HUMAN_FEMALE, {{
+        {0x41, 0x1E}, {0x42, 0x2B}, {0x37, 0x2F}, {0x34, 0x30}, {0x39, 0x29}, {0x3A, 0x26}, {0x36, 0x34}, {0x41, 0x37},
+        {0x42, 0x32}, {0x40, 0x21}, {0x40, 0x31}, {0x40, 0x2F}, {0x3E, 0x22}, {0x3B, 0x1A}, {0x39, 0x29}, {0x42, 0x47},
+    }}},
+    {BODY_TYPE_DWARF_MALE, {{
+        {0x3F, 0x47}, {0x41, 0x56}, {0x37, 0x59}, {0x32, 0x5E}, {0x37, 0x58}, {0x39, 0x54}, {0x34, 0x61}, {0x40, 0x61},
+        {0x41, 0x5D}, {0x3E, 0x4F}, {0x3E, 0x5B}, {0x3D, 0x5B}, {0x3F, 0x4C}, {0x3B, 0x45}, {0x37, 0x58}, {0x41, 0x74},
+    }}},
+    {BODY_TYPE_DWARF_FEMALE, {{
+        {0x45, 0x45}, {0x46, 0x54}, {0x3A, 0x55}, {0x38, 0x58}, {0x3C, 0x54}, {0x3F, 0x52}, {0x39, 0x5B}, {0x45, 0x5C},
+        {0x47, 0x5C}, {0x44, 0x4B}, {0x44, 0x57}, {0x43, 0x55}, {0x44, 0x4A}, {0x3E, 0x45}, {0x3C, 0x54}, {0x47, 0x70},
+    }}},
 };
 const std::unordered_map<ItemId, int> paperdoll_helm_indexByType = {
     {ITEM_HORNED_HELM, 0},
@@ -416,37 +376,54 @@ const int pPaperdoll_Beards[4] = {  // 4E5AD0
     56,
     136,
 };
-const int pPaperdoll_LeftHand[4][2] = {  // 4E5AE0
-    0x67, 0x6A, 0x65, 0x6C, 0x74, 0x8D, 0x74, 0x93,
+const IndexedArray<std::array<int, 2>, BODY_TYPE_FIRST, BODY_TYPE_LAST> pPaperdoll_LeftHand = {  // 4E5AE0
+    {BODY_TYPE_HUMAN_MALE, {0x67, 0x6A}},
+    {BODY_TYPE_HUMAN_FEMALE, {0x65, 0x6C}},
+    {BODY_TYPE_DWARF_MALE, {0x74, 0x8D}},
+    {BODY_TYPE_DWARF_FEMALE, {0x74, 0x93}},
 };
-const int pPaperdoll_SecondLeftHand[4][2] = {  // 4E5B00
-    0x1A, 0x6B, 0x28, 0x6D, 0x19, 0x8D, 0x20, 0x92,
+const IndexedArray<std::array<int, 2>, BODY_TYPE_FIRST, BODY_TYPE_LAST> pPaperdoll_SecondLeftHand = {  // 4E5B00
+    {BODY_TYPE_HUMAN_MALE, {0x1A, 0x6B}},
+    {BODY_TYPE_HUMAN_FEMALE, {0x28, 0x6D}},
+    {BODY_TYPE_DWARF_MALE, {0x19, 0x8D}},
+    {BODY_TYPE_DWARF_FEMALE, {0x20, 0x92}},
 };
-const int pPaperdoll_RightHand[4][2] = {  // 4E5B20
-    0x1E, 0x90, 0x22, 0x9E, 0x19, 0xBA, 0x1F, 0xB8,
+const IndexedArray<std::array<int, 2>, BODY_TYPE_FIRST, BODY_TYPE_LAST> pPaperdoll_RightHand = {  // 4E5B20
+    {BODY_TYPE_HUMAN_MALE, {0x1E, 0x90}},
+    {BODY_TYPE_HUMAN_FEMALE, {0x22, 0x9E}},
+    {BODY_TYPE_DWARF_MALE, {0x19, 0xBA}},
+    {BODY_TYPE_DWARF_FEMALE, {0x1F, 0xB8}},
 };
-const int pPaperdollLeftEmptyHand[4][2] = {  // 4E5B40
-    0x80, 0xCD, 0x83, 0xC9, 0x83, 0xD8, 0x7B, 0xD8,
+const IndexedArray<std::array<int, 2>, BODY_TYPE_FIRST, BODY_TYPE_LAST> pPaperdollLeftEmptyHand = {  // 4E5B40
+    {BODY_TYPE_HUMAN_MALE, {0x80, 0xCD}},
+    {BODY_TYPE_HUMAN_FEMALE, {0x83, 0xC9}},
+    {BODY_TYPE_DWARF_MALE, {0x83, 0xD8}},
+    {BODY_TYPE_DWARF_FEMALE, {0x7B, 0xD8}},
 };
 
 int pPaperdoll_BodyX = 481;                  // 004E4C28
 int pPaperdoll_BodyY = 0;                    // 004E4C2C
-const int paperdoll_Armor_Coord[4][17][2] = {  // 4E4E30
-    0x2C, 0x67, 0x30, 0x69, 0x2D, 0x67, 0x2C, 0x64, 0x14, 0x66, 0x22, 0x67,
-    0x20, 0x66, 0x25, 0x66, 0x12, 0x66, 0x0A, 0x66, 0x13, 0x64, 0x0E, 0x64,
-    0x0A, 0x63, 0x14, 0x66, 0x0A, 0x63, 0x0A, 0x66, 0x25, 0x66,
-
-    0x32, 0x68, 0x32, 0x69, 0x35, 0x69, 0x33, 0x68, 0x24, 0x67, 0x30, 0x69,
-    0x33, 0x68, 0x31, 0x69, 0x19, 0x69, 0x19, 0x6A, 0x16, 0x66, 0x16, 0x65,
-    0x0F, 0x6B, 0x24, 0x67, 0x0F, 0x6B, 0x19, 0x6A, 0x31, 0x69,
-
-    0x2A, 0x8C, 0x29, 0x8C, 0x2A, 0x89, 0x29, 0x86, 0x12, 0x87, 0x2D, 0x89,
-    0x2A, 0x88, 0x25, 0x87, 0x12, 0x8B, 0x12, 0x8B, 0x11, 0x8A, 0x15, 0x87,
-    0x09, 0x89, 0x12, 0x87, 0x09, 0x89, 0x12, 0x8B, 0x25, 0x87,
-
-    0x33, 0x90, 0x32, 0x90, 0x34, 0x91, 0x32, 0x8E, 0x21, 0x8B, 0x31, 0x8B,
-    0x33, 0x8E, 0x2F, 0x8F, 0x16, 0x8D, 0x18, 0x8C, 0x19, 0x8C, 0x1B, 0x8E,
-    0x0C, 0x8C, 0x21, 0x8B, 0x0C, 0x8C, 0x18, 0x8C, 0x2F, 0x8F,
+const IndexedArray<std::array<std::array<int, 2>, 17>, BODY_TYPE_FIRST, BODY_TYPE_LAST> paperdoll_Armor_Coord = {  // 4E4E30
+    {BODY_TYPE_HUMAN_MALE, {{
+        {0x2C, 0x67}, {0x30, 0x69}, {0x2D, 0x67}, {0x2C, 0x64}, {0x14, 0x66}, {0x22, 0x67}, {0x20, 0x66}, {0x25, 0x66},
+        {0x12, 0x66}, {0x0A, 0x66}, {0x13, 0x64}, {0x0E, 0x64}, {0x0A, 0x63}, {0x14, 0x66}, {0x0A, 0x63}, {0x0A, 0x66},
+        {0x25, 0x66},
+    }}},
+    {BODY_TYPE_HUMAN_FEMALE, {{
+        {0x32, 0x68}, {0x32, 0x69}, {0x35, 0x69}, {0x33, 0x68}, {0x24, 0x67}, {0x30, 0x69}, {0x33, 0x68}, {0x31, 0x69},
+        {0x19, 0x69}, {0x19, 0x6A}, {0x16, 0x66}, {0x16, 0x65}, {0x0F, 0x6B}, {0x24, 0x67}, {0x0F, 0x6B}, {0x19, 0x6A},
+        {0x31, 0x69},
+    }}},
+    {BODY_TYPE_DWARF_MALE, {{
+        {0x2A, 0x8C}, {0x29, 0x8C}, {0x2A, 0x89}, {0x29, 0x86}, {0x12, 0x87}, {0x2D, 0x89}, {0x2A, 0x88}, {0x25, 0x87},
+        {0x12, 0x8B}, {0x12, 0x8B}, {0x11, 0x8A}, {0x15, 0x87}, {0x09, 0x89}, {0x12, 0x87}, {0x09, 0x89}, {0x12, 0x8B},
+        {0x25, 0x87},
+    }}},
+    {BODY_TYPE_DWARF_FEMALE, {{
+        {0x33, 0x90}, {0x32, 0x90}, {0x34, 0x91}, {0x32, 0x8E}, {0x21, 0x8B}, {0x31, 0x8B}, {0x33, 0x8E}, {0x2F, 0x8F},
+        {0x16, 0x8D}, {0x18, 0x8C}, {0x19, 0x8C}, {0x1B, 0x8E}, {0x0C, 0x8C}, {0x21, 0x8B}, {0x0C, 0x8C}, {0x18, 0x8C},
+        {0x2F, 0x8F},
+    }}},
 };
 const std::unordered_map<ItemId, int> paperdoll_armor_indexByType = {
     {ITEM_LEATHER_ARMOR, 0},
@@ -469,39 +446,49 @@ const std::unordered_map<ItemId, int> paperdoll_armor_indexByType = {
 };
 const std::unordered_map<int, ItemId> paperdoll_armor_typeByIndex = inverted(paperdoll_armor_indexByType);
 
-const int paperdoll_shoulder_coord[4][17][2] = {  // 4E5050
-    0x64, 0x67, 0x61, 0x67, 0x65, 0x68, 0x6E, 0x74, 0x6C, 0x68, 0x61, 0x67,
-    0x66, 0x68, 0x6C, 0x6A, 0x6E, 0x6D, 0x67, 0x69, 0x70, 0x67, 0x6E, 0x6D,
-    0x6C, 0x6F, 0x6C, 0x68, 0x6C, 0x6F, 0x67, 0x69, 0x6C, 0x6A,
-
-    0x60, 0x6B, 0x60, 0x6C, 0x60, 0x6B, 0x61, 0x6A, 0x60, 0x69, 0,    0,
-    0x60, 0x6A, 0x61, 0x69, 0x63, 0x6A, 0x64, 0x6A, 0x61, 0x66, 0x66, 0x67,
-    0x64, 0x6C, 0x60, 0x69, 0x64, 0x6C, 0x64, 0x6A, 0x61, 0x69,
-
-    0x6D, 0x8C, 0x75, 0x8C, 0,    0,    0x72, 0x8D, 0x6A, 0x89, 0,    0,
-    0x73, 0x8C, 0x69, 0x8C, 0x6E, 0x8D, 0x71, 0x8D, 0x70, 0x8D, 0x72, 0x8D,
-    0x74, 0x8E, 0x6A, 0x89, 0x74, 0x8E, 0x71, 0x8D, 0x69, 0x8C,
-
-    0x72, 0x91, 0x72, 0x91, 0,    0,    0x6E, 0x92, 0x6F, 0x91, 0,    0,
-    0,    0,    0x6E, 0x91, 0x71, 0x90, 0x72, 0x8D, 0x72, 0x90, 0x73, 0x93,
-    0x73, 0x90, 0x6F, 0x91, 0x73, 0x90, 0x72, 0x8D, 0x6E, 0x91,
+const IndexedArray<std::array<std::array<int, 2>, 17>, BODY_TYPE_FIRST, BODY_TYPE_LAST> paperdoll_shoulder_coord = {  // 4E5050
+    {BODY_TYPE_HUMAN_MALE, {{
+        {0x64, 0x67}, {0x61, 0x67}, {0x65, 0x68}, {0x6E, 0x74}, {0x6C, 0x68}, {0x61, 0x67}, {0x66, 0x68}, {0x6C, 0x6A},
+        {0x6E, 0x6D}, {0x67, 0x69}, {0x70, 0x67}, {0x6E, 0x6D}, {0x6C, 0x6F}, {0x6C, 0x68}, {0x6C, 0x6F}, {0x67, 0x69},
+        {0x6C, 0x6A},
+    }}},
+    {BODY_TYPE_HUMAN_FEMALE, {{
+        {0x60, 0x6B}, {0x60, 0x6C}, {0x60, 0x6B}, {0x61, 0x6A}, {0x60, 0x69}, {0, 0}, {0x60, 0x6A}, {0x61, 0x69},
+        {0x63, 0x6A}, {0x64, 0x6A}, {0x61, 0x66}, {0x66, 0x67}, {0x64, 0x6C}, {0x60, 0x69}, {0x64, 0x6C}, {0x64, 0x6A},
+        {0x61, 0x69},
+    }}},
+    {BODY_TYPE_DWARF_MALE, {{
+        {0x6D, 0x8C}, {0x75, 0x8C}, {0, 0}, {0x72, 0x8D}, {0x6A, 0x89}, {0, 0}, {0x73, 0x8C}, {0x69, 0x8C},
+        {0x6E, 0x8D}, {0x71, 0x8D}, {0x70, 0x8D}, {0x72, 0x8D}, {0x74, 0x8E}, {0x6A, 0x89}, {0x74, 0x8E}, {0x71, 0x8D},
+        {0x69, 0x8C},
+    }}},
+    {BODY_TYPE_DWARF_FEMALE, {{
+        {0x72, 0x91}, {0x72, 0x91}, {0, 0}, {0x6E, 0x92}, {0x6F, 0x91}, {0, 0}, {0, 0}, {0x6E, 0x91},
+        {0x71, 0x90}, {0x72, 0x8D}, {0x72, 0x90}, {0x73, 0x93}, {0x73, 0x90}, {0x6F, 0x91}, {0x73, 0x90}, {0x72, 0x8D},
+        {0x6E, 0x91},
+    }}},
 };
-const int paperdoll_shoulder_second_coord[4][17][2] = {  // dword_4E5270
-    0,    0,    0x61, 0x67, 0,    0,    0x64, 0x69, 0x64, 0x68, 0,    0,
-    0,    0,    0x5E, 0x66, 0x5F, 0x69, 0x55, 0x69, 0x5F, 0x67, 0x5F, 0x68,
-    0x32, 0x69, 0x64, 0x68, 0x32, 0x69, 0x55, 0x69, 0x5E, 0x66,
-
-    0,    0,    0,    0,    0,    0,    0x60, 0x6C, 0x5E, 0x69, 0,    0,
-    0,    0,    0x5D, 0x6A, 0x5B, 0x6A, 0x5B, 0x6A, 0x59, 0x69, 0x56, 0x68,
-    0x38, 0x6E, 0x5E, 0x69, 0x38, 0x6E, 0x5B, 0x6A, 0x5D, 0x6A,
-
-    0,    0,    0,    0,    0,    0,    0x72, 0x8D, 0x62, 0x89, 0,    0,
-    0,    0,    0x69, 0x8C, 0x5E, 0x8D, 0x61, 0x8D, 0x5F, 0x8D, 0x60, 0x8D,
-    0x2E, 0x8C, 0x62, 0x89, 0x2E, 0x8C, 0x61, 0x8D, 0x69, 0x8C,
-
-    0,    0,    0,    0,    0,    0,    0x72, 0x91, 0x67, 0x8F, 0,    0,
-    0,    0,    0,    0,    0x64, 0x93, 0x65, 0x8C, 0x65, 0x91, 0x67, 0x91,
-    0x36, 0x90, 0x67, 0x8F, 0x36, 0x90, 0x65, 0x8C, 0x6E, 0x91,
+const IndexedArray<std::array<std::array<int, 2>, 17>, BODY_TYPE_FIRST, BODY_TYPE_LAST> paperdoll_shoulder_second_coord = {  // dword_4E5270
+    {BODY_TYPE_HUMAN_MALE, {{
+        {0, 0}, {0x61, 0x67}, {0, 0}, {0x64, 0x69}, {0x64, 0x68}, {0, 0}, {0, 0}, {0x5E, 0x66},
+        {0x5F, 0x69}, {0x55, 0x69}, {0x5F, 0x67}, {0x5F, 0x68}, {0x32, 0x69}, {0x64, 0x68}, {0x32, 0x69}, {0x55, 0x69},
+        {0x5E, 0x66},
+    }}},
+    {BODY_TYPE_HUMAN_FEMALE, {{
+        {0, 0}, {0, 0}, {0, 0}, {0x60, 0x6C}, {0x5E, 0x69}, {0, 0}, {0, 0}, {0x5D, 0x6A},
+        {0x5B, 0x6A}, {0x5B, 0x6A}, {0x59, 0x69}, {0x56, 0x68}, {0x38, 0x6E}, {0x5E, 0x69}, {0x38, 0x6E}, {0x5B, 0x6A},
+        {0x5D, 0x6A},
+    }}},
+    {BODY_TYPE_DWARF_MALE, {{
+        {0, 0}, {0, 0}, {0, 0}, {0x72, 0x8D}, {0x62, 0x89}, {0, 0}, {0, 0}, {0x69, 0x8C},
+        {0x5E, 0x8D}, {0x61, 0x8D}, {0x5F, 0x8D}, {0x60, 0x8D}, {0x2E, 0x8C}, {0x62, 0x89}, {0x2E, 0x8C}, {0x61, 0x8D},
+        {0x69, 0x8C},
+    }}},
+    {BODY_TYPE_DWARF_FEMALE, {{
+        {0, 0}, {0, 0}, {0, 0}, {0x72, 0x91}, {0x67, 0x8F}, {0, 0}, {0, 0}, {0, 0},
+        {0x64, 0x93}, {0x65, 0x8C}, {0x65, 0x91}, {0x67, 0x91}, {0x36, 0x90}, {0x67, 0x8F}, {0x36, 0x90}, {0x65, 0x8C},
+        {0x6E, 0x91},
+    }}},
 };
 
 static constexpr std::array<const char *, 25> dlad_texnames_by_face = {
@@ -551,7 +538,7 @@ std::array<GraphicsImage *, 16> paperdoll_dbrds;
 Recti savedInventoryLeftClickButtonRect;
 
 GUIWindow_CharacterRecord::GUIWindow_CharacterRecord(ScreenType screen)
-    : GUIWindow(WINDOW_CharacterRecord, {0, 0}, render->GetRenderDimensions()) {
+    : GUIWindow(WINDOW_CHARACTER_RECORD, {0, 0}, render->GetRenderDimensions()) {
     gameTimer->setPaused(true);
     bRingsShownInCharScreen = false;
     CharacterUI_LoadPaperdollTextures();
@@ -635,14 +622,14 @@ void GUIWindow_CharacterRecord::Update() {
     auto player = &pParty->activeCharacter();
 
     switch (current_character_screen_window) {
-        case WINDOW_CharacterWindow_Stats: {
+        case WINDOW_CHARACTER_STATS: {
             CharacterUI_ReleaseButtons();
             releaseAwardsScrollBar();
             CharacterUI_StatsTab_Draw(player);
             render->DrawQuad2D(assets->getImage_ColorKey("ib-cd1-d"), pCharacterScreen_StatsBtn->rect.topLeft());
             break;
         }
-        case WINDOW_CharacterWindow_Skills: {
+        case WINDOW_CHARACTER_SKILLS: {
             if (dword_507CC0_activ_ch != pParty->activeCharacterIndex()) {
                 CharacterUI_ReleaseButtons();
                 CharacterUI_SkillsTab_CreateButtons();
@@ -652,14 +639,14 @@ void GUIWindow_CharacterRecord::Update() {
             render->DrawQuad2D(assets->getImage_ColorKey("ib-cd2-d"), pCharacterScreen_SkillsBtn->rect.topLeft());
             break;
         }
-        case WINDOW_CharacterWindow_Awards: {
+        case WINDOW_CHARACTER_AWARDS: {
             CharacterUI_ReleaseButtons();
             createAwardsScrollBar();
             CharacterUI_AwardsTab_Draw(player);
             render->DrawQuad2D(assets->getImage_ColorKey("ib-cd4-d"), pCharacterScreen_AwardsBtn->rect.topLeft());
             break;
         }
-        case WINDOW_CharacterWindow_Inventory: {
+        case WINDOW_CHARACTER_INVENTORY: {
             CharacterUI_ReleaseButtons();
             releaseAwardsScrollBar();
             CharacterUI_InventoryTab_Draw(player, false);
@@ -678,27 +665,27 @@ void GUIWindow_CharacterRecord::Update() {
 }
 
 void GUIWindow_CharacterRecord::ShowStatsTab() {
-    current_character_screen_window = WINDOW_CharacterWindow_Stats;
+    current_character_screen_window = WINDOW_CHARACTER_STATS;
     CharacterUI_ReleaseButtons();
     releaseAwardsScrollBar();
-    new OnButtonClick3(WINDOW_CharacterWindow_Stats,
+    new OnButtonClick3(WINDOW_CHARACTER_STATS,
         pCharacterScreen_StatsBtn->rect.topLeft(), {0, 0}, pCharacterScreen_StatsBtn);
 }
 
 void GUIWindow_CharacterRecord::ShowSkillsTab() {
-    current_character_screen_window = WINDOW_CharacterWindow_Skills;
+    current_character_screen_window = WINDOW_CHARACTER_SKILLS;
     CharacterUI_ReleaseButtons();
     releaseAwardsScrollBar();
     CharacterUI_SkillsTab_CreateButtons();
-    new OnButtonClick3(WINDOW_CharacterWindow_Skills,
+    new OnButtonClick3(WINDOW_CHARACTER_SKILLS,
         pCharacterScreen_SkillsBtn->rect.topLeft(), {0, 0}, pCharacterScreen_SkillsBtn);
 }
 
 void GUIWindow_CharacterRecord::ShowInventoryTab() {
-    current_character_screen_window = WINDOW_CharacterWindow_Inventory;
+    current_character_screen_window = WINDOW_CHARACTER_INVENTORY;
     releaseAwardsScrollBar();
     CharacterUI_ReleaseButtons();
-    new OnButtonClick3(WINDOW_CharacterWindow_Inventory,
+    new OnButtonClick3(WINDOW_CHARACTER_INVENTORY,
         pCharacterScreen_InventoryBtn->rect.topLeft(), {0, 0}, pCharacterScreen_InventoryBtn);
 }
 
@@ -706,8 +693,8 @@ void GUIWindow_CharacterRecord::ShowAwardsTab() {
     releaseAwardsScrollBar();
     CharacterUI_ReleaseButtons();
     createAwardsScrollBar();
-    current_character_screen_window = WINDOW_CharacterWindow_Awards;
-    new OnButtonClick3(WINDOW_CharacterWindow_Awards,
+    current_character_screen_window = WINDOW_CHARACTER_AWARDS;
+    new OnButtonClick3(WINDOW_CHARACTER_AWARDS,
         pCharacterScreen_AwardsBtn->rect.topLeft(), {0, 0}, pCharacterScreen_AwardsBtn);
     fillAwardsData();
 }
@@ -976,15 +963,8 @@ void CharacterUI_DrawPaperdoll(Character *player) {
     int item_X;
     int item_Y;
 
-    int IsDwarf;
-    int pBodyComplection;
-    if (player->GetRace() == RACE_DWARF) {
-        IsDwarf = 1;
-        pBodyComplection = player->GetSexByVoice() == SEX_MALE ? 2 : 3;
-    } else {
-        IsDwarf = 0;
-        pBodyComplection = player->GetSexByVoice() == SEX_MALE ? 0 : 1;
-    }
+    bool isDwarf = player->GetRace() == RACE_DWARF;
+    BodyType bodyType = player->bodyType();
 
     int uPlayerID = pParty->getCharacterIdInParty(player);
 
@@ -1005,16 +985,16 @@ void CharacterUI_DrawPaperdoll(Character *player) {
 
         // hands aren't in two handed grip pose
         if (!bTwoHandedGrip) {
-            item_X = pPaperdoll_BodyX + pPaperdoll_LeftHand[pBodyComplection][0];
-            item_Y = pPaperdoll_BodyY + pPaperdoll_LeftHand[pBodyComplection][1];
+            item_X = pPaperdoll_BodyX + pPaperdoll_LeftHand[bodyType][0];
+            item_Y = pPaperdoll_BodyY + pPaperdoll_LeftHand[bodyType][1];
 
             render->DrawQuad2D(paperdoll_dlads[uPlayerID], {item_X, item_Y});
         }
 
         // main hand's item
         if (itemMainHand) {
-            item_X = pPaperdoll_BodyX + paperdoll_Weapon[pBodyComplection][1][0] - pItemTable->items[itemMainHand->itemId].paperdollAnchorOffset.x;
-            item_Y = pPaperdoll_BodyY + paperdoll_Weapon[pBodyComplection][1][1] - pItemTable->items[itemMainHand->itemId].paperdollAnchorOffset.y;
+            item_X = pPaperdoll_BodyX + paperdoll_Weapon[bodyType][1][0] - pItemTable->items[itemMainHand->itemId].paperdollAnchorOffset.x;
+            item_Y = pPaperdoll_BodyY + paperdoll_Weapon[bodyType][1][1] - pItemTable->items[itemMainHand->itemId].paperdollAnchorOffset.y;
 
             GraphicsImage *texture = nullptr;
             if (itemMainHand->itemId == ITEM_BLASTER)
@@ -1025,8 +1005,8 @@ void CharacterUI_DrawPaperdoll(Character *player) {
     } else {
         // bow
         if (InventoryEntry bow = player->inventory.entry(ITEM_SLOT_BOW)) {
-            item_X = pPaperdoll_BodyX + paperdoll_Weapon[pBodyComplection][2][0] - pItemTable->items[bow->itemId].paperdollAnchorOffset.x;
-            item_Y = pPaperdoll_BodyY + paperdoll_Weapon[pBodyComplection][2][1] - pItemTable->items[bow->itemId].paperdollAnchorOffset.y;
+            item_X = pPaperdoll_BodyX + paperdoll_Weapon[bodyType][2][0] - pItemTable->items[bow->itemId].paperdollAnchorOffset.x;
+            item_Y = pPaperdoll_BodyY + paperdoll_Weapon[bodyType][2][1] - pItemTable->items[bow->itemId].paperdollAnchorOffset.y;
 
             CharacterUI_DrawItem(item_X, item_Y, bow.get(), bow.index(), nullptr, !bRingsShownInCharScreen);
         }
@@ -1035,10 +1015,10 @@ void CharacterUI_DrawPaperdoll(Character *player) {
         if (InventoryEntry cloak = player->inventory.entry(ITEM_SLOT_CLOAK)) {
             index = valueOr(paperdoll_cloak_indexByType, cloak->itemId, -1);
             if (index != -1) {
-                item_X = pPaperdoll_BodyX + paperdoll_Cloak[pBodyComplection][index][0];
-                item_Y = pPaperdoll_BodyY + paperdoll_Cloak[pBodyComplection][index][1];
+                item_X = pPaperdoll_BodyX + paperdoll_Cloak[bodyType][index][0];
+                item_Y = pPaperdoll_BodyY + paperdoll_Cloak[bodyType][index][1];
 
-                GraphicsImage *texture = paperdoll_cloak_texture[pBodyComplection][index];
+                GraphicsImage *texture = paperdoll_cloak_texture[bodyType][index];
                 CharacterUI_DrawItem(item_X, item_Y, cloak.get(), cloak.index(), texture, !bRingsShownInCharScreen);
             }
         }
@@ -1050,10 +1030,10 @@ void CharacterUI_DrawPaperdoll(Character *player) {
         if (InventoryEntry armor = player->inventory.entry(ITEM_SLOT_ARMOUR)) {
             index = valueOr(paperdoll_armor_indexByType, armor->itemId, -1);
             if (index != -1) {
-                item_X = pPaperdoll_BodyX + paperdoll_Armor_Coord[pBodyComplection][index][0];
-                item_Y = pPaperdoll_BodyY + paperdoll_Armor_Coord[pBodyComplection][index][1];
+                item_X = pPaperdoll_BodyX + paperdoll_Armor_Coord[bodyType][index][0];
+                item_Y = pPaperdoll_BodyY + paperdoll_Armor_Coord[bodyType][index][1];
 
-                GraphicsImage *texture = paperdoll_armor_texture[pBodyComplection][index][0];
+                GraphicsImage *texture = paperdoll_armor_texture[bodyType][index][0];
                 CharacterUI_DrawItem(item_X, item_Y, armor.get(), armor.index(), texture, !bRingsShownInCharScreen);
             }
         }
@@ -1062,14 +1042,14 @@ void CharacterUI_DrawPaperdoll(Character *player) {
         if (InventoryEntry boots = player->inventory.entry(ITEM_SLOT_BOOTS)) {
             index = valueOr(paperdoll_boots_indexByType, boots->itemId, -1);
             if (index != -1) {
-                item_X = pPaperdoll_BodyX + paperdoll_Boot[pBodyComplection][index][0];
-                item_Y = pPaperdoll_BodyY + paperdoll_Boot[pBodyComplection][index][1];
+                item_X = pPaperdoll_BodyX + paperdoll_Boot[bodyType][index][0];
+                item_Y = pPaperdoll_BodyY + paperdoll_Boot[bodyType][index][1];
 
                 GraphicsImage *texture = nullptr;
                 if (boots->itemId == ITEM_ARTIFACT_HERMES_SANDALS) {
                     texture = paperdoll_flying_feet[player->uCurrentFace];
                 } else {
-                    texture = paperdoll_boots_texture[pBodyComplection][index];
+                    texture = paperdoll_boots_texture[bodyType][index];
                 }
 
                 CharacterUI_DrawItem(item_X, item_Y, boots.get(), boots.index(), texture, !bRingsShownInCharScreen);
@@ -1078,12 +1058,12 @@ void CharacterUI_DrawPaperdoll(Character *player) {
 
         // offhand depending on grip
         if (!bTwoHandedGrip) {
-            item_X = pPaperdoll_BodyX + pPaperdoll_LeftHand[pBodyComplection][0];
-            item_Y = pPaperdoll_BodyY + pPaperdoll_LeftHand[pBodyComplection][1];
+            item_X = pPaperdoll_BodyX + pPaperdoll_LeftHand[bodyType][0];
+            item_Y = pPaperdoll_BodyY + pPaperdoll_LeftHand[bodyType][1];
             render->DrawQuad2D(paperdoll_dlads[uPlayerID], {item_X, item_Y});
         } else {
-            item_X = pPaperdoll_BodyX + pPaperdoll_SecondLeftHand[pBodyComplection][0];
-            item_Y = pPaperdoll_BodyY + pPaperdoll_SecondLeftHand[pBodyComplection][1];
+            item_X = pPaperdoll_BodyX + pPaperdoll_SecondLeftHand[bodyType][0];
+            item_Y = pPaperdoll_BodyY + pPaperdoll_SecondLeftHand[bodyType][1];
             render->DrawQuad2D(paperdoll_dlaus[uPlayerID], {item_X, item_Y});
         }
 
@@ -1091,13 +1071,13 @@ void CharacterUI_DrawPaperdoll(Character *player) {
         if (InventoryEntry belt = player->inventory.entry(ITEM_SLOT_BELT)) {
             index = valueOr(paperdoll_belt_indexByType, belt->itemId, -1);
             if (index != -1) {
-                item_X = pPaperdoll_BodyX + paperdoll_Belt[pBodyComplection][index][0];
-                item_Y = pPaperdoll_BodyY + paperdoll_Belt[pBodyComplection][index][1];
+                item_X = pPaperdoll_BodyX + paperdoll_Belt[bodyType][index][0];
+                item_Y = pPaperdoll_BodyY + paperdoll_Belt[bodyType][index][1];
                 GraphicsImage *texture = nullptr;
-                if (IsDwarf != 1 || index == 5)
-                    texture = paperdoll_belt_texture[pBodyComplection][index];
+                if (index == 5) // Titan's Belt has dwarf textures.
+                    texture = paperdoll_belt_texture[bodyType][index];
                 else
-                    texture = paperdoll_belt_texture[pBodyComplection - 2][index];
+                    texture = paperdoll_belt_texture[humanBodyType(bodyType)][index];
 
                 CharacterUI_DrawItem(item_X, item_Y, belt.get(), belt.index(), texture, !bRingsShownInCharScreen);
             }
@@ -1109,16 +1089,16 @@ void CharacterUI_DrawPaperdoll(Character *player) {
             if (index != -1) {
                 GraphicsImage *texture = nullptr;
                 // Some armors doesn't have sleeves so use normal one for two-handed or none if it also unavailable
-                if (bTwoHandedGrip && paperdoll_shoulder_second_coord[pBodyComplection][index][0]) {
-                    item_X = pPaperdoll_BodyX + paperdoll_shoulder_second_coord[pBodyComplection][index][0];
-                    item_Y = pPaperdoll_BodyY + paperdoll_shoulder_second_coord[pBodyComplection][index][1];
+                if (bTwoHandedGrip && paperdoll_shoulder_second_coord[bodyType][index][0]) {
+                    item_X = pPaperdoll_BodyX + paperdoll_shoulder_second_coord[bodyType][index][0];
+                    item_Y = pPaperdoll_BodyY + paperdoll_shoulder_second_coord[bodyType][index][1];
 
-                    texture = paperdoll_armor_texture[pBodyComplection][index][2];
-                } else if (paperdoll_shoulder_coord[pBodyComplection][index][0]) {
-                    item_X = pPaperdoll_BodyX + paperdoll_shoulder_coord[pBodyComplection][index][0];
-                    item_Y = pPaperdoll_BodyY + paperdoll_shoulder_coord[pBodyComplection][index][1];
+                    texture = paperdoll_armor_texture[bodyType][index][2];
+                } else if (paperdoll_shoulder_coord[bodyType][index][0]) {
+                    item_X = pPaperdoll_BodyX + paperdoll_shoulder_coord[bodyType][index][0];
+                    item_Y = pPaperdoll_BodyY + paperdoll_shoulder_coord[bodyType][index][1];
 
-                    texture = paperdoll_armor_texture[pBodyComplection][index][1];
+                    texture = paperdoll_armor_texture[bodyType][index][1];
                 }
 
                 if (texture)
@@ -1131,11 +1111,11 @@ void CharacterUI_DrawPaperdoll(Character *player) {
             index = valueOr(paperdoll_cloak_indexByType, cloak->itemId, -1);
             if (index != -1) {
                 // leather cloak has no collar
-                if (paperdoll_CloakCollar[pBodyComplection][index][0]) {
-                    item_X = pPaperdoll_BodyX + paperdoll_CloakCollar[pBodyComplection][index][0];
-                    item_Y = pPaperdoll_BodyY + paperdoll_CloakCollar[pBodyComplection][index][1];
+                if (paperdoll_CloakCollar[bodyType][index][0]) {
+                    item_X = pPaperdoll_BodyX + paperdoll_CloakCollar[bodyType][index][0];
+                    item_Y = pPaperdoll_BodyY + paperdoll_CloakCollar[bodyType][index][1];
 
-                    GraphicsImage *texture = paperdoll_cloak_collar_texture[pBodyComplection][index];
+                    GraphicsImage *texture = paperdoll_cloak_collar_texture[bodyType][index];
                     CharacterUI_DrawItem(item_X, item_Y, cloak.get(), cloak.index(), texture, !bRingsShownInCharScreen);
                 }
             }
@@ -1153,12 +1133,12 @@ void CharacterUI_DrawPaperdoll(Character *player) {
         if (InventoryEntry helm = player->inventory.entry(ITEM_SLOT_HELMET)) {
             index = valueOr(paperdoll_helm_indexByType, helm->itemId, -1);
             if (index != -1) {
-                item_X = pPaperdoll_BodyX + paperdoll_Helm[pBodyComplection][index][0];
-                item_Y = pPaperdoll_BodyY + paperdoll_Helm[pBodyComplection][index][1];
+                item_X = pPaperdoll_BodyX + paperdoll_Helm[bodyType][index][0];
+                item_Y = pPaperdoll_BodyY + paperdoll_Helm[bodyType][index][1];
 
                 GraphicsImage *texture = nullptr;
-                if (IsDwarf != 1 || helm->itemId != ITEM_PHYNAXIAN_HELM)
-                    texture = paperdoll_helm_texture[std::to_underlying(player->GetSexByVoice())][index];
+                if (!isDwarf || helm->itemId != ITEM_PHYNAXIAN_HELM)
+                    texture = paperdoll_helm_texture[humanBodyType(bodyType)][index];
                 else
                     texture = paperdoll_dbrds[11];
 
@@ -1168,8 +1148,8 @@ void CharacterUI_DrawPaperdoll(Character *player) {
 
         // main hand's item
         if (itemMainHand) {
-            item_X = pPaperdoll_BodyX + paperdoll_Weapon[pBodyComplection][1][0] - pItemTable->items[itemMainHand->itemId].paperdollAnchorOffset.x;
-            item_Y = pPaperdoll_BodyY + paperdoll_Weapon[pBodyComplection][1][1] - pItemTable->items[itemMainHand->itemId].paperdollAnchorOffset.y;
+            item_X = pPaperdoll_BodyX + paperdoll_Weapon[bodyType][1][0] - pItemTable->items[itemMainHand->itemId].paperdollAnchorOffset.x;
+            item_Y = pPaperdoll_BodyY + paperdoll_Weapon[bodyType][1][1] - pItemTable->items[itemMainHand->itemId].paperdollAnchorOffset.y;
 
             GraphicsImage *texture = nullptr;
             if (itemMainHand->itemId == ITEM_BLASTER)
@@ -1180,8 +1160,8 @@ void CharacterUI_DrawPaperdoll(Character *player) {
 
         // offhand's item
         if (itemOffHand) {
-            item_X = pPaperdoll_BodyX + paperdoll_Weapon[pBodyComplection][0][0] - pItemTable->items[itemOffHand->itemId].paperdollAnchorOffset.x;
-            item_Y = pPaperdoll_BodyY + paperdoll_Weapon[pBodyComplection][0][1] - pItemTable->items[itemOffHand->itemId].paperdollAnchorOffset.y;
+            item_X = pPaperdoll_BodyX + paperdoll_Weapon[bodyType][0][0] - pItemTable->items[itemOffHand->itemId].paperdollAnchorOffset.x;
+            item_Y = pPaperdoll_BodyY + paperdoll_Weapon[bodyType][0][1] - pItemTable->items[itemOffHand->itemId].paperdollAnchorOffset.y;
 
             /*
              * MM6 artifacts.
@@ -1216,21 +1196,21 @@ void CharacterUI_DrawPaperdoll(Character *player) {
 
     // mainhand's wrist
     {
-        item_X = pPaperdoll_BodyX + pPaperdoll_RightHand[pBodyComplection][0];
-        item_Y = pPaperdoll_BodyY + pPaperdoll_RightHand[pBodyComplection][1];
+        item_X = pPaperdoll_BodyX + pPaperdoll_RightHand[bodyType][0];
+        item_Y = pPaperdoll_BodyY + pPaperdoll_RightHand[bodyType][1];
 
         render->DrawQuad2D(paperdoll_drhs[uPlayerID], {item_X, item_Y});
     }
 
     // offhand's wrist
     if (bTwoHandedGrip) {
-        item_X = pPaperdoll_BodyX + pPaperdoll_SecondLeftHand[pBodyComplection][0];
-        item_Y = pPaperdoll_BodyY + pPaperdoll_SecondLeftHand[pBodyComplection][1];
+        item_X = pPaperdoll_BodyX + pPaperdoll_SecondLeftHand[bodyType][0];
+        item_Y = pPaperdoll_BodyY + pPaperdoll_SecondLeftHand[bodyType][1];
 
         render->DrawQuad2D(paperdoll_dlhus[uPlayerID], {item_X, item_Y});
     } else if (!itemOffHand || itemOffHand && !itemOffHand->isShield()) {
-        item_X = pPaperdoll_BodyX + pPaperdollLeftEmptyHand[pBodyComplection][0];
-        item_Y = pPaperdoll_BodyY + pPaperdollLeftEmptyHand[pBodyComplection][1];
+        item_X = pPaperdoll_BodyX + pPaperdollLeftEmptyHand[bodyType][0];
+        item_Y = pPaperdoll_BodyY + pPaperdollLeftEmptyHand[bodyType][1];
         render->DrawQuad2D(paperdoll_dlhs[uPlayerID], {item_X, item_Y});
     }
 
@@ -1336,8 +1316,8 @@ void CharacterUI_DrawPaperdollWithRingOverlay(Character *player) {
         if (!entry)
             continue;
 
-        static int pPaperdollRingsX[6] = {0x1EA, 0x21A, 0x248, 0x1EA, 0x21A, 0x248};
-        static int pPaperdollRingsY[6] = {0x0CA, 0x0CA, 0x0CA, 0x0FA, 0x0FA, 0x0FA};
+        static constexpr int pPaperdollRingsX[6] = {0x1EA, 0x21A, 0x248, 0x1EA, 0x21A, 0x248};
+        static constexpr int pPaperdollRingsY[6] = {0x0CA, 0x0CA, 0x0CA, 0x0FA, 0x0FA, 0x0FA};
 
         CharacterUI_DrawItem(
             pPaperdollRingsX[i], pPaperdollRingsY[i],
@@ -1375,39 +1355,41 @@ void CharacterUI_LoadPaperdollTextures() {
     paperdoll_dbrds[3] = assets->getImage_Solid("ib-cd4-d");
     paperdoll_dbrds[1] = assets->getImage_Solid("ib-cd5-d");
 
-    auto loadTexture = [&](const auto &map, int itemIndex, int bodyIndex, int shoulderIndex) {
-        std::string name = GetItemTextureFilename(*valuePtr(map, itemIndex), bodyIndex + 1, shoulderIndex);
+    auto loadTexture = [&](const auto &map, int itemIndex, BodyType bodyType, int shoulderIndex) {
+        std::string name = GetItemTextureFilename(*valuePtr(map, itemIndex), std::to_underlying(bodyType), shoulderIndex);
         return assets->getImage_Alpha(name);
     };
 
-    for (unsigned i = 0; i < 2; ++i) {
+    for (BodyType bodyType : {BODY_TYPE_HUMAN_MALE, BODY_TYPE_HUMAN_FEMALE}) {
         for (unsigned j : {0, 1, 2, 3, 4, 6}) // Belt
-            paperdoll_belt_texture[i][j] = loadTexture(paperdoll_belt_typeByIndex, j, i, 0);
+            paperdoll_belt_texture[bodyType][j] = loadTexture(paperdoll_belt_typeByIndex, j, bodyType, 0);
 
+        // TODO(captainurist): MM7 ships distinct dwarf helm textures that are never loaded: item091v3, item240v3,
+        //                     item344v3 and item344v4. And item092v3, loaded for dwarves below, is a copy of item092v1.
+        //                     Check whether dwarves should use the dwarf variants.
         for (unsigned j = 0; j < 16; ++j)  // Helm
-            paperdoll_helm_texture[i][j] = loadTexture(paperdoll_helm_typeByIndex, j, i, 0);
+            paperdoll_helm_texture[bodyType][j] = loadTexture(paperdoll_helm_typeByIndex, j, bodyType, 0);
 
-        if (IsDwarfPresentInParty(true))  // the phynaxian helm uses a slightly
-                                          // different graphic for dwarves
+        if (IsDwarfPresentInParty(true))
             paperdoll_dbrds[11] = assets->getImage_Alpha("item092v3");
     }
 
-    for (unsigned i = 0; i < 4; ++i) {
-        if (ShouldLoadTexturesForRaceAndGender(i)) {
-            paperdoll_belt_texture[i][5] = loadTexture(paperdoll_belt_typeByIndex, 5, i, 0);  // Titans belt
+    for (BodyType bodyType : allBodyTypes()) {
+        if (isBodyTypeInParty(bodyType)) {
+            paperdoll_belt_texture[bodyType][5] = loadTexture(paperdoll_belt_typeByIndex, 5, bodyType, 0);  // Titan's Belt
 
-            for (int v32 = 0; v32 < 17; ++v32) {  // simple armor
-                paperdoll_armor_texture[i][v32][0] = loadTexture(paperdoll_armor_typeByIndex, v32, i, 0);  // armor
-                paperdoll_armor_texture[i][v32][1] = loadTexture(paperdoll_armor_typeByIndex, v32, i, 1);  // shoulder 1
-                paperdoll_armor_texture[i][v32][2] = loadTexture(paperdoll_armor_typeByIndex, v32, i, 2);  // shoulder 2
+            for (int armorIndex = 0; armorIndex < 17; ++armorIndex) {
+                paperdoll_armor_texture[bodyType][armorIndex][0] = loadTexture(paperdoll_armor_typeByIndex, armorIndex, bodyType, 0);  // armor
+                paperdoll_armor_texture[bodyType][armorIndex][1] = loadTexture(paperdoll_armor_typeByIndex, armorIndex, bodyType, 1);  // shoulder 1
+                paperdoll_armor_texture[bodyType][armorIndex][2] = loadTexture(paperdoll_armor_typeByIndex, armorIndex, bodyType, 2);  // shoulder 2
             }
 
-            for (int v33 = 0; v33 < 6; ++v33)  // boots
-                paperdoll_boots_texture[i][v33] = loadTexture(paperdoll_boots_typeByIndex, v33, i, 0);
+            for (int bootsIndex = 0; bootsIndex < 6; ++bootsIndex)
+                paperdoll_boots_texture[bodyType][bootsIndex] = loadTexture(paperdoll_boots_typeByIndex, bootsIndex, bodyType, 0);
 
-            for (int v38 = 0; v38 < 10; ++v38) {  // Cloak
-                paperdoll_cloak_texture[i][v38] = loadTexture(paperdoll_cloak_typeByIndex, v38, i, 0);
-                paperdoll_cloak_collar_texture[i][v38] = loadTexture(paperdoll_cloak_typeByIndex, v38, i, 1);
+            for (int cloakIndex = 0; cloakIndex < 10; ++cloakIndex) {
+                paperdoll_cloak_texture[bodyType][cloakIndex] = loadTexture(paperdoll_cloak_typeByIndex, cloakIndex, bodyType, 0);
+                paperdoll_cloak_collar_texture[bodyType][cloakIndex] = loadTexture(paperdoll_cloak_typeByIndex, cloakIndex, bodyType, 1);
             }
         }
     }
@@ -1655,13 +1637,7 @@ void GUIWindow_CharacterRecord::fillAwardsData() {
 
 void WetsuitOn(int characterIndex) {
     Character *player = &pParty->pCharacters[characterIndex];
-    int texture_num;
-
-    if (player->GetRace() == RACE_DWARF) {
-        texture_num = (player->GetSexByVoice() != SEX_MALE) + 3;
-    } else {
-        texture_num = (player->GetSexByVoice() != SEX_MALE) + 1;
-    }
+    int texture_num = std::to_underlying(player->bodyType());
     paperdoll_dbods[characterIndex] = assets->getImage_Alpha(fmt::format("pc23v{}Bod", texture_num));  // Body texture
     paperdoll_dlads[characterIndex] = assets->getImage_Alpha(fmt::format("pc23v{}lad", texture_num));  // Left Hand
     paperdoll_dlaus[characterIndex] = assets->getImage_Alpha(fmt::format("pc23v{}lau", texture_num));  // Left Hand2
@@ -1697,14 +1673,14 @@ void OnPaperdollLeftClick() {
     int mousex = mouse->position().x;
     int mousey = mouse->position().y;
 
-    static int RingsX[6] = {0x1EA, 0x21A, 0x248, 0x1EA, 0x21A, 0x248};
-    static int RingsY[6] = {0x0CA, 0x0CA, 0x0CA, 0x0FA, 0x0FA, 0x0FA};
+    static constexpr int RingsX[6] = {0x1EA, 0x21A, 0x248, 0x1EA, 0x21A, 0x248};
+    static constexpr int RingsY[6] = {0x0CA, 0x0CA, 0x0CA, 0x0FA, 0x0FA, 0x0FA};
 
-    static int glovex = 586;
-    static int glovey = 88;
+    static constexpr int glovex = 586;
+    static constexpr int glovey = 88;
 
-    static int amuletx = 493;
-    static int amulety = 91;
+    static constexpr int amuletx = 493;
+    static constexpr int amulety = 91;
 
     int cellSize = 32;
     ItemSlot pos = ITEM_SLOT_INVALID;

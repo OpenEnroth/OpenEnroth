@@ -127,7 +127,9 @@ void GameBindings::_registerPartyBindings(sol::state_view &solState, sol::table 
                     } else if (key == "class") {
                         character->classType = val.second.as<Class>();
                     } else if (key == "condition") {
-                        character->SetCondition(val.second.as<Condition>(), false);
+                        Condition condition = val.second.as<Condition>();
+                        if (condition != CONDITION_ZOMBIE || character->classType != CLASS_LICH)
+                            character->SetCondition(condition, false);
                     } else if (key == "skill") {
                         sol::table skillValueTable = val.second.as<sol::table>();
                         CombinedSkillValue current = character->getActualSkillValue(skillValueTable["id"]);

@@ -28,6 +28,8 @@ void BspRenderer::AddFace(const int node_id, const int uFaceID) {
 
     // check if any triangle of the face can be seen
 
+    // TODO(captainurist): function-local statics, make them members. AddFace recurses through AddNode, so they are
+    //                     too big for locals.
     static RenderVertexSoft originalFaceVertices[64];
     static RenderVertexSoft clippedFaceVertices[64];
 
@@ -111,16 +113,11 @@ void BspRenderer::AddFace(const int node_id, const int uFaceID) {
 
     auto newNode = &nodes[num_nodes];
 
-    // TODO(yoctozepto): remove it from here
-    static RenderVertexSoft pPortalBounding[4];
-
-    // calculates the portal bounding and frustum
     bool isFrustumBuilt = CalcPortalShapePoly(
         pFace,
         clippedFaceVertices,
         &pNewNumVertices,
-        newNode->ViewportNodeFrustum.data(),
-        pPortalBounding);
+        newNode->ViewportNodeFrustum.data());
 
     if (!isFrustumBuilt) {
         return;  // no way we can see through this portal

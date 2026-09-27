@@ -15,6 +15,7 @@
 #include "Engine/Engine.h"
 #include "Engine/EngineCallObserver.h"
 #include "Engine/EngineGlobals.h"
+#include "Engine/Interaction.h"
 #include "Engine/Data/AwardEnums.h"
 #include "Engine/Data/HouseEnumFunctions.h"
 #include "Engine/Evt/Processor.h"
@@ -36,7 +37,7 @@
 #include "Engine/Resources/LodTextureCache.h"
 #include "Engine/Objects/Actor.h"
 #include "Engine/Objects/Chest.h"
-#include "Engine/Objects/ObjectList.h"
+#include "Engine/Tables/ObjectTable.h"
 #include "Engine/Objects/SpriteObject.h"
 #include "Engine/Objects/NPC.h"
 #include "Engine/Objects/CharacterEnumFunctions.h"
@@ -229,7 +230,7 @@ bool Game::loop() {
     return true;
 }
 
-GraphicsImage *gamma_preview_image = nullptr;  // 506E40
+std::unique_ptr<GraphicsImage> gamma_preview_image;  // 506E40
 
 void Game_StartDialogue(int actor_id) {
     if (pParty->hasActiveCharacter()) {
@@ -353,22 +354,13 @@ void Game::processQueuedMessages() {
                 // case UIMSG_Game_OpenLoadGameDialog:
                 // Game_OpenLoadGameDialog(); continue; case UIMSG_Quit:
                 // Game_QuitGameWhilePlaying(uMessageParam); continue;
-            case UIMSG_80:
-                assert(false);
-                pGUIWindow_CurrentMenu = nullptr;
-                current_screen_type = SCREEN_OPTIONS;
-                // pGUIWindow_CurrentMenu =
-                // GUIWindow::Create(0, 0,
-                // window->GetWidth(), window->GetHeight(),
-                // WINDOW_8, 0, 0);
-                continue;
             case UIMSG_Cancel:
                 new OnCancel({350, 302}, {106, 42}, pBtnCancel);
                 continue;
             case UIMSG_OpenQuestBook:
                 engine->_messageQueue->clear();
                 // toggle
-                if (current_screen_type == SCREEN_BOOKS && pGUIWindow_CurrentMenu->eWindowType == WindowType::WINDOW_QuestBook) {
+                if (current_screen_type == SCREEN_BOOKS && pGUIWindow_CurrentMenu->eWindowType == WINDOW_QUEST_BOOK) {
                     engine->_messageQueue->addMessageCurrentFrame(UIMSG_Escape, 0, 0);
                     continue;
                 }
@@ -387,7 +379,7 @@ void Game::processQueuedMessages() {
             case UIMSG_OpenAutonotes:
                 engine->_messageQueue->clear();
                 // toggle
-                if (current_screen_type == SCREEN_BOOKS && pGUIWindow_CurrentMenu->eWindowType == WindowType::WINDOW_AutonotesBook) {
+                if (current_screen_type == SCREEN_BOOKS && pGUIWindow_CurrentMenu->eWindowType == WINDOW_AUTONOTES_BOOK) {
                     engine->_messageQueue->addMessageCurrentFrame(UIMSG_Escape, 0, 0);
                     continue;
                 }
@@ -406,7 +398,7 @@ void Game::processQueuedMessages() {
             case UIMSG_OpenMapBook:
                 engine->_messageQueue->clear();
                 // toggle
-                if (current_screen_type == SCREEN_BOOKS && pGUIWindow_CurrentMenu->eWindowType == WindowType::WINDOW_MapsBook) {
+                if (current_screen_type == SCREEN_BOOKS && pGUIWindow_CurrentMenu->eWindowType == WINDOW_MAPS_BOOK) {
                     engine->_messageQueue->addMessageCurrentFrame(UIMSG_Escape, 0, 0);
                     continue;
                 }
@@ -425,7 +417,7 @@ void Game::processQueuedMessages() {
             case UIMSG_OpenCalendar:
                 engine->_messageQueue->clear();
                 // toggle
-                if (current_screen_type == SCREEN_BOOKS && pGUIWindow_CurrentMenu->eWindowType == WindowType::WINDOW_CalendarBook) {
+                if (current_screen_type == SCREEN_BOOKS && pGUIWindow_CurrentMenu->eWindowType == WINDOW_CALENDAR_BOOK) {
                     engine->_messageQueue->addMessageCurrentFrame(UIMSG_Escape, 0, 0);
                     continue;
                 }
@@ -444,7 +436,7 @@ void Game::processQueuedMessages() {
             case UIMSG_OpenHistoryBook:
                 engine->_messageQueue->clear();
                 // toggle
-                if (current_screen_type == SCREEN_BOOKS && pGUIWindow_CurrentMenu->eWindowType == WindowType::WINDOW_JournalBook) {
+                if (current_screen_type == SCREEN_BOOKS && pGUIWindow_CurrentMenu->eWindowType == WINDOW_JOURNAL_BOOK) {
                     engine->_messageQueue->addMessageCurrentFrame(UIMSG_Escape, 0, 0);
                     continue;
                 }
@@ -569,12 +561,12 @@ void Game::processQueuedMessages() {
                                         }
                                     }
                                     if (rest_ui_sky_frame_current) {
-                                        rest_ui_sky_frame_current->release();
+                                        assets->releaseImage(rest_ui_sky_frame_current);
                                         rest_ui_sky_frame_current = nullptr;
                                     }
 
                                     if (rest_ui_hourglass_frame_current) {
-                                        rest_ui_hourglass_frame_current->release();
+                                        assets->releaseImage(rest_ui_hourglass_frame_current);
                                         rest_ui_hourglass_frame_current = nullptr;
                                     }
 
@@ -691,7 +683,7 @@ void Game::processQueuedMessages() {
                 continue;
 
             case UIMSG_OnIndoorEntryExit: {
-                assert(pDialogueWindow && pDialogueWindow->eWindowType == WINDOW_IndoorEntryExit);
+                assert(pDialogueWindow && pDialogueWindow->eWindowType == WINDOW_INDOOR_ENTRY_EXIT);
                 GUIWindow_IndoorEntryExit *window = static_cast<GUIWindow_IndoorEntryExit *>(pDialogueWindow.get());
                 MapDestination destination = window->destination();
 
@@ -793,7 +785,7 @@ void Game::processQueuedMessages() {
                     interactionPossible = pActors[id].aiState == Dead;
                 }
                 if (type == OBJECT_Sprite) {
-                    interactionPossible = !(pObjectList->pObjects[pSpriteObjects[id].uObjectDescID].uFlags & OBJECT_DESC_UNPICKABLE);
+                    interactionPossible = !(pObjectTable->pObjects[pSpriteObjects[id].uObjectDescID].uFlags & OBJECT_DESC_UNPICKABLE);
                 }
                 if (type == OBJECT_Decoration) {
                     interactionPossible = pLevelDecorations[id].uEventID != 0 || pLevelDecorations[id].IsInteractive();
@@ -843,7 +835,7 @@ void Game::processQueuedMessages() {
                 pAudioPlayer->playUISound(SOUND_StartMainChoice02);
                 autoSave();
                 MapDestination destination(houseNpcs[currentHouseNpc].targetMapID, MAP_START_POINT_PARTY);
-                dword_6BE364_game_settings_1 |= GAME_SETTINGS_SKIP_WORLD_UPDATE;
+                engineFlags |= ENGINE_SKIP_NEXT_WORLD_UPDATE;
                 uGameState = GAME_STATE_CHANGE_LOCATION;
                 // v53 = buildingTable_minus1_::30[26 * (unsigned
                 // int)ptr_507BC0->ptr_1C];
@@ -930,7 +922,7 @@ void Game::processQueuedMessages() {
                     if (!allMaps().contains(map_index))
                         continue;
                     engine->_pendingTransition = MapDestination(map_index, MAP_START_POINT_PARTY);
-                    dword_6BE364_game_settings_1 |= GAME_SETTINGS_SKIP_WORLD_UPDATE;
+                    engineFlags |= ENGINE_SKIP_NEXT_WORLD_UPDATE;
                     uGameState = GAME_STATE_CHANGE_LOCATION;
                     onMapLeave();
                     continue;
@@ -1347,10 +1339,6 @@ void Game::processQueuedMessages() {
                     current_screen_type = SCREEN_GAME;
                 }
 
-                if (gamma_preview_image) {
-                    gamma_preview_image->release();
-                    gamma_preview_image = nullptr;
-                }
                 gamma_preview_image = GraphicsImage::Create(render->MakeViewportScreenshot(155, 117));
 
                 new OnButtonClick({602, 450}, {0, 0}, pBtn_GameSettings);
@@ -1361,11 +1349,11 @@ void Game::processQueuedMessages() {
                 pAudioPlayer->playUISound(SOUND_StartMainChoice02);
                 continue;
             case UIMSG_ClickAwardsUpBtn:
-                new OnButtonClick3(WINDOW_CharacterWindow_Awards, pBtn_Up->rect.topLeft(), {0, 0}, pBtn_Up);
+                new OnButtonClick3(WINDOW_CHARACTER_AWARDS, pBtn_Up->rect.topLeft(), {0, 0}, pBtn_Up);
                 ((GUIWindow_CharacterRecord *)pGUIWindow_CurrentMenu.get())->clickAwardsUp();
                 continue;
             case UIMSG_ClickAwardsDownBtn:
-                new OnButtonClick3(WINDOW_CharacterWindow_Awards, pBtn_Down->rect.topLeft(), {0, 0}, pBtn_Down);
+                new OnButtonClick3(WINDOW_CHARACTER_AWARDS, pBtn_Down->rect.topLeft(), {0, 0}, pBtn_Down);
                 ((GUIWindow_CharacterRecord *)pGUIWindow_CurrentMenu.get())->clickAwardsDown();
                 continue;
             case UIMSG_ChangeDetaliz:
@@ -1435,16 +1423,6 @@ void Game::processQueuedMessages() {
             case UIMSG_MouseLeftClickInScreen:
                 engine->_messageQueue->clear();
                 engine->onGameViewportClick();
-                continue;
-            case UIMSG_F:  // what event?
-                assert(false);
-                //pButton2 = (GUIButton *)(uint16_t)vis->get_picked_object_zbuf_val().object_pid;
-                assert(false);  // GUIWindow::Create(0, 0, 0, 0, WINDOW_F, (int)pButton2, 0);
-                continue;
-            case UIMSG_54:  // what event?
-                assert(false);
-                //pButton2 = (GUIButton *)uMessageParam;
-                assert(false);  // GUIWindow::Create(0, 0, 0, 0, WINDOW_22, (int)pButton2, 0);
                 continue;
             case UIMSG_Game_Action:
                 engine->_messageQueue->clear();
@@ -1543,7 +1521,7 @@ void Game::gameLoop() {
 
         DoPrepareWorld(bLoading, 1);
         gameTimer->setPaused(false);
-        dword_6BE364_game_settings_1 |= GAME_SETTINGS_0080_SKIP_USER_INPUT_THIS_FRAME;
+        engineFlags |= ENGINE_SKIP_NEXT_USER_INPUT;
         // uGame_if_0_else_ui_id__11_save__else_load__8_drawSpellInfoPopup__22_final_window__26_keymapOptions__2_options__28_videoOptions
         // = 0;
         current_screen_type = SCREEN_GAME;
@@ -1588,8 +1566,8 @@ void Game::gameLoop() {
                         dropFocusFromIncapacitatedCharacter();
                 }
 
-                if (dword_6BE364_game_settings_1 & GAME_SETTINGS_SKIP_WORLD_UPDATE) {
-                    dword_6BE364_game_settings_1 &= ~GAME_SETTINGS_SKIP_WORLD_UPDATE;
+                if (engineFlags & ENGINE_SKIP_NEXT_WORLD_UPDATE) {
+                    engineFlags &= ~ENGINE_SKIP_NEXT_WORLD_UPDATE;
                 } else {
                     Actor::UpdateActorAI();
                     UpdateUserInput_and_MapSpecificStuff();

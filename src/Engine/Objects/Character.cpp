@@ -2,7 +2,9 @@
 
 #include <algorithm>
 #include <memory>
+#include <optional>
 #include <string>
+#include <utility>
 #include <vector>
 
 #include "Engine/Engine.h"
@@ -19,7 +21,7 @@
 #include "Engine/Localization.h"
 #include "Engine/Random/Random.h"
 #include "Engine/Objects/Actor.h"
-#include "Engine/Objects/ObjectList.h"
+#include "Engine/Tables/ObjectTable.h"
 #include "Engine/Objects/SpriteObject.h"
 #include "Engine/Objects/NPC.h"
 #include "Engine/Objects/CharacterEnumFunctions.h"
@@ -553,13 +555,8 @@ void Character::SetCondition(Condition condition, int blockable) {
             break;
 
         case CONDITION_ZOMBIE:
-            if (classType == CLASS_LICH || IsEradicated() || IsZombie() || !IsDead()) { // cant zombified
-                return;
-            }
+            assert(classType != CLASS_LICH);
 
-            conditions.resetAll();
-            health = GetMaxHealth();
-            mana = 0;
             uPrevFace = uCurrentFace;
             uPrevVoiceID = uVoiceID;
 
@@ -570,6 +567,7 @@ void Character::SetCondition(Condition condition, int blockable) {
                 uCurrentFace = 24;
                 uVoiceID = 24;
             }
+            GameUI_ReloadPlayerPortraits(characterIndex(), uCurrentFace);
 
             playReaction(SPEECH_CHEATED_DEATH);
             break;
@@ -599,6 +597,25 @@ void Character::SetCondition(Condition condition, int blockable) {
     }
 
     return;
+}
+
+void Character::ResetCondition(Condition condition) {
+    if (!conditions.has(condition)) {
+        return;
+    }
+
+    conditions.reset(condition);
+
+    switch (condition) {
+        case CONDITION_ZOMBIE:
+            uCurrentFace = uPrevFace;
+            uVoiceID = uPrevVoiceID;
+            GameUI_ReloadPlayerPortraits(characterIndex(), uCurrentFace);
+            break;
+
+        default:
+            break;
+    }
 }
 
 //----- (00492700) --------------------------------------------------------
@@ -634,7 +651,7 @@ bool Character::CanIdentify(const Item &item) const {
     int multiplier =
         GetMultiplierForSkillLevel(SKILL_ITEM_ID, 1, 2, 3, 5);
 
-    if (CheckHiredNPCSpeciality(Scholar) || val.mastery() == MASTERY_GRANDMASTER)  // always identify
+    if (CheckHiredNPCSpeciality(NPC_PROFESSION_SCHOLAR) || val.mastery() == MASTERY_GRANDMASTER)  // always identify
         return true;
 
     // check item level against skill
@@ -650,9 +667,9 @@ bool Character::CanRepair(const Item &item) const {
     int multiplier = GetMultiplierForSkillLevel(SKILL_REPAIR, 1, 2, 3, 5);
 
     // TODO(Nik-RE-dev): is check for boots correct?
-    if (CheckHiredNPCSpeciality(Smith) && item.isWeapon() ||
-        CheckHiredNPCSpeciality(Armorer) && item.isArmor() ||
-        CheckHiredNPCSpeciality(Alchemist) && item.type() >= ITEM_TYPE_BOOTS)
+    if (CheckHiredNPCSpeciality(NPC_PROFESSION_SMITH) && item.isWeapon() ||
+        CheckHiredNPCSpeciality(NPC_PROFESSION_ARMORER) && item.isArmor() ||
+        CheckHiredNPCSpeciality(NPC_PROFESSION_ALCHEMIST) && item.type() >= ITEM_TYPE_BOOTS)
         return true;  // check against hired help
 
     if (val.mastery() == MASTERY_GRANDMASTER)  // gm repair
@@ -694,9 +711,9 @@ int Character::GetDisarmTrap() const {
 
 int Character::learningPercent() const {
     int hirelingBonus = 0;
-    if (CheckHiredNPCSpeciality(Teacher)) hirelingBonus = 10;
-    if (CheckHiredNPCSpeciality(Instructor)) hirelingBonus += 15;
-    if (CheckHiredNPCSpeciality(Scholar)) hirelingBonus += 5;
+    if (CheckHiredNPCSpeciality(NPC_PROFESSION_TEACHER)) hirelingBonus = 10;
+    if (CheckHiredNPCSpeciality(NPC_PROFESSION_INSTRUCTOR)) hirelingBonus += 15;
+    if (CheckHiredNPCSpeciality(NPC_PROFESSION_SCHOLAR)) hirelingBonus += 5;
 
     int skill = getActualSkillValue(SKILL_LEARNING).level();
 
@@ -822,11 +839,11 @@ int Character::GetActualStat(Attribute stat) const {
 
     int npcBonus = 0;
     if (stat == ATTRIBUTE_LUCK) {
-        if (CheckHiredNPCSpeciality(Fool))
+        if (CheckHiredNPCSpeciality(NPC_PROFESSION_FOOL))
             npcBonus += 5;
-        if (CheckHiredNPCSpeciality(ChimneySweep))
+        if (CheckHiredNPCSpeciality(NPC_PROFESSION_CHIMNEY_SWEEP))
             npcBonus += 20;
-        if (CheckHiredNPCSpeciality(Psychic))
+        if (CheckHiredNPCSpeciality(NPC_PROFESSION_PSYCHIC))
             npcBonus += 10;
     }
 
@@ -2020,7 +2037,7 @@ int Character::GetActualResistance(Attribute resistance) const {
 
     CombinedSkillValue leatherSkill = getActualSkillValue(SKILL_LEATHER);
 
-    if (CheckHiredNPCSpeciality(Enchanter)) v10 = 20;
+    if (CheckHiredNPCSpeciality(NPC_PROFESSION_ENCHANTER)) v10 = 20;
     if ((resistance == ATTRIBUTE_RESIST_FIRE ||
          resistance == ATTRIBUTE_RESIST_AIR ||
          resistance == ATTRIBUTE_RESIST_WATER ||
@@ -2478,25 +2495,25 @@ int Character::actualSkillLevel(Skill skill) const {
     int bonus = 0;
     switch (skill) {
         case SKILL_MONSTER_ID: {
-            if (CheckHiredNPCSpeciality(Hunter)) bonus = 6;
-            if (CheckHiredNPCSpeciality(Sage)) bonus += 6;
+            if (CheckHiredNPCSpeciality(NPC_PROFESSION_HUNTER)) bonus = 6;
+            if (CheckHiredNPCSpeciality(NPC_PROFESSION_SAGE)) bonus += 6;
             bonus += GetItemsBonus(ATTRIBUTE_SKILL_MONSTER_ID);
         } break;
 
         case SKILL_ARMSMASTER: {
-            if (CheckHiredNPCSpeciality(Armsmaster)) bonus = 2;
-            if (CheckHiredNPCSpeciality(Weaponsmaster)) bonus += 3;
+            if (CheckHiredNPCSpeciality(NPC_PROFESSION_ARMS_MASTER)) bonus = 2;
+            if (CheckHiredNPCSpeciality(NPC_PROFESSION_WEAPONS_MASTER)) bonus += 3;
             bonus += GetItemsBonus(ATTRIBUTE_SKILL_ARMSMASTER);
         } break;
 
         case SKILL_STEALING: {
-            if (CheckHiredNPCSpeciality(Burglar)) bonus = 8;
+            if (CheckHiredNPCSpeciality(NPC_PROFESSION_BURGLAR)) bonus = 8;
             bonus += GetItemsBonus(ATTRIBUTE_SKILL_STEALING);
         } break;
 
         case SKILL_ALCHEMY: {
-            if (CheckHiredNPCSpeciality(Herbalist)) bonus = 4;
-            if (CheckHiredNPCSpeciality(Apothecary)) bonus += 8;
+            if (CheckHiredNPCSpeciality(NPC_PROFESSION_HERBALIST)) bonus = 4;
+            if (CheckHiredNPCSpeciality(NPC_PROFESSION_APOTHECARY)) bonus += 8;
             bonus += GetItemsBonus(ATTRIBUTE_SKILL_ALCHEMY);
         } break;
 
@@ -2505,12 +2522,12 @@ int Character::actualSkillLevel(Skill skill) const {
         } break;
 
         case SKILL_UNARMED: {
-            if (CheckHiredNPCSpeciality(Monk)) bonus = 2;
+            if (CheckHiredNPCSpeciality(NPC_PROFESSION_MONK)) bonus = 2;
             bonus += GetItemsBonus(ATTRIBUTE_SKILL_UNARMED);
         } break;
 
         case SKILL_DODGE: {
-            if (CheckHiredNPCSpeciality(Monk)) bonus = 2;
+            if (CheckHiredNPCSpeciality(NPC_PROFESSION_MONK)) bonus = 2;
             bonus += GetItemsBonus(ATTRIBUTE_SKILL_DODGE);
         } break;
 
@@ -2522,57 +2539,57 @@ int Character::actualSkillLevel(Skill skill) const {
             break;
 
         case SKILL_EARTH:
-            if (CheckHiredNPCSpeciality(Apprentice)) bonus = 2;
-            if (CheckHiredNPCSpeciality(Mystic)) bonus += 3;
-            if (CheckHiredNPCSpeciality(Spellmaster)) bonus += 4;
+            if (CheckHiredNPCSpeciality(NPC_PROFESSION_APPRENTICE)) bonus = 2;
+            if (CheckHiredNPCSpeciality(NPC_PROFESSION_MYSTIC)) bonus += 3;
+            if (CheckHiredNPCSpeciality(NPC_PROFESSION_SPELL_MASTER)) bonus += 4;
             if (classType == CLASS_WARLOCK && PartyHasDragon())
                 bonus += 3;
             bonus += GetItemsBonus(ATTRIBUTE_SKILL_EARTH);
             break;
         case SKILL_FIRE:
-            if (CheckHiredNPCSpeciality(Apprentice)) bonus = 2;
-            if (CheckHiredNPCSpeciality(Mystic)) bonus += 3;
-            if (CheckHiredNPCSpeciality(Spellmaster)) bonus += 4;
+            if (CheckHiredNPCSpeciality(NPC_PROFESSION_APPRENTICE)) bonus = 2;
+            if (CheckHiredNPCSpeciality(NPC_PROFESSION_MYSTIC)) bonus += 3;
+            if (CheckHiredNPCSpeciality(NPC_PROFESSION_SPELL_MASTER)) bonus += 4;
             if (classType == CLASS_WARLOCK && PartyHasDragon())
                 bonus += 3;
             bonus += GetItemsBonus(ATTRIBUTE_SKILL_FIRE);
             break;
         case SKILL_AIR:
-            if (CheckHiredNPCSpeciality(Apprentice)) bonus = 2;
-            if (CheckHiredNPCSpeciality(Mystic)) bonus += 3;
-            if (CheckHiredNPCSpeciality(Spellmaster)) bonus += 4;
+            if (CheckHiredNPCSpeciality(NPC_PROFESSION_APPRENTICE)) bonus = 2;
+            if (CheckHiredNPCSpeciality(NPC_PROFESSION_MYSTIC)) bonus += 3;
+            if (CheckHiredNPCSpeciality(NPC_PROFESSION_SPELL_MASTER)) bonus += 4;
             if (classType == CLASS_WARLOCK && PartyHasDragon())
                 bonus += 3;
             bonus += GetItemsBonus(ATTRIBUTE_SKILL_AIR);
             break;
         case SKILL_WATER:
-            if (CheckHiredNPCSpeciality(Apprentice)) bonus = 2;
-            if (CheckHiredNPCSpeciality(Mystic)) bonus += 3;
-            if (CheckHiredNPCSpeciality(Spellmaster)) bonus += 4;
+            if (CheckHiredNPCSpeciality(NPC_PROFESSION_APPRENTICE)) bonus = 2;
+            if (CheckHiredNPCSpeciality(NPC_PROFESSION_MYSTIC)) bonus += 3;
+            if (CheckHiredNPCSpeciality(NPC_PROFESSION_SPELL_MASTER)) bonus += 4;
             if (classType == CLASS_WARLOCK && PartyHasDragon())
                 bonus += 3;
             bonus += GetItemsBonus(ATTRIBUTE_SKILL_WATER);
             break;
         case SKILL_SPIRIT:
-            if (CheckHiredNPCSpeciality(Acolyte2)) bonus = 2;
-            if (CheckHiredNPCSpeciality(Initiate)) bonus += 3;
-            if (CheckHiredNPCSpeciality(Prelate)) bonus += 4;
+            if (CheckHiredNPCSpeciality(NPC_PROFESSION_ACOLYTE)) bonus = 2;
+            if (CheckHiredNPCSpeciality(NPC_PROFESSION_INITIATE)) bonus += 3;
+            if (CheckHiredNPCSpeciality(NPC_PROFESSION_PRELATE)) bonus += 4;
             if (classType == CLASS_WARLOCK && PartyHasDragon())
                 bonus += 3;
             bonus += GetItemsBonus(ATTRIBUTE_SKILL_SPIRIT);
             break;
         case SKILL_MIND:
-            if (CheckHiredNPCSpeciality(Acolyte2)) bonus = 2;
-            if (CheckHiredNPCSpeciality(Initiate)) bonus += 3;
-            if (CheckHiredNPCSpeciality(Prelate)) bonus += 4;
+            if (CheckHiredNPCSpeciality(NPC_PROFESSION_ACOLYTE)) bonus = 2;
+            if (CheckHiredNPCSpeciality(NPC_PROFESSION_INITIATE)) bonus += 3;
+            if (CheckHiredNPCSpeciality(NPC_PROFESSION_PRELATE)) bonus += 4;
             if (classType == CLASS_WARLOCK && PartyHasDragon())
                 bonus += 3;
             bonus += GetItemsBonus(ATTRIBUTE_SKILL_MIND);
             break;
         case SKILL_BODY:
-            if (CheckHiredNPCSpeciality(Acolyte2)) bonus = 2;
-            if (CheckHiredNPCSpeciality(Initiate)) bonus += 3;
-            if (CheckHiredNPCSpeciality(Prelate)) bonus += 4;
+            if (CheckHiredNPCSpeciality(NPC_PROFESSION_ACOLYTE)) bonus = 2;
+            if (CheckHiredNPCSpeciality(NPC_PROFESSION_INITIATE)) bonus += 3;
+            if (CheckHiredNPCSpeciality(NPC_PROFESSION_PRELATE)) bonus += 4;
             if (classType == CLASS_WARLOCK && PartyHasDragon())
                 bonus += 3;
             bonus += GetItemsBonus(ATTRIBUTE_SKILL_BODY);
@@ -2585,15 +2602,15 @@ int Character::actualSkillLevel(Skill skill) const {
         } break;
 
         case SKILL_MERCHANT: {
-            if (CheckHiredNPCSpeciality(Trader)) bonus = 4;
-            if (CheckHiredNPCSpeciality(Merchant)) bonus += 6;
-            if (CheckHiredNPCSpeciality(Gypsy)) bonus += 3;
-            if (CheckHiredNPCSpeciality(Duper)) bonus += 8;
+            if (CheckHiredNPCSpeciality(NPC_PROFESSION_TRADER)) bonus = 4;
+            if (CheckHiredNPCSpeciality(NPC_PROFESSION_MERCHANT)) bonus += 6;
+            if (CheckHiredNPCSpeciality(NPC_PROFESSION_GYPSY)) bonus += 3;
+            if (CheckHiredNPCSpeciality(NPC_PROFESSION_DUPER)) bonus += 8;
         } break;
 
         case SKILL_PERCEPTION: {
-            if (CheckHiredNPCSpeciality(Scout)) bonus = 6;
-            if (CheckHiredNPCSpeciality(Psychic)) bonus += 5;
+            if (CheckHiredNPCSpeciality(NPC_PROFESSION_SCOUT)) bonus = 6;
+            if (CheckHiredNPCSpeciality(NPC_PROFESSION_PSYCHIC)) bonus += 5;
         } break;
 
         case SKILL_ITEM_ID:
@@ -2603,9 +2620,9 @@ int Character::actualSkillLevel(Skill skill) const {
             bonus += GetItemsBonus(ATTRIBUTE_SKILL_MEDITATION);
             break;
         case SKILL_TRAP_DISARM: {
-            if (CheckHiredNPCSpeciality(Tinker)) bonus = 4;
-            if (CheckHiredNPCSpeciality(Locksmith)) bonus += 6;
-            if (CheckHiredNPCSpeciality(Burglar)) bonus += 8;
+            if (CheckHiredNPCSpeciality(NPC_PROFESSION_TINKER)) bonus = 4;
+            if (CheckHiredNPCSpeciality(NPC_PROFESSION_LOCKSMITH)) bonus += 6;
+            if (CheckHiredNPCSpeciality(NPC_PROFESSION_BURGLAR)) bonus += 8;
             bonus += GetItemsBonus(ATTRIBUTE_SKILL_TRAP_DISARM);
         } break;
         default:
@@ -2909,6 +2926,13 @@ Sex Character::GetSexByVoice() const {
     }
 }
 
+BodyType Character::bodyType() const {
+    bool isMale = GetSexByVoice() == SEX_MALE;
+    if (GetRace() == RACE_DWARF)
+        return isMale ? BODY_TYPE_DWARF_MALE : BODY_TYPE_DWARF_FEMALE;
+    return isMale ? BODY_TYPE_HUMAN_MALE : BODY_TYPE_HUMAN_FEMALE;
+}
+
 //----- (00490188) --------------------------------------------------------
 void Character::SetInitialStats() {
     Race race = GetRace();
@@ -3131,7 +3155,7 @@ void Character::useItem(int targetCharacter, bool isPortraitClick) {
         pAudioPlayer->playUISound(SOUND_eat);
 
         if (pGUIWindow_CurrentMenu &&
-            pGUIWindow_CurrentMenu->eWindowType != WINDOW_null) {
+            pGUIWindow_CurrentMenu->eWindowType != WINDOW_NULL) {
             engine->_messageQueue->addMessageCurrentFrame(UIMSG_Escape, 0, 0);
         }
         //if (v73) {
@@ -3377,7 +3401,7 @@ void Character::useItem(int targetCharacter, bool isPortraitClick) {
             playerAffected->playReaction(SPEECH_DRINK_POTION);
         }
         pAudioPlayer->playUISound(SOUND_drink);
-        if (pGUIWindow_CurrentMenu && pGUIWindow_CurrentMenu->eWindowType != WINDOW_null) {
+        if (pGUIWindow_CurrentMenu && pGUIWindow_CurrentMenu->eWindowType != WINDOW_NULL) {
             engine->_messageQueue->addMessageCurrentFrame(UIMSG_Escape, 0, 0);
         }
         if (pParty->bTurnBasedModeOn) {
@@ -3422,7 +3446,7 @@ void Character::useItem(int targetCharacter, bool isPortraitClick) {
             pParty->takeHoldingItem();
             // Process spell on next frame after game exits inventory window.
             engine->_messageQueue->addMessageNextFrame(UIMSG_SpellScrollUse, std::to_underlying(scrollSpellId), targetCharacter);
-            if (current_screen_type != SCREEN_GAME && pGUIWindow_CurrentMenu && (pGUIWindow_CurrentMenu->eWindowType != WINDOW_null)) {
+            if (current_screen_type != SCREEN_GAME && pGUIWindow_CurrentMenu && (pGUIWindow_CurrentMenu->eWindowType != WINDOW_NULL)) {
                 engine->_messageQueue->addMessageCurrentFrame(UIMSG_Escape, 0, 0);
             }
         }
@@ -3454,7 +3478,7 @@ void Character::useItem(int targetCharacter, bool isPortraitClick) {
         playerAffected->bHaveSpell[bookSpellId] = true;
         playerAffected->playReaction(SPEECH_LEARN_SPELL);
 
-        // if (pGUIWindow_CurrentMenu && pGUIWindow_CurrentMenu->eWindowType != WINDOW_null) {
+        // if (pGUIWindow_CurrentMenu && pGUIWindow_CurrentMenu->eWindowType != WINDOW_NULL) {
         //     if (!v73) { // v73 is always 0 at this point
         //         mouse->RemoveHoldingItem();
         //         return;
@@ -3640,7 +3664,6 @@ void Character::giveAward(AwardId award) {
 }
 
 void Character::giveAutonote(int autonote) {
-    assert(autonote > 0); // TODO(captainurist): autonote is coming from a script, do range checking here.
     if (!pParty->_autonoteBits[autonote] && !pAutonoteTxt[autonote].pText.empty()) {
         spell_fx_renderer->SetPlayerBuffAnim(BECOME_MAGIC_GUILD_MEMBER, characterIndex());
         playReaction(SPEECH_AWARD_GOT);
@@ -3697,6 +3720,8 @@ void Character::AddSkillByEvent(Skill skill, int level, Mastery mastery) {
     int newLevel = std::min(pActiveSkills[skill].level() + level, skills_max_level[skill]);
     Mastery newMastery = std::max(pActiveSkills[skill].mastery(), mastery);
 
+    // TODO(captainurist): adding only a mastery to a skill at level 0 builds mastery without a level, and the
+    //                     constructor asserts. No MM6, MM7 or MM8 script adds to a skill, so only mods get here.
     pActiveSkills[skill] = CombinedSkillValue(newLevel, newMastery);
 }
 
@@ -3749,39 +3774,8 @@ bool Character::hasUnderwaterSuitEquipped() const {
 }
 
 //----- (0043EDB9) --------------------------------------------------------
-bool ShouldLoadTexturesForRaceAndGender(int bodyType) {
-    Race race;  // edi@2
-    Sex sex;       // eax@2
-
-    for (Character &character : pParty->pCharacters) {
-        race = character.GetRace();
-        sex = character.GetSexByVoice();
-        switch (bodyType) {
-            case 0:
-                if ((race == RACE_HUMAN ||
-                     race == RACE_ELF ||
-                     race == RACE_GOBLIN) &&
-                    sex == SEX_MALE)
-                    return true;
-                break;
-            case 1:
-                if ((race == RACE_HUMAN ||
-                     race == RACE_ELF ||
-                     race == RACE_GOBLIN) &&
-                    sex == SEX_FEMALE)
-                    return true;
-                break;
-            case 2:
-                if (race == RACE_DWARF && sex == SEX_MALE)
-                    return true;
-                break;
-            case 3:
-                if (race == RACE_DWARF && sex == SEX_FEMALE)
-                    return true;
-                break;
-        }
-    }
-    return false;
+bool isBodyTypeInParty(BodyType bodyType) {
+    return std::ranges::contains(pParty->pCharacters, bodyType, &Character::bodyType);
 }
 
 //----- (0043ED6F) --------------------------------------------------------
@@ -4122,7 +4116,7 @@ void DamageCharacterFromMonster(Pid uObjID, ActorAbility dmgSource, signed int t
 }
 
 void Character::OnInventoryLeftClick() {
-    if (current_character_screen_window != WINDOW_CharacterWindow_Inventory) {
+    if (current_character_screen_window != WINDOW_CHARACTER_INVENTORY) {
         return;
     }
 
@@ -4471,7 +4465,7 @@ void Character::_42FA66_do_explosive_impact(Vec3f pos, int a4, int16_t a5, int a
     a1a.uSpellID = SPELL_FIRE_FIREBALL;
     a1a.spell_level = 8;
     a1a.spell_skill = MASTERY_MASTER;
-    a1a.uObjectDescID = pObjectList->ObjectIDByItemID(a1a.spriteId);
+    a1a.uObjectDescID = pObjectTable->ObjectIDByItemID(a1a.spriteId);
     a1a.vPosition = pos;
     a1a.uAttributes = 0;
     a1a.uSectorID = pIndoor->GetSector(pos);
@@ -4764,7 +4758,7 @@ void Character::Zero() {
     uNumDivineInterventionCastsThisDay = 0;
     uNumArmageddonCasts = 0;
     uNumFireSpikeCasts = 0; // TODO(pskelton): firespike meant to remain permanantly??
-    releaseBeacons();
+    std::ranges::fill(vBeacons, std::nullopt);
     // Character bits
     _characterEventBits.reset();
     _achievedAwardsBits.reset();
@@ -4802,20 +4796,10 @@ bool Character::matchesAttackPreference(MonsterAttackPreference preference) cons
     }
 }
 
-// TODO(captainurist): make LloydBeacon::image own its texture and drop this.
-void Character::releaseBeacons() {
-    for (std::optional<LloydBeacon> &beacon : vBeacons) {
-        if (beacon)
-            beacon->image->release();
-        beacon.reset();
-    }
-}
-
 void Character::cleanupBeacons() {
     for (int i = 0; i < 5; i++) {
         if (!vBeacons[i] || vBeacons[i]->uBeaconTime >= pParty->GetPlayingTime())
             continue;
-        vBeacons[i]->image->release();
         vBeacons[i].reset();
     }
 }
@@ -4834,11 +4818,7 @@ bool Character::setBeacon(int index, Duration duration) {
     beacon._partyViewPitch = pParty->_viewPitch;
     beacon.mapId = engine->_currentLoadedMapId;
 
-    if (vBeacons[index]) {
-        // overwrite so clear image
-        vBeacons[index]->image->release();
-    }
-    vBeacons[index] = beacon;
+    vBeacons[index] = std::move(beacon);
 
     return true;
 }

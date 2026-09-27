@@ -442,18 +442,18 @@ void NPCHireableDialogPrepare() {
     int v0 = 0;
     NPCData *v1 = houseNpcs[currentHouseNpc].npc;
 
-    pDialogueWindow = std::make_unique<GUIWindow>(WINDOW_Dialogue, Pointi(0, 0), Sizei(render->GetRenderDimensions().w, 350));
+    pDialogueWindow = std::make_unique<GUIWindow>(WINDOW_DIALOGUE, Pointi(0, 0), Sizei(render->GetRenderDimensions().w, 350));
     pBtn_ExitCancel = pDialogueWindow->CreateButton({471, 445}, {169, 35}, BUTTON_TYPE_NORMAL, 0,
         UIMSG_Escape, 0, INPUT_ACTION_INVALID, localization->str(LSTR_CANCEL), {ui_exit_cancel_button_background}
     );
     pDialogueWindow->CreateButton({0, 0}, {0, 0}, BUTTON_TYPE_NORMAL, 0, UIMSG_HouseScreenClick, 0);
     if (!pNPCStats->pProfessions[v1->profession].pBenefits.empty()) {
-        pDialogueWindow->CreateButton({480, 160}, {140, 30}, BUTTON_TYPE_NORMAL, 0,
+        pDialogueWindow->CreateButton("HouseNpcDialogue_ProfessionDetails", {480, 160}, {140, 30}, BUTTON_TYPE_NORMAL, 0,
             UIMSG_SelectHouseNPCDialogueOption, std::to_underlying(DIALOGUE_PROFESSION_DETAILS), INPUT_ACTION_INVALID, localization->str(LSTR_MORE_INFORMATION)
         );
         v0 = 1;
     }
-    pDialogueWindow->CreateButton({480, 30 * v0 + 160}, {140, 30}, BUTTON_TYPE_NORMAL, 0,
+    pDialogueWindow->CreateButton("HouseNpcDialogue_HireFire", {480, 30 * v0 + 160}, {140, 30}, BUTTON_TYPE_NORMAL, 0,
         UIMSG_SelectHouseNPCDialogueOption, std::to_underlying(DIALOGUE_HIRE_FIRE), INPUT_ACTION_INVALID, localization->str(LSTR_HIRE));
     pDialogueWindow->setKeyboardControlGroup(v0 + 1, false, 0, 2);
     window_SpeakInHouse->setCurrentDialogue(DIALOGUE_OTHER);
@@ -516,7 +516,7 @@ void updateHouseNPCTopics(int npc) {
     currentHouseNpc = npc;
     if (houseNpcs[npc].type == HOUSE_TRANSITION) {
         // TODO(Nik-RE-dev): can use GUIWindow_Transition
-        pDialogueWindow = std::make_unique<GUIWindow>(WINDOW_Dialogue, Pointi(0, 0), render->GetRenderDimensions());
+        pDialogueWindow = std::make_unique<GUIWindow>(WINDOW_DIALOGUE, Pointi(0, 0), render->GetRenderDimensions());
         pBtn_ExitCancel = pDialogueWindow->CreateButton({566, 445}, {75, 33}, BUTTON_TYPE_NORMAL, 0, UIMSG_Escape, 0, INPUT_ACTION_TRANSITION_NO, localization->str(LSTR_CANCEL), {ui_buttdesc2});
         pBtn_YES = pDialogueWindow->CreateButton({486, 445}, {75, 33}, BUTTON_TYPE_NORMAL, 0, UIMSG_HouseTransitionConfirmation, 1, INPUT_ACTION_TRANSITION_YES, houseNpcs[npc].label, {ui_buttyes2});
         pDialogueWindow->CreateButton({pNPCPortraits_x[0][0], pNPCPortraits_y[0][0]}, {63, 73}, BUTTON_TYPE_NORMAL, 0, UIMSG_HouseTransitionConfirmation, 1,
@@ -571,7 +571,7 @@ bool houseDialogPressEscape() {
         window_SpeakInHouse->currentDialogue() == DIALOGUE_MAIN) {
         currentHouseNpc = -1;
         if (shop_ui_background) {
-            shop_ui_background->release();
+            assets->releaseImage(shop_ui_background);
             shop_ui_background = nullptr;
         }
         window_SpeakInHouse->updateDialogueOnEscape();
@@ -585,8 +585,8 @@ bool houseDialogPressEscape() {
         pBtn_ExitCancel = window_SpeakInHouse->vButtons.front();
         for (int i = 0; i < houseNpcs.size(); ++i) {
             Pointi pos = {pNPCPortraits_x[houseNpcs.size() - 1][i], pNPCPortraits_y[houseNpcs.size() - 1][i]};
-            houseNpcs[i].button = window_SpeakInHouse->CreateButton(pos, {63, 73}, BUTTON_TYPE_NORMAL, 0, UIMSG_ClickHouseNPCPortrait, i,
-                                                                    INPUT_ACTION_INVALID, houseNpcs[i].label);
+            houseNpcs[i].button = window_SpeakInHouse->CreateButton(fmt::format("House_Npc{}", i), pos, {63, 73}, BUTTON_TYPE_NORMAL, 0,
+                                                                    UIMSG_ClickHouseNPCPortrait, i, INPUT_ACTION_INVALID, houseNpcs[i].label);
         }
 
         BackToHouseMenu();
@@ -776,7 +776,7 @@ void GUIWindow_House::reinitDialogueWindow() {
         pDialogueWindow->receives_keyboard_input = false;
         pDialogueWindow->DeleteButtons();
     } else {
-        pDialogueWindow = std::make_unique<GUIWindow>(WINDOW_Dialogue, Pointi(0, 0), Sizei(render->GetPresentDimensions().w, 345));
+        pDialogueWindow = std::make_unique<GUIWindow>(WINDOW_DIALOGUE, Pointi(0, 0), Sizei(render->GetPresentDimensions().w, 345));
     }
 
     pBtn_ExitCancel = pDialogueWindow->CreateButton({471, 445}, {169, 35}, BUTTON_TYPE_NORMAL, 0, UIMSG_Escape, 0, INPUT_ACTION_INVALID,
@@ -967,7 +967,8 @@ void GUIWindow_House::initializeNPCDialogue(int npc) {
 
 void GUIWindow_House::initializeNPCDialogueButtons(std::vector<DialogueId> optionList) {
     for (int i = 0; i < optionList.size(); i++)
-        pDialogueWindow->CreateButton({480, 160 + 30 * i}, {140, 30}, BUTTON_TYPE_NORMAL, 0, UIMSG_SelectHouseNPCDialogueOption, std::to_underlying(optionList[i]), INPUT_ACTION_INVALID, "");
+        pDialogueWindow->CreateButton(fmt::format("HouseNpcDialogue_Option{}", i), {480, 160 + 30 * i}, {140, 30}, BUTTON_TYPE_NORMAL, 0,
+                                      UIMSG_SelectHouseNPCDialogueOption, std::to_underlying(optionList[i]), INPUT_ACTION_INVALID, "");
     pDialogueWindow->setKeyboardControlGroup(optionList.size(), false, 0, 2);
     _savedButtonsNum = pDialogueWindow->pNumPresenceButton;
 }
@@ -1034,7 +1035,7 @@ void GUIWindow_House::learnSelectedSkill(Skill skill) {
     }
 }
 
-GUIWindow_House::GUIWindow_House(HouseId houseId) : GUIWindow(WINDOW_HouseInterior, {0, 0}, render->GetRenderDimensions()), _houseId(houseId) {
+GUIWindow_House::GUIWindow_House(HouseId houseId) : GUIWindow(WINDOW_HOUSE_INTERIOR, {0, 0}, render->GetRenderDimensions()), _houseId(houseId) {
     gameTimer->setPaused(true);  // pause timer so not attacked
 
     current_screen_type = SCREEN_HOUSE;
@@ -1047,8 +1048,8 @@ GUIWindow_House::GUIWindow_House(HouseId houseId) : GUIWindow(WINDOW_HouseInteri
 
     for (int i = 0; i < houseNpcs.size(); ++i) {
         Pointi pos = {pNPCPortraits_x[houseNpcs.size() - 1][i], pNPCPortraits_y[houseNpcs.size() - 1][i]};
-        houseNpcs[i].button = CreateButton(pos, {63, 73}, BUTTON_TYPE_NORMAL, 0, UIMSG_ClickHouseNPCPortrait, i,
-                                                      INPUT_ACTION_INVALID, houseNpcs[i].label);
+        houseNpcs[i].button = CreateButton(fmt::format("House_Npc{}", i), pos, {63, 73}, BUTTON_TYPE_NORMAL, 0,
+                                           UIMSG_ClickHouseNPCPortrait, i, INPUT_ACTION_INVALID, houseNpcs[i].label);
     }
 
     CreateCharacterButtons();
@@ -1074,13 +1075,13 @@ GUIWindow_House::~GUIWindow_House() {
 
     for (HouseNpcDesc &desc : houseNpcs) {
         if (desc.icon) {
-            desc.icon->release();
+            assets->releaseImage(desc.icon);
         }
     }
     houseNpcs.clear();
 
     if (game_ui_dialogue_background) {
-        game_ui_dialogue_background->release();
+        assets->releaseImage(game_ui_dialogue_background);
         game_ui_dialogue_background = nullptr;
     }
 

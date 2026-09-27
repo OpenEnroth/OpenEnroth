@@ -4,6 +4,7 @@
 
 #include "GameOver.h"
 
+#include "Engine/EngineGlobals.h"
 #include "Engine/AssetsManager.h"
 #include "Engine/Resources/EngineFileSystem.h"
 #include "Engine/Graphics/Renderer/Renderer.h"
@@ -25,7 +26,7 @@
 
 //----- (004BF91E) --------------------------------------------------------
 void GameOver_Setup() {
-    dword_6BE364_game_settings_1 &= ~GAME_SETTINGS_4000;
+    engineFlags &= ~ENGINE_ESCAPE_ENABLED;
     GameOverNoSound = true;
     pAudioPlayer->stopSounds();
 
@@ -34,13 +35,13 @@ void GameOver_Setup() {
     pDialogueWindow = nullptr;
 }
 
-GraphicsImage *CreateWinnerCertificate() {
+std::unique_ptr<GraphicsImage> CreateWinnerCertificate() {
     render->Present();
     render->BeginScene2D();
     GraphicsImage *background = assets->getImage_PCXFromIconsLOD("winbg.pcx");
     render->DrawQuad2D(background, {0, 0});
 
-    std::unique_ptr<GUIWindow> tempwindow_SpeakInHouse = std::make_unique<GUIWindow>(WINDOW_Unknown, Pointi{ 0, 0 }, render->GetRenderDimensions());
+    std::unique_ptr<GUIWindow> tempwindow_SpeakInHouse = std::make_unique<GUIWindow>(WINDOW_WINNER_CERTIFICATE, Pointi{ 0, 0 }, render->GetRenderDimensions());
     Recti frameRect(75, 60, 469, 338);
     std::unique_ptr<GUIFont> pFont = GUIFont::LoadFont("endgame.fnt");
 
@@ -99,7 +100,7 @@ GraphicsImage *CreateWinnerCertificate() {
 
     GUIWindow::DrawTitleText(pFont.get(), 1, frameRect.h, colorTable.Black,
         localization->format(LSTR_YOUR_SCORE_LU, v23), 3, frameRect);
-    dword_6BE364_game_settings_1 |= GAME_SETTINGS_4000;
+    engineFlags |= ENGINE_ESCAPE_ENABLED;
 
     // flush draw buffer so cert is drawn
     render->DrawTwodVerts();
@@ -108,9 +109,9 @@ GraphicsImage *CreateWinnerCertificate() {
 
     RgbaImage pixels = render->MakeFullScreenshot();
     ufs->write("MM7_Win.Pcx", pcx::encode(pixels));
-    GraphicsImage *result = GraphicsImage::Create(std::move(pixels));
+    std::unique_ptr<GraphicsImage> result = GraphicsImage::Create(std::move(pixels));
 
-    background->release();
+    assets->releaseImage(background);
     background = nullptr;
 
     return result;

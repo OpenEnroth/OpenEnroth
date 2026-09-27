@@ -350,7 +350,7 @@ void GameWindowHandler::OnPaint() {
 }
 
 void GameWindowHandler::OnActivated() {
-    if (dword_6BE364_game_settings_1 & GAME_SETTINGS_APP_INACTIVE) {
+    if (engineFlags & ENGINE_APP_INACTIVE) {
         // dword_4E98BC_bApplicationActive = 1;
         //        Resume video playback
         //          pMediaPlayer->
@@ -359,15 +359,15 @@ void GameWindowHandler::OnActivated() {
 
         render->Reinitialize();
 
-        dword_6BE364_game_settings_1 &= ~GAME_SETTINGS_APP_INACTIVE;
+        engineFlags &= ~ENGINE_APP_INACTIVE;
 
         if (!pArcomageGame->_gameInProgress) {
-            if (dword_6BE364_game_settings_1 & GAME_SETTINGS_0200_EVENT_TIMER)
-                dword_6BE364_game_settings_1 &= ~GAME_SETTINGS_0200_EVENT_TIMER;
+            if (engineFlags & ENGINE_GAME_TIMER_PAUSED_BEFORE_DEACTIVATE)
+                engineFlags &= ~ENGINE_GAME_TIMER_PAUSED_BEFORE_DEACTIVATE;
             else
                 gameTimer->setPaused(false);
-            if (dword_6BE364_game_settings_1 & GAME_SETTINGS_0400_MISC_TIMER)
-                dword_6BE364_game_settings_1 &= ~GAME_SETTINGS_0400_MISC_TIMER;
+            if (engineFlags & ENGINE_ANIM_TIMER_PAUSED_BEFORE_DEACTIVATE)
+                engineFlags &= ~ENGINE_ANIM_TIMER_PAUSED_BEFORE_DEACTIVATE;
             else
                 animTimer->setPaused(false);
         }
@@ -380,20 +380,20 @@ void GameWindowHandler::OnActivated() {
 }
 
 void GameWindowHandler::OnDeactivated() {
-    if (!(dword_6BE364_game_settings_1 & GAME_SETTINGS_APP_INACTIVE)) {
+    if (!(engineFlags & ENGINE_APP_INACTIVE)) {
         // dword_4E98BC_bApplicationActive = 0;
 
-        dword_6BE364_game_settings_1 |= GAME_SETTINGS_APP_INACTIVE;
+        engineFlags |= ENGINE_APP_INACTIVE;
         if (gameTimer != nullptr) {
             if (gameTimer->isPaused())
-                dword_6BE364_game_settings_1 |= GAME_SETTINGS_0200_EVENT_TIMER;
+                engineFlags |= ENGINE_GAME_TIMER_PAUSED_BEFORE_DEACTIVATE;
             else
                 gameTimer->setPaused(true);
         }
 
         if (animTimer != nullptr) {
             if (animTimer->isPaused())
-                dword_6BE364_game_settings_1 |= GAME_SETTINGS_0400_MISC_TIMER;
+                engineFlags |= ENGINE_ANIM_TIMER_PAUSED_BEFORE_DEACTIVATE;
             else
                 animTimer->setPaused(true);
         }
@@ -543,7 +543,7 @@ bool GameWindowHandler::closeEvent(const PlatformWindowEvent *event) {
 
     // TODO(captainurist): That's a very convoluted way to exit the game, redo this properly once we have a unified
     //                     event loop.
-    dword_6BE364_game_settings_1 &= ~GAME_SETTINGS_APP_INACTIVE;
+    engineFlags &= ~ENGINE_APP_INACTIVE;
     component<EngineControlComponent>()->runControlRoutine([] (EngineController *game) {
         game->goToMainMenu();
         game->pressGuiButton("MainMenu_ExitGame");

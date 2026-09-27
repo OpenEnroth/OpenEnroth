@@ -234,7 +234,7 @@ void CreateParty_EventLoop() {
             keyboardInputHandler->StartTextInput(TEXT_INPUT_TEXT, 15, pGUIWindow_CurrentMenu.get());
             break;
         case UIMSG_Escape:
-            if (!(dword_6BE364_game_settings_1 & GAME_SETTINGS_4000)) break;
+            if (!(engineFlags & ENGINE_ESCAPE_ENABLED)) break;
             if (GetCurrentMenuID() == MENU_MAIN ||
                 GetCurrentMenuID() == MENU_MMT_MAIN_MENU ||
                 GetCurrentMenuID() == MENU_CREATEPARTY ||
@@ -568,7 +568,7 @@ void GUIWindow_PartyCreation::Update() {
 
 //----- (0049695A) --------------------------------------------------------
 GUIWindow_PartyCreation::GUIWindow_PartyCreation() :
-    GUIWindow(WINDOW_CharacterCreation, {0, 0}, render->GetRenderDimensions()) {
+    GUIWindow(WINDOW_PARTY_CREATION, {0, 0}, render->GetRenderDimensions()) {
     engine->_messageQueue->clear();
     errorMessageExpireTime = Duration(); // Clear any lingering error popup from previous session.
 
@@ -702,7 +702,7 @@ GUIWindow_PartyCreation::GUIWindow_PartyCreation() :
 }
 
 GUIWindow_PartyCreation::~GUIWindow_PartyCreation() {
-    main_menu_background->release();
+    assets->releaseImage(main_menu_background);
     main_menu_background = nullptr;
 }
 

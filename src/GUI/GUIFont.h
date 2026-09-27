@@ -108,6 +108,6 @@ class GUIFont {
  private:
     LodFont _font;
     AtlasLayout _layout;
-    GraphicsImage *_texture = nullptr;
+    std::unique_ptr<GraphicsImage> _texture;
 };
 

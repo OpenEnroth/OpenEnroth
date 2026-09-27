@@ -337,10 +337,6 @@ class Movie : public IMovie {
     }
 
     virtual ~Movie() {
-        if (_texture != nullptr) {
-            _texture->release();
-        }
-
         while (!_binkBuffer.empty()) _binkBuffer.pop();
         Close();
     }
@@ -489,7 +485,7 @@ class Movie : public IMovie {
 
         AVPacket packet;
 
-        GraphicsImage *tex = nullptr;
+        std::unique_ptr<GraphicsImage> tex;
 
         // holds decoded audio
         std::queue<Blob> buffq;
@@ -558,14 +554,11 @@ class Movie : public IMovie {
 
                 render->BeginScene2D();
                 // create texture from buffer
-                if (tex) {
-                    tex->release();
-                }
                 // TODO(captainurist): no need to copy here.
                 RgbaImage frameImage = RgbaImage::copy(static_cast<const Color *>(video.last_frame.data()), pMovie_Track->GetWidth(), pMovie_Track->GetHeight());
                 tex = GraphicsImage::Create(std::move(frameImage));
 
-                render->DrawImage(tex, calculateVideoRectangle(*pMovie_Track));
+                render->DrawImage(tex.get(), calculateVideoRectangle(*pMovie_Track));
                 render->Present();
             }
 
@@ -581,9 +574,6 @@ class Movie : public IMovie {
 
         // clean up
         while (!buffq.empty()) buffq.pop();
-        if (tex) {
-            tex->release();
-        }
 
         return;
     }
@@ -712,14 +702,11 @@ class Movie : public IMovie {
  protected:
     void _renderTexture(const Blob &buffer) {
         // create texture from buffer
-        if (_texture) {
-            _texture->release();
-        }
         // TODO(captainurist): no need to copy here.
         RgbaImage frameImage = RgbaImage::copy(static_cast<const Color *>(buffer.data()), GetWidth(), GetHeight());
         _texture = GraphicsImage::Create(std::move(frameImage));
 
-        render->DrawImage(_texture, calculateVideoRectangle(*this));
+        render->DrawImage(_texture.get(), calculateVideoRectangle(*this));
     }
 
  protected:
@@ -741,7 +728,7 @@ class Movie : public IMovie {
 
     FFmpegBlobIoContext _ioContext;
 
-    GraphicsImage *_texture = nullptr;
+    std::unique_ptr<GraphicsImage> _texture;
 
     // Bink video properties
     AVPacket _binkPacket;
@@ -788,7 +775,8 @@ void MPlayer::HouseMovieLoop() {
 
     render->BeginScene2D();
 
-    static GraphicsImage *tex = nullptr;
+    // TODO(captainurist): function-local static that owns a texture, make it a member.
+    static std::unique_ptr<GraphicsImage> tex;
 
     Blob buffer = pMovie_Track->GetFrame();
     if (buffer) {
@@ -800,14 +788,11 @@ void MPlayer::HouseMovieLoop() {
         rect.h = wsize.h - render->config->graphics.HouseMovieY2.value();
 
         // create texture from buffer
-        if (tex) {
-            tex->release();
-        }
         // TODO(captainurist): no need to copy here.
         RgbaImage frameImage = RgbaImage::copy(static_cast<const Color *>(buffer.data()), pMovie_Track->GetWidth(), pMovie_Track->GetHeight());
         tex = GraphicsImage::Create(std::move(frameImage));
 
-        render->DrawImage(tex, rect);
+        render->DrawImage(tex.get(), rect);
 
     } else {
         pMovie_Track = nullptr;
@@ -870,7 +855,7 @@ void MPlayer::PlayFullscreenMovie(std::string_view pFilename) {
         MM_TRACE("bink file");
         pMovie->PlayBink();
     } else {
-        GraphicsImage *tex = nullptr;
+        std::unique_ptr<GraphicsImage> tex;
         while (true) {
             MessageLoopWithWait();
 
@@ -885,19 +870,13 @@ void MPlayer::PlayFullscreenMovie(std::string_view pFilename) {
             }
 
             // create texture from buffer
-            if (tex) {
-                tex->release();
-            }
             // TODO(captainurist): no need to copy here.
             RgbaImage frameImage = RgbaImage::copy(static_cast<const Color *>(buffer.data()), pMovie_Track->GetWidth(), pMovie_Track->GetHeight());
             tex = GraphicsImage::Create(std::move(frameImage));
 
-            render->DrawImage(tex, calculateVideoRectangle(*pMovie_Track));
+            render->DrawImage(tex.get(), calculateVideoRectangle(*pMovie_Track));
 
             render->Present();
-        }
-        if (tex) {
-            tex->release();
         }
     }
 

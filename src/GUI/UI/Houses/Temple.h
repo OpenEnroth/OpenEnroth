@@ -27,6 +27,11 @@ class GUIWindow_Temple : public GUIWindow_House {
      */
     bool isPlayerHealableByTemple(const Character &player) const;
 
+    /**
+     * @return                          Whether this is one of the three temples that raise the dead as zombies.
+     */
+    bool isEvilTemple() const;
+
  private:
     std::vector<int> _templeSpellCounter;
 };

@@ -9,6 +9,7 @@
 #include "Engine/Engine.h"
 
 #include "Engine/EngineGlobals.h"
+#include "Engine/Interaction.h"
 #include "Engine/AssetsManager.h"
 
 #include "Engine/Evt/Processor.h"
@@ -37,7 +38,7 @@
 #include "Engine/Localization.h"
 #include "Engine/Objects/Actor.h"
 #include "Engine/Objects/Chest.h"
-#include "Engine/Objects/ObjectList.h"
+#include "Engine/Tables/ObjectTable.h"
 #include "Engine/Objects/SpriteObject.h"
 #include "Engine/Objects/NPC.h"
 #include "Engine/Objects/MonsterEnumFunctions.h"
@@ -221,6 +222,7 @@ void Engine::DrawGUI() {
         GameUI_DrawTorchlightAndWizardEye();
     }
 
+    // TODO(captainurist): function-local statics, move the FPS counter state into Engine.
     static bool render_framerate = false;
     static float framerate = 0.0f;
     static unsigned frames_this_second = 0;
@@ -464,6 +466,121 @@ Vis_PIDAndDepth Engine::PickMouseForInteraction() {
     return PickMouse(config->gameplay.MouseInteractionDepth.value(), pt.x, pt.y, &vis_anything_filter, &vis_face_filter);
 }
 
+void Engine::onGameViewportClick() {
+    int clickable_distance = engine->config->gameplay.MouseInteractionDepth.value();
+
+    // bug fix - stops you entering shops while dialog still open.
+    // was SCREEN_NPC_DIALOGUE
+    if (current_screen_type != SCREEN_GAME) {
+        return;
+    }
+
+    auto pidAndDepth = engine->PickMouseForTargeting();
+    Pid pid = pidAndDepth.pid;
+    int distance = pidAndDepth.depth;
+    bool in_range = distance < clickable_distance;
+
+    if (pid.type() == OBJECT_Sprite) {
+        int item_id = pid.id();
+        if (pSpriteObjects[item_id].IsUnpickable() || !pSpriteObjects[item_id].uObjectDescID || !in_range) {
+            pParty->dropHeldItem();
+        } else {
+            ItemInteraction(item_id);
+        }
+    } else if (pid.type() == OBJECT_Actor) {
+        int mon_id = pid.id();
+
+        if (pActors[mon_id].aiState == Dead) {
+            if (in_range) {
+                pActors[mon_id].LootActor();
+            } else {
+                pParty->dropHeldItem();
+            }
+        } else if (!keyboardInputHandler->IsCastOnClickToggled()) {
+            if (pActors[mon_id].GetActorsRelation(nullptr) == HOSTILITY_FRIENDLY && pActors[mon_id].ActorFriend()) {
+                if (!in_range) {
+                    pParty->dropHeldItem();
+                } else if (pActors[mon_id].CanAct()) {
+                    if (pParty->hasActiveCharacter()) {
+                        InteractWithActor(mon_id);
+                    } else {
+                        // Do not interact with actors with no active character
+                        engine->_statusBar->setEvent(LSTR_NOBODY_IS_IN_CONDITION);
+                    }
+                }
+            } else {
+                if (pParty->bTurnBasedModeOn && pTurnEngine->turn_stage == TE_MOVEMENT) {
+                    pTurnEngine->flags |= TE_FLAG_8_finished;
+                } else {
+                    engine->_messageQueue->addMessageCurrentFrame(UIMSG_Attack, 0, 0);
+                }
+            }
+        } else if (pParty->bTurnBasedModeOn && pTurnEngine->turn_stage == TE_MOVEMENT) {
+            pParty->setAirborne(true);
+        } else if (pParty->hasActiveCharacter() &&
+                   pParty->activeCharacter().uQuickSpell != SPELL_NONE &&
+                   IsSpellQuickCastableOnShiftClick(pParty->activeCharacter().uQuickSpell)) {
+            engine->_messageQueue->addMessageCurrentFrame(UIMSG_CastQuickSpellAtActor, mon_id, 0);
+        } else if (pParty->pPickedItem.itemId != ITEM_NULL) {
+            pParty->dropHeldItem();
+        } else if (!pParty->hasActiveCharacter()) {
+            engine->_statusBar->setEvent(LSTR_NOBODY_IS_IN_CONDITION);
+            pAudioPlayer->playUISound(SOUND_error);
+        } else {
+            engine->_statusBar->setEvent(LSTR_SET_A_QUICK_SPELL);
+            pAudioPlayer->playUISound(SOUND_error);
+        }
+    } else if (pid.type() == OBJECT_Decoration) {
+        int id = pid.id();
+        if (distance - pDecorationTable->decoration(pLevelDecorations[id].uDecorationDescID)->uRadius < clickable_distance) {
+            if (pParty->hasActiveCharacter()) {
+                // Do not interact with decoration with no active character
+                DecorationInteraction(id, pid);
+            } else {
+                engine->_statusBar->setEvent(LSTR_NOBODY_IS_IN_CONDITION);
+            }
+        } else {
+            pParty->dropHeldItem();
+        }
+    } else if (pid.type() == OBJECT_Face && in_range) {
+        int eventId = 0;
+
+        if (uCurrentlyLoadedLevelType == LEVEL_INDOOR) {
+            if (!pIndoor->faces[pid.id()].Clickable()) {
+                if (pParty->pPickedItem.itemId == ITEM_NULL) {
+                    engine->_statusBar->nothingHere();
+                } else {
+                    pParty->dropHeldItem();
+                }
+                return;
+            } else {
+                eventId = pIndoor->faces[pid.id()].eventId;
+            }
+        } else if (uCurrentlyLoadedLevelType == LEVEL_OUTDOOR) {
+            const BLVFace &model = pOutdoor->face(pid);
+            if (!model.Clickable()) {
+                if (pParty->pPickedItem.itemId == ITEM_NULL) {
+                    engine->_statusBar->nothingHere();
+                } else {
+                    pParty->dropHeldItem();
+                }
+                return;
+            } else {
+                eventId = model.eventId;
+            }
+        }
+
+        if (pParty->hasActiveCharacter()) {
+            eventProcessor(eventId, pid, 1);
+        } else {
+            // Do not interact with faces with no active character
+            engine->_statusBar->setEvent(LSTR_NOBODY_IS_IN_CONDITION);
+        }
+    } else {
+        pParty->dropHeldItem();
+    }
+}
+
 void Engine::toggleOverlays() {
     bool isEnabled = _overlaySystem.isEnabled();
     _overlaySystem.setEnabled(!isEnabled);
@@ -505,8 +622,8 @@ void PlayButtonClickSound() {
 
 //----- (0046BDC0) --------------------------------------------------------
 void UpdateUserInput_and_MapSpecificStuff() {
-    if (dword_6BE364_game_settings_1 & GAME_SETTINGS_0080_SKIP_USER_INPUT_THIS_FRAME) {
-        dword_6BE364_game_settings_1 &= ~GAME_SETTINGS_0080_SKIP_USER_INPUT_THIS_FRAME;
+    if (engineFlags & ENGINE_SKIP_NEXT_USER_INPUT) {
+        engineFlags &= ~ENGINE_SKIP_NEXT_USER_INPUT;
         return;
     }
 
@@ -696,8 +813,8 @@ void Engine::MM7_Initialize() {
     pDecorationTable = new DecorationTable;
     deserialize(engine->resources()->eventsData("ddeclist.bin"), pDecorationTable);
 
-    pObjectList = new ObjectList;
-    deserialize(engine->resources()->eventsData("dobjlist.bin"), pObjectList);
+    pObjectTable = new ObjectTable;
+    deserialize(engine->resources()->eventsData("dobjlist.bin"), pObjectTable);
 
     pMonsterList = new MonsterList;
     deserialize(engine->resources()->eventsData("dmonlist.bin"), pMonsterList);
@@ -718,7 +835,7 @@ void Engine::MM7_Initialize() {
     if (engine->config->graphics.GenerateTiles.value())
         pTileGenerator->fillTable();
 
-    dword_6BE364_game_settings_1 |= GAME_SETTINGS_4000;
+    engineFlags |= ENGINE_ESCAPE_ENABLED;
 }
 
 //----- (00465D0B) --------------------------------------------------------
@@ -748,7 +865,7 @@ void Engine::SecondaryInitialization() {
 
     //pPaletteManager->SetMistColor(128, 128, 128);
     //pPaletteManager->RecalculateAll();
-    pObjectList->InitializeSprites();
+    pObjectTable->InitializeSprites();
     pOverlayTable->initializeSprites();
 
     // TODO(captainurist): try resurrecting the food / gold animations using resource files from MM6?
@@ -1319,7 +1436,7 @@ void RegeneratePartyHealthMana() {
         spellSprite.spell_skill = pParty->ImmolationSkillLevel();
         spellSprite.spriteId = SPRITE_SPELL_FIRE_IMMOLATION;
         spellSprite.uSpellID = SPELL_FIRE_IMMOLATION;
-        spellSprite.uObjectDescID = pObjectList->ObjectIDByItemID(SpellSpriteMapping[SPELL_FIRE_IMMOLATION]);
+        spellSprite.uObjectDescID = pObjectTable->ObjectIDByItemID(SpellSpriteMapping[SPELL_FIRE_IMMOLATION]);
         spellSprite.field_60_distance_related_prolly_lod = 0;
         spellSprite.uAttributes = 0;
         spellSprite.uSectorID = 0;

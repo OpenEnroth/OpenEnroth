@@ -9,6 +9,7 @@
 #include <vector>
 
 #include "Engine/Engine.h"
+#include "Engine/EngineGlobals.h"
 #include "Engine/PartyPlacement.h"
 #include "Engine/Resources/EngineFileSystem.h"
 #include "Engine/Resources/LOD.h"
@@ -26,6 +27,8 @@
 #include "Engine/Objects/SpriteObject.h"
 
 #include "Engine/Snapshots/CompositeSnapshots.h"
+
+#include "Engine/Spells/CastSpellInfo.h"
 
 #include "GUI/GUIWindow.h"
 #include "GUI/UI/UIGame.h"
@@ -50,7 +53,8 @@ void loadGame(std::string_view fileName) {
     engine->_lastLoadedSaveFileName = fileName;
 
     // TODO(captainurist): remained from Party::Reset, doesn't really belong here (or in Party::Reset).
-    current_character_screen_window = WINDOW_CharacterWindow_Stats;
+    CastSpellInfoHelpers::cancelSpellCastInProgress();
+    current_character_screen_window = WINDOW_CHARACTER_STATS;
     if (pParty->bTurnBasedModeOn) {
         pTurnEngine->End(false);
         pParty->bTurnBasedModeOn = false;
@@ -61,8 +65,6 @@ void loadGame(std::string_view fileName) {
     deserialize(Blob::copy(ufs->read(path)), &state, tags::via<SaveGame_MM7>);
 
     // Move loaded state to global variables.
-    for (Character &character : pParty->pCharacters)
-        character.releaseBeacons(); // The assignment below drops these raw owning pointers.
     *pParty = std::move(state.party);
     *gameTimer = std::move(state.eventTimer);
     *pActiveOverlayList = std::move(state.overlays);
@@ -76,6 +78,18 @@ void loadGame(std::string_view fileName) {
 
     // We always start in realtime after loading a game.
     pParty->bTurnBasedModeOn = false;
+
+    // Vanilla MM7's evil temples and Reanimate could make a Lich a zombie. Only the temples swapped in a zombie face,
+    // 23 or 24, and they kept the Lich face in uPrevFace.
+    for (Character &character : pParty->pCharacters) {
+        if (character.classType == CLASS_LICH && character.IsZombie()) {
+            character.conditions.reset(CONDITION_ZOMBIE);
+            if (character.uCurrentFace == 23 || character.uCurrentFace == 24) {
+                character.uCurrentFace = character.uPrevFace;
+                character.uVoiceID = character.uPrevVoiceID;
+            }
+        }
+    }
 
     pParty->setActiveCharacterIndex(-1);
     pParty->setActiveToFirstCanAct();
@@ -116,7 +130,7 @@ void loadGame(std::string_view fileName) {
     //                     skip placement when loading. MapDestination has no way to say that.
     engine->_pendingTransition = MapDestination(pMapTable->GetMapInfo(state.header.locationName), MAP_START_POINT_PARTY);
 
-    dword_6BE364_game_settings_1 |= GAME_SETTINGS_LOADING_SAVEGAME_SKIP_RESPAWN | GAME_SETTINGS_SKIP_WORLD_UPDATE;
+    engineFlags |= ENGINE_LOADING_SAVEGAME | ENGINE_SKIP_NEXT_WORLD_UPDATE;
 
     // pAudioPlayer->SetMusicVolume(engine->config->music_level);
     // pAudioPlayer->SetMasterVolume(engine->config->sound_level);

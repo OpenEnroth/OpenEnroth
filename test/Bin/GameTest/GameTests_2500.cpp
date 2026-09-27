@@ -7,7 +7,11 @@
 #include "Engine/MapEnums.h"
 #include "Engine/Party.h"
 #include "Engine/SaveLoad.h"
+#include "Engine/mm7_data.h"
+#include "Engine/Data/AwardEnums.h"
 #include "Engine/Data/HouseEnums.h"
+#include "Engine/Evt/EvtVariables.h"
+#include "Engine/Graphics/Image.h"
 #include "Engine/Graphics/Indoor.h"
 #include "Engine/Graphics/Vis.h"
 #include "Engine/Objects/Actor.h"
@@ -18,6 +22,7 @@
 #include "Engine/Tables/NPCTable.h"
 
 #include "GUI/GUIWindow.h"
+#include "GUI/UI/UIGame.h"
 #include "GUI/UI/UISaveLoad.h"
 
 #include "Media/Audio/SoundList.h"
@@ -26,6 +31,10 @@
 
 static AccessibleVector<std::string> soundNames(const TestMultiTape<SoundId> &soundsTape) {
     return soundsTape.flatten().map([](SoundId id) { return pSoundList->soundInfo(id)->name; });
+}
+
+static std::string portraitName(int face) {
+    return fmt::format("{}01", pPlayerPortraitsNames[face]);
 }
 
 // 2500
@@ -643,6 +652,127 @@ GAME_TEST(Issues, Issue2776) {
     EXPECT_EQ(mpsTape.back(), tape(0, 0, 0, 18)); // Dying zeroes SP, only the unconscious sorcerer keeps it.
 }
 
+GAME_TEST(Issues, Issue2777a) {
+    // A Lich healed at an evil temple was turned into a Zombie.
+    for (Class classType : {CLASS_WIZARD, CLASS_LICH}) {
+        SCOPED_TRACE(fmt::format("class={}", std::to_underlying(classType)));
+        test.prepareForNextTest();
+        game.startNewGame();
+
+        Character &target = pParty->pCharacters[0];
+        setEvtVariable(target, VAR_Class, std::to_underlying(classType));
+        target.SetCondition(CONDITION_DEAD, 0);
+        pParty->SetGold(100000);
+        int zombieFace = target.IsMale() ? 23 : 24;
+
+        auto conditionTape = charTapes.condition(0);
+        auto faceTape = charTapes.face(0);
+        auto hpTape = charTapes.hp(0);
+        auto houseTape = tapes.house();
+        test.startTaping();
+        game.teleportTo(MAP_MOUNT_NIGHON, Vec3f(5894, -11456, 576), 0); // In front of Offerings and Blessings.
+        game.tick(2);
+        game.pressAndReleaseKey(PlatformKey::KEY_SPACE);
+        game.tick(2);
+        game.pressGuiButton("Game_Character1");
+        game.tick();
+        game.pressGuiButton("HouseDialogue_Option0"); // Heal.
+        game.tick(2);
+
+        EXPECT_EQ(houseTape.back(), HOUSE_TEMPLE_MOUNT_NIGHON);
+        EXPECT_EQ(hpTape, tape(0, target.GetMaxHealth()));
+        if (classType == CLASS_LICH) {
+            EXPECT_EQ(conditionTape, tape(CONDITION_DEAD, CONDITION_GOOD));
+            EXPECT_EQ(faceTape.size(), 1);
+        } else {
+            EXPECT_EQ(conditionTape, tape(CONDITION_DEAD, CONDITION_ZOMBIE));
+            EXPECT_EQ(faceTape.back(), zombieFace);
+        }
+        EXPECT_EQ(game_ui_player_faces[0][0]->name(), portraitName(target.uCurrentFace));
+    }
+}
+
+GAME_TEST(Issues, Issue2777b) {
+    // Reanimate forced the Zombie condition and portrait onto a dead Lich.
+    for (Class classType : {CLASS_WIZARD, CLASS_LICH}) {
+        SCOPED_TRACE(fmt::format("class={}", std::to_underlying(classType)));
+        test.prepareForNextTest();
+        game.startNewGame();
+
+        Character &target = pParty->pCharacters[0];
+        setEvtVariable(target, VAR_Class, std::to_underlying(classType));
+        target.SetCondition(CONDITION_UNCONSCIOUS, 0);
+        target.SetCondition(CONDITION_DEAD, 0);
+        int zombieFace = target.IsMale() ? 23 : 24;
+
+        Character &caster = pParty->pCharacters[3];
+        caster.setSkillValue(SKILL_DARK, CombinedSkillValue(10, MASTERY_NOVICE));
+        caster.bHaveSpell[SPELL_DARK_REANIMATE] = true;
+        caster.mana = 1000;
+
+        auto conditionTape = charTapes.condition(0);
+        auto faceTape = charTapes.face(0);
+        auto hpTape = charTapes.hp(0);
+        test.startTaping();
+        game.castSpell(3, SPELL_DARK_REANIMATE);
+        game.tick();
+        game.pressAndReleaseKey(PlatformKey::KEY_DIGIT_1);
+        game.tick(2);
+
+        if (classType == CLASS_LICH) {
+            EXPECT_EQ(conditionTape, tape(CONDITION_DEAD, CONDITION_GOOD));
+            EXPECT_EQ(faceTape.size(), 1);
+            EXPECT_EQ(hpTape, tape(0, target.GetMaxHealth() / 2));
+        } else {
+            EXPECT_EQ(conditionTape, tape(CONDITION_DEAD, CONDITION_ZOMBIE));
+            EXPECT_EQ(faceTape.back(), zombieFace);
+            EXPECT_EQ(hpTape, tape(0, target.GetMaxHealth()));
+        }
+        EXPECT_EQ(game_ui_player_faces[0][0]->name(), portraitName(target.uCurrentFace));
+    }
+}
+
+GAME_TEST(Issues, Issue2777c) {
+    // Promoting a Zombie Wizard to Lich kept the Zombie condition and lost the pre-zombie portrait.
+    game.startNewGame();
+
+    Character &target = pParty->pCharacters[0];
+    setEvtVariable(target, VAR_Class, std::to_underlying(CLASS_WIZARD));
+    target.giveAward(AWARD_PROMOTION_WIZARD);
+    pParty->_questBits[QBIT_DARK_PATH] = true;
+    for (Character &character : pParty->pCharacters)
+        character.inventory.add(Item(ITEM_QUEST_LICH_JAR_EMPTY)); // MM7's promotion script refuses unless every party member carries a jar.
+    int originalFace = target.uCurrentFace;
+    int originalVoice = target.uVoiceID;
+    int zombieFace = target.IsMale() ? 23 : 24;
+    int lichFace = target.IsMale() ? 20 : 21;
+    target.SetCondition(CONDITION_ZOMBIE, 0);
+
+    auto conditionTape = charTapes.condition(0);
+    auto faceTape = charTapes.face(0);
+    auto classTape = charTapes.clazz(0);
+    test.startTaping();
+    game.teleportTo(MAP_PIT, Vec3f(3398, -7952, 59), 0); // In front of Halfgild Wynac's house.
+    game.tick(2);
+    game.pressAndReleaseKey(PlatformKey::KEY_SPACE);
+    game.tick(2);
+    game.pressGuiButton("Game_Character1");
+    game.tick();
+    game.pressGuiButton("House_Npc0"); // Halfgild Wynac, who promotes Wizards to Liches.
+    game.tick();
+    game.pressGuiButton("HouseNpcDialogue_Option0"); // Halfgild's only topic, where he offers the promotion.
+    game.tick(2);
+    game.pressGuiButton("HouseNpcDialogue_Option0"); // And then carries it out.
+    game.tick(2);
+
+    EXPECT_EQ(classTape, tape(CLASS_WIZARD, CLASS_LICH));
+    EXPECT_EQ(conditionTape, tape(CONDITION_ZOMBIE, CONDITION_GOOD));
+    EXPECT_EQ(faceTape, tape(zombieFace, lichFace));
+    EXPECT_EQ(target.uPrevFace, originalFace);
+    EXPECT_EQ(target.uPrevVoiceID, originalVoice);
+    EXPECT_EQ(game_ui_player_faces[0][0]->name(), portraitName(lichFace));
+}
+
 GAME_TEST(Issues, Issue2784a) {
     // Acid Burst impacts were silent.
     auto soundsTape = tapes.sounds();
@@ -695,6 +825,34 @@ GAME_TEST(Issues, Issue2784d) {
     game.tick();
     EXPECT_EQ(houseTape.back(), HOUSE_MAGIC_SHOP_TULAREAN_FOREST);
     EXPECT_EQ(soundNames(soundsTape).count("Elf Magic Shop 01"), 1);
+}
+
+GAME_TEST(Issues, Issue2789) {
+    // Quickloading while an enchantment spell waited for its target item crashed on the next click on an item.
+    test.prepareForNextTest(10, RANDOM_ENGINE_SEQUENTIAL);
+    engine->config->debug.AllMagic.setValue(true);
+    game.startNewGame();
+    game.tick(2);
+    pParty->pCharacters[0].setSkillValue(SKILL_SWORD, CombinedSkillValue::novice());
+    pParty->pCharacters[0].inventory.equip(ITEM_SLOT_MAIN_HAND, Item(ITEM_BROADSWORD));
+    game.pressAndReleaseKey(PlatformKey::KEY_F5); // Quicksave.
+    game.tick(2);
+
+    game.castSpell(0, SPELL_FIRE_FIRE_AURA); // Opens the enchantment targeting inventory.
+    game.tick();
+    ASSERT_TRUE(IsEnchantingInProgress);
+
+    game.pressAndReleaseKey(PlatformKey::KEY_F9); // Quickload.
+    game.skipLoadingScreen();
+    game.tick(2);
+    EXPECT_FALSE(IsEnchantingInProgress);
+    EXPECT_EQ(enchantingActiveCharacter, -1);
+
+    game.pressAndReleaseKey(PlatformKey::KEY_I);
+    game.tick(2);
+    game.pressAndReleaseButton(BUTTON_LEFT, 521, 95); // The sword on the paperdoll.
+    game.tick(2);
+    EXPECT_EQ(pParty->pPickedItem.itemId, ITEM_BROADSWORD);
 }
 
 GAME_TEST(Issues, Issue2792) {
@@ -759,7 +917,7 @@ GAME_TEST(Issues, Issue2834) {
 
     game.pressGuiButton("Game_Hireling2"); // Lady Margaret is the first hireling.
     game.tick(2);
-    game.pressGuiButton("Dialogue_Option1"); // Swap the heads.
+    game.pressGuiButton("NpcDialogue_Option1"); // Swap the heads.
     game.tick(2);
     test.stopTaping();
 

@@ -15,58 +15,58 @@
 
 GUIWindow_Book::~GUIWindow_Book() {
     if (ui_book_map_frame) {
-        ui_book_map_frame->release();
+        assets->releaseImage(ui_book_map_frame);
     }
     if (ui_book_quest_div_bar) {
-        ui_book_quest_div_bar->release();
+        assets->releaseImage(ui_book_quest_div_bar);
     }
     if (ui_book_button8_off) {
-        ui_book_button8_off->release();
+        assets->releaseImage(ui_book_button8_off);
     }
     if (ui_book_button8_on) {
-        ui_book_button8_on->release();
+        assets->releaseImage(ui_book_button8_on);
     }
     if (ui_book_button7_off) {
-        ui_book_button7_off->release();
+        assets->releaseImage(ui_book_button7_off);
     }
     if (ui_book_button7_on) {
-        ui_book_button7_on->release();
+        assets->releaseImage(ui_book_button7_on);
     }
     if (ui_book_button6_off) {
-        ui_book_button6_off->release();
+        assets->releaseImage(ui_book_button6_off);
     }
     if (ui_book_button6_on) {
-        ui_book_button6_on->release();
+        assets->releaseImage(ui_book_button6_on);
     }
     if (ui_book_button5_off) {
-        ui_book_button5_off->release();
+        assets->releaseImage(ui_book_button5_off);
     }
     if (ui_book_button5_on) {
-        ui_book_button5_on->release();
+        assets->releaseImage(ui_book_button5_on);
     }
     if (ui_book_button4_off) {
-        ui_book_button4_off->release();
+        assets->releaseImage(ui_book_button4_off);
     }
     if (ui_book_button4_on) {
-        ui_book_button4_on->release();
+        assets->releaseImage(ui_book_button4_on);
     }
     if (ui_book_button3_off) {
-        ui_book_button3_off->release();
+        assets->releaseImage(ui_book_button3_off);
     }
     if (ui_book_button3_on) {
-        ui_book_button3_on->release();
+        assets->releaseImage(ui_book_button3_on);
     }
     if (ui_book_button2_off) {
-        ui_book_button2_off->release();
+        assets->releaseImage(ui_book_button2_off);
     }
     if (ui_book_button2_on) {
-        ui_book_button2_on->release();
+        assets->releaseImage(ui_book_button2_on);
     }
     if (ui_book_button1_off) {
-        ui_book_button1_off->release();
+        assets->releaseImage(ui_book_button1_off);
     }
     if (ui_book_button1_on) {
-        ui_book_button1_on->release();
+        assets->releaseImage(ui_book_button1_on);
     }
 
     pAudioPlayer->playUISound(SOUND_closebook);
@@ -74,7 +74,7 @@ GUIWindow_Book::~GUIWindow_Book() {
     pChildBooksOverlay = nullptr;
 }
 
-GUIWindow_Book::GUIWindow_Book() : GUIWindow(WINDOW_Book, {0, 0}, render->GetRenderDimensions()) {
+GUIWindow_Book::GUIWindow_Book() : GUIWindow(WINDOW_BOOK, {0, 0}, render->GetRenderDimensions()) {
     initializeFonts();
     CreateButton({475, 445}, {158, 34}, BUTTON_TYPE_NORMAL, 0, UIMSG_Escape, 0, INPUT_ACTION_INVALID, localization->str(LSTR_EXIT_DIALOGUE));
     current_screen_type = SCREEN_BOOKS;
@@ -102,7 +102,7 @@ void GUIWindow_Book::bookButtonClicked(BookButtonAction action) {
 }
 
 GUIWindow_BooksButtonOverlay::GUIWindow_BooksButtonOverlay(Pointi position, Sizei dimensions, GUIButton *button, std::string_view hint) :
-    GUIWindow(WINDOW_BooksButtonOverlay, position, dimensions, hint),
+    GUIWindow(WINDOW_BOOKS_BUTTON_OVERLAY, position, dimensions, hint),
     _button(button)
 {}
 

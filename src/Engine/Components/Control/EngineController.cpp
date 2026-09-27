@@ -168,10 +168,8 @@ void EngineController::pressAndReleaseButton(PlatformMouseButton button) {
     pressAndReleaseButton(button, mouse->position());
 }
 
-void EngineController::pressGuiButton(std::string_view buttonId) {
-    GUIButton *button = existingButton(buttonId);
-    Pointi center = button->rect.center();
-    pressAndReleaseButton(BUTTON_LEFT, center.x, center.y);
+void EngineController::pressGuiButton(std::string_view buttonId, PlatformMouseButton button) {
+    pressAndReleaseButton(button, existingButton(buttonId)->rect.center());
 }
 
 void EngineController::doubleClickGuiButton(std::string_view buttonId) {
@@ -198,7 +196,7 @@ void EngineController::goToInventory(int characterIndex) {
     pressAndReleaseKey(PlatformKey::KEY_I);
     tick(2); // Need two ticks for inventory to be shown.
 
-    if (current_screen_type != SCREEN_CHARACTERS || current_character_screen_window != WINDOW_CharacterWindow_Inventory)
+    if (current_screen_type != SCREEN_CHARACTERS || current_character_screen_window != WINDOW_CHARACTER_INVENTORY)
         throw Exception("Couldn't to go to inventory");
 }
 
@@ -241,7 +239,7 @@ void EngineController::skipLoadingScreen() {
     ThrowingTicker ticker2(this, "Couldn't skip a loading screen");
     while (pGameLoadingUI_ProgressBar->IsActive())
         ticker2.tick();
-    while (dword_6BE364_game_settings_1 & GAME_SETTINGS_0080_SKIP_USER_INPUT_THIS_FRAME)
+    while (engineFlags & ENGINE_SKIP_NEXT_USER_INPUT)
         ticker2.tick();
 }
 
@@ -311,9 +309,6 @@ Actor *EngineController::spawnMonster(Vec3f position, MonsterId id, SpawnFlags f
     actor->monsterId = id;
     actor->radius = pMonsterList->monsters[id].monsterRadius;
     actor->height = pMonsterList->monsters[id].monsterHeight;
-    actor->monsterInfo.goldDiceRolls = 0;
-    actor->monsterInfo.treasureType = RANDOM_ITEM_ANY;
-    actor->monsterInfo.exp = 0;
     actor->moveSpeed = pMonsterList->monsters[id].movementSpeed;
     actor->initialPosition = position;
     actor->pos = actor->initialPosition;
@@ -355,7 +350,7 @@ Actor *EngineController::spawnMonster(Vec3f position, MonsterId id, SpawnFlags f
 void EngineController::teleportTo(MapId map, Vec3f position, int viewYaw, int viewPitch) {
     if (engine->_currentLoadedMapId != map) {
         engine->_pendingTransition = MapDestination(map, PartyPlacement(position, viewYaw * 512 / 90, viewPitch * 512 / 90, 0));
-        dword_6BE364_game_settings_1 |= GAME_SETTINGS_SKIP_WORLD_UPDATE;
+        engineFlags |= ENGINE_SKIP_NEXT_WORLD_UPDATE;
         uGameState = GAME_STATE_CHANGE_LOCATION;
         onMapLeave();
         tick();

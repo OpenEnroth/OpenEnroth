@@ -9,6 +9,7 @@
 #include <utility>
 
 #include "Engine/Engine.h"
+#include "Engine/EngineGlobals.h"
 #include "Engine/AssetsManager.h"
 #include "Engine/Evt/Processor.h"
 #include "Engine/Graphics/BspRenderer.h"
@@ -27,7 +28,7 @@
 #include "Engine/Graphics/Renderer/Renderer.h"
 #include "Engine/Random/Random.h"
 #include "Engine/Objects/Actor.h"
-#include "Engine/Objects/ObjectList.h"
+#include "Engine/Tables/ObjectTable.h"
 #include "Engine/Objects/SpriteObject.h"
 #include "Engine/Tables/ItemTable.h"
 #include "Engine/Party.h"
@@ -36,15 +37,12 @@
 #include "Engine/SpellFxRenderer.h"
 #include "Engine/Timer.h"
 #include "Engine/TurnEngine/TurnEngine.h"
-#include "Engine/Localization.h"
 #include "Engine/MapEnumFunctions.h"
 #include "Engine/Tables/MapTable.h"
 #include "Engine/Resources/LOD.h"
 #include "Engine/SaveLoad.h"
 
 #include "GUI/GUIProgressBar.h"
-#include "GUI/GUIWindow.h"
-#include "GUI/UI/UIStatusBar.h"
 
 #include "Media/Audio/AudioPlayer.h"
 
@@ -294,7 +292,7 @@ void IndoorLocation::Load(std::string_view filename, int num_days_played, int re
             if (delta.header.info.lastRespawnDay == 0)
                 respawnInitial = true;
 
-            if (dword_6BE364_game_settings_1 & GAME_SETTINGS_LOADING_SAVEGAME_SKIP_RESPAWN)
+            if (engineFlags & ENGINE_LOADING_SAVEGAME)
                 respawn_interval_days = 0x1BAF800;
 
             if (!respawnInitial && num_days_played - delta.header.info.lastRespawnDay >= respawn_interval_days && pMapTable->GetMapInfo(filename) != MAP_CASTLE_HARMONDALE)
@@ -901,11 +899,11 @@ void loadAndPrepareBLV(MapId mapid, bool bLoading) {
 
     pStationaryLightsStack->uNumLightsActive = 0;
     pIndoor->Load(mapFilename, pParty->GetPlayingTime().toDays() + 1, respawn_interval, &indoor_was_respawned);
-    if (!(dword_6BE364_game_settings_1 & GAME_SETTINGS_LOADING_SAVEGAME_SKIP_RESPAWN)) {
+    if (!(engineFlags & ENGINE_LOADING_SAVEGAME)) {
         Actor::InitializeActors();
         SpriteObject::InitializeSpriteObjects();
     }
-    dword_6BE364_game_settings_1 &= ~GAME_SETTINGS_LOADING_SAVEGAME_SKIP_RESPAWN;
+    engineFlags &= ~ENGINE_LOADING_SAVEGAME;
 
     if (indoor_was_respawned) {
         for (unsigned i = 0; i < pIndoor->pSpawnPoints.size(); ++i) {
@@ -993,10 +991,6 @@ void loadAndPrepareBLV(MapId mapid, bool bLoading) {
     }
 
     pGameLoadingUI_ProgressBar->Progress();
-
-    Actor this_;
-    this_.monsterInfo.id = MONSTER_ELEMENTAL_LIGHT_C;
-    this_.PrepareSprites(0); // TODO(captainurist): can drop this? Was loaded because light elementals can be summoned.
 
     // Party to start position
     if (!bLoading) {
@@ -1127,20 +1121,7 @@ void IndoorLocation::PrepareDecorationsRenderList_BLV(unsigned int uDecorationID
     const DecorationData *decoration = pDecorationTable->decoration(pLevelDecorations[uDecorationID].uDecorationDescID);
 
     if (decoration->uFlags & DECORATION_DATA_EMITS_FIRE) {
-        // TODO(pskelton): common emit fire code
-        Particle_sw particle; // Fire, like at the Pit's tavern.
-        particle.type = ParticleType_Bitmap | ParticleType_Rotating | ParticleType_Ascending;
-        particle.uDiffuse = colorTable.OrangeyRed;
-        particle.x = (double)pLevelDecorations[uDecorationID].vPosition.x;
-        particle.y = (double)pLevelDecorations[uDecorationID].vPosition.y;
-        particle.z = (double)pLevelDecorations[uDecorationID].vPosition.z;
-        particle.shiftX = 0.0;
-        particle.shiftY = 0.0;
-        particle.shiftZ = 0.0;
-        particle.particle_size = 1.0;
-        particle.timeToLive = Duration::randomRealtimeSeconds(vrng, 1, 2); // was either 1 or 2 secs, we made it into [1, 2).
-        particle.texture = spell_fx_renderer->effpar01;
-        particle_engine->AddParticle(&particle);
+        spell_fx_renderer->addFireParticle(pLevelDecorations[uDecorationID].vPosition); // Fire, like at the Pit's tavern.
         return;
     }
 
@@ -1327,98 +1308,6 @@ bool Check_LOS_Obscurred_Outdoors_Bmodels(const Vec3f &target, const Vec3f &from
     return false;
 }
 
-//----- (0046A334) --------------------------------------------------------
-// TODO(Nik-RE-dev): does not belong here, it's common function for interaction for both indoor/outdoor
-// TODO(Nik-RE-dev): get rid of external function declaration inside
-void DoInteractionWithTopmostZObject(Pid pid) {
-    auto id = pid.id();
-    auto type = pid.type();
-
-    // was SCREEN_BRANCHLESS_NPC_DIALOG
-    if (current_screen_type != SCREEN_GAME) {
-        return;
-    }
-
-    switch (type) {
-        case OBJECT_Sprite: {  // take the item
-            if (pSpriteObjects[id].IsUnpickable() || id >= pSpriteObjects.size() || !pSpriteObjects[id].uObjectDescID) {
-                return;
-            }
-
-            extern void ItemInteraction(int item_id);
-            ItemInteraction(id);
-            break;
-        }
-
-        case OBJECT_Actor:
-            if (pActors[id].aiState == Dying || pActors[id].aiState == Summoned)
-                return;
-            if (pActors[id].aiState == Dead) {
-                pActors[id].LootActor();
-            } else {
-                extern bool CanInteractWithActor(int id);
-                extern void InteractWithActor(int id);
-                if (CanInteractWithActor(id)) {
-                    if (pParty->hasActiveCharacter()) {
-                        InteractWithActor(id);
-                    } else {
-                        engine->_statusBar->setEvent(LSTR_NOBODY_IS_IN_CONDITION);
-                    }
-                }
-            }
-            break;
-
-        case OBJECT_Decoration:
-            extern void DecorationInteraction(int id, Pid pid);
-            if (pParty->hasActiveCharacter()) {
-                DecorationInteraction(id, pid);
-            } else {
-                engine->_statusBar->setEvent(LSTR_NOBODY_IS_IN_CONDITION);
-            }
-            break;
-
-        case OBJECT_Face:
-            if (uCurrentlyLoadedLevelType == LEVEL_OUTDOOR) {
-                int bmodel_id = id >> 6;
-                int face_id = id & 0x3F;
-
-                if (bmodel_id >= pOutdoor->pBModels.size()) {
-                    return;
-                }
-
-                BLVFace &model = pOutdoor->pBModels[bmodel_id].faces[face_id];
-
-                if (model.attributes & FACE_EVENT_IS_HINT || model.eventId == 0) {
-                    return;
-                }
-
-                if (pParty->hasActiveCharacter()) {
-                    eventProcessor(pOutdoor->pBModels[bmodel_id].faces[face_id].eventId, pid, 1);
-                } else {
-                    engine->_statusBar->setEvent(LSTR_NOBODY_IS_IN_CONDITION);
-                }
-            } else {
-                if (!(pIndoor->faces[id].attributes & FACE_CLICKABLE)) {
-                    engine->_statusBar->nothingHere();
-                    return;
-                }
-                if (pIndoor->faces[id].attributes & FACE_EVENT_IS_HINT || !pIndoor->faces[id].eventId) {
-                    return;
-                }
-
-                if (pParty->hasActiveCharacter()) {
-                    eventProcessor((int16_t)pIndoor->faces[id].eventId, pid, 1);
-                } else {
-                    engine->_statusBar->setEvent(LSTR_NOBODY_IS_IN_CONDITION);
-                }
-            }
-            break;
-
-        default:
-            MM_WARNING("Warning: Invalid ID reached!");
-            break;
-    }
-}
 //----- (0046BDF1) --------------------------------------------------------
 void BLV_UpdateUserInputAndOther() {
     BLV_ProcessPartyActions();
@@ -1814,7 +1703,7 @@ int DropTreasureAt(ItemTreasureLevel trs_level, RandomItemType trs_type, Vec3f p
     SpriteObject a1;
     pItemTable->generateItem(trs_level, trs_type, &a1.containing_item);
     a1.spriteId = pItemTable->items[a1.containing_item.itemId].spriteId;
-    a1.uObjectDescID = pObjectList->ObjectIDByItemID(a1.spriteId);
+    a1.uObjectDescID = pObjectTable->ObjectIDByItemID(a1.spriteId);
     a1.vPosition = pos;
     a1.uFacing = facing;
     a1.uAttributes = 0;
@@ -1847,12 +1736,12 @@ void SpawnRandomTreasure(MapData *mapData, SpawnPoint *spawn) {
 
         spawnedObject.containing_item.generateGold(spawn->treasureLevel);
         spawnedObject.spriteId = pItemTable->items[spawnedObject.containing_item.itemId].spriteId;
-        spawnedObject.uObjectDescID = pObjectList->ObjectIDByItemID(spawnedObject.spriteId);
+        spawnedObject.uObjectDescID = pObjectTable->ObjectIDByItemID(spawnedObject.spriteId);
     } else {
         if (!spawnedObject.containing_item.GenerateArtifact())
             return;
         spawnedObject.spriteId = pItemTable->items[spawnedObject.containing_item.itemId].spriteId;
-        spawnedObject.uObjectDescID = pObjectList->ObjectIDByItemID(spawnedObject.spriteId);
+        spawnedObject.uObjectDescID = pObjectTable->ObjectIDByItemID(spawnedObject.spriteId);
         spawnedObject.containing_item.Reset();  // TODO(captainurist): this needs checking
     }
 

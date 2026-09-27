@@ -2,6 +2,7 @@
 
 #include "Engine/AssetsManager.h"
 #include "Engine/Engine.h"
+#include "Engine/EngineGlobals.h"
 #include "Engine/Localization.h"
 #include "Engine/mm7_data.h"
 #include "Engine/Graphics/Renderer/Renderer.h"
@@ -9,9 +10,9 @@
 #include "GUI/GUIWindow.h"
 
 FsmAction LoadStep2State::enter() {
-    // TODO(Gerark) This specific value GAME_SETTINGS_4000 is checked only in UIPartyCreation.
+    // TODO(Gerark) This specific value ENGINE_ESCAPE_ENABLED is checked only in UIPartyCreation.
     // So, this assignment might be removed after the Party Creation becomes part of the FSM
-    dword_6BE364_game_settings_1 |= GAME_SETTINGS_4000;
+    engineFlags |= ENGINE_ESCAPE_ENABLED;
 
     _fullscreenTexture = assets->getImage_PCXFromIconsLOD("mm6title.pcx");
     _isFirstPass = true;
@@ -37,7 +38,7 @@ FsmAction LoadStep2State::update() {
 }
 
 void LoadStep2State::exit() {
-    _fullscreenTexture->release();
+    assets->releaseImage(_fullscreenTexture);
     _fullscreenTexture = nullptr;
     _isFirstPass = false;
 }

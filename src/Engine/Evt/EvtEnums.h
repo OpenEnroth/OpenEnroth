@@ -83,9 +83,9 @@ enum class EvtVariable {
     VAR_Sex = 0x1,
     VAR_Class = 0x2,
     VAR_CurrentHP = 0x3,
-    VAR_MaxHP = 0x4,
+    VAR_MaxHP = 0x4, // TODO(captainurist): rename to VAR_FullHP, compare checks that HP is full and set heals to full.
     VAR_CurrentSP = 0x5,
-    VAR_MaxSP = 0x6,
+    VAR_MaxSP = 0x6, // TODO(captainurist): rename to VAR_FullSP, compare checks that SP is full and set restores it.
     VAR_ActualAC = 0x7,
     VAR_ACModifier = 0x8,
     VAR_BaseLevel = 0x9,
@@ -234,6 +234,8 @@ enum class EvtVariable {
     VAR_UnknownTimeEvent19 = 0x112,
     VAR_ReputationInCurrentLocation = 0x113,
     VAR_History_0 = 0x114,
+    // TODO(captainurist): MM7's history.txt only has text for History_0..History_27, so History_28 reads past
+    //                     historyLines. No MM7 script uses History_18 or History_28.
     VAR_History_28 = 0x130,
     VAR_AlertStatus = 0x131,
     VAR_GoldInBank = 0x132,
@@ -246,6 +248,9 @@ enum class EvtVariable {
     VAR_ArenaWinsLord = 0x139,
     VAR_Invisible = 0x13A,
     VAR_ItemEquipped = 0x13B,
+
+    VAR_FIRST_SKILL = VAR_StaffSkill,
+    VAR_LAST_SKILL = VAR_LearningSkill,
 };
 using enum EvtVariable;
 

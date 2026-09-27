@@ -27,7 +27,6 @@
 #include "Engine/Tables/DecorationTable.h"
 #include "Engine/Graphics/Image.h"
 #include "Engine/EngineGlobals.h"
-#include "Engine/Random/Random.h"
 
 #include "Library/Logger/Logger.h"
 
@@ -235,20 +234,7 @@ void BaseRenderer::PrepareDecorationsRenderList_ODM() {
                     }
                 }
             } else {
-                // Emit fire particles.
-                Particle_sw local_0;
-                local_0.type = ParticleType_Bitmap | ParticleType_Rotating | ParticleType_Ascending;
-                local_0.uDiffuse = colorTable.OrangeyRed;
-                local_0.x = static_cast<float>(pLevelDecorations[i].vPosition.x);
-                local_0.y = static_cast<float>(pLevelDecorations[i].vPosition.y);
-                local_0.z = static_cast<float>(pLevelDecorations[i].vPosition.z);
-                local_0.shiftX = 0.0f;
-                local_0.shiftY = 0.0f;
-                local_0.shiftZ = 0.0f;
-                local_0.particle_size = 1.0f;
-                local_0.timeToLive = Duration::randomRealtimeSeconds(vrng, 1, 2); // was either 1 or 2 secs, we made it into [1, 2).
-                local_0.texture = spell_fx_renderer->effpar01;
-                particle_engine->AddParticle(&local_0);
+                spell_fx_renderer->addFireParticle(pLevelDecorations[i].vPosition);
             }
         }
     }

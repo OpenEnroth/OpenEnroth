@@ -52,13 +52,13 @@ static void calculateRequiredFood() {
         ++foodRequiredToRest;
     }
 
-    if (CheckHiredNPCSpeciality(Porter)) {
+    if (CheckHiredNPCSpeciality(NPC_PROFESSION_PORTER)) {
         --foodRequiredToRest;
     }
-    if (CheckHiredNPCSpeciality(QuarterMaster)) {
+    if (CheckHiredNPCSpeciality(NPC_PROFESSION_QUARTER_MASTER)) {
         foodRequiredToRest -= 2;
     }
-    if (CheckHiredNPCSpeciality(Gypsy)) {
+    if (CheckHiredNPCSpeciality(NPC_PROFESSION_GYPSY)) {
         --foodRequiredToRest;
     }
     if (foodRequiredToRest < 1) {
@@ -70,7 +70,7 @@ static void calculateRequiredFood() {
 }
 
 GUIWindow_Rest::GUIWindow_Rest()
-    : GUIWindow(WINDOW_Rest, {0, 0}, render->GetRenderDimensions()) {
+    : GUIWindow(WINDOW_REST, {0, 0}, render->GetRenderDimensions()) {
     prepareToLoadRestUI();
     calculateRequiredFood();
 
@@ -107,7 +107,7 @@ void GUIWindow_Rest::Update() {
         render->DrawQuad2D(rest_ui_restmain, {8, 8});
         render->DrawQuad2D(rest_ui_sky_frame_current, {16, 26});
         if (rest_ui_hourglass_frame_current) {
-            rest_ui_hourglass_frame_current->release();
+            assets->releaseImage(rest_ui_hourglass_frame_current);
             rest_ui_hourglass_frame_current = nullptr;
         }
 

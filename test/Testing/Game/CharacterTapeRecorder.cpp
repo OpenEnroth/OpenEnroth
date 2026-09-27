@@ -31,6 +31,14 @@ TestMultiTape<PortraitId> CharacterTapeRecorder::portraits() {
     return custom(std::bind(&Character::portrait, _1));
 }
 
+TestTape<int> CharacterTapeRecorder::face(int characterIndex) {
+    return custom(characterIndex, std::bind<int>(&Character::uCurrentFace, _1));
+}
+
+TestMultiTape<int> CharacterTapeRecorder::faces() {
+    return custom(std::bind<int>(&Character::uCurrentFace, _1));
+}
+
 TestTape<int> CharacterTapeRecorder::hp(int characterIndex) {
     return custom(characterIndex, std::bind(&Character::health, _1));
 }
@@ -109,6 +117,14 @@ TestTape<bool> CharacterTapeRecorder::hasBuff(int characterIndex, CharacterBuff 
 
 TestMultiTape<bool> CharacterTapeRecorder::haveBuffs(CharacterBuff buff) {
     return custom([=](const Character &character) { return character.pCharacterBuffs[buff].Active(); });
+}
+
+TestTape<bool> CharacterTapeRecorder::hasBeacon(int characterIndex, int slot) {
+    return custom(characterIndex, [=](const Character &character) { return character.vBeacons[slot].has_value(); });
+}
+
+TestMultiTape<bool> CharacterTapeRecorder::haveBeacons(int slot) {
+    return custom([=](const Character &character) { return character.vBeacons[slot].has_value(); });
 }
 
 TestTape<SpellId> CharacterTapeRecorder::quickSpell(int characterIndex) {

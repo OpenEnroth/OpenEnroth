@@ -1,6 +1,7 @@
 #pragma once
 
 #include <cstdint>
+#include <memory>
 #include <vector>
 #include <string>
 #include <utility>
@@ -41,21 +42,13 @@ enum class StealResult {
 using enum StealResult;
 
 struct LloydBeacon {
-    ~LloydBeacon() {
-        // if (image != nullptr) {
-        //    image->Release();
-        // }
-        // image release moved to install beacon to avoid de-refernce
-        image = nullptr;
-    }
-
     Time uBeaconTime = Time();
     Vec3f _partyPos;
     int16_t _partyViewYaw = 0;
     int16_t _partyViewPitch = 0;
     uint16_t unknown = 0;
     MapId mapId = MAP_INVALID;
-    GraphicsImage *image = nullptr;
+    std::shared_ptr<GraphicsImage> image; // TODO(captainurist): shouldn't be shared, it is only because createSaveData() copies the whole Party to serialize it. Redo serialization.
 };
 
 // HP/SP regeneration from items and spell
@@ -174,6 +167,7 @@ class Character {
     Race GetRace() const;
     std::string GetRaceName() const;
     Sex GetSexByVoice() const;
+    BodyType bodyType() const;
     void SetInitialStats();
     void SetSexByVoice();
     void ChangeClass(Class classType);
@@ -202,7 +196,25 @@ class Character {
     bool CanAct() const;
     bool CanSteal() const;
     bool CanEquip_RaceAndAlignmentCheck(ItemId uItemID) const;
+
+    // TODO(captainurist): make `blockable` a bool, which is what callers already pass as 0 and 1. The
+    // SetCond*WithBlockCheck wrappers below are only ever called with false.
+    /**
+     * Does nothing if the character already has the condition, or if `blockable` is set and Protection from Magic
+     * or a worn item wards it off. Setting Zombie swaps in the zombie face and voice, and a Lich must not get it.
+     *
+     * @param condition                 Condition to set.
+     * @param blockable                 Whether Protection from Magic and worn items can block the condition.
+     */
     void SetCondition(Condition condition, int blockable);
+
+    /**
+     * Clears a condition. For Zombie, also restores the character's original face and voice. Does nothing if the
+     * character doesn't have the condition.
+     *
+     * @param condition                 Condition to clear.
+     */
+    void ResetCondition(Condition condition);
 
     /**
      * @offset 0x49327B
@@ -298,7 +310,6 @@ class Character {
     static void _42ECB5_CharacterAttacksActor();
     static void _42FA66_do_explosive_impact(Vec3f pos, int a4, int16_t a5, int actchar);
     void cleanupBeacons();
-    void releaseBeacons();
     bool setBeacon(int index, Duration duration);
 
     // TODO(captainurist): check all usages, most should be using getActualSkillValue.
@@ -388,7 +399,7 @@ class Character {
 
 void DamageCharacterFromMonster(Pid uObjID, ActorAbility dmgSource, signed int a4);
 bool IsDwarfPresentInParty(bool b);
-bool ShouldLoadTexturesForRaceAndGender(int bodyType); // TODO(captainurist): #enum
+bool isBodyTypeInParty(BodyType bodyType);
 int CharacterCreation_GetUnspentAttributePointCount();
 
 /**

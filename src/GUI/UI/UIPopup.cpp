@@ -14,7 +14,7 @@
 #include "Engine/Localization.h"
 #include "Engine/Objects/Actor.h"
 #include "Engine/Objects/Chest.h"
-#include "Engine/Objects/ObjectList.h"
+#include "Engine/Tables/ObjectTable.h"
 #include "Engine/Objects/SpriteObject.h"
 #include "Engine/Objects/NPC.h"
 #include "Engine/Objects/CharacterEnumFunctions.h"
@@ -407,7 +407,7 @@ void GameUI_DrawItemInfo(Item *inspect_item) {
         render->ResetUIClipRect();
 
         if (inspect_item_image) {
-            inspect_item_image->release();
+            assets->releaseImage(inspect_item_image);
             inspect_item_image = nullptr;
         }
 
@@ -433,7 +433,7 @@ void GameUI_DrawItemInfo(Item *inspect_item) {
         render->ResetUIClipRect();
 
         if (inspect_item_image) {
-            inspect_item_image->release();
+            assets->releaseImage(inspect_item_image);
             inspect_item_image = nullptr;
         }
         return;
@@ -649,6 +649,7 @@ std::pair<int, int> MonsterPopup_Draw(unsigned int uActorID, Recti* pWindow) {
         , Y_EFFECT_LIST = Y_POS_DOLL + SIZE_DOLL            // Lower edge doll frame - add an empty line!
         , RIGHT_BOTTOM_MARGIN = 16;                         // Added to measured bottom and right edge of rendered text
 
+    // TODO(captainurist): function-local static, the doll's animation state should live in the popup window.
     static Actor pMonsterInfoUI_Doll;
     MonsterInfo &monsterInfo = pActors[uActorID].monsterInfo;
 
@@ -1720,7 +1721,7 @@ void GameUI_DrawNPCPopup(int _this) {  // PopupWindowForBenefitAndJoinText
                 // TODO(captainurist): we need a saner check for baby dragon, comparing pointers here is questionable.
                 if (pNPC == &pNPCStats->pNPCData[57]) {
                     pText = pNPCTopics[512].pText; // Baby dragon text.
-                } else if (pNPC->profession != NoProfession) {
+                } else if (pNPC->profession != NPC_PROFESSION_NONE) {
                     pText = pNPCStats->pProfessions[pNPC->profession].pBenefits;
                     if (pText.empty())
                         pText = pNPCStats->pProfessions[pNPC->profession].pJoinText;
@@ -1820,7 +1821,7 @@ void UI_OnMouseRightClick(Pointi mousePos) {
                     MonsterPopup_Draw(pointedObject.id(), &popup_window);
                 }
                 if (pointedObject.type() == OBJECT_Sprite) {
-                    if (!(pObjectList->pObjects[pSpriteObjects[pointedObject.id()].uObjectDescID].uFlags & OBJECT_DESC_UNPICKABLE)) {
+                    if (!(pObjectTable->pObjects[pSpriteObjects[pointedObject.id()].uObjectDescID].uFlags & OBJECT_DESC_UNPICKABLE)) {
                         GameUI_DrawItemInfo(&pSpriteObjects[pointedObject.id()].containing_item);
                     }
                 }
@@ -1828,7 +1829,7 @@ void UI_OnMouseRightClick(Pointi mousePos) {
             break;
         }
         case SCREEN_BOOKS: {
-            if (pGUIWindow_CurrentMenu->eWindowType != WINDOW_MapsBook || !pViewport.contains(mousePos)) {
+            if (pGUIWindow_CurrentMenu->eWindowType != WINDOW_MAPS_BOOK || !pViewport.contains(mousePos)) {
                 break;
             }
 
@@ -1847,16 +1848,16 @@ void UI_OnMouseRightClick(Pointi mousePos) {
             else if ((signed int)pY >= 345)
                 break;
             else if (current_character_screen_window ==
-                     WINDOW_CharacterWindow_Stats)  // 2DEvent -
+                     WINDOW_CHARACTER_STATS)  // 2DEvent -
                                                     // CharacerScreenStats
                 CharacterUI_StatsTab_ShowHint();
             else if (current_character_screen_window ==
-                     WINDOW_CharacterWindow_Skills)  // 2DEvent -
+                     WINDOW_CHARACTER_SKILLS)  // 2DEvent -
                                                      // CharacerScreenSkills
                 CharacterUI_SkillsTab_ShowHint();
             else if (
                 current_character_screen_window ==
-                WINDOW_CharacterWindow_Inventory)  // 2DEvent -
+                WINDOW_CHARACTER_INVENTORY)  // 2DEvent -
                                                    // CharacerScreenInventory
                 Inventory_ItemPopupAndAlchemy();
             break;
@@ -2046,9 +2047,7 @@ void Inventory_ItemPopupAndAlchemy() {
 
     // check character condition
     if (!pParty->activeCharacter().CanAct()) {
-        static std::string hint_reference;
-        hint_reference = localization->format(LSTR_S_IS_IN_NO_CONDITION_TO_S, pParty->activeCharacter().name,
-                                                    localization->str(LSTR_IDENTIFY_ITEMS));
+        std::string hint_reference = localization->format(LSTR_S_IS_IN_NO_CONDITION_TO_S, pParty->activeCharacter().name, localization->str(LSTR_IDENTIFY_ITEMS));
 
         Recti frameRect(0, 40, 384, 180);
         if (pX <= 320) {

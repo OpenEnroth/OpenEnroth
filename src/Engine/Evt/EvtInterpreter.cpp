@@ -6,6 +6,7 @@
 #include <tl/generator.hpp>
 
 #include "Engine/Evt/EvtInterpreter.h"
+#include "Engine/Evt/EvtEnumFunctions.h"
 #include "Engine/Evt/EvtInstruction.h"
 #include "Engine/Evt/EvtVariables.h"
 #include "Engine/Evt/Processor.h"
@@ -37,6 +38,8 @@
 #include "GUI/UI/UIBranchlessDialogue.h"
 #include "GUI/UI/UITransition.h"
 #include "GUI/UI/UIStatusBar.h"
+
+#include "Library/Logger/Logger.h"
 
 /**
  * @offset 0x4465DF
@@ -118,6 +121,21 @@ static tl::generator<Character &> iterateCharacters(EvtTargetCharacter who, Rand
 }
 
 /**
+ * @param who                           Characters that a variable command targets.
+ * @param variable                      Variable of the command.
+ * @param rng                           Random engine for `CHOOSE_RANDOM`.
+ * @return                              Characters to run the command for. For a party variable this is just the first
+ *                                      targeted character, since the whole party shares one value.
+ */
+static tl::generator<Character &> iterateCharacters(EvtTargetCharacter who, EvtVariable variable, RandomEngine *rng) {
+    for (Character &character : iterateCharacters(who, rng)) {
+        co_yield character;
+        if (isPartyVariable(variable))
+            co_return;
+    }
+}
+
+/**
  * @param ir                            MoveToMap instruction.
  * @return                              Where it sends the party. An all-zero position means the script isn't placing
  *                                      the party itself - on the current map it stays put, which is how the MM6
@@ -160,6 +178,8 @@ int EvtInterpreter::executeOneEvent(int step, bool isNpc) {
                 return -1;
             case EVENT_OnCanShowDialogItemCmp:
                 _readyToExit = true;
+                if (!validateVariableValue(ir))
+                    break;
                 for (Character &player : pParty->pCharacters) {
                     if (compareEvtVariable(player, ir.data.variable_descr.type, ir.data.variable_descr.value)) {
                         return ir.target_step;
@@ -319,7 +339,9 @@ int EvtInterpreter::executeOneEvent(int step, bool isNpc) {
             setDecorationSprite(ir.data.sprite_texture_descr.cog, ir.data.sprite_texture_descr.hide, ir.str);
             break;
         case EVENT_Compare:
-            for (Character &character : iterateCharacters(_who, grng))
+            if (!validateVariableValue(ir))
+                break;
+            for (Character &character : iterateCharacters(_who, ir.data.variable_descr.type, grng))
                 if (compareEvtVariable(character, ir.data.variable_descr.type, ir.data.variable_descr.value))
                     return ir.target_step;
             break;
@@ -327,16 +349,20 @@ int EvtInterpreter::executeOneEvent(int step, bool isNpc) {
             switchDoorAnimation(ir.data.door_descr.door_id, ir.data.door_descr.door_action);
             break;
         case EVENT_Add:
+            if (!validateVariableValue(ir))
+                break;
             // TODO(captainurist): move this workaround into patched event data, and add the OnMapReload step from
             //                     GrayFace's d27.evt that re-applies the empty cage sprite once the quest bit is set.
             //                     The sprite isn't saved, so after a reload the cage shows Roland until the next click.
             if (engine->_currentLoadedMapId == MAP_COLONY_ZOD && _eventId == 376 &&
                 ir.data.variable_descr.type == VAR_PlayerItemInHands && pParty->_questBits[QBIT_TALKED_TO_ROLAND])
                 break; // Roland's cage script adds the key on every click, it never checks the quest bit.
-            for (Character &character : iterateCharacters(_who, grng))
+            for (Character &character : iterateCharacters(_who, ir.data.variable_descr.type, grng))
                 addEvtVariable(character, ir.data.variable_descr.type, ir.data.variable_descr.value);
             break;
         case EVENT_Subtract:
+            if (!validateVariableValue(ir))
+                break;
             // We had a couple issues with quest items not being removed from inventory, and the reason was that the
             // character target wasn't properly set in the script. Thus, we don't even check `_who` here and just try
             // to take the item from all characters. See issues #1808 and #1912.
@@ -350,13 +376,15 @@ int EvtInterpreter::executeOneEvent(int step, bool isNpc) {
                     }
                 }
             } else {
-                for (Character &character : iterateCharacters(_who, grng))
+                for (Character &character : iterateCharacters(_who, ir.data.variable_descr.type, grng))
                     if (!subtractEvtVariable(character, ir.data.variable_descr.type, ir.data.variable_descr.value))
                         _cancelled = true;
             }
             break;
         case EVENT_Set:
-            for (Character &character : iterateCharacters(_who, grng))
+            if (!validateVariableValue(ir))
+                break;
+            for (Character &character : iterateCharacters(_who, ir.data.variable_descr.type, grng))
                 setEvtVariable(character, ir.data.variable_descr.type, ir.data.variable_descr.value);
             break;
         case EVENT_SummonMonsters:
@@ -671,4 +699,13 @@ void EvtInterpreter::prepare(const EvtProgram &eventMap, int eventId, Pid object
 
 bool EvtInterpreter::isValid() {
     return _events.size() > 0;
+}
+
+bool EvtInterpreter::validateVariableValue(const EvtInstruction &ir) const {
+    if (isEvtVariableValueValid(ir.opcode, ir.data.variable_descr.type, ir.data.variable_descr.value))
+        return true;
+
+    MM_ERROR("Skipping step {} of evt event {}, value {} is out of range for evt variable {}",
+             ir.step, _eventId, ir.data.variable_descr.value, std::to_underlying(ir.data.variable_descr.type));
+    return false;
 }

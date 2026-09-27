@@ -2,6 +2,7 @@
 
 #include "Engine/AssetsManager.h"
 #include "Engine/Engine.h"
+#include "Engine/EngineGlobals.h"
 #include "Engine/Graphics/Renderer/Renderer.h"
 #include "Engine/Localization.h"
 #include "Engine/Party.h"
@@ -93,7 +94,7 @@ GraphicsImage *ui_townportal_cheat_destination_icon = nullptr;
 
 GUIWindow_TownPortalBook::GUIWindow_TownPortalBook(Pid casterPid, SpellCastFlags castFlags)
         : _casterPid(casterPid), _castFlags(castFlags) {
-    this->eWindowType = WindowType::WINDOW_TownPortal;
+    this->eWindowType = WINDOW_TOWN_PORTAL;
 
     ui_book_townportal_background = assets->getImage_Solid("townport");
 
@@ -166,7 +167,7 @@ void GUIWindow_TownPortalBook::clickTown(int townId) {
         pParty->_viewPitch = townPortalList[townId].viewPitch;
     } else {  // if change map
         onMapLeave();
-        dword_6BE364_game_settings_1 |= GAME_SETTINGS_SKIP_WORLD_UPDATE;
+        engineFlags |= ENGINE_SKIP_NEXT_WORLD_UPDATE;
         uGameState = GAME_STATE_CHANGE_LOCATION;
         engine->_pendingTransition = MapDestination(townPortalList[townId].mapInfoID,
                                                     PartyPlacement(townPortalList[townId].pos, townPortalList[townId].viewYaw, townPortalList[townId].viewPitch, 0));

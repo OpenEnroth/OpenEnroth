@@ -175,6 +175,24 @@ inline Segment<Class> promotionsForClass(Class classType) {
 
 
 //
+// BodyType
+//
+
+inline Segment<BodyType> allBodyTypes() {
+    return {BODY_TYPE_FIRST, BODY_TYPE_LAST};
+}
+
+/**
+ * @param bodyType                      Body type to map.
+ * @return                              Body type of a human of the same sex. Dwarves draw most belts and helms with
+ *                                      these textures.
+ */
+inline BodyType humanBodyType(BodyType bodyType) {
+    return bodyType == BODY_TYPE_HUMAN_MALE || bodyType == BODY_TYPE_DWARF_MALE ? BODY_TYPE_HUMAN_MALE : BODY_TYPE_HUMAN_FEMALE;
+}
+
+
+//
 // CharacterAttributeType
 //
 
