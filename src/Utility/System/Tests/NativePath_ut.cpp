@@ -130,7 +130,7 @@ UNIT_TEST(NativePath, WindowsRoots) {
     testJoin("//./UNC/server/share/a", "/b", "//./UNC/server/share/b");
     testJoin("//?/uNc/server/share/a", "/b", "//?/uNc/server/share/b");
     testJoin("//?/UNCx/server/share/a", "/b", "//?/UNCx/b"); // Not "UNC".
-    testJoin("//./COM1/a", "/b", "//./COM1/b");
+    testJoin("//./C:/Games", "/anims", "//./C:/anims");
 
     // A missing component ends the root name early, wherever in the root name it's missing.
     testJoin("//server//x", "/b", "//server/b");
