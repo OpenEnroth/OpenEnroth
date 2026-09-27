@@ -2,7 +2,7 @@ name: Build Release
 
 on:
   schedule:
-    - cron: 6 11 * * *
+    - cron: '6 11 * * *'
   workflow_dispatch:
     inputs:
       myCommit:
@@ -12,7 +12,7 @@ on:
         type: string
   push:
     branches:
-      - 'master'
+      - master
 
 env:
   TAG_NAME: nightly
@@ -29,19 +29,19 @@ jobs:
     outputs:
       tagName: ${{steps.output_release_tag.outputs.tagName}}
     env:
-      GH_TOKEN: '${{secrets.GITHUB_TOKEN}}'
-      GH_REPO: '${{github.repository}}'
+      GH_TOKEN: ${{secrets.GITHUB_TOKEN}}
+      GH_REPO: ${{github.repository}}
     steps:
-      - name: Advance nightly tag
-        env:
-          NIGHTLY_REF: '${{inputs.myCommit || github.sha}}'
+      - name: 'Advance nightly tag'
         run: |
           NIGHTLY_SHA=$(gh api "repos/$GH_REPO/commits/$NIGHTLY_REF" --jq .sha) # The refs API takes only a full sha.
           if ! gh api --method PATCH "repos/$GH_REPO/git/refs/tags/$TAG_NAME" -f sha="$NIGHTLY_SHA" -F force=true; then
             gh api --method POST "repos/$GH_REPO/git/refs" -f ref="refs/tags/$TAG_NAME" -f sha="$NIGHTLY_SHA"
           fi
+        env:
+          NIGHTLY_REF: ${{inputs.myCommit || github.sha}}
 
-      - name: Publish nightly release
+      - name: 'Publish nightly release'
         run: |
           if gh release view "$TAG_NAME" > /dev/null 2>&1; then
             gh release edit "$TAG_NAME" --draft=false --prerelease
@@ -49,7 +49,7 @@ jobs:
             gh release create "$TAG_NAME" --prerelease --title "$TAG_NAME" --notes 'Nightly build.'
           fi
 
-      - name: Output release tag
+      - name: 'Output release tag'
         id: output_release_tag
         run: |
           echo "tagName=$TAG_NAME" >> "$GITHUB_OUTPUT"
@@ -59,13 +59,13 @@ jobs:
     uses: ./.github/workflows/build_all.yml
     secrets: inherit
     with:
-      releaseTag: '${{needs.advance_nightly_tag.outputs.tagName}}'
-      myCommit: '${{inputs.myCommit}}'
+      releaseTag: ${{needs.advance_nightly_tag.outputs.tagName}}
+      myCommit: ${{inputs.myCommit}}
 
   build_linux_flatpak:
     needs: advance_nightly_tag
     uses: ./.github/workflows/linux_flatpak.yml
     secrets: inherit
     with:
-      releaseTag: '${{needs.advance_nightly_tag.outputs.tagName}}'
-      myCommit: '${{inputs.myCommit}}'
+      releaseTag: ${{needs.advance_nightly_tag.outputs.tagName}}
+      myCommit: ${{inputs.myCommit}}

@@ -55,36 +55,35 @@ jobs:
           - RelWithDebInfo
         architecture:
           - x86_64
-
     steps:
-      - name: Make ccache dir
+      - name: 'Make ccache dir'
         run: |
           mkdir -p .ccache
           cd .ccache
           echo "CCACHE_DIR=$PWD" >> "$GITHUB_ENV"
 
-      - name: Compose bundle name
-        env:
-          RELEASE_TAG: '${{inputs.releaseTag}}'
+      - name: 'Compose bundle name'
         run: |
           # An empty release tag must not leave a doubled underscore in the file name.
           echo "BUNDLE_NAME=io.github.openenroth.openenroth${RELEASE_TAG:+_$RELEASE_TAG}_${{matrix.configuration}}_${{matrix.architecture}}.flatpak" >> "$GITHUB_ENV"
+        env:
+          RELEASE_TAG: ${{inputs.releaseTag}}
 
-      - name: Checkout
+      - name: 'Checkout'
         uses: actions/checkout@v7.0.1
         with:
           submodules: recursive
-          ref: '${{inputs.myCommit}}'
+          ref: ${{inputs.myCommit}}
 
-      - name: Set up ccache
+      - name: 'Set up ccache'
         uses: hendrikmuhs/ccache-action@v1.2.24
         with:
-          key: 'linux-flatpak-${{matrix.configuration}}-${{matrix.architecture}}'
+          key: linux-flatpak-${{matrix.configuration}}-${{matrix.architecture}}
           verbose: 2
           max-size: 400M
           save: ${{github.event_name != 'pull_request'}}
 
-      - name: Run Flatpak build
+      - name: 'Run Flatpak build'
         uses: flatpak/flatpak-github-actions/flatpak-builder@79327416609af08178ad73b352877e51450790b3 # v6.8
         with:
           run-tests: true
@@ -96,15 +95,15 @@ jobs:
           restore-cache: false
           upload-artifact: false
 
-      - name: Publish release
+      - name: 'Publish release'
         if: inputs.releaseTag != ''
         uses: softprops/action-gh-release@v3.0.3
         with:
           prerelease: true
-          tag_name: '${{inputs.releaseTag}}'
+          tag_name: ${{inputs.releaseTag}}
           files: ${{env.BUNDLE_NAME}}
           fail_on_unmatched_files: true
 
-      - name: Clean up ccache
+      - name: 'Clean up ccache'
         run: |
           ccache -c
