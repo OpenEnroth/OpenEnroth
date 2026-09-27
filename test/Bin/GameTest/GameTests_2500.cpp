@@ -754,7 +754,7 @@ GAME_TEST(Issues, Issue2777c) {
     game.tick(2);
     game.pressGuiButton("Game_Character1");
     game.tick();
-    game.pressGuiButton("HouseNpc0"); // Halfgild Wynac, the only MM7 NPC who promotes Wizards to Liches.
+    game.pressGuiButton("House_Npc0"); // Halfgild Wynac, the only MM7 NPC who promotes Wizards to Liches.
     game.tick();
     game.pressGuiButton("HouseNpcDialogue_Option0"); // Halfgild's only topic, where he offers the promotion.
     game.tick(2);

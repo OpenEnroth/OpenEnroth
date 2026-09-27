@@ -585,7 +585,7 @@ bool houseDialogPressEscape() {
         pBtn_ExitCancel = window_SpeakInHouse->vButtons.front();
         for (int i = 0; i < houseNpcs.size(); ++i) {
             Pointi pos = {pNPCPortraits_x[houseNpcs.size() - 1][i], pNPCPortraits_y[houseNpcs.size() - 1][i]};
-            houseNpcs[i].button = window_SpeakInHouse->CreateButton(fmt::format("HouseNpc{}", i), pos, {63, 73}, BUTTON_TYPE_NORMAL, 0,
+            houseNpcs[i].button = window_SpeakInHouse->CreateButton(fmt::format("House_Npc{}", i), pos, {63, 73}, BUTTON_TYPE_NORMAL, 0,
                                                                     UIMSG_ClickHouseNPCPortrait, i, INPUT_ACTION_INVALID, houseNpcs[i].label);
         }
 
@@ -1048,7 +1048,7 @@ GUIWindow_House::GUIWindow_House(HouseId houseId) : GUIWindow(WINDOW_HOUSE_INTER
 
     for (int i = 0; i < houseNpcs.size(); ++i) {
         Pointi pos = {pNPCPortraits_x[houseNpcs.size() - 1][i], pNPCPortraits_y[houseNpcs.size() - 1][i]};
-        houseNpcs[i].button = CreateButton(fmt::format("HouseNpc{}", i), pos, {63, 73}, BUTTON_TYPE_NORMAL, 0,
+        houseNpcs[i].button = CreateButton(fmt::format("House_Npc{}", i), pos, {63, 73}, BUTTON_TYPE_NORMAL, 0,
                                            UIMSG_ClickHouseNPCPortrait, i, INPUT_ACTION_INVALID, houseNpcs[i].label);
     }
 
