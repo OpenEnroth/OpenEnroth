@@ -158,7 +158,9 @@ NativePath NativePath::withExtension(std::string_view extension) const {
 NativePath NativePath::operator/(const NativePath &tail) const {
     PathRoot root = parseRoot(_path);
     PathRoot tailRoot = parseRoot(tail._path);
-    bool tailNamesAnotherRoot = tailRoot.size > 0 && tail._path.compare(0, tailRoot.size, _path, 0, root.size) != 0;
+    std::string_view rootName = std::string_view(_path).substr(0, root.size);
+    std::string_view tailRootName = std::string_view(tail._path).substr(0, tailRoot.size);
+    bool tailNamesAnotherRoot = !tailRootName.empty() && !ascii::noCaseEquals(tailRootName, rootName); // "c:" is "C:".
 
     if (tailRoot.isAbsolute() || tailNamesAnotherRoot)
         return tail;

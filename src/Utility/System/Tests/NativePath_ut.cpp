@@ -131,6 +131,11 @@ UNIT_TEST(NativePath, WindowsRoots) {
     EXPECT_EQ((NativePath("C:/a") / NativePath("C:b")).toWtf8(), "C:/a/b"); // Same drive, so it's a plain append.
     EXPECT_EQ((NativePath("C:/a") / NativePath("D:b")).toWtf8(), "D:b"); // Another drive replaces, even a relative one.
 
+    // Drive letters are case-insensitive, and a tail in the other case used to replace the head as another drive.
+    EXPECT_EQ((NativePath("C:/a") / NativePath("c:b")).toWtf8(), "C:/a/b");
+    EXPECT_EQ((NativePath("c:/a") / NativePath("C:b")).toWtf8(), "c:/a/b");
+    EXPECT_EQ((NativePath("C:") / NativePath("c:b")).toWtf8(), "C:/b");
+
     // A drive letter is an ASCII letter of either case followed by a colon, and nothing else is one.
     EXPECT_EQ((NativePath("c:/a") / NativePath("/b")).toWtf8(), "c:/b");
     EXPECT_EQ((NativePath("Ab") / NativePath("c")).toWtf8(), "Ab/c");
