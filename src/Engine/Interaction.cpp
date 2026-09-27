@@ -4,23 +4,17 @@
 #include "Engine/Evt/Processor.h"
 #include "Engine/Graphics/Indoor.h"
 #include "Engine/Graphics/Outdoor.h"
-#include "Engine/Graphics/Vis.h"
 #include "Engine/Localization.h"
 #include "Engine/Objects/Actor.h"
 #include "Engine/Objects/Decoration.h"
 #include "Engine/Objects/SpriteObject.h"
 #include "Engine/Party.h"
-#include "Engine/Spells/Spells.h"
-#include "Engine/Tables/DecorationTable.h"
 #include "Engine/Tables/ItemTable.h"
-#include "Engine/TurnEngine/TurnEngine.h"
 
 #include "GUI/GUIMessageQueue.h"
 #include "GUI/GUIWindow.h"
 #include "GUI/UI/UIBranchlessDialogue.h"
 #include "GUI/UI/UIStatusBar.h"
-
-#include "Media/Audio/AudioPlayer.h"
 
 #include "Library/Logger/Logger.h"
 
@@ -78,121 +72,6 @@ void DecorationInteraction(int id, Pid pid) {
             eventProcessor(engine->_persistentVariables.decorVars[pLevelDecorations[id].eventVarId] + 380, Pid(), 1); // 380 is the MM7 dispatch base, see EVENT_ChangeEvent.
             activeLevelDecoration = nullptr;
         }
-    }
-}
-
-void Engine::onGameViewportClick() {
-    int clickable_distance = engine->config->gameplay.MouseInteractionDepth.value();
-
-    // bug fix - stops you entering shops while dialog still open.
-    // was SCREEN_NPC_DIALOGUE
-    if (current_screen_type != SCREEN_GAME) {
-        return;
-    }
-
-    auto pidAndDepth = engine->PickMouseForTargeting();
-    Pid pid = pidAndDepth.pid;
-    int distance = pidAndDepth.depth;
-    bool in_range = distance < clickable_distance;
-
-    if (pid.type() == OBJECT_Sprite) {
-        int item_id = pid.id();
-        if (pSpriteObjects[item_id].IsUnpickable() || !pSpriteObjects[item_id].uObjectDescID || !in_range) {
-            pParty->dropHeldItem();
-        } else {
-            ItemInteraction(item_id);
-        }
-    } else if (pid.type() == OBJECT_Actor) {
-        int mon_id = pid.id();
-
-        if (pActors[mon_id].aiState == Dead) {
-            if (in_range) {
-                pActors[mon_id].LootActor();
-            } else {
-                pParty->dropHeldItem();
-            }
-        } else if (!keyboardInputHandler->IsCastOnClickToggled()) {
-            if (pActors[mon_id].GetActorsRelation(nullptr) == HOSTILITY_FRIENDLY && pActors[mon_id].ActorFriend()) {
-                if (!in_range) {
-                    pParty->dropHeldItem();
-                } else if (pActors[mon_id].CanAct()) {
-                    if (pParty->hasActiveCharacter()) {
-                        InteractWithActor(mon_id);
-                    } else {
-                        // Do not interact with actors with no active character
-                        engine->_statusBar->setEvent(LSTR_NOBODY_IS_IN_CONDITION);
-                    }
-                }
-            } else {
-                if (pParty->bTurnBasedModeOn && pTurnEngine->turn_stage == TE_MOVEMENT) {
-                    pTurnEngine->flags |= TE_FLAG_8_finished;
-                } else {
-                    engine->_messageQueue->addMessageCurrentFrame(UIMSG_Attack, 0, 0);
-                }
-            }
-        } else if (pParty->bTurnBasedModeOn && pTurnEngine->turn_stage == TE_MOVEMENT) {
-            pParty->setAirborne(true);
-        } else if (pParty->hasActiveCharacter() &&
-                   pParty->activeCharacter().uQuickSpell != SPELL_NONE &&
-                   IsSpellQuickCastableOnShiftClick(pParty->activeCharacter().uQuickSpell)) {
-            engine->_messageQueue->addMessageCurrentFrame(UIMSG_CastQuickSpellAtActor, mon_id, 0);
-        } else if (pParty->pPickedItem.itemId != ITEM_NULL) {
-            pParty->dropHeldItem();
-        } else if (!pParty->hasActiveCharacter()) {
-            engine->_statusBar->setEvent(LSTR_NOBODY_IS_IN_CONDITION);
-            pAudioPlayer->playUISound(SOUND_error);
-        } else {
-            engine->_statusBar->setEvent(LSTR_SET_A_QUICK_SPELL);
-            pAudioPlayer->playUISound(SOUND_error);
-        }
-    } else if (pid.type() == OBJECT_Decoration) {
-        int id = pid.id();
-        if (distance - pDecorationTable->decoration(pLevelDecorations[id].uDecorationDescID)->uRadius < clickable_distance) {
-            if (pParty->hasActiveCharacter()) {
-                // Do not interact with decoration with no active character
-                DecorationInteraction(id, pid);
-            } else {
-                engine->_statusBar->setEvent(LSTR_NOBODY_IS_IN_CONDITION);
-            }
-        } else {
-            pParty->dropHeldItem();
-        }
-    } else if (pid.type() == OBJECT_Face && in_range) {
-        int eventId = 0;
-
-        if (uCurrentlyLoadedLevelType == LEVEL_INDOOR) {
-            if (!pIndoor->faces[pid.id()].Clickable()) {
-                if (pParty->pPickedItem.itemId == ITEM_NULL) {
-                    engine->_statusBar->nothingHere();
-                } else {
-                    pParty->dropHeldItem();
-                }
-                return;
-            } else {
-                eventId = pIndoor->faces[pid.id()].eventId;
-            }
-        } else if (uCurrentlyLoadedLevelType == LEVEL_OUTDOOR) {
-            const BLVFace &model = pOutdoor->face(pid);
-            if (!model.Clickable()) {
-                if (pParty->pPickedItem.itemId == ITEM_NULL) {
-                    engine->_statusBar->nothingHere();
-                } else {
-                    pParty->dropHeldItem();
-                }
-                return;
-            } else {
-                eventId = model.eventId;
-            }
-        }
-
-        if (pParty->hasActiveCharacter()) {
-            eventProcessor(eventId, pid, 1);
-        } else {
-            // Do not interact with faces with no active character
-            engine->_statusBar->setEvent(LSTR_NOBODY_IS_IN_CONDITION);
-        }
-    } else {
-        pParty->dropHeldItem();
     }
 }
 
