@@ -21,8 +21,8 @@ using enum PathRootKind;
 
 struct PathRoot {
     PathRootKind kind = PATH_ROOT_NONE;
-    size_t size = 0;
     bool hasRootDirectory = false; // Whether a separator follows the root name, as in "C:/" and "/".
+    size_t size = 0;
 
     [[nodiscard]] bool isAbsolute() const {
 #ifdef _WINDOWS
