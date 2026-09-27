@@ -103,7 +103,6 @@ GAME_TEST(Issues, Issue2018a) {
     test.startTaping();
 
     pParty->_questBits[QBIT_FOUNTAIN_IN_STEADWICK_ACTIVATED] = true;
-    pParty->pCharacters[3].setSkillValue(SKILL_WATER, CombinedSkillValue::novice());
     pParty->pCharacters[3].mana = 10;
 
     // A scroll casts Town Portal at master, where it fails half the time.
@@ -127,7 +126,6 @@ GAME_TEST(Issues, Issue2018b) {
     game.startNewGame();
     test.startTaping();
 
-    pParty->pCharacters[3].setSkillValue(SKILL_WATER, CombinedSkillValue::novice());
     pParty->pCharacters[3].mana = 10;
 
     readScroll(game, 3, ITEM_SCROLL_LLOYDS_BEACON);
