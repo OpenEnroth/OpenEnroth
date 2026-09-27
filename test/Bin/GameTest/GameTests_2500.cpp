@@ -726,6 +726,7 @@ GAME_TEST(Issues, Issue2777b) {
         } else {
             EXPECT_EQ(conditionTape, tape(CONDITION_DEAD, CONDITION_ZOMBIE));
             EXPECT_EQ(faceTape.back(), zombieFace);
+            EXPECT_EQ(hpTape, tape(0, target.GetMaxHealth()));
         }
         EXPECT_EQ(game_ui_player_faces[0][0]->name(), portraitName(target.uCurrentFace));
     }
