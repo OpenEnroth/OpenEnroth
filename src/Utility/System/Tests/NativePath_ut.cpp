@@ -120,6 +120,11 @@ UNIT_TEST(NativePath, WindowsRoots) {
     EXPECT_EQ((NativePath("//server/share/a") / NativePath("/b")).toWtf8(), "//server/share/b");
     EXPECT_EQ((NativePath("//server/share/a") / NativePath("//server/other")).toWtf8(), "//server/other");
     EXPECT_EQ((NativePath("//server/share") / NativePath("")).toWtf8(), "//server/share/");
+
+    // The same holds for the extended-length spellings, where the share sits two components further in.
+    EXPECT_EQ((NativePath("//?/UNC/server/share/a") / NativePath("/b")).toWtf8(), "//?/UNC/server/share/b");
+    EXPECT_EQ((NativePath("//?/C:/Games") / NativePath("/anims")).toWtf8(), "//?/C:/anims");
+    EXPECT_EQ(NativePath("//?/UNC/ser.ver/sh.are").withExtension("").toWtf8(), "//?/UNC/ser.ver/sh.are");
     EXPECT_EQ((NativePath("C:a") / NativePath("b")).toWtf8(), "C:a/b"); // Drive-relative with a name appends normally.
 
     // An empty tail leaves a separator only where the head can take one. "C:" names the current directory on
