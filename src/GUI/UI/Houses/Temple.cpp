@@ -27,11 +27,12 @@ void GUIWindow_Temple::mainDialogue() {
 }
 
 void GUIWindow_Temple::healDialogue() {
-    if (!isPlayerHealableByTemple(pParty->activeCharacter())) {
+    Character &character = pParty->activeCharacter();
+    if (!isPlayerHealableByTemple(character)) {
         return;
     }
 
-    int price = PriceCalculator::templeHealingCostForPlayer(&pParty->activeCharacter(), houseTable[houseId()].fPriceMultiplier);
+    int price = PriceCalculator::templeHealingCostForPlayer(&character, houseTable[houseId()].fPriceMultiplier);
     if (pParty->GetGold() < price) {
         engine->_statusBar->setEvent(LSTR_YOU_DONT_HAVE_ENOUGH_GOLD);
         playHouseSound(houseId(), HOUSE_SOUND_GENERAL_NOT_ENOUGH_GOLD);
@@ -41,24 +42,25 @@ void GUIWindow_Temple::healDialogue() {
 
     bool keepZombie = false;
     bool makeZombie = false;
-    if (isEvilTemple() && pParty->activeCharacter().classType != CLASS_LICH) {
-        keepZombie = pParty->activeCharacter().IsZombie();
-        makeZombie = !keepZombie && pParty->activeCharacter().conditions.hasAny({CONDITION_ERADICATED, CONDITION_PETRIFIED, CONDITION_DEAD});
+    if (isEvilTemple()) {
+        keepZombie = character.IsZombie();
+        makeZombie = !keepZombie && character.classType != CLASS_LICH &&
+                     character.conditions.hasAny({CONDITION_ERADICATED, CONDITION_PETRIFIED, CONDITION_DEAD});
     } else {
-        pParty->activeCharacter().ResetCondition(CONDITION_ZOMBIE);
+        character.ResetCondition(CONDITION_ZOMBIE);
     }
 
-    pParty->activeCharacter().conditions.resetAll();
+    character.conditions.resetAll();
     if (keepZombie) {
-        pParty->activeCharacter().conditions.set(CONDITION_ZOMBIE, pParty->GetPlayingTime());
+        character.conditions.set(CONDITION_ZOMBIE, pParty->GetPlayingTime());
     } else if (makeZombie) {
-        pParty->activeCharacter().SetCondition(CONDITION_ZOMBIE, 0);
+        character.SetCondition(CONDITION_ZOMBIE, 0);
     }
     pParty->TakeGold(price);
-    pParty->activeCharacter().health = pParty->activeCharacter().GetMaxHealth();
-    pParty->activeCharacter().mana = pParty->activeCharacter().GetMaxMana();
+    character.health = character.GetMaxHealth();
+    character.mana = character.GetMaxMana();
     pAudioPlayer->playExclusiveSound(SOUND_heal);
-    pParty->activeCharacter().playReaction(SPEECH_TEMPLE_HEAL);
+    character.playReaction(SPEECH_TEMPLE_HEAL);
     engine->_messageQueue->addMessageCurrentFrame(UIMSG_Escape, 1, 0);
 }
 
