@@ -67,6 +67,8 @@ bool isEvtVariableValueValid(EvtOpcode opcode, EvtVariable var, int value) {
     case VAR_NPCs2:
         return isInRange(value, 0, std::ssize(pNPCStats->pNPCData) - 1);
     default:
+        // TODO(captainurist): add and subtract on HP, SP, stats, gold, food, reputation and the like do plain int
+        //                     arithmetic that overflows for values near INT_MIN or INT_MAX. Bound those values here.
         return true;
     }
 }
