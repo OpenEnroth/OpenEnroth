@@ -145,6 +145,7 @@ GAME_TEST(Issues, Issue2021) {
     game.startNewGame();
     test.startTaping();
 
+    // TODO(captainurist): #2864 the slot count should come from the scroll, not from the reader's own water mastery.
     pParty->pCharacters[3].setSkillValue(SKILL_WATER, CombinedSkillValue(4, MASTERY_EXPERT)); // Three beacon slots.
     readScroll(game, 3, ITEM_SCROLL_LLOYDS_BEACON);
     game.tick(3);
