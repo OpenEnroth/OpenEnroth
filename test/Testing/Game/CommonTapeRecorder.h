@@ -64,6 +64,8 @@ class CommonTapeRecorder {
 
     TestTape<int> food();
 
+    TestTape<int> reputation();
+
     TestTape<int> deaths();
 
     TestTape<MapId> map();
