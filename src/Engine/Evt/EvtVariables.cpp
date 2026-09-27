@@ -30,6 +30,9 @@ static bool isInRange(int value, auto first, auto last) {
 }
 
 bool isEvtVariableValueValid(EvtOpcode opcode, EvtVariable var, int value) {
+    assert(opcode == EVENT_Compare || opcode == EVENT_OnCanShowDialogItemCmp || opcode == EVENT_Set ||
+           opcode == EVENT_Add || opcode == EVENT_Subtract);
+
     if (var >= VAR_FIRST_SKILL && var <= VAR_LAST_SKILL) {
         if (opcode == EVENT_Subtract)
             return isInRange(value, 0, 63); // A subtract is a plain level count, mastery bits mean nothing there.
