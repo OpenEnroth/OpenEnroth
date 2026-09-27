@@ -124,8 +124,8 @@ static tl::generator<Character &> iterateCharacters(EvtTargetCharacter who, Rand
  * @param who                           Characters that a variable command targets.
  * @param variable                      Variable of the command.
  * @param rng                           Random engine for `CHOOSE_RANDOM`.
- * @return                              The characters to run the command for. A party variable gets only the first
- *                                      of them, so that the command changes it once.
+ * @return                              Characters to run the command for. For a party variable this is just the first
+ *                                      targeted character, since the whole party shares one value.
  */
 static tl::generator<Character &> iterateCharacters(EvtTargetCharacter who, EvtVariable variable, RandomEngine *rng) {
     for (Character &character : iterateCharacters(who, rng)) {
