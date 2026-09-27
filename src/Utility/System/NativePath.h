@@ -123,7 +123,8 @@ class NativePath {
      * @param tail                      Path to append.
      * @return                          The two paths joined with a separator. An absolute `tail`, or one naming
      *                                  another root, replaces this path. A rooted `tail` keeps only this path's root
-     *                                  name.
+     *                                  name. A bare drive letter takes a separator too, so `"C:" / "x"` is `"C:/x"`
+     *                                  and not the drive-relative `"C:x"`, which has to be spelled out if wanted.
      */
     [[nodiscard]] NativePath operator/(const NativePath &tail) const;
 

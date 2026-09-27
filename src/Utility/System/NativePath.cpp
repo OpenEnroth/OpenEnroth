@@ -72,17 +72,6 @@ static size_t fileNameOffset(std::string_view path, PathRoot root) {
 }
 
 /**
- * @param path                      Path to append to.
- * @param root                      The path's root.
- * @return                          Whether a component appended to the path needs a separator in front of it. It
- *                                  doesn't after an empty path, a trailing separator, or a bare drive letter, since
- *                                  `"C:x"` names `"x"` in the current directory of drive C.
- */
-static bool needsSeparator(std::string_view path, PathRoot root) {
-    return !path.empty() && path.back() != separator && !(root.kind == PATH_ROOT_DRIVE && root.size == path.size());
-}
-
-/**
  * @param path                      Path to scan.
  * @param nameOffset                Offset of the file name inside the path.
  * @return                          Offset of the extension inside the path, or `npos` if there is none. A leading
@@ -158,8 +147,8 @@ NativePath NativePath::withExtension(std::string_view extension) const {
     if (extension.empty())
         return result;
 
-    if (nameOffset == _path.size() && needsSeparator(_path, root))
-        result._path += separator; // A root name like "//server/share" has no file name, so the extension starts one.
+    if (nameOffset == _path.size() && !_path.empty() && _path.back() != separator)
+        result._path += separator; // A bare root name like "C:" or "//server/share" has no file name, so this starts one.
     if (extension[0] != '.')
         result._path += '.';
     result._path += extension;
@@ -179,8 +168,8 @@ NativePath NativePath::operator/(const NativePath &tail) const {
         result._path = _path.substr(0, root.size); // A rooted tail keeps our root name, and drops everything after it.
     } else {
         result._path = _path;
-        if (needsSeparator(_path, root))
-            result._path += separator;
+        if (!_path.empty() && _path.back() != separator)
+            result._path += separator; // After a bare drive letter too, "C:" / "x" is "C:/x" and not the drive-relative "C:x".
     }
 
     result._path.append(tail._path, tailRoot.size);

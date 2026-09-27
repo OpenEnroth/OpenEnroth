@@ -105,12 +105,16 @@ UNIT_TEST(NativePath, WindowsRoots) {
     EXPECT_EQ((NativePath("C:/a") / NativePath("D:/b")).toWtf8(), "D:/b"); // Another drive replaces everything.
     EXPECT_EQ((NativePath("C:/a") / NativePath("/b")).toWtf8(), "C:/b"); // A rooted tail keeps our drive.
     EXPECT_EQ((NativePath("C:/a") / NativePath("C:b")).toWtf8(), "C:/a/b"); // Same drive, so it's a plain append.
-    EXPECT_EQ((NativePath("C:") / NativePath("b")).toWtf8(), "C:b"); // Drive-relative, no separator inserted.
-    EXPECT_EQ((NativePath("C:a") / NativePath("b")).toWtf8(), "C:a/b"); // Drive-relative with a name appends normally.
     EXPECT_EQ((NativePath("//server/share") / NativePath("f")).toWtf8(), "//server/share/f");
 
-    // A bare drive letter is drive-relative, but a bare server name is already absolute. So a separator goes in
-    // after it, and as a tail it replaces the head.
+    // A bare drive letter takes a separator like any other root name. The drive-relative "C:x" has to be spelled out.
+    EXPECT_EQ((NativePath("C:") / NativePath("b")).toWtf8(), "C:/b");
+    EXPECT_EQ((NativePath("C:") / NativePath("C:b")).toWtf8(), "C:/b");
+    EXPECT_EQ((NativePath("C:") / NativePath("")).toWtf8(), "C:/");
+    EXPECT_EQ(NativePath("C:").withExtension(".x").toWtf8(), "C:/.x");
+    EXPECT_EQ((NativePath("C:a") / NativePath("b")).toWtf8(), "C:a/b");
+
+    // A bare server name is already absolute. So a separator goes in after it, and as a tail it replaces the head.
     EXPECT_EQ((NativePath("//server") / NativePath("share")).toWtf8(), "//server/share");
     EXPECT_EQ((NativePath("//server/share") / NativePath("//server")).toWtf8(), "//server");
     EXPECT_EQ((NativePath("//server") / NativePath("/share")).toWtf8(), "//server/share");
@@ -131,9 +135,7 @@ UNIT_TEST(NativePath, WindowsRoots) {
     EXPECT_EQ(NativePath("//./UNC/ser.ver/sh.are").withExtension("").toWtf8(), "//./UNC/ser.ver/sh.are");
     EXPECT_EQ(NativePath("//?/unc/ser.ver/sh.are").withExtension("").toWtf8(), "//?/unc/ser.ver/sh.are");
 
-    // An empty tail leaves a separator only where the head can take one. "C:" names the current directory on
-    // drive C while "C:/" names its root, so appending nothing to a bare drive letter must not move it.
-    EXPECT_EQ((NativePath("C:") / NativePath("")).toWtf8(), "C:");
+    // An empty tail leaves a trailing separator, after a root name as well.
     EXPECT_EQ((NativePath("C:/a") / NativePath("")).toWtf8(), "C:/a/");
     EXPECT_EQ((NativePath("//server") / NativePath("")).toWtf8(), "//server/");
 
@@ -145,7 +147,6 @@ UNIT_TEST(NativePath, WindowsRoots) {
     EXPECT_EQ(NativePath::fromWtf8("C:/Games/MM7").native(), L"C:/Games/MM7"); // Everything else keeps them.
 
     // A root name is never a file name, so a dot inside one doesn't start an extension.
-    EXPECT_EQ(NativePath("C:").withExtension(".x").toWtf8(), "C:.x");
     EXPECT_EQ(NativePath("//ser.ver").withExtension("").toWtf8(), "//ser.ver");
     EXPECT_EQ(NativePath("//ser.ver/sh.are").withExtension("").toWtf8(), "//ser.ver/sh.are");
     EXPECT_EQ(NativePath("//ser.ver/sh.are/a.txt").withExtension("").toWtf8(), "//ser.ver/sh.are/a");
