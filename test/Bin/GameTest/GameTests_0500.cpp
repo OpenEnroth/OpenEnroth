@@ -494,9 +494,9 @@ GAME_TEST(Issues, Issue673b) {
     test.startTaping();
     game.pressAndReleaseKey(PlatformKey::KEY_SPACE);
     game.tick(2);
-    game.pressGuiButton("Dialogue_Option0"); // Take the quest.
+    game.pressGuiButton("NpcDialogue_Option0"); // Take the quest.
     game.tick(2);
-    game.pressGuiButton("Dialogue_Option0"); // Hand over the tapestry.
+    game.pressGuiButton("NpcDialogue_Option0"); // Hand over the tapestry.
     game.tick(2);
     test.stopTaping();
 
