@@ -2984,6 +2984,7 @@ void CastSpellInfoHelpers::cancelSpellCastInProgress() {
             mouse->SetCursorImage("MICON1");
             engine->_statusBar->clearEvent();
             IsEnchantingInProgress = false;
+            enchantingActiveCharacter = -1;
             back_to_game();
 
             targeted_spell_canceled = true;
