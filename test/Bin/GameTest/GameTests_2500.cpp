@@ -782,6 +782,7 @@ GAME_TEST(Issues, Issue2777d) {
     Character &templed = pParty->pCharacters[1];
     setEvtVariable(templed, VAR_Class, std::to_underlying(CLASS_LICH));
     int templedFace = templed.uCurrentFace;
+    int templedVoice = templed.uVoiceID;
     int zombieFace = templed.IsMale() ? 23 : 24;
     templed.uPrevFace = templed.uCurrentFace; // What vanilla MM7's evil temples left behind.
     templed.uPrevVoiceID = templed.uVoiceID;
@@ -793,6 +794,7 @@ GAME_TEST(Issues, Issue2777d) {
     auto reanimatedConditionTape = charTapes.condition(0);
     auto reanimatedFaceTape = charTapes.face(0);
     auto templedFaceTape = charTapes.face(1);
+    auto templedVoiceTape = charTapes.custom(1, [](const Character &character) { return static_cast<int>(character.uVoiceID); });
     test.startTaping();
     game.tick();
     game.loadGame(game.saveGame());
@@ -803,6 +805,8 @@ GAME_TEST(Issues, Issue2777d) {
     EXPECT_EQ(reanimatedConditionTape, tape(CONDITION_DEAD));
     EXPECT_EQ(reanimatedFaceTape, tape(reanimatedFace));
     EXPECT_EQ(templedFaceTape, tape(zombieFace, templedFace));
+    EXPECT_EQ(templedVoiceTape, tape(zombieFace, templedVoice));
+    EXPECT_EQ(game_ui_player_faces[1][0]->name(), fmt::format("{}01", pPlayerPortraitsNames[templedFace]));
 }
 
 GAME_TEST(Issues, Issue2784a) {
