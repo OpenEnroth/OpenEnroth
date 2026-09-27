@@ -28,8 +28,8 @@ on:
         type: string
 
 # A new push into a PR auto-cancels the run for the previous one. Master and nightly unaffected.
-# The prefix is a literal because a workflow called from Build Release sees the caller's whole github context, run_id
-# included, so with github.workflow as the prefix the two workflows it calls would share a group and cancel each other.
+# Build Release runs this workflow and linux_flatpak inside its own run, where both see its name and run_id, so only a
+# literal prefix ("build-all-") keeps their concurrency groups apart.
 concurrency:
   group: build-all-${{github.event.pull_request.number || github.run_id}}
   cancel-in-progress: true
