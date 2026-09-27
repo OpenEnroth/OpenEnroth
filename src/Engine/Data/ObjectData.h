@@ -10,6 +10,12 @@
 
 #include "Library/Color/Color.h"
 
+/**
+ * A kind of `SpriteObject`, a row of `dobjlist.bin`. Covers items lying on the ground, arrows and monster bolts,
+ * spell projectiles, impacts and explosions, and traps. Items are the only pickable rows.
+ *
+ * `SpriteObject::uObjectDescID` indexes these rows, and `ObjectTable::ObjectIDByItemID` finds a row by its `SpriteId`.
+ */
 struct ObjectData {
     inline bool NoSprite() const { return uFlags & OBJECT_DESC_NO_SPRITE; }
 
