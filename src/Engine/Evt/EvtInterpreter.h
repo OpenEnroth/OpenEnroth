@@ -21,6 +21,15 @@ class EvtInterpreter {
      int executeOneEvent(int step, bool isNpc);
 
  private:
+     /**
+      * Logs an error naming the event and step when the command's value is out of range for its variable.
+      *
+      * @param ir                       A compare, set, add or subtract command.
+      * @return                         Whether the value is in range.
+      */
+     [[nodiscard]] bool validateVariableValue(const EvtInstruction &ir) const;
+
+ private:
      int _eventId = 0;
      std::vector<EvtInstruction> _events;
      Pid _objectPid = Pid();
