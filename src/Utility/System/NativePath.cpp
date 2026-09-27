@@ -120,7 +120,8 @@ std::wstring NativePath::native() const {
     std::wstring result = txt::wtf8ToWide(_path);
 
     // Win32 only recognizes a literal "\\?\". Spelled with forward slashes the prefix gets parsed like any other path,
-    // which brings back MAX_PATH and strips a trailing dot off a file name. "//./" makes no difference either way.
+    // which brings back MAX_PATH and strips a trailing dot off a file name. A "//./" path gets parsed whichever slashes
+    // it uses, so converting it too does no harm.
     if (parseRoot(_path).kind == PATH_ROOT_EXTENDED)
         std::ranges::replace(result, L'/', L'\\');
 
