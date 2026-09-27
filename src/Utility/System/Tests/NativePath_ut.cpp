@@ -35,7 +35,7 @@ UNIT_TEST(NativePath, StdPathRoundTrip) {
     std::filesystem::path cwd = std::filesystem::current_path();
     EXPECT_EQ(NativePath::fromStdPath(cwd).toStdPath(), cwd);
 
-    // A name that isn't ASCII goes through wchar_t on Windows, where a narrow conversion would mangle it.
+    // Non-ASCII paths have to survive the round trip too.
     std::filesystem::path lol(u8"a/\u043b\u043e\u043b.txt");
     EXPECT_EQ(NativePath::fromStdPath(lol).toWtf8(), "a/\xd0\xbb\xd0\xbe\xd0\xbb.txt");
     EXPECT_EQ(NativePath::fromWtf8("a/\xd0\xbb\xd0\xbe\xd0\xbb.txt").toStdPath(), lol);
