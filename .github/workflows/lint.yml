@@ -85,20 +85,20 @@ jobs:
 
       # Gated on the configure rather than on the previous step, so that one push reports every verdict.
       - name: 'Check lua style'
-        if: '!cancelled() && steps.configure.outcome == ''success'''
+        if: ${{!cancelled() && steps.configure.outcome == 'success'}}
         working-directory: build
         run: |
           ninja check_style_lua_scripts
 
       - name: 'Run clang-tidy'
-        if: '!cancelled() && steps.configure.outcome == ''success'''
+        if: ${{!cancelled() && steps.configure.outcome == 'success'}}
         working-directory: build
         run: |
           ninja check_tidy
 
       # The shader and doxygen checks need no build tree, so they run regardless of how the configure went.
       - name: 'Check shaders'
-        if: '!cancelled()'
+        if: ${{!cancelled()}}
         run: |
           for glsl_version in "410 core" "320 es"; do
             for shader in resources/shaders/*.vert resources/shaders/*.frag; do
@@ -109,6 +109,6 @@ jobs:
 
       # Doxyfile sets WARN_AS_ERROR, so generating the docs is the check.
       - name: 'Check doxygen'
-        if: '!cancelled()'
+        if: ${{!cancelled()}}
         run: |
           "$HOME/doxygen/doxygen" Doxyfile

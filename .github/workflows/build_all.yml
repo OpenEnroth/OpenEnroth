@@ -65,8 +65,8 @@ jobs:
           - linux_x86_64
           - android_universal
         include:
-          - {configuration: Debug,          build_type: Debug}
-          - {configuration: RelWithDebInfo, build_type: RelWithDebInfo}
+          - {configuration: Debug,          build_type: Debug,          gradle_build_type: Debug}
+          - {configuration: RelWithDebInfo, build_type: RelWithDebInfo, gradle_build_type: Release}
           - {target: windows_x86,       runner: windows-2022, platform: windows, architecture: x86,       ccache_size: 400M, release_os: Windows, release_extension: zip}
           - {target: windows_x86_64,    runner: windows-2022, platform: windows, architecture: x86_64,    ccache_size: 400M, release_os: Windows, release_extension: zip}
           - {target: darwin_arm64,      runner: macos-15,     platform: darwin,  architecture: arm64,     ccache_size: 400M, release_os: macOS,   release_extension: dmg, cmake_args: -DCMAKE_OSX_ARCHITECTURES=arm64 -DCMAKE_OSX_DEPLOYMENT_TARGET=11}
@@ -209,8 +209,8 @@ jobs:
         uses: burrunan/gradle-cache-action@v3.0.3
         with:
           build-root-directory: android
-          job-id: android-${{matrix.configuration == 'RelWithDebInfo' && 'Release' || matrix.configuration}}
-          arguments: assemble${{matrix.configuration == 'RelWithDebInfo' && 'Release' || matrix.configuration}} --info -Pandroid.native.buildOutput=verbose
+          job-id: android-${{matrix.gradle_build_type}}
+          arguments: assemble${{matrix.gradle_build_type}} --info -Pandroid.native.buildOutput=verbose
           read-only: ${{github.event_name == 'pull_request'}}
         env:
           SIGNING_KEYSTORE: ${{steps.decode_keystore.outputs.filePath}}
