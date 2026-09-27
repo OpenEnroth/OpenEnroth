@@ -412,5 +412,5 @@ void Menu::MenuLoop() {
 
     pGUIWindow_CurrentMenu = nullptr;
 
-    gamma_preview_image = nullptr;
+    gamma_preview_image.reset();
 }

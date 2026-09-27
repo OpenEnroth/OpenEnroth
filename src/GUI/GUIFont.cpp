@@ -64,7 +64,7 @@ void GUIFont::CreateFontTex() {
 }
 
 void GUIFont::ReleaseFontTex() {
-    _texture = nullptr;
+    _texture.reset();
 }
 
 int GUIFont::GetHeight() const {

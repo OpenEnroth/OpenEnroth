@@ -51,7 +51,7 @@ GraphicsImage *Renderer::solidFillTexture() {
 }
 
 void Renderer::releaseSolidFillTexture() {
-    _solidFillTexture = nullptr;
+    _solidFillTexture.reset();
 }
 
 void Renderer::FillRect(const Recti &rect, Color color) {

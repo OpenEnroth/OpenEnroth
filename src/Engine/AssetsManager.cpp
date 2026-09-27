@@ -47,15 +47,9 @@ AssetsManager::~AssetsManager() = default;
 void AssetsManager::releaseAllTextures() {
     MM_TRACE("Render - Releasing Textures.");
     // clears any textures from gpu
-    for (const auto &[name, image] : images) {
-        image->releaseRenderId();
-    }
-    for (const auto &[name, image] : bitmaps) {
-        image->releaseRenderId();
-    }
-    for (const auto &[name, image] : sprites) {
-        image->releaseRenderId();
-    }
+    for (auto *cache : {&images, &bitmaps, &sprites})
+        for (const auto &[name, image] : *cache)
+            image->releaseRenderId();
 
     ReloadFonts();
 }
