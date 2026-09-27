@@ -83,8 +83,9 @@ export OPENENROTH_MM7_PATH="<path-to-mm7-game-assets>"
 ### macOS
 
 1. Move the game data to `~/Library/Application Support/OpenEnroth`, creating this directory if needed.
-2. Download one of the prebuilt [releases](https://github.com/OpenEnroth/OpenEnroth/releases) and unzip the files.
-3. Run `xattr -rc <extracted-path>/dist/OpenEnroth.app`. This clears the quarantine flag — macOS will refuse to
+2. Download the `.dmg` from one of the prebuilt [releases](https://github.com/OpenEnroth/OpenEnroth/releases), open it
+   and drag `OpenEnroth.app` into `Applications`.
+3. Run `xattr -rc /Applications/OpenEnroth.app`. This clears the quarantine flag — macOS will refuse to
    launch unsigned binaries without this step.
 4. Run `OpenEnroth.app`.
 

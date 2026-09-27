@@ -108,11 +108,11 @@ jobs:
 
           # An empty release tag must not leave a doubled underscore in the file name.
           release_suffix="${RELEASE_TAG:+_$RELEASE_TAG}_${{matrix.configuration}}_$architecture"
-          if [ "$platform" = "android" ]; then
-            echo "RELEASE_FILE=Android$release_suffix.apk" >> "$GITHUB_ENV"
-          else
-            echo "RELEASE_FILE=$RUNNER_OS$release_suffix.zip" >> "$GITHUB_ENV"
-          fi
+          case "$platform" in
+            android) echo "RELEASE_FILE=Android$release_suffix.apk" >> "$GITHUB_ENV";;
+            darwin)  echo "RELEASE_FILE=$RUNNER_OS$release_suffix.dmg" >> "$GITHUB_ENV";;
+            *)       echo "RELEASE_FILE=$RUNNER_OS$release_suffix.zip" >> "$GITHUB_ENV";;
+          esac
         env:
           RELEASE_TAG: '${{inputs.releaseTag}}'
 
@@ -303,7 +303,7 @@ jobs:
           command: |
             mkdir -p dist
             cp -r build/src/Bin/OpenEnroth/OpenEnroth.app dist/
-            hdiutil create OpenEnroth.dmg -ov -volname "OpenEnroth" -fs HFS+ -srcfolder dist
+            hdiutil create "$RELEASE_FILE" -ov -volname "OpenEnroth" -fs HFS+ -srcfolder dist
 
       - name: '[windows] Prepare files for release'
         if: env.MATRIX_PLATFORM == 'windows'
@@ -318,8 +318,8 @@ jobs:
           mkdir -p dist
           cp build/src/Bin/OpenEnroth/OpenEnroth dist/
 
-      - name: '[darwin/windows/linux] Zip folder for release'
-        if: env.MATRIX_PLATFORM != 'android' && env.MATRIX_SANITIZERS == ''
+      - name: '[windows/linux] Zip folder for release'
+        if: (env.MATRIX_PLATFORM == 'windows' || env.MATRIX_PLATFORM == 'linux') && env.MATRIX_SANITIZERS == ''
         uses: thedoctor0/zip-release@0.7.6
         with:
           type: zip
