@@ -57,7 +57,7 @@ jobs:
           - x86_64
     env:
       # An empty release tag must not leave a doubled underscore in the file name.
-      RELEASE_FILE: OpenEnroth_Linux${{inputs.releaseTag && format('_{0}', inputs.releaseTag) || ''}}_${{matrix.configuration}}_${{matrix.architecture}}.flatpak
+      RELEASE_FILE: OpenEnroth${{inputs.releaseTag && format('_{0}', inputs.releaseTag) || ''}}_Linux_${{matrix.architecture}}_${{matrix.configuration}}.flatpak
     steps:
       - name: 'Make ccache dir'
         run: |

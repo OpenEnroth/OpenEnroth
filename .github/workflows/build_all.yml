@@ -79,7 +79,7 @@ jobs:
           - {configuration: ASan, build_type: Debug, sanitizers: address, target: linux_x86_64, runner: ubuntu-26.04, platform: linux, architecture: x86_64, ccache_size: 400M}
     env:
       # An empty release tag must not leave a doubled underscore in the file name.
-      RELEASE_FILE: OpenEnroth_${{matrix.release_os}}${{inputs.releaseTag && format('_{0}', inputs.releaseTag) || ''}}_${{matrix.configuration}}_${{matrix.architecture}}.${{matrix.release_extension}}
+      RELEASE_FILE: OpenEnroth${{inputs.releaseTag && format('_{0}', inputs.releaseTag) || ''}}_${{matrix.release_os}}_${{matrix.architecture}}_${{matrix.configuration}}.${{matrix.release_extension}}
     steps:
       - name: '[linux/android] Configure fast APT mirror'
         if: matrix.platform == 'linux' || matrix.platform == 'android'
