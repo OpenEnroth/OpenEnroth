@@ -30,6 +30,7 @@ set(ENGINE_HEADERS
         Conditions.h
         Engine.h
         EngineCallObserver.h
+        EngineEnums.h
         EngineGlobals.h
         EngineIocContainer.h
         HitMap.h

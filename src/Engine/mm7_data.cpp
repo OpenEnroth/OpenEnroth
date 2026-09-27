@@ -2289,7 +2289,6 @@ int uDefaultTravelTime_ByFoot;
 float fWalkSpeedMultiplier = 1.0f;
 float fBackwardWalkSpeedMultiplier = 1.0f;
 float fTurnSpeedMultiplier = 1.0f;
-int dword_6BE364_game_settings_1 = 0;
 
 int uPlayerCreationUI_SelectedCharacter;
 int uPlayerCreationUI_NameEditCharacter;

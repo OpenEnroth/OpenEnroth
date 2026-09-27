@@ -4,6 +4,7 @@
 
 #include "GameOver.h"
 
+#include "Engine/EngineGlobals.h"
 #include "Engine/AssetsManager.h"
 #include "Engine/Resources/EngineFileSystem.h"
 #include "Engine/Graphics/Renderer/Renderer.h"
@@ -25,7 +26,7 @@
 
 //----- (004BF91E) --------------------------------------------------------
 void GameOver_Setup() {
-    dword_6BE364_game_settings_1 &= ~GAME_SETTINGS_4000;
+    engineFlags &= ~ENGINE_ESCAPE_ENABLED;
     GameOverNoSound = true;
     pAudioPlayer->stopSounds();
 
@@ -99,7 +100,7 @@ std::unique_ptr<GraphicsImage> CreateWinnerCertificate() {
 
     GUIWindow::DrawTitleText(pFont.get(), 1, frameRect.h, colorTable.Black,
         localization->format(LSTR_YOUR_SCORE_LU, v23), 3, frameRect);
-    dword_6BE364_game_settings_1 |= GAME_SETTINGS_4000;
+    engineFlags |= ENGINE_ESCAPE_ENABLED;
 
     // flush draw buffer so cert is drawn
     render->DrawTwodVerts();

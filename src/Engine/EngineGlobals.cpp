@@ -9,6 +9,8 @@ PlatformEventLoop *eventLoop = nullptr;
 PlatformEventHandler *eventHandler = nullptr;
 PlatformApplication *application = nullptr;
 
+EngineFlags engineFlags;
+
 
 void detail::globalProcessMessages() {
     application->processMessages();

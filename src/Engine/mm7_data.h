@@ -96,24 +96,6 @@ extern float fWalkSpeedMultiplier;
 extern float fBackwardWalkSpeedMultiplier;
 extern float fTurnSpeedMultiplier;
 
-// TODO(captainurist): #enum
-#define GAME_SETTINGS_SKIP_WORLD_UPDATE 0x0001  // Skip updating world next frame due to changing levels etc.
-#define GAME_SETTINGS_INVALID_RESOLUTION 0x0002
-#define GAME_SETTINGS_NO_INTRO 0x0004
-#define GAME_SETTINGS_NO_LOGO 0x0008
-#define GAME_SETTINGS_NO_SOUND 0x0010
-#define GAME_SETTINGS_NO_WALK_SOUND 0x0020
-#define GAME_SETTINGS_NO_HOUSE_ANIM 0x0040
-#define GAME_SETTINGS_0080_SKIP_USER_INPUT_THIS_FRAME 0x0080
-#define GAME_SETTINGS_APP_INACTIVE 0x0100
-#define GAME_SETTINGS_0200_EVENT_TIMER 0x0200
-#define GAME_SETTINGS_0400_MISC_TIMER 0x0400
-#define GAME_SETTINGS_0800 0x0800
-#define GAME_SETTINGS_1000 0x1000
-#define GAME_SETTINGS_LOADING_SAVEGAME_SKIP_RESPAWN 0x2000  // don't respawn the level we're loading because we're loading a saved game
-#define GAME_SETTINGS_4000 0x4000  // initialisation state
-extern int dword_6BE364_game_settings_1;  // GAME_SETTINGS_*
-
 /** Recovery multiplier for non-combat actions, e.g. receiving fall damage, casting buffs,
  * and receiving damage from monsters. */
 constexpr float debug_non_combat_recovery_mul = 1.0f;

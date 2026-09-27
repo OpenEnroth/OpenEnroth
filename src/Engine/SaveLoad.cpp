@@ -9,6 +9,7 @@
 #include <vector>
 
 #include "Engine/Engine.h"
+#include "Engine/EngineGlobals.h"
 #include "Engine/PartyPlacement.h"
 #include "Engine/Resources/EngineFileSystem.h"
 #include "Engine/Resources/LOD.h"
@@ -129,7 +130,7 @@ void loadGame(std::string_view fileName) {
     //                     skip placement when loading. MapDestination has no way to say that.
     engine->_pendingTransition = MapDestination(pMapTable->GetMapInfo(state.header.locationName), MAP_START_POINT_PARTY);
 
-    dword_6BE364_game_settings_1 |= GAME_SETTINGS_LOADING_SAVEGAME_SKIP_RESPAWN | GAME_SETTINGS_SKIP_WORLD_UPDATE;
+    engineFlags |= ENGINE_LOADING_SAVEGAME | ENGINE_SKIP_NEXT_WORLD_UPDATE;
 
     // pAudioPlayer->SetMusicVolume(engine->config->music_level);
     // pAudioPlayer->SetMasterVolume(engine->config->sound_level);
