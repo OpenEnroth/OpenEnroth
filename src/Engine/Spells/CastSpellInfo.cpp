@@ -32,7 +32,6 @@
 #include "Engine/Spells/SpellEnumFunctions.h"
 
 #include "GUI/GUIMessageQueue.h"
-#include "GUI/UI/UIGame.h"
 #include "GUI/UI/UIStatusBar.h"
 #include "GUI/UI/UISpell.h"
 
@@ -2642,8 +2641,6 @@ void CastSpellInfoHelpers::castSpell() {
                             target.playReaction(SPEECH_CHEATED_DEATH);
                         } else if (target.IsDead()) {
                             target.SetCondition(CONDITION_ZOMBIE, 1);
-                            if (target.IsZombie())
-                                GameUI_ReloadPlayerPortraits(pCastSpell->targetCharacterIndex, target.uCurrentFace);
                         }
                         break;
                     }

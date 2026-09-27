@@ -572,6 +572,7 @@ void Character::SetCondition(Condition condition, int blockable) {
                 uCurrentFace = 24;
                 uVoiceID = 24;
             }
+            GameUI_ReloadPlayerPortraits(characterIndex(), uCurrentFace);
 
             playReaction(SPEECH_CHEATED_DEATH);
             break;
