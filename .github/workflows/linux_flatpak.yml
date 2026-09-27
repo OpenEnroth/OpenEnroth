@@ -28,8 +28,10 @@ on:
         type: string
 
 # A new push into a PR auto-cancels the run for the previous one. Master and nightly unaffected.
+# The prefix is a literal because in a workflow called from Build Release, github.workflow is the caller's name, and
+# the two workflows it calls would then share a group and cancel each other.
 concurrency:
-  group: linux-flatpak-${{github.event.pull_request.number || github.run_id}} # Called from Build Release, github.workflow would be the caller's name.
+  group: linux-flatpak-${{github.event.pull_request.number || github.run_id}}
   cancel-in-progress: true
 
 env:
