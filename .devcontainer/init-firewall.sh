@@ -62,6 +62,7 @@ ALLOWED_DOMAINS=(
     celestialheavens.com    # Might & Magic fan site — game data references.
     mmmodding.miraheze.org  # Might & Magic modding wiki — evt format references.
     godbolt.org             # Compiler Explorer — checking codegen across compilers.
+    learn.microsoft.com     # Win32 and MSVC docs — path, file API and compiler behavior on Windows.
 )
 
 # Build the dnsmasq --ipset directive: /domain1/domain2/.../ipset_name
