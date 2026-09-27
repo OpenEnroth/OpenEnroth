@@ -769,6 +769,42 @@ GAME_TEST(Issues, Issue2777c) {
     EXPECT_EQ(game_ui_player_faces[0][0]->name(), fmt::format("{}01", pPlayerPortraitsNames[lichFace]));
 }
 
+GAME_TEST(Issues, Issue2777d) {
+    // A Lich loaded from a save made before the fix kept the Zombie condition.
+    game.startNewGame();
+
+    Character &reanimated = pParty->pCharacters[0];
+    setEvtVariable(reanimated, VAR_Class, std::to_underlying(CLASS_LICH));
+    int reanimatedFace = reanimated.uCurrentFace;
+    reanimated.SetCondition(CONDITION_DEAD, 0);
+    reanimated.conditions.set(CONDITION_ZOMBIE, pParty->GetPlayingTime()); // What vanilla MM7's Reanimate left behind.
+
+    Character &templed = pParty->pCharacters[1];
+    setEvtVariable(templed, VAR_Class, std::to_underlying(CLASS_LICH));
+    int templedFace = templed.uCurrentFace;
+    int zombieFace = templed.IsMale() ? 23 : 24;
+    templed.uPrevFace = templed.uCurrentFace; // What vanilla MM7's evil temples left behind.
+    templed.uPrevVoiceID = templed.uVoiceID;
+    templed.uCurrentFace = zombieFace;
+    templed.uVoiceID = zombieFace;
+    templed.conditions.set(CONDITION_ZOMBIE, pParty->GetPlayingTime());
+
+    auto zombieTape = charTapes.custom([](const Character &character) { return character.IsZombie(); });
+    auto reanimatedConditionTape = charTapes.condition(0);
+    auto reanimatedFaceTape = charTapes.face(0);
+    auto templedFaceTape = charTapes.face(1);
+    test.startTaping();
+    game.tick();
+    game.loadGame(game.saveGame());
+    game.tick();
+
+    EXPECT_EQ(zombieTape.front(), tape(true, true, false, false));
+    EXPECT_EQ(zombieTape.back(), tape(false, false, false, false));
+    EXPECT_EQ(reanimatedConditionTape, tape(CONDITION_DEAD));
+    EXPECT_EQ(reanimatedFaceTape, tape(reanimatedFace));
+    EXPECT_EQ(templedFaceTape, tape(zombieFace, templedFace));
+}
+
 GAME_TEST(Issues, Issue2784a) {
     // Acid Burst impacts were silent.
     auto soundsTape = tapes.sounds();

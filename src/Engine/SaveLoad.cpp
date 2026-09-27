@@ -80,6 +80,18 @@ void loadGame(std::string_view fileName) {
     // We always start in realtime after loading a game.
     pParty->bTurnBasedModeOn = false;
 
+    // Vanilla MM7's evil temples and Reanimate could make a Lich a zombie. The temples also put on the zombie face,
+    // 23 or 24. Reanimate left the Lich face on, with its pre-promotion face still in uPrevFace.
+    for (Character &character : pParty->pCharacters) {
+        if (character.classType != CLASS_LICH || !character.IsZombie())
+            continue;
+        if (character.uCurrentFace == 23 || character.uCurrentFace == 24) {
+            character.ResetCondition(CONDITION_ZOMBIE);
+        } else {
+            character.conditions.reset(CONDITION_ZOMBIE);
+        }
+    }
+
     pParty->setActiveCharacterIndex(-1);
     pParty->setActiveToFirstCanAct();
 
