@@ -2,7 +2,6 @@
 
 #include <algorithm>
 #include <cassert>
-#include <limits>
 
 #include "Engine/Engine.h"
 #include "Engine/Evt/EvtEnumFunctions.h"
@@ -32,7 +31,9 @@ static bool isInRange(int value, auto first, auto last) {
 
 bool isEvtVariableValueValid(EvtOpcode opcode, EvtVariable var, int value) {
     if (var >= VAR_FIRST_SKILL && var <= VAR_LAST_SKILL) {
-        if (!isInRange(value, 0, std::numeric_limits<uint16_t>::max()))
+        if (opcode == EVENT_Subtract)
+            return isInRange(value, 0, 63); // A subtract is a plain level count, mastery bits mean nothing there.
+        if (!isInRange(value, 0, 0x1FF)) // Level in the low 6 bits, the three mastery flags above it.
             return false;
         if (opcode != EVENT_Set)
             return true; // Compare and add give meaning to mastery bits without a level, 0x80 is "master or better".
@@ -41,32 +42,32 @@ bool isEvtVariableValueValid(EvtOpcode opcode, EvtVariable var, int value) {
     }
 
     switch (var) {
-        case VAR_Sex:
-            return isInRange(value, SEX_FIRST, SEX_LAST);
-        case VAR_Class:
-            return isInRange(value, CLASS_FIRST, CLASS_LAST);
-        case VAR_Race:
-            return isInRange(value, RACE_FIRST, RACE_LAST);
-        case VAR_HiredNPCHasSpeciality:
-            return isInRange(value, NPC_PROFESSION_FIRST, NPC_PROFESSION_LAST);
-        case VAR_Award:
-            return isInRange(value, AWARD_FIRST, AWARD_LAST);
-        case VAR_QBits_QuestsDone:
-            return isInRange(value, QBIT_FIRST, QBIT_LAST);
-        case VAR_PlayerItemInHands:
-        case VAR_ItemEquipped:
-            return isInRange(value, ITEM_FIRST_VALID, ITEM_LAST_VALID);
-        case VAR_RandomGold:
-        case VAR_RandomFood:
-            return value > 0;
-        case VAR_AutoNotes:
-            return pParty->_autonoteBits.indices().contains(value);
-        case VAR_PlayerBits:
-            return pParty->pCharacters[0]._characterEventBits.indices().contains(value);
-        case VAR_NPCs2:
-            return isInRange(value, 0, std::ssize(pNPCStats->pNPCData) - 1);
-        default:
-            return true;
+    case VAR_Sex:
+        return isInRange(value, SEX_FIRST, SEX_LAST);
+    case VAR_Class:
+        return isInRange(value, CLASS_FIRST, CLASS_LAST);
+    case VAR_Race:
+        return isInRange(value, RACE_FIRST, RACE_LAST);
+    case VAR_HiredNPCHasSpeciality:
+        return isInRange(value, NPC_PROFESSION_FIRST, NPC_PROFESSION_LAST);
+    case VAR_Award:
+        return isInRange(value, AWARD_FIRST, AWARD_LAST);
+    case VAR_QBits_QuestsDone:
+        return isInRange(value, QBIT_FIRST, QBIT_LAST);
+    case VAR_PlayerItemInHands:
+    case VAR_ItemEquipped:
+        return isInRange(value, ITEM_FIRST_VALID, ITEM_LAST_VALID);
+    case VAR_RandomGold:
+    case VAR_RandomFood:
+        return value > 0;
+    case VAR_AutoNotes:
+        return pParty->_autonoteBits.indices().contains(value);
+    case VAR_PlayerBits:
+        return pParty->pCharacters[0]._characterEventBits.indices().contains(value);
+    case VAR_NPCs2:
+        return isInRange(value, 0, std::ssize(pNPCStats->pNPCData) - 1);
+    default:
+        return true;
     }
 }
 
