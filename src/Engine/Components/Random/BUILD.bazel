@@ -1,0 +1,20 @@
+load("@rules_cc//cc:cc_library.bzl", "cc_library")
+
+cc_library(
+    name = "engine_components_random",
+    srcs = [
+        "EngineRandomComponent.cpp",
+        "TracingRandomEngine.cpp",
+    ],
+    hdrs = [
+        "EngineRandomComponent.h",
+        "TracingRandomEngine.h",
+    ],
+    visibility = ["//visibility:public"],
+    deps = [
+        "//src/Engine/Random:engine_random",
+        "//src/Library/Platform/Application:library_platform_application",
+        "//src/Library/Random:library_random",
+        "//src/Library/StackTrace:library_stack_trace",
+    ],
+)

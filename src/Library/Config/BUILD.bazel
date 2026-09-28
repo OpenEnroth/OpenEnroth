@@ -1,0 +1,42 @@
+load("@rules_cc//cc:cc_library.bzl", "cc_library")
+
+cc_library(
+    name = "library_config",
+    srcs = [
+        "AnyConfigEntry.cpp",
+        "Config.cpp",
+        "ConfigPatch.cpp",
+        "ConfigSection.cpp",
+    ],
+    hdrs = [
+        "AnyConfigEntry.h",
+        "AnyHandler.h",
+        "Config.h",
+        "ConfigEntry.h",
+        "ConfigFwd.h",
+        "ConfigPatch.h",
+        "ConfigSection.h",
+    ],
+    visibility = ["//visibility:public"],
+    deps = [
+        "//src/Utility:utility",
+        "//src/Library/Logger:library_logger",
+        "//src/Library/Serialization:library_serialization",
+        # inicpp is PRIVATE
+        "@inifile_cpp",
+    ],
+)
+
+cc_library(
+    name = "test_library_config",
+    testonly = True,
+    srcs = [
+        "Tests/Config_ut.cpp",
+    ],
+    visibility = ["//visibility:public"],
+    deps = [
+        ":library_config",
+        "//test/Testing/Unit:testing_unit",
+    ],
+    alwayslink = True,
+)

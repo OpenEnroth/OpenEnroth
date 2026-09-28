@@ -86,6 +86,17 @@ jobs:
         restore-cache: false
         upload-artifact: false
 
+    - name: Annotate failure log
+      if: failure()
+      run: |
+        f=$(ls -t .flatpak-builder/build/openenroth*/bazel-*.log 2>/dev/null | head -1)
+        if [ -n "$f" ]; then
+          grep -E "error:|ERROR:|CMake Error|Error [0-9]|FAILED:|incomplete" "$f" | head -10 | while IFS= read -r l; do echo "::warning::${l:0:400}"; done
+        else
+          echo "::warning::no bazel log found; failed before bazel ran"
+          ls .flatpak-builder/build 2>/dev/null | head -5 | while read d; do echo "::warning::builddir: $d"; done
+        fi
+
     - name: Publish release
       if: inputs.releaseTag != ''
       uses: softprops/action-gh-release@v2.0.8

@@ -1,0 +1,33 @@
+load("@rules_cc//cc:cc_library.bzl", "cc_library")
+
+cc_library(
+    name = "library_vid",
+    srcs = [
+        "VidReader.cpp",
+        "VidSnapshots.cpp",
+    ],
+    hdrs = [
+        "VidReader.h",
+        "VidSnapshots.h",
+    ],
+    visibility = ["//visibility:public"],
+    deps = [
+        "//src/Library/Binary:library_binary",
+        "//src/Library/Snapshots:library_snapshots",
+        "//src/Utility:utility",
+    ],
+)
+
+cc_library(
+    name = "test_library_vid",
+    testonly = True,
+    srcs = [
+        "Tests/VidReader_ut.cpp",
+    ],
+    visibility = ["//visibility:public"],
+    deps = [
+        ":library_vid",
+        "//test/Testing/Unit:testing_unit",
+    ],
+    alwayslink = True,
+)

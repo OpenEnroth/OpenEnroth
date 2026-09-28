@@ -1,0 +1,25 @@
+load("@rules_cc//cc:cc_library.bzl", "cc_library")
+
+cc_library(
+    name = "engine_components_control",
+    srcs = [
+        "EngineControlComponent.cpp",
+        "EngineController.cpp",
+    ],
+    hdrs = [
+        "EngineControlComponent.h",
+        "EngineControlState.h",
+        "EngineControlStateHandle.h",
+        "EngineController.h",
+    ],
+    visibility = ["//visibility:public"],
+    deps = [
+        "//src/Arcomage:arcomage",
+        "//src/Engine:engine",
+        "//src/GUI:gui",
+        "//src/Library/FileSystem/Memory:library_filesystem_memory",
+        "//src/Library/Platform/Application:library_platform_application",
+        "//src/Library/Platform/Interface:library_platform_interface",
+        "//src/Utility:utility",
+    ],
+)

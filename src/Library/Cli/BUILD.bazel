@@ -1,0 +1,17 @@
+load("@rules_cc//cc:cc_library.bzl", "cc_library")
+load("//bazel:stdlib_hardening.bzl", "STDLIB_HARDENING_DEFINES")
+
+cc_library(
+    name = "library_cli",
+    defines = STDLIB_HARDENING_DEFINES,
+    srcs = [
+        "CliApp.cpp",
+    ],
+    hdrs = [
+        "CliApp.h",
+    ],
+    visibility = ["//visibility:public"],
+    deps = [
+        "@cli11",
+    ],
+)

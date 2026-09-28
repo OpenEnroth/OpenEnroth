@@ -1,0 +1,16 @@
+load("@rules_cc//cc:cc_library.bzl", "cc_library")
+
+cc_library(
+    name = "core_time",
+    srcs = [
+        "Duration.cpp",
+    ],
+    hdrs = [
+        "Duration.h",
+        "Time.h",
+    ],
+    visibility = ["//visibility:public"],
+    deps = [
+        "//src/Library/Random:library_random",
+    ],
+)

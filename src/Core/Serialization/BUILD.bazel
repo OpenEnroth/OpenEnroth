@@ -1,0 +1,18 @@
+load("@rules_cc//cc:cc_library.bzl", "cc_library")
+
+cc_library(
+    name = "core_serialization",
+    srcs = [
+        "PlatformKeySerialization.cpp",
+        "PlatformWindowModeSerialization.cpp",
+    ],
+    hdrs = [
+        "PlatformKeySerialization.h",
+        "PlatformWindowModeSerialization.h",
+    ],
+    visibility = ["//visibility:public"],
+    deps = [
+        "//src/Library/Platform/Interface:library_platform_interface",
+        "//src/Library/Serialization:library_serialization",
+    ],
+)

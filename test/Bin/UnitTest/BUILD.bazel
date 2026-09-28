@@ -1,0 +1,46 @@
+load("@rules_cc//cc:cc_test.bzl", "cc_test")
+
+# cc_test so bazel caches passed results; shards run (and cache) in parallel
+# via gtest's native sharding protocol.
+cc_test(
+    name = "OpenEnroth_UnitTest",
+    srcs = [
+        "UnitTestMain.cpp",
+    ],
+    shard_count = 4,
+    visibility = ["//visibility:public"],
+    deps = [
+        "//test/Testing/Unit:testing_unit",
+        "//src/Library/StackTrace:library_stack_trace",
+        # Test-case libraries. These are alwayslink so the gtest auto-registration
+        # statics survive the linker; without them this binary links zero tests.
+        "//src/Library/Binary:test_library_binary",
+        "//src/Library/Color:test_library_color",
+        "//src/Library/Compression:test_library_compression",
+        "//src/Library/Config:test_library_config",
+        "//src/Library/Environment/Tests:test_library_environment",
+        "//src/Library/FileSystem/Directory:test_library_filesystem_directory",
+        "//src/Library/FileSystem/Dump:test_library_filesystem_dump",
+        "//src/Library/FileSystem/Embedded:test_library_filesystem_embedded",
+        "//src/Library/FileSystem/Interface:test_library_filesystem_interface",
+        "//src/Library/FileSystem/Lowercase:test_library_filesystem_lowercase",
+        "//src/Library/FileSystem/Masking:test_library_filesystem_masking",
+        "//src/Library/FileSystem/Memory:test_library_filesystem_memory",
+        "//src/Library/FileSystem/Merging:test_library_filesystem_merging",
+        "//src/Library/FileSystem/Mounting:test_library_filesystem_mounting",
+        "//src/Library/FileSystem/Sub:test_library_filesystem_sub",
+        "//src/Library/FileSystem/Trie:test_library_filesystem_trie",
+        "//src/Library/Fsm:test_library_fsm",
+        "//src/Library/Geometry:test_library_geometry",
+        "//src/Library/Json:test_library_json",
+        "//src/Library/Lod:test_library_lod",
+        "//src/Library/Logger:test_library_logger",
+        "//src/Library/Preprocessor:test_library_preprocessor",
+        "//src/Library/Serialization:test_library_serialization",
+        "//src/Library/Snapshots:test_library_snapshots",
+        "//src/Library/Snd:test_library_snd",
+        "//src/Library/StackTrace:test_library_stack_trace",
+        "//src/Library/Vid:test_library_vid",
+        "//src/Utility:test_utility",
+    ],
+)

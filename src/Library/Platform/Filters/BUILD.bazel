@@ -1,0 +1,18 @@
+load("@rules_cc//cc:cc_library.bzl", "cc_library")
+
+cc_library(
+    name = "library_platform_filters",
+    srcs = [
+        "FilteringEventHandler.cpp",
+        "PlatformEventFilter.cpp",
+    ],
+    hdrs = [
+        "FilteringEventHandler.h",
+        "PlatformEventFilter.h",
+    ],
+    visibility = ["//visibility:public"],
+    deps = [
+        "//src/Library/Platform/Interface:library_platform_interface",
+        "//src/Utility:utility",
+    ],
+)

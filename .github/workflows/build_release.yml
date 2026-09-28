@@ -72,7 +72,7 @@ jobs:
 
   build_all:
     needs: advanceNightlyTag
-    uses: ./.github/workflows/build_all.yml
+    uses: ./.github/workflows/bazel_build.yml
     secrets: inherit
     with:
       releaseTag: '${{needs.advanceNightlyTag.outputs.tagName}}'

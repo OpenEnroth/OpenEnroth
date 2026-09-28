@@ -1,0 +1,18 @@
+load("@rules_cc//cc:cc_library.bzl", "cc_library")
+
+# glad — pre-generated OpenGL/EGL loader. Already in-tree, not a submodule.
+cc_library(
+    name = "glad",
+    srcs = [
+        "src/egl.c",
+        "src/gl.c",
+    ],
+    hdrs = [
+        "include/EGL/eglplatform.h",
+        "include/KHR/khrplatform.h",
+        "include/glad/egl.h",
+        "include/glad/gl.h",
+    ],
+    includes = ["include"],
+    visibility = ["//visibility:public"],
+)

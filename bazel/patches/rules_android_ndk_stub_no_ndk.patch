@@ -1,0 +1,16 @@
+--- a/rules.bzl
++++ b/rules.bzl
+@@ -26,5 +26,10 @@
+     ndk_path = ctx.attr.path or ctx.os.environ.get("ANDROID_NDK_HOME", None)
+     if not ndk_path:
+-        fail("Either the ANDROID_NDK_HOME environment variable or the " +
+-             "path attribute of android_ndk_repository must be set.")
+-    if ndk_path.startswith("$WORKSPACE_ROOT"):
++        # No NDK found: create a stub repo with no toolchains so non-Android
++        # platforms (Windows, macOS, Linux desktop) can build without an NDK.
++        # register_toolchains("@androidndk//:all") resolves to the empty set.
++        # Android CI builds set ANDROID_NDK_HOME explicitly before Bazel runs.
++        ctx.file("BUILD.bazel", "# Stub: ANDROID_NDK_HOME is not set.\n")
++        ctx.file("target_systems.bzl", "TARGET_SYSTEMS = {}\n")
++        return
++    if ndk_path.startswith("$WORKSPACE_ROOT"):

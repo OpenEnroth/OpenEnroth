@@ -1,0 +1,2 @@
+# This package contains the binary targets (OpenEnroth, LodTool, CodeGen).
+# All binaries are defined in subdirectories.

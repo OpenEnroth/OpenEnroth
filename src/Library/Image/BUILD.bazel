@@ -1,0 +1,25 @@
+load("@rules_cc//cc:cc_library.bzl", "cc_library")
+
+cc_library(
+    name = "library_image",
+    srcs = [
+        "ImageFunctions.cpp",
+        "Pcx.cpp",
+        "Png.cpp",
+    ],
+    hdrs = [
+        "Image.h",
+        "ImageFunctions.h",
+        "Palette.h",
+        "Pcx.h",
+        "Png.h",
+    ],
+    visibility = ["//visibility:public"],
+    deps = [
+        "//src/Library/Color:library_color",
+        "//src/Library/Geometry:library_geometry",
+        "//src/Utility:utility",
+        # PNG — Phase 5 TODO
+        "//bazel/system:png",
+    ],
+)

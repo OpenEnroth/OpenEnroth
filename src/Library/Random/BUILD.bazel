@@ -1,0 +1,16 @@
+load("@rules_cc//cc:cc_library.bzl", "cc_library")
+load("//bazel:stdlib_hardening.bzl", "STDLIB_HARDENING_DEFINES")
+
+cc_library(
+    name = "library_random",
+    defines = STDLIB_HARDENING_DEFINES,
+    srcs = [
+        "RandomEngine.cpp",
+    ],
+    hdrs = [
+        "MersenneTwisterRandomEngine.h",
+        "RandomEngine.h",
+        "SequentialRandomEngine.h",
+    ],
+    visibility = ["//visibility:public"],
+)
