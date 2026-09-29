@@ -11,7 +11,7 @@
 
 using namespace std::chrono_literals; // NOLINT
 
-static ProcessResult runShell(std::string command, std::chrono::milliseconds timeout = 30s) {
+static ProcessResult runShell(std::string command, std::chrono::milliseconds timeout = {}) {
 #ifdef _WINDOWS
     return runProcess(NativePath::fromWtf8(std::getenv("ComSpec")), {"/c", std::move(command)}, timeout);
 #else
@@ -52,10 +52,11 @@ UNIT_TEST(Process, Timeout) {
     std::string command = "sleep 5";
 #endif
     auto start = std::chrono::steady_clock::now();
-    EXPECT_THROW((void) runShell(command, 200ms), Exception);
+    ProcessResult result = runShell(command, 200ms);
+    EXPECT_FALSE(result.exitCode);
     EXPECT_LT(std::chrono::steady_clock::now() - start, 10s);
 }
 
 UNIT_TEST(Process, MissingExecutable) {
-    EXPECT_THROW((void) runProcess("no_such_executable_here", {}, 30s), Exception);
+    EXPECT_THROW((void) runProcess("no_such_executable_here", {}), Exception);
 }

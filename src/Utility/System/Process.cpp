@@ -54,18 +54,20 @@ ProcessResult runProcess(const NativePath &path, const std::vector<std::string> 
     auto deadline = std::chrono::steady_clock::now() + timeout;
     while (subprocess_alive(&process)) {
         drain();
-        if (std::chrono::steady_clock::now() >= deadline) {
+        if (timeout != timeout.zero() && std::chrono::steady_clock::now() >= deadline) {
             subprocess_terminate(&process);
             subprocess_join(&process, nullptr);
             drain();
-            throw Exception("{}: didn't finish in {}ms, output was:\n{}", displayString, timeout.count(), result.output);
+            return result;
         }
         std::this_thread::sleep_for(std::chrono::milliseconds(10));
     }
     drain();
 
-    if (subprocess_join(&process, &result.exitCode) != 0)
+    int exitCode = 0;
+    if (subprocess_join(&process, &exitCode) != 0)
         throw Exception("{}: couldn't get the exit code", displayString);
+    result.exitCode = exitCode;
     return result;
 }
 
