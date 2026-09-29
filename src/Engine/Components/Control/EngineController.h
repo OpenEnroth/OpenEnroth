@@ -115,8 +115,7 @@ class EngineController {
     void startNewGame();
 
     /**
-     * Waits for a loading screen to start and complete. Should be called right after the action that triggers the
-     * load, without ticking in between. With `no_loading_screen` the whole load happens inside a single frame.
+     * Waits for the loading screen to complete.
      *
      * @throws Exception                If there is no loading screen.
      */
