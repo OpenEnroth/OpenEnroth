@@ -41,8 +41,7 @@ class EvtInterpreter {
 
      /**
       * @param ir                       Instruction to run, outside of NPC mode.
-      * @return                         What the event does next. `Jmp`, `RandomGoTo` and a condition that holds
-      *                                 jump.
+      * @return                         Where the event goes after this instruction.
       */
      EvtFlow executeInstruction(EvtInstruction ir);
 
