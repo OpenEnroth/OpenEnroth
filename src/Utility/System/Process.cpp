@@ -4,6 +4,8 @@
 #include <chrono>
 #include <cstdio>
 #include <string>
+#include <string_view>
+#include <system_error>
 #include <thread>
 #include <vector>
 
@@ -22,6 +24,19 @@ ProcessResult runProcess(const NativePath &path, const std::vector<std::string> 
 
 #else // __ANDROID__
 
+[[noreturn]] static void throwFromSubprocessError(int error, std::string_view displayString) {
+    switch (error) {
+    case subprocess_error_not_found: Exception::throwFromErrc(std::errc::no_such_file_or_directory, displayString);
+    case subprocess_error_permission_denied: Exception::throwFromErrc(std::errc::permission_denied, displayString);
+    case subprocess_error_no_memory: Exception::throwFromErrc(std::errc::not_enough_memory, displayString);
+    case subprocess_error_not_supported: Exception::throwFromErrc(std::errc::function_not_supported, displayString);
+    case subprocess_error_invalid_options:
+    case subprocess_error_invalid_environment: Exception::throwFromErrc(std::errc::invalid_argument, displayString);
+    case subprocess_error_pipe: throw Exception("{}: couldn't create pipes to the process", displayString);
+    default: throw Exception("{}: couldn't start the process", displayString);
+    }
+}
+
 ProcessResult runProcess(const NativePath &path, const std::vector<std::string> &args, std::chrono::milliseconds timeout) {
     std::string displayString = path.displayString();
 
@@ -39,7 +54,7 @@ ProcessResult runProcess(const NativePath &path, const std::vector<std::string> 
     int options = subprocess_option_inherit_environment | subprocess_option_no_window | subprocess_option_enable_async |
                   subprocess_option_enable_async_no_wait;
     if (int error = subprocess_create(commandLine.data(), options, &process))
-        throw Exception("{}: couldn't start the process, subprocess.h error {}", displayString, error);
+        throwFromSubprocessError(error, displayString);
     MM_AT_SCOPE_EXIT(subprocess_destroy(&process));
 
     fclose(process.stdin_file); // The child reads end of file right away.
