@@ -207,24 +207,24 @@ int EvtInterpreter::executeOneEvent(int step, bool isNpc) {
         return step + 1;
     }
 
-    EvtResult result = executeInstruction(ir);
-    switch (result.outcome) {
-        case EVT_OUTCOME_NEXT: return step + 1;
-        case EVT_OUTCOME_JUMP: return result.target;
-        case EVT_OUTCOME_STOP:
-        case EVT_OUTCOME_WAIT: return -1;
+    EvtFlow flow = executeInstruction(ir);
+    switch (flow.type) {
+        case EVT_FLOW_NEXT: return step + 1;
+        case EVT_FLOW_JUMP: return flow.target;
+        case EVT_FLOW_STOP:
+        case EVT_FLOW_YIELD: return -1;
     }
     assert(false);
     return -1;
 }
 
 // TODO(captainurist): take a const reference once the MoveToMap data hacks below stop patching `ir`.
-EvtResult EvtInterpreter::executeInstruction(EvtInstruction ir) {
+EvtFlow EvtInterpreter::executeInstruction(EvtInstruction ir) {
     int step = ir.step;
 
     switch (ir.opcode) {
         case EVENT_Exit:
-            return {EVT_OUTCOME_STOP};
+            return {EVT_FLOW_STOP};
         case EVENT_SpeakInHouse:
             if (enterHouse(ir.data.house_id)) {
                 pAudioPlayer->playHouseSound(SOUND_enter, false);
@@ -254,7 +254,7 @@ EvtResult EvtInterpreter::executeInstruction(EvtInstruction ir) {
                                                                              moveToMapDestination(ir), ir.str);
                 savedEventID = _eventId;
                 savedEventStep = step + 1;
-                return {EVT_OUTCOME_WAIT};
+                return {EVT_FLOW_YIELD};
             }
 
             // TODO(pskelton): Fix #2117 this should be a data mod
@@ -285,14 +285,14 @@ EvtResult EvtInterpreter::executeInstruction(EvtInstruction ir) {
                         current_screen_type = SCREEN_GAME;
                         pDialogueWindow = nullptr;
                     }
-                    return {EVT_OUTCOME_STOP};
+                    return {EVT_FLOW_STOP};
                 }
             }
             break;
         }
         case EVENT_OpenChest:
             if (!Chest::open(ir.data.chest_id, _objectPid)) {
-                return {EVT_OUTCOME_STOP};
+                return {EVT_FLOW_STOP};
             }
             break;
         case EVENT_ShowFace:
@@ -358,7 +358,7 @@ EvtResult EvtInterpreter::executeInstruction(EvtInstruction ir) {
                 break;
             for (Character &character : iterateCharacters(_who, ir.data.variable_descr.type, grng))
                 if (compareEvtVariable(character, ir.data.variable_descr.type, ir.data.variable_descr.value))
-                    return {EVT_OUTCOME_JUMP, ir.target_step};
+                    return {EVT_FLOW_JUMP, ir.target_step};
             break;
         case EVENT_ChangeDoorState:
             switchDoorAnimation(ir.data.door_descr.door_id, ir.data.door_descr.door_action);
@@ -397,7 +397,7 @@ EvtResult EvtInterpreter::executeInstruction(EvtInstruction ir) {
                         isShort = true;
             }
             if (isShort)
-                return {EVT_OUTCOME_STOP};
+                return {EVT_FLOW_STOP};
             break;
         }
         case EVENT_Set:
@@ -438,7 +438,7 @@ EvtResult EvtInterpreter::executeInstruction(EvtInstruction ir) {
             Actor::toggleFlag(ir.data.actor_flag_descr.id, ir.data.actor_flag_descr.attr, ir.data.actor_flag_descr.is_set);
             break;
         case EVENT_RandomGoTo:
-            return {EVT_OUTCOME_JUMP, ir.data.random_goto_descr.random_goto[grng->random(ir.data.random_goto_descr.random_goto_len)]};
+            return {EVT_FLOW_JUMP, ir.data.random_goto_descr.random_goto[grng->random(ir.data.random_goto_descr.random_goto_len)]};
         case EVENT_InputString:
             // Originally starting step was checked to ensure skipping this command when returning from dialogue.
             // Changed to using "step + 1" to go to next event
@@ -450,7 +450,7 @@ EvtResult EvtInterpreter::executeInstruction(EvtInstruction ir) {
             game_ui_status_bar_event_string = (ir.data.text_id < engine->_levelStrings.size()) ? engine->_levelStrings[ir.data.text_id] : "";
             startBranchlessDialogue(_eventId, step + 1, EVENT_InputString);
 #endif
-            return {EVT_OUTCOME_STOP};
+            return {EVT_FLOW_STOP};
         case EVENT_StatusText:
             if (activeLevelDecoration) {
                 if (activeLevelDecoration == (LevelDecoration *)1) {
@@ -475,13 +475,13 @@ EvtResult EvtInterpreter::executeInstruction(EvtInstruction ir) {
             break;
         case EVENT_OnTimer:
             // Trigger, must be skipped but can be encountered in vanilla
-            return {EVT_OUTCOME_STOP};
+            return {EVT_FLOW_STOP};
         case EVENT_ToggleIndoorLight:
             pIndoor->toggleLight(ir.data.light_descr.light_id, ir.data.light_descr.is_enable);
             break;
         case EVENT_PressAnyKey:
             startBranchlessDialogue(_eventId, step + 1, EVENT_PressAnyKey);
-            return {EVT_OUTCOME_WAIT};
+            return {EVT_FLOW_YIELD};
         case EVENT_SummonItem:
             SpriteObject::dropItemAt(ir.data.summon_item_descr.sprite, Vec3f(ir.data.summon_item_descr.x, ir.data.summon_item_descr.y, ir.data.summon_item_descr.z),
                                      ir.data.summon_item_descr.speed, ir.data.summon_item_descr.count, ir.data.summon_item_descr.random_rotate);
@@ -490,13 +490,13 @@ EvtResult EvtInterpreter::executeInstruction(EvtInstruction ir) {
             _who = ir.who;
             break;
         case EVENT_Jmp:
-            return {EVT_OUTCOME_JUMP, ir.target_step};
+            return {EVT_FLOW_JUMP, ir.target_step};
         case EVENT_OnMapReload:
             // Trigger, must be skipped but can be encountered in vanilla
-            return {EVT_OUTCOME_STOP};
+            return {EVT_FLOW_STOP};
         case EVENT_OnLongTimer:
             // Trigger, must be skipped but can be encountered in vanilla
-            return {EVT_OUTCOME_STOP};
+            return {EVT_FLOW_STOP};
         case EVENT_SetNPCTopic:
         {
             NPCData *npc = &pNPCStats->pNPCData[ir.data.npc_topic_descr.npc_id];
@@ -570,7 +570,7 @@ EvtResult EvtInterpreter::executeInstruction(EvtInstruction ir) {
             for (Character &character : iterateCharacters(_who, grng)) {
                 CombinedSkillValue val = character.getSkillValue(ir.data.check_skill_descr.skill_type);
                 if (val.level() >= ir.data.check_skill_descr.skill_level && val.mastery() == ir.data.check_skill_descr.skill_mastery)
-                    return {EVT_OUTCOME_JUMP, ir.target_step};
+                    return {EVT_FLOW_JUMP, ir.target_step};
             }
             break;
         case EVENT_SetNPCGroupNews:
@@ -596,12 +596,12 @@ EvtResult EvtInterpreter::executeInstruction(EvtInstruction ir) {
             break;
         case EVENT_IsActorKilled:
             if (Actor::isActorKilled(ir.data.actor_descr.policy, ir.data.actor_descr.param, ir.data.actor_descr.num)) {
-                return {EVT_OUTCOME_JUMP, ir.target_step};
+                return {EVT_FLOW_JUMP, ir.target_step};
             }
             break;
         case EVENT_OnMapLeave:
             // Trigger, must be skipped but can be encountered in vanilla
-            return {EVT_OUTCOME_STOP};
+            return {EVT_FLOW_STOP};
         case EVENT_ChangeGroup:
             // TODO: enconunter and process
             assert(false);
@@ -628,7 +628,7 @@ EvtResult EvtInterpreter::executeInstruction(EvtInstruction ir) {
             break;
         case EVENT_CheckSeason:
             if (checkSeason(ir.data.season)) {
-                return {EVT_OUTCOME_JUMP, ir.target_step};
+                return {EVT_FLOW_JUMP, ir.target_step};
             }
             break;
         case EVENT_ToggleActorGroupFlag:
@@ -659,7 +659,7 @@ EvtResult EvtInterpreter::executeInstruction(EvtInstruction ir) {
             break;
     }
 
-    return {EVT_OUTCOME_NEXT};
+    return {EVT_FLOW_NEXT};
 }
 
 bool EvtInterpreter::executeRegular(int startStep) {
