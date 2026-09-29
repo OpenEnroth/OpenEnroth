@@ -20,6 +20,7 @@ env:
   LLS_TAG: '3.19.1'
   CLANG_TIDY_VERSION: '22.1.8'
   DOXYGEN_VERSION: '1.9.5'
+  MOLD_VERSION: '2.36.0'
 
 defaults:
   run:
@@ -40,7 +41,7 @@ jobs:
       - name: 'Install mold'
         uses: rui314/setup-mold@v1
         with:
-          mold-version: '2.36.0'
+          mold-version: ${{env.MOLD_VERSION}}
           make-default: false
 
       # The configure step resolves OpenGL, so the GL development files have to be there.
