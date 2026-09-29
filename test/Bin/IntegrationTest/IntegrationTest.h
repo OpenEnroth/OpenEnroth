@@ -6,6 +6,7 @@
 #include <vector>
 
 #include "Testing/Extensions/ScopedTestFolder.h"
+#include "Testing/Extensions/ThrowingAssertions.h"
 
 #include "Utility/System/NativePath.h"
 #include "Utility/System/Process.h"
