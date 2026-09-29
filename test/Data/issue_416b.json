@@ -13,11 +13,6 @@
                 "value": "50"
             },
             {
-                "key": "trace_no_loading_screen",
-                "section": "debug",
-                "value": "true"
-            },
-            {
                 "key": "trace_no_party_actor_collisions",
                 "section": "debug",
                 "value": "false"
@@ -31,6 +26,11 @@
                 "key": "trace_random_engine",
                 "section": "debug",
                 "value": "sequential"
+            },
+            {
+                "key": "trace_single_frame_loading_screen",
+                "section": "debug",
+                "value": "true"
             }
         ],
         "endState": {
@@ -124,7 +124,7 @@
                         "Blaster",
                         "Wetsuit"
                     ],
-                    "hp": 745,
+                    "hp": 747,
                     "intelligence": 19,
                     "luck": 75,
                     "might": 15,
@@ -229,7 +229,7 @@
                         "Blaster",
                         "Wetsuit"
                     ],
-                    "hp": 176,
+                    "hp": 128,
                     "intelligence": 114,
                     "luck": 23,
                     "might": 19,
@@ -611,67 +611,67 @@
             "type": "paint"
         },
         {
-            "randomState": 107,
+            "randomState": 122,
             "tickCount": 1550,
             "type": "paint"
         },
         {
-            "randomState": 111,
+            "randomState": 138,
             "tickCount": 1600,
             "type": "paint"
         },
         {
-            "randomState": 145,
+            "randomState": 138,
             "tickCount": 1650,
             "type": "paint"
         },
         {
-            "randomState": 145,
+            "randomState": 138,
             "tickCount": 1700,
             "type": "paint"
         },
         {
-            "randomState": 153,
+            "randomState": 146,
             "tickCount": 1750,
             "type": "paint"
         },
         {
-            "randomState": 157,
+            "randomState": 150,
             "tickCount": 1800,
             "type": "paint"
         },
         {
-            "randomState": 157,
+            "randomState": 150,
             "tickCount": 1850,
             "type": "paint"
         },
         {
-            "randomState": 157,
+            "randomState": 150,
             "tickCount": 1900,
             "type": "paint"
         },
         {
-            "randomState": 157,
+            "randomState": 150,
             "tickCount": 1950,
             "type": "paint"
         },
         {
-            "randomState": 168,
+            "randomState": 161,
             "tickCount": 2000,
             "type": "paint"
         },
         {
-            "randomState": 173,
+            "randomState": 166,
             "tickCount": 2050,
             "type": "paint"
         },
         {
-            "randomState": 178,
+            "randomState": 171,
             "tickCount": 2100,
             "type": "paint"
         },
         {
-            "randomState": 178,
+            "randomState": 171,
             "tickCount": 2150,
             "type": "paint"
         }

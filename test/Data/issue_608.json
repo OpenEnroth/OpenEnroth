@@ -8,11 +8,6 @@
                 "value": "16"
             },
             {
-                "key": "trace_no_loading_screen",
-                "section": "debug",
-                "value": "true"
-            },
-            {
                 "key": "trace_no_party_actor_collisions",
                 "section": "debug",
                 "value": "false"
@@ -26,6 +21,11 @@
                 "key": "trace_random_engine",
                 "section": "debug",
                 "value": "sequential"
+            },
+            {
+                "key": "trace_single_frame_loading_screen",
+                "section": "debug",
+                "value": "true"
             }
         ],
         "endState": {
@@ -6932,12 +6932,12 @@
             "type": "paint"
         },
         {
-            "randomState": 286,
+            "randomState": 194,
             "tickCount": 1808,
             "type": "paint"
         },
         {
-            "randomState": 289,
+            "randomState": 286,
             "tickCount": 1824,
             "type": "paint"
         },
@@ -6972,7 +6972,7 @@
             "type": "paint"
         },
         {
-            "randomState": 297,
+            "randomState": 289,
             "tickCount": 1936,
             "type": "paint"
         },
@@ -7012,13 +7012,18 @@
             "type": "paint"
         },
         {
-            "randomState": 301,
+            "randomState": 297,
             "tickCount": 2064,
             "type": "paint"
         },
         {
             "randomState": 301,
             "tickCount": 2080,
+            "type": "paint"
+        },
+        {
+            "randomState": 301,
+            "tickCount": 2096,
             "type": "paint"
         },
         {
@@ -8323,11 +8328,6 @@
         },
         {
             "randomState": 304,
-            "tickCount": 2096,
-            "type": "paint"
-        },
-        {
-            "randomState": 304,
             "tickCount": 2112,
             "type": "paint"
         },
@@ -8352,7 +8352,7 @@
             "type": "paint"
         },
         {
-            "randomState": 306,
+            "randomState": 304,
             "tickCount": 2192,
             "type": "paint"
         },
@@ -8392,7 +8392,7 @@
             "type": "paint"
         },
         {
-            "randomState": 307,
+            "randomState": 306,
             "tickCount": 2320,
             "type": "paint"
         },
@@ -8412,7 +8412,7 @@
             "type": "paint"
         },
         {
-            "randomState": 310,
+            "randomState": 307,
             "tickCount": 2384,
             "type": "paint"
         },
@@ -8427,7 +8427,7 @@
             "type": "paint"
         },
         {
-            "randomState": 312,
+            "randomState": 310,
             "tickCount": 2432,
             "type": "paint"
         },
@@ -8472,6 +8472,11 @@
             "type": "paint"
         },
         {
+            "randomState": 312,
+            "tickCount": 2576,
+            "type": "paint"
+        },
+        {
             "isAutoRepeat": false,
             "key": "CONTROL",
             "mods": "ctrl|num",
@@ -8479,7 +8484,7 @@
         },
         {
             "randomState": 312,
-            "tickCount": 2576,
+            "tickCount": 2592,
             "type": "paint"
         },
         {
@@ -8487,11 +8492,6 @@
             "key": "SHIFT",
             "mods": "shift|ctrl|num",
             "type": "keyPress"
-        },
-        {
-            "randomState": 312,
-            "tickCount": 2592,
-            "type": "paint"
         },
         {
             "randomState": 312,
@@ -8519,7 +8519,7 @@
             "type": "paint"
         },
         {
-            "randomState": 327,
+            "randomState": 312,
             "tickCount": 2688,
             "type": "paint"
         },
@@ -8561,6 +8561,11 @@
         {
             "randomState": 327,
             "tickCount": 2816,
+            "type": "paint"
+        },
+        {
+            "randomState": 327,
+            "tickCount": 2832,
             "type": "paint"
         }
     ]
