@@ -1,4 +1,4 @@
-# dmgbuild settings for the OpenEnroth disk image, see scripts/make_dmg.sh. Values passed with -D arrive in `defines`.
+# dmgbuild settings for the OpenEnroth disk image, see make_dmg.sh. Values passed with -D arrive in `defines`.
 import os.path
 
 application = defines['app']

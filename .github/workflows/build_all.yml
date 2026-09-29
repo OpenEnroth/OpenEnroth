@@ -266,7 +266,7 @@ jobs:
           attempt_limit: 3
           attempt_delay: 5000
           command: |
-            ./scripts/make_dmg.sh build/src/Bin/OpenEnroth/OpenEnroth.app src/Bin/OpenEnroth/OpenEnroth.icns "$RELEASE_FILE"
+            ./distribution/macos/make_dmg.sh build/src/Bin/OpenEnroth/OpenEnroth.app src/Bin/OpenEnroth/OpenEnroth.icns "$RELEASE_FILE"
 
       - name: '[windows] Prepare files for release'
         if: matrix.platform == 'windows'
