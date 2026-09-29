@@ -4,6 +4,7 @@
 
 #include "Engine/Components/Control/EngineController.h"
 
+#include "Testing/Extensions/GoogleTestHelp.h"
 #include "Testing/Game/GameTest.h"
 #include "Testing/Game/TestController.h"
 
@@ -16,20 +17,12 @@
 
 #include "GameTestOptions.h"
 
-void printGoogleTestHelp(char *app) {
-    int argc = 2;
-    char help[] = "--help";
-    char *argv[] = { app, help, nullptr };
-    testing::InitGoogleTest(&argc, argv);
-}
-
 int platformMain(int argc, char **argv) {
     try {
         StackTraceOnCrash st(nullptr, STACK_TRACE_LOAD_SYMBOLS_ON_CRASH);
         UnicodeCrt _(argc, argv);
         GameTestOptions opts = GameTestOptions::parse(argc, argv);
         if (opts.helpPrinted) {
-            fmt::print(stdout, "\n");
             printGoogleTestHelp(argv[0]);
             return 1;
         }
