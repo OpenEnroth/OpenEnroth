@@ -10,6 +10,7 @@
 #include "Library/LodFormats/LodImage.h"
 #include "Library/Logger/Logger.h"
 
+#include "Utility/Math/Float.h"
 #include "Utility/String/Format.h"
 
 
@@ -49,7 +50,7 @@ Palette PaletteManager::createGrayscalePalette() {
 Palette PaletteManager::createLoadedPalette(const Palette &palette) {
     float xs = engine->config->graphics.Saturation.value();
     float xv = engine->config->graphics.Lightness.value();
-    if (xs == 1.0f && xv == 1.0f)
+    if (fuzzyEquals(xs, 1.0f) && fuzzyEquals(xv, 1.0f))
         return palette;
 
     Palette result;
