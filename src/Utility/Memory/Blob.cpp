@@ -49,7 +49,7 @@ Blob Blob::fromFile(const NativePath &path) {
     // file doesn't exist.
     std::shared_ptr<mio::mmap_source> mmap;
     try {
-        mmap = std::make_shared<mio::mmap_source>(path.toStdPath().native());
+        mmap = std::make_shared<mio::mmap_source>(path.native());
     } catch (const std::system_error &e) {
         // mio doesn't fill in the path component for std::system_error, so we need to do this ourselves.
         throw std::system_error(e.code(), displayString);
