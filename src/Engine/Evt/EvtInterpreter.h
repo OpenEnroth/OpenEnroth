@@ -12,9 +12,9 @@
  * What an instruction tells the interpreter to do next.
  */
 enum class EvtFlowType {
-    EVT_FLOW_NEXT,  // Go on with the next step.
+    EVT_FLOW_NEXT,
     EVT_FLOW_JUMP,  // Go on with the step in `EvtFlow::target`.
-    EVT_FLOW_STOP,  // The event ends here.
+    EVT_FLOW_STOP,
     EVT_FLOW_YIELD, // The event pauses here, and the dialogue it opened resumes it at the next step if the player goes on.
 };
 using enum EvtFlowType;
