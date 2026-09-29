@@ -48,20 +48,33 @@ def lerp(a, b, t):
     return tuple(a[i] + (b[i] - a[i]) * t for i in range(len(a)))
 
 
+def mottle(rnd, cells_x, cells_y, blur):
+    """Smooth random field in -1..1, made by blowing up a small grid of random values."""
+    small = Image.new('L', (cells_x, cells_y))
+    small.putdata([rnd.randint(0, 255) for _ in range(cells_x * cells_y)])
+    return small.resize((W, H), Image.BICUBIC).filter(ImageFilter.GaussianBlur(blur))
+
+
 def parchment():
+    rnd = random.Random(7) # Fixed seed, so the texture and the output files are reproducible.
+    blotches = mottle(rnd, 24, 16, 18 * S).load() # Uneven aging, a few big patches.
+    fibers = mottle(rnd, 150, 100, 1.5 * S).load() # Finer cloudiness.
+
     img = Image.new('RGB', (W, H))
     px = img.load()
     cx, cy = W / 2, H * 0.45
-    rnd = random.Random(7) # Fixed seed, so the grain and the output files are reproducible.
     for y in range(H):
         base = lerp(PAPER_TOP, PAPER_BOTTOM, y / (H - 1))
         for x in range(W):
             dx, dy = (x - cx) / (W / 2), (y - cy) / (H / 2)
             edge = min(1.0, math.hypot(dx, dy) / 1.3) ** 3 * 0.55 # Darkens toward the corners like aged paper.
-            n = rnd.gauss(0, 1.4) # Paper grain.
             c = lerp(base, PAPER_EDGE, edge)
-            px[x, y] = tuple(max(0, min(255, int(round(v + n)))) for v in c)
-    return img.filter(ImageFilter.GaussianBlur(0.5 * S))
+            n = (blotches[x, y] - 128) / 128 * 9 + (fibers[x, y] - 128) / 128 * 5 + rnd.gauss(0, 4.5)
+            # Darker spots also turn a little browner, the way old paper stains.
+            px[x, y] = (max(0, min(255, int(round(c[0] + n)))),
+                        max(0, min(255, int(round(c[1] + n * 1.08)))),
+                        max(0, min(255, int(round(c[2] + n * 1.25)))))
+    return img.filter(ImageFilter.GaussianBlur(0.3 * S))
 
 
 def frame(img):
@@ -69,9 +82,6 @@ def frame(img):
     outer, inner = 10 * S, 14 * S
     d.rectangle((outer, outer, W - 1 - outer, H - 1 - outer), outline=BRONZE + (200,), width=2 * S)
     d.rectangle((inner, inner, W - 1 - inner, H - 1 - inner), outline=BRONZE + (130,), width=S)
-    r = 4 * S
-    for x, y in ((outer, outer), (W - 1 - outer, outer), (outer, H - 1 - outer), (W - 1 - outer, H - 1 - outer)):
-        d.polygon([(x, y - r), (x + r, y), (x, y + r), (x - r, y)], fill=BRONZE + (230,))
 
 
 def bezier(p0, p1, p2, steps):
