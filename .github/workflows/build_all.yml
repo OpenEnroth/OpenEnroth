@@ -260,9 +260,16 @@ jobs:
           attempt_limit: 3
           attempt_delay: 5000
           command: |
-            mkdir -p dist
+            rm -rf dist
+            mkdir dist
             cp -r build/src/Bin/OpenEnroth/OpenEnroth.app dist/
-            hdiutil create "$RELEASE_FILE" -ov -volname "OpenEnroth" -fs HFS+ -srcfolder dist
+            ln -s /Applications dist/Applications
+            cp src/Bin/OpenEnroth/OpenEnroth.icns dist/.VolumeIcon.icns
+            hdiutil create staging.dmg -ov -volname "OpenEnroth" -fs HFS+ -format UDRW -srcfolder dist
+            mount_point=$(hdiutil attach staging.dmg -nobrowse -noautoopen | awk -F '\t' '/Apple_HFS/ {print $NF}')
+            SetFile -a C "$mount_point" # Finder only shows .VolumeIcon.icns when the volume root has the custom icon flag.
+            hdiutil detach "$mount_point"
+            hdiutil convert staging.dmg -ov -format UDZO -o "$RELEASE_FILE"
 
       - name: '[windows] Prepare files for release'
         if: matrix.platform == 'windows'
