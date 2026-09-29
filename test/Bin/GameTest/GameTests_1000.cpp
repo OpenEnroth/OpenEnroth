@@ -777,7 +777,7 @@ GAME_TEST(Issues, Issue1342) {
                 result.push_back(sprite.containing_item.goldAmount);
         return result;
     });
-    test.loadGameFromTestData("issue_1342.mm7");
+    game.startNewGame();
     test.startTaping();
     game.teleportTo(MAP_DRAGONS_LAIR, Vec3f(-3375, 2124, -49), 270); // First visit, so the map spawns its random treasure.
 
