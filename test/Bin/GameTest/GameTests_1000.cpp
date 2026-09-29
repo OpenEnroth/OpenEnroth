@@ -770,19 +770,17 @@ GAME_TEST(Issues, Issue1341) {
 
 GAME_TEST(Issues, Issue1342) {
     // Gold piles are generated with 0 gold.
-    auto goldTape = tapes.custom([] {
-        AccessibleVector<int> result;
-        for (const SpriteObject &sprite : pSpriteObjects)
-            if (sprite.uObjectDescID != 0 && sprite.containing_item.isGold())
-                result.push_back(sprite.containing_item.goldAmount);
-        return result;
-    });
     game.startNewGame();
-    test.startTaping();
     game.teleportTo(MAP_DRAGONS_LAIR, Vec3f(-3375, 2124, -49), 270); // First visit, so the map spawns its random treasure.
 
-    EXPECT_FALSE(goldTape.back().empty());
-    EXPECT_MISSES(goldTape.back(), 0);
+    int piles = 0;
+    for (const SpriteObject &sprite : pSpriteObjects) {
+        if (sprite.uObjectDescID != 0 && sprite.containing_item.isGold()) {
+            EXPECT_GT(sprite.containing_item.goldAmount, 0);
+            piles++;
+        }
+    }
+    EXPECT_GT(piles, 0);
 }
 
 GAME_TEST(Issues, Issue1362) {
