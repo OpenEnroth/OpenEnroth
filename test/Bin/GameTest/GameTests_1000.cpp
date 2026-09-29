@@ -770,20 +770,19 @@ GAME_TEST(Issues, Issue1341) {
 
 GAME_TEST(Issues, Issue1342) {
     // Gold piles are generated with 0 gold.
-    auto goldTape = tapes.gold();
-    auto pilesTape = tapes.mapItemCount(ITEM_GOLD_SMALL);
-    auto statusTape = tapes.statusBar();
-    auto mapTape = tapes.map();
-    test.playTraceFromTestData("issue_1342.mm7", "issue_1342.json");
+    auto goldTape = tapes.custom([] {
+        AccessibleVector<int> result;
+        for (const SpriteObject &sprite : pSpriteObjects)
+            if (sprite.uObjectDescID != 0 && sprite.containing_item.isGold())
+                result.push_back(sprite.containing_item.goldAmount);
+        return result;
+    });
+    test.loadGameFromTestData("issue_1342.mm7");
+    test.startTaping();
+    game.teleportTo(MAP_DRAGONS_LAIR, Vec3f(-3375, 2124, -49), 270); // First visit, so the map spawns its random treasure.
 
-    // Emerald Isle -> Dragon Cave. Map change is important here because we need to trigger map respawn on first visit.
-    EXPECT_EQ(mapTape, tape(MAP_EMERALD_ISLAND, MAP_DRAGONS_LAIR));
-
-    EXPECT_GT(goldTape.delta(), 0); // We picked up some gold.
-    EXPECT_EQ(pilesTape.max() - pilesTape.back(), 3); // Minus three small gold piles.
-    EXPECT_MISSES(statusTape, "You found 0 gold!"); // No piles of 0 size.
-    for (int gold : goldTape.adjacentDeltas())
-        EXPECT_CONTAINS(statusTape, fmt::format("You found {} gold!", gold));
+    EXPECT_FALSE(goldTape.back().empty());
+    EXPECT_MISSES(goldTape.back(), 0);
 }
 
 GAME_TEST(Issues, Issue1362) {
