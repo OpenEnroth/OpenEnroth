@@ -21,7 +21,6 @@ class PaletteManager {
 
  private:
     std::vector<Palette> _palettes;
-    std::vector<int> _rawPaletteIds; // Palettes from the LOD that paletteData() hasn't desaturated yet.
 };
 
 extern PaletteManager *pPaletteManager;

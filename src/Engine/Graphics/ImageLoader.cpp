@@ -272,6 +272,9 @@ bool Bitmaps_GEN_Loader::Load(RgbaImage *rgbaImage) {
     // Desaturate.
     float xs = engine->config->graphics.Saturation.value();
     float xv = engine->config->graphics.Lightness.value();
+    if (xs == 1.0f && xv == 1.0f)
+        return true;
+
     for (Color &pixel : rgbaImage->pixels())
         pixel = pixel.toHsvColorf().adjusted(0, xs, xv).toColor();
 

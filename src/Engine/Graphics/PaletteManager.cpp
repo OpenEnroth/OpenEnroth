@@ -18,7 +18,6 @@ PaletteManager *pPaletteManager = new PaletteManager;
 void PaletteManager::load(LodTextureCache *lod) {
     _palettes.clear();
     _palettes.reserve(1000);
-    _rawPaletteIds.clear();
 
     // Palette #0 is grayscale.
     _palettes.emplace_back(createGrayscalePalette());
@@ -29,8 +28,7 @@ void PaletteManager::load(LodTextureCache *lod) {
 
         LodImage *texture = lod->loadTexture(paletteName, false);
         if (texture) {
-            _palettes.emplace_back(texture->palette);
-            _rawPaletteIds.push_back(paletteId);
+            _palettes.emplace_back(createLoadedPalette(texture->palette));
         } else {
             _palettes.emplace_back(createGrayscalePalette());
         }
@@ -38,10 +36,6 @@ void PaletteManager::load(LodTextureCache *lod) {
 }
 
 std::span<Color> PaletteManager::paletteData() {
-    for (int paletteId : _rawPaletteIds)
-        _palettes[paletteId] = createLoadedPalette(_palettes[paletteId]);
-    _rawPaletteIds.clear();
-
     return {_palettes[0].colors.data(), _palettes.size() * _palettes[0].colors.size()};
 }
 
@@ -55,6 +49,8 @@ Palette PaletteManager::createGrayscalePalette() {
 Palette PaletteManager::createLoadedPalette(const Palette &palette) {
     float xs = engine->config->graphics.Saturation.value();
     float xv = engine->config->graphics.Lightness.value();
+    if (xs == 1.0f && xv == 1.0f)
+        return palette;
 
     Palette result;
     for (size_t i = 0; i < 256; i++)
