@@ -35,8 +35,8 @@ ProcessResult runProcess(const NativePath &path, const std::vector<std::string> 
     commandLine.push_back(nullptr);
 
     subprocess_s process;
-    int options = subprocess_option_combined_stdout_stderr | subprocess_option_inherit_environment | subprocess_option_no_window |
-                  subprocess_option_enable_async | subprocess_option_enable_async_no_wait;
+    int options = subprocess_option_inherit_environment | subprocess_option_no_window | subprocess_option_enable_async |
+                  subprocess_option_enable_async_no_wait;
     if (int error = subprocess_create(commandLine.data(), options, &process))
         throw Exception("{}: couldn't start the process, subprocess.h error {}", displayString, error);
     MM_AT_SCOPE_EXIT(subprocess_destroy(&process));
@@ -48,7 +48,9 @@ ProcessResult runProcess(const NativePath &path, const std::vector<std::string> 
     auto drain = [&] {
         char buffer[4096];
         while (unsigned size = subprocess_read_stdout(&process, buffer, sizeof(buffer)))
-            result.output.append(buffer, size);
+            result.standardOutput.append(buffer, size);
+        while (unsigned size = subprocess_read_stderr(&process, buffer, sizeof(buffer)))
+            result.standardError.append(buffer, size);
     };
 
     auto deadline = std::chrono::steady_clock::now() + timeout;
