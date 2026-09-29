@@ -3,10 +3,9 @@
 # Draws the dmg window background at 1x and 2x, in the colors of the MM7 winner certificate: a sepia parchment ground
 # with a bronze double frame, a title, and a bronze arrow from the app to the Applications link. dmg_settings.py sizes
 # the window to the 1x image and centers the icons at a quarter and three quarters of its width, 47.5% down. Needs
-# Pillow, and Cinzel and Cormorant Garamond from https://github.com/google/fonts (ofl/cinzel, ofl/cormorantgaramond).
+# Pillow and the DejaVu fonts.
 #
-# Usage: GenerateDmgBackground.py <fonts-dir> <output.png> <output@2x.png>
-#   fonts-dir     - Folder holding Cinzel[wght].ttf and CormorantGaramond-Italic[wght].ttf
+# Usage: GenerateDmgBackground.py <output.png> <output@2x.png>
 
 import math
 import os
@@ -28,14 +27,21 @@ BRONZE_LIGHT = (185, 170, 139)
 BRONZE_DARK = (96, 83, 58)
 INK = (37, 32, 23)
 
+FONT_DIRS = [
+    '/usr/share/fonts/truetype/dejavu',
+    '/usr/share/fonts/TTF',
+    '/usr/share/fonts/dejavu',
+    os.path.expanduser('~/Library/Fonts'),
+    '/Library/Fonts',
+]
 
-def font(fonts_dir, name, style, size):
-    path = os.path.join(fonts_dir, name)
-    if not os.path.isfile(path):
-        sys.exit(f'{path} not found.')
-    result = ImageFont.truetype(path, size)
-    result.set_variation_by_name(style)
-    return result
+
+def font(name, size):
+    for directory in FONT_DIRS:
+        path = os.path.join(directory, name)
+        if os.path.isfile(path):
+            return ImageFont.truetype(path, size)
+    sys.exit(f'{name} not found, install the DejaVu fonts.')
 
 
 def lerp(a, b, t):
@@ -134,22 +140,20 @@ def ornament(img, y):
 
 
 def main():
-    if len(sys.argv) != 4:
-        sys.exit(f'Usage: {sys.argv[0]} <fonts-dir> <output.png> <output@2x.png>')
-    fonts_dir = sys.argv[1]
+    if len(sys.argv) != 3:
+        sys.exit(f'Usage: {sys.argv[0]} <output.png> <output@2x.png>')
 
     img = parchment().convert('RGBA')
     frame(img)
     draw_arrow(img)
-    centered_text(img, 34 * S, 'Drag OpenEnroth into Applications',
-                  font(fonts_dir, 'Cinzel[wght].ttf', 'Bold', 19 * S), INK + (255,))
-    ornament(img, 74 * S)
-    centered_text(img, H - 46 * S, 'The open-source engine for Might and Magic VI, VII and VIII',
-                  font(fonts_dir, 'CormorantGaramond-Italic[wght].ttf', 'Medium Italic', 15 * S), BRONZE_DARK + (255,))
+    centered_text(img, 36 * S, 'Drag OpenEnroth into Applications', font('DejaVuSerif.ttf', 20 * S), INK + (255,))
+    ornament(img, 76 * S)
+    centered_text(img, H - 44 * S, 'Open-source engine for Might and Magic VI, VII and VIII',
+                  font('DejaVuSans.ttf', 10 * S), BRONZE_DARK + (255,))
 
     img = img.convert('RGB')
-    img.resize((W // S, H // S), Image.LANCZOS).save(sys.argv[2], optimize=True)
-    img.save(sys.argv[3], optimize=True)
+    img.resize((W // S, H // S), Image.LANCZOS).save(sys.argv[1], optimize=True)
+    img.save(sys.argv[2], optimize=True)
 
 
 if __name__ == '__main__':
