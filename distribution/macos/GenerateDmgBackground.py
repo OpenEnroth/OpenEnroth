@@ -83,10 +83,11 @@ def frame(img):
     d.rectangle((inner, inner, W - 1 - inner, H - 1 - inner), outline=BRONZE + (130,), width=S)
 
 
-def bezier(p0, p1, p2, steps):
-    return [((1 - t) ** 2 * p0[0] + 2 * (1 - t) * t * p1[0] + t * t * p2[0],
-             (1 - t) ** 2 * p0[1] + 2 * (1 - t) * t * p1[1] + t * t * p2[1])
-            for t in (i / steps for i in range(steps + 1))]
+def bezier(p0, p1, p2, p3, steps):
+    def at(t, i):
+        u = 1 - t
+        return u ** 3 * p0[i] + 3 * u * u * t * p1[i] + 3 * u * t * t * p2[i] + t ** 3 * p3[i]
+    return [(at(t, 0), at(t, 1)) for t in (i / steps for i in range(steps + 1))]
 
 
 def supersampled(draw):
@@ -107,20 +108,24 @@ def stroke(draw, points, color, width_at):
 
 
 def draw_arrow(img):
-    x0, x1 = APP[0] + 92 * S, APPLICATIONS[0] - 104 * S
-    y = APP[1] - 4 * S
-    pts = bezier((x0, y), ((x0 + x1) / 2, y - 30 * S), (x1, y), 400)
-    tip = pts[-1]
-    ang = math.atan2(pts[-1][1] - pts[-11][1], pts[-1][0] - pts[-11][0])
-
     length, half = 17 * S, 10 * S
+    notch_depth = length * 0.62 # How far the notch in the head's back edge sits from the tip.
+
+    # The shaft rises from the app and levels out into the head's notch, and the head points along the curve's
+    # direction there, so the shaft enters the head on its center line.
+    x0, x1 = APP[0] + 92 * S, APPLICATIONS[0] - 104 * S - notch_depth
+    y = APP[1] - 4 * S
+    d = x1 - x0
+    c1, c2, end = (x0 + 0.25 * d, y - 24 * S), (x1 - 0.5 * d, y - 17 * S), (x1, y)
+    shaft = bezier((x0, y), c1, c2, end, 400)
+    ang = math.atan2(end[1] - c2[1], end[0] - c2[0])
+
+    tip = (end[0] + notch_depth * math.cos(ang), end[1] + notch_depth * math.sin(ang))
     back = (tip[0] - length * math.cos(ang), tip[1] - length * math.sin(ang))
-    notch = (tip[0] - length * 0.62 * math.cos(ang), tip[1] - length * 0.62 * math.sin(ang))
     head = [tip,
             (back[0] + half * math.sin(ang), back[1] - half * math.cos(ang)),
-            notch,
+            end,
             (back[0] - half * math.sin(ang), back[1] + half * math.cos(ang))]
-    shaft = pts[:-20]
 
     def arrow(color, offset):
         def draw(d, scale):
