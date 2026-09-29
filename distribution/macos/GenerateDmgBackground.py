@@ -23,7 +23,6 @@ PAPER_TOP = (242, 240, 235)
 PAPER_BOTTOM = (219, 212, 196)
 PAPER_EDGE = (201, 189, 165)
 BRONZE = (140, 123, 87)
-BRONZE_LIGHT = (185, 170, 139)
 BRONZE_DARK = (96, 83, 58)
 INK = (37, 32, 23)
 
@@ -90,21 +89,29 @@ def bezier(p0, p1, p2, steps):
             for t in (i / steps for i in range(steps + 1))]
 
 
-def stroke(draw, points, offset, color_at, width_at):
+def supersampled(draw):
+    """Runs draw(ImageDraw, scale) on a canvas 4x the image size and returns it scaled down, which anti-aliases it."""
+    scale = 4
+    big = Image.new('RGBA', (W * scale, H * scale), (0, 0, 0, 0))
+    draw(ImageDraw.Draw(big), scale)
+    return big.convert('RGBa').resize((W, H), Image.LANCZOS).convert('RGBA') # Premultiplied, so edges don't darken.
+
+
+def stroke(draw, points, color, width_at):
     for i in range(len(points) - 1):
         t = i / (len(points) - 1)
         (ax, ay), (bx, by) = points[i], points[i + 1]
-        draw.line([(ax, ay + offset), (bx, by + offset)], fill=color_at(t), width=max(1, int(width_at(t))))
+        draw.line([(ax, ay), (bx, by)], fill=color, width=max(1, int(width_at(t))))
         r = width_at(t) / 2
-        draw.ellipse((bx - r, by + offset - r, bx + r, by + offset + r), fill=color_at(t))
+        draw.ellipse((bx - r, by - r, bx + r, by + r), fill=color)
 
 
 def draw_arrow(img):
     x0, x1 = APP[0] + 92 * S, APPLICATIONS[0] - 104 * S
     y = APP[1] - 4 * S
-    pts = bezier((x0, y), ((x0 + x1) / 2, y - 30 * S), (x1, y), 200)
+    pts = bezier((x0, y), ((x0 + x1) / 2, y - 30 * S), (x1, y), 400)
     tip = pts[-1]
-    ang = math.atan2(pts[-1][1] - pts[-6][1], pts[-1][0] - pts[-6][0])
+    ang = math.atan2(pts[-1][1] - pts[-11][1], pts[-1][0] - pts[-11][0])
 
     length, half = 17 * S, 10 * S
     back = (tip[0] - length * math.cos(ang), tip[1] - length * math.sin(ang))
@@ -113,22 +120,18 @@ def draw_arrow(img):
             (back[0] + half * math.sin(ang), back[1] - half * math.cos(ang)),
             notch,
             (back[0] - half * math.sin(ang), back[1] + half * math.cos(ang))]
-    shaft = pts[:-10]
-    width_at = lambda t: (1.5 + 3.5 * t) * S
+    shaft = pts[:-20]
 
-    shadow = Image.new('RGBA', img.size, (0, 0, 0, 0))
-    d = ImageDraw.Draw(shadow)
-    stroke(d, shaft, 3 * S, lambda t: BRONZE_DARK + (int(30 + 45 * t),), width_at)
-    d.polygon([(x, y + 3 * S) for x, y in head], fill=BRONZE_DARK + (80,))
+    def arrow(color, offset):
+        def draw(d, scale):
+            moved = lambda points: [(x * scale, (y + offset) * scale) for x, y in points]
+            stroke(d, moved(shaft), color, lambda t: (1.5 + 3.5 * t) * S * scale)
+            d.polygon(moved(head), fill=color)
+        return draw
+
+    shadow = supersampled(arrow(BRONZE_DARK + (70,), 3 * S))
     img.alpha_composite(shadow.filter(ImageFilter.GaussianBlur(3.5 * S)))
-
-    body = Image.new('RGBA', img.size, (0, 0, 0, 0))
-    d = ImageDraw.Draw(body)
-    stroke(d, shaft, 0,
-           lambda t: tuple(int(c) for c in lerp(BRONZE_LIGHT, BRONZE, t)) + (int(80 + 175 * min(1.0, t * 1.4)),),
-           width_at)
-    d.polygon(head, fill=BRONZE + (255,))
-    img.alpha_composite(body)
+    img.alpha_composite(supersampled(arrow(BRONZE + (255,), 0)))
 
 
 def centered_text(img, y, text, text_font, fill):
