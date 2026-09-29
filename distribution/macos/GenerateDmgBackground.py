@@ -58,7 +58,7 @@ def mottle(rnd, cells_x, cells_y, blur):
 def parchment():
     rnd = random.Random(7) # Fixed seed, so the texture and the output files are reproducible.
     blotches = mottle(rnd, 24, 16, 18 * S).load() # Uneven aging, a few big patches.
-    fibers = mottle(rnd, 150, 100, 1.5 * S).load() # Finer cloudiness.
+    fibers = mottle(rnd, 300, 200, 0.75 * S).load() # Finer cloudiness.
 
     img = Image.new('RGB', (W, H))
     px = img.load()
@@ -74,7 +74,7 @@ def parchment():
             px[x, y] = (max(0, min(255, int(round(c[0] + n)))),
                         max(0, min(255, int(round(c[1] + n * 1.08)))),
                         max(0, min(255, int(round(c[2] + n * 1.25)))))
-    return img.filter(ImageFilter.GaussianBlur(0.3 * S))
+    return img.filter(ImageFilter.GaussianBlur(0.15 * S))
 
 
 def frame(img):
