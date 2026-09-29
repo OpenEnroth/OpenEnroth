@@ -378,6 +378,7 @@ GAME_TEST(Issues, Issue626) {
     game.pressGuiButton("LoadMenu_Slot1");
     game.tick(2);
     game.pressGuiButton("LoadMenu_Load");
+    game.tick(2);
     game.skipLoadingScreen();
     game.tick(2);
 
@@ -658,6 +659,7 @@ GAME_TEST(Issues, Issue689) {
     game.pressGuiButton("LoadMenu_Slot0");
     game.tick(2);
     game.pressGuiButton("LoadMenu_Load");
+    game.tick(2);
     game.skipLoadingScreen();
     game.tick(2);
 
