@@ -11,12 +11,13 @@ constexpr std::string_view configName = "openenroth.ini";
 
 TEST_F(IntegrationTest, Help) {
     ProcessResult result = runOpenEnroth({"--help"});
+    EXPECT_EQ(result.exitCode, 1);
     EXPECT_TRUE(result.output.contains("--user-path")) << result.output;
 }
 
 TEST_F(IntegrationTest, UnknownOption) {
     ProcessResult result = runOpenEnroth({"--no-such-option"});
-    EXPECT_NE(result.exitCode, 0);
+    EXPECT_EQ(result.exitCode, 1);
     EXPECT_TRUE(result.output.contains("--no-such-option")) << result.output;
 }
 
