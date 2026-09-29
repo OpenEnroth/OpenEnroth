@@ -177,7 +177,7 @@ To run all unit tests locally, build a `OpenEnroth_UnitTest` cmake target and ru
 
 To run all game tests locally, set `OPENENROTH_MM7_PATH` environment variable to point to the location of the game assets, then build `Run_GameTest_Headless_Parallel` cmake target. Alternatively, you can build `OpenEnroth_GameTest`, and run it manually, passing the paths to both game assets and the test data via command line. Run `OpenEnroth_GameTest --help` for a list of options. Note that you can pass `--headless` to run tests in headless mode. Test data is located in `test/Data/`.
 
-To run all integration tests locally, set `OPENENROTH_MM7_PATH` as above and build `Run_IntegrationTest`. Alternatively, build `OpenEnroth_IntegrationTest` and run it manually, passing the path to the `OpenEnroth` binary via `--binary-path`.
+To run all integration tests locally, set `OPENENROTH_MM7_PATH` as above and build `Run_IntegrationTest`. Alternatively, build `OpenEnroth_IntegrationTest` and run it manually with `OPENENROTH_MM7_PATH` set, passing the path to the `OpenEnroth` binary via `--binary-path`.
 
 If you need to look closely at the recorded trace, you can play it by running `OpenEnroth play --speed 0.5 <path-to-trace.json>`. Alternatively, if you already have a unit test that runs the recorded trace, you can run `OpenEnroth_GameTest --speed 0.5 --gtest_filter=<test-suite-name>.<test-name> --test-path <path-to-test-data-folder>`. Note that `--gtest_filter` needs that `=` and won't work if you try passing the test name after a space. 
 
