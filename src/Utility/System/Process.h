@@ -9,8 +9,8 @@
 struct ProcessResult {
     int exitCode = 0; // EXIT_FAILURE on POSIX if the process was killed by a signal.
     bool timedOut = false; // Whether the process was killed because it ran out of time.
-    std::string standardOutput;
-    std::string standardError;
+    std::string stdOut;
+    std::string stdErr;
 };
 
 // TODO(captainurist): add WTF-8 support to subprocess.h upstream, it converts arguments with MB_ERR_INVALID_CHARS.
