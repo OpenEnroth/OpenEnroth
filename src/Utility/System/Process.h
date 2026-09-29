@@ -8,14 +8,15 @@
 
 struct ProcessResult {
     int exitCode = 0; // EXIT_FAILURE on POSIX if the process was killed by a signal.
-    bool timedOut = false; // Whether the process was killed because it ran out of time.
+    bool timedOut = false;
     std::string stdOut;
     std::string stdErr;
 };
 
 // TODO(captainurist): add WTF-8 support to subprocess.h upstream, it converts arguments with MB_ERR_INVALID_CHARS.
 /**
- * Runs a process to completion, with nothing on its standard input.
+ * Runs a process to completion, with nothing on its standard input. Only the process itself is waited for and
+ * killed, not the processes it starts.
  *
  * @param path                          Path to the executable.
  * @param args                          Arguments, not including the executable name. UTF-8 on Windows, byte strings
