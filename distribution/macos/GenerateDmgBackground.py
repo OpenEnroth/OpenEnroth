@@ -5,7 +5,7 @@
 # dmg_settings.py, a 600x400 window with 128pt icons centered at (150, 190) and (450, 190). Needs Pillow and the DejaVu
 # fonts.
 #
-# Usage: GenerateDmgBackground.py <output.png> <output@2x.png>
+# Usage: GenerateDmgBackground.py <output.jpg> <output@2x.jpg>
 
 import math
 import os
@@ -151,7 +151,7 @@ def ornament(img, y):
 
 def main():
     if len(sys.argv) != 3:
-        sys.exit(f'Usage: {sys.argv[0]} <output.png> <output@2x.png>')
+        sys.exit(f'Usage: {sys.argv[0]} <output.jpg> <output@2x.jpg>')
 
     img = parchment().convert('RGBA')
     frame(img)
@@ -162,8 +162,9 @@ def main():
                   font('DejaVuSans.ttf', 10 * S), BRONZE_DARK + (255,))
 
     img = img.convert('RGB')
-    img.resize((W // S, H // S), Image.LANCZOS).save(sys.argv[1], optimize=True)
-    img.save(sys.argv[2], optimize=True)
+    jpeg ={'format': 'JPEG', 'quality': 92, 'subsampling': 0, 'optimize': True}
+    img.resize((W // S, H // S), Image.LANCZOS).save(sys.argv[1], **jpeg)
+    img.save(sys.argv[2], **jpeg)
 
 
 if __name__ == '__main__':

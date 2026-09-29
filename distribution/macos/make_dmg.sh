@@ -6,12 +6,12 @@
 # Usage: make_dmg.sh <app> <icon> <background> <output>
 #   app         - Path to the app bundle, e.g. build/src/Bin/OpenEnroth/OpenEnroth.app
 #   icon        - Path to the .icns file for the volume icon
-#   background  - Path to the 1x background png. A <name>@2x.png next to it is used on Retina screens.
+#   background  - Path to the 1x background image. A <name>@2x image next to it is used on Retina screens.
 #   output      - Path of the dmg to write, overwritten if it exists
 #
 # Example:
 #   ./distribution/macos/make_dmg.sh build/src/Bin/OpenEnroth/OpenEnroth.app src/Bin/OpenEnroth/OpenEnroth.icns \
-#       distribution/macos/background.png OpenEnroth.dmg
+#       distribution/macos/background.jpg OpenEnroth.dmg
 
 set -euo pipefail
 
