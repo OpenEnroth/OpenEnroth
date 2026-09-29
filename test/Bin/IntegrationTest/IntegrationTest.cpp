@@ -23,6 +23,6 @@ void IntegrationTest::init(const NativePath &binaryPath) {
 
 ProcessResult IntegrationTest::runOpenEnroth(const std::vector<std::string> &args) const {
     ProcessResult result = runProcess(globalBinaryPath, args, std::chrono::minutes(2)); // Only a hung game gets anywhere near this.
-    ASSERT_FALSE(result.timedOut) << result.standardError;
+    ASSERT_FALSE(result.timedOut) << result.stdErr;
     return result;
 }
