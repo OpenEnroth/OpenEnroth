@@ -1,7 +1,7 @@
 #!/bin/bash
 #
 # Packs a macOS app bundle into a dmg that opens as a window with the app, an Applications link to drag it onto, and
-# the given background. The window takes the background's size. Needs dmgbuild, `pip install dmgbuild`.
+# the given background, drawn for the 600x400 window in dmg_settings.py. Needs dmgbuild, `pip install dmgbuild`.
 #
 # Usage: make_dmg.sh <app> <icon> <background> <output>
 #   app         - Path to the app bundle, e.g. build/src/Bin/OpenEnroth/OpenEnroth.app

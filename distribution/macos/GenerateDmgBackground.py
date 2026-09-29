@@ -1,9 +1,9 @@
 #!/usr/bin/env python3
 #
 # Draws the dmg window background at 1x and 2x, in the colors of the MM7 winner certificate: a sepia parchment ground
-# with a bronze double frame, a title, and a bronze arrow from the app to the Applications link. dmg_settings.py sizes
-# the window to the 1x image and centers the icons at a quarter and three quarters of its width, 47.5% down. Needs
-# Pillow and the DejaVu fonts.
+# with a bronze double frame, a title, and a bronze arrow from the app to the Applications link. The layout matches
+# dmg_settings.py, a 600x400 window with 128pt icons centered at (150, 190) and (450, 190). Needs Pillow and the DejaVu
+# fonts.
 #
 # Usage: GenerateDmgBackground.py <output.png> <output@2x.png>
 
@@ -16,8 +16,8 @@ from PIL import Image, ImageDraw, ImageFilter, ImageFont
 
 S = 2 # Everything is drawn at 2x and downscaled for 1x.
 W, H = 600 * S, 400 * S
-APP = (W // 4, int(H * 0.475))
-APPLICATIONS = (W * 3 // 4, int(H * 0.475))
+APP = (150 * S, 190 * S)
+APPLICATIONS = (450 * S, 190 * S)
 
 PAPER_TOP = (242, 240, 235)
 PAPER_BOTTOM = (219, 212, 196)
