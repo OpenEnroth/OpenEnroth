@@ -48,9 +48,9 @@ ProcessResult runProcess(const NativePath &path, const std::vector<std::string> 
     auto drain = [&] {
         char buffer[4096];
         while (unsigned size = subprocess_read_stdout(&process, buffer, sizeof(buffer)))
-            result.standardOutput.append(buffer, size);
+            result.stdOut.append(buffer, size);
         while (unsigned size = subprocess_read_stderr(&process, buffer, sizeof(buffer)))
-            result.standardError.append(buffer, size);
+            result.stdErr.append(buffer, size);
     };
 
     auto deadline = std::chrono::steady_clock::now() + timeout;
