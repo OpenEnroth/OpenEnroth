@@ -2,29 +2,29 @@
 #
 # Draws the dmg window background at 1x and 2x, in the colors of the MM7 winner certificate: a sepia parchment ground
 # with a bronze double frame, a title, and a bronze arrow from the app to the Applications link. The layout matches
-# dmg_settings.py, a 600x400 window with 128pt icons centered at (150, 190) and (450, 190). Needs Pillow and the DejaVu
-# fonts.
+# dmg_settings.py, a 600x400 window with 128pt icons centered at (150, 190) and (450, 190). Needs skia-python, Pillow
+# and the DejaVu fonts.
 #
 # Usage: GenerateDmgBackground.py <output.jpg> <output@2x.jpg>
 
 import math
 import os
-import random
 import sys
 
-from PIL import Image, ImageDraw, ImageFilter, ImageFont
+import skia
+from PIL import Image
 
-S = 2 # Everything is drawn at 2x and downscaled for 1x.
-W, H = 600 * S, 400 * S
-APP = (150 * S, 190 * S)
-APPLICATIONS = (450 * S, 190 * S)
+W, H = 600, 400 # In points, every size below is in points too.
+APP = (150, 190)
+APPLICATIONS = (450, 190)
+SEED = 7 # Fixed, so the noise and the output files are reproducible.
 
-PAPER_TOP = (242, 240, 235)
-PAPER_BOTTOM = (219, 212, 196)
-PAPER_EDGE = (201, 189, 165)
-BRONZE = (140, 123, 87)
-BRONZE_DARK = (96, 83, 58)
-INK = (37, 32, 23)
+PAPER_TOP = 0xFFF2F0EB
+PAPER_BOTTOM = 0xFFDBD4C4
+PAPER_EDGE = 0xFFC9BDA5
+BRONZE = 0xFF8C7B57
+BRONZE_DARK = 0xFF60533A
+INK = 0xFF252017
 
 FONT_DIRS = [
     '/usr/share/fonts/truetype/dejavu',
@@ -39,135 +39,128 @@ def font(name, size):
     for directory in FONT_DIRS:
         path = os.path.join(directory, name)
         if os.path.isfile(path):
-            return ImageFont.truetype(path, size)
+            return skia.Font(skia.Typeface.MakeFromFile(path), size)
     sys.exit(f'{name} not found, install the DejaVu fonts.')
 
 
-def lerp(a, b, t):
-    return tuple(a[i] + (b[i] - a[i]) * t for i in range(len(a)))
+def with_alpha(color, alpha):
+    return (color & 0x00FFFFFF) | (alpha << 24)
 
 
-def mottle(rnd, cells_x, cells_y, blur):
-    """Smooth random field in -1..1, made by blowing up a small grid of random values."""
-    small = Image.new('L', (cells_x, cells_y))
-    small.putdata([rnd.randint(0, 255) for _ in range(cells_x * cells_y)])
-    return small.resize((W, H), Image.BICUBIC).filter(ImageFilter.GaussianBlur(blur))
+def noise(canvas, frequency, octaves, strength):
+    """Overlays gray fractal noise, which lightens and darkens the paper around its own color."""
+    gray = skia.ColorFilters.Matrix([
+        1, 0, 0, 0, 0,
+        1, 0, 0, 0, 0,
+        1, 0, 0, 0, 0,
+        0, 0, 0, 0, strength,
+    ])
+    paint = skia.Paint(Shader=skia.PerlinNoiseShader.MakeFractalNoise(frequency, frequency, octaves, SEED),
+                       ColorFilter=gray, BlendMode=skia.BlendMode.kOverlay)
+    canvas.drawRect(skia.Rect(W, H), paint)
 
 
-def parchment():
-    rnd = random.Random(7) # Fixed seed, so the texture and the output files are reproducible.
-    blotches = mottle(rnd, 24, 16, 18 * S).load() # Uneven aging, a few big patches.
-    fibers = mottle(rnd, 300, 200, 0.75 * S).load() # Finer cloudiness.
-
-    img = Image.new('RGB', (W, H))
-    px = img.load()
-    cx, cy = W / 2, H * 0.45
-    for y in range(H):
-        base = lerp(PAPER_TOP, PAPER_BOTTOM, y / (H - 1))
-        for x in range(W):
-            dx, dy = (x - cx) / (W / 2), (y - cy) / (H / 2)
-            edge = min(1.0, math.hypot(dx, dy) / 1.3) ** 3 * 0.55 # Darkens toward the corners like aged paper.
-            c = lerp(base, PAPER_EDGE, edge)
-            n = (blotches[x, y] - 128) / 128 * 9 + (fibers[x, y] - 128) / 128 * 5 + rnd.gauss(0, 4.5)
-            # Darker spots also turn a little browner, the way old paper stains.
-            px[x, y] = (max(0, min(255, int(round(c[0] + n)))),
-                        max(0, min(255, int(round(c[1] + n * 1.08)))),
-                        max(0, min(255, int(round(c[2] + n * 1.25)))))
-    return img.filter(ImageFilter.GaussianBlur(0.15 * S))
+def parchment(canvas):
+    canvas.drawRect(skia.Rect(W, H), skia.Paint(Shader=skia.GradientShader.MakeLinear(
+        [(0, 0), (0, H)], [PAPER_TOP, PAPER_BOTTOM])))
+    # Darkens toward the corners like aged paper.
+    canvas.drawRect(skia.Rect(W, H), skia.Paint(Shader=skia.GradientShader.MakeRadial(
+        (W / 2, H * 0.45), W * 0.65, [with_alpha(PAPER_EDGE, 0), with_alpha(PAPER_EDGE, 0), with_alpha(PAPER_EDGE, 150)],
+        [0, 0.55, 1])))
+    noise(canvas, 0.012, 2, 0.3) # Uneven aging, a few big patches.
+    noise(canvas, 0.25, 2, 0.3) # Finer cloudiness.
+    noise(canvas, 2.5, 1, 0.7) # Grain.
 
 
-def frame(img):
-    d = ImageDraw.Draw(img)
-    outer, inner = 10 * S, 14 * S
-    d.rectangle((outer, outer, W - 1 - outer, H - 1 - outer), outline=BRONZE + (200,), width=2 * S)
-    d.rectangle((inner, inner, W - 1 - inner, H - 1 - inner), outline=BRONZE + (130,), width=S)
+def frame(canvas):
+    paint = skia.Paint(AntiAlias=True, Style=skia.Paint.kStroke_Style, Color=with_alpha(BRONZE, 200), StrokeWidth=2)
+    canvas.drawRect(skia.Rect.MakeLTRB(10, 10, W - 10, H - 10), paint)
+    paint.setColor(with_alpha(BRONZE, 130))
+    paint.setStrokeWidth(1)
+    canvas.drawRect(skia.Rect.MakeLTRB(14, 14, W - 14, H - 14), paint)
 
 
-def bezier(p0, p1, p2, steps):
-    return [((1 - t) ** 2 * p0[0] + 2 * (1 - t) * t * p1[0] + t * t * p2[0],
-             (1 - t) ** 2 * p0[1] + 2 * (1 - t) * t * p1[1] + t * t * p2[1])
-            for t in (i / steps for i in range(steps + 1))]
+def arrow_paths():
+    head_length, head_half_width = 17, 10
+    notch_depth = head_length * 0.62 # How far the notch in the head's back edge sits from the tip.
+
+    # The shaft is an arch that ends in the head's notch, and the head points along the arch's direction there.
+    start = (APP[0] + 92, APP[1] - 4)
+    notch = (APPLICATIONS[0] - 104 - notch_depth, APP[1] - 4)
+    control = ((start[0] + notch[0]) / 2, start[1] - 30)
+    shaft = skia.Path()
+    shaft.moveTo(*start)
+    shaft.quadTo(*control, *notch)
+
+    ang = math.atan2(notch[1] - control[1], notch[0] - control[0])
+    cos, sin = math.cos(ang), math.sin(ang)
+    tip = (notch[0] + notch_depth * cos, notch[1] + notch_depth * sin)
+    back = (tip[0] - head_length * cos, tip[1] - head_length * sin)
+    head = skia.Path()
+    head.moveTo(*tip)
+    head.lineTo(back[0] + head_half_width * sin, back[1] - head_half_width * cos)
+    head.lineTo(*notch)
+    head.lineTo(back[0] - head_half_width * sin, back[1] + head_half_width * cos)
+    head.close()
+    return shaft, head
 
 
-def supersampled(draw):
-    """Runs draw(ImageDraw, scale) on a canvas 4x the image size and returns it scaled down, which anti-aliases it."""
-    scale = 4
-    big = Image.new('RGBA', (W * scale, H * scale), (0, 0, 0, 0))
-    draw(ImageDraw.Draw(big), scale)
-    return big.convert('RGBa').resize((W, H), Image.LANCZOS).convert('RGBA') # Premultiplied, so edges don't darken.
+def arrow(canvas):
+    shaft, head = arrow_paths()
+
+    def draw(color, **extra):
+        stroke = skia.Paint(AntiAlias=True, Color=color, Style=skia.Paint.kStroke_Style, StrokeWidth=4,
+                            StrokeCap=skia.Paint.kRound_Cap, **extra)
+        canvas.drawPath(shaft, stroke)
+        canvas.drawPath(head, skia.Paint(AntiAlias=True, Color=color, **extra))
+
+    canvas.save()
+    canvas.translate(0, 3)
+    draw(with_alpha(BRONZE_DARK, 70), MaskFilter=skia.MaskFilter.MakeBlur(skia.kNormal_BlurStyle, 3.5))
+    canvas.restore()
+    draw(BRONZE)
 
 
-def stroke(draw, points, color, width_at):
-    for i in range(len(points) - 1):
-        t = i / (len(points) - 1)
-        (ax, ay), (bx, by) = points[i], points[i + 1]
-        draw.line([(ax, ay), (bx, by)], fill=color, width=max(1, int(width_at(t))))
-        r = width_at(t) / 2
-        draw.ellipse((bx - r, by - r, bx + r, by + r), fill=color)
+def centered_text(canvas, y, text, text_font, color):
+    x = (W - text_font.measureText(text)) / 2
+    canvas.drawString(text, x, y, text_font, skia.Paint(AntiAlias=True, Color=color))
 
 
-def draw_arrow(img):
-    x0, x1 = APP[0] + 92 * S, APPLICATIONS[0] - 104 * S
-    y = APP[1] - 4 * S
-    pts = bezier((x0, y), ((x0 + x1) / 2, y - 30 * S), (x1, y), 400)
-    shaft = pts[:-20]
-    tip = pts[-1]
-    ang = math.atan2(tip[1] - shaft[-1][1], tip[0] - shaft[-1][0]) # Aimed through the shaft's end, so it enters centered.
-
-    length, half = 17 * S, 10 * S
-    back = (tip[0] - length * math.cos(ang), tip[1] - length * math.sin(ang))
-    notch = (tip[0] - length * 0.62 * math.cos(ang), tip[1] - length * 0.62 * math.sin(ang))
-    head = [tip,
-            (back[0] + half * math.sin(ang), back[1] - half * math.cos(ang)),
-            notch,
-            (back[0] - half * math.sin(ang), back[1] + half * math.cos(ang))]
-
-    def arrow(color, offset):
-        def draw(d, scale):
-            moved = lambda points: [(x * scale, (y + offset) * scale) for x, y in points]
-            stroke(d, moved(shaft), color, lambda t: (1.5 + 3.5 * t) * S * scale)
-            d.polygon(moved(head), fill=color)
-        return draw
-
-    shadow = supersampled(arrow(BRONZE_DARK + (70,), 3 * S))
-    img.alpha_composite(shadow.filter(ImageFilter.GaussianBlur(3.5 * S)))
-    img.alpha_composite(supersampled(arrow(BRONZE + (255,), 0)))
-
-
-def centered_text(img, y, text, text_font, fill):
-    d = ImageDraw.Draw(img)
-    w = d.textlength(text, font=text_font)
-    d.text(((W - w) / 2, y), text, font=text_font, fill=fill)
-
-
-def ornament(img, y):
-    d = ImageDraw.Draw(img)
-    cx, half, gap = W / 2, 84 * S, 11 * S
+def ornament(canvas, y):
+    cx, half, gap = W / 2, 84, 11
     for sign in (-1, 1):
-        for i in range(int(half - gap)):
-            a = int(210 * (1 - i / (half - gap)) ** 1.2)
-            x = cx + sign * (gap + i)
-            d.line([(x, y), (x + sign, y)], fill=BRONZE + (a,), width=S)
-    r = 4 * S
-    d.polygon([(cx, y - r), (cx + r, y), (cx, y + r), (cx - r, y)], fill=BRONZE + (240,))
+        start, end = (cx + sign * gap, y), (cx + sign * half, y)
+        line = skia.Paint(AntiAlias=True, StrokeWidth=1, Shader=skia.GradientShader.MakeLinear(
+            [start, end], [with_alpha(BRONZE, 210), with_alpha(BRONZE, 0)]))
+        canvas.drawLine(*start, *end, line)
+    diamond = skia.Path()
+    diamond.moveTo(cx, y - 4)
+    diamond.lineTo(cx + 4, y)
+    diamond.lineTo(cx, y + 4)
+    diamond.lineTo(cx - 4, y)
+    diamond.close()
+    canvas.drawPath(diamond, skia.Paint(AntiAlias=True, Color=with_alpha(BRONZE, 240)))
+
+
+def render(scale):
+    surface = skia.Surface(W * scale, H * scale)
+    with surface as canvas:
+        canvas.scale(scale, scale)
+        parchment(canvas)
+        frame(canvas)
+        arrow(canvas)
+        centered_text(canvas, 56, 'Drag OpenEnroth into Applications', font('DejaVuSerif.ttf', 20), INK)
+        ornament(canvas, 76)
+        centered_text(canvas, H - 24, 'Open-source engine for Might and Magic VI, VII and VIII',
+                      font('DejaVuSans.ttf', 10), BRONZE_DARK)
+    return Image.fromarray(surface.makeImageSnapshot().toarray(colorType=skia.kRGBA_8888_ColorType)).convert('RGB')
 
 
 def main():
     if len(sys.argv) != 3:
         sys.exit(f'Usage: {sys.argv[0]} <output.jpg> <output@2x.jpg>')
-
-    img = parchment().convert('RGBA')
-    frame(img)
-    draw_arrow(img)
-    centered_text(img, 36 * S, 'Drag OpenEnroth into Applications', font('DejaVuSerif.ttf', 20 * S), INK + (255,))
-    ornament(img, 76 * S)
-    centered_text(img, H - 44 * S, 'Open-source engine for Might and Magic VI, VII and VIII',
-                  font('DejaVuSans.ttf', 10 * S), BRONZE_DARK + (255,))
-
-    img = img.convert('RGB')
-    jpeg ={'format': 'JPEG', 'quality': 92, 'subsampling': 0, 'optimize': True}
-    img.resize((W // S, H // S), Image.LANCZOS).save(sys.argv[1], **jpeg)
-    img.save(sys.argv[2], **jpeg)
+    for scale, path in ((1, sys.argv[1]), (2, sys.argv[2])):
+        render(scale).save(path, format='JPEG', quality=92, subsampling=0, optimize=True)
 
 
 if __name__ == '__main__':
