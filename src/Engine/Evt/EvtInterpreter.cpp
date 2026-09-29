@@ -673,9 +673,8 @@ bool EvtInterpreter::executeRegular(int startStep) {
 
     _who = !pParty->hasActiveCharacter() ? CHOOSE_RANDOM : CHOOSE_ACTIVE;
 
-    while (step != -1) {
+    while (step != -1)
         step = executeOneEvent(step, false);
-    }
 
     return _mapExitTriggered;
 }
