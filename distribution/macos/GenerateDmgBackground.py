@@ -1,10 +1,12 @@
 #!/usr/bin/env python3
 #
-# Draws the dmg window background at 1x and 2x: a parchment ground, a title, and a gold arrow from the app to the
-# Applications link. The layout matches dmg_settings.py, a 600x400 window with 128pt icons centered at (150, 190) and
-# (450, 190). Needs Pillow and the DejaVu fonts.
+# Draws the dmg window background at 1x and 2x, in the colors of the MM7 winner certificate: a sepia parchment ground
+# with a bronze double frame, a title, and a bronze arrow from the app to the Applications link. dmg_settings.py sizes
+# the window to the 1x image and centers the icons at a quarter and three quarters of its width, 47.5% down. Needs
+# Pillow, and Cinzel and Cormorant Garamond from https://github.com/google/fonts (ofl/cinzel, ofl/cormorantgaramond).
 #
-# Usage: GenerateDmgBackground.py <output.png> <output@2x.png>
+# Usage: GenerateDmgBackground.py <fonts-dir> <output.png> <output@2x.png>
+#   fonts-dir     - Folder holding Cinzel[wght].ttf and CormorantGaramond-Italic[wght].ttf
 
 import math
 import os
@@ -15,29 +17,25 @@ from PIL import Image, ImageDraw, ImageFilter, ImageFont
 
 S = 2 # Everything is drawn at 2x and downscaled for 1x.
 W, H = 600 * S, 400 * S
-APP = (150 * S, 190 * S)
-APPLICATIONS = (450 * S, 190 * S)
+APP = (W // 4, int(H * 0.475))
+APPLICATIONS = (W * 3 // 4, int(H * 0.475))
 
-GOLD = (206, 150, 34)
-GOLD_LIGHT = (232, 188, 76)
-INK = (64, 50, 34)
-INK_SOFT = (128, 110, 86)
-
-FONT_DIRS = [
-    '/usr/share/fonts/truetype/dejavu',
-    '/usr/share/fonts/TTF',
-    '/usr/share/fonts/dejavu',
-    os.path.expanduser('~/Library/Fonts'),
-    '/Library/Fonts',
-]
+PAPER_TOP = (242, 240, 235)
+PAPER_BOTTOM = (219, 212, 196)
+PAPER_EDGE = (201, 189, 165)
+BRONZE = (140, 123, 87)
+BRONZE_LIGHT = (185, 170, 139)
+BRONZE_DARK = (96, 83, 58)
+INK = (37, 32, 23)
 
 
-def font(name, size):
-    for directory in FONT_DIRS:
-        path = os.path.join(directory, name)
-        if os.path.isfile(path):
-            return ImageFont.truetype(path, size)
-    sys.exit(f'{name} not found, install the DejaVu fonts.')
+def font(fonts_dir, name, style, size):
+    path = os.path.join(fonts_dir, name)
+    if not os.path.isfile(path):
+        sys.exit(f'{path} not found.')
+    result = ImageFont.truetype(path, size)
+    result.set_variation_by_name(style)
+    return result
 
 
 def lerp(a, b, t):
@@ -45,20 +43,29 @@ def lerp(a, b, t):
 
 
 def parchment():
-    top, bottom = (251, 247, 237), (240, 231, 210)
     img = Image.new('RGB', (W, H))
     px = img.load()
     cx, cy = W / 2, H * 0.45
     rnd = random.Random(7) # Fixed seed, so the grain and the output files are reproducible.
     for y in range(H):
-        base = lerp(top, bottom, y / (H - 1))
+        base = lerp(PAPER_TOP, PAPER_BOTTOM, y / (H - 1))
         for x in range(W):
             dx, dy = (x - cx) / (W / 2), (y - cy) / (H / 2)
-            d = min(1.0, math.hypot(dx, dy) / 1.25)
-            v = 1.0 - 0.045 * d ** 2.5 # Faint vignette.
-            n = rnd.gauss(0, 1.3) # Paper grain.
-            px[x, y] = tuple(max(0, min(255, int(round(c * v + n)))) for c in base)
+            edge = min(1.0, math.hypot(dx, dy) / 1.3) ** 3 * 0.55 # Darkens toward the corners like aged paper.
+            n = rnd.gauss(0, 1.4) # Paper grain.
+            c = lerp(base, PAPER_EDGE, edge)
+            px[x, y] = tuple(max(0, min(255, int(round(v + n)))) for v in c)
     return img.filter(ImageFilter.GaussianBlur(0.5 * S))
+
+
+def frame(img):
+    d = ImageDraw.Draw(img)
+    outer, inner = 10 * S, 14 * S
+    d.rectangle((outer, outer, W - 1 - outer, H - 1 - outer), outline=BRONZE + (200,), width=2 * S)
+    d.rectangle((inner, inner, W - 1 - inner, H - 1 - inner), outline=BRONZE + (130,), width=S)
+    r = 4 * S
+    for x, y in ((outer, outer), (W - 1 - outer, outer), (outer, H - 1 - outer), (W - 1 - outer, H - 1 - outer)):
+        d.polygon([(x, y - r), (x + r, y), (x, y + r), (x - r, y)], fill=BRONZE + (230,))
 
 
 def bezier(p0, p1, p2, steps):
@@ -95,16 +102,16 @@ def draw_arrow(img):
 
     shadow = Image.new('RGBA', img.size, (0, 0, 0, 0))
     d = ImageDraw.Draw(shadow)
-    stroke(d, shaft, 3 * S, lambda t: (70, 45, 10, int(40 + 50 * t)), width_at)
-    d.polygon([(x, y + 3 * S) for x, y in head], fill=(70, 45, 10, 90))
+    stroke(d, shaft, 3 * S, lambda t: BRONZE_DARK + (int(30 + 45 * t),), width_at)
+    d.polygon([(x, y + 3 * S) for x, y in head], fill=BRONZE_DARK + (80,))
     img.alpha_composite(shadow.filter(ImageFilter.GaussianBlur(3.5 * S)))
 
     body = Image.new('RGBA', img.size, (0, 0, 0, 0))
     d = ImageDraw.Draw(body)
     stroke(d, shaft, 0,
-           lambda t: tuple(int(c) for c in lerp(GOLD_LIGHT, GOLD, t)) + (int(70 + 185 * min(1.0, t * 1.4)),),
+           lambda t: tuple(int(c) for c in lerp(BRONZE_LIGHT, BRONZE, t)) + (int(80 + 175 * min(1.0, t * 1.4)),),
            width_at)
-    d.polygon(head, fill=GOLD + (255,))
+    d.polygon(head, fill=BRONZE + (255,))
     img.alpha_composite(body)
 
 
@@ -119,27 +126,30 @@ def ornament(img, y):
     cx, half, gap = W / 2, 84 * S, 11 * S
     for sign in (-1, 1):
         for i in range(int(half - gap)):
-            a = int(200 * (1 - i / (half - gap)) ** 1.2)
+            a = int(210 * (1 - i / (half - gap)) ** 1.2)
             x = cx + sign * (gap + i)
-            d.line([(x, y), (x + sign, y)], fill=GOLD + (a,), width=S)
+            d.line([(x, y), (x + sign, y)], fill=BRONZE + (a,), width=S)
     r = 4 * S
-    d.polygon([(cx, y - r), (cx + r, y), (cx, y + r), (cx - r, y)], fill=GOLD + (235,))
+    d.polygon([(cx, y - r), (cx + r, y), (cx, y + r), (cx - r, y)], fill=BRONZE + (240,))
 
 
 def main():
-    if len(sys.argv) != 3:
-        sys.exit(f'Usage: {sys.argv[0]} output.png output@2x.png')
+    if len(sys.argv) != 4:
+        sys.exit(f'Usage: {sys.argv[0]} <fonts-dir> <output.png> <output@2x.png>')
+    fonts_dir = sys.argv[1]
 
     img = parchment().convert('RGBA')
+    frame(img)
     draw_arrow(img)
-    centered_text(img, 36 * S, 'Drag OpenEnroth into Applications', font('DejaVuSerif.ttf', 20 * S), INK + (255,))
-    ornament(img, 76 * S)
-    centered_text(img, H - 32 * S, 'Open-source engine for Might and Magic VI, VII and VIII',
-                  font('DejaVuSans.ttf', 10 * S), INK_SOFT + (255,))
+    centered_text(img, 34 * S, 'Drag OpenEnroth into Applications',
+                  font(fonts_dir, 'Cinzel[wght].ttf', 'Bold', 19 * S), INK + (255,))
+    ornament(img, 74 * S)
+    centered_text(img, H - 46 * S, 'The open-source engine for Might and Magic VI, VII and VIII',
+                  font(fonts_dir, 'CormorantGaramond-Italic[wght].ttf', 'Medium Italic', 15 * S), BRONZE_DARK + (255,))
 
     img = img.convert('RGB')
-    img.resize((W // S, H // S), Image.LANCZOS).save(sys.argv[1], optimize=True)
-    img.save(sys.argv[2], optimize=True)
+    img.resize((W // S, H // S), Image.LANCZOS).save(sys.argv[2], optimize=True)
+    img.save(sys.argv[3], optimize=True)
 
 
 if __name__ == '__main__':

@@ -1,33 +1,34 @@
 #!/bin/bash
 #
 # Packs a macOS app bundle into a dmg that opens as a window with the app, an Applications link to drag it onto, and
-# the background next to this script. Needs dmgbuild, `pip install dmgbuild`.
+# the given background. The window takes the background's size. Needs dmgbuild, `pip install dmgbuild`.
 #
-# Usage: make_dmg.sh <app> <icon> <output>
-#   app     - Path to the app bundle, e.g. build/src/Bin/OpenEnroth/OpenEnroth.app
-#   icon    - Path to the .icns file for the volume icon
-#   output  - Path of the dmg to write, overwritten if it exists
+# Usage: make_dmg.sh <app> <icon> <background> <output>
+#   app         - Path to the app bundle, e.g. build/src/Bin/OpenEnroth/OpenEnroth.app
+#   icon        - Path to the .icns file for the volume icon
+#   background  - Path to the 1x background png. A <name>@2x.png next to it is used on Retina screens.
+#   output      - Path of the dmg to write, overwritten if it exists
 #
 # Example:
-#   ./distribution/macos/make_dmg.sh build/src/Bin/OpenEnroth/OpenEnroth.app src/Bin/OpenEnroth/OpenEnroth.icns OpenEnroth.dmg
+#   ./distribution/macos/make_dmg.sh build/src/Bin/OpenEnroth/OpenEnroth.app src/Bin/OpenEnroth/OpenEnroth.icns \
+#       distribution/macos/background.png OpenEnroth.dmg
 
 set -euo pipefail
 
-if [[ $# -lt 3 ]]; then
-    echo "Usage: $0 <app> <icon> <output>"
+if [[ $# -lt 4 ]]; then
+    echo "Usage: $0 <app> <icon> <background> <output>"
     exit 1
 fi
 
 APP="$1"
 ICON="$2"
-OUTPUT="$3"
-DMG_DIR="$(cd "$(dirname "$0")" && pwd)"
+BACKGROUND="$3"
+OUTPUT="$4"
 
-# dmgbuild picks up background@2x.png next to background.png for Retina screens.
 python3 -m dmgbuild \
-    -s "$DMG_DIR/dmg_settings.py" \
+    -s "$(dirname "$0")/dmg_settings.py" \
     -D app="$APP" \
     -D icon="$ICON" \
-    -D background="$DMG_DIR/background.png" \
+    -D background="$BACKGROUND" \
     "$(basename "$APP" .app)" \
     "$OUTPUT"
