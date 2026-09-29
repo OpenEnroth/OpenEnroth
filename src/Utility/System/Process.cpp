@@ -1,6 +1,7 @@
 #include "Process.h"
 
 #include <algorithm>
+#include <chrono>
 #include <cstdio>
 #include <string>
 #include <thread>
@@ -42,7 +43,7 @@ ProcessResult runProcess(const NativePath &path, const std::vector<std::string> 
     MM_AT_SCOPE_EXIT(subprocess_destroy(&process));
 
     fclose(process.stdin_file); // The child reads end of file right away.
-    process.stdin_file = nullptr;
+    process.stdin_file = nullptr; // subprocess_join and subprocess_destroy close it otherwise.
 
     ProcessResult result;
     auto drain = [&] {

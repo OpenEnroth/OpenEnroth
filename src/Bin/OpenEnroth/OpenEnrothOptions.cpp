@@ -67,7 +67,7 @@ OpenEnrothOptions OpenEnrothOptions::parse(int argc, char **argv) {
 
     app->add_flag(
         "--exit-after-start", result.exitAfterStart,
-        "Start the game, then exit through the main menu right away.")->group(""); // For integration tests, group("") hides the option.
+        "Start the game, then exit through the main menu right away.")->group(""); // group("") hides the option. It's there for the integration tests.
 
     app->parse(argc, argv, result.helpPrinted);
 
