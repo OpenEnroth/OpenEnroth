@@ -1,7 +1,7 @@
 #include "Process.h"
 
+#include <algorithm>
 #include <cstdio>
-#include <filesystem>
 #include <string>
 #include <thread>
 #include <vector>
@@ -12,7 +12,6 @@
 
 #include "Utility/Exception.h"
 #include "Utility/ScopeGuard.h"
-#include "Utility/String/Encoding.h"
 
 #ifdef __ANDROID__
 
@@ -25,12 +24,9 @@ ProcessResult runProcess(const NativePath &path, const std::vector<std::string> 
 ProcessResult runProcess(const NativePath &path, const std::vector<std::string> &args, std::chrono::milliseconds timeout) {
     std::string displayString = path.displayString();
 
-    std::filesystem::path nativePath = path.toStdPath();
-    nativePath.make_preferred(); // cmd.exe reads a forward slash in its own path as the start of a switch.
+    std::string program = path.toWtf8();
 #ifdef _WINDOWS
-    std::string program = txt::wideToWtf8(nativePath.native());
-#else
-    std::string program = nativePath.native();
+    std::ranges::replace(program, '/', '\\'); // cmd.exe reads a forward slash in its own path as the start of a switch.
 #endif
 
     std::vector<const char *> commandLine = {program.c_str()};
