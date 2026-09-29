@@ -27,13 +27,13 @@ UNIT_TEST(Process, ExitCode) {
 UNIT_TEST(Process, Output) {
     ProcessResult result = runShell("echo hello");
     EXPECT_EQ(result.exitCode, 0);
-    EXPECT_TRUE(result.standardOutput.starts_with("hello")) << result.standardOutput; // The line ending is platform-specific.
+    EXPECT_TRUE(result.stdOut.starts_with("hello")) << result.stdOut; // The line ending is platform-specific.
 }
 
 UNIT_TEST(Process, StandardErrorIsCaptured) {
     ProcessResult result = runShell("echo oops 1>&2");
-    EXPECT_TRUE(result.standardError.starts_with("oops")) << result.standardError;
-    EXPECT_TRUE(result.standardOutput.empty()) << result.standardOutput;
+    EXPECT_TRUE(result.stdErr.starts_with("oops")) << result.stdErr;
+    EXPECT_TRUE(result.stdOut.empty()) << result.stdOut;
 }
 
 UNIT_TEST(Process, LargeOutput) {
@@ -44,7 +44,7 @@ UNIT_TEST(Process, LargeOutput) {
     ProcessResult result = runShell("i=0; while [ $i -lt 20000 ]; do echo 0123456789; i=$((i+1)); done");
 #endif
     EXPECT_EQ(result.exitCode, 0);
-    EXPECT_GE(result.standardOutput.size(), 20000 * 11);
+    EXPECT_GE(result.stdOut.size(), 20000 * 11);
 }
 
 UNIT_TEST(Process, Timeout) {
