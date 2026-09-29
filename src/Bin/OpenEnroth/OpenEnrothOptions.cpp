@@ -37,9 +37,6 @@ OpenEnrothOptions OpenEnrothOptions::parse(int argc, char **argv) {
         "Run in portable mode, game & user data paths will default to current folder. "
         "If '.portable' file exists in the current folder, then this parameter defaults to 'true'.");
     app->add_flag(
-        "--exit-after-start", result.exitAfterStart,
-        "Start the game, then exit through the main menu right away. Config is loaded & saved as usual.");
-    app->add_flag(
         "--tracing-rng", result.tracingRng,
         "Use random number generators that print stack trace on each call.");
     app->add_option(
@@ -67,6 +64,10 @@ OpenEnrothOptions OpenEnrothOptions::parse(int argc, char **argv) {
         "TRACE", result.retrace.traces,
         "Path to trace file(s) to retrace.")->option_text("...");
     retrace->set_help_flag("-h,--help", "Print help and exit."); // This places --help last in the command list.
+
+    app->add_flag(
+        "--exit-after-start", result.exitAfterStart,
+        "Start the game, then exit through the main menu right away.")->group(""); // For integration tests, group("") hides the option.
 
     app->parse(argc, argv, result.helpPrinted);
 

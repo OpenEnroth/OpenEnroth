@@ -235,7 +235,7 @@ jobs:
           OPENENROTH_MM7_PATH: ${{github.workspace}}/OpenEnroth_GameData/mm7
 
       - name: '[darwin/windows/linux] Run integration tests'
-        if: env.MATRIX_PLATFORM != 'android'
+        if: matrix.platform != 'android'
         working-directory: build
         run: |
           ninja Run_IntegrationTest
