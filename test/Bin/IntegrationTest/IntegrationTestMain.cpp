@@ -2,6 +2,8 @@
 
 #include <exception>
 
+#include "Testing/Extensions/GoogleTestHelp.h"
+
 #include "Library/StackTrace/StackTraceOnCrash.h"
 
 #include "Utility/String/Format.h"
@@ -15,8 +17,10 @@ int main(int argc, char **argv) {
         StackTraceOnCrash st;
         UnicodeCrt _(argc, argv);
         IntegrationTestOptions opts = IntegrationTestOptions::parse(argc, argv);
-        if (opts.helpPrinted)
+        if (opts.helpPrinted) {
+            printGoogleTestHelp(argv[0]);
             return 1;
+        }
 
         testing::InitGoogleTest(&argc, argv);
         if (!opts.listRequested)
