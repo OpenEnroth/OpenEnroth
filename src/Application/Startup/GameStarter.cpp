@@ -92,10 +92,9 @@ void GameStarter::initialize() {
     MM_INFO("Built in resource override is {}.", _config->debug.OverrideBuiltInResources.value() ? "enabled" : "disabled");
 
     // Patch config.
-    if (_options.quickStart)
+    if (_options.quickStart) {
         _config->graphics.GenerateTiles.setValue(false);
-    if (_options.headless) {
-        _config->graphics.Saturation.setValue(1.0f); // Nothing is displayed, so skip the color adjustment on load.
+        _config->graphics.Saturation.setValue(1.0f);
         _config->graphics.Lightness.setValue(1.0f);
     }
 
