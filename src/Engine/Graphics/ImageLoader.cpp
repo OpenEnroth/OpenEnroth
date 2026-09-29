@@ -22,6 +22,8 @@
 #include "Library/LodFormats/LodSprite.h"
 #include "Library/Logger/Logger.h"
 
+#include "Utility/Math/Float.h"
+
 // List of textures that require additional processing for transparent pixels.
 // TODO(captainurist): #jsonify & move to compiled-in game data
 static const std::unordered_set<std::string_view> transparentTextures = {
@@ -272,6 +274,9 @@ bool Bitmaps_GEN_Loader::Load(RgbaImage *rgbaImage) {
     // Desaturate.
     float xs = engine->config->graphics.Saturation.value();
     float xv = engine->config->graphics.Lightness.value();
+    if (fuzzyEquals(xs, 1.0f) && fuzzyEquals(xv, 1.0f))
+        return true;
+
     for (Color &pixel : rgbaImage->pixels())
         pixel = pixel.toHsvColorf().adjusted(0, xs, xv).toColor();
 

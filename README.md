@@ -76,49 +76,40 @@ export OPENENROTH_MM7_PATH="<path-to-mm7-game-assets>"
 
 ### Windows
 
-1. Download one of the prebuilt [releases](https://github.com/OpenEnroth/OpenEnroth/releases) and unzip the files.
-2. Copy `OpenEnroth.exe` and `OpenEnroth.pdb` to the directory containing the game data.
+1. Download `OpenEnroth_nightly_Windows_x86_64_RelWithDebInfo.zip` (`x86` for 32-bit Windows) from the
+   [releases page](https://github.com/OpenEnroth/OpenEnroth/releases).
+2. Unzip `OpenEnroth.exe` and `OpenEnroth.pdb` into the directory containing the game data.
 3. Run `OpenEnroth.exe`.
 
 ### macOS
 
 1. Move the game data to `~/Library/Application Support/OpenEnroth`, creating this directory if needed.
-2. Download one of the prebuilt [releases](https://github.com/OpenEnroth/OpenEnroth/releases) and unzip the files.
-3. Run `xattr -rc <extracted-path>/dist/OpenEnroth.app`. This clears the quarantine flag — macOS will refuse to
+2. Download `OpenEnroth_nightly_macOS_arm64_RelWithDebInfo.dmg` (`x86_64` for Intel Macs) from the
+   [releases page](https://github.com/OpenEnroth/OpenEnroth/releases), open it and drag `OpenEnroth.app` into
+   `Applications`.
+3. Run `xattr -rc /Applications/OpenEnroth.app`. This clears the quarantine flag — macOS will refuse to
    launch unsigned binaries without this step.
 4. Run `OpenEnroth.app`.
 
-### Linux (Flatpak)
+### Linux
 
-The Flatpak package is the easiest choice if you aren't using Ubuntu 24.04, or you cannot install system
-packages on your computer (e.g. on "atomic"/"immutable" distributions like Bazzite or SteamOS).
+OpenEnroth ships for Linux as a Flatpak package.
 
 1. Check for Flatpak support:
    * Run `flatpak --version`. If you get a version number, you're ready; otherwise visit
      [https://flatpak.org/setup/](https://flatpak.org/setup/) for setup instructions.
 2. Install OpenEnroth:
-   * Download the `io.github.openenroth.openenroth_*.flatpak` package from the [releases page](https://github.com/OpenEnroth/OpenEnroth/releases).
-   * Run `flatpak install --user /path/to/io.github.openenroth.openenroth_*.flatpak`.
+   * Download the `OpenEnroth_nightly_Linux_x86_64_RelWithDebInfo.flatpak` package from the [releases page](https://github.com/OpenEnroth/OpenEnroth/releases).
+   * Run `flatpak install --user /path/to/OpenEnroth_nightly_Linux_x86_64_RelWithDebInfo.flatpak`.
    * Create `~/.var/app/io.github.openenroth.openenroth/data/mm7/data/`
    * Move the game data (at least `ANIMS`, `DATA`, `MUSIC` and `SOUNDS`) into this new directory.
 3. Run OpenEnroth from your application menu or using `flatpak run io.github.openenroth.openenroth`.
-
-### Linux (Loose executable)
-
-The loose executable is better if you want direct access to the binary (e.g. for development), or need full
-control over install location. Requires Ubuntu 24.04 or a distribution with compatible system libraries.
-
-1. Install required libraries: `sudo apt-get install libgl1` (Ubuntu 24.04).
-   For other distributions, check your package manager for equivalent packages.
-2. Download a prebuilt [release](https://github.com/OpenEnroth/OpenEnroth/releases) and unzip it.
-3. Copy the game data (`ANIMS`, `DATA`, `MUSIC` and `SOUNDS`) next to the `OpenEnroth` executable.
-4. Run `OpenEnroth` (you may need `chmod a+x OpenEnroth` first).
 
 ### Android (Experimental)
 
 Android is not actively tested by the dev team — expect issues and be prepared to troubleshoot.
 
-1. Download `openenroth-release.apk` from the [releases page](https://github.com/OpenEnroth/OpenEnroth/releases).
+1. Download `OpenEnroth_nightly_Android_universal_RelWithDebInfo.apk` from the [releases page](https://github.com/OpenEnroth/OpenEnroth/releases).
 2. Install the APK on your device (you will need to allow installation from unknown sources in your device settings).
 3. Copy the game data (`ANIMS`, `DATA`, `MUSIC` and `SOUNDS`) to
    `/sdcard/Android/data/io.github.openenroth.openenroth/files/` on your device.
