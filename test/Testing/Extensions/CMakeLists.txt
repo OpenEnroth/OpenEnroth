@@ -2,12 +2,14 @@ cmake_minimum_required(VERSION 3.27 FATAL_ERROR)
 
 if(OE_BUILD_TESTS)
     set(TESTING_EXTENSIONS_SOURCES
+            GoogleTestHelp.cpp
             ThrowingAssertions.cpp
             ScopedTestFile.cpp
             ScopedTestFileSlot.cpp
             ScopedTestFolder.cpp)
 
     set(TESTING_EXTENSIONS_HEADERS
+            GoogleTestHelp.h
             ThrowingAssertions.h
             ExpectExtensions.h
             ScopedTestFile.h
