@@ -156,7 +156,7 @@ We strive for a good test coverage of the project, and while we're not there yet
 Tests in OpenEnroth fall into three categories:
 * Unit tests. These are a standard breed of tests, written using Google Test. You can see some examples in `src/Utility/Streams/Tests`.
 * Game tests. If you're familiar with how testing is done these days for complex mobile apps, then you can consider game tests a variation of UI tests that's specific to our project. Game tests need game assets to run.
-* Integration tests. These run the `OpenEnroth` binary as a separate process and look at what it prints and at what it leaves in the user folder, so they cover what the other two can't reach, such as command line handling and the startup sequence. You can see them in `test/Bin/IntegrationTest`. The ones that start the game need game assets to run.
+* Integration tests. These run the `OpenEnroth` binary as a separate process, which lets them cover the startup sequence. They need game assets to run.
 
 Game tests work by instrumenting the engine, and then running test code in between the game frames. This code usually sends events to the engine (e.g. mouse clicks), which are then processed by the engine in the next frame, but it can do pretty much anything else – all of engine's data is accessible and writable from inside the game test.
 
