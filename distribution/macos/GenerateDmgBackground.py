@@ -110,8 +110,9 @@ def draw_arrow(img):
     x0, x1 = APP[0] + 92 * S, APPLICATIONS[0] - 104 * S
     y = APP[1] - 4 * S
     pts = bezier((x0, y), ((x0 + x1) / 2, y - 30 * S), (x1, y), 400)
+    shaft = pts[:-20]
     tip = pts[-1]
-    ang = math.atan2(pts[-1][1] - pts[-11][1], pts[-1][0] - pts[-11][0])
+    ang = math.atan2(tip[1] - shaft[-1][1], tip[0] - shaft[-1][0]) # Aimed through the shaft's end, so it enters centered.
 
     length, half = 17 * S, 10 * S
     back = (tip[0] - length * math.cos(ang), tip[1] - length * math.sin(ang))
@@ -120,7 +121,6 @@ def draw_arrow(img):
             (back[0] + half * math.sin(ang), back[1] - half * math.cos(ang)),
             notch,
             (back[0] - half * math.sin(ang), back[1] + half * math.cos(ang))]
-    shaft = pts[:-20]
 
     def arrow(color, offset):
         def draw(d, scale):
