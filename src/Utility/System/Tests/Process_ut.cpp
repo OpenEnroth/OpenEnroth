@@ -53,7 +53,8 @@ UNIT_TEST(Process, Timeout) {
 #endif
     auto start = std::chrono::steady_clock::now();
     ProcessResult result = runShell(command, 200ms);
-    EXPECT_FALSE(result.exitCode);
+    EXPECT_TRUE(result.timedOut);
+    EXPECT_NE(result.exitCode, 0);
     EXPECT_LT(std::chrono::steady_clock::now() - start, 10s);
 }
 

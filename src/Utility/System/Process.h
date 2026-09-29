@@ -1,14 +1,14 @@
 #pragma once
 
 #include <chrono>
-#include <optional>
 #include <string>
 #include <vector>
 
 #include "NativePath.h"
 
 struct ProcessResult {
-    std::optional<int> exitCode; // Empty if the process ran out of time. EXIT_FAILURE if it was killed by a signal.
+    int exitCode = 0; // EXIT_FAILURE on POSIX if the process was killed by a signal.
+    bool timedOut = false; // Whether the process was killed because it ran out of time.
     std::string output; // Standard output and standard error, interleaved.
 };
 
