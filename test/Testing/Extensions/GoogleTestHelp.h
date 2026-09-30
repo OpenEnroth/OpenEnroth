@@ -1,8 +1,8 @@
 #pragma once
 
 /**
- * Prints Google Test's own command line help, for test binaries that parse their options with CLI11 first and have
- * already printed that help.
+ * Prints an empty line, then Google Test's own command line help. For test binaries that have just printed their
+ * CLI11 help.
  *
  * @param app                           Name of the executable, `argv[0]`.
  */
