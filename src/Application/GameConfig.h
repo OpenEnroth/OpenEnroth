@@ -105,6 +105,10 @@ class GameConfig : public Config {
         Bool NoActors = {this, "no_actors", false,
             "Disable all actors."};
 
+        Bool DecompiledEvents = {this, "decompiled_events", false,
+            "Run the events of every evt file through the Lua script that the decompiler makes of it. "
+            "This checks the decompiler and the Lua events against the evt interpreter."};
+
         Bool NoDamage = {this, "no_damage", false,
             "Disable all incoming damage to party."};
 

@@ -41,11 +41,13 @@
 
 #include "Scripting/AudioBindings.h"
 #include "Scripting/ConfigBindings.h"
+#include "Scripting/EvtBindings.h"
 #include "Scripting/OverlayBindings.h"
 #include "Scripting/GameBindings.h"
 #include "Scripting/InputBindings.h"
 #include "Scripting/InputScriptEventHandler.h"
 #include "Scripting/LoggerBindings.h"
+#include "Scripting/LuaEvtScripts.h"
 #include "Scripting/PlatformBindings.h"
 #include "Scripting/RendererBindings.h"
 #include "Scripting/ScriptingSystem.h"
@@ -201,7 +203,9 @@ void GameStarter::initialize() {
     _scriptingSystem->addBindings<OverlayBindings>("overlay", *_overlaySystem);
     _scriptingSystem->addBindings<AudioBindings>("audio");
     _scriptingSystem->addBindings<RendererBindings>("renderer");
+    _scriptingSystem->addBindings<EvtBindings>("evt");
     _scriptingSystem->executeEntryPoint();
+    _evtScripts = std::make_unique<LuaEvtScripts>(_scriptingSystem->state());
 }
 
 GameStarter::~GameStarter() {
@@ -210,6 +214,7 @@ GameStarter::~GameStarter() {
     _game.reset();
     _engine.reset();
     _overlaySystem.reset();
+    _evtScripts.reset();
     _scriptingSystem.reset();
     _renderer.reset();
 

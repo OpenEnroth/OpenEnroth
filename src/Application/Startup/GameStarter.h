@@ -23,6 +23,7 @@ class Game;
 class GameBindings;
 class OverlaySystem;
 class ScriptingSystem;
+class LuaEvtScripts;
 class EngineController;
 
 class GameStarter {
@@ -60,6 +61,7 @@ class GameStarter {
     std::unique_ptr<PlatformApplication> _application;
     std::unique_ptr<Renderer> _renderer;
     std::unique_ptr<ScriptingSystem> _scriptingSystem;
+    std::unique_ptr<LuaEvtScripts> _evtScripts;
     std::unique_ptr<OverlaySystem> _overlaySystem;
     std::unique_ptr<Engine> _engine;
     std::shared_ptr<Game> _game;

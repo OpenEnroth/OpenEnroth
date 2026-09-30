@@ -252,19 +252,9 @@ EvtFlow EvtInterpreter::executeInstruction(EvtInstruction ir) {
 
                 pDialogueWindow = std::make_unique<GUIWindow_IndoorEntryExit>(ir.data.move_map_descr.house_id, ir.data.move_map_descr.exit_pic_id,
                                                                              moveToMapDestination(ir), ir.str);
-                savedEventID = _eventId;
-                savedEventStep = step + 1;
+                setEventContinuation([eventId = _eventId, next = step + 1] { eventProcessor(eventId, Pid(), true, next); });
                 return {EVT_FLOW_YIELD};
             }
-
-            // TODO(pskelton): Fix #2117 this should be a data mod
-            if (engine->_indoor->filename == "d25.blv" && _eventId == 451 && ir.step == 1)
-                ir.str = "out06.odm";
-
-            // TODO(pskelton): Fix #2117 this should be a data mod - the RandomGoTo targets fall through into each
-            //                 other, only the first one should run.
-            if (engine->_indoor->filename == "d25.blv" && _eventId == 451 && engine->_pendingTransition)
-                break;
 
             MapDestination destination = moveToMapDestination(ir);
             if (destination.map() == MAP_INVALID) { // teleport within map
@@ -366,12 +356,6 @@ EvtFlow EvtInterpreter::executeInstruction(EvtInstruction ir) {
         case EVENT_Add:
             if (!validateVariableValue(ir))
                 break;
-            // TODO(captainurist): move this workaround into patched event data, and add the OnMapReload step from
-            //                     GrayFace's d27.evt that re-applies the empty cage sprite once the quest bit is set.
-            //                     The sprite isn't saved, so after a reload the cage shows Roland until the next click.
-            if (engine->_currentLoadedMapId == MAP_COLONY_ZOD && _eventId == 376 &&
-                ir.data.variable_descr.type == VAR_PlayerItemInHands && pParty->_questBits[QBIT_TALKED_TO_ROLAND])
-                break; // Roland's cage script adds the key on every click, it never checks the quest bit.
             for (Character &character : iterateCharacters(_who, ir.data.variable_descr.type, grng))
                 addEvtVariable(character, ir.data.variable_descr.type, ir.data.variable_descr.value);
             break;
@@ -450,7 +434,7 @@ EvtFlow EvtInterpreter::executeInstruction(EvtInstruction ir) {
             game_ui_status_bar_event_string = (ir.data.text_id < engine->_levelStrings.size()) ? engine->_levelStrings[ir.data.text_id] : "";
             startBranchlessDialogue(_eventId, step + 1, EVENT_InputString);
 #endif
-            return {EVT_FLOW_STOP};
+            return {EVT_FLOW_STOP}; // The dialogue that would wait for the answer isn't there.
         case EVENT_StatusText:
             if (activeLevelDecoration) {
                 if (activeLevelDecoration == (LevelDecoration *)1) {
@@ -717,6 +701,13 @@ void EvtInterpreter::prepare(const EvtProgram &eventMap, int eventId, Pid object
 
 bool EvtInterpreter::isValid() {
     return _events.size() > 0;
+}
+
+void EvtInterpreter::prepare(int eventId, Pid objectPid, bool canShowMessages) {
+    _eventId = eventId;
+    _canShowMessages = canShowMessages;
+    _objectPid = objectPid;
+    _events.clear();
 }
 
 bool EvtInterpreter::validateVariableValue(const EvtInstruction &ir) const {

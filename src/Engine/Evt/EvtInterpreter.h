@@ -36,14 +36,34 @@ class EvtInterpreter {
      void prepare(const EvtProgram &eventMap, int eventId, Pid objectPid, bool canShowMessages);
      bool isValid();
 
- protected:
-     int executeOneEvent(int step, bool isNpc);
+     /**
+      * Prepares to run instructions that don't come from an evt file, one `executeInstruction` call at a time.
+      *
+      * @param eventId                  Id of the event the instructions run as.
+      * @param objectPid                Object that triggered the event.
+      * @param canShowMessages          Whether the event can show status texts and open dialogues.
+      */
+     void prepare(int eventId, Pid objectPid, bool canShowMessages);
 
      /**
       * @param ir                       Instruction to run, outside of NPC mode.
       * @return                         Where the event goes after this instruction.
       */
      EvtFlow executeInstruction(EvtInstruction ir);
+
+     /**
+      * @param who                      Characters that the instructions that follow apply to, as `ForPartyMember` sets.
+      */
+     void setTargetCharacter(EvtTargetCharacter who) {
+         _who = who;
+     }
+
+     bool isMapExitTriggered() const {
+         return _mapExitTriggered;
+     }
+
+ protected:
+     int executeOneEvent(int step, bool isNpc);
 
  private:
      /**
