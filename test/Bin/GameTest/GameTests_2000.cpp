@@ -215,22 +215,26 @@ GAME_TEST(Issues, Issue2066) {
 GAME_TEST(Issues, Issue2074) {
     // Encounter actors that spawned too far from their spawn point were removed, which counts as killed, so leaving
     // Castle Gryphonheart set its aggro map variable and the whole castle was hostile on re-entry.
-    auto mapTape = tapes.map();
-    auto castleHostileTape = tapes.custom([] {
-        return engine->_currentLoadedMapId == MAP_CASTLE_GRYPHONHEART &&
-               std::ranges::any_of(pActors, [](const Actor &actor) { return actor.attributes & ACTOR_AGGRESSOR; });
-    });
-    game.startNewGame();
-    test.startTaping();
-    game.teleportTo(MAP_CASTLE_GRYPHONHEART, Vec3f(641, 0, 0), 0); // First visit spawns the encounters. Facing the exit.
-    game.pressAndReleaseKey(PlatformKey::KEY_SPACE);
-    game.tick();
-    game.pressGuiButton("Transition_Yes");
-    game.tick();
-    game.skipLoadingScreen();
-    game.teleportTo(MAP_CASTLE_GRYPHONHEART, Vec3f(641, 0, 0), 0);
-    EXPECT_EQ(mapTape, tape(MAP_EMERALD_ISLAND, MAP_CASTLE_GRYPHONHEART, MAP_ERATHIA, MAP_CASTLE_GRYPHONHEART));
-    EXPECT_EQ(castleHostileTape, tape(false));
+    for (int i = 0; i < 8; i++) { // Only one spawn point in the castle can roll too far, and only about half of the time.
+        test.prepareForNextTest();
+        auto mapTape = tapes.map();
+        auto castleHostileTape = tapes.custom([] {
+            return engine->_currentLoadedMapId == MAP_CASTLE_GRYPHONHEART &&
+                   std::ranges::any_of(pActors, [](const Actor &actor) { return actor.attributes & ACTOR_AGGRESSOR; });
+        });
+        game.startNewGame();
+        game.tick(i); // Shifts the random state, so that each iteration rolls different encounter positions.
+        test.startTaping();
+        game.teleportTo(MAP_CASTLE_GRYPHONHEART, Vec3f(641, 0, 0), 0); // First visit spawns the encounters. Facing the exit.
+        game.pressAndReleaseKey(PlatformKey::KEY_SPACE);
+        game.tick();
+        game.pressGuiButton("Transition_Yes");
+        game.tick();
+        game.skipLoadingScreen();
+        game.teleportTo(MAP_CASTLE_GRYPHONHEART, Vec3f(641, 0, 0), 0);
+        EXPECT_EQ(mapTape, tape(MAP_EMERALD_ISLAND, MAP_CASTLE_GRYPHONHEART, MAP_ERATHIA, MAP_CASTLE_GRYPHONHEART));
+        EXPECT_EQ(castleHostileTape, tape(false)) << "Iteration " << i;
+    }
 }
 
 GAME_TEST(Issues, Issue2075) {
