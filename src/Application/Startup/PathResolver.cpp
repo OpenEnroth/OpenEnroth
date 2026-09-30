@@ -140,7 +140,7 @@ NativePath resolveMm7UserPath(Environment *environment) {
 #ifdef _WINDOWS
     std::string savedGames = environment->path(PATH_WINDOWS_SAVED_GAMES);
     if (savedGames.empty())
-        return {}; // Shouldn't really happen.
+        return fs::cwd(); // Shouldn't really happen.
     return NativePath::fromWtf8(fmt::format("{}/OpenEnroth", savedGames));
 #elif __ANDROID__
     return NativePath::fromWtf8(fmt::format("{}/.openenroth", environment->path(PATH_ANDROID_STORAGE_INTERNAL)));
