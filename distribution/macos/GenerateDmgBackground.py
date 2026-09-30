@@ -141,7 +141,7 @@ def render(scale):
         centered_text(canvas, 56, 'Drag OpenEnroth into Applications', font('DejaVuSerif.ttf', 20), INK)
         ornament(canvas, 76)
         centered_text(canvas, H - 40, 'Open-source engine for Might and Magic VI, VII and VIII',
-                      font('DejaVuSans.ttf', 10), BRONZE_DARK)
+                      font('DejaVuSans.ttf', 12), BRONZE_DARK)
     return Image.fromarray(surface.makeImageSnapshot().toarray(colorType=skia.kRGBA_8888_ColorType)).convert('RGB')
 
 
