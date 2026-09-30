@@ -48,13 +48,13 @@ GUIWindow_LloydsBook::GUIWindow_LloydsBook(Pid casterPid, SpellCastFlags castFla
     _recallingBeacon = false;
 
     if (!ui_book_lloyds_border) {
-        ui_book_lloyds_border = assets->getImage_ColorKey("lb_bordr");
+        ui_book_lloyds_border = assets->getIcon("lb_bordr");
     }
 
-    ui_book_lloyds_backgrounds[0] = assets->getImage_ColorKey("sbmap");
-    ui_book_lloyds_backgrounds[1] = assets->getImage_ColorKey("sbmap");
-    ui_book_button1_on = assets->getImage_Alpha("tab-an-6b");
-    ui_book_button1_off = assets->getImage_Alpha("tab-an-6a");
+    ui_book_lloyds_backgrounds[0] = assets->getIcon("sbmap");
+    ui_book_lloyds_backgrounds[1] = assets->getIcon("sbmap");
+    ui_book_button1_on = assets->getIcon("tab-an-6b");
+    ui_book_button1_off = assets->getIcon("tab-an-6a");
 
     pBtn_Book_1 = CreateButton({415, 13}, {39, 36}, BUTTON_TYPE_NORMAL, 0, UIMSG_LloydBookFlipButton, 0, INPUT_ACTION_INVALID, localization->str(LSTR_SET_BEACON));
     pBtn_Book_2 = CreateButton({415, 48}, {39, 36}, BUTTON_TYPE_NORMAL, 0, UIMSG_LloydBookFlipButton, 1, INPUT_ACTION_INVALID, localization->str(LSTR_RECALL_BEACON));

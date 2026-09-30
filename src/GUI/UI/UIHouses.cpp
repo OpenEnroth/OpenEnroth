@@ -355,7 +355,7 @@ bool enterHouse(HouseId uHouseID) {
     }
 
     currentHouseNpc = -1;
-    game_ui_dialogue_background = assets->getImage_Solid(dialogueBackgroundResourceByAlignment[pParty->alignment]);
+    game_ui_dialogue_background = assets->getIcon(dialogueBackgroundResourceByAlignment[pParty->alignment]);
 
     prepareHouse(uHouseID);
 
@@ -389,7 +389,7 @@ void prepareHouse(HouseId house) {
         HouseNpcDesc desc;
         desc.type = HOUSE_PROPRIETOR;
         desc.label = localization->format(LSTR_CONVERSE_WITH_S, houseTable[house].pProprieterName);
-        desc.icon = assets->getImage_ColorKey(fmt::format("npc{:03}", proprietorId));
+        desc.icon = assets->getIcon(fmt::format("npc{:03}", proprietorId));
 
         houseNpcs.push_back(desc);
     }
@@ -401,7 +401,7 @@ void prepareHouse(HouseId house) {
                 HouseNpcDesc desc;
                 desc.type = HOUSE_NPC;
                 desc.label = localization->format(LSTR_CONVERSE_WITH_S, pNPCStats->pNPCData[i].name);
-                desc.icon = assets->getImage_ColorKey(fmt::format("npc{:03}", pNPCStats->pNPCData[i].portraitId));
+                desc.icon = assets->getIcon(fmt::format("npc{:03}", pNPCStats->pNPCData[i].portraitId));
                 desc.npc = &pNPCStats->pNPCData[i];
 
                 houseNpcs.push_back(desc);
@@ -425,7 +425,7 @@ void prepareHouse(HouseId house) {
             HouseNpcDesc desc;
             desc.type = HOUSE_TRANSITION;
             desc.label = localization->format(LSTR_ENTER_S, pMapTable->pInfos[id].name);
-            desc.icon = assets->getImage_ColorKey(pHouse_ExitPictures[static_cast<int>(id)]);
+            desc.icon = assets->getIcon(pHouse_ExitPictures[static_cast<int>(id)]);
             desc.targetMapID = id;
 
             houseNpcs.push_back(desc);
@@ -1043,7 +1043,7 @@ GUIWindow_House::GUIWindow_House(HouseId houseId) : GUIWindow(WINDOW_HOUSE_INTER
                                    localization->str(LSTR_EXIT_BUILDING), {ui_exit_cancel_button_background});
 
     if (buildingType() <= HOUSE_TYPE_MIRRORED_PATH_GUILD) {
-        shop_ui_background = assets->getImage_ColorKey(shopBackgroundNames[buildingType()]);
+        shop_ui_background = assets->getIcon(shopBackgroundNames[buildingType()]);
     }
 
     for (int i = 0; i < houseNpcs.size(); ++i) {

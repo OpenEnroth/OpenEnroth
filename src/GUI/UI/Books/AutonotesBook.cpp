@@ -35,25 +35,25 @@ GUIWindow_AutonotesBook::GUIWindow_AutonotesBook() : GUIWindow_Book() {
     pChildBooksOverlay = std::make_unique<GUIWindow_BooksButtonOverlay>(Pointi{527, 353}, Sizei{0, 0}, pBtn_Autonotes);
     bFlashAutonotesBook = false;
 
-    ui_book_autonotes_background = assets->getImage_ColorKey("sbautnot");
-    ui_book_quest_div_bar = assets->getImage_Alpha("divbar");
+    ui_book_autonotes_background = assets->getIcon("sbautnot");
+    ui_book_quest_div_bar = assets->getIcon("divbar");
 
-    ui_book_button1_on = assets->getImage_Alpha("tab-an-6b");
-    ui_book_button2_on = assets->getImage_Alpha("tab-an-7b");
-    ui_book_button3_on = assets->getImage_Alpha("tab-an-1b");
-    ui_book_button4_on = assets->getImage_Alpha("tab-an-2b");
-    ui_book_button5_on = assets->getImage_Alpha("tab-an-3b");
-    ui_book_button6_on = assets->getImage_Alpha("tab-an-5b");
-    ui_book_button7_on = assets->getImage_Alpha("tab-an-4b");
-    ui_book_button8_on = assets->getImage_Alpha("tab-an-8b");
-    ui_book_button1_off = assets->getImage_Alpha("tab-an-6a");
-    ui_book_button2_off = assets->getImage_Alpha("tab-an-7a");
-    ui_book_button3_off = assets->getImage_Alpha("tab-an-1a");
-    ui_book_button4_off = assets->getImage_Alpha("tab-an-2a");
-    ui_book_button5_off = assets->getImage_Alpha("tab-an-3a");
-    ui_book_button6_off = assets->getImage_Alpha("tab-an-5a");
-    ui_book_button7_off = assets->getImage_Alpha("tab-an-4a");
-    ui_book_button8_off = assets->getImage_Alpha("tab-an-8a");
+    ui_book_button1_on = assets->getIcon("tab-an-6b");
+    ui_book_button2_on = assets->getIcon("tab-an-7b");
+    ui_book_button3_on = assets->getIcon("tab-an-1b");
+    ui_book_button4_on = assets->getIcon("tab-an-2b");
+    ui_book_button5_on = assets->getIcon("tab-an-3b");
+    ui_book_button6_on = assets->getIcon("tab-an-5b");
+    ui_book_button7_on = assets->getIcon("tab-an-4b");
+    ui_book_button8_on = assets->getIcon("tab-an-8b");
+    ui_book_button1_off = assets->getIcon("tab-an-6a");
+    ui_book_button2_off = assets->getIcon("tab-an-7a");
+    ui_book_button3_off = assets->getIcon("tab-an-1a");
+    ui_book_button4_off = assets->getIcon("tab-an-2a");
+    ui_book_button5_off = assets->getIcon("tab-an-3a");
+    ui_book_button6_off = assets->getIcon("tab-an-5a");
+    ui_book_button7_off = assets->getIcon("tab-an-4a");
+    ui_book_button8_off = assets->getIcon("tab-an-8a");
 
     pBtn_Book_1 = CreateButton(pViewport.topLeft() + Pointi(398, 1), {50, 34}, BUTTON_TYPE_NORMAL, 0,
         UIMSG_ClickBooksBtn, std::to_underlying(BOOK_PREV_PAGE), INPUT_ACTION_DIALOG_LEFT, localization->str(LSTR_SCROLL_DOWN), {ui_book_button1_on});

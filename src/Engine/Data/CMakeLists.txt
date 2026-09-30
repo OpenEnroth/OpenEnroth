@@ -6,6 +6,7 @@ cmake_minimum_required(VERSION 3.27 FATAL_ERROR)
 # TODO(captainurist): Game-related enums go to Engine/XYZ/....??? Engine/Model?
 set(ENGINE_DATA_SOURCES
         HouseEnumFunctions.cpp
+        ResourceMask.cpp
         TileEnums.cpp
         TileEnumFunctions.cpp)
 
@@ -30,6 +31,7 @@ set(ENGINE_DATA_HEADERS
         ObjectEnums.h
         OverlayData.h
         PortraitFrameData.h
+        ResourceMask.h
         SoundEnums.h
         SpecialEnchantmentData.h
         StandardEnchantmentData.h
@@ -39,5 +41,5 @@ set(ENGINE_DATA_HEADERS
         TileEnums.h)
 
 add_library(engine_data STATIC ${ENGINE_DATA_SOURCES} ${ENGINE_DATA_HEADERS})
-target_link_libraries(engine_data PUBLIC core_time library_color library_serialization utility)
+target_link_libraries(engine_data PUBLIC core_time library_color library_json library_serialization utility)
 target_check_style(engine_data)

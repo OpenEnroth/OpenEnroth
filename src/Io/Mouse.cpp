@@ -66,7 +66,7 @@ void Io::Mouse::SetCursorImage(std::string_view name) {
         platform->setCursorShown(true);
         this->cursor_img = nullptr;
     } else { // Cursor is item or another bitmap.
-        this->cursor_img = assets->getImage_ColorKey(name, colorTable.Black /*colorTable.TealMask*/);
+        this->cursor_img = assets->getIcon(name);
         this->AllocCursorSystemMem();
         this->_arrowCursor = false;
     }
@@ -133,7 +133,7 @@ void Io::Mouse::DrawCursor() {
             render->DrawQuad2D(this->cursor_img, pos);
         } else if (_mouseLook == MouseLookState::Enabled) {
             platform->setCursorShown(false);
-            auto pointer = assets->getImage_ColorKey("MICON2", colorTable.Black /*colorTable.TealMask*/);
+            auto pointer = assets->getIcon("MICON2");
             render->DrawQuad2D(pointer, pViewport.center() - pointer->size() / 2);
         } else {
             platform->setCursorShown(true);
@@ -192,7 +192,7 @@ void Io::Mouse::DrawPickedItem() {
     if (pParty->pPickedItem.itemId == ITEM_NULL)
         return;
 
-    GraphicsImage *pTexture = assets->getImage_Alpha(pParty->pPickedItem.GetIconName());
+    GraphicsImage *pTexture = assets->getIcon(pParty->pPickedItem.GetIconName());
     if (!pTexture) return;
 
     Pointi mousePos = this->position();

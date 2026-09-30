@@ -324,7 +324,7 @@ void GameUI_DrawItemInfo(Item *inspect_item) {
     if (inspect_item->itemId == ITEM_NULL)
         return;
 
-    auto inspect_item_image = assets->getImage_ColorKey(inspect_item->GetIconName());
+    auto inspect_item_image = assets->getIcon(inspect_item->GetIconName());
 
     Recti iteminfo_window(0, 40, 384, 180);
 
@@ -1734,7 +1734,7 @@ void GameUI_DrawNPCPopup(int _this) {  // PopupWindowForBenefitAndJoinText
                 popup_window.w = 400;
                 GUIWindow::DrawMessageBox(popup_window, "");
                 auto tex_name = fmt::format("NPC{:03}", pNPC->portraitId);
-                render->DrawQuad2D(assets->getImage_ColorKey(tex_name),
+                render->DrawQuad2D(assets->getIcon(tex_name),
                                    {popup_window.x + 22, popup_window.y + 36});
 
                 GUIWindow::DrawTitleText(assets->pFontArrus.get(), 0, 12, colorTable.PaleCanary, NameAndTitle(pNPC), 3, popup_window);

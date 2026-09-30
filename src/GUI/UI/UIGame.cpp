@@ -181,13 +181,13 @@ extern std::unordered_map<InputAction, PlatformKey> curr_key_map;
 
 GUIWindow_GameMenu::GUIWindow_GameMenu()
     : GUIWindow(WINDOW_GAME_MENU, {0, 0}, render->GetRenderDimensions()) {
-    game_ui_menu_options = assets->getImage_ColorKey("options");
-    game_ui_menu_new = assets->getImage_ColorKey("new1");
-    game_ui_menu_load = assets->getImage_ColorKey("load1");
-    game_ui_menu_save = assets->getImage_ColorKey("save1");
-    game_ui_menu_controls = assets->getImage_ColorKey("controls1");
-    game_ui_menu_resume = assets->getImage_ColorKey("resume1");
-    game_ui_menu_quit = assets->getImage_ColorKey("quit1");
+    game_ui_menu_options = assets->getIcon("options");
+    game_ui_menu_new = assets->getIcon("new1");
+    game_ui_menu_load = assets->getIcon("load1");
+    game_ui_menu_save = assets->getIcon("save1");
+    game_ui_menu_controls = assets->getIcon("controls1");
+    game_ui_menu_resume = assets->getIcon("resume1");
+    game_ui_menu_quit = assets->getIcon("quit1");
 
     pBtn_NewGame = CreateButton({0x13u, 0x9Bu}, {0xD6u, 0x28u}, BUTTON_TYPE_NORMAL, 0,
         UIMSG_StartNewGame, 0, INPUT_ACTION_NEW_GAME, localization->str(LSTR_NEW_GAME), {game_ui_menu_new});
@@ -215,14 +215,14 @@ void GUIWindow_GameMenu::Update() {
 void GameUI_LoadPlayerPortraitsAndVoices() {
     for (unsigned i = 0; i < 4; ++i) {
         for (unsigned j = 0; j < 56; ++j) {
-            game_ui_player_faces[i][j] = assets->getImage_ColorKey(
+            game_ui_player_faces[i][j] = assets->getIcon(
                 fmt::format("{}{:02}", pPlayerPortraitsNames[pParty->pCharacters[i].uCurrentFace], j + 1));
         }
     }
 
     game_ui_player_face_eradicated =
-        assets->getImage_ColorKey("ERADCATE");
-    game_ui_player_face_dead = assets->getImage_ColorKey("DEAD");
+        assets->getIcon("ERADCATE");
+    game_ui_player_face_dead = assets->getIcon("DEAD");
     /*
         if (SoundSetAction[24][0])
         {
@@ -242,7 +242,7 @@ void GameUI_ReloadPlayerPortraits(int player_id, int face_id) {  // the transiti
         auto filename =
             fmt::format("{}{:02}", pPlayerPortraitsNames[face_id], i + 1);
         game_ui_player_faces[player_id][i] =
-            assets->getImage_ColorKey(filename);
+            assets->getIcon(filename);
     }
 }
 
@@ -271,11 +271,11 @@ static Color GameMenuUI_GetKeyBindingColor(InputAction action) {
 
 GUIWindow_GameKeyBindings::GUIWindow_GameKeyBindings()
     : GUIWindow(WINDOW_KEY_MAPPING_OPTIONS, {0, 0}, render->GetPresentDimensions()) {
-    game_ui_options_controls[0] = assets->getImage_ColorKey("optkb");
-    game_ui_options_controls[1] = assets->getImage_ColorKey("optkb_h");
-    game_ui_options_controls[2] = assets->getImage_ColorKey("resume1");
-    game_ui_options_controls[3] = assets->getImage_ColorKey("optkb_1");
-    game_ui_options_controls[4] = assets->getImage_ColorKey("optkb_2");
+    game_ui_options_controls[0] = assets->getIcon("optkb");
+    game_ui_options_controls[1] = assets->getIcon("optkb_h");
+    game_ui_options_controls[2] = assets->getIcon("resume1");
+    game_ui_options_controls[3] = assets->getIcon("optkb_1");
+    game_ui_options_controls[4] = assets->getIcon("optkb_2");
 
     CreateButton({241, 302}, {214, 40}, BUTTON_TYPE_NORMAL, 0, UIMSG_Escape, 0);
 
@@ -366,21 +366,21 @@ GUIWindow_GameVideoOptions::GUIWindow_GameVideoOptions()
     : GUIWindow(WINDOW_VIDEO_OPTIONS, {0, 0}, render->GetRenderDimensions()) {
     // -------------------------------------
     // GameMenuUI_OptionsVideo_Load --- part
-    game_ui_menu_options_video_background = assets->getImage_ColorKey("optvid");
-    game_ui_menu_options_video_bloodsplats = assets->getImage_ColorKey("opvdH-bs");
-    game_ui_menu_options_video_coloredlights = assets->getImage_ColorKey("opvdH-cl");
-    game_ui_menu_options_video_tinting = assets->getImage_ColorKey("opvdH-tn");
+    game_ui_menu_options_video_background = assets->getIcon("optvid");
+    game_ui_menu_options_video_bloodsplats = assets->getIcon("opvdH-bs");
+    game_ui_menu_options_video_coloredlights = assets->getIcon("opvdH-cl");
+    game_ui_menu_options_video_tinting = assets->getIcon("opvdH-tn");
 
-    game_ui_menu_options_video_gamma_positions[0] = assets->getImage_ColorKey("convol10");
-    game_ui_menu_options_video_gamma_positions[1] = assets->getImage_ColorKey("convol20");
-    game_ui_menu_options_video_gamma_positions[2] = assets->getImage_ColorKey("convol30");
-    game_ui_menu_options_video_gamma_positions[3] = assets->getImage_ColorKey("convol40");
-    game_ui_menu_options_video_gamma_positions[4] = assets->getImage_ColorKey("convol50");
-    game_ui_menu_options_video_gamma_positions[5] = assets->getImage_ColorKey("convol60");
-    game_ui_menu_options_video_gamma_positions[6] = assets->getImage_ColorKey("convol70");
-    game_ui_menu_options_video_gamma_positions[7] = assets->getImage_ColorKey("convol80");
-    game_ui_menu_options_video_gamma_positions[8] = assets->getImage_ColorKey("convol90");
-    game_ui_menu_options_video_gamma_positions[9] = assets->getImage_ColorKey("convol00");
+    game_ui_menu_options_video_gamma_positions[0] = assets->getIcon("convol10");
+    game_ui_menu_options_video_gamma_positions[1] = assets->getIcon("convol20");
+    game_ui_menu_options_video_gamma_positions[2] = assets->getIcon("convol30");
+    game_ui_menu_options_video_gamma_positions[3] = assets->getIcon("convol40");
+    game_ui_menu_options_video_gamma_positions[4] = assets->getIcon("convol50");
+    game_ui_menu_options_video_gamma_positions[5] = assets->getIcon("convol60");
+    game_ui_menu_options_video_gamma_positions[6] = assets->getIcon("convol70");
+    game_ui_menu_options_video_gamma_positions[7] = assets->getIcon("convol80");
+    game_ui_menu_options_video_gamma_positions[8] = assets->getIcon("convol90");
+    game_ui_menu_options_video_gamma_positions[9] = assets->getIcon("convol00");
     // not_available_bloodsplats_texture_id =
     // pIcons_LOD->LoadTexture("opvdG-bs", TEXTURE_16BIT_PALETTE);
     // not_available_us_colored_lights_texture_id =
@@ -461,26 +461,26 @@ void OptionsMenuSkin::Release() {
 
 GUIWindow_GameOptions::GUIWindow_GameOptions()
     : GUIWindow(WINDOW_GAME_OPTIONS, {0, 0}, render->GetRenderDimensions()) {
-    options_menu_skin.uTextureID_Background = assets->getImage_ColorKey("ControlBG");
-    options_menu_skin.uTextureID_TurnSpeed[2] = assets->getImage_ColorKey("con_16x");
-    options_menu_skin.uTextureID_TurnSpeed[1] = assets->getImage_ColorKey("con_32x");
-    options_menu_skin.uTextureID_TurnSpeed[0] = assets->getImage_ColorKey("con_Smoo");
-    options_menu_skin.uTextureID_ArrowLeft = assets->getImage_Alpha("con_ArrL");
-    options_menu_skin.uTextureID_ArrowRight = assets->getImage_Alpha("con_ArrR");
-    options_menu_skin.uTextureID_SoundLevels[0] = assets->getImage_ColorKey("convol10");
-    options_menu_skin.uTextureID_SoundLevels[1] = assets->getImage_ColorKey("convol20");
-    options_menu_skin.uTextureID_SoundLevels[2] = assets->getImage_ColorKey("convol30");
-    options_menu_skin.uTextureID_SoundLevels[3] = assets->getImage_ColorKey("convol40");
-    options_menu_skin.uTextureID_SoundLevels[4] = assets->getImage_ColorKey("convol50");
-    options_menu_skin.uTextureID_SoundLevels[5] = assets->getImage_ColorKey("convol60");
-    options_menu_skin.uTextureID_SoundLevels[6] = assets->getImage_ColorKey("convol70");
-    options_menu_skin.uTextureID_SoundLevels[7] = assets->getImage_ColorKey("convol80");
-    options_menu_skin.uTextureID_SoundLevels[8] = assets->getImage_ColorKey("convol90");
-    options_menu_skin.uTextureID_SoundLevels[9] = assets->getImage_ColorKey("convol00");
-    options_menu_skin.uTextureID_FlipOnExit = assets->getImage_ColorKey("option04");
-    options_menu_skin.uTextureID_AlwaysRun = assets->getImage_ColorKey("option03");
-    options_menu_skin.uTextureID_ShowDamage = assets->getImage_ColorKey("option02");
-    options_menu_skin.uTextureID_WalkSound = assets->getImage_ColorKey("option01");
+    options_menu_skin.uTextureID_Background = assets->getIcon("ControlBG");
+    options_menu_skin.uTextureID_TurnSpeed[2] = assets->getIcon("con_16x");
+    options_menu_skin.uTextureID_TurnSpeed[1] = assets->getIcon("con_32x");
+    options_menu_skin.uTextureID_TurnSpeed[0] = assets->getIcon("con_Smoo");
+    options_menu_skin.uTextureID_ArrowLeft = assets->getIcon("con_ArrL");
+    options_menu_skin.uTextureID_ArrowRight = assets->getIcon("con_ArrR");
+    options_menu_skin.uTextureID_SoundLevels[0] = assets->getIcon("convol10");
+    options_menu_skin.uTextureID_SoundLevels[1] = assets->getIcon("convol20");
+    options_menu_skin.uTextureID_SoundLevels[2] = assets->getIcon("convol30");
+    options_menu_skin.uTextureID_SoundLevels[3] = assets->getIcon("convol40");
+    options_menu_skin.uTextureID_SoundLevels[4] = assets->getIcon("convol50");
+    options_menu_skin.uTextureID_SoundLevels[5] = assets->getIcon("convol60");
+    options_menu_skin.uTextureID_SoundLevels[6] = assets->getIcon("convol70");
+    options_menu_skin.uTextureID_SoundLevels[7] = assets->getIcon("convol80");
+    options_menu_skin.uTextureID_SoundLevels[8] = assets->getIcon("convol90");
+    options_menu_skin.uTextureID_SoundLevels[9] = assets->getIcon("convol00");
+    options_menu_skin.uTextureID_FlipOnExit = assets->getIcon("option04");
+    options_menu_skin.uTextureID_AlwaysRun = assets->getIcon("option03");
+    options_menu_skin.uTextureID_ShowDamage = assets->getIcon("option02");
+    options_menu_skin.uTextureID_WalkSound = assets->getIcon("option01");
 
     CreateButton({22, 270}, options_menu_skin.uTextureID_TurnSpeed[2]->size(), BUTTON_TYPE_NORMAL, 0,
                  UIMSG_SetTurnSpeed, 0x80);
@@ -1566,7 +1566,7 @@ void GameUI_DrawHiredNPCs() {
             std::string pContainer = fmt::format("NPC{:03}", buf.Get(i)->portraitId);
             int npcX = pHiredNPCsIconsOffsetsX[count];
             int npcY = pHiredNPCsIconsOffsetsY[count];
-            render->DrawQuad2D(assets->getImage_ColorKey(pContainer), {npcX, npcY});
+            render->DrawQuad2D(assets->getIcon(pContainer), {npcX, npcY});
 
             // Dark sacrifice animation.
             if (!buf.IsFollower(i) && buf.GetSacrificeStatus(i)->inProgress) {

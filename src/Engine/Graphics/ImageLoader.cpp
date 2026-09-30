@@ -1,5 +1,6 @@
 #include "ImageLoader.h"
 
+#include <cassert>
 #include <unordered_set>
 #include <string_view>
 #include <memory>
@@ -57,57 +58,46 @@ static Palette MakePaletteColorKey(const Palette &palette, Color key) {
     return result;
 }
 
-bool Paletted_Img_Loader::Load(RgbaImage *rgbaImage) {
-    LodImage *tex = lod->loadTexture(resource_name);
-    if (tex == nullptr)
-        return false;
+bool Icon_LOD_Loader::Load(RgbaImage *rgbaImage) {
+    if (resource_name.ends_with(".pcx")) {
+        Blob data = lod->LoadCompressedTexture(resource_name);
+        if (!data) {
+            MM_WARNING("Unable to load {}", resource_name);
+            return false;
+        }
 
-    *rgbaImage = makeRgbaImage(tex->image, tex->palette);
-
-    return true;
-}
-
-bool ColorKey_LOD_Loader::Load(RgbaImage *rgbaImage) {
-    LodImage *tex = lod->loadTexture(resource_name);
-    if (tex == nullptr)
-        return false;
-
-    Palette palette;
-    if (tex->zeroIsTransparent) {
-        palette = MakePaletteAlpha(tex->palette);
-    } else {
-        palette = MakePaletteColorKey(tex->palette, colorkey);
+        *rgbaImage = pcx::decode(data);
+        if (mask.mode == MASK_COLOR)
+            for (Color &pixel : rgbaImage->pixels())
+                if (pixel == mask.color)
+                    pixel = Color();
+        return true;
     }
 
-    *rgbaImage = makeRgbaImage(tex->image, palette);
-
-    return true;
-}
-
-bool Image16bit_LOD_Loader::Load(RgbaImage *rgbaImage) {
     LodImage *tex = lod->loadTexture(resource_name);
     if (tex == nullptr)
         return false;
 
     Palette palette;
-    if (tex->zeroIsTransparent) {
-        palette = MakePaletteAlpha(tex->palette);
-    } else {
+    switch (mask.mode) {
+    default:
+        assert(false);
+        [[fallthrough]];
+    case MASK_DEFAULT:
+        palette = tex->zeroIsTransparent ? MakePaletteAlpha(tex->palette) : tex->palette;
+        break;
+    case MASK_NONE:
         palette = tex->palette;
+        break;
+    case MASK_ZERO:
+        palette = MakePaletteAlpha(tex->palette);
+        break;
+    case MASK_COLOR:
+        palette = MakePaletteColorKey(tex->palette, mask.color);
+        break;
     }
 
     *rgbaImage = makeRgbaImage(tex->image, palette);
-
-    return true;
-}
-
-bool Alpha_LOD_Loader::Load(RgbaImage *rgbaImage) {
-    LodImage *tex = lod->loadTexture(resource_name);
-    if (tex == nullptr)
-        return false;
-
-    *rgbaImage = makeRgbaImage(tex->image, MakePaletteAlpha(tex->palette));
-
     return true;
 }
 
@@ -174,22 +164,6 @@ bool PCX_LOD_Raw_Loader::Load(RgbaImage *rgbaImage) {
     }
 
     return InternalLoad(data, rgbaImage);
-}
-
-bool PCX_LOD_Compressed_Loader::Load(RgbaImage *rgbaImage) {
-    Blob pcx_data = blob_func();
-    if (!pcx_data) {
-        MM_WARNING("Unable to load {}", resource_name);
-        return false;
-    }
-
-    bool result = InternalLoad(pcx_data, rgbaImage);
-
-    for (Color &pixel : rgbaImage->pixels())
-        if (pixel == colorkey)
-            pixel = Color();
-
-    return result;
 }
 
 static Color ProcessTransparentPixel(const GrayscaleImage &image, const Palette &palette, size_t x, size_t y) {

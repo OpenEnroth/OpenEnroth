@@ -1,7 +1,8 @@
 #pragma once
 
 #include <string>
-#include <functional>
+
+#include "Engine/Data/ResourceMask.h"
 
 #include "Library/Color/Color.h"
 #include "Library/Image/Image.h"
@@ -21,58 +22,19 @@ class ImageLoader {
     std::string resource_name;
 };
 
-class Paletted_Img_Loader : public ImageLoader {
+class Icon_LOD_Loader : public ImageLoader {
  public:
-    inline Paletted_Img_Loader(LodTextureCache *lod, std::string_view filename) {
+    inline Icon_LOD_Loader(LodTextureCache *lod, std::string_view filename, ResourceMask mask) {
         this->resource_name = filename;
         this->lod = lod;
+        this->mask = mask;
     }
 
     virtual bool Load(RgbaImage *rgbaImage) override;
 
  protected:
     LodTextureCache *lod = nullptr;
-};
-
-class ColorKey_LOD_Loader : public ImageLoader {
- public:
-    inline ColorKey_LOD_Loader(LodTextureCache *lod, std::string_view filename, Color colorkey) {
-        this->resource_name = filename;
-        this->colorkey = colorkey;
-        this->lod = lod;
-    }
-
-    virtual bool Load(RgbaImage *rgbaImage) override;
-
- protected:
-    Color colorkey;
-    LodTextureCache *lod = nullptr;
-};
-
-class Image16bit_LOD_Loader : public ImageLoader {
- public:
-    inline Image16bit_LOD_Loader(LodTextureCache *lod, std::string_view filename) {
-        this->resource_name = filename;
-        this->lod = lod;
-    }
-
-    virtual bool Load(RgbaImage *rgbaImage) override;
-
- protected:
-    LodTextureCache *lod = nullptr;
-};
-
-class Alpha_LOD_Loader : public ImageLoader {
- public:
-    inline Alpha_LOD_Loader(LodTextureCache *lod, std::string_view filename) {
-        this->resource_name = filename;
-        this->lod = lod;
-    }
-
-    virtual bool Load(RgbaImage *rgbaImage) override;
-
- protected:
-    LodTextureCache *lod = nullptr;
+    ResourceMask mask;
 };
 
 class Buff_LOD_Loader : public ImageLoader {
@@ -104,25 +66,6 @@ class PCX_LOD_Raw_Loader : public PCX_Loader {
 
  protected:
     LodReader *lod = nullptr;
-};
-
-class PCX_LOD_Compressed_Loader : public PCX_Loader {
- public:
-    // TODO(captainurist): this is the next level of ugly, redo.
-    template<class Lod>
-    inline PCX_LOD_Compressed_Loader(Lod *lod, std::string_view filename, Color colorkey) {
-        this->colorkey = colorkey;
-        resource_name = filename;
-        blob_func = [this, lod] {
-            return lod->LoadCompressedTexture(resource_name);
-        };
-    }
-
-    virtual bool Load(RgbaImage *rgbaImage) override;
-
- protected:
-    std::function<Blob()> blob_func;
-    Color colorkey;
 };
 
 class Bitmaps_LOD_Loader : public ImageLoader {

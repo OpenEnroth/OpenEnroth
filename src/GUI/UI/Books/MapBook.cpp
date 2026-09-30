@@ -36,19 +36,19 @@ GUIWindow_MapBook::GUIWindow_MapBook() {
     viewparams->ClampMapViewPosition();
     pChildBooksOverlay = std::make_unique<GUIWindow_BooksButtonOverlay>(Pointi{546, 353}, Sizei{0, 0}, pBtn_Maps);
 
-    ui_book_map_background = assets->getImage_ColorKey("sbmap");
-    ui_book_button1_on = assets->getImage_Alpha("zoom-on");
-    ui_book_button2_on = assets->getImage_Alpha("zoot-on");
-    ui_book_button3_on = assets->getImage_Alpha("tabNon");
-    ui_book_button4_on = assets->getImage_Alpha("tabSon");
-    ui_book_button5_on = assets->getImage_Alpha("tabEon");
-    ui_book_button6_on = assets->getImage_Alpha("tabWon");
-    ui_book_button1_off = assets->getImage_Alpha("zoom-off");
-    ui_book_button2_off = assets->getImage_Alpha("zoot-off");
-    ui_book_button3_off = assets->getImage_Alpha("tabNoff");
-    ui_book_button4_off = assets->getImage_Alpha("tabSoff");
-    ui_book_button5_off = assets->getImage_Alpha("tabEoff");
-    ui_book_button6_off = assets->getImage_Alpha("tabWoff");
+    ui_book_map_background = assets->getIcon("sbmap");
+    ui_book_button1_on = assets->getIcon("zoom-on");
+    ui_book_button2_on = assets->getIcon("zoot-on");
+    ui_book_button3_on = assets->getIcon("tabNon");
+    ui_book_button4_on = assets->getIcon("tabSon");
+    ui_book_button5_on = assets->getIcon("tabEon");
+    ui_book_button6_on = assets->getIcon("tabWon");
+    ui_book_button1_off = assets->getIcon("zoom-off");
+    ui_book_button2_off = assets->getIcon("zoot-off");
+    ui_book_button3_off = assets->getIcon("tabNoff");
+    ui_book_button4_off = assets->getIcon("tabSoff");
+    ui_book_button5_off = assets->getIcon("tabEoff");
+    ui_book_button6_off = assets->getIcon("tabWoff");
 
     pBtn_Book_1 = CreateButton(pViewport.topLeft() + Pointi(398, 1), {50, 34}, BUTTON_TYPE_NORMAL, 0, UIMSG_ClickBooksBtn,
          std::to_underlying(BOOK_ZOOM_IN), INPUT_ACTION_ZOOM_IN, localization->str(LSTR_ZOOM_IN), {ui_book_button1_on});

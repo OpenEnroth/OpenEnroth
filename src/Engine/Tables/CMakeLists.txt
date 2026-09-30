@@ -18,6 +18,7 @@ set(ENGINE_TABLES_SOURCES
         OverlayTable.cpp
         PortraitFrameTable.cpp
         QuestTable.cpp
+        ResourceMaskTable.cpp
         TextureFrameTable.cpp
         TileTable.cpp
         TransitionTable.cpp)
@@ -40,6 +41,7 @@ set(ENGINE_TABLES_HEADERS
         OverlayTable.h
         PortraitFrameTable.h
         QuestTable.h
+        ResourceMaskTable.h
         TextureFrameTable.h
         TileTable.h
         TransitionTable.h)

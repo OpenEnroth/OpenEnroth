@@ -231,10 +231,10 @@ void GUIWindow_SaveLoad::drawSaveLoad() {
 }
 
 GUIWindow_Save::GUIWindow_Save() : GUIWindow_SaveLoad(WINDOW_SAVE, {0, 0}, render->GetRenderDimensions()) {
-    saveload_ui_loadsave = assets->getImage_ColorKey("loadsave");
-    saveload_ui_save_up = assets->getImage_ColorKey("save_up");
-    saveload_ui_saveu = assets->getImage_ColorKey("LS_saveU");
-    saveload_ui_x_u = assets->getImage_ColorKey("x_u");
+    saveload_ui_loadsave = assets->getIcon("loadsave");
+    saveload_ui_save_up = assets->getIcon("save_up");
+    saveload_ui_saveu = assets->getIcon("LS_saveU");
+    saveload_ui_x_u = assets->getIcon("x_u");
 
     _slots = saveMenuSlots(); // New save slot is shown first.
 
@@ -242,12 +242,12 @@ GUIWindow_Save::GUIWindow_Save() : GUIWindow_SaveLoad(WINDOW_SAVE, {0, 0}, rende
     // none, e.g. when playing a new game - then the new save slot stays selected.
     preselectSlot(engine->_lastLoadedSaveFileName);
 
-    saveload_ui_x_d = assets->getImage_ColorKey("x_d");
-    saveload_ui_ls_saved = assets->getImage_ColorKey("LS_saveD");
-    ui_ar_up_dn = assets->getImage_ColorKey("ar_up_dn");
-    ui_ar_dn_dn = assets->getImage_ColorKey("ar_dn_dn");
+    saveload_ui_x_d = assets->getIcon("x_d");
+    saveload_ui_ls_saved = assets->getIcon("LS_saveD");
+    ui_ar_up_dn = assets->getIcon("ar_up_dn");
+    ui_ar_dn_dn = assets->getIcon("ar_dn_dn");
 
-    scrollstop = assets->getImage_ColorKey("con_x");
+    scrollstop = assets->getIcon("con_x");
 
     CreateButton("SaveMenu_Slot0", {21, 198}, {191, 18}, BUTTON_TYPE_NORMAL, 0, UIMSG_SelectLoadSlot, 0);
     CreateButton("SaveMenu_Slot1", {21, 218}, {191, 18}, BUTTON_TYPE_NORMAL, 0, UIMSG_SelectLoadSlot, 1);
@@ -292,14 +292,14 @@ void GUIWindow_Save::slotClicked(int slotIndex, bool isDoubleClick) {
 GUIWindow_Load::GUIWindow_Load(bool ingame) : GUIWindow_SaveLoad(WINDOW_LOAD, {0, 0}, {0, 0}) {
     current_screen_type = SCREEN_LOADGAME;
 
-    saveload_ui_loadsave = assets->getImage_ColorKey("loadsave");
-    saveload_ui_load_up = assets->getImage_ColorKey("load_up");
-    saveload_ui_loadu = assets->getImage_ColorKey("LS_loadU");
-    saveload_ui_x_u = assets->getImage_ColorKey("x_u");
+    saveload_ui_loadsave = assets->getIcon("loadsave");
+    saveload_ui_load_up = assets->getIcon("load_up");
+    saveload_ui_loadu = assets->getIcon("LS_loadU");
+    saveload_ui_x_u = assets->getIcon("x_u");
 
     main_menu_background = nullptr;
     if (!ingame) {
-        main_menu_background = assets->getImage_PCXFromIconsLOD("lsave640.pcx");
+        main_menu_background = assets->getIcon("lsave640.pcx");
         render->DrawQuad2D(main_menu_background, {0, 0});
     } else {
         render->DrawQuad2D(saveload_ui_loadsave, {8, 8});
@@ -319,12 +319,12 @@ GUIWindow_Load::GUIWindow_Load(bool ingame) : GUIWindow_SaveLoad(WINDOW_LOAD, {0
     // Pre-select the last loaded save.
     preselectSlot(engine->_lastLoadedSaveFileName);
 
-    saveload_ui_x_d = assets->getImage_ColorKey("x_d");
-    saveload_ui_ls_saved = assets->getImage_ColorKey("LS_loadD");
-    ui_ar_up_dn = assets->getImage_ColorKey("AR_UP_DN");
-    ui_ar_dn_dn = assets->getImage_ColorKey("AR_DN_DN");
+    saveload_ui_x_d = assets->getIcon("x_d");
+    saveload_ui_ls_saved = assets->getIcon("LS_loadD");
+    ui_ar_up_dn = assets->getIcon("AR_UP_DN");
+    ui_ar_dn_dn = assets->getIcon("AR_DN_DN");
 
-    scrollstop = assets->getImage_ColorKey("con_x");
+    scrollstop = assets->getIcon("con_x");
 
     CreateButton("LoadMenu_Slot0", {21, 198}, {191, 18}, BUTTON_TYPE_NORMAL, 0, UIMSG_SelectLoadSlot, 0);
     CreateButton("LoadMenu_Slot1", {21, 219}, {191, 18}, BUTTON_TYPE_NORMAL, 0, UIMSG_SelectLoadSlot, 1);

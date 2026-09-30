@@ -2,6 +2,9 @@
 
 #include <string_view>
 
+#include "Engine/Data/ResourceMask.h"
+#include "Engine/Tables/ResourceMaskTable.h"
+
 #include "Utility/Memory/Blob.h"
 
 #include "Library/Lod/LodReader.h"
@@ -18,6 +21,13 @@ class ResourceManager {
 
     Blob eventsData(std::string_view filename);
 
+    /**
+     * @param filename                  Name of an image in `icons.lod`, case-insensitive.
+     * @return                          Mask to apply to that image.
+     */
+    ResourceMask iconMask(std::string_view filename) const;
+
  private:
     LodReader _eventsLodReader;
+    ResourceMaskTable _masks;
 };

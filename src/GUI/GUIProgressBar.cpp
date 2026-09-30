@@ -38,7 +38,7 @@ bool GUIProgressBar::Initialize(Type type) {
     turnHourIconId = pIconsFrameTable->animationId("turnhour");
 
     if (uType == TYPE_Fullscreen) {
-        loading_bg = assets->getImage_PCXFromIconsLOD(fmt::format("loading{}.pcx", vrng->random(5) + 1));
+        loading_bg = assets->getIcon(fmt::format("loading{}.pcx", vrng->random(5) + 1));
 
         uProgressCurrent = 0;
         uX = 122;
@@ -47,11 +47,11 @@ bool GUIProgressBar::Initialize(Type type) {
         uHeight = 56;
         uProgressMax = 26;
 
-        progressbar_loading = assets->getImage_Alpha("loadprog");
+        progressbar_loading = assets->getIcon("loadprog");
         Draw();
         return true;
     } else {
-        progressbar_dungeon = assets->getImage_ColorKey(ProgressBarResourceByAlignment[pParty->alignment]);
+        progressbar_dungeon = assets->getIcon(ProgressBarResourceByAlignment[pParty->alignment]);
     }
 
     uProgressCurrent = 0;

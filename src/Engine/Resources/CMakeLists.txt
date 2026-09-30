@@ -15,5 +15,5 @@ set(ENGINE_RESOURCES_HEADERS
         ResourceManager.h)
 
 add_library(engine_resources STATIC ${ENGINE_RESOURCES_SOURCES} ${ENGINE_RESOURCES_HEADERS})
-target_link_libraries(engine_resources PUBLIC library_lod library_lod_formats library_filesystem_interface utility)
+target_link_libraries(engine_resources PUBLIC engine_tables library_json library_lod library_lod_formats library_filesystem_interface utility)
 target_check_style(engine_resources)

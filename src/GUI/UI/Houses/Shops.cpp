@@ -784,7 +784,7 @@ void GUIWindow_Shop::houseDialogueOptionSelected(DialogueId option) {
         const std::array<Item, 12> &itemArray = (option == DIALOGUE_SHOP_BUY_STANDARD) ? pParty->standartItemsInShops[houseId()] : pParty->specialItemsInShops[houseId()];
         for (int i = 0; i < itemAmountInShop[shopType]; ++i) {
             if (itemArray[i].itemId != ITEM_NULL) {
-                shop_ui_items_in_store[i] = assets->getImage_ColorKey(itemArray[i].GetIconName());
+                shop_ui_items_in_store[i] = assets->getIcon(itemArray[i].GetIconName());
             }
         }
         if (shopType == HOUSE_TYPE_WEAPON_SHOP) {
