@@ -25,6 +25,8 @@
 
 #include "Utility/ScopeGuard.h"
 
+#include "GameTestCommon.h"
+
 static std::initializer_list<CharacterBuff> allPotionBuffs() {
     static constexpr std::initializer_list<CharacterBuff> result = {
         CHARACTER_BUFF_RESIST_AIR,
@@ -62,16 +64,33 @@ GAME_TEST(Issues, Issue502) {
 }
 
 GAME_TEST(Issues, Issue503) {
-    // Check that town portal book actually pauses game.
-    auto hpTape = charTapes.hps();
-    auto noDamageTape = tapes.config(engine->config->debug.NoDamage);
+    // Town Portal book didn't pause the game, monsters kept attacking the party while it was open.
+    test.prepareForNextTest(100, RANDOM_ENGINE_MERSENNE_TWISTER);
     auto screenTape = tapes.screen();
-    auto mapTape = tapes.map();
-    test.playTraceFromTestData("issue_503.mm7", "issue_503.json");
-    EXPECT_EQ(hpTape, tape({1147, 699, 350, 242})); // Game was paused, the party wasn't shot at, no HP change.
-    EXPECT_EQ(noDamageTape, tape(false)); // HP change was actually possible.
-    EXPECT_EQ(screenTape, tape(SCREEN_GAME, SCREEN_BOOKS, SCREEN_GAME)); // TP book was opened.
-    EXPECT_EQ(mapTape, tape(MAP_DRAGON_CAVES, MAP_CASTLE_HARMONDALE)); // And party was teleported to Harmondale.
+    auto timeTape = tapes.time();
+    auto hpTape = charTapes.hp(0);
+
+    engine->config->debug.NoActors.setValue(true);
+    engine->config->debug.AllMagic.setValue(true); // Grandmaster Town Portal works with hostiles around.
+    game.startNewGame();
+    prepareForBattleTest();
+
+    engine->config->debug.NoActors.setValue(false);
+    for (int i = 0; i < 4; i++) {
+        game.tick(7);
+        game.spawnMonster(pParty->pos + Vec3f(0, 200, 0), MONSTER_DWARF_C);
+    }
+    game.tick(50);
+    ASSERT_LT(pParty->pCharacters[0].health, pParty->pCharacters[0].GetMaxHealth()); // Monsters are hitting the party.
+
+    game.castSpell(0, SPELL_WATER_TOWN_PORTAL);
+    game.tick(2);
+    test.startTaping();
+    game.tick(100);
+
+    EXPECT_EQ(screenTape, tape(SCREEN_BOOKS));
+    EXPECT_EQ(timeTape.size(), 1);
+    EXPECT_EQ(hpTape.size(), 1);
 }
 
 GAME_TEST(Issues, Issue504) {
