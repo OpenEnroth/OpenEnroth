@@ -1,17 +1,11 @@
-#include <algorithm>
 #include <string>
 #include <string_view>
 #include <type_traits>
-
-#ifdef _WINDOWS
-#   define WIN32_LEAN_AND_MEAN
-#   include <Windows.h>
-#endif
+#include <vector>
 
 #include "Testing/Unit/UnitTest.h"
 
 #include "Utility/Streams/FileOutputStream.h"
-#include "Utility/String/Encoding.h"
 #include "Utility/System/Fs.h"
 #include "Utility/System/NativePath.h"
 
@@ -148,29 +142,19 @@ UNIT_TEST(NativePath, WindowsRoots) {
 UNIT_TEST(NativePath, ExtendedLengthReachesWin32) {
     // Win32 only honors a literal "\\?\". With forward slashes a path over MAX_PATH fails to open, and a trailing dot
     // gets stripped off the file name.
-    NativePath temp = fs::tempDir();
-    NativePath prefixed = NativePath::fromWtf8("//?/" + temp.toWtf8());
-    auto onDisk = [&] (std::string_view name) { // Built by hand and checked with plain Win32, NativePath not involved.
-        std::wstring result = L"\\\\?\\" + temp.native();
-        if (!result.ends_with(L'/'))
-            result += L'/';
-        result += txt::wtf8ToWide(name);
-        std::ranges::replace(result, L'/', L'\\'); // "\\?\" takes no forward slashes and no doubled separators.
-        return result;
-    };
 
     // A single component is capped at 255 characters, so it takes two to get over MAX_PATH wherever temp is.
-    std::string dir = "oe_" + std::string(200, 'd');
-    std::string longName = dir + "/oe_" + std::string(200, 'x') + ".txt";
-    ASSERT_TRUE(CreateDirectoryW(onDisk(dir).c_str(), nullptr) || GetLastError() == ERROR_ALREADY_EXISTS);
+    NativePath dir = fs::tempDir() / NativePath("oe_" + std::string(150, 'd'));
+    NativePath prefixed = NativePath::fromWtf8("//?/" + dir.toWtf8());
+    ScopedTestFolder folder(dir);
 
-    for (std::string_view name : {std::string_view(longName), std::string_view("oe_trailing_dot.")}) {
+    for (const std::string &name : {"oe_" + std::string(150, 'x') + ".txt", std::string("oe_trailing_dot.")}) {
         ASSERT_NO_THROW(FileOutputStream(prefixed / NativePath(name)).close()) << name;
 
-        EXPECT_NE(GetFileAttributesW(onDisk(name).c_str()), INVALID_FILE_ATTRIBUTES) << name;
-        EXPECT_TRUE(DeleteFileW(onDisk(name).c_str())) << name;
+        // Listed through the plain path, which stays under MAX_PATH and doesn't take the "//?/" branch.
+        EXPECT_EQ(fs::ls(dir), std::vector<DirectoryEntry>({{name, FILE_REGULAR}})) << name;
+        EXPECT_TRUE(fs::remove(prefixed / NativePath(name))) << name;
     }
-    EXPECT_TRUE(RemoveDirectoryW(onDisk(dir).c_str()));
 }
 #endif
 
