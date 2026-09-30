@@ -128,9 +128,3 @@ void EvtProgram::dump(int eventId, EvtSource source) const {
         MM_TRACE("Event {} not found", eventId);
     }
 }
-
-void EvtProgram::dumpAll(EvtSource source) const {
-    for (const auto &[id, _] : _eventsById) {
-        dump(id, source);
-    }
-}
