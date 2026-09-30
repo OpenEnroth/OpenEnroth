@@ -1,6 +1,67 @@
 cmake_minimum_required(VERSION 3.27 FATAL_ERROR)
 
-file(GLOB_RECURSE RESOURCE_SOURCES "scripts/*" "shaders/*" "images/*")
+set(RESOURCE_SOURCES
+    images/OpenEnroth.png
+    scripts/_definitions/bindings/audio.lua
+    scripts/_definitions/bindings/config.lua
+    scripts/_definitions/bindings/game.lua
+    scripts/_definitions/bindings/input.lua
+    scripts/_definitions/bindings/log.lua
+    scripts/_definitions/bindings/overlay.lua
+    scripts/_definitions/bindings/platform.lua
+    scripts/_definitions/bindings/renderer.lua
+    scripts/_definitions/def_common.lua
+    scripts/_definitions/def_game.lua
+    scripts/_definitions/def_imgui.lua
+    scripts/console.lua
+    scripts/core/error.lua
+    scripts/core/input_listener.lua
+    scripts/core/log_listener.lua
+    scripts/dev/cheat_command_overlay.lua
+    scripts/dev/cheat_commands_list.lua
+    scripts/dev/commands/alignment_command.lua
+    scripts/dev/commands/class_command.lua
+    scripts/dev/commands/cls_command.lua
+    scripts/dev/commands/command_manager.lua
+    scripts/dev/commands/command_utils.lua
+    scripts/dev/commands/condition_command.lua
+    scripts/dev/commands/config_command.lua
+    scripts/dev/commands/debug_command.lua
+    scripts/dev/commands/food_command.lua
+    scripts/dev/commands/game_commands.lua
+    scripts/dev/commands/gold_command.lua
+    scripts/dev/commands/hp_command.lua
+    scripts/dev/commands/inventory_command.lua
+    scripts/dev/commands/mana_command.lua
+    scripts/dev/commands/skillpoints_command.lua
+    scripts/dev/commands/skills_command.lua
+    scripts/dev/commands/xp_command.lua
+    scripts/dev/console_overlay.lua
+    scripts/dev/imgui_demo_overlay.lua
+    scripts/init.lua
+    scripts/utils.lua
+    shaders/fog.glsl
+    shaders/glbillbshader.frag
+    shaders/glbillbshader.vert
+    shaders/glbspshader.frag
+    shaders/glbspshader.vert
+    shaders/gldecalshader.frag
+    shaders/gldecalshader.vert
+    shaders/glforcepershader.frag
+    shaders/glforcepershader.vert
+    shaders/gllinesshader.frag
+    shaders/gllinesshader.vert
+    shaders/gloutbuild.frag
+    shaders/gloutbuild.vert
+    shaders/glterrain.frag
+    shaders/glterrain.vert
+    shaders/gltextshader.frag
+    shaders/gltextshader.vert
+    shaders/gltwodshader.frag
+    shaders/gltwodshader.vert
+    shaders/lighting.glsl
+    shaders/precision.glsl
+    )
 
 cmrc_add_resource_library(resources NAMESPACE openenroth ${RESOURCE_SOURCES})
 
