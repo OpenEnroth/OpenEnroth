@@ -1,17 +1,22 @@
 #include "ResourceManager.h"
 
+#include <algorithm>
 #include <cassert>
 #include <string>
 
 #include "Engine/Data/ResourceMask.h"
+#include "Engine/Graphics/PaletteManager.h"
 
 #include "Library/Image/ImageFunctions.h"
 #include "Library/Image/Pcx.h"
 #include "Library/Json/Json.h"
 #include "Library/LodFormats/LodFormats.h"
+#include "Library/LodFormats/LodImage.h"
+#include "Library/Logger/Logger.h"
 #include "Library/FileSystem/Interface/FileSystem.h"
 
 #include "Utility/String/Ascii.h"
+#include "Utility/Lambda.h"
 #include "Utility/MapAccess.h"
 
 #include "EngineFileSystem.h"
@@ -40,6 +45,51 @@ static Palette maskedPalette(const LodImage &image, const ResourceMask &mask) {
     return result;
 }
 
+static Color ProcessTransparentPixel(const GrayscaleImage &image, const Palette &palette, size_t x, size_t y) {
+    size_t count = 0;
+    size_t r = 0, g = 0, b = 0;
+
+    auto processPixel = [&](size_t x, size_t y) {
+        uint8_t pal = image[y][x];
+        if (palette.colors[pal].a != 0) {
+            count++;
+            r += palette.colors[pal].r;
+            g += palette.colors[pal].g;
+            b += palette.colors[pal].b;
+        }
+    };
+
+    bool canDecX = x > 0;
+    bool canIncX = x < image.width() - 1;
+    bool canDecY = y > 0;
+    bool canIncY = y < image.height() - 1;
+
+    if (canDecX && canDecY)
+        processPixel(x - 1, y - 1);
+    if (canDecX)
+        processPixel(x - 1, y);
+    if (canDecX && canIncY)
+        processPixel(x - 1, y + 1);
+    if (canDecY)
+        processPixel(x, y - 1);
+    if (canIncY)
+        processPixel(x, y + 1);
+    if (canIncX && canDecY)
+        processPixel(x + 1, y - 1);
+    if (canIncX)
+        processPixel(x + 1, y);
+    if (canIncX && canIncY)
+        processPixel(x + 1, y + 1);
+
+    if (count != 0) {
+        r /= count;
+        g /= count;
+        b /= count;
+    }
+
+    return Color(static_cast<uint8_t>(r), static_cast<uint8_t>(g), static_cast<uint8_t>(b), 0);
+}
+
 ResourceManager::ResourceManager() = default;
 ResourceManager::~ResourceManager() = default;
 
@@ -60,12 +110,13 @@ Blob ResourceManager::eventsData(std::string_view filename) {
 
 RgbaImage ResourceManager::icon(std::string_view filename) {
     std::string name = ascii::toLower(filename);
+    if (!_iconsLodReader.exists(name)) {
+        MM_ERROR("Trying to load non-existent LOD entry '{}'.", _iconsLodReader.displayPath(name));
+        return {};
+    }
+
     ResourceMask mask = valueOr(_masks.icons, name);
-
     if (name.ends_with(".pcx")) {
-        if (!_iconsLodReader.exists(name))
-            return {};
-
         RgbaImage result = pcx::decode(lod::decodeMaybeCompressed(_iconsLodReader.read(name)));
         if (mask.mode == MASK_COLOR)
             for (Color &pixel : result.pixels())
@@ -74,13 +125,34 @@ RgbaImage ResourceManager::icon(std::string_view filename) {
         return result;
     }
 
-    LodImage image = lod::decodeImage(_iconsLodReader.read(_iconsLodReader.exists(name) ? name : "pending"));
+    LodImage image = lod::decodeImage(_iconsLodReader.read(name));
     return makeRgbaImage(image.image, maskedPalette(image, mask));
 }
 
-LodImage ResourceManager::bitmap(std::string_view filename) {
+RgbaImage ResourceManager::bitmap(std::string_view filename) {
     std::string name = ascii::toLower(filename);
-    LodImage result = lod::decodeImage(_bitmapsLodReader.read(_bitmapsLodReader.exists(name) ? name : "pending"));
-    result.palette = maskedPalette(result, valueOr(_masks.bitmaps, name));
+    if (!_bitmapsLodReader.exists(name)) {
+        MM_ERROR("Trying to load non-existent LOD entry '{}'.", _bitmapsLodReader.displayPath(name));
+        return {};
+    }
+
+    LodImage image = lod::decodeImage(_bitmapsLodReader.read(name));
+    Palette palette = PaletteManager::createLoadedPalette(maskedPalette(image, valueOr(_masks.bitmaps, name)));
+    if (std::ranges::all_of(palette.colors, _1 != 0, &Color::a))
+        return makeRgbaImage(image.image, palette);
+
+    // Bitmaps are drawn with bilinear filtering, so transparent pixels take the color of their opaque neighbors
+    // to keep the filter from bleeding the mask color into the edges.
+    RgbaImage result = RgbaImage::uninitialized(image.image.width(), image.image.height());
+    for (size_t y = 0; y < image.image.height(); y++) {
+        for (size_t x = 0; x < image.image.width(); x++) {
+            uint8_t pal = image.image[y][x];
+            if (palette.colors[pal].a == 0) {
+                result[y][x] = ProcessTransparentPixel(image.image, palette, x, y);
+            } else {
+                result[y][x] = palette.colors[pal];
+            }
+        }
+    }
     return result;
 }

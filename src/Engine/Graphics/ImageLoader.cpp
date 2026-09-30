@@ -14,7 +14,6 @@
 #include "Engine/Resources/LodTextureCache.h"
 #include "Engine/Resources/ResourceManager.h"
 #include "Engine/Resources/LodSpriteCache.h"
-#include "Engine/Graphics/PaletteManager.h"
 
 #include "Library/Image/ImageFunctions.h"
 #include "Library/Image/Pcx.h"
@@ -25,14 +24,11 @@
 #include "Library/Logger/Logger.h"
 
 #include "Utility/Math/Float.h"
-#include "Utility/Lambda.h"
 
 bool Icon_LOD_Loader::Load(RgbaImage *rgbaImage) {
     *rgbaImage = resources->icon(resource_name);
-    if (!*rgbaImage) {
-        MM_WARNING("Unable to load {}", resource_name);
-        return false;
-    }
+    if (!*rgbaImage)
+        *rgbaImage = resources->icon("pending");
     return true;
 }
 
@@ -101,79 +97,10 @@ bool PCX_LOD_Raw_Loader::Load(RgbaImage *rgbaImage) {
     return InternalLoad(data, rgbaImage);
 }
 
-static Color ProcessTransparentPixel(const GrayscaleImage &image, const Palette &palette, size_t x, size_t y) {
-    size_t count = 0;
-    size_t r = 0, g = 0, b = 0;
-
-    auto processPixel = [&](size_t x, size_t y) {
-        uint8_t pal = image[y][x];
-        if (palette.colors[pal].a != 0) {
-            count++;
-            r += palette.colors[pal].r;
-            g += palette.colors[pal].g;
-            b += palette.colors[pal].b;
-        }
-    };
-
-    bool canDecX = x > 0;
-    bool canIncX = x < image.width() - 1;
-    bool canDecY = y > 0;
-    bool canIncY = y < image.height() - 1;
-
-    if (canDecX && canDecY)
-        processPixel(x - 1, y - 1);
-    if (canDecX)
-        processPixel(x - 1, y);
-    if (canDecX && canIncY)
-        processPixel(x - 1, y + 1);
-    if (canDecY)
-        processPixel(x, y - 1);
-    if (canIncY)
-        processPixel(x, y + 1);
-    if (canIncX && canDecY)
-        processPixel(x + 1, y - 1);
-    if (canIncX)
-        processPixel(x + 1, y);
-    if (canIncX && canIncY)
-        processPixel(x + 1, y + 1);
-
-    if (count != 0) {
-        r /= count;
-        g /= count;
-        b /= count;
-    }
-
-    return Color(static_cast<uint8_t>(r), static_cast<uint8_t>(g), static_cast<uint8_t>(b), 0);
-}
-
 bool Bitmaps_LOD_Loader::Load(RgbaImage *rgbaImage) {
-    LodImage tex = resources->bitmap(resource_name);
-
-    size_t w = tex.image.width();
-    size_t h = tex.image.height();
-
-    // Desaturate bitmaps
-    Palette palette = PaletteManager::createLoadedPalette(tex.palette);
-
-    if (std::ranges::all_of(palette.colors, _1 != 0, &Color::a)) {
-        *rgbaImage = makeRgbaImage(tex.image, palette);
-        return true;
-    }
-
-    // Bitmaps are drawn with bilinear filtering, so transparent pixels take the color of their opaque neighbors
-    // to keep the filter from bleeding the mask color into the edges.
-    *rgbaImage = RgbaImage::uninitialized(w, h);
-    for (size_t y = 0; y < h; y++) {
-        for (size_t x = 0; x < w; x++) {
-            uint8_t pal = tex.image[y][x];
-            if (palette.colors[pal].a == 0) {
-                (*rgbaImage)[y][x] = ProcessTransparentPixel(tex.image, palette, x, y);
-            } else {
-                (*rgbaImage)[y][x] = palette.colors[pal];
-            }
-        }
-    }
-
+    *rgbaImage = resources->bitmap(resource_name);
+    if (!*rgbaImage)
+        *rgbaImage = resources->bitmap("pending");
     return true;
 }
 
