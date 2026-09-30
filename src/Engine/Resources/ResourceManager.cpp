@@ -16,11 +16,6 @@
 
 #include "EngineFileSystem.h"
 
-/**
- * @param image                     Image to mask.
- * @param mask                      Mask to apply.
- * @return                          The image's palette, with the entries the mask picks made transparent.
- */
 static Palette maskedPalette(const LodImage &image, const ResourceMask &mask) {
     Palette result = image.palette;
     switch (mask.mode) {
