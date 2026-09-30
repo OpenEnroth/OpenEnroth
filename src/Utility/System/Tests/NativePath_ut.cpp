@@ -151,8 +151,8 @@ UNIT_TEST(NativePath, ExtendedLengthReachesWin32) {
     for (const std::string &name : {"oe_" + std::string(150, 'x') + ".txt", std::string("oe_trailing_dot.")}) {
         ASSERT_NO_THROW(FileOutputStream(prefixed / NativePath(name)).close()) << name;
 
-        // Listed through the plain path, which stays under MAX_PATH and doesn't take the "//?/" branch.
-        EXPECT_EQ(fs::ls(dir), std::vector<DirectoryEntry>({{name, FILE_REGULAR}})) << name;
+        // The names come from the OS, so a stripped trailing dot would show here.
+        EXPECT_EQ(fs::ls(prefixed), std::vector<DirectoryEntry>({{name, FILE_REGULAR}})) << name;
         EXPECT_TRUE(fs::remove(prefixed / NativePath(name))) << name;
     }
 }
