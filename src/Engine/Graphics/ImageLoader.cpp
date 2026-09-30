@@ -2,8 +2,6 @@
 
 #include <cassert>
 #include <algorithm>
-#include <array>
-#include <functional>
 #include <string_view>
 #include <memory>
 #include <utility>
@@ -26,29 +24,32 @@
 #include "Library/Logger/Logger.h"
 
 #include "Utility/Math/Float.h"
+#include "Utility/Lambda.h"
 
 /**
  * @param image                     Image to mask.
  * @param mask                      Mask to apply.
- * @return                          For each palette entry, whether its pixels are transparent.
+ * @return                          The image's palette, with the entries the mask picks made transparent.
  */
-static std::array<bool, 256> transparentPaletteEntries(const LodImage &image, const ResourceMask &mask) {
-    std::array<bool, 256> result = {};
+static Palette maskedPalette(const LodImage &image, const ResourceMask &mask) {
+    Palette result = image.palette;
     switch (mask.mode) {
     default:
         assert(false);
         [[fallthrough]];
     case MASK_DEFAULT:
-        result[0] = image.zeroIsTransparent;
+        if (image.zeroIsTransparent)
+            result.colors[0] = Color();
         break;
     case MASK_NONE:
         break;
     case MASK_ZERO:
-        result[0] = true;
+        result.colors[0] = Color();
         break;
     case MASK_COLOR:
-        for (size_t i = 0; i < result.size(); i++)
-            result[i] = image.palette.colors[i] == mask.color;
+        for (Color &color : result.colors)
+            if (color == mask.color)
+                color = Color();
         break;
     }
     return result;
@@ -74,13 +75,7 @@ bool Icon_LOD_Loader::Load(RgbaImage *rgbaImage) {
     if (tex == nullptr)
         return false;
 
-    Palette palette = tex->palette;
-    std::array<bool, 256> transparent = transparentPaletteEntries(*tex, mask);
-    for (size_t i = 0; i < transparent.size(); i++)
-        if (transparent[i])
-            palette.colors[i] = Color();
-
-    *rgbaImage = makeRgbaImage(tex->image, palette);
+    *rgbaImage = makeRgbaImage(tex->image, maskedPalette(*tex, mask));
     return true;
 }
 
@@ -149,14 +144,13 @@ bool PCX_LOD_Raw_Loader::Load(RgbaImage *rgbaImage) {
     return InternalLoad(data, rgbaImage);
 }
 
-static Color ProcessTransparentPixel(const GrayscaleImage &image, const Palette &palette, const std::array<bool, 256> &transparent,
-                                     size_t x, size_t y) {
+static Color ProcessTransparentPixel(const GrayscaleImage &image, const Palette &palette, size_t x, size_t y) {
     size_t count = 0;
     size_t r = 0, g = 0, b = 0;
 
     auto processPixel = [&](size_t x, size_t y) {
         uint8_t pal = image[y][x];
-        if (!transparent[pal]) {
+        if (palette.colors[pal].a != 0) {
             count++;
             r += palette.colors[pal].r;
             g += palette.colors[pal].g;
@@ -202,17 +196,12 @@ bool Bitmaps_LOD_Loader::Load(RgbaImage *rgbaImage) {
     size_t h = tex->image.height();
 
     // Desaturate bitmaps
-    Palette palette = PaletteManager::createLoadedPalette(tex->palette);
+    Palette palette = PaletteManager::createLoadedPalette(maskedPalette(*tex, mask));
 
-    std::array<bool, 256> transparent = transparentPaletteEntries(*tex, mask);
-    if (std::ranges::none_of(transparent, std::identity())) {
+    if (std::ranges::all_of(palette.colors, _1 != 0, &Color::a)) {
         *rgbaImage = makeRgbaImage(tex->image, palette);
         return true;
     }
-
-    for (size_t i = 0; i < transparent.size(); i++)
-        if (transparent[i])
-            palette.colors[i] = Color();
 
     // Bitmaps are drawn with bilinear filtering, so transparent pixels take the color of their opaque neighbors
     // to keep the filter from bleeding the mask color into the edges.
@@ -220,8 +209,8 @@ bool Bitmaps_LOD_Loader::Load(RgbaImage *rgbaImage) {
     for (size_t y = 0; y < h; y++) {
         for (size_t x = 0; x < w; x++) {
             uint8_t pal = tex->image[y][x];
-            if (transparent[pal]) {
-                (*rgbaImage)[y][x] = ProcessTransparentPixel(tex->image, palette, transparent, x, y);
+            if (palette.colors[pal].a == 0) {
+                (*rgbaImage)[y][x] = ProcessTransparentPixel(tex->image, palette, x, y);
             } else {
                 (*rgbaImage)[y][x] = palette.colors[pal];
             }
