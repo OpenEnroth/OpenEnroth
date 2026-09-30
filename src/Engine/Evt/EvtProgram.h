@@ -60,13 +60,6 @@ class EvtProgram {
     std::string hint(int eventId) const;
 
     /**
-     * Logs every event at trace level.
-     *
-     * @param source                    Evt file this program was loaded from.
-     */
-    void dumpAll(EvtSource source) const;
-
-    /**
      * Logs one event at trace level.
      *
      * @param eventId                   Event to log.

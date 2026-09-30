@@ -22,8 +22,10 @@ class GUIWindow_BranchlessDialogue : public GUIWindow {
 };
 
 /**
- * @param type                          Command that opens the dialogue, or `EVENT_Invalid` for an NPC's catchphrase. An
- *                                      event that opens it pauses, and the event loop stores how to resume it.
+ * Opens the dialogue and clears the stored event continuation. An event that opens the dialogue stores its own
+ * after this returns.
+ *
+ * @param type                          Command that opens the dialogue, or `EVENT_Invalid` for an NPC's catchphrase.
  */
 void startBranchlessDialogue(EvtOpcode type);
 void releaseBranchlessDialogue();

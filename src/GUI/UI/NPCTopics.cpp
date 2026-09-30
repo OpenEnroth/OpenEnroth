@@ -14,7 +14,6 @@
 #include "Engine/Graphics/Indoor.h"
 #include "Engine/Graphics/Viewport.h"
 #include "Engine/Graphics/Renderer/Renderer.h"
-#include "Engine/Objects/Decoration.h"
 #include "Engine/Localization.h"
 #include "Engine/Objects/Actor.h"
 #include "Engine/Objects/NPC.h"
