@@ -1098,6 +1098,23 @@ GAME_TEST(Issues, Issue929) {
     EXPECT_EQ(itemsTape.delta(), -1);
 }
 
+GAME_TEST(Issues, Issue939) {
+    // Bow skill wasn't added to the Shoot value in the quick reference.
+    auto shootTape = tapes.custom([] { return pParty->pCharacters[0].GetRangedAttack(); });
+    auto screenTape = tapes.screen();
+    game.startNewGame();
+    Character &character = pParty->pCharacters[0];
+    character.inventory.equip(ITEM_SLOT_BOW, Item(ITEM_CROSSBOW));
+    character.setSkillValue(SKILL_BOW, CombinedSkillValue());
+    test.startTaping();
+    game.tick();
+    character.setSkillValue(SKILL_BOW, CombinedSkillValue(10, MASTERY_NOVICE));
+    game.pressAndReleaseKey(PlatformKey::KEY_Z); // Open the quick reference.
+    game.tick();
+    EXPECT_EQ(screenTape, tape(SCREEN_GAME, SCREEN_QUICK_REFERENCE));
+    EXPECT_EQ(shootTape.delta(), 10);
+}
+
 GAME_TEST(Issues, Issue959) {
     // Human town halls played no greeting.
     auto houseTape = tapes.house();

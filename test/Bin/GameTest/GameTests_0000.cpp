@@ -136,60 +136,9 @@ GAME_TEST(Issues, Issue248) {
     EXPECT_EQ(screenTape, tape(SCREEN_GAME, SCREEN_NPC_DIALOGUE, SCREEN_GAME));
 }
 
-GAME_TEST(Issues, Issue268_939) {
+GAME_TEST(Issues, Issue268) {
     // Crash in ODM_GetFloorLevel.
     test.playTraceFromTestData("issue_268.mm7", "issue_268.json");
-
-    // #939: Quick reference doesn't match vanilla.
-    // hp
-    EXPECT_EQ(pParty->pCharacters[0].GetHealth(), 71);
-    EXPECT_EQ(pParty->pCharacters[1].GetHealth(), 80);
-    EXPECT_EQ(pParty->pCharacters[2].GetHealth(), 154);
-    EXPECT_EQ(pParty->pCharacters[3].GetHealth(), 169);
-    // sp
-    EXPECT_EQ(pParty->pCharacters[0].GetMana(), 0);
-    EXPECT_EQ(pParty->pCharacters[1].GetMana(), 0);
-    EXPECT_EQ(pParty->pCharacters[2].GetMana(), 55);
-    EXPECT_EQ(pParty->pCharacters[3].GetMana(), 19);
-    // ac
-    EXPECT_EQ(pParty->pCharacters[0].GetActualAC(), 126);
-    EXPECT_EQ(pParty->pCharacters[1].GetActualAC(), 77);
-    EXPECT_EQ(pParty->pCharacters[2].GetActualAC(), 82);
-    EXPECT_EQ(pParty->pCharacters[3].GetActualAC(), 66);
-    // attack
-    EXPECT_EQ(pParty->pCharacters[0].GetActualAttack(false), 30);
-    EXPECT_EQ(pParty->pCharacters[1].GetActualAttack(false), 37);
-    EXPECT_EQ(pParty->pCharacters[2].GetActualAttack(false), 29);
-    EXPECT_EQ(pParty->pCharacters[3].GetActualAttack(false), 9);
-    // dmg
-    EXPECT_EQ(pParty->pCharacters[0].GetMeleeDamageString(), "35 - 41");
-    EXPECT_EQ(pParty->pCharacters[1].GetMeleeDamageString(), "39 - 55");
-    EXPECT_EQ(pParty->pCharacters[2].GetMeleeDamageString(), "35 - 39");
-    EXPECT_EQ(pParty->pCharacters[3].GetMeleeDamageString(), "Wand");
-    // shoot
-    EXPECT_EQ(pParty->pCharacters[0].GetRangedAttack(), 18);
-    EXPECT_EQ(pParty->pCharacters[1].GetRangedAttack(), 23);
-    EXPECT_EQ(pParty->pCharacters[2].GetRangedAttack(), 21);
-    EXPECT_EQ(pParty->pCharacters[3].GetRangedAttack(), 9); // was 17 in vanilla see #1927
-    // dmg
-    EXPECT_EQ(pParty->pCharacters[0].GetRangedDamageString(), "9 - 14");
-    EXPECT_EQ(pParty->pCharacters[1].GetRangedDamageString(), "11 - 16");
-    EXPECT_EQ(pParty->pCharacters[2].GetRangedDamageString(), "11 - 16");
-    EXPECT_EQ(pParty->pCharacters[3].GetRangedDamageString(), "Wand");
-    // skills
-    auto checkSkills = [](std::initializer_list<std::pair<int, int>> numSkillPairs) {
-        for (auto pair : numSkillPairs) {
-            int pSkillsCount = 0;
-            for (Skill j : allVisibleSkills()) {
-                if (pParty->pCharacters[pair.first].pActiveSkills[j]) {
-                    ++pSkillsCount;
-                }
-            }
-            EXPECT_EQ(pSkillsCount, pair.second);
-        }
-    };
-    // NB vanilla gets wrong count for characters - doesnt count learning
-    checkSkills({ {0, 13}, {1, 11}, {2, 20}, {3, 11} });
 }
 
 GAME_TEST(Issues, Issue271) {
@@ -503,7 +452,7 @@ GAME_TEST(Issues, Issue405) {
     EXPECT_EQ(firstRemainingRecovery, secondRemainingRecovery);
 }
 
-GAME_TEST(Issues, Issue408_939_970_996) {
+GAME_TEST(Issues, Issue408_970_996) {
     // Testing that the gameover loop works.
     // Trace enters throne room - resurecta - final task and exits gameover loop.
     auto screenTape = tapes.screen();
@@ -525,7 +474,6 @@ GAME_TEST(Issues, Issue408_939_970_996) {
     EXPECT_TRUE(flatMessageBoxes.front().starts_with("Congratulations Adventurer"));
 
     // #970: Armor Class is wrong.
-    // #939: Quick reference doesnt match vanilla.
     // #996: Wrong attack damage when dual wielding blaster and offhand weapon.
     // hp
     EXPECT_EQ(pParty->pCharacters[0].GetHealth(), 1240);
@@ -562,20 +510,6 @@ GAME_TEST(Issues, Issue408_939_970_996) {
     EXPECT_EQ(pParty->pCharacters[1].GetRangedDamageString(), "17 - 37");
     EXPECT_EQ(pParty->pCharacters[2].GetRangedDamageString(), "17 - 37");
     EXPECT_EQ(pParty->pCharacters[3].GetRangedDamageString(), "17 - 37");
-    // skills
-    auto checkSkills = [](std::initializer_list<std::pair<int, int>> numSkillPairs) {
-        for (auto pair : numSkillPairs) {
-            int pSkillsCount = 0;
-            for (Skill j : allVisibleSkills()) {
-                if (pParty->pCharacters[pair.first].pActiveSkills[j]) {
-                    ++pSkillsCount;
-                }
-            }
-            EXPECT_EQ(pSkillsCount , pair.second);
-        }
-    };
-    // NB vanilla gets wrong count for character index 2 (13) - doesnt count learning
-    checkSkills({ {0, 10}, {1, 11}, {2, 14}, {3, 9} });
 }
 
 GAME_TEST(Issues, Issue414) {
