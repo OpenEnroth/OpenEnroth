@@ -861,12 +861,25 @@ GAME_TEST(Issues, Issue1898) {
 }
 
 GAME_TEST(Issues, Issue1890) {
-    // Stuck *in* stairs when leaving the Mercenary Guild
-    auto yPos = tapes.custom([]() { return static_cast<int>(pParty->pos.y); });
-    test.playTraceFromTestData("issue_1890.mm7", "issue_1890.json");
-    EXPECT_EQ(engine->_currentLoadedMapId, MAP_TATALIA);
-    EXPECT_CONTAINS(yPos, 16803); // starting point
-    EXPECT_LT(yPos.back(), 16700); // moved forwards
+    // Leaving the Mercenary Guild put the party inside the stairs in Tatalia, and it was held back when walking off.
+    auto mapTape = tapes.map();
+    auto yTape = tapes.custom([] { return pParty->pos.y; });
+    engine->config->debug.NoActors.setValue(true);
+    game.startNewGame();
+    game.teleportTo(MAP_MERCENARY_GUILD, Vec3f(896, 2700, 1), 270); // Facing the exit.
+    test.startTaping();
+    game.pointMouseAtFace(22);
+    game.pressAndReleaseButton(BUTTON_LEFT);
+    game.tick();
+    game.pressGuiButton("Transition_Yes");
+    game.tick();
+    game.skipLoadingScreen();
+    game.pressKey(PlatformKey::KEY_UP);
+    game.tick(2);
+    game.releaseKey(PlatformKey::KEY_UP);
+    EXPECT_EQ(mapTape, tape(MAP_MERCENARY_GUILD, MAP_TATALIA));
+    EXPECT_CONTAINS(yTape, 16803); // Arrival spot on the stairs.
+    EXPECT_LT(yTape.back(), 16700); // Walked off at full speed.
 }
 
 // 1900
