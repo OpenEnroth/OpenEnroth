@@ -10,7 +10,7 @@ icon = defines['icon']
 
 # GenerateDmgBackground.py draws the background for this window size and these icon positions.
 background = defines['background']
-window_rect = ((200, 120), (600, 400))
+window_rect = ((200, 120), (600, 400 + 28)) # The bounds include the 28pt title bar, the background fills the rest.
 icon_size = 128
 text_size = 12
 icon_locations = {
