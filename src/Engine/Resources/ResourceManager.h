@@ -27,6 +27,12 @@ class ResourceManager {
      */
     ResourceMask iconMask(std::string_view filename) const;
 
+    /**
+     * @param filename                  Name of an image in `bitmaps.lod`, case-insensitive.
+     * @return                          Mask to apply to that image.
+     */
+    ResourceMask bitmapMask(std::string_view filename) const;
+
  private:
     LodReader _eventsLodReader;
     ResourceMaskTable _masks;

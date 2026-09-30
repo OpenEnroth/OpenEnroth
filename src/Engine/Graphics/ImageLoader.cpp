@@ -1,7 +1,9 @@
 #include "ImageLoader.h"
 
 #include <cassert>
-#include <unordered_set>
+#include <algorithm>
+#include <array>
+#include <functional>
 #include <string_view>
 #include <memory>
 #include <utility>
@@ -25,36 +27,30 @@
 
 #include "Utility/Math/Float.h"
 
-// List of textures that require additional processing for transparent pixels.
-// TODO(captainurist): #jsonify & move to compiled-in game data
-static const std::unordered_set<std::string_view> transparentTextures = {
-    "hwtrdre",
-    "hwtrdrne",
-    "hwtrdrs",
-    "hwtrdrsw",
-    "hwtrdrxne",
-    "hwtrdrxse",
-    "hwtrdrn",
-    "hwtrdrnw",
-    "hwtrdrse",
-    "hwtrdrw",
-    "hwtrdrxnw",
-    "hwtrdrxsw"
-};
-
-static Palette MakePaletteAlpha(const Palette &palette) {
-    Palette result = palette;
-    result.colors[0] = Color();
-    return result;
-}
-
-static Palette MakePaletteColorKey(const Palette &palette, Color key) {
-    Palette result = palette;
-
-    for (size_t i = 0; i < 256; i++)
-        if (result.colors[i] == key)
-            result.colors[i] = Color(); // Repeated appearances of the same color do happen, so can't break early.
-
+/**
+ * @param image                     Image to mask.
+ * @param mask                      Mask to apply.
+ * @return                          For each palette entry, whether its pixels are transparent.
+ */
+static std::array<bool, 256> transparentPaletteEntries(const LodImage &image, const ResourceMask &mask) {
+    std::array<bool, 256> result = {};
+    switch (mask.mode) {
+    default:
+        assert(false);
+        [[fallthrough]];
+    case MASK_DEFAULT:
+        result[0] = image.zeroIsTransparent;
+        break;
+    case MASK_NONE:
+        break;
+    case MASK_ZERO:
+        result[0] = true;
+        break;
+    case MASK_COLOR:
+        for (size_t i = 0; i < result.size(); i++)
+            result[i] = image.palette.colors[i] == mask.color;
+        break;
+    }
     return result;
 }
 
@@ -78,24 +74,11 @@ bool Icon_LOD_Loader::Load(RgbaImage *rgbaImage) {
     if (tex == nullptr)
         return false;
 
-    Palette palette;
-    switch (mask.mode) {
-    default:
-        assert(false);
-        [[fallthrough]];
-    case MASK_DEFAULT:
-        palette = tex->zeroIsTransparent ? MakePaletteAlpha(tex->palette) : tex->palette;
-        break;
-    case MASK_NONE:
-        palette = tex->palette;
-        break;
-    case MASK_ZERO:
-        palette = MakePaletteAlpha(tex->palette);
-        break;
-    case MASK_COLOR:
-        palette = MakePaletteColorKey(tex->palette, mask.color);
-        break;
-    }
+    Palette palette = tex->palette;
+    std::array<bool, 256> transparent = transparentPaletteEntries(*tex, mask);
+    for (size_t i = 0; i < transparent.size(); i++)
+        if (transparent[i])
+            palette.colors[i] = Color();
 
     *rgbaImage = makeRgbaImage(tex->image, palette);
     return true;
@@ -166,13 +149,14 @@ bool PCX_LOD_Raw_Loader::Load(RgbaImage *rgbaImage) {
     return InternalLoad(data, rgbaImage);
 }
 
-static Color ProcessTransparentPixel(const GrayscaleImage &image, const Palette &palette, size_t x, size_t y) {
+static Color ProcessTransparentPixel(const GrayscaleImage &image, const Palette &palette, const std::array<bool, 256> &transparent,
+                                     size_t x, size_t y) {
     size_t count = 0;
     size_t r = 0, g = 0, b = 0;
 
     auto processPixel = [&](size_t x, size_t y) {
         uint8_t pal = image[y][x];
-        if (pal != 0) {
+        if (!transparent[pal]) {
             count++;
             r += palette.colors[pal].r;
             g += palette.colors[pal].g;
@@ -220,20 +204,26 @@ bool Bitmaps_LOD_Loader::Load(RgbaImage *rgbaImage) {
     // Desaturate bitmaps
     Palette palette = PaletteManager::createLoadedPalette(tex->palette);
 
-    if (!transparentTextures.contains(this->resource_name)) {
+    std::array<bool, 256> transparent = transparentPaletteEntries(*tex, mask);
+    if (std::ranges::none_of(transparent, std::identity())) {
         *rgbaImage = makeRgbaImage(tex->image, palette);
-    } else {
-        palette = MakePaletteAlpha(palette);
+        return true;
+    }
 
-        *rgbaImage = RgbaImage::uninitialized(w, h);
-        for (size_t y = 0; y < h; y++) {
-            for (size_t x = 0; x < w; x++) {
-                uint8_t pal = tex->image[y][x];
-                if (pal == 0) {
-                    (*rgbaImage)[y][x] = ProcessTransparentPixel(tex->image, palette, x, y);
-                } else {
-                    (*rgbaImage)[y][x] = palette.colors[pal];
-                }
+    for (size_t i = 0; i < transparent.size(); i++)
+        if (transparent[i])
+            palette.colors[i] = Color();
+
+    // Bitmaps are drawn with bilinear filtering, so transparent pixels take the color of their opaque neighbors
+    // to keep the filter from bleeding the mask color into the edges.
+    *rgbaImage = RgbaImage::uninitialized(w, h);
+    for (size_t y = 0; y < h; y++) {
+        for (size_t x = 0; x < w; x++) {
+            uint8_t pal = tex->image[y][x];
+            if (transparent[pal]) {
+                (*rgbaImage)[y][x] = ProcessTransparentPixel(tex->image, palette, transparent, x, y);
+            } else {
+                (*rgbaImage)[y][x] = palette.colors[pal];
             }
         }
     }

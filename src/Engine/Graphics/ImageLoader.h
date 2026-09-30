@@ -70,15 +70,17 @@ class PCX_LOD_Raw_Loader : public PCX_Loader {
 
 class Bitmaps_LOD_Loader : public ImageLoader {
  public:
-    inline Bitmaps_LOD_Loader(LodTextureCache *lod, std::string_view filename) {
+    inline Bitmaps_LOD_Loader(LodTextureCache *lod, std::string_view filename, ResourceMask mask) {
         this->resource_name = filename;
         this->lod = lod;
+        this->mask = mask;
     }
 
     virtual bool Load(RgbaImage *rgbaImage) override;
 
  protected:
     LodTextureCache *lod = nullptr;
+    ResourceMask mask;
 };
 
 class Bitmaps_GEN_Loader : public ImageLoader {

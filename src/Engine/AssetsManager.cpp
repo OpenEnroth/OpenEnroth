@@ -97,7 +97,7 @@ GraphicsImage *AssetsManager::getBitmap(std::string_view name, bool generated) {
         if (generated) {
             loader = std::make_unique<Bitmaps_GEN_Loader>(filename);
         } else {
-            loader = std::make_unique<Bitmaps_LOD_Loader>(pBitmaps_LOD, filename);
+            loader = std::make_unique<Bitmaps_LOD_Loader>(pBitmaps_LOD, filename, engine->resources()->bitmapMask(filename));
         }
         i = bitmaps.emplace(filename, GraphicsImage::Create(std::move(loader))).first;
     }

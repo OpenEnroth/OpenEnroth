@@ -30,3 +30,7 @@ Blob ResourceManager::eventsData(std::string_view filename) {
 ResourceMask ResourceManager::iconMask(std::string_view filename) const {
     return valueOr(_masks.icons, ascii::toLower(filename));
 }
+
+ResourceMask ResourceManager::bitmapMask(std::string_view filename) const {
+    return valueOr(_masks.bitmaps, ascii::toLower(filename));
+}

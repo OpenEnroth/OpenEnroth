@@ -1,12 +1,26 @@
 {
   "_": [
-    "Masks for MM7 icons whose zeroIsTransparent flag is wrong. An icon that is not listed follows the flag: palette entry #0 is transparent if the flag is set, and nothing is transparent otherwise.",
+    "Masks for MM7 bitmaps and icons whose zeroIsTransparent flag is wrong. An image that is not listed follows the flag: palette entry #0 is transparent if the flag is set, and nothing is transparent otherwise.",
     "Values:",
-    "\"default\" follows the flag, the same as not listing the icon.",
+    "\"default\" follows the flag, the same as not listing the image.",
     "\"none\" makes nothing transparent, even if the flag is set.",
     "\"zero\" makes palette entry #0 transparent, even if the flag is not set.",
     "\"#rrggbb\" makes every palette entry of that color transparent, whatever the flag says. In a PCX image, every pixel of that color."
   ],
+  "bitmaps": {
+    "hwtrdre": "zero",
+    "hwtrdrn": "zero",
+    "hwtrdrne": "zero",
+    "hwtrdrnw": "zero",
+    "hwtrdrs": "zero",
+    "hwtrdrse": "zero",
+    "hwtrdrsw": "zero",
+    "hwtrdrw": "zero",
+    "hwtrdrxne": "zero",
+    "hwtrdrxnw": "zero",
+    "hwtrdrxse": "zero",
+    "hwtrdrxsw": "zero"
+  },
   "icons": {
     "arrowl1": "#000000",
     "arrowl10": "#000000",
