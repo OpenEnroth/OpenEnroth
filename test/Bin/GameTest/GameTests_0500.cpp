@@ -862,10 +862,26 @@ GAME_TEST(Issues, Issue790) {
 }
 
 GAME_TEST(Issues, Issue792) {
-    // Test that event timers do not fire in-between game loading process
-    auto screenTape = tapes.screen();
-    test.playTraceFromTestData("issue_792.mm7", "issue_792.json"); // Should not assert
-    EXPECT_EQ(screenTape, tape(SCREEN_GAME, SCREEN_MENU, SCREEN_GAME, SCREEN_PARTY_CREATION, SCREEN_GAME, SCREEN_MENU, SCREEN_LOADGAME, SCREEN_GAME));
+    // Event timers of the map being left fired before the next map loaded.
+    game.startNewGame();
+    game.teleportTo(MAP_ERATHIA, Vec3f(-12216, 1900, 961), 90); // Next to a well.
+    game.tick(20); // Erathia's timers fire once on the first visit.
+    game.pressAndReleaseKey(PlatformKey::KEY_SPACE); // Drink. Erathia's 1am timer clears the drinker's mark.
+    game.tick(2);
+
+    auto mapTape = tapes.map();
+    auto drankTape = tapes.custom([] -> bool { return pParty->pCharacters[0]._characterEventBits[5]; });
+    test.startTaping();
+    game.teleportTo(MAP_ERATHIA, Vec3f(-18056, 4430, 832), 90); // In front of the Royal Steeds stable.
+    game.tick(2);
+    game.pressAndReleaseKey(PlatformKey::KEY_SPACE);
+    game.tick(2);
+    game.pressGuiButton("HouseDialogue_Option0"); // A two-day ride to Tatalia, passing 1am.
+    game.tick(2);
+    game.skipLoadingScreen();
+    game.tick(2);
+    EXPECT_EQ(mapTape, tape(MAP_ERATHIA, MAP_TATALIA));
+    EXPECT_EQ(drankTape, tape(true));
 }
 
 GAME_TEST(Issues, Issue797) {
