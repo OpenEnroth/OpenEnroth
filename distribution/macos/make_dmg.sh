@@ -12,7 +12,7 @@ ICON="$2"
 BACKGROUND="$3"
 OUTPUT="$4"
 
-python3 -m dmgbuild \
+dmgbuild \
     -s "$(dirname "$0")/dmg_settings.py" \
     -D app="$APP" \
     -D icon="$ICON" \

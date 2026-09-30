@@ -40,7 +40,6 @@ env:
   NDK_VERSION: '28.1.13356709'
   XCODE_VERSION: '16.3'
   JAVA_VERSION: '17'
-  DMGBUILD_VERSION: '1.6.7'
   # This is required for ccache to work for android build, otherwise we get 100% cache misses.
   CCACHE_COMPILERCHECK: content
 
@@ -166,7 +165,7 @@ jobs:
       - name: '[darwin] Install dependencies'
         if: matrix.platform == 'darwin'
         run: |
-          pip3 install --break-system-packages "dmgbuild==$DMGBUILD_VERSION"
+          brew install dmgbuild
 
       - name: '[windows] Set up MSVC environment'
         if: matrix.platform == 'windows'
