@@ -47,6 +47,26 @@ UNIT_TEST(Process, LargeOutput) {
     EXPECT_GE(result.stdOut.size(), 20000 * 11);
 }
 
+UNIT_TEST(Process, LargeOutputOnBothStreams) {
+    // Both pipes are filled at once, so this hangs if either of them isn't read while the process is running.
+#ifdef _WINDOWS
+    ProcessResult result = runShell("for /L %i in (1,1,20000) do @(echo 0123456789& echo 0123456789 1>&2)", 30s);
+#else
+    ProcessResult result = runShell("i=0; while [ $i -lt 20000 ]; do echo 0123456789; echo 0123456789 1>&2; i=$((i+1)); done", 30s);
+#endif
+    EXPECT_FALSE(result.timedOut);
+    EXPECT_EQ(result.exitCode, 0);
+    EXPECT_GE(result.stdOut.size(), 20000 * 11);
+    EXPECT_GE(result.stdErr.size(), 20000 * 11);
+}
+
+UNIT_TEST(Process, ReadingStandardInput) {
+    // sort reads its standard input until end of file, so this hangs if the child's stdin stays open.
+    ProcessResult result = runShell("sort", 30s);
+    EXPECT_FALSE(result.timedOut);
+    EXPECT_EQ(result.exitCode, 0);
+}
+
 UNIT_TEST(Process, Timeout) {
 #ifdef _WINDOWS
     std::string command = "ping -n 6 127.0.0.1"; // There is no sleep, and timeout.exe refuses to run without a console.
