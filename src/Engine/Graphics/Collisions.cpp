@@ -101,7 +101,7 @@ static bool CollideSphereWithFace(BLVFace* face, const Vec3f& pos, float radius,
     if (ignore_ethereal && face->Ethereal())
         return false;
 
-    if (face->numVertices < 3)
+    if (face->vertices.size() < 3)
         return false; // Apparently this happens.
 
     float dir_normal_projection = dot(dir, face->facePlane.normal);
@@ -157,13 +157,8 @@ static bool CollideSphereWithFace(BLVFace* face, const Vec3f& pos, float radius,
 
     // now collide with vertices - point sphere collision
     a = dir.lengthSqr();
-    for (int i = 0; i < face->numVertices; ++i) {
-        Vec3f vertPos;
-        if (model_idx == MODEL_INDOOR) {
-            vertPos = pIndoor->vertices[face->vertexIds[i]];
-        } else {
-            vertPos = pOutdoor->pBModels[model_idx].vertices[face->vertexIds[i]];
-        }
+    for (size_t i = 0; i < face->vertices.size(); ++i) {
+        Vec3f vertPos = *face->vertices[i];
 
         b = 2.0f * (dot(dir, pos - vertPos));
         c = (vertPos - pos).lengthSqr() - radius * radius;
@@ -176,16 +171,11 @@ static bool CollideSphereWithFace(BLVFace* face, const Vec3f& pos, float radius,
     }
 
     // now collide with edges
-    for (int i = 0; i < face->numVertices; ++i) {
+    for (size_t i = 0; i < face->vertices.size(); ++i) {
         Vec3f vert1, vert2;
-        int i2 = (i + 1) % face->numVertices;
-        if (model_idx == MODEL_INDOOR) {
-            vert1 = pIndoor->vertices[face->vertexIds[i]];
-            vert2 = pIndoor->vertices[face->vertexIds[i2]];
-        } else {
-            vert1 = pOutdoor->pBModels[model_idx].vertices[face->vertexIds[i]];
-            vert2 = pOutdoor->pBModels[model_idx].vertices[face->vertexIds[i2]];
-        }
+        size_t i2 = (i + 1) % face->vertices.size();
+        vert1 = *face->vertices[i];
+        vert2 = *face->vertices[i2];
 
         // collide with line between the two verts
         float intersectionDist;
@@ -735,7 +725,7 @@ void ProcessActorCollisionsBLV(Actor &actor, bool isAboveGround, bool isFlying) 
                 eventProcessor(pIndoor->faces[id].eventId, Pid(), 1);
 
             if (pIndoor->faces[id].polygonType == POLYGON_Floor) {
-                float new_floor_z_tmp = pIndoor->vertices[face->vertexIds[0]].z;
+                float new_floor_z_tmp = face->vertices[0]->z;
                 // We dont collide with the rear of faces so hitting a floor poly with upwards direction means that
                 // weve collided with its edge and we should step up onto its level.
                 if (actor.velocity.z > 0.0f && (new_floor_z_tmp - actor.pos.z) < 128)
@@ -1017,7 +1007,7 @@ void ProcessPartyCollisionsBLV(int sectorId, int min_party_move_delta_sqr, int *
                 *faceEvent = pFace->eventId;
 
             if (pFace->polygonType == POLYGON_Floor) {
-                float new_party_z_tmp = pIndoor->vertices[pFace->vertexIds[0]].z;
+                float new_party_z_tmp = pFace->vertices[0]->z;
                 // We dont collide with the rear of faces so hitting a floor poly with upwards direction means that
                 // weve collided with its edge and we should step up onto its level.
                 if (pParty->velocity.z > 0.0f && (new_party_z_tmp - pParty->pos.z) < 128)
@@ -1184,7 +1174,7 @@ void ProcessPartyCollisionsODM(Vec3f *partyNewPos, Vec3f *partyInputSpeed, int *
             if (pBLVFace->polygonType == POLYGON_Floor) {
                 // We dont collide with the rear of faces so hitting a floor poly with upwards direction means that
                 // weve collided with its edge and we should step up onto its level.
-                float newZ = pOutdoor->pBModels[collision_state.pid.id() >> 6].vertices[pBLVFace->vertexIds[0]].z;
+                float newZ = pBLVFace->vertices[0]->z;
                 if (pParty->velocity.z > 0.0f && (newZ - pParty->pos.z) < 128)
                     pParty->pos.z = newZ;
             }

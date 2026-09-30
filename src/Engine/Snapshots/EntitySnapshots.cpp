@@ -41,6 +41,7 @@
 #include "Library/Snapshots/CommonSnapshots.h"
 
 #include "Utility/Memory/MemSet.h"
+#include "Utility/Exception.h"
 #include "Utility/String/Ascii.h"
 #include "Utility/MapAccess.h"
 
@@ -282,6 +283,7 @@ void reconstruct(const BLVFace_MM7 &src, BLVFace *dst) {
     reconstruct(src.facePlane, &dst->facePlane);
     dst->zCalc.init(dst->facePlane);
     dst->attributes = static_cast<FaceAttributes>(src.attributes);
+    dst->vertices = {};
     dst->vertexIds = {};
     dst->textureUs = {};
     dst->textureVs = {};
@@ -291,7 +293,6 @@ void reconstruct(const BLVFace_MM7 &src, BLVFace *dst) {
     dst->backSectorId = src.backSectorId;
     reconstruct(src.bounding, &dst->boundingBox);
     dst->polygonType = static_cast<PolygonType>(src.polygonType);
-    dst->numVertices = src.numVertices;
 }
 
 void reconstruct(const TileData_MM7 &src, TileData *dst) {
@@ -1564,11 +1565,24 @@ void reconstruct(const BLVSector_MM7 &src, BLVSector *dst) {
     reconstruct(src.boundingBox, &dst->boundingBox);
 }
 
-void reconstruct(const ODMFace_MM7 &src, BLVFace *dst, ContextTag<int> faceIndex) {
+void reconstruct(const ODMFace_MM7 &src, BLVFace *dst, ContextTag<int> faceIndex, std::span<Vec3f> vertices) {
     reconstruct(src.facePlane, &dst->facePlane);
     dst->zCalc.init(dst->facePlane);
     dst->attributes = FaceAttributes(src.attributes);
-    dst->vertexIds = std::vector<int16_t>(src.vertexIds.begin(), src.vertexIds.begin() + src.numVertices);
+    dst->vertices.clear();
+    dst->vertexIds.clear();
+    if (src.numVertices > src.vertexIds.size())
+        throw Exception("ODM face vertex count {} exceeds the maximum {}", src.numVertices, src.vertexIds.size());
+    dst->vertices.reserve(src.numVertices);
+    dst->vertexIds.reserve(src.numVertices);
+    for (size_t i = 0; i < src.numVertices; ++i) {
+        int16_t vertexId = src.vertexIds[i];
+        if (vertexId < 0 || static_cast<size_t>(vertexId) >= vertices.size())
+            throw Exception("ODM face vertex index {} is out of range for {} vertices", vertexId, vertices.size());
+
+        dst->vertices.push_back(&vertices[vertexId]);
+        dst->vertexIds.push_back(vertexId);
+    }
     dst->textureUs = std::vector<int16_t>(src.textureUs.begin(), src.textureUs.begin() + src.numVertices);
     dst->textureVs = std::vector<int16_t>(src.textureVs.begin(), src.textureVs.begin() + src.numVertices);
     dst->texture = nullptr;
@@ -1578,7 +1592,6 @@ void reconstruct(const ODMFace_MM7 &src, BLVFace *dst, ContextTag<int> faceIndex
     reconstruct(src.boundingBox, &dst->boundingBox);
     dst->cogNumber = src.cogNumber;
     dst->eventId = src.eventId;
-    dst->numVertices = src.numVertices;
     dst->polygonType = static_cast<PolygonType>(src.polygonType);
     dst->faceId = *faceIndex;
 }

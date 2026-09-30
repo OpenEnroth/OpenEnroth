@@ -929,7 +929,7 @@ struct ODMFace_MM7 {
 static_assert(sizeof(ODMFace_MM7) == 308);
 MM_DECLARE_MEMCOPY_SERIALIZABLE(ODMFace_MM7)
 
-void reconstruct(const ODMFace_MM7 &src, BLVFace *dst, ContextTag<int> faceIndex);
+void reconstruct(const ODMFace_MM7 &src, BLVFace *dst, ContextTag<int> faceIndex, std::span<Vec3f> vertices);
 
 
 struct SpawnPoint_MM6 {
