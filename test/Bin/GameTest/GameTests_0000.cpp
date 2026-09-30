@@ -324,32 +324,29 @@ GAME_TEST(Issues, Issue293c) {
 }
 
 GAME_TEST(Issues, Issue294) {
-    // Testing that party auto-casting shrapnel successfully targets rats & kills them, gaining experience.
-    auto deadActorsTape = actorTapes.countByState(Dead);
-    auto ratStateTape = actorTapes.aiState(79);
-    auto ratPositionTape = tapes.custom([] { return pActors[79].pos; });
-    auto recoveringTape = charTapes.areRecovering();
-    auto spritesTape = tapes.sprites();
-    test.playTraceFromTestData("issue_294.mm7", "issue_294.json");
+    // Spray spells fired at a point-blank rat flew over it because their projectiles spawned at half the party height.
+    for (SpellId spell : {SPELL_AIR_SPARKS, SPELL_WATER_POISON_SPRAY, SPELL_DARK_SHARPMETAL}) {
+        SCOPED_TRACE(fmt::format("spell={}", std::to_underlying(spell)));
+        test.prepareForNextTest();
+        engine->config->debug.NoActors.setValue(true);
+        game.startNewGame();
+        test.startTaping();
+        prepareForBattleTest({{CLASS_SORCERER, RACE_HUMAN}});
+        engine->config->debug.NoActors.setValue(false);
 
-    // Only the 4th char acted.
-    EXPECT_EQ(recoveringTape.slice(0).unique(), tape(false));
-    EXPECT_EQ(recoveringTape.slice(1).unique(), tape(false));
-    EXPECT_EQ(recoveringTape.slice(2).unique(), tape(false));
-    EXPECT_EQ(recoveringTape.slice(3).unique(), tape(false, true, false));
+        Character &caster = pParty->pCharacters[0];
+        caster.setSkillValue(skillForSpell(spell), CombinedSkillValue(1, MASTERY_NOVICE));
+        caster.bHaveSpell[spell] = true;
+        caster.mana = 1000;
 
-    // Sharpmetal was cast.
-    EXPECT_CONTAINS(spritesTape.flatten(), SPRITE_SPELL_DARK_SHARPMETAL_IMPACT);
+        auto hpTape = actorTapes.hp(0);
+        game.spawnMonster(pParty->pos + Vec3f(0, 80, 0), MONSTER_RAT_A, SPAWN_DUMMY); // Right in front of the party.
+        game.castQuickSpell(0, spell);
+        game.tick(30);
+        test.stopTaping();
 
-    // Giant rat died after a sharpmetal cast from character #4.
-    EXPECT_EQ(deadActorsTape.delta(), +1);
-    EXPECT_EQ(ratStateTape.frontBack(), tape(Standing, Dead));
-
-    // Rat didn't move much.
-    Vec3f positionJitter = BBoxf::forPoints(ratPositionTape).size();
-    EXPECT_LT(positionJitter.x, 100);
-    EXPECT_LT(positionJitter.y, 100);
-    EXPECT_LT(positionJitter.z, 100);
+        EXPECT_LT(hpTape.delta(), 0);
+    }
 }
 
 // 300
