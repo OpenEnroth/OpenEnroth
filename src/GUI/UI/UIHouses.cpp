@@ -553,7 +553,6 @@ void selectProprietorDialogueOption(DialogueId option) {
 
 bool houseDialogPressEscape() {
     engine->_messageQueue->clear();
-    activeLevelDecoration = nullptr;
     current_npc_text.clear();
     pParty->placeHeldItemInInventoryOrDrop();
 

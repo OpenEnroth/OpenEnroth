@@ -211,8 +211,16 @@ int EvtInterpreter::executeOneEvent(int step, bool isNpc) {
     switch (flow.type) {
         case EVT_FLOW_NEXT: return step + 1;
         case EVT_FLOW_JUMP: return flow.target;
-        case EVT_FLOW_STOP:
-        case EVT_FLOW_YIELD: return -1;
+        case EVT_FLOW_STOP: return -1;
+        case EVT_FLOW_YIELD:
+            setEventContinuation([source = _source, eventId = _eventId, decoration = _decoration, next = step + 1] {
+                if (source == EVT_SOURCE_GLOBAL) {
+                    globalEventProcessor(eventId, decoration, next);
+                } else {
+                    eventProcessor(eventId, Pid(), true, next);
+                }
+            });
+            return -1;
     }
     assert(false);
     return -1;
@@ -252,7 +260,6 @@ EvtFlow EvtInterpreter::executeInstruction(EvtInstruction ir) {
 
                 pDialogueWindow = std::make_unique<GUIWindow_IndoorEntryExit>(ir.data.move_map_descr.house_id, ir.data.move_map_descr.exit_pic_id,
                                                                              moveToMapDestination(ir), ir.str);
-                setEventContinuation([eventId = _eventId, next = step + 1] { eventProcessor(eventId, Pid(), true, next); });
                 return {EVT_FLOW_YIELD};
             }
 
@@ -272,7 +279,7 @@ EvtFlow EvtInterpreter::executeInstruction(EvtInstruction ir) {
                     pAudioPlayer->playUISound(SOUND_teleport);
                 }
             } else {
-                pGameLoadingUI_ProgressBar->Initialize((GUIProgressBar::Type)((activeLevelDecoration == NULL) + 1));
+                pGameLoadingUI_ProgressBar->Initialize(_source == EVT_SOURCE_GLOBAL ? GUIProgressBar::TYPE_Fullscreen : GUIProgressBar::TYPE_Box);
                 startMapTransition(destination);
                 _mapExitTriggered = true;
                 if (current_screen_type == SCREEN_HOUSE) {
@@ -447,14 +454,13 @@ EvtFlow EvtInterpreter::executeInstruction(EvtInstruction ir) {
             assert(false);
 #if 0
             game_ui_status_bar_event_string = (ir.data.text_id < engine->_levelStrings.size()) ? engine->_levelStrings[ir.data.text_id] : "";
-            startBranchlessDialogue(_eventId, step + 1, EVENT_InputString);
+            startBranchlessDialogue(EVENT_InputString);
 #endif
             return {EVT_FLOW_STOP};
         case EVENT_StatusText:
-            if (activeLevelDecoration) {
-                if (activeLevelDecoration == (LevelDecoration *)1) {
+            if (_source == EVT_SOURCE_GLOBAL) {
+                if (!_decoration) // An NPC topic.
                     current_npc_text = pNPCTopics[ir.data.text_id - 1].pText;
-                }
                 if (_canShowMessages) {
                     engine->_statusBar->setEvent(pNPCTopics[ir.data.text_id - 1].pText);
                 }
@@ -466,7 +472,7 @@ EvtFlow EvtInterpreter::executeInstruction(EvtInstruction ir) {
             break;
         case EVENT_ShowMessage:
             branchless_dialogue_str.clear();
-            if (activeLevelDecoration) {
+            if (_source == EVT_SOURCE_GLOBAL) {
                 current_npc_text = pNPCTopics[ir.data.text_id - 1].pText;
             } else if (ir.data.text_id < engine->_levelStrings.size()) {
                 branchless_dialogue_str = engine->_levelStrings[ir.data.text_id];
@@ -479,7 +485,7 @@ EvtFlow EvtInterpreter::executeInstruction(EvtInstruction ir) {
             pIndoor->toggleLight(ir.data.light_descr.light_id, ir.data.light_descr.is_enable);
             break;
         case EVENT_PressAnyKey:
-            startBranchlessDialogue(_eventId, step + 1, EVENT_PressAnyKey);
+            startBranchlessDialogue(EVENT_PressAnyKey);
             return {EVT_FLOW_YIELD};
         case EVENT_SummonItem:
             SpriteObject::dropItemAt(ir.data.summon_item_descr.sprite, Vec3f(ir.data.summon_item_descr.x, ir.data.summon_item_descr.y, ir.data.summon_item_descr.z),
@@ -557,11 +563,12 @@ EvtFlow EvtInterpreter::executeInstruction(EvtInstruction ir) {
             // binary at 0xa33e0 and 0xa3418, the PC MM8.exe is presumed to match.
             // TODO(captainurist): make the state<->event mapping per-game before feeding MM8 data through here, and
             //                     spell the MM7 store as -380 while at it.
+            assert(_decoration);
             if (ir.data.event_id) {
-                engine->_persistentVariables.decorVars[activeLevelDecoration->eventVarId] = ir.data.event_id - 124;
+                engine->_persistentVariables.decorVars[_decoration->eventVarId] = ir.data.event_id - 124;
             } else {
-                engine->_persistentVariables.decorVars[activeLevelDecoration->eventVarId] = 0;
-                activeLevelDecoration->uFlags |= LEVEL_DECORATION_INVISIBLE;
+                engine->_persistentVariables.decorVars[_decoration->eventVarId] = 0;
+                _decoration->uFlags |= LEVEL_DECORATION_INVISIBLE;
             }
             break;
         case EVENT_CheckSkill:
@@ -703,8 +710,11 @@ bool EvtInterpreter::executeNpcDialogue(int startStep) {
     return !_readyToExit || _canShowOption;
 }
 
-void EvtInterpreter::prepare(const EvtProgram &eventMap, int eventId, Pid objectPid, bool canShowMessages) {
+void EvtInterpreter::prepare(const EvtProgram &eventMap, EvtSource source, int eventId, Pid objectPid, bool canShowMessages,
+                             LevelDecoration *decoration) {
     _eventId = eventId;
+    _source = source;
+    _decoration = decoration;
     _canShowMessages = canShowMessages;
     _objectPid = objectPid;
 

@@ -20,11 +20,18 @@ void checkDecorationEvents();
 void eventProcessor(int eventId, Pid targetObj, bool canShowMessages, int startStep = 0);
 
 /**
+ * Runs an event from global.evt.
+ *
+ * @param eventId                       Event to run.
+ * @param decoration                    Interactive decoration the event runs for, or `nullptr` for an NPC topic.
+ * @param startStep                     Step to start from.
+ */
+void globalEventProcessor(int eventId, LevelDecoration *decoration, int startStep = 0);
+
+/**
  * @param continuation                  Callback that resumes an event paused on a dialogue, or `nullptr` for none.
  */
 void setEventContinuation(std::function<void()> continuation);
-
-bool hasEventContinuation();
 
 /**
  * Runs the stored continuation, if there is one, and clears it.
@@ -43,5 +50,3 @@ std::string getEventHintString(int eventId);
 void onMapLoad();
 void onMapLeave();
 void onTimer();
-
-extern LevelDecoration *savedDecoration;

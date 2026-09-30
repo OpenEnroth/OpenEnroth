@@ -660,10 +660,8 @@ DialogueId handleScriptedNPCTopicSelection(DialogueId topic, NPCData *npcData) {
         topicEventId = eventId;
         return DIALOGUE_MASTERY_TEACHER_OFFER;
     } else {
-        activeLevelDecoration = (LevelDecoration *)1;
         current_npc_text.clear();
-        eventProcessor(eventId, Pid(), 1);
-        activeLevelDecoration = nullptr;
+        globalEventProcessor(eventId, nullptr);
     }
 
     return DIALOGUE_MAIN;
