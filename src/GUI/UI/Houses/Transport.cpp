@@ -234,9 +234,8 @@ int GUIWindow_Transport::getTravelTimeTransportDays(int schedule_id) {
             travel_time -= 3;
         if (CheckHiredNPCSpeciality(NPC_PROFESSION_PIRATE))
             travel_time -= 2;
-    } else {
-        if (CheckHiredNPCSpeciality(NPC_PROFESSION_HORSEMAN))
-            travel_time -= 2;
+    } else if (CheckHiredNPCSpeciality(NPC_PROFESSION_HORSEMAN)) {
+        travel_time -= 2;
     }
     if (CheckHiredNPCSpeciality(NPC_PROFESSION_EXPLORER))
         travel_time -= 1;

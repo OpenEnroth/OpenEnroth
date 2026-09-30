@@ -94,18 +94,18 @@ void Io::KeyboardInputHandler::GenerateActions(bool isPaused) {
         }
 
         if (isTriggered) {
-            if (isPaused)
+            if (isPaused) {
                 ProcessPausedAction(action);
-            else
+            } else {
                 ProcessGameplayAction(action);
+            }
         }
     }
 
     if (resettimer) {
         this->keydelaytimer = gameTimer->dt();
-    } else {
-        if (this->keydelaytimer < DELAY_TOGGLE_TIME_FIRST)
-            this->keydelaytimer += gameTimer->dt();
+    } else if (this->keydelaytimer < DELAY_TOGGLE_TIME_FIRST) {
+        this->keydelaytimer += gameTimer->dt();
     }
 }
 
@@ -369,12 +369,10 @@ void Io::KeyboardInputHandler::GenerateInputActions() {
         } else {
             pParty->uFlags2 &= ~PARTY_FLAGS_2_RUNNING;
         }
+    } else if (IsRunKeyToggled()) {
+        pParty->uFlags2 &= ~PARTY_FLAGS_2_RUNNING;
     } else {
-        if (IsRunKeyToggled()) {
-            pParty->uFlags2 &= ~PARTY_FLAGS_2_RUNNING;
-        } else {
-            pParty->uFlags2 |= PARTY_FLAGS_2_RUNNING;
-        }
+        pParty->uFlags2 |= PARTY_FLAGS_2_RUNNING;
     }
 
     GenerateActions(gameTimer->isPaused());
@@ -442,14 +440,12 @@ bool Io::KeyboardInputHandler::ProcessTextInput(PlatformKey key, int c) {
                 pPressedKeysBuffer.push_back(c);
             }
         }
-    } else {
-        if (key != PlatformKey::KEY_CHAR) {
-            // we're setting key binding in options
-            // pPressedKeysBuffer[uNumKeysPressed++] = c;
-            // pPressedKeysBuffer[uNumKeysPressed] = 0;
-            lastKeyPressed = key;
-            SetWindowInputStatus(WINDOW_INPUT_CONFIRMED);
-        }
+    } else if (key != PlatformKey::KEY_CHAR) {
+        // we're setting key binding in options
+        // pPressedKeysBuffer[uNumKeysPressed++] = c;
+        // pPressedKeysBuffer[uNumKeysPressed] = 0;
+        lastKeyPressed = key;
+        SetWindowInputStatus(WINDOW_INPUT_CONFIRMED);
     }
     return true;
 }

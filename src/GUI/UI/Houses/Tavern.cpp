@@ -77,10 +77,11 @@ void GUIWindow_Tavern::arcomageResultDialogue() {
     }
     std::string pText;
     if (pArcomageGame->_gameWinner) {
-        if (pArcomageGame->_gameWinner == 1)
+        if (pArcomageGame->_gameWinner == 1) {
             pText = localization->str(LSTR_YOU_WON);
-        else
+        } else {
             pText = localization->str(LSTR_YOU_LOST);
+        }
     } else {
         pText = localization->str(LSTR_A_TIE);
     }
