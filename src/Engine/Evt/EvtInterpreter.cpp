@@ -532,7 +532,6 @@ EvtFlow EvtInterpreter::executeInstruction(EvtInstruction ir) {
                     houseDialogPressEscape();
                     pMediaPlayer->Unload();
                     window_SpeakInHouse->Release();
-                    activeLevelDecoration = (LevelDecoration *)1;
                     if (enterHouse(HOUSE_BODY_GUILD_MASTER_ERATHIA)) {
                         pAudioPlayer->playUISound(SOUND_Invalid);
                         window_SpeakInHouse = new GUIWindow_House({0, 0}, render->GetRenderDimensions(), HOUSE_BODY_GUILD_MASTER_ERATHIA, "");
