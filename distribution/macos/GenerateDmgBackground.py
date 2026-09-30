@@ -4,8 +4,6 @@
 # with a title and a bronze arrow from the app to the Applications link. The layout matches dmg_settings.py, a 600x400
 # window content area with 128pt icons centered at (150, 190) and (450, 190). Needs skia-python, Pillow and the DejaVu
 # fonts.
-#
-# Usage: GenerateDmgBackground.py <output.jpg> <output@2x.jpg>
 
 import math
 import os
