@@ -12,6 +12,7 @@
 #include "Engine/Graphics/Renderer/Renderer.h"
 #include "Engine/Graphics/TileGenerator.h"
 #include "Engine/Resources/LodTextureCache.h"
+#include "Engine/Resources/ResourceManager.h"
 #include "Engine/Resources/LodSpriteCache.h"
 #include "Engine/Graphics/PaletteManager.h"
 
@@ -26,56 +27,12 @@
 #include "Utility/Math/Float.h"
 #include "Utility/Lambda.h"
 
-/**
- * @param image                     Image to mask.
- * @param mask                      Mask to apply.
- * @return                          The image's palette, with the entries the mask picks made transparent.
- */
-static Palette maskedPalette(const LodImage &image, const ResourceMask &mask) {
-    Palette result = image.palette;
-    switch (mask.mode) {
-    default:
-        assert(false);
-        [[fallthrough]];
-    case MASK_DEFAULT:
-        if (image.zeroIsTransparent)
-            result.colors[0] = Color();
-        break;
-    case MASK_NONE:
-        break;
-    case MASK_ZERO:
-        result.colors[0] = Color();
-        break;
-    case MASK_COLOR:
-        for (Color &color : result.colors)
-            if (color == mask.color)
-                color = Color();
-        break;
-    }
-    return result;
-}
-
 bool Icon_LOD_Loader::Load(RgbaImage *rgbaImage) {
-    if (resource_name.ends_with(".pcx")) {
-        Blob data = lod->LoadCompressedTexture(resource_name);
-        if (!data) {
-            MM_WARNING("Unable to load {}", resource_name);
-            return false;
-        }
-
-        *rgbaImage = pcx::decode(data);
-        if (mask.mode == MASK_COLOR)
-            for (Color &pixel : rgbaImage->pixels())
-                if (pixel == mask.color)
-                    pixel = Color();
-        return true;
-    }
-
-    LodImage *tex = lod->loadTexture(resource_name);
-    if (tex == nullptr)
+    *rgbaImage = resources->icon(resource_name);
+    if (!*rgbaImage) {
+        MM_WARNING("Unable to load {}", resource_name);
         return false;
-
-    *rgbaImage = makeRgbaImage(tex->image, maskedPalette(*tex, mask));
+    }
     return true;
 }
 
@@ -190,16 +147,16 @@ static Color ProcessTransparentPixel(const GrayscaleImage &image, const Palette 
 }
 
 bool Bitmaps_LOD_Loader::Load(RgbaImage *rgbaImage) {
-    LodImage *tex = lod->loadTexture(this->resource_name);
+    LodImage tex = resources->bitmap(resource_name);
 
-    size_t w = tex->image.width();
-    size_t h = tex->image.height();
+    size_t w = tex.image.width();
+    size_t h = tex.image.height();
 
     // Desaturate bitmaps
-    Palette palette = PaletteManager::createLoadedPalette(maskedPalette(*tex, mask));
+    Palette palette = PaletteManager::createLoadedPalette(tex.palette);
 
     if (std::ranges::all_of(palette.colors, _1 != 0, &Color::a)) {
-        *rgbaImage = makeRgbaImage(tex->image, palette);
+        *rgbaImage = makeRgbaImage(tex.image, palette);
         return true;
     }
 
@@ -208,9 +165,9 @@ bool Bitmaps_LOD_Loader::Load(RgbaImage *rgbaImage) {
     *rgbaImage = RgbaImage::uninitialized(w, h);
     for (size_t y = 0; y < h; y++) {
         for (size_t x = 0; x < w; x++) {
-            uint8_t pal = tex->image[y][x];
+            uint8_t pal = tex.image[y][x];
             if (palette.colors[pal].a == 0) {
-                (*rgbaImage)[y][x] = ProcessTransparentPixel(tex->image, palette, x, y);
+                (*rgbaImage)[y][x] = ProcessTransparentPixel(tex.image, palette, x, y);
             } else {
                 (*rgbaImage)[y][x] = palette.colors[pal];
             }

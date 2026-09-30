@@ -2,13 +2,12 @@
 
 #include <string>
 
-#include "Engine/Data/ResourceMask.h"
-
 #include "Library/Color/Color.h"
 #include "Library/Image/Image.h"
 
 class LodSpriteCache;
 class LodTextureCache;
+class ResourceManager;
 class LodReader;
 
 class ImageLoader {
@@ -24,17 +23,15 @@ class ImageLoader {
 
 class Icon_LOD_Loader : public ImageLoader {
  public:
-    inline Icon_LOD_Loader(LodTextureCache *lod, std::string_view filename, ResourceMask mask) {
+    inline Icon_LOD_Loader(ResourceManager *resources, std::string_view filename) {
         this->resource_name = filename;
-        this->lod = lod;
-        this->mask = mask;
+        this->resources = resources;
     }
 
     virtual bool Load(RgbaImage *rgbaImage) override;
 
  protected:
-    LodTextureCache *lod = nullptr;
-    ResourceMask mask;
+    ResourceManager *resources = nullptr;
 };
 
 class Buff_LOD_Loader : public ImageLoader {
@@ -70,17 +67,15 @@ class PCX_LOD_Raw_Loader : public PCX_Loader {
 
 class Bitmaps_LOD_Loader : public ImageLoader {
  public:
-    inline Bitmaps_LOD_Loader(LodTextureCache *lod, std::string_view filename, ResourceMask mask) {
+    inline Bitmaps_LOD_Loader(ResourceManager *resources, std::string_view filename) {
         this->resource_name = filename;
-        this->lod = lod;
-        this->mask = mask;
+        this->resources = resources;
     }
 
     virtual bool Load(RgbaImage *rgbaImage) override;
 
  protected:
-    LodTextureCache *lod = nullptr;
-    ResourceMask mask;
+    ResourceManager *resources = nullptr;
 };
 
 class Bitmaps_GEN_Loader : public ImageLoader {

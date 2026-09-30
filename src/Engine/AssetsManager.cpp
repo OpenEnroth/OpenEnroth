@@ -10,7 +10,6 @@
 #include "Engine/Graphics/Image.h"
 #include "Engine/Resources/LodTextureCache.h"
 #include "Engine/Resources/LodSpriteCache.h"
-#include "Engine/Resources/ResourceManager.h"
 
 #include "GUI/GUIFont.h"
 
@@ -73,7 +72,7 @@ GraphicsImage *AssetsManager::getIcon(std::string_view name) {
 
     auto i = images.find(filename);
     if (i == images.end())
-        i = images.emplace(filename, GraphicsImage::Create(std::make_unique<Icon_LOD_Loader>(pIcons_LOD, filename, engine->resources()->iconMask(filename)))).first;
+        i = images.emplace(filename, GraphicsImage::Create(std::make_unique<Icon_LOD_Loader>(engine->resources(), filename))).first;
 
     return i->second.get();
 }
@@ -97,7 +96,7 @@ GraphicsImage *AssetsManager::getBitmap(std::string_view name, bool generated) {
         if (generated) {
             loader = std::make_unique<Bitmaps_GEN_Loader>(filename);
         } else {
-            loader = std::make_unique<Bitmaps_LOD_Loader>(pBitmaps_LOD, filename, engine->resources()->bitmapMask(filename));
+            loader = std::make_unique<Bitmaps_LOD_Loader>(engine->resources(), filename);
         }
         i = bitmaps.emplace(filename, GraphicsImage::Create(std::move(loader))).first;
     }
