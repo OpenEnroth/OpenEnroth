@@ -284,6 +284,7 @@ void reconstruct(const BLVFace_MM7 &src, BLVFace *dst) {
     dst->zCalc.init(dst->facePlane);
     dst->attributes = static_cast<FaceAttributes>(src.attributes);
     dst->vertices = {};
+    dst->vertexIds = {};
     dst->textureUs = {};
     dst->textureVs = {};
     dst->texture = nullptr;
@@ -1569,15 +1570,18 @@ void reconstruct(const ODMFace_MM7 &src, BLVFace *dst, ContextTag<int> faceIndex
     dst->zCalc.init(dst->facePlane);
     dst->attributes = FaceAttributes(src.attributes);
     dst->vertices.clear();
+    dst->vertexIds.clear();
     if (src.numVertices > src.vertexIds.size())
         throw Exception("ODM face vertex count {} exceeds the maximum {}", src.numVertices, src.vertexIds.size());
     dst->vertices.reserve(src.numVertices);
+    dst->vertexIds.reserve(src.numVertices);
     for (size_t i = 0; i < src.numVertices; ++i) {
         int16_t vertexId = src.vertexIds[i];
         if (vertexId < 0 || static_cast<size_t>(vertexId) >= vertices.size())
             throw Exception("ODM face vertex index {} is out of range for {} vertices", vertexId, vertices.size());
 
         dst->vertices.push_back(&vertices[vertexId]);
+        dst->vertexIds.push_back(vertexId);
     }
     dst->textureUs = std::vector<int16_t>(src.textureUs.begin(), src.textureUs.begin() + src.numVertices);
     dst->textureVs = std::vector<int16_t>(src.textureVs.begin(), src.textureVs.begin() + src.numVertices);

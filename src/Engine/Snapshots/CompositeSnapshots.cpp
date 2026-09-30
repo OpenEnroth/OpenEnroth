@@ -42,6 +42,7 @@ template<class Face>
 static void dropDuplicateFaceVertices(Face *face) {
     auto copyVertex = [&](int src, int dst) {
         face->vertices[dst] = face->vertices[src];
+        face->vertexIds[dst] = face->vertexIds[src];
         face->textureUs[dst] = face->textureUs[src];
         face->textureVs[dst] = face->textureVs[src];
     };
@@ -84,6 +85,7 @@ static void dropDuplicateFaceVertices(Face *face) {
 
     size_t newnumVertices = r - l + 1;
     face->vertices.resize(newnumVertices);
+    face->vertexIds.resize(newnumVertices);
     face->textureUs.resize(newnumVertices);
     face->textureVs.resize(newnumVertices);
 }
@@ -91,16 +93,14 @@ static void dropDuplicateFaceVertices(Face *face) {
 /**
  * @param face                          Face to compute the normal of.
  * @param vertices                      Alternate vertex positions to use instead of `face.vertices`.
- * @param sourceVertices                Vertex array that owns `face.vertices`, used to map to `vertices`.
  * @return                              Unit normal of the face, or `std::nullopt` if the face has no area.
  */
 template<class Face>
-static std::optional<Vec3f> faceNormal(const Face &face, std::span<const Vec3f> vertices = {},
-                                       std::span<const Vec3f> sourceVertices = {}) {
+static std::optional<Vec3f> faceNormal(const Face &face, std::span<const Vec3f> vertices = {}) {
     auto vertex = [&](int index) -> const Vec3f & {
         if (vertices.empty())
             return *face.vertices[index];
-        return vertices[face.vertices[index] - sourceVertices.data()];
+        return vertices[face.vertexIds[index]];
     };
 
     int numVertices = static_cast<int>(face.vertices.size());
@@ -137,23 +137,24 @@ static std::optional<Vec3f> faceNormal(const Face &face, std::span<const Vec3f> 
  * Recomputes the plane of a face from its vertices, and collapses the face to two vertices if it has no area.
  *
  * @param face                          Face to repair.
- * @param vertices                      Vertex positions owned by this model.
  * @param closedVertices                Vertex positions with every door closed, empty for outdoor models, which
- *                                      have no doors. A face with no area in `vertices` but some here is stretched
- *                                      by a door, and takes its normal from here instead of being collapsed.
+ *                                      have no doors. A face with no area in its original positions but some here
+ *                                      is stretched by a door, and takes its normal from here instead of being
+ *                                      collapsed.
  */
 template<class Face>
-static void repairFaceNormal(Face *face, std::span<const Vec3f> vertices, std::span<const Vec3f> closedVertices) {
+static void repairFaceNormal(Face *face, std::span<const Vec3f> closedVertices) {
     if (face->vertices.size() < 3)
         return;
 
     std::optional<Vec3f> normal = faceNormal(*face);
     if (!normal && !closedVertices.empty())
-        normal = faceNormal(*face, closedVertices, vertices);
+        normal = faceNormal(*face, closedVertices);
 
     if (!normal) {
         // TODO(captainurist): drop such faces instead, ids are referenced from sectors, doors, the bsp tree and saves.
         face->vertices.resize(2);
+        face->vertexIds.resize(2);
         face->textureUs.resize(2);
         face->textureVs.resize(2);
         return;
@@ -177,7 +178,9 @@ void reconstruct(const IndoorLocation_MM7 &src, IndoorLocation *dst) {
         size_t numVertices = src.faces[i].numVertices;
 
         pFace->vertices.clear();
+        pFace->vertexIds.clear();
         pFace->vertices.reserve(numVertices);
+        pFace->vertexIds.reserve(numVertices);
         for (size_t k = 0; k < numVertices; ++k) {
             if (j + k >= faceData.size())
                 throw Exception("BLV face vertex data overflow: offset {} exceeds size {}", j + k, faceData.size());
@@ -187,6 +190,7 @@ void reconstruct(const IndoorLocation_MM7 &src, IndoorLocation *dst) {
                 throw Exception("BLV face vertex index {} is out of range for {} vertices", vertexId, dst->vertices.size());
 
             pFace->vertices.push_back(&dst->vertices[vertexId]);
+            pFace->vertexIds.push_back(vertexId);
         }
         j += numVertices + 1; // +1 to skip closing vertex in source data.
 
@@ -455,7 +459,7 @@ void reconstruct(const IndoorDelta_MM7 &src, IndoorLocation *dst) {
     }
 
     for (BLVFace &face : dst->faces)
-        repairFaceNormal(&face, dst->vertices, closedVertices);
+        repairFaceNormal(&face, closedVertices);
 
     reconstruct(src.eventVariables, &engine->_persistentVariables);
     dst->lastVisitTime = Time::fromTicks(src.lastVisitTime);
@@ -509,12 +513,12 @@ void reconstruct(std::tuple<const BSPModelData_MM7 &, const BSPModelExtras_MM7 &
     dst->faces.clear();
     dst->faces.resize(srcExtras.faces.size());
     for (int i = 0; i < srcExtras.faces.size(); i++) {
-        reconstruct(srcExtras.faces[i], &dst->faces[i], tags::context(i), dst->vertices);
+        reconstruct(srcExtras.faces[i], &dst->faces[i], tags::context(i), dst->vertices); // tag to set indexes in dst->faces
     }
 
     for (BLVFace &face : dst->faces) {
         dropDuplicateFaceVertices(&face);
-        repairFaceNormal(&face, dst->vertices, {});
+        repairFaceNormal(&face, {});
     }
 
     reconstruct(srcExtras.bspNodes, &dst->nodes);

@@ -154,8 +154,15 @@ struct BLVFace {
     PlaneZCalcf zCalc;
     FaceAttributes attributes;
 
-    /** Pointers to this face's vertices. */
+    /**
+     * Pointers into the owning IndoorLocation::vertices or BSPModel::vertices vector. The owner must outlive this
+     * face, and the vector must not be structurally modified while these pointers are in use.
+     */
     std::vector<Vec3f *> vertices;
+
+    // TODO(pskelton): remove this, required for door closed position face normal checks
+    /** Indices into the owning vertex vector, in the same order as `vertices`. */
+    std::vector<int16_t> vertexIds;
 
     /** U (horizontal) texture coordinates for each vertex, in texture pixels. */
     std::vector<int16_t> textureUs;
