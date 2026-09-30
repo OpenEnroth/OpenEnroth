@@ -23,15 +23,13 @@ class ResourceManager {
 
     /**
      * @param filename                  Name of an image in `icons.lod`, case-insensitive.
-     * @return                          The icon, masked as `resource_mask_table.json` says, or an empty image if
-     *                                  there is no such icon.
+     * @return                          The icon, or an empty image if there is no such icon.
      */
     RgbaImage icon(std::string_view filename);
 
     /**
      * @param filename                  Name of an image in `bitmaps.lod`, case-insensitive.
-     * @return                          The bitmap, masked as `resource_mask_table.json` says and desaturated, or an
-     *                                  empty image if there is no such bitmap.
+     * @return                          The desaturated bitmap, or an empty image if there is no such bitmap.
      */
     RgbaImage bitmap(std::string_view filename);
 
