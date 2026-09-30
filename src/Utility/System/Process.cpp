@@ -47,9 +47,10 @@ ProcessResult runProcess(const NativePath &path, const std::vector<std::string> 
 ProcessResult runProcess(const NativePath &path, const std::vector<std::string> &args, std::chrono::milliseconds timeout) {
     assert(timeout >= timeout.zero());
 
-    std::string displayString = path.displayString();
+    NativePath absolutePath = path.absolute(); // Windows searches PATH and more for a relative name, POSIX doesn't.
+    std::string displayString = absolutePath.displayString();
 
-    std::string program = path.toWtf8();
+    std::string program = absolutePath.toWtf8();
 #ifdef _WINDOWS
     std::ranges::replace(program, '/', '\\'); // cmd.exe reads a forward slash in its own path as the start of a switch.
 #endif

@@ -70,3 +70,12 @@ UNIT_TEST(Process, LongTimeout) {
 UNIT_TEST(Process, MissingExecutable) {
     EXPECT_THROW((void) runProcess("no_such_executable_here", {}), Exception);
 }
+
+UNIT_TEST(Process, RelativeNameIsNotSearched) {
+    // A bare name is resolved against the current directory on every platform, while Windows would search PATH.
+#ifdef _WINDOWS
+    EXPECT_THROW((void) runProcess("cmd.exe", {"/c", "exit 0"}), Exception);
+#else
+    EXPECT_THROW((void) runProcess("sh", {"-c", "exit 0"}), Exception);
+#endif
+}
