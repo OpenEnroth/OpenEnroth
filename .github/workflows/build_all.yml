@@ -259,20 +259,25 @@ jobs:
         run: |
           pip3 install --break-system-packages "dmgbuild==$DMGBUILD_VERSION"
 
-      - name: '[darwin] Prepare files for release'
+      - name: '[darwin] Package'
         if: matrix.platform == 'darwin'
         uses: Wandalen/wretry.action@v3.8.0
         with:
           attempt_limit: 3
           attempt_delay: 5000
           command: |
-            ./distribution/macos/make_dmg.sh build/src/Bin/OpenEnroth/OpenEnroth.app src/Bin/OpenEnroth/OpenEnroth.icns distribution/macos/background.jpg "$RELEASE_FILE"
+            ninja -C build Package_OpenEnroth
 
-      - name: '[windows] Prepare files for release'
+      - name: '[windows] Package'
         if: matrix.platform == 'windows'
-        working-directory: build/src/Bin/OpenEnroth
+        working-directory: build
         run: |
-          7z a -tzip "$GITHUB_WORKSPACE/$RELEASE_FILE" OpenEnroth.exe OpenEnroth.pdb
+          ninja Package_OpenEnroth
+
+      - name: '[darwin/windows] Prepare files for release'
+        if: matrix.platform == 'darwin' || matrix.platform == 'windows'
+        run: |
+          mv "build/src/Bin/OpenEnroth/OpenEnroth.${{matrix.release_extension}}" "$RELEASE_FILE"
 
       - name: '[darwin/windows/android] Publish release'
         if: inputs.releaseTag != '' && matrix.platform != 'linux' # Linux ships as a Flatpak.

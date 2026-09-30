@@ -18,6 +18,15 @@ else()
         add_executable(OpenEnroth ${BIN_OPENENROTH_HEADERS} ${BIN_OPENENROTH_SOURCES} ${CMAKE_CURRENT_SOURCE_DIR}/OpenEnroth.rc)
 
         install(TARGETS OpenEnroth)
+
+        if(MSVC)
+            set(OpenEnroth_PDB $<TARGET_PDB_FILE_NAME:OpenEnroth>)
+        endif()
+        add_custom_target(Package_OpenEnroth
+                ${CMAKE_COMMAND} -E tar cf ${CMAKE_CURRENT_BINARY_DIR}/OpenEnroth.zip --format=zip $<TARGET_FILE_NAME:OpenEnroth> ${OpenEnroth_PDB}
+                DEPENDS OpenEnroth
+                WORKING_DIRECTORY $<TARGET_FILE_DIR:OpenEnroth>
+                VERBATIM)
     elseif(APPLE)
         # Set apple plist items and icon
         set(MACOSX_BUNDLE_BUNDLE_NAME "OpenEnroth")
@@ -41,6 +50,12 @@ else()
         set_target_properties(OpenEnroth PROPERTIES MACOSX_BUNDLE_INFO_PLIST ${CMAKE_CURRENT_SOURCE_DIR}/Info.plist.in)
 
         # Can't make install on OSX due to signing, dmg generation, etc
+
+        add_custom_target(Package_OpenEnroth
+                ${CMAKE_SOURCE_DIR}/distribution/macos/make_dmg.sh $<TARGET_BUNDLE_DIR:OpenEnroth> ${OpenEnroth_ICON}
+                    ${CMAKE_SOURCE_DIR}/distribution/macos/background.jpg ${CMAKE_CURRENT_BINARY_DIR}/OpenEnroth.dmg
+                DEPENDS OpenEnroth
+                VERBATIM)
     else ()
         add_executable(OpenEnroth ${BIN_OPENENROTH_HEADERS} ${BIN_OPENENROTH_SOURCES})
 
