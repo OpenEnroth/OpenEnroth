@@ -275,3 +275,12 @@ enum class EvtTargetCharacter {
 };
 using enum EvtTargetCharacter;
 
+/**
+ * Which evt file an event comes from.
+ */
+enum class EvtSource {
+    EVT_SOURCE_MAP,    // The current map's, with texts from the map's string table.
+    EVT_SOURCE_GLOBAL, // global.evt, with texts from the NPC topic table.
+};
+using enum EvtSource;
+

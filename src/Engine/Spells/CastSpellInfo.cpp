@@ -2188,9 +2188,8 @@ void CastSpellInfoHelpers::castSpell() {
                             eventProcessor(pLevelDecorations[obj_id].uEventID, spell_targeted_at, 1);
                             pLevelDecorations[obj_id].uFlags |= LEVEL_DECORATION_VISIBLE_ON_MAP;
                         } else if (pLevelDecorations[obj_id].IsInteractive()) {
-                            activeLevelDecoration = &pLevelDecorations[obj_id];
-                            eventProcessor(engine->_persistentVariables.decorVars[pLevelDecorations[obj_id].eventVarId] + 380, Pid(), 1); // 380 is the MM7 dispatch base, see EVENT_ChangeEvent.
-                            activeLevelDecoration = nullptr;
+                            int eventId = engine->_persistentVariables.decorVars[pLevelDecorations[obj_id].eventVarId] + 380; // 380 is the MM7 dispatch base, see EVENT_ChangeEvent.
+                            globalEventProcessor(eventId, &pLevelDecorations[obj_id]);
                         }
                     }
                     if (spell_targeted_at.type() == OBJECT_Face) {

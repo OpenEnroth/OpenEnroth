@@ -8,6 +8,8 @@
 
 #include "Library/Geometry/Vec.h"
 
+struct LevelDecoration;
+
 /**
  * What an instruction tells the interpreter to do next.
  */
@@ -33,7 +35,17 @@ class EvtInterpreter {
      bool executeRegular(int startStep);
      bool executeNpcDialogue(int startStep);
 
-     void prepare(const EvtProgram &eventMap, int eventId, Pid objectPid, bool canShowMessages);
+     /**
+      * @param eventMap                 Program to take the event from.
+      * @param source                   Evt file the program was loaded from.
+      * @param eventId                  Event to run.
+      * @param objectPid                Object that triggered the event.
+      * @param canShowMessages          Whether the event can show status texts and open dialogues.
+      * @param decoration               Interactive decoration a global event runs for, the one `ChangeEvent` changes.
+      *                                 `nullptr` for a global event that runs for an NPC topic, and for map events.
+      */
+     void prepare(const EvtProgram &eventMap, EvtSource source, int eventId, Pid objectPid, bool canShowMessages,
+                  LevelDecoration *decoration = nullptr);
      bool isValid();
 
  protected:
@@ -57,6 +69,8 @@ class EvtInterpreter {
  private:
      int _eventId = 0;
      std::vector<EvtInstruction> _events;
+     EvtSource _source = EVT_SOURCE_MAP;
+     LevelDecoration *_decoration = nullptr;
      Pid _objectPid = Pid();
      bool _canShowMessages = false;
      bool _canShowOption = true;
