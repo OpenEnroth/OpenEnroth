@@ -1,9 +1,9 @@
 #!/usr/bin/env python3
 #
 # Draws the dmg window background at 1x and 2x, in the colors of the MM7 winner certificate: a sepia parchment ground
-# with a bronze double frame, a title, and a bronze arrow from the app to the Applications link. The layout matches
-# dmg_settings.py, a 600x400 window with 128pt icons centered at (150, 190) and (450, 190). Needs skia-python, Pillow
-# and the DejaVu fonts.
+# with a title and a bronze arrow from the app to the Applications link. The layout matches dmg_settings.py, a 600x400
+# window content area with 128pt icons centered at (150, 190) and (450, 190). Needs skia-python, Pillow and the DejaVu
+# fonts.
 #
 # Usage: GenerateDmgBackground.py <output.jpg> <output@2x.jpg>
 
@@ -70,14 +70,6 @@ def parchment(canvas):
     noise(canvas, 0.012, 2, 0.3) # Uneven aging, a few big patches.
     noise(canvas, 0.25, 2, 0.3) # Finer cloudiness.
     noise(canvas, 2.5, 1, 0.7) # Grain.
-
-
-def frame(canvas):
-    paint = skia.Paint(AntiAlias=True, Style=skia.Paint.kStroke_Style, Color=with_alpha(BRONZE, 200), StrokeWidth=2)
-    canvas.drawRect(skia.Rect.MakeLTRB(10, 10, W - 10, H - 10), paint)
-    paint.setColor(with_alpha(BRONZE, 130))
-    paint.setStrokeWidth(1)
-    canvas.drawRect(skia.Rect.MakeLTRB(14, 14, W - 14, H - 14), paint)
 
 
 def arrow_paths():
@@ -147,11 +139,10 @@ def render(scale):
     with surface as canvas:
         canvas.scale(scale, scale)
         parchment(canvas)
-        frame(canvas)
         arrow(canvas)
         centered_text(canvas, 56, 'Drag OpenEnroth into Applications', font('DejaVuSerif.ttf', 20), INK)
         ornament(canvas, 76)
-        centered_text(canvas, H - 24, 'Open-source engine for Might and Magic VI, VII and VIII',
+        centered_text(canvas, H - 40, 'Open-source engine for Might and Magic VI, VII and VIII',
                       font('DejaVuSans.ttf', 10), BRONZE_DARK)
     return Image.fromarray(surface.makeImageSnapshot().toarray(colorType=skia.kRGBA_8888_ColorType)).convert('RGB')
 
