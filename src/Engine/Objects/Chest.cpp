@@ -224,10 +224,11 @@ void Chest::PlaceItems(int uChestID) { // only used for setup
 
 void Chest::toggleFlag(int uChestID, ChestFlag uFlag, bool bValue) {
     if (uChestID >= 0 && uChestID <= 19) {
-        if (bValue)
+        if (bValue) {
             vChests[uChestID].flags |= uFlag;
-        else
+        } else {
             vChests[uChestID].flags &= ~uFlag;
+        }
     }
 }
 
@@ -249,24 +250,22 @@ void Chest::OnChestLeftClick() {
         if (pos) {
             chest->inventory.add(*pos, pParty->takeHoldingItem());
         }
-    } else {
-        if (InventoryEntry entry = chest->inventory.entry(inventoryPos)) {
-            Item item = chest->inventory.take(entry);
+    } else if (InventoryEntry entry = chest->inventory.entry(inventoryPos)) {
+        Item item = chest->inventory.take(entry);
 
-            if (item.isGold()) {
-                pParty->partyFindsGold(item.goldAmount, GOLD_RECEIVE_SHARE);
-            } else {
-                Pointi offset = mousePos + mouse->pickedItemOffset - chestTable[chest->chestTypeId].inventoryOffset - (inventoryPos * 32);
+        if (item.isGold()) {
+            pParty->partyFindsGold(item.goldAmount, GOLD_RECEIVE_SHARE);
+        } else {
+            Pointi offset = mousePos + mouse->pickedItemOffset - chestTable[chest->chestTypeId].inventoryOffset - (inventoryPos * 32);
 
-                GraphicsImage *tex = assets->getImage_Alpha(item.GetIconName());
-                offset -= Pointi(itemOffset(tex->width()), itemOffset(tex->height()));
+            GraphicsImage *tex = assets->getImage_Alpha(item.GetIconName());
+            offset -= Pointi(itemOffset(tex->width()), itemOffset(tex->height()));
 
-                pParty->setHoldingItem(item, -offset);
-            }
-
-            if (engine->config->gameplay.ChestTryPlaceItems.value() == 2)
-                Chest::PlaceItems(uChestID);
+            pParty->setHoldingItem(item, -offset);
         }
+
+        if (engine->config->gameplay.ChestTryPlaceItems.value() == 2)
+            Chest::PlaceItems(uChestID);
     }
 }
 

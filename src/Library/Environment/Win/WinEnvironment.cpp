@@ -25,18 +25,19 @@ static std::wstring OS_GetAppStringRecursive(HKEY parent_key, const wchar_t *pat
         wcscpy(path_tail, delimiter + 1);
 
         if (!parent_key) {
-            if (!wcsicmp(current_key, L"HKEY_CLASSES_ROOT"))
+            if (!wcsicmp(current_key, L"HKEY_CLASSES_ROOT")) {
                 parent_key = HKEY_CLASSES_ROOT;
-            else if (!wcsicmp(current_key, L"HKEY_CURRENT_CONFIG"))
+            } else if (!wcsicmp(current_key, L"HKEY_CURRENT_CONFIG")) {
                 parent_key = HKEY_CURRENT_CONFIG;
-            else if (!wcsicmp(current_key, L"HKEY_CURRENT_USER"))
+            } else if (!wcsicmp(current_key, L"HKEY_CURRENT_USER")) {
                 parent_key = HKEY_CURRENT_USER;
-            else if (!wcsicmp(current_key, L"HKEY_LOCAL_MACHINE"))
+            } else if (!wcsicmp(current_key, L"HKEY_LOCAL_MACHINE")) {
                 parent_key = HKEY_LOCAL_MACHINE;
-            else if (!wcsicmp(current_key, L"HKEY_USERS"))
+            } else if (!wcsicmp(current_key, L"HKEY_USERS")) {
                 parent_key = HKEY_USERS;
-            else
+            } else {
                 return {};
+            }
 
             delimiter = wcsstr(path_tail, L"/");
             if (delimiter) {

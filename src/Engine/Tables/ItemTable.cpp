@@ -77,10 +77,11 @@ void ItemTable::LoadSpecialEnchantments(const Blob &spcitems) {
         } else {
             res = fromString<int>(token14);
         }
-        if (isMul)
+        if (isMul) {
             specialEnchantments[i].valueMul = res;
-        else
+        } else {
             specialEnchantments[i].valueAdd = res;
+        }
         specialEnchantments[i].enchantmentLevel = !tokens[15].empty() ? (tolower(tokens[15][0]) - 'a') : 0;
     }
 }
@@ -188,10 +189,11 @@ void ItemTable::LoadItems(const Blob &itemsBlob) {
         if ((items[item_counter].rarity == RARITY_SPECIAL) &&
             (items[item_counter].standardEnchantment)) {
             char b_s = fromString<int>(tokens[13]);
-            if (b_s)
+            if (b_s) {
                 items[item_counter].standardEnchantmentStrength = b_s;
-            else
+            } else {
                 items[item_counter].standardEnchantmentStrength = 1;
+            }
         } else {
             items[item_counter].standardEnchantmentStrength = 0;
         }
@@ -265,12 +267,13 @@ void ItemTable::LoadPotions(const Blob &potions) {
         for (ItemId column : Segment(ITEM_FIRST_REAL_POTION, ITEM_LAST_REAL_POTION)) {
             int flatPotionId = std::to_underlying(column) - std::to_underlying(ITEM_FIRST_REAL_POTION);
             std::string_view cell = tokens[flatPotionId + 7];
-            if (cell == "no")
+            if (cell == "no") {
                 potionCombination[row][column] = ITEM_NULL;
-            else if (cell[0] == 'E')
+            } else if (cell[0] == 'E') {
                 potionCombination[row][column] = static_cast<ItemId>(fromString<int>(cell.substr(1))); // Damage level.
-            else
+            } else {
                 potionCombination[row][column] = static_cast<ItemId>(fromString<int>(cell));
+            }
         }
     }
 }
@@ -378,10 +381,11 @@ void ItemTable::generateItem(ItemTreasureLevel treasureLevel, RandomItemType uTr
 
     if (outItem->itemId == ITEM_SPELLBOOK_DIVINE_INTERVENTION && !pParty->_questBits[QBIT_DIVINE_INTERVENTION_RETRIEVED])
         outItem->itemId = ITEM_SPELLBOOK_SUNRAY;
-    if (pItemTable->items[outItem->itemId].identifyAndRepairDifficulty)
+    if (pItemTable->items[outItem->itemId].identifyAndRepairDifficulty) {
         outItem->flags = 0;
-    else
+    } else {
         outItem->flags = ITEM_IDENTIFIED;
+    }
 
     if (!outItem->isPotion()) {
         outItem->specialEnchantment = ITEM_ENCHANTMENT_NULL;

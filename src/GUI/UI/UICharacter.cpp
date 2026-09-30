@@ -658,10 +658,11 @@ void GUIWindow_CharacterRecord::Update() {
             break;
     }
 
-    if (bRingsShownInCharScreen)
+    if (bRingsShownInCharScreen) {
         CharacterUI_DrawPaperdollWithRingOverlay(player);
-    else
+    } else {
         CharacterUI_DrawPaperdoll(player);
+    }
 }
 
 void GUIWindow_CharacterRecord::ShowStatsTab() {
@@ -1074,10 +1075,11 @@ void CharacterUI_DrawPaperdoll(Character *player) {
                 item_X = pPaperdoll_BodyX + paperdoll_Belt[bodyType][index][0];
                 item_Y = pPaperdoll_BodyY + paperdoll_Belt[bodyType][index][1];
                 GraphicsImage *texture = nullptr;
-                if (index == 5) // Titan's Belt has dwarf textures.
+                if (index == 5) { // Titan's Belt has dwarf textures.
                     texture = paperdoll_belt_texture[bodyType][index];
-                else
+                } else {
                     texture = paperdoll_belt_texture[humanBodyType(bodyType)][index];
+                }
 
                 CharacterUI_DrawItem(item_X, item_Y, belt.get(), belt.index(), texture, !bRingsShownInCharScreen);
             }
@@ -1137,10 +1139,11 @@ void CharacterUI_DrawPaperdoll(Character *player) {
                 item_Y = pPaperdoll_BodyY + paperdoll_Helm[bodyType][index][1];
 
                 GraphicsImage *texture = nullptr;
-                if (!isDwarf || helm->itemId != ITEM_PHYNAXIAN_HELM)
+                if (!isDwarf || helm->itemId != ITEM_PHYNAXIAN_HELM) {
                     texture = paperdoll_helm_texture[humanBodyType(bodyType)][index];
-                else
+                } else {
                     texture = paperdoll_dbrds[11];
+                }
 
                 CharacterUI_DrawItem(item_X, item_Y, helm.get(), helm.index(), texture, !bRingsShownInCharScreen);
             }
@@ -1272,16 +1275,17 @@ static void CharacterUI_DrawItem(int x, int y, Item *item, int id, GraphicsImage
 
     if (item->ItemEnchanted()) { // enchant animation
         GraphicsImage *enchantment_texture = nullptr;
-        if (item->AuraEffectRed())
+        if (item->AuraEffectRed()) {
             enchantment_texture = assets->getImage_ColorKey("sptext01");
-        else if (item->AuraEffectBlue())
+        } else if (item->AuraEffectBlue()) {
             enchantment_texture = assets->getImage_ColorKey("sp28a");
-        else if (item->AuraEffectGreen())
+        } else if (item->AuraEffectGreen()) {
             enchantment_texture = assets->getImage_ColorKey("sp30a");
-        else if (item->AuraEffectPurple())
+        } else if (item->AuraEffectPurple()) {
             enchantment_texture = assets->getImage_ColorKey("sp91a");
-        else
+        } else {
             assert(false);
+        }
 
         ItemEnchantmentTimer = std::max(0_ticks, ItemEnchantmentTimer - gameTimer->dt());
         if (!ItemEnchantmentTimer) {
@@ -1533,12 +1537,10 @@ void GUIWindow_CharacterRecord::CharacterUI_StatsTab_Draw(Character *player) {
         Color color16 = UI_GetHealthManaAndOtherQualitiesStringColor(current, max);
         if (immune) {
             return fmt::format("{}{::}\r180{}\n", localization->str(lstr), color16.tag(), localization->str(LSTR_IMMUNE));
+        } else if (current < 100 && max < 100) {
+            return fmt::format("{}{::}\t110{}\f00000 / {}\n", localization->str(lstr), color16.tag(), current, max);
         } else {
-            if (current < 100 && max < 100) {
-                return fmt::format("{}{::}\t110{}\f00000 / {}\n", localization->str(lstr), color16.tag(), current, max);
-            } else {
-                return fmt::format("{}{::}\r180{}\f00000 / {}\n", localization->str(lstr), color16.tag(), current, max);
-            }
+            return fmt::format("{}{::}\r180{}\f00000 / {}\n", localization->str(lstr), color16.tag(), current, max);
         }
     };
 
@@ -1938,17 +1940,15 @@ void OnPaperdollLeftClick() {
                     Item tmp = pParty->activeCharacter().inventory.take(mainhandequip);
                     pParty->activeCharacter().inventory.equip(ITEM_SLOT_MAIN_HAND, pParty->takeHoldingItem());
                     pParty->setHoldingItem(tmp);
+                } else if (shieldequip) {
+                    Item tmp = pParty->activeCharacter().inventory.take(shieldequip);
+                    pParty->activeCharacter().inventory.equip(ITEM_SLOT_MAIN_HAND, pParty->takeHoldingItem());
+                    pParty->setHoldingItem(tmp);
+                } else if (pParty->activeCharacter().inventory.canEquip(ITEM_SLOT_MAIN_HAND)) {
+                    pParty->activeCharacter().inventory.equip(ITEM_SLOT_MAIN_HAND, pParty->takeHoldingItem());
                 } else {
-                    if (shieldequip) {
-                        Item tmp = pParty->activeCharacter().inventory.take(shieldequip);
-                        pParty->activeCharacter().inventory.equip(ITEM_SLOT_MAIN_HAND, pParty->takeHoldingItem());
-                        pParty->setHoldingItem(tmp);
-                    } else if (pParty->activeCharacter().inventory.canEquip(ITEM_SLOT_MAIN_HAND)) {
-                        pParty->activeCharacter().inventory.equip(ITEM_SLOT_MAIN_HAND, pParty->takeHoldingItem());
-                    } else {
-                        pAudioPlayer->playUISound(SOUND_error); // Out of inventory space.
-                        return;
-                    }
+                    pAudioPlayer->playUISound(SOUND_error); // Out of inventory space.
+                    return;
                 }
                 return;
                 //-------------------------------------------------------------------------------
@@ -2012,21 +2012,19 @@ void OnPaperdollLeftClick() {
             AfterEnchClickEventId = UIMSG_Escape;
             AfterEnchClickEventSecondParam = 0;
             AfterEnchClickEventTimeout = Duration::fromRealtimeSeconds(2);
-        } else {
-            if (!ptr_50C9A4_ItemToEnchant) {
-                pParty->setHoldingItem(pParty->activeCharacter().inventory.take(entry));
+        } else if (!ptr_50C9A4_ItemToEnchant) {
+            pParty->setHoldingItem(pParty->activeCharacter().inventory.take(entry));
 
-                // pParty->setHoldingItem(&pParty->activeCharacter().pInventoryItemList[v34
-                // - 1]);
-                //  pParty->activeCharacter().pEquipment[pParty->activeCharacter().pInventoryItemList[v34
-                //  - 1].uBodyAnchor - 1] = 0;
-                //  pParty->activeCharacter().pInventoryItemList[v34 -
-                //  1].Reset();
+            // pParty->setHoldingItem(&pParty->activeCharacter().pInventoryItemList[v34
+            // - 1]);
+            //  pParty->activeCharacter().pEquipment[pParty->activeCharacter().pInventoryItemList[v34
+            //  - 1].uBodyAnchor - 1] = 0;
+            //  pParty->activeCharacter().pInventoryItemList[v34 -
+            //  1].Reset();
 
-                // return
-                // &this->pInventoryItemList[this->pEquipment[index] -
-                // 1];
-            }
+            // return
+            // &this->pInventoryItemList[this->pEquipment[index] -
+            // 1];
         }
 
         // for (unsigned i = 0; i < 6; ++i)
@@ -2072,15 +2070,11 @@ void OnPaperdollLeftClick() {
                 AfterEnchClickEventId = UIMSG_Escape;
                 AfterEnchClickEventSecondParam = 0;
                 AfterEnchClickEventTimeout = Duration::fromRealtimeSeconds(2);
-            } else {
-                if (!ptr_50C9A4_ItemToEnchant) {
-                    pParty->setHoldingItem(pParty->activeCharacter().inventory.take(entry));
-                }
-            }
-        } else {
-            if (InventoryEntry entry = pParty->activeCharacter().inventory.entry(ITEM_SLOT_BOW)) {
+            } else if (!ptr_50C9A4_ItemToEnchant) {
                 pParty->setHoldingItem(pParty->activeCharacter().inventory.take(entry));
             }
+        } else if (InventoryEntry entry = pParty->activeCharacter().inventory.entry(ITEM_SLOT_BOW)) {
+            pParty->setHoldingItem(pParty->activeCharacter().inventory.take(entry));
         }
     }
 }

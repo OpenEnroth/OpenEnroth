@@ -79,10 +79,11 @@ bool isEvtVariableValueValid(EvtOpcode opcode, EvtVariable var, int value) {
 
 static bool CmpSkillValue(int valToCompare, CombinedSkillValue skillValue) {
     int val;
-    if (valToCompare <= 63)
+    if (valToCompare <= 63) {
         val = skillValue.level();
-    else
+    } else {
         val = skillValue.joined();
+    }
     return val >= valToCompare;
 }
 

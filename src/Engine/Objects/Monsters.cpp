@@ -145,87 +145,89 @@ void ParseDamage(std::string_view damage_str, uint8_t *dice_rolls,
 MonsterProjectile ParseMissleAttackType(std::string_view missle_attack_str) {
     // TODO(captainurist): this is broken, we get "FireAr" for flaming arrow here.
 
-    if (ascii::noCaseEquals(missle_attack_str, "ARROW"))
+    if (ascii::noCaseEquals(missle_attack_str, "ARROW")) {
         return MONSTER_PROJECTILE_ARROW;
-    else if (ascii::noCaseEquals(missle_attack_str, "ARROWF"))
+    } else if (ascii::noCaseEquals(missle_attack_str, "ARROWF")) {
         return MONSTER_PROJECTILE_FLAMING_ARROW;
-    else if (ascii::noCaseEquals(missle_attack_str, "FIRE"))
+    } else if (ascii::noCaseEquals(missle_attack_str, "FIRE")) {
         return MONSTER_PROJECTILE_FIRE_BOLT;
-    else if (ascii::noCaseEquals(missle_attack_str, "AIR"))
+    } else if (ascii::noCaseEquals(missle_attack_str, "AIR")) {
         return MONSTER_PROJECTILE_AIR_BOLT;
-    else if (ascii::noCaseEquals(missle_attack_str, "WATER"))
+    } else if (ascii::noCaseEquals(missle_attack_str, "WATER")) {
         return MONSTER_PROJECTILE_WATER_BOLT;
-    else if (ascii::noCaseEquals(missle_attack_str, "EARTH"))
+    } else if (ascii::noCaseEquals(missle_attack_str, "EARTH")) {
         return MONSTER_PROJECTILE_EARTH_BOLT;
-    else if (ascii::noCaseEquals(missle_attack_str, "SPIRIT"))
+    } else if (ascii::noCaseEquals(missle_attack_str, "SPIRIT")) {
         return MONSTER_PROJECTILE_SPIRIT_BOLT;
-    else if (ascii::noCaseEquals(missle_attack_str, "MIND"))
+    } else if (ascii::noCaseEquals(missle_attack_str, "MIND")) {
         return MONSTER_PROJECTILE_MIND_BOLT;
-    else if (ascii::noCaseEquals(missle_attack_str, "BODY"))
+    } else if (ascii::noCaseEquals(missle_attack_str, "BODY")) {
         return MONSTER_PROJECTILE_BODY_BOLT;
-    else if (ascii::noCaseEquals(missle_attack_str, "LIGHT"))
+    } else if (ascii::noCaseEquals(missle_attack_str, "LIGHT")) {
         return MONSTER_PROJECTILE_LIGHT_BOLT;
-    else if (ascii::noCaseEquals(missle_attack_str, "DARK"))
+    } else if (ascii::noCaseEquals(missle_attack_str, "DARK")) {
         return MONSTER_PROJECTILE_DARK_BOLT;
-    else if (ascii::noCaseEquals(missle_attack_str, "ENER"))
+    } else if (ascii::noCaseEquals(missle_attack_str, "ENER")) {
         return MONSTER_PROJECTILE_ENERGY_BOLT;
-    else
+    } else {
         return MONSTER_PROJECTILE_NONE;
+    }
 }
 
 MonsterSpecialAttack ParseSpecialAttack(std::string_view spec_att_str) {
     std::string tmp = ascii::toLower(spec_att_str);
 
-    if (tmp.starts_with("curse"))
+    if (tmp.starts_with("curse")) {
         return SPECIAL_ATTACK_CURSE;
-    else if (tmp.starts_with("weak"))
+    } else if (tmp.starts_with("weak")) {
         return SPECIAL_ATTACK_WEAK;
-    else if (tmp.starts_with("asleep"))
+    } else if (tmp.starts_with("asleep")) {
         return SPECIAL_ATTACK_SLEEP;
-    else if (tmp.starts_with("afraid"))
+    } else if (tmp.starts_with("afraid")) {
         return SPECIAL_ATTACK_FEAR;
-    else if (tmp.starts_with("drunk"))
+    } else if (tmp.starts_with("drunk")) {
         return SPECIAL_ATTACK_DRUNK;
-    else if (tmp.starts_with("insane"))
+    } else if (tmp.starts_with("insane")) {
         return SPECIAL_ATTACK_INSANE;
-    else if (tmp.starts_with("poison weak") || tmp.starts_with("poison1"))
+    } else if (tmp.starts_with("poison weak") || tmp.starts_with("poison1")) {
         return SPECIAL_ATTACK_POISON_WEAK;
-    else if (tmp.starts_with("poison medium") || tmp.starts_with("poison2"))
+    } else if (tmp.starts_with("poison medium") || tmp.starts_with("poison2")) {
         return SPECIAL_ATTACK_POISON_MEDIUM;
-    else if (tmp.starts_with("poison severe") || tmp.starts_with("poison3"))
+    } else if (tmp.starts_with("poison severe") || tmp.starts_with("poison3")) {
         return SPECIAL_ATTACK_POISON_SEVERE;
-    else if (tmp.starts_with("disease weak") || tmp.starts_with("disease1"))
+    } else if (tmp.starts_with("disease weak") || tmp.starts_with("disease1")) {
         return SPECIAL_ATTACK_DISEASE_WEAK;
-    else if (tmp.starts_with("disease medium") || tmp.starts_with("disease2"))
+    } else if (tmp.starts_with("disease medium") || tmp.starts_with("disease2")) {
         return SPECIAL_ATTACK_DISEASE_MEDIUM;
-    else if (tmp.starts_with("disease severe") || tmp.starts_with("disease3"))
+    } else if (tmp.starts_with("disease severe") || tmp.starts_with("disease3")) {
         return SPECIAL_ATTACK_DISEASE_SEVERE;
-    else if (tmp.starts_with("paralyze"))
+    } else if (tmp.starts_with("paralyze")) {
         return SPECIAL_ATTACK_PARALYZED;
-    else if (tmp.starts_with("uncon"))
+    } else if (tmp.starts_with("uncon")) {
         return SPECIAL_ATTACK_UNCONSCIOUS;
-    else if (tmp.starts_with("dead"))
+    } else if (tmp.starts_with("dead")) {
         return SPECIAL_ATTACK_DEAD;
-    else if (tmp.starts_with("stone"))
+    } else if (tmp.starts_with("stone")) {
         return SPECIAL_ATTACK_PETRIFIED;
-    else if (tmp.starts_with("errad"))
+    } else if (tmp.starts_with("errad")) {
         return SPECIAL_ATTACK_ERADICATED;
-    else if (tmp.starts_with("brkitem"))
+    } else if (tmp.starts_with("brkitem")) {
         return SPECIAL_ATTACK_BREAK_ANY;
-    else if (tmp.starts_with("brkarmor"))
+    } else if (tmp.starts_with("brkarmor")) {
         return SPECIAL_ATTACK_BREAK_ARMOR;
-    else if (tmp.starts_with("brkweapon"))
+    } else if (tmp.starts_with("brkweapon")) {
         return SPECIAL_ATTACK_BREAK_WEAPON;
-    else if (tmp.starts_with("steal"))
+    } else if (tmp.starts_with("steal")) {
         return SPECIAL_ATTACK_STEAL;
-    else if (tmp.starts_with("age"))
+    } else if (tmp.starts_with("age")) {
         return SPECIAL_ATTACK_AGING;
-    else if (tmp.starts_with("drainsp"))
+    } else if (tmp.starts_with("drainsp")) {
         return SPECIAL_ATTACK_MANA_DRAIN;
-    else if (tmp.starts_with("none") || tmp.starts_with("0"))
+    } else if (tmp.starts_with("none") || tmp.starts_with("0")) {
         return SPECIAL_ATTACK_NONE;
-    else
+    } else {
         MM_WARNING("ParseSpecialAttack:: Unknown monster special attack '{}'", tmp);
+    }
 
     return SPECIAL_ATTACK_NONE;
 }
@@ -344,10 +346,11 @@ void MonsterStats::Initialize(const Blob &monsters) {
         info.numCharactersAttackedPerSpecialAbility = 0;
         for (char c : cell) {
             char lc = ascii::toLower(c);
-            if (lc >= '2' && lc <= '4')
+            if (lc >= '2' && lc <= '4') {
                 info.numCharactersAttackedPerSpecialAbility = lc - '0';
-            else if (auto it = attackPrefMap.find(lc); it != attackPrefMap.end())
+            } else if (auto it = attackPrefMap.find(lc); it != attackPrefMap.end()) {
                 info.attackPreferences |= it->second;
+            }
         }
     };
 

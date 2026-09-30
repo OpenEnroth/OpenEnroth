@@ -299,10 +299,11 @@ class AVVideoStream : public AVStreamWrapper {
 
 static Recti calculateVideoRectangle(const IMovie &movie) {
     Sizei scaleSize;
-    if (render->GetPresentDimensions() != render->GetRenderDimensions())
+    if (render->GetPresentDimensions() != render->GetRenderDimensions()) {
         scaleSize = render->GetRenderDimensions();
-    else
+    } else {
         scaleSize = window->size();
+    }
     float ratio_width = (float)scaleSize.w / movie.GetWidth();
     float ratio_height = (float)scaleSize.h / movie.GetHeight();
     float ratio = std::min(ratio_width, ratio_height);

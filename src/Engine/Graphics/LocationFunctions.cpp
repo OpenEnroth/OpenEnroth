@@ -12,10 +12,11 @@ bool GetAlertStatus() {
     int result;
 
     // TODO(captainurist): indoor & outdoor messed up, is this a bug?
-    if (uCurrentlyLoadedLevelType == LEVEL_INDOOR)
+    if (uCurrentlyLoadedLevelType == LEVEL_INDOOR) {
         result = pOutdoor->ddm.alertStatus;
-    else
+    } else {
         result = uCurrentlyLoadedLevelType == LEVEL_OUTDOOR ? pIndoor->dlv.alertStatus : 0;
+    }
 
     return result;
 }

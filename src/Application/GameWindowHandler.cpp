@@ -94,10 +94,11 @@ std::tuple<int, Pointi, Sizei> GameWindowHandler::GetWindowRelativePosition(Poin
 
     Sizei size = window->size();
     Pointi pos;
-    if (position != nullptr)
+    if (position != nullptr) {
         pos = *position;
-    else
+    } else {
         pos = window->position();
+    }
 
     // Fallback is centered on display 0.
     Pointi relativePos = Pointi(-1, -1);
@@ -273,11 +274,9 @@ void GameWindowHandler::OnMouseMove(Pointi position, Pointi relative, bool left_
         ArcomageGame::OnMouseMove(position);
         ArcomageGame::OnMouseClick(0, left_button);
         ArcomageGame::OnMouseClick(1, right_button);
-    } else {
-        if (mouse) {
-            mouse->setPosition(position);
-            mouse->DoMouseLook(relative);
-        }
+    } else if (mouse) {
+        mouse->setPosition(position);
+        mouse->DoMouseLook(relative);
     }
 }
 
@@ -362,14 +361,16 @@ void GameWindowHandler::OnActivated() {
         engineFlags &= ~ENGINE_APP_INACTIVE;
 
         if (!pArcomageGame->_gameInProgress) {
-            if (engineFlags & ENGINE_GAME_TIMER_PAUSED_BEFORE_DEACTIVATE)
+            if (engineFlags & ENGINE_GAME_TIMER_PAUSED_BEFORE_DEACTIVATE) {
                 engineFlags &= ~ENGINE_GAME_TIMER_PAUSED_BEFORE_DEACTIVATE;
-            else
+            } else {
                 gameTimer->setPaused(false);
-            if (engineFlags & ENGINE_ANIM_TIMER_PAUSED_BEFORE_DEACTIVATE)
+            }
+            if (engineFlags & ENGINE_ANIM_TIMER_PAUSED_BEFORE_DEACTIVATE) {
                 engineFlags &= ~ENGINE_ANIM_TIMER_PAUSED_BEFORE_DEACTIVATE;
-            else
+            } else {
                 animTimer->setPaused(false);
+            }
         }
 
         pAudioPlayer->resumeSounds();
@@ -385,17 +386,19 @@ void GameWindowHandler::OnDeactivated() {
 
         engineFlags |= ENGINE_APP_INACTIVE;
         if (gameTimer != nullptr) {
-            if (gameTimer->isPaused())
+            if (gameTimer->isPaused()) {
                 engineFlags |= ENGINE_GAME_TIMER_PAUSED_BEFORE_DEACTIVATE;
-            else
+            } else {
                 gameTimer->setPaused(true);
+            }
         }
 
         if (animTimer != nullptr) {
-            if (animTimer->isPaused())
+            if (animTimer->isPaused()) {
                 engineFlags |= ENGINE_ANIM_TIMER_PAUSED_BEFORE_DEACTIVATE;
-            else
+            } else {
                 animTimer->setPaused(true);
+            }
         }
 
         if (pAudioPlayer) {
