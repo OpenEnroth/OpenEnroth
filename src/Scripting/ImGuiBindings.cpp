@@ -165,7 +165,6 @@ void InitEnums(sol::table &table) {
         "NoBringToFrontOnFocus", ImGuiWindowFlags_NoBringToFrontOnFocus,
         "AlwaysVerticalScrollbar", ImGuiWindowFlags_AlwaysVerticalScrollbar,
         "AlwaysHorizontalScrollbar", ImGuiWindowFlags_AlwaysHorizontalScrollbar,
-        "AlwaysUseWindowPadding", ImGuiWindowFlags_AlwaysUseWindowPadding,
         "NoNavInputs", ImGuiWindowFlags_NoNavInputs,
         "NoNavFocus", ImGuiWindowFlags_NoNavFocus,
         "UnsavedDocument", ImGuiWindowFlags_UnsavedDocument,
@@ -175,7 +174,6 @@ void InitEnums(sol::table &table) {
         "NoDecoration", ImGuiWindowFlags_NoDecoration,
         "NoInputs", ImGuiWindowFlags_NoInputs,
 
-        "NavFlattened", ImGuiWindowFlags_NavFlattened,
         "ChildWindow", ImGuiWindowFlags_ChildWindow,
         "Tooltip", ImGuiWindowFlags_Tooltip,
         "Popup", ImGuiWindowFlags_Popup,
@@ -374,7 +372,6 @@ void InitEnums(sol::table &table) {
         "None", ImGuiTreeNodeFlags_None,
         "Selected", ImGuiTreeNodeFlags_Selected,
         "Framed", ImGuiTreeNodeFlags_Framed,
-        "AllowItemOverlap", ImGuiTreeNodeFlags_AllowItemOverlap,
         "NoTreePushOnOpen", ImGuiTreeNodeFlags_NoTreePushOnOpen,
         "NoAutoOpenOnLog", ImGuiTreeNodeFlags_NoAutoOpenOnLog,
         "DefaultOpen", ImGuiTreeNodeFlags_DefaultOpen,
@@ -394,8 +391,7 @@ void InitEnums(sol::table &table) {
         "DontClosePopups", ImGuiSelectableFlags_DontClosePopups,
         "SpanAllColumns", ImGuiSelectableFlags_SpanAllColumns,
         "AllowDoubleClick", ImGuiSelectableFlags_AllowDoubleClick,
-        "Disabled", ImGuiSelectableFlags_Disabled,
-        "AllowItemOverlap", ImGuiSelectableFlags_AllowItemOverlap
+        "Disabled", ImGuiSelectableFlags_Disabled
     );
 
     table.new_enum("ImGuiPopupFlags",
@@ -404,7 +400,6 @@ void InitEnums(sol::table &table) {
         "MouseButtonRight", ImGuiPopupFlags_MouseButtonRight,
         "MouseButtonMiddle", ImGuiPopupFlags_MouseButtonMiddle,
         "MouseButtonMask_", ImGuiPopupFlags_MouseButtonMask_,
-        "MouseButtonDefault_", ImGuiPopupFlags_MouseButtonDefault_,
         "NoOpenOverExistingPopup", ImGuiPopupFlags_NoOpenOverExistingPopup,
         "NoOpenOverItems", ImGuiPopupFlags_NoOpenOverItems,
         "AnyPopupId", ImGuiPopupFlags_AnyPopupId,
