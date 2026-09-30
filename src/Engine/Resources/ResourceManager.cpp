@@ -45,7 +45,7 @@ static Palette maskedPalette(const LodImage &image, const ResourceMask &mask) {
     return result;
 }
 
-static Color ProcessTransparentPixel(const GrayscaleImage &image, const Palette &palette, size_t x, size_t y) {
+static Color processTransparentPixel(const GrayscaleImage &image, const Palette &palette, size_t x, size_t y) {
     size_t count = 0;
     size_t r = 0, g = 0, b = 0;
 
@@ -148,7 +148,7 @@ RgbaImage ResourceManager::bitmap(std::string_view filename) {
         for (size_t x = 0; x < image.image.width(); x++) {
             uint8_t pal = image.image[y][x];
             if (palette.colors[pal].a == 0) {
-                result[y][x] = ProcessTransparentPixel(image.image, palette, x, y);
+                result[y][x] = processTransparentPixel(image.image, palette, x, y);
             } else {
                 result[y][x] = palette.colors[pal];
             }
