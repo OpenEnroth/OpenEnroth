@@ -20,6 +20,7 @@
 #include "Engine/Objects/Actor.h"
 #include "Engine/Objects/Chest.h"
 #include "Engine/Objects/MonsterEnumFunctions.h"
+#include "Engine/Objects/SpriteObject.h"
 #include "Engine/Resources/EngineFileSystem.h"
 #include "Engine/Resources/LOD.h"
 #include "Engine/SaveLoad.h"
@@ -643,16 +644,22 @@ GAME_TEST(Prs, Pr2157b) {
 }
 
 GAME_TEST(Issues, Issue2186a) {
-    // Consistent crashing in Grand Temple of the Sun Upper Level
-    auto maps = tapes.map();
-    test.playTraceFromTestData("issue_2186.mm7", "issue_2186.json");
+    // Objects falling through a floor portal kept the sector above it and fell through the floor below.
+    auto armorZTape = tapes.custom([] {
+        AccessibleVector<int> result;
+        for (const SpriteObject &sprite : pSpriteObjects)
+            if (sprite.uObjectDescID != 0 && sprite.containing_item.itemId == ITEM_LEATHER_ARMOR)
+                result.push_back(sprite.vPosition.z);
+        return result;
+    });
+    game.startNewGame();
+    game.teleportTo(MAP_GRAND_TEMPLE_OF_THE_SUN, Vec3f(-880, 800, 648), 0); // Upper level, facing the hole over the hall.
+    test.startTaping();
+    pParty->setHoldingItem(Item(ITEM_LEATHER_ARMOR));
+    game.pressAndReleaseButton(BUTTON_LEFT, pViewport.center()); // Throw it down the hole.
+    game.tick(30);
 
-    EXPECT_CONTAINS(maps, MAP_EVENMORN_ISLAND); // we made it outside
-    EXPECT_EQ(maps.back(), MAP_GRAND_TEMPLE_OF_THE_SUN); // and back in
-    // and no actors are still underground
-    for (const auto &act : pActors) {
-        EXPECT_GT(act.pos.z, -1000);
-    }
+    EXPECT_EQ(armorZTape.back(), tape(129)); // Lying on the floor below.
 }
 
 GAME_TEST(Issues, Issue2186b) {
