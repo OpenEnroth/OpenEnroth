@@ -277,7 +277,7 @@ jobs:
       - name: '[darwin/windows] Prepare files for release'
         if: matrix.platform == 'darwin' || matrix.platform == 'windows'
         run: |
-          mv "build/src/Bin/OpenEnroth/OpenEnroth.${{matrix.release_extension}}" "$RELEASE_FILE"
+          mv "build/distribution/OpenEnroth.${{matrix.release_extension}}" "$RELEASE_FILE"
 
       - name: '[darwin/windows/android] Publish release'
         if: inputs.releaseTag != '' && matrix.platform != 'linux' # Linux ships as a Flatpak.
