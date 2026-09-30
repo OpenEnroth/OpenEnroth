@@ -80,6 +80,17 @@ UNIT_TEST(DirectoryFileSystem, WriteRootAsFile) {
     EXPECT_ANY_THROW(fs.write("", Blob()));
 }
 
+UNIT_TEST(DirectoryFileSystem, WriteCreatesDirs) {
+    // Writing creates the missing directories, the root included.
+    ScopedTestFolder dir("tmp_dfs_dir");
+    DirectoryFileSystem fs(NativePath("tmp_dfs_dir/root"));
+
+    fs.write("1.txt", Blob::fromString("a"));
+    fs.openForWriting("a/b/2.txt")->write("bc");
+    EXPECT_EQ(fs.read("1.txt").str(), "a");
+    EXPECT_EQ(fs.read("a/b/2.txt").str(), "bc");
+}
+
 UNIT_TEST(DirectoryFileSystem, DisplayPathSymmetry) {
     ScopedTestFile tmp("1.txt", "");
 
