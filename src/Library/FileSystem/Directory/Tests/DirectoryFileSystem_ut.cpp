@@ -1,4 +1,3 @@
-#include <filesystem>
 #include <ranges>
 #include <string>
 #include <vector>
@@ -9,6 +8,7 @@
 #include "Library/FileSystem/Directory/DirectoryFileSystem.h"
 
 #include "Utility/Streams/FileOutputStream.h"
+#include "Utility/System/Fs.h"
 
 UNIT_TEST(DirectoryFileSystem, LsRoot) {
     // Make sure passing empty paths works as intended.
@@ -98,8 +98,7 @@ UNIT_TEST(DirectoryFileSystem, DisplayPathSymmetry) {
     Blob blob = fs.read("1.txt");
     std::unique_ptr<InputStream> stream = fs.openForReading("1.txt");
 
-    EXPECT_TRUE(blob.displayPath().ends_with("1.txt"));
-    EXPECT_TRUE(std::filesystem::path(blob.displayPath()).is_absolute());
+    EXPECT_EQ(blob.displayPath(), (fs::cwd() / NativePath("1.txt")).displayString());
     EXPECT_EQ(blob.displayPath(), stream->displayPath());
 }
 

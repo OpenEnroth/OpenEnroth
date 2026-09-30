@@ -56,4 +56,27 @@ bool remove(const NativePath &path);
  */
 void mkdirs(const NativePath &path);
 
+/**
+ * @return                              Current working directory.
+ * @throws std::runtime_error           On errors.
+ */
+[[nodiscard]] NativePath cwd();
+
+/**
+ * Resolution isn't lexical on Windows. A drive-relative `"C:x"` resolves against the current directory of drive C,
+ * which only the OS knows.
+ *
+ * @param path                          Path to resolve.
+ * @return                              Absolute copy of `path`, resolved against the current directory. An empty
+ *                                      path resolves to the current directory itself.
+ * @throws std::runtime_error           On errors.
+ */
+[[nodiscard]] NativePath absolute(const NativePath &path);
+
+/**
+ * @return                              Directory for temporary files.
+ * @throws std::runtime_error           On errors.
+ */
+[[nodiscard]] NativePath tempDir();
+
 } // namespace fs

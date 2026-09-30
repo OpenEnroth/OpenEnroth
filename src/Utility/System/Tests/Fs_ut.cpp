@@ -57,6 +57,14 @@ UNIT_TEST(Fs, LsNotADirectory) {
     EXPECT_TRUE(fs::ls("tmp_fs_empty_dir").empty());
 }
 
+UNIT_TEST(Fs, Absolute) {
+    // An empty path resolves to the cwd, and an absolute path stays as it is.
+    NativePath cwd = fs::cwd();
+    EXPECT_EQ(fs::absolute(""), cwd);
+    EXPECT_EQ(fs::absolute("a"), cwd / NativePath("a"));
+    EXPECT_EQ(fs::absolute(cwd), cwd);
+}
+
 UNIT_TEST(Fs, EmptyPath) {
     // The empty path doesn't name the current directory.
     EXPECT_FALSE(fs::exists(""));

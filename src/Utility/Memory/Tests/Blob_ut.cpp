@@ -1,11 +1,11 @@
 #include <string>
-#include <filesystem>
 
 #include "Testing/Unit/UnitTest.h"
 
 #include "Utility/Memory/Blob.h"
 #include "Utility/Streams/FileInputStream.h"
 #include "Utility/Streams/FileOutputStream.h"
+#include "Utility/System/Fs.h"
 
 UNIT_TEST(Blob, FromFile) {
     NativePath fileName = NativePath("abcdefghijklmnopqrstuvwxyz.tmp");
@@ -71,8 +71,7 @@ UNIT_TEST(Blob, DisplayPathFromFile) {
     ScopedTestFile tmp(fileName, "123");
 
     std::string displayPath = Blob::fromFile(fileName).displayPath();
-    EXPECT_TRUE(displayPath.ends_with("1.bin"));
-    EXPECT_TRUE(std::filesystem::path(displayPath).is_absolute());
+    EXPECT_EQ(displayPath, fs::absolute(fileName).displayString());
 }
 
 UNIT_TEST(Blob, DisplayPathFromEmptyFile) {
@@ -80,8 +79,7 @@ UNIT_TEST(Blob, DisplayPathFromEmptyFile) {
     ScopedTestFile tmp(fileName, "");
 
     std::string displayPath = Blob::fromFile(fileName).displayPath();
-    EXPECT_TRUE(displayPath.ends_with("1.txt"));
-    EXPECT_TRUE(std::filesystem::path(displayPath).is_absolute());
+    EXPECT_EQ(displayPath, fs::absolute(fileName).displayString());
 }
 
 UNIT_TEST(Blob, DisplayPathFromStream) {
@@ -90,13 +88,12 @@ UNIT_TEST(Blob, DisplayPathFromStream) {
 
     FileInputStream in(fileName);
     std::string displayPath = Blob::read(&in, 2).displayPath();
-    EXPECT_TRUE(displayPath.ends_with("1.bin"));
-    EXPECT_TRUE(std::filesystem::path(displayPath).is_absolute());
+    EXPECT_EQ(displayPath, fs::absolute(fileName).displayString());
 }
 
 UNIT_TEST(Blob, ExceptionMessages) {
     NativePath fileName = NativePath("lknjdfgsbiuherqbhvdfnjkkvsdhjkweqguy.txt");
 
-    EXPECT_FALSE(std::filesystem::exists(fileName.toStdPath()));
+    EXPECT_FALSE(fs::exists(fileName));
     EXPECT_THROW_MESSAGE((void) Blob::fromFile(fileName), fileName.toWtf8());
 }

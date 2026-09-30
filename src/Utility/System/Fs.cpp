@@ -5,13 +5,21 @@
 #include <system_error>
 #include <vector>
 
+static std::filesystem::path toStdPath(const NativePath &path) {
+    return std::filesystem::path(path.native()); // A wchar_t string on Windows, so no C locale conversion.
+}
+
+static NativePath fromStdPath(const std::filesystem::path &path) {
+    return NativePath::fromNative(path.native());
+}
+
 bool fs::exists(const NativePath &path) {
     std::error_code ec;
-    return std::filesystem::exists(path.toStdPath(), ec); // Returns false on error.
+    return std::filesystem::exists(toStdPath(path), ec); // Returns false on error.
 }
 
 FileStat fs::stat(const NativePath &path) {
-    std::filesystem::path stdPath = path.toStdPath();
+    std::filesystem::path stdPath = toStdPath(path);
 
     std::error_code ec;
     std::filesystem::directory_entry entry(stdPath, ec);
@@ -37,7 +45,7 @@ std::vector<DirectoryEntry> fs::ls(const NativePath &path) {
 }
 
 void fs::ls(const NativePath &path, std::vector<DirectoryEntry> *entries) {
-    std::filesystem::directory_iterator pos(path.toStdPath());
+    std::filesystem::directory_iterator pos(toStdPath(path));
     std::filesystem::directory_iterator end;
 
     // Errors past this point are ignored. They're most likely permissions-related, and `stat` and `exists` ignore
@@ -57,15 +65,27 @@ void fs::ls(const NativePath &path, std::vector<DirectoryEntry> *entries) {
         if (!isRegular && !isDirectory)
             continue;
 
-        entries->emplace_back(NativePath::fromStdPath(entry.path().filename()).toWtf8(),
+        entries->emplace_back(fromStdPath(entry.path().filename()).toWtf8(),
                               isRegular ? FILE_REGULAR : FILE_DIRECTORY);
     }
 }
 
 bool fs::remove(const NativePath &path) {
-    return std::filesystem::remove_all(path.toStdPath()) > 0;
+    return std::filesystem::remove_all(toStdPath(path)) > 0;
 }
 
 void fs::mkdirs(const NativePath &path) {
-    std::filesystem::create_directories(path.toStdPath());
+    std::filesystem::create_directories(toStdPath(path));
+}
+
+NativePath fs::cwd() {
+    return fromStdPath(std::filesystem::current_path());
+}
+
+NativePath fs::absolute(const NativePath &path) {
+    return path.isEmpty() ? cwd() : fromStdPath(std::filesystem::absolute(toStdPath(path)));
+}
+
+NativePath fs::tempDir() {
+    return fromStdPath(std::filesystem::temp_directory_path());
 }

@@ -14,7 +14,7 @@
 #include "Utility/System/Fs.h"
 
 DirectoryFileSystem::DirectoryFileSystem(const NativePath &root) {
-    _root = root.absolute();
+    _root = fs::absolute(root);
 }
 
 DirectoryFileSystem::~DirectoryFileSystem() = default;

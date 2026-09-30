@@ -12,6 +12,7 @@
 
 #include "Utility/Exception.h"
 #include "Utility/String/Format.h"
+#include "Utility/System/Fs.h"
 
 OpenEnrothOptions OpenEnrothOptions::parse(int argc, char **argv) {
     // Note that it's OK to create a temporary `Environment` here.
@@ -67,13 +68,13 @@ OpenEnrothOptions OpenEnrothOptions::parse(int argc, char **argv) {
 
     app->parse(argc, argv, result.helpPrinted);
 
-    if (!portable && std::filesystem::exists(".portable"))
+    if (!portable && fs::exists(".portable"))
         portable = true;
     if (portable && *portable) {
         if (result.userPath.isEmpty())
-            result.userPath = NativePath::fromStdPath(std::filesystem::current_path());
+            result.userPath = fs::cwd();
         if (result.dataPath.isEmpty())
-            result.dataPath = NativePath::fromStdPath(std::filesystem::current_path());
+            result.dataPath = fs::cwd();
     }
 
     if (result.subcommand == SUBCOMMAND_RETRACE) {

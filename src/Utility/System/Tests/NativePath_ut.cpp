@@ -1,33 +1,24 @@
-#include <filesystem>
-#include <fstream>
+#include <algorithm>
 #include <string>
 #include <string_view>
 #include <type_traits>
 
+#ifdef _WINDOWS
+#   define WIN32_LEAN_AND_MEAN
+#   include <Windows.h>
+#endif
+
 #include "Testing/Unit/UnitTest.h"
 
+#include "Utility/Streams/FileOutputStream.h"
+#include "Utility/String/Encoding.h"
+#include "Utility/System/Fs.h"
 #include "Utility/System/NativePath.h"
 
-template<class T>
-concept BuildsFromStdPath = requires(const T &path) { NativePath::fromStdPath(path); };
-
 UNIT_TEST(NativePath, ConversionsAreChecked) {
-    // A string must not reach fromStdPath, because std::filesystem::path converts a narrow string per the C locale on
-    // Windows. The deleted template overload is what turns each of these into a compile error.
-    static_assert(BuildsFromStdPath<std::filesystem::path>);
-    static_assert(!BuildsFromStdPath<std::string>);
-    static_assert(!BuildsFromStdPath<std::wstring>);
-
     static_assert(std::is_convertible_v<const char *, NativePath>);
     static_assert(std::is_convertible_v<std::string_view, NativePath>);
     static_assert(std::is_same_v<decltype(NativePath().toWtf8()), const std::string &>); // No copy on every call.
-}
-
-UNIT_TEST(NativePath, StdPathRoundTrip) {
-    // Non-ASCII paths have to survive the round trip.
-    std::filesystem::path lol(u8"a/\u043b\u043e\u043b.txt");
-    EXPECT_EQ(NativePath::fromStdPath(lol).toWtf8(), "a/\xd0\xbb\xd0\xbe\xd0\xbb.txt");
-    EXPECT_EQ(NativePath::fromWtf8("a/\xd0\xbb\xd0\xbe\xd0\xbb.txt").toStdPath(), lol);
 }
 
 UNIT_TEST(NativePath, NativeRoundTrip) {
@@ -157,28 +148,29 @@ UNIT_TEST(NativePath, WindowsRoots) {
 UNIT_TEST(NativePath, ExtendedLengthReachesWin32) {
     // Win32 only honors a literal "\\?\". With forward slashes a path over MAX_PATH fails to open, and a trailing dot
     // gets stripped off the file name.
-    std::filesystem::path temp = std::filesystem::temp_directory_path();
-    std::string prefixed = "//?/" + NativePath::fromStdPath(temp).toWtf8();
-    auto onDisk = [&] (std::string_view name) { // Built by hand, NativePath not involved.
-        return std::filesystem::path(L"\\\\?\\" + std::filesystem::path(temp / name).make_preferred().wstring());
+    NativePath temp = fs::tempDir();
+    NativePath prefixed = NativePath::fromWtf8("//?/" + temp.toWtf8());
+    auto onDisk = [&] (std::string_view name) { // Built by hand and checked with plain Win32, NativePath not involved.
+        std::wstring result = L"\\\\?\\" + temp.native();
+        if (!result.ends_with(L'/'))
+            result += L'/';
+        result += txt::wtf8ToWide(name);
+        std::ranges::replace(result, L'/', L'\\'); // "\\?\" takes no forward slashes and no doubled separators.
+        return result;
     };
 
     // A single component is capped at 255 characters, so it takes two to get over MAX_PATH wherever temp is.
     std::string dir = "oe_" + std::string(200, 'd');
     std::string longName = dir + "/oe_" + std::string(200, 'x') + ".txt";
-    std::filesystem::create_directory(onDisk(dir));
+    ASSERT_TRUE(CreateDirectoryW(onDisk(dir).c_str(), nullptr) || GetLastError() == ERROR_ALREADY_EXISTS);
 
     for (std::string_view name : {std::string_view(longName), std::string_view("oe_trailing_dot.")}) {
-        NativePath path = NativePath::fromWtf8(prefixed + std::string(name));
-        {
-            std::ofstream stream(path.toStdPath());
-            ASSERT_TRUE(stream.is_open()) << name;
-        }
+        ASSERT_NO_THROW(FileOutputStream(prefixed / NativePath(name)).close()) << name;
 
-        EXPECT_TRUE(std::filesystem::exists(onDisk(name))) << name;
-        EXPECT_TRUE(std::filesystem::remove(onDisk(name))) << name;
+        EXPECT_NE(GetFileAttributesW(onDisk(name).c_str()), INVALID_FILE_ATTRIBUTES) << name;
+        EXPECT_TRUE(DeleteFileW(onDisk(name).c_str())) << name;
     }
-    EXPECT_TRUE(std::filesystem::remove(onDisk(dir)));
+    EXPECT_TRUE(RemoveDirectoryW(onDisk(dir).c_str()));
 }
 #endif
 
@@ -191,14 +183,6 @@ UNIT_TEST(NativePath, DisplayString) {
     EXPECT_TRUE(display.ends_with("kek.txt"));
     EXPECT_NE(display.find("\xEF\xBF\xBD"), std::string::npos); // U+FFFD.
     EXPECT_EQ(display.find("\xed\xb0\x80"), std::string::npos);
-}
-
-UNIT_TEST(NativePath, Absolute) {
-    EXPECT_EQ(NativePath().absolute().toStdPath(), std::filesystem::current_path());
-    EXPECT_EQ(NativePath("a").absolute().toStdPath(), std::filesystem::current_path() / "a");
-
-    NativePath cwd = NativePath::fromStdPath(std::filesystem::current_path());
-    EXPECT_EQ(cwd.absolute(), cwd); // An absolute path stays as it is.
 }
 
 UNIT_TEST(NativePath, Comparison) {
@@ -252,18 +236,14 @@ UNIT_TEST(NativePath, InvalidUtf8RoundTrip) {
 UNIT_TEST(NativePath, InvalidUtf8FileNames) {
     // A name with invalid UTF-8 in it is not just convertible, it's also usable to actually open a file. APFS is the
     // exception, it only takes file names that are valid UTF-8, so this test doesn't run on MacOS.
-    NativePath tmpDir = NativePath::fromStdPath(std::filesystem::temp_directory_path()); // A build dir can sit on an APFS-backed mount in a dev container.
+    NativePath tmpDir = fs::tempDir(); // A build dir can sit on an APFS-backed mount in a dev container.
 
     for (std::string_view name : {"tmp_lol\xD0kek.txt", "tmp_lol\xFFkek.txt", "tmp_trailing\xD0"}) {
         NativePath path = tmpDir / NativePath::fromWtf8(name);
 
-        std::ofstream stream(path.toStdPath());
-        ASSERT_TRUE(stream.is_open()) << name;
-        stream << "lol";
-        stream.close();
-
-        EXPECT_TRUE(std::filesystem::exists(path.toStdPath())) << name;
-        EXPECT_TRUE(std::filesystem::remove(path.toStdPath())) << name;
+        ASSERT_NO_THROW(FileOutputStream(path).close()) << name;
+        EXPECT_TRUE(fs::exists(path)) << name;
+        EXPECT_TRUE(fs::remove(path)) << name;
     }
 }
 #endif
