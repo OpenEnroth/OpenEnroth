@@ -261,12 +261,9 @@ jobs:
 
       - name: '[darwin/windows] Package'
         if: matrix.platform == 'darwin' || matrix.platform == 'windows'
-        uses: Wandalen/wretry.action@v3.8.0 # hdiutil is flaky on the macOS runners.
-        with:
-          attempt_limit: 3
-          attempt_delay: 5000
-          command: |
-            ninja -C build OpenEnroth_Package
+        working-directory: build
+        run: |
+          ninja OpenEnroth_Package
 
       - name: '[darwin/windows] Prepare files for release'
         if: matrix.platform == 'darwin' || matrix.platform == 'windows'
