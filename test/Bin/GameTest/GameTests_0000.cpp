@@ -385,16 +385,25 @@ GAME_TEST(Issues, Issue315) {
     game.startNewGame(); // This shouldn't crash.
 }
 
-GAME_TEST(Issues, Issue331_679) {
-    // Assert when traveling by horse caused by out of bound access to pObjectTable->pObjects.
-    auto goldTape = tapes.gold();
-    auto mapTape = tapes.map();
-    test.playTraceFromTestData("issue_331.mm7", "issue_331.json");
-    EXPECT_EQ(mapTape, tape(MAP_TULAREAN_FOREST, MAP_HARMONDALE, MAP_TULAREAN_FOREST)); // We did travel.
-
-    // #679: Loading autosave after travelling by stables / boat results in gold loss.
-    EXPECT_EQ(goldTape.delta(), 0);
-    EXPECT_LT(goldTape.min(), goldTape.front()); // We did spend money.
+GAME_TEST(Issues, Issue331) {
+    // Map load looked up object flags by sprite id instead of object desc id, reading past pObjectTable->pObjects.
+    // A sword's sprite id is the desc id of an unpickable object, so a sword dropped on the ground was gone once the
+    // party left the map and came back.
+    auto groundSwordsTape = tapes.custom([] {
+        return static_cast<int>(std::ranges::count_if(pSpriteObjects, [](const SpriteObject &sprite) {
+            return sprite.uObjectDescID != 0 && sprite.containing_item.itemId == ITEM_CRUDE_LONGSWORD;
+        }));
+    });
+    game.startNewGame();
+    Vec3f startPos = pParty->pos;
+    test.startTaping();
+    pParty->setHoldingItem(Item(ITEM_CRUDE_LONGSWORD));
+    game.pressAndReleaseButton(BUTTON_LEFT, 240, 170); // A click in the viewport drops the held item.
+    game.tick(20);
+    autoSave();
+    game.teleportTo(MAP_HARMONDALE, Vec3f(-12192, 9000, 0), 0);
+    game.teleportTo(MAP_EMERALD_ISLAND, startPos, 0);
+    EXPECT_EQ(groundSwordsTape, tape(1, 0, 1));
 }
 
 GAME_TEST(Prs, Pr347) {

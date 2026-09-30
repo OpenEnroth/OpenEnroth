@@ -617,6 +617,16 @@ GAME_TEST(Issues, Issue677) {
                                    {CONDITION_WEAK, CONDITION_WEAK, CONDITION_WEAK, CONDITION_WEAK}));
 }
 
+GAME_TEST(Issues, Issue679) {
+    // Loading autosave after travelling by stables / boat results in gold loss.
+    auto goldTape = tapes.gold();
+    auto mapTape = tapes.map();
+    test.playTraceFromTestData("issue_331.mm7", "issue_331.json");
+    EXPECT_EQ(mapTape, tape(MAP_TULAREAN_FOREST, MAP_HARMONDALE, MAP_TULAREAN_FOREST)); // We did travel.
+    EXPECT_EQ(goldTape.delta(), 0);
+    EXPECT_LT(goldTape.min(), goldTape.front()); // We did spend money.
+}
+
 GAME_TEST(Issues, Issue680) {
     // Chest items duplicate sometimes
     auto chestItemsCount = tapes.custom([] { return vChests[4].inventory.size(); });
