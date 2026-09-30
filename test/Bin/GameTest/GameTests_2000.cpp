@@ -213,14 +213,24 @@ GAME_TEST(Issues, Issue2066) {
 }
 
 GAME_TEST(Issues, Issue2074) {
-    // Re-entering castle gryphonheart causes NPCs to become hostile
+    // Encounter actors that spawned too far from their spawn point were removed, which counts as killed, so leaving
+    // Castle Gryphonheart set its aggro map variable and the whole castle was hostile on re-entry.
     auto mapTape = tapes.map();
-    test.playTraceFromTestData("issue_2074.mm7", "issue_2074.json");
-    EXPECT_EQ(mapTape, tape(MAP_ERATHIA, MAP_CASTLE_GRYPHONHEART, MAP_ERATHIA, MAP_CASTLE_GRYPHONHEART));
-
-    for (const auto& actor : pActors)
-        EXPECT_EQ(std::to_underlying(actor.attributes & ACTOR_AGGRESSOR), 0); // Check that the NPCs arent hostile
-    EXPECT_EQ(engine->_persistentVariables.mapVars[4], 0); // check for persistant castle aggro var - 2 when angered
+    auto castleHostileTape = tapes.custom([] {
+        return engine->_currentLoadedMapId == MAP_CASTLE_GRYPHONHEART &&
+               std::ranges::any_of(pActors, [](const Actor &actor) { return actor.attributes & ACTOR_AGGRESSOR; });
+    });
+    game.startNewGame();
+    test.startTaping();
+    game.teleportTo(MAP_CASTLE_GRYPHONHEART, Vec3f(641, 0, 0), 0); // First visit spawns the encounters. Facing the exit.
+    game.pressAndReleaseKey(PlatformKey::KEY_SPACE);
+    game.tick();
+    game.pressGuiButton("Transition_Yes");
+    game.tick();
+    game.skipLoadingScreen();
+    game.teleportTo(MAP_CASTLE_GRYPHONHEART, Vec3f(641, 0, 0), 0);
+    EXPECT_EQ(mapTape, tape(MAP_EMERALD_ISLAND, MAP_CASTLE_GRYPHONHEART, MAP_ERATHIA, MAP_CASTLE_GRYPHONHEART));
+    EXPECT_EQ(castleHostileTape, tape(false));
 }
 
 GAME_TEST(Issues, Issue2075) {
