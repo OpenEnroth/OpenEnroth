@@ -25,8 +25,7 @@ set(SCRIPTS_SOURCES
     dev/commands/mana_command.lua
     dev/commands/skillpoints_command.lua
     dev/commands/skills_command.lua
-    dev/commands/xp_command.lua
-    )
+    dev/commands/xp_command.lua)
 
 add_library(scripts INTERFACE ${SCRIPTS_SOURCES})
 target_check_lua_style(scripts)
