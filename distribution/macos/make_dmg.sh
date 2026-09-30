@@ -3,7 +3,7 @@
 set -euo pipefail
 
 if [[ $# -ne 4 ]]; then
-    echo "Usage: $0 OpenEnroth.app volume_icon.icns background.jpg output.dmg"
+    echo "Usage: $0 <app> <icon> <background> <output>"
     exit 1
 fi
 

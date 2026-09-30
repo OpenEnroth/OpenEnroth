@@ -3,7 +3,7 @@
 set -e
 
 if [[ $# -lt 2 ]]; then
-    echo "Usage: $0 shader.frag \"410 core\""
+    echo "Usage: $0 <shader> <version>"
     exit 1
 fi
 
