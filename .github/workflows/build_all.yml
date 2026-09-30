@@ -266,13 +266,13 @@ jobs:
           attempt_limit: 3
           attempt_delay: 5000
           command: |
-            ninja -C build Package_OpenEnroth
+            ninja -C build OpenEnroth_Package
 
       - name: '[windows] Package'
         if: matrix.platform == 'windows'
         working-directory: build
         run: |
-          ninja Package_OpenEnroth
+          ninja OpenEnroth_Package
 
       - name: '[darwin/windows] Prepare files for release'
         if: matrix.platform == 'darwin' || matrix.platform == 'windows'
