@@ -81,8 +81,9 @@ void SdlWindow::setVisible(bool visible) {
     if (visible) {
         if (!SDL_ShowWindow(_window))
             _state->logSdlError("SDL_ShowWindow");
-    } else if (!SDL_HideWindow(_window)) {
-        _state->logSdlError("SDL_HideWindow");
+    } else {
+        if (!SDL_HideWindow(_window))
+            _state->logSdlError("SDL_HideWindow");
     }
 }
 

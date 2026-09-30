@@ -129,11 +129,13 @@ static void registerTimerTriggers(EvtOpcode triggerType, std::vector<MapTimer> *
                     // Set alarm time to zero because it must always fire
                     timer.alarmTime = Time();
                 }
-            } else if (levelLastVisit) {
-                timer.alarmTime = levelLastVisit + timer.interval;
             } else {
-                // Without last visit all timers must fire immediately
-                timer.alarmTime = pParty->GetPlayingTime();
+                if (levelLastVisit) {
+                    timer.alarmTime = levelLastVisit + timer.interval;
+                } else {
+                    // Without last visit all timers must fire immediately
+                    timer.alarmTime = pParty->GetPlayingTime();
+                }
             }
 
             assert(timer.interval > 0_ticks);

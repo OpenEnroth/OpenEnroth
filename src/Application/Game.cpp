@@ -937,10 +937,12 @@ void Game::processQueuedMessages() {
                             pParty->uFallStartZ = z;
                             continue;
                         }
-                    } else if ((x > -32768) && (x < 32768) && (y > -32768) && (y < 32768) && (z >= 0) && (z < 10000)) {
-                        pParty->pos = Vec3f(x, y, z);
-                        pParty->uFallStartZ = z;
-                        continue;
+                    } else {
+                        if ((x > -32768) && (x < 32768) && (y > -32768) && (y < 32768) && (z >= 0) && (z < 10000)) {
+                            pParty->pos = Vec3f(x, y, z);
+                            pParty->uFallStartZ = z;
+                            continue;
+                        }
                     }
                     pAudioPlayer->playUISound(SOUND_error);
                     status_string = "Can't jump to that location!";

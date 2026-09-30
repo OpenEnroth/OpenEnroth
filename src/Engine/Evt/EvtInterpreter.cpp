@@ -459,8 +459,10 @@ EvtFlow EvtInterpreter::executeInstruction(EvtInstruction ir) {
                 if (_canShowMessages) {
                     engine->_statusBar->setEvent(pNPCTopics[ir.data.text_id - 1].pText);
                 }
-            } else if (_canShowMessages) {
-                engine->_statusBar->setEvent((ir.data.text_id < engine->_levelStrings.size()) ? engine->_levelStrings[ir.data.text_id] : "");
+            } else {
+                if (_canShowMessages) {
+                    engine->_statusBar->setEvent((ir.data.text_id < engine->_levelStrings.size()) ? engine->_levelStrings[ir.data.text_id] : "");
+                }
             }
             break;
         case EVENT_ShowMessage:
