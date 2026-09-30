@@ -60,6 +60,13 @@ UNIT_TEST(Process, Timeout) {
     EXPECT_LT(std::chrono::steady_clock::now() - start, 10s);
 }
 
+UNIT_TEST(Process, LongTimeout) {
+    // A timeout too long for steady_clock's nanoseconds must not kill the process.
+    ProcessResult result = runShell("exit 0", std::chrono::milliseconds::max());
+    EXPECT_FALSE(result.timedOut);
+    EXPECT_EQ(result.exitCode, 0);
+}
+
 UNIT_TEST(Process, MissingExecutable) {
     EXPECT_THROW((void) runProcess("no_such_executable_here", {}), Exception);
 }

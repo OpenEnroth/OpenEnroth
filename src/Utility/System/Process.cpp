@@ -1,6 +1,8 @@
 #include "Process.h"
 
 #include <algorithm>
+#include <cassert>
+#include <cerrno>
 #include <chrono>
 #include <cstdio>
 #include <string>
@@ -25,6 +27,11 @@ ProcessResult runProcess(const NativePath &path, const std::vector<std::string> 
 #else // __ANDROID__
 
 [[noreturn]] static void throwFromSubprocessError(int error, std::string_view displayString) {
+#ifndef _WINDOWS
+    if (errno != 0)
+        Exception::throwFromErrno(displayString); // On POSIX subprocess.h leaves the reason in errno, the error code is coarser.
+#endif
+
     switch (error) {
     case subprocess_error_not_found: Exception::throwFromErrc(std::errc::no_such_file_or_directory, displayString);
     case subprocess_error_permission_denied: Exception::throwFromErrc(std::errc::permission_denied, displayString);
@@ -32,12 +39,14 @@ ProcessResult runProcess(const NativePath &path, const std::vector<std::string> 
     case subprocess_error_not_supported: Exception::throwFromErrc(std::errc::function_not_supported, displayString);
     case subprocess_error_invalid_options:
     case subprocess_error_invalid_environment: Exception::throwFromErrc(std::errc::invalid_argument, displayString);
-    case subprocess_error_pipe: throw Exception("{}: couldn't create pipes to the process", displayString);
+    case subprocess_error_pipe: throw Exception("{}: couldn't create the pipes for the process", displayString);
     default: throw Exception("{}: couldn't start the process", displayString);
     }
 }
 
 ProcessResult runProcess(const NativePath &path, const std::vector<std::string> &args, std::chrono::milliseconds timeout) {
+    assert(timeout >= timeout.zero());
+
     std::string displayString = path.displayString();
 
     std::string program = path.toWtf8();
@@ -53,6 +62,7 @@ ProcessResult runProcess(const NativePath &path, const std::vector<std::string> 
     subprocess_s process;
     int options = subprocess_option_inherit_environment | subprocess_option_no_window | subprocess_option_enable_async |
                   subprocess_option_enable_async_no_wait;
+    errno = 0;
     if (int error = subprocess_create(commandLine.data(), options, &process))
         throwFromSubprocessError(error, displayString);
     MM_AT_SCOPE_EXIT(subprocess_destroy(&process));
@@ -69,10 +79,11 @@ ProcessResult runProcess(const NativePath &path, const std::vector<std::string> 
             result.stdErr.append(buffer, size);
     };
 
-    auto deadline = std::chrono::steady_clock::now() + timeout;
+    auto start = std::chrono::steady_clock::now();
     while (subprocess_alive(&process)) {
         drain();
-        if (timeout != timeout.zero() && std::chrono::steady_clock::now() >= deadline) {
+        auto elapsed = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::steady_clock::now() - start);
+        if (timeout != timeout.zero() && elapsed >= timeout) {
             subprocess_terminate(&process);
             result.timedOut = true;
             break;
