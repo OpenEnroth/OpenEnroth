@@ -21,12 +21,13 @@ namespace fs {
 [[nodiscard]] FileStat stat(const NativePath &path);
 
 /**
- * Lists a directory. Never throws. Lists nothing if `path` doesn't exist or isn't a directory, and skips entries
- * that can't be stat'ed, so the result is always in sync with what `stat` returns.
+ * Lists a directory. Once the directory is open, errors are ignored. Entries that can't be stat'ed are skipped, so
+ * the result is always in sync with what `stat` returns.
  *
  * @param path                          Path to a directory to list.
  * @return                              Directory entries, in unspecified order. Names are WTF-8 on Windows, byte
  *                                      strings on POSIX.
+ * @throws std::runtime_error           If the directory can't be opened, e.g. if `path` doesn't exist or is a file.
  */
 [[nodiscard]] std::vector<DirectoryEntry> ls(const NativePath &path);
 
@@ -36,7 +37,7 @@ namespace fs {
  * @param path                          Path to a directory to list.
  * @param[out] entries                  Vector to append the entries to.
  */
-void ls(const NativePath &path, std::vector<DirectoryEntry> *entries);
+void ls(const NativePath &path, std::vector<DirectoryEntry> *entries); // Throws like the overload above.
 
 /**
  * Removes the file or directory at `path`. A directory is removed with everything that's in it.

@@ -37,12 +37,13 @@ std::vector<DirectoryEntry> fs::ls(const NativePath &path) {
 }
 
 void fs::ls(const NativePath &path, std::vector<DirectoryEntry> *entries) {
-    // All errors are ignored. The ones we get here are most likely permissions-related, and `stat` and `exists`
-    // ignore them too. Only the iterator's constructor and `increment` take an `error_code`, `operator++` throws.
+    std::filesystem::directory_iterator pos(path.toStdPath());
+    std::filesystem::directory_iterator end;
+
+    // Errors past this point are ignored. They're most likely permissions-related, and `stat` and `exists` ignore
+    // them too. `operator++` is the throwing overload, so the loop calls `increment` with an `error_code`.
     std::error_code walkEc;
     std::error_code ec;
-    std::filesystem::directory_iterator pos(path.toStdPath(), walkEc);
-    std::filesystem::directory_iterator end;
     for (; !walkEc && pos != end; pos.increment(walkEc)) {
         const std::filesystem::directory_entry &entry = *pos;
 
@@ -66,8 +67,5 @@ bool fs::remove(const NativePath &path) {
 }
 
 void fs::mkdirs(const NativePath &path) {
-    if (path.isEmpty())
-        return; // The current directory, create_directories("") throws.
-
     std::filesystem::create_directories(path.toStdPath());
 }

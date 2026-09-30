@@ -3,6 +3,7 @@
 #include <cassert>
 #include <vector>
 #include <memory>
+#include <stdexcept>
 #include <string>
 #include <utility>
 
@@ -31,16 +32,16 @@ FileStat DirectoryFileSystem::_stat(FileSystemPathView path) const {
 void DirectoryFileSystem::_ls(FileSystemPathView path, std::vector<DirectoryEntry> *entries) const {
     NativePath basePath = makeBasePath(path);
 
-    // Handle the known errors first.
-    FileType type = fs::stat(basePath).type;
-    if (path.isEmpty() && type != FILE_DIRECTORY)
-        return; // ls("") should always work.
-    if (type == FILE_REGULAR)
-        FileSystemException::raise(this, FS_LS_FAILED_PATH_IS_FILE, path);
-    if (type != FILE_DIRECTORY)
+    try {
+        fs::ls(basePath, entries);
+    } catch (const std::runtime_error &) {
+        FileType type = fs::stat(basePath).type;
+        if (path.isEmpty() || type == FILE_DIRECTORY)
+            return; // ls("") always works, and so does ls on a directory that can't be opened.
+        if (type == FILE_REGULAR)
+            FileSystemException::raise(this, FS_LS_FAILED_PATH_IS_FILE, path);
         FileSystemException::raise(this, FS_LS_FAILED_PATH_DOESNT_EXIST, path);
-
-    fs::ls(basePath, entries);
+    }
 
     // Files with '\\' in filename are not observable through this interface.
     std::erase_if(*entries, [](const DirectoryEntry &entry) { return entry.name.find('\\') != std::string::npos; });
