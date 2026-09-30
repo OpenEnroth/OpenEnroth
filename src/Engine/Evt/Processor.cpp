@@ -46,7 +46,6 @@ static std::vector<int> decorationsWithEvents;
 static Time timerGuard;
 
 static std::function<void()> eventContinuation;
-LevelDecoration *savedDecoration;
 
 void initDecorationEvents() {
     DecorationId id = pDecorationTable->decorationId("Event Trigger");
@@ -148,21 +147,17 @@ static void registerTimerTriggers(EvtOpcode triggerType, std::vector<MapTimer> *
     }
 }
 
-void eventProcessor(int eventId, Pid targetObj, bool canShowMessages, int startStep) {
+static void runEvent(EvtSource source, int eventId, Pid targetObj, bool canShowMessages, int startStep, LevelDecoration *decoration) {
     if (!eventId) {
         engine->_statusBar->nothingHere();
         return;
     }
 
+    const EvtProgram &program = source == EVT_SOURCE_GLOBAL ? engine->_globalEventMap : engine->_localEventMap;
     EvtInterpreter interpreter;
     MM_TRACE("Executing regular event starting from step {}", startStep);
-    if (activeLevelDecoration) {
-        engine->_globalEventMap.dump(eventId);
-        interpreter.prepare(engine->_globalEventMap, eventId, targetObj, canShowMessages);
-    } else {
-        engine->_localEventMap.dump(eventId);
-        interpreter.prepare(engine->_localEventMap, eventId, targetObj, canShowMessages);
-    }
+    program.dump(eventId, source);
+    interpreter.prepare(program, source, eventId, targetObj, canShowMessages, decoration);
 
     if (!interpreter.isValid()) {
         MM_WARNING("Face has invalid event ID");
@@ -175,12 +170,16 @@ void eventProcessor(int eventId, Pid targetObj, bool canShowMessages, int startS
     }
 }
 
-void setEventContinuation(std::function<void()> continuation) {
-    eventContinuation = std::move(continuation);
+void eventProcessor(int eventId, Pid targetObj, bool canShowMessages, int startStep) {
+    runEvent(EVT_SOURCE_MAP, eventId, targetObj, canShowMessages, startStep, nullptr);
 }
 
-bool hasEventContinuation() {
-    return eventContinuation != nullptr;
+void globalEventProcessor(int eventId, LevelDecoration *decoration, int startStep) {
+    runEvent(EVT_SOURCE_GLOBAL, eventId, Pid(), true, startStep, decoration);
+}
+
+void setEventContinuation(std::function<void()> continuation) {
+    eventContinuation = std::move(continuation);
 }
 
 void continueSavedEvent() {
@@ -200,11 +199,8 @@ bool npcDialogueEventProcessor(int eventId, int startStep) {
     EvtInterpreter interpreter;
 
     MM_TRACE("Executing NPC dialogue event starting from step {}", startStep);
-    LevelDecoration *oldDecoration = activeLevelDecoration;
-    activeLevelDecoration = (LevelDecoration *)1; // Required for correct printing of messages
-    engine->_globalEventMap.dump(eventId);
-    activeLevelDecoration = oldDecoration;
-    interpreter.prepare(engine->_globalEventMap, eventId, Pid(), false);
+    engine->_globalEventMap.dump(eventId, EVT_SOURCE_GLOBAL);
+    interpreter.prepare(engine->_globalEventMap, EVT_SOURCE_GLOBAL, eventId, Pid(), false);
     return interpreter.executeNpcDialogue(startStep);
 }
 
