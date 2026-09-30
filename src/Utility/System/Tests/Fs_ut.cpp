@@ -37,7 +37,7 @@ UNIT_TEST(Fs, LsRemoveMkdirs) {
 
 UNIT_TEST(Fs, LsNonAscii) {
     // Non-ASCII names have to come back from ls unchanged.
-    std::string name = reinterpret_cast<const char *>(u8"файл.txt");
+    std::string name = "\xD1\x84\xD0\xB0\xD0\xB9\xD0\xBB.txt"; // "файл.txt" in UTF-8.
     ScopedTestFolder dir("tmp_fs_non_ascii");
     ScopedTestFile tmp(NativePath("tmp_fs_non_ascii") / NativePath(name), "");
 
