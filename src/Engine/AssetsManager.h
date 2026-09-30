@@ -23,10 +23,6 @@ class AssetsManager {
      */
     void releaseImage(GraphicsImage *image);
 
-    /**
-     * @param name                      Name of an image in `icons.lod`, case-insensitive.
-     * @return                          The image, masked as `resource_mask_table.json` says.
-     */
     GraphicsImage *getIcon(std::string_view name);
     GraphicsImage *getImage_Buff(std::string_view name);
 
