@@ -56,9 +56,7 @@ struct BLVDoor {
     int16_t *pSectorIDs;
     int16_t *pDeltaUs;
     int16_t *pDeltaVs;
-    int16_t *pXOffsets;
-    int16_t *pYOffsets;
-    int16_t *pZOffsets;
+    std::vector<Vec3f> offsets;
     uint16_t numVertices;
     uint16_t numFaces;
     uint16_t numSectors;
