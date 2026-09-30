@@ -64,4 +64,8 @@ set(RESOURCE_SOURCES
 
 cmrc_add_resource_library(resources NAMESPACE openenroth ${RESOURCE_SOURCES})
 
-add_subdirectory(scripts)
+set(SCRIPTS_SOURCES ${RESOURCE_SOURCES})
+list(FILTER SCRIPTS_SOURCES INCLUDE REGEX "\\.lua$")
+
+add_library(scripts INTERFACE ${SCRIPTS_SOURCES})
+target_check_lua_style(scripts)
