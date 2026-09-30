@@ -1,6 +1,6 @@
 #!/bin/bash
 
-set -e
+set -euo pipefail
 
 if [[ $# -lt 2 ]]; then
     echo "Usage: $0 <shader> <version>"
