@@ -1,18 +1,9 @@
 #!/bin/bash
-#
-# Validates a single GLSL shader using glslangValidator.
-#
-# Usage: check_shader.sh <shader> <version>
-#   shader   - Path to shader file (e.g., resources/shaders/glterrain.frag)
-#   version  - GLSL version string, e.g. "410 core" or "320 es"
-#
-# Example:
-#   ./scripts/check_shader.sh resources/shaders/glterrain.frag "410 core"
 
 set -e
 
 if [[ $# -lt 2 ]]; then
-    echo "Usage: $0 <shader> <version>"
+    echo "Usage: $0 shader.frag \"410 core\""
     exit 1
 fi
 
