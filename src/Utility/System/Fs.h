@@ -5,6 +5,9 @@
 #include "Utility/System/FileStat.h"
 #include "Utility/System/NativePath.h"
 
+/**
+ * File system calls on `NativePath`s. An empty path is invalid, and every call treats it as a path that doesn't exist.
+ */
 namespace fs {
 
 /**
@@ -67,8 +70,7 @@ void mkdirs(const NativePath &path);
  * which only the OS knows.
  *
  * @param path                          Path to resolve.
- * @return                              Absolute copy of `path`, resolved against the current directory. An empty
- *                                      path resolves to the current directory itself.
+ * @return                              Absolute copy of `path`, resolved against the current directory.
  * @throws std::runtime_error           On errors.
  */
 [[nodiscard]] NativePath absolute(const NativePath &path);

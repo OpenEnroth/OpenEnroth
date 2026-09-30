@@ -14,7 +14,7 @@ UNIT_TEST(DirectoryFileSystem, LsRoot) {
     // Make sure passing empty paths works as intended.
     ScopedTestFile tmp("1.txt", "");
 
-    DirectoryFileSystem fs1(NativePath("")); // Current dir.
+    DirectoryFileSystem fs1(fs::cwd());
     std::vector<DirectoryEntry> entries = fs1.ls("");
     EXPECT_TRUE(std::ranges::find(entries, "1.txt", &DirectoryEntry::name) != std::ranges::end(entries))
         << "size = " << entries.size() << ", [0] = " << (entries.empty() ? "<nothing>" : entries[0].name);
@@ -30,19 +30,19 @@ UNIT_TEST(DirectoryFileSystem, LsFile) {
     // Make sure ls() throws when called on a file.
     ScopedTestFile tmp("1.txt", "");
 
-    DirectoryFileSystem fs(NativePath("")); // Current dir.
+    DirectoryFileSystem fs(fs::cwd());
     EXPECT_ANY_THROW((void) fs.ls("1.txt"));
 }
 
 UNIT_TEST(DirectoryFileSystem, LsNonExistent) {
     // Make sure ls() throws when called on a folder that doesn't exist.
-    DirectoryFileSystem fs(NativePath("")); // Current dir.
+    DirectoryFileSystem fs(fs::cwd());
     EXPECT_ANY_THROW((void) fs.ls("this_dir_doesnt_exist"));
 }
 
 UNIT_TEST(DirectoryFileSystem, ExistsRoot) {
     // Make sure exists("") works as intented.
-    DirectoryFileSystem fs1(NativePath("")); // Current dir.
+    DirectoryFileSystem fs1(fs::cwd());
     EXPECT_TRUE(fs1.exists(""));
 
     DirectoryFileSystem fs2(NativePath("this_dir_doesnt_exist"));
@@ -55,7 +55,7 @@ UNIT_TEST(DirectoryFileSystem, ExistsRoot) {
 
 UNIT_TEST(DirectoryFileSystem, StatRoot) {
     // Make sure stat("") works as intented.
-    DirectoryFileSystem fs1(NativePath("")); // Current dir.
+    DirectoryFileSystem fs1(fs::cwd());
     EXPECT_EQ(fs1.stat("").type, FILE_DIRECTORY);
 
     DirectoryFileSystem fs2(NativePath("this_dir_doesnt_exist")); // Non-existent dir.
@@ -94,7 +94,7 @@ UNIT_TEST(DirectoryFileSystem, WriteCreatesDirs) {
 UNIT_TEST(DirectoryFileSystem, DisplayPathSymmetry) {
     ScopedTestFile tmp("1.txt", "");
 
-    DirectoryFileSystem fs(NativePath(""));
+    DirectoryFileSystem fs(fs::cwd());
     Blob blob = fs.read("1.txt");
     std::unique_ptr<InputStream> stream = fs.openForReading("1.txt");
 
@@ -120,7 +120,7 @@ UNIT_TEST(DirectoryFileSystem, EscapingPaths) {
 }
 
 UNIT_TEST(DirectoryFileSystem, EscapingDisplayPath) {
-    DirectoryFileSystem fs(NativePath(""));
+    DirectoryFileSystem fs(fs::cwd());
 
     EXPECT_TRUE(fs.displayPath("..").ends_with(".."));
 }

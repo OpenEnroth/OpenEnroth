@@ -6,6 +6,8 @@
 #include <vector>
 
 static std::filesystem::path toStdPath(const NativePath &path) {
+    if (path.isEmpty())
+        throw std::filesystem::filesystem_error("Empty path", std::make_error_code(std::errc::invalid_argument));
     return std::filesystem::path(path.native()); // A wchar_t string on Windows, so no C locale conversion.
 }
 
@@ -14,11 +16,17 @@ static NativePath fromStdPath(const std::filesystem::path &path) {
 }
 
 bool fs::exists(const NativePath &path) {
+    if (path.isEmpty())
+        return false;
+
     std::error_code ec;
     return std::filesystem::exists(toStdPath(path), ec); // Returns false on error.
 }
 
 FileStat fs::stat(const NativePath &path) {
+    if (path.isEmpty())
+        return {};
+
     std::filesystem::path stdPath = toStdPath(path);
 
     std::error_code ec;
@@ -71,6 +79,9 @@ void fs::ls(const NativePath &path, std::vector<DirectoryEntry> *entries) {
 }
 
 bool fs::remove(const NativePath &path) {
+    if (path.isEmpty())
+        return false;
+
     return std::filesystem::remove_all(toStdPath(path)) > 0;
 }
 
@@ -83,7 +94,7 @@ NativePath fs::cwd() {
 }
 
 NativePath fs::absolute(const NativePath &path) {
-    return path.isEmpty() ? cwd() : fromStdPath(std::filesystem::absolute(toStdPath(path)));
+    return fromStdPath(std::filesystem::absolute(toStdPath(path)));
 }
 
 NativePath fs::tempDir() {

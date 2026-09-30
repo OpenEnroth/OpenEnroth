@@ -58,17 +58,18 @@ UNIT_TEST(Fs, LsNotADirectory) {
 }
 
 UNIT_TEST(Fs, Absolute) {
-    // An empty path resolves to the cwd, and an absolute path stays as it is.
+    // A relative path resolves against the cwd, and an absolute path stays as it is.
     NativePath cwd = fs::cwd();
-    EXPECT_EQ(fs::absolute(""), cwd);
     EXPECT_EQ(fs::absolute("a"), cwd / NativePath("a"));
     EXPECT_EQ(fs::absolute(cwd), cwd);
 }
 
 UNIT_TEST(Fs, EmptyPath) {
-    // The empty path doesn't name the current directory.
+    // An empty path is invalid, and behaves as a path that doesn't exist and can't be created.
     EXPECT_FALSE(fs::exists(""));
     EXPECT_EQ(fs::stat(""), FileStat());
     EXPECT_THROW((void) fs::ls(""), std::runtime_error);
+    EXPECT_FALSE(fs::remove(""));
     EXPECT_THROW(fs::mkdirs(""), std::runtime_error);
+    EXPECT_THROW((void) fs::absolute(""), std::runtime_error);
 }
