@@ -163,6 +163,11 @@ jobs:
               sudo apt-get install -y libglu1-mesa-dev
             fi
 
+      - name: '[darwin] Install dependencies'
+        if: matrix.platform == 'darwin'
+        run: |
+          pip3 install --break-system-packages "dmgbuild==$DMGBUILD_VERSION"
+
       - name: '[windows] Set up MSVC environment'
         if: matrix.platform == 'windows'
         uses: ilammy/msvc-dev-cmd@v1
@@ -253,11 +258,6 @@ jobs:
           else
             cp android/openenroth/build/outputs/apk/release/openenroth-release*.apk "$RELEASE_FILE" # -unsigned without a keystore.
           fi
-
-      - name: '[darwin] Install dmgbuild'
-        if: matrix.platform == 'darwin'
-        run: |
-          pip3 install --break-system-packages "dmgbuild==$DMGBUILD_VERSION"
 
       - name: '[darwin] Package'
         if: matrix.platform == 'darwin'
