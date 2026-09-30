@@ -20,20 +20,19 @@ void checkDecorationEvents();
 void eventProcessor(int eventId, Pid targetObj, bool canShowMessages, int startStep = 0);
 
 /**
- * @param continuation                  What goes on with the event that stops for the dialogue it opened, once the
- *                                      dialogue closes and lets it. Empty if nothing waits for the dialogue.
+ * @param continuation                  Callback that resumes an event paused on a dialogue, or `nullptr` for none.
  */
 void setEventContinuation(std::function<void()> continuation);
 
 bool hasEventContinuation();
 
 /**
- * Called when a dialogue that an event stopped for closes and lets the event go on.
+ * Runs the stored continuation, if there is one, and clears it.
  */
 void continueSavedEvent();
 
 /**
- * Called when a dialogue that an event stopped for closes without letting the event go on.
+ * Clears the stored continuation without running it.
  */
 void cancelSavedEvent();
 
