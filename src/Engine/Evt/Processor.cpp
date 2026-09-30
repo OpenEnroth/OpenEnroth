@@ -1,5 +1,7 @@
 #include "Processor.h"
 
+#include <functional>
+#include <utility>
 #include <vector>
 #include <string>
 
@@ -43,8 +45,7 @@ static std::vector<int> decorationsWithEvents;
 // Do not needed in practice but can be considered optimization to avoid checking timers too often.
 static Time timerGuard;
 
-int savedEventID;
-int savedEventStep;
+static std::function<void()> eventContinuation;
 LevelDecoration *savedDecoration;
 
 void initDecorationEvents() {
@@ -172,6 +173,23 @@ void eventProcessor(int eventId, Pid targetObj, bool canShowMessages, int startS
     if (interpreter.executeRegular(startStep)) {
         onMapLeave();
     }
+}
+
+void setEventContinuation(std::function<void()> continuation) {
+    eventContinuation = std::move(continuation);
+}
+
+bool hasEventContinuation() {
+    return eventContinuation != nullptr;
+}
+
+void continueSavedEvent() {
+    if (std::function<void()> continuation = std::exchange(eventContinuation, nullptr))
+        continuation();
+}
+
+void cancelSavedEvent() {
+    eventContinuation = nullptr;
 }
 
 bool npcDialogueEventProcessor(int eventId, int startStep) {
