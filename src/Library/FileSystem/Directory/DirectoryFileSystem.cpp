@@ -5,7 +5,6 @@
 #include <memory>
 #include <stdexcept>
 #include <string>
-#include <utility>
 
 #include "Library/FileSystem/Interface/FileSystemException.h"
 

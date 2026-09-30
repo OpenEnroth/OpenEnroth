@@ -1,12 +1,9 @@
 #pragma once
 
-#include <cstdint>
 #include <vector>
 #include <string>
 #include <string_view>
 #include <memory>
-#include <utility>
-#include <compare>
 
 #include "Utility/Memory/Blob.h"
 #include "Utility/Streams/InputStream.h"

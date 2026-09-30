@@ -6,18 +6,23 @@
 #include "Utility/System/NativePath.h"
 
 /**
- * File system calls on `NativePath`s. An empty path is invalid, and every call treats it as a path that doesn't exist.
+ * File system calls on `NativePath`s. An empty path is invalid. `exists`, `stat` and `remove` treat it as a path that
+ * doesn't exist, and the other calls throw.
  */
 namespace fs {
 
 /**
- * @param path                          Path to check. Never throws, returns `false` on errors.
+ * Never throws, errors read as a missing path.
+ *
+ * @param path                          Path to check.
  * @return                              Whether `path` exists.
  */
 [[nodiscard]] bool exists(const NativePath &path);
 
 /**
- * @param path                          Path to stat. Never throws.
+ * Never throws.
+ *
+ * @param path                          Path to stat.
  * @return                              Stats for `path`, or an empty `FileStat` on errors, or if `path` is neither
  *                                      a file nor a directory.
  */
@@ -39,8 +44,9 @@ namespace fs {
  *
  * @param path                          Path to a directory to list.
  * @param[out] entries                  Vector to append the entries to.
+ * @throws std::runtime_error           Same as the overload above.
  */
-void ls(const NativePath &path, std::vector<DirectoryEntry> *entries); // Throws like the overload above.
+void ls(const NativePath &path, std::vector<DirectoryEntry> *entries);
 
 /**
  * Removes the file or directory at `path`. A directory is removed with everything that's in it.

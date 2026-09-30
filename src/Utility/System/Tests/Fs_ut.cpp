@@ -23,6 +23,7 @@ UNIT_TEST(Fs, LsRemoveMkdirs) {
     ScopedTestFolder dir("tmp_fs_dir");
 
     fs::mkdirs("tmp_fs_dir/a/b");
+    EXPECT_TRUE(fs::exists("tmp_fs_dir/a/b"));
     EXPECT_EQ(fs::stat("tmp_fs_dir/a/b"), FileStat(FILE_DIRECTORY, 0));
     fs::mkdirs("tmp_fs_dir/a/b"); // Already exists.
 
@@ -52,8 +53,9 @@ UNIT_TEST(Fs, LsNotADirectory) {
     EXPECT_THROW((void) fs::ls("tmp_fs_doesnt_exist"), std::runtime_error);
     EXPECT_THROW((void) fs::ls("tmp_fs_not_a_dir.txt"), std::runtime_error);
 
+    EXPECT_THROW(fs::mkdirs("tmp_fs_not_a_dir.txt"), std::runtime_error);
+
     ScopedTestFolder dir("tmp_fs_empty_dir");
-    fs::mkdirs("tmp_fs_empty_dir");
     EXPECT_TRUE(fs::ls("tmp_fs_empty_dir").empty());
 }
 
@@ -72,4 +74,9 @@ UNIT_TEST(Fs, EmptyPath) {
     EXPECT_FALSE(fs::remove(""));
     EXPECT_THROW(fs::mkdirs(""), std::runtime_error);
     EXPECT_THROW((void) fs::absolute(""), std::runtime_error);
+}
+
+UNIT_TEST(Fs, TempDir) {
+    // The temp directory exists.
+    EXPECT_EQ(fs::stat(fs::tempDir()).type, FILE_DIRECTORY);
 }

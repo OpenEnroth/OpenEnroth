@@ -34,11 +34,11 @@ FileStat fs::stat(const NativePath &path) {
     bool isRegular = entry.is_regular_file(ec);
     bool isDirectory = !isRegular && entry.is_directory(ec);
     if (!isRegular && !isDirectory)
-        return {}; // Return an empty stat on error or if it's not a file / directory.
+        return {};
 
     std::int64_t size = 0;
     if (isRegular) {
-        size = std::filesystem::file_size(stdPath, ec);
+        size = entry.file_size(ec); // Cached in the entry on Windows, so no second syscall there.
         if (ec)
             return {};
     }

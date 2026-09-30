@@ -31,13 +31,13 @@ UNIT_TEST(DirectoryFileSystem, LsFile) {
     ScopedTestFile tmp("1.txt", "");
 
     DirectoryFileSystem fs(fs::cwd());
-    EXPECT_ANY_THROW((void) fs.ls("1.txt"));
+    EXPECT_THROW_MESSAGE((void) fs.ls("1.txt"), "is not a directory");
 }
 
 UNIT_TEST(DirectoryFileSystem, LsNonExistent) {
     // Make sure ls() throws when called on a folder that doesn't exist.
     DirectoryFileSystem fs(fs::cwd());
-    EXPECT_ANY_THROW((void) fs.ls("this_dir_doesnt_exist"));
+    EXPECT_THROW_MESSAGE((void) fs.ls("this_dir_doesnt_exist"), "doesn't exist");
 }
 
 UNIT_TEST(DirectoryFileSystem, ExistsRoot) {
@@ -90,6 +90,17 @@ UNIT_TEST(DirectoryFileSystem, WriteCreatesDirs) {
     EXPECT_EQ(fs.read("1.txt").str(), "a");
     EXPECT_EQ(fs.read("a/b/2.txt").str(), "bc");
 }
+
+#ifndef _WINDOWS
+UNIT_TEST(DirectoryFileSystem, LsHidesBackslashNames) {
+    // A backslash is an ordinary character in a POSIX file name, but a separator in a FileSystem path.
+    ScopedTestFolder dir("tmp_dfs_backslash");
+    ScopedTestFile tmp("tmp_dfs_backslash/a\\b.txt", "");
+
+    DirectoryFileSystem fs(NativePath("tmp_dfs_backslash"));
+    EXPECT_TRUE(fs.ls("").empty());
+}
+#endif
 
 UNIT_TEST(DirectoryFileSystem, DisplayPathSymmetry) {
     ScopedTestFile tmp("1.txt", "");

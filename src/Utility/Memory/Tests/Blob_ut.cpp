@@ -71,7 +71,7 @@ UNIT_TEST(Blob, DisplayPathFromFile) {
     ScopedTestFile tmp(fileName, "123");
 
     std::string displayPath = Blob::fromFile(fileName).displayPath();
-    EXPECT_EQ(displayPath, fs::absolute(fileName).displayString());
+    EXPECT_EQ(displayPath, (fs::cwd() / fileName).displayString());
 }
 
 UNIT_TEST(Blob, DisplayPathFromEmptyFile) {
@@ -79,7 +79,7 @@ UNIT_TEST(Blob, DisplayPathFromEmptyFile) {
     ScopedTestFile tmp(fileName, "");
 
     std::string displayPath = Blob::fromFile(fileName).displayPath();
-    EXPECT_EQ(displayPath, fs::absolute(fileName).displayString());
+    EXPECT_EQ(displayPath, (fs::cwd() / fileName).displayString());
 }
 
 UNIT_TEST(Blob, DisplayPathFromStream) {
@@ -88,7 +88,7 @@ UNIT_TEST(Blob, DisplayPathFromStream) {
 
     FileInputStream in(fileName);
     std::string displayPath = Blob::read(&in, 2).displayPath();
-    EXPECT_EQ(displayPath, fs::absolute(fileName).displayString());
+    EXPECT_EQ(displayPath, (fs::cwd() / fileName).displayString());
 }
 
 UNIT_TEST(Blob, ExceptionMessages) {
