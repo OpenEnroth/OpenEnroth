@@ -1,7 +1,5 @@
 #include "ImageLoader.h"
 
-#include <cassert>
-#include <algorithm>
 #include <string_view>
 #include <memory>
 #include <utility>
@@ -15,7 +13,6 @@
 #include "Engine/Resources/ResourceManager.h"
 #include "Engine/Resources/LodSpriteCache.h"
 
-#include "Library/Image/ImageFunctions.h"
 #include "Library/Image/Pcx.h"
 #include "Library/Image/Png.h"
 #include "Library/LodFormats/LodFormats.h"

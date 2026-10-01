@@ -2,7 +2,6 @@
 
 #include <string>
 
-#include "Library/Color/Color.h"
 #include "Library/Image/Image.h"
 
 class LodSpriteCache;

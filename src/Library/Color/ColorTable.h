@@ -60,7 +60,6 @@ class ColorTable {
     const Color NeonGreen = Color(30, 255, 30);         // #1EFF1E
     const Color Mahogany = Color(192, 64, 0);           // #C04000
     const Color Tawny = Color(200, 100, 0);             // #C86400
-    const Color TealMask = Color(0, 255, 255);          // #00FCF8
     const Color Cioccolato = Color(92, 49, 14);         // #5C310E
     const Color JazzberryJam = Color(168, 19, 118);     // #A81376
     const Color RioGrande = Color(200, 200, 5);         // #C8C805
