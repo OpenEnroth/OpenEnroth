@@ -30,10 +30,10 @@ int platformMain(int argc, char **argv) {
         std::ranges::sort(traceNames);
 
         for (const std::string &traceName : traceNames) {
-            NativePath tracePath = opts.testPath / NativePath(traceName);
-            testing::RegisterTest("Retrace", NativePath(traceName).withExtension("").toWtf8().c_str(),
+            NativePath traceFile(traceName);
+            testing::RegisterTest("Retrace", traceFile.withExtension("").toWtf8().c_str(),
                                   nullptr, nullptr, __FILE__, __LINE__,
-                                  [tracePath] { return new RetraceTest(tracePath); });
+                                  [tracePath = opts.testPath / traceFile] { return new RetraceTest(tracePath); });
         }
 
         testing::InitGoogleTest(&argc, argv);
