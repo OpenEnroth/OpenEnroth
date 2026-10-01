@@ -12,7 +12,7 @@
 namespace fs {
 
 /**
- * Never throws, errors read as a missing path.
+ * Checks whether `path` exists. Never throws, errors read as a missing path.
  *
  * @param path                          Path to check.
  * @return                              Whether `path` exists.
@@ -20,7 +20,7 @@ namespace fs {
 [[nodiscard]] bool exists(const NativePath &path);
 
 /**
- * Never throws.
+ * Looks up the type and size of `path`. Never throws.
  *
  * @param path                          Path to stat.
  * @return                              Stats for `path`, or an empty `FileStat` on errors, or if `path` is neither
@@ -78,11 +78,13 @@ void mkdirs(const NativePath &path);
 [[nodiscard]] NativePath tmp();
 
 /**
- * Resolution isn't lexical on Windows. A drive-relative `"C:x"` resolves against the current directory of drive C,
- * which only the OS knows.
+ * Resolves `path` against the current directory.
+ *
+ * On Windows this isn't lexical. A drive-relative `"C:x"` resolves against the current directory of drive C, which
+ * only the OS knows.
  *
  * @param path                          Path to resolve.
- * @return                              Absolute copy of `path`, resolved against the current directory.
+ * @return                              Absolute copy of `path`.
  * @throws Exception                    On errors.
  */
 [[nodiscard]] NativePath absolute(const NativePath &path);
