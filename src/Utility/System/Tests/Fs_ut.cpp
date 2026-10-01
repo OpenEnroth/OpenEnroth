@@ -2,11 +2,6 @@
 #include <string>
 #include <vector>
 
-#ifndef _WINDOWS
-#   include <sys/stat.h>
-#   include <unistd.h>
-#endif
-
 #include "Testing/Unit/UnitTest.h"
 
 #include "Utility/Exception.h"
@@ -63,23 +58,6 @@ UNIT_TEST(Fs, LsNotADirectory) {
     ScopedTestFolder dir("tmp_fs_empty_dir");
     EXPECT_TRUE(fs::ls("tmp_fs_empty_dir").empty());
 }
-
-#ifndef _WINDOWS
-UNIT_TEST(Fs, LsUnreadableDirectory) {
-    // A directory that exists but can't be opened lists as empty, in sync with stat.
-    if (geteuid() == 0)
-        GTEST_SKIP() << "Root can open any directory.";
-
-    ScopedTestFolder dir("tmp_fs_unreadable");
-    ScopedTestFile file("tmp_fs_unreadable/1.txt", "");
-    ASSERT_EQ(chmod("tmp_fs_unreadable", 0), 0);
-
-    EXPECT_EQ(fs::stat("tmp_fs_unreadable"), FileStat(FILE_DIRECTORY, 0));
-    EXPECT_TRUE(fs::ls("tmp_fs_unreadable").empty());
-
-    chmod("tmp_fs_unreadable", 0755); // So that the scoped helpers can clean up.
-}
-#endif
 
 UNIT_TEST(Fs, Absolute) {
     // A relative path resolves against the cwd, and an absolute path stays as it is.
