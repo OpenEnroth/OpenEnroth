@@ -167,7 +167,6 @@ jobs:
         if: matrix.platform == 'darwin'
         run: |
           pipx install "dmgbuild==$DMGBUILD_VERSION"
-          pipx environment --value PIPX_BIN_DIR >> "$GITHUB_PATH" # The runner puts it on PATH only in .bashrc, which steps don't read.
 
       - name: '[windows] Set up MSVC environment'
         if: matrix.platform == 'windows'
