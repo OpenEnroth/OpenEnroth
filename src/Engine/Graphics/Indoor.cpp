@@ -664,9 +664,7 @@ void BLV_UpdateDoors() {
 void BLV_UpdateDoorGeometry(BLVDoor* door, int distance) {
     // adjust verts to how open the door is
     for (int j = 0; j < door->numVertices; ++j) {
-        pIndoor->vertices[door->pVertexIDs[j]].x = door->direction.x * distance + door->pXOffsets[j];
-        pIndoor->vertices[door->pVertexIDs[j]].y = door->direction.y * distance + door->pYOffsets[j];
-        pIndoor->vertices[door->pVertexIDs[j]].z = door->direction.z * distance + door->pZOffsets[j];
+        pIndoor->vertices[door->pVertexIDs[j]] = door->direction * distance + door->offsets[j];
     }
 
     for (int j = 0; j < door->numFaces; ++j) {

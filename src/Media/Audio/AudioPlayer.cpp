@@ -247,9 +247,9 @@ void AudioPlayer::playSound(SoundId eSoundID, SoundPlaybackMode mode, Pid pid) {
                 assert(uCurrentlyLoadedLevelType == LEVEL_INDOOR);
                 assert((int)object_id < pIndoor->doors.size());
 
-                sample->SetPosition(pIndoor->doors[object_id].pXOffsets[0],
-                                    pIndoor->doors[object_id].pYOffsets[0],
-                                    pIndoor->doors[object_id].pZOffsets[0], MAX_SOUND_DIST);
+                sample->SetPosition(pIndoor->doors[object_id].offsets[0].x,
+                                    pIndoor->doors[object_id].offsets[0].y,
+                                    pIndoor->doors[object_id].offsets[0].z, MAX_SOUND_DIST);
 
                 result = _regularSoundPool.playUniquePid(sample, si->dataSource, pid, true);
 

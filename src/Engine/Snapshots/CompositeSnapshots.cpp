@@ -399,17 +399,21 @@ void reconstruct(const IndoorDelta_MM7 &src, IndoorLocation *dst) {
         pDoor->pDeltaVs = dst->doorsData.data() + j;
         j += pDoor->numFaces;
 
-        pDoor->pXOffsets = dst->doorsData.data() + j;
+        size_t xOffsetsStart = j;
         j += pDoor->numOffsets;
 
-        pDoor->pYOffsets = dst->doorsData.data() + j;
+        size_t yOffsetsStart = j;
         j += pDoor->numOffsets;
 
-        pDoor->pZOffsets = dst->doorsData.data() + j;
+        size_t zOffsetsStart = j;
         j += pDoor->numOffsets;
 
         if (j > dst->doorsData.size())
             throw Exception("BLV door data overflow: offset {} exceeds size {}", j, dst->doorsData.size());
+
+        pDoor->offsets.resize(pDoor->numOffsets);
+        for (size_t k = 0; k < pDoor->numOffsets; ++k)
+            pDoor->offsets[k] = Vec3f(dst->doorsData[xOffsetsStart + k], dst->doorsData[yOffsetsStart + k], dst->doorsData[zOffsetsStart + k]);
     }
 
     for (size_t i = 0; i < dst->doors.size(); ++i) {
@@ -427,7 +431,7 @@ void reconstruct(const IndoorDelta_MM7 &src, IndoorLocation *dst) {
         closedVertices = dst->vertices;
         for (const BLVDoor &door : dst->doors)
             for (int i = 0; i < door.numVertices; ++i)
-                closedVertices[door.pVertexIDs[i]] = door.direction * door.moveLength + Vec3f(door.pXOffsets[i], door.pYOffsets[i], door.pZOffsets[i]);
+                closedVertices[door.pVertexIDs[i]] = door.direction * door.moveLength + door.offsets[i];
     }
 
     for (BLVFace &face : dst->faces)
