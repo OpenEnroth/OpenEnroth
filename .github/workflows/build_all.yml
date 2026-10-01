@@ -40,6 +40,7 @@ env:
   NDK_VERSION: '28.1.13356709'
   XCODE_VERSION: '16.3'
   JAVA_VERSION: '17'
+  DMGBUILD_VERSION: '1.6.7'
   # This is required for ccache to work for android build, otherwise we get 100% cache misses.
   CCACHE_COMPILERCHECK: content
 
@@ -165,7 +166,8 @@ jobs:
       - name: '[darwin] Install dependencies'
         if: matrix.platform == 'darwin'
         run: |
-          brew install dmgbuild
+          pipx install "dmgbuild==$DMGBUILD_VERSION"
+          pipx environment --value PIPX_BIN_DIR >> "$GITHUB_PATH" # The runner puts it on PATH only in .bashrc, which steps don't read.
 
       - name: '[windows] Set up MSVC environment'
         if: matrix.platform == 'windows'
