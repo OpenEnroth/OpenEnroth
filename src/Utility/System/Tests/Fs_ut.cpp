@@ -1,10 +1,10 @@
 #include <algorithm>
-#include <stdexcept>
 #include <string>
 #include <vector>
 
 #include "Testing/Unit/UnitTest.h"
 
+#include "Utility/Exception.h"
 #include "Utility/System/Fs.h"
 
 UNIT_TEST(Fs, ExistsStat) {
@@ -50,10 +50,10 @@ UNIT_TEST(Fs, LsNotADirectory) {
     // ls throws for a path that isn't a directory, so an empty listing always means an empty directory.
     ScopedTestFile file("tmp_fs_not_a_dir.txt", "lol");
 
-    EXPECT_THROW((void) fs::ls("tmp_fs_doesnt_exist"), std::runtime_error);
-    EXPECT_THROW((void) fs::ls("tmp_fs_not_a_dir.txt"), std::runtime_error);
+    EXPECT_THROW_MESSAGE((void) fs::ls("tmp_fs_doesnt_exist"), "Couldn't list 'tmp_fs_doesnt_exist': ");
+    EXPECT_THROW((void) fs::ls("tmp_fs_not_a_dir.txt"), Exception);
 
-    EXPECT_THROW(fs::mkdirs("tmp_fs_not_a_dir.txt"), std::runtime_error);
+    EXPECT_THROW(fs::mkdirs("tmp_fs_not_a_dir.txt"), Exception);
 
     ScopedTestFolder dir("tmp_fs_empty_dir");
     EXPECT_TRUE(fs::ls("tmp_fs_empty_dir").empty());
@@ -70,10 +70,10 @@ UNIT_TEST(Fs, EmptyPath) {
     // An empty path is invalid, and behaves as a path that doesn't exist and can't be created.
     EXPECT_FALSE(fs::exists(""));
     EXPECT_EQ(fs::stat(""), FileStat());
-    EXPECT_THROW((void) fs::ls(""), std::runtime_error);
+    EXPECT_THROW((void) fs::ls(""), Exception);
     EXPECT_FALSE(fs::remove(""));
-    EXPECT_THROW(fs::mkdirs(""), std::runtime_error);
-    EXPECT_THROW((void) fs::absolute(""), std::runtime_error);
+    EXPECT_THROW(fs::mkdirs(""), Exception);
+    EXPECT_THROW((void) fs::absolute(""), Exception);
 }
 
 UNIT_TEST(Fs, TempDir) {

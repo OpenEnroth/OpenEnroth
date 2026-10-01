@@ -35,7 +35,7 @@ namespace fs {
  * @param path                          Path to a directory to list.
  * @return                              Directory entries, in unspecified order. Names are WTF-8 on Windows, byte
  *                                      strings on POSIX.
- * @throws std::runtime_error           If the directory can't be opened, e.g. if `path` doesn't exist or is a file.
+ * @throws Exception                    If the directory can't be opened, e.g. if `path` doesn't exist or is a file.
  */
 [[nodiscard]] std::vector<DirectoryEntry> ls(const NativePath &path);
 
@@ -44,7 +44,7 @@ namespace fs {
  *
  * @param path                          Path to a directory to list.
  * @param[out] entries                  Vector to append the entries to.
- * @throws std::runtime_error           Same as the overload above.
+ * @throws Exception                    Same as the overload above.
  */
 void ls(const NativePath &path, std::vector<DirectoryEntry> *entries);
 
@@ -53,7 +53,7 @@ void ls(const NativePath &path, std::vector<DirectoryEntry> *entries);
  *
  * @param path                          Path to remove.
  * @return                              Whether anything was removed.
- * @throws std::runtime_error           On errors, e.g. missing permissions.
+ * @throws Exception                    On errors, e.g. missing permissions.
  */
 bool remove(const NativePath &path);
 
@@ -61,13 +61,13 @@ bool remove(const NativePath &path);
  * Creates the directory at `path`, along with all missing parents. Does nothing if it already exists.
  *
  * @param path                          Path to the directory to create.
- * @throws std::runtime_error           On errors.
+ * @throws Exception                    On errors.
  */
 void mkdirs(const NativePath &path);
 
 /**
  * @return                              Current working directory.
- * @throws std::runtime_error           On errors.
+ * @throws Exception                    On errors.
  */
 [[nodiscard]] NativePath cwd();
 
@@ -77,13 +77,13 @@ void mkdirs(const NativePath &path);
  *
  * @param path                          Path to resolve.
  * @return                              Absolute copy of `path`, resolved against the current directory.
- * @throws std::runtime_error           On errors.
+ * @throws Exception                    On errors.
  */
 [[nodiscard]] NativePath absolute(const NativePath &path);
 
 /**
  * @return                              Directory for temporary files.
- * @throws std::runtime_error           On errors.
+ * @throws Exception                    On errors.
  */
 [[nodiscard]] NativePath tempDir();
 

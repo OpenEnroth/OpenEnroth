@@ -3,13 +3,13 @@
 #include <cassert>
 #include <vector>
 #include <memory>
-#include <stdexcept>
 #include <string>
 
 #include "Library/FileSystem/Interface/FileSystemException.h"
 
 #include "Utility/Streams/FileInputStream.h"
 #include "Utility/Streams/FileOutputStream.h"
+#include "Utility/Exception.h"
 #include "Utility/System/Fs.h"
 
 DirectoryFileSystem::DirectoryFileSystem(const NativePath &root) {
@@ -33,7 +33,7 @@ void DirectoryFileSystem::_ls(FileSystemPathView path, std::vector<DirectoryEntr
 
     try {
         fs::ls(basePath, entries);
-    } catch (const std::runtime_error &) {
+    } catch (const Exception &) {
         if (path.isEmpty())
             return; // ls("") always works.
 
