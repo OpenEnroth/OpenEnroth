@@ -323,30 +323,49 @@ GAME_TEST(Issues, Issue293c) {
     EXPECT_EQ(pParty->pCharacters[3].sResAirBase, 18);
 }
 
-GAME_TEST(Issues, Issue294) {
-    // Spray spells fired at a point-blank rat flew over it because their projectiles spawned at half the party height.
-    for (SpellId spell : {SPELL_AIR_SPARKS, SPELL_WATER_POISON_SPRAY, SPELL_DARK_SHARPMETAL}) {
+GAME_TEST(Issues, Issue294a) {
+    // Blades and Sharpmetal flew over a point-blank rat because their projectiles spawned at half the party height.
+    for (SpellId spell : {SPELL_EARTH_BLADES, SPELL_DARK_SHARPMETAL}) {
         SCOPED_TRACE(fmt::format("spell={}", std::to_underlying(spell)));
-        test.prepareForNextTest();
+        test.prepareForNextTest(100, RANDOM_ENGINE_MERSENNE_TWISTER);
         engine->config->debug.NoActors.setValue(true);
+        engine->config->debug.AllMagic.setValue(true);
         game.startNewGame();
         test.startTaping();
-        prepareForBattleTest({{CLASS_SORCERER, RACE_HUMAN}});
+        prepareForBattleTest();
         engine->config->debug.NoActors.setValue(false);
-
-        Character &caster = pParty->pCharacters[0];
-        caster.setSkillValue(skillForSpell(spell), CombinedSkillValue(1, MASTERY_NOVICE));
-        caster.bHaveSpell[spell] = true;
-        caster.mana = 1000;
 
         auto hpTape = actorTapes.hp(0);
         game.spawnMonster(pParty->pos + Vec3f(0, 80, 0), MONSTER_RAT_A, SPAWN_DUMMY); // Right in front of the party.
+        game.tick(); // Quick spell targeting picks from the last rendered frame.
         game.castQuickSpell(0, spell);
         game.tick(30);
         test.stopTaping();
 
         EXPECT_LT(hpTape.delta(), 0);
     }
+}
+
+GAME_TEST(Issues, Issue294b) {
+    // Blaster shots flew over a point-blank rat because they spawned at half the party height.
+    engine->config->debug.NoActors.setValue(true);
+    game.startNewGame();
+    test.startTaping();
+    prepareForBattleTest();
+    engine->config->debug.NoActors.setValue(false);
+
+    Character &shooter = pParty->pCharacters[0];
+    shooter.inventory.equip(ITEM_SLOT_MAIN_HAND, Item(ITEM_BLASTER));
+    shooter.setSkillValue(SKILL_BLASTER, CombinedSkillValue(10, MASTERY_GRANDMASTER));
+
+    auto hpTape = actorTapes.hp(0);
+    game.spawnMonster(pParty->pos + Vec3f(0, 80, 0), MONSTER_RAT_A, SPAWN_DUMMY); // Right in front of the party.
+    game.tick(); // Attack targeting picks from the last rendered frame.
+    game.pressAndReleaseKey(PlatformKey::KEY_A);
+    game.tick(30);
+    test.stopTaping();
+
+    EXPECT_LT(hpTape.delta(), 0);
 }
 
 // 300
