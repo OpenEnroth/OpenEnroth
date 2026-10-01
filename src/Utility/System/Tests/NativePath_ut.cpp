@@ -144,7 +144,7 @@ UNIT_TEST(NativePath, ExtendedLengthReachesWin32) {
     // gets stripped off the file name.
 
     // A single component is capped at 255 characters, so it takes two to get over MAX_PATH wherever temp is.
-    NativePath dir = fs::tempDir() / NativePath("oe_" + std::string(150, 'd'));
+    NativePath dir = fs::tmp() / NativePath("oe_" + std::string(150, 'd'));
     NativePath prefixed = NativePath::fromWtf8("//?/" + dir.toWtf8());
     ScopedTestFolder folder(dir);
 
@@ -220,7 +220,7 @@ UNIT_TEST(NativePath, InvalidUtf8RoundTrip) {
 UNIT_TEST(NativePath, InvalidUtf8FileNames) {
     // A name with invalid UTF-8 in it is not just convertible, it's also usable to actually open a file. APFS is the
     // exception, it only takes file names that are valid UTF-8, so this test doesn't run on MacOS.
-    NativePath tmpDir = fs::tempDir(); // A build dir can sit on an APFS-backed mount in a dev container.
+    NativePath tmpDir = fs::tmp(); // A build dir can sit on an APFS-backed mount in a dev container.
 
     for (std::string_view name : {"tmp_lol\xD0kek.txt", "tmp_lol\xFFkek.txt", "tmp_trailing\xD0"}) {
         NativePath path = tmpDir / NativePath::fromWtf8(name);

@@ -76,7 +76,7 @@ UNIT_TEST(Fs, EmptyPath) {
     EXPECT_THROW((void) fs::absolute(""), Exception);
 }
 
-UNIT_TEST(Fs, TempDir) {
+UNIT_TEST(Fs, Tmp) {
     // The temp directory exists.
-    EXPECT_EQ(fs::stat(fs::tempDir()).type, FILE_DIRECTORY);
+    EXPECT_EQ(fs::stat(fs::tmp()).type, FILE_DIRECTORY);
 }

@@ -72,6 +72,12 @@ void mkdirs(const NativePath &path);
 [[nodiscard]] NativePath cwd();
 
 /**
+ * @return                              Directory for temporary files.
+ * @throws Exception                    On errors.
+ */
+[[nodiscard]] NativePath tmp();
+
+/**
  * Resolution isn't lexical on Windows. A drive-relative `"C:x"` resolves against the current directory of drive C,
  * which only the OS knows.
  *
@@ -80,11 +86,5 @@ void mkdirs(const NativePath &path);
  * @throws Exception                    On errors.
  */
 [[nodiscard]] NativePath absolute(const NativePath &path);
-
-/**
- * @return                              Directory for temporary files.
- * @throws Exception                    On errors.
- */
-[[nodiscard]] NativePath tempDir();
 
 } // namespace fs

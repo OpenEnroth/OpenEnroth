@@ -120,6 +120,14 @@ NativePath fs::cwd() {
     return fromStdPath(result);
 }
 
+NativePath fs::tmp() {
+    std::error_code ec;
+    std::filesystem::path result = std::filesystem::temp_directory_path(ec);
+    if (ec)
+        throw Exception("Couldn't get the temp directory: {}", ec.message());
+    return fromStdPath(result);
+}
+
 NativePath fs::absolute(const NativePath &path) {
     checkNotEmpty("resolve", path);
 
@@ -127,13 +135,5 @@ NativePath fs::absolute(const NativePath &path) {
     std::filesystem::path result = std::filesystem::absolute(toStdPath(path), ec);
     if (ec)
         throwError("resolve", path, ec);
-    return fromStdPath(result);
-}
-
-NativePath fs::tempDir() {
-    std::error_code ec;
-    std::filesystem::path result = std::filesystem::temp_directory_path(ec);
-    if (ec)
-        throw Exception("Couldn't get the temp directory: {}", ec.message());
     return fromStdPath(result);
 }
