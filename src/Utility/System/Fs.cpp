@@ -68,8 +68,11 @@ void fs::ls(const NativePath &path, std::vector<DirectoryEntry> *entries) {
     std::error_code walkEc;
     std::filesystem::directory_iterator pos(toStdPath(path), walkEc);
     std::filesystem::directory_iterator end;
-    if (walkEc)
+    if (walkEc) {
+        if (stat(path).type == FILE_DIRECTORY)
+            return; // Exists but can't be opened, e.g. no permissions.
         throwError("list", path, walkEc);
+    }
 
     // Errors past this point are ignored. They're most likely permissions-related, and `stat` and `exists` ignore
     // them too. `operator++` is the throwing overload, so the loop calls `increment` with an `error_code`.

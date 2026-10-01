@@ -25,14 +25,14 @@ namespace fs {
 [[nodiscard]] FileStat stat(const NativePath &path);
 
 /**
- * Lists a directory. Entries that can't be stat'ed are skipped, so the result is always in sync with what `stat`
- * returns.
+ * Lists a directory. Entries that can't be stat'ed are skipped, and a directory that can't be opened lists as empty,
+ * so the result is always in sync with what `stat` returns.
  *
  * @param path                          Path to a directory to list.
  * @return                              Directory entries, in unspecified order. Names are WTF-8 on Windows, byte
  *                                      strings on POSIX.
- * @throws Exception                    If the directory can't be opened, e.g. if `path` is empty, doesn't exist,
- *                                      or is a file.
+ * @throws Exception                    If `path` isn't a directory, e.g. if it is empty, doesn't exist, or is a
+ *                                      file.
  */
 [[nodiscard]] std::vector<DirectoryEntry> ls(const NativePath &path);
 

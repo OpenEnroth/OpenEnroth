@@ -37,10 +37,7 @@ void DirectoryFileSystem::_ls(FileSystemPathView path, std::vector<DirectoryEntr
         if (path.isEmpty())
             return; // ls("") always works.
 
-        FileType type = fs::stat(basePath).type;
-        if (type == FILE_DIRECTORY)
-            return; // A directory that can't be opened lists as empty.
-        if (type == FILE_REGULAR)
+        if (fs::stat(basePath).type == FILE_REGULAR)
             FileSystemException::raise(this, FS_LS_FAILED_PATH_IS_FILE, path);
         FileSystemException::raise(this, FS_LS_FAILED_PATH_DOESNT_EXIST, path);
     }
