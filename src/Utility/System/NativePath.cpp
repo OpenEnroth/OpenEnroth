@@ -2,7 +2,6 @@
 
 #include <algorithm>
 #include <cstddef>
-#include <filesystem>
 #include <string>
 #include <string_view>
 
@@ -134,12 +133,6 @@ std::wstring NativePath::native() const {
 
 std::string NativePath::displayString() const {
     return txt::encodedToUtf8(_path, ENCODING_UTF8); // UTF-8 to UTF-8 conversion replaces all the invalid parts.
-}
-
-NativePath NativePath::absolute() const {
-    // Resolution is delegated to std::filesystem because on Windows it's not lexical. A drive-relative "C:x"
-    // resolves against the current directory of drive C, which only the OS knows.
-    return fromStdPath(_path.empty() ? std::filesystem::current_path() : std::filesystem::absolute(toStdPath()));
 }
 
 NativePath NativePath::withExtension(std::string_view extension) const {

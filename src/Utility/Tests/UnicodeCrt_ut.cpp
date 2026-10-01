@@ -8,6 +8,7 @@
 
 #include "Utility/Streams/FileOutputStream.h"
 #include "Utility/String/Encoding.h"
+#include "Utility/System/Fs.h"
 #include "Utility/UnicodeCrt.h"
 
 static const char8_t *u8prefix = u8"\u0444\u0430\u0439\u043B"; // "File" in Russian.
@@ -51,10 +52,9 @@ UNIT_TEST(UnicodeCrt, fopen) {
     EXPECT_EQ(status2, 0);
 #endif
 
-    // Using UTF-8 api directly here.
-    EXPECT_TRUE(std::filesystem::exists(u8path));
-    EXPECT_TRUE(std::filesystem::remove(u8path));
-    EXPECT_FALSE(std::filesystem::exists(u8path));
+    EXPECT_TRUE(fs::exists(NativePath::fromWtf8(path)));
+    EXPECT_TRUE(fs::remove(NativePath::fromWtf8(path)));
+    EXPECT_FALSE(fs::exists(NativePath::fromWtf8(path)));
 }
 
 UNIT_TEST(UnicodeCrt, filesystem_exists_remove) {
@@ -125,10 +125,9 @@ UNIT_TEST(UnicodeCrt, fstreams) {
 
     EXPECT_EQ(std::string_view(buffer), std::string_view(data));
 
-    // Using UTF-8 api directly here.
-    EXPECT_TRUE(std::filesystem::exists(u8path));
-    EXPECT_TRUE(std::filesystem::remove(u8path));
-    EXPECT_FALSE(std::filesystem::exists(u8path));
+    EXPECT_TRUE(fs::exists(NativePath::fromWtf8(path)));
+    EXPECT_TRUE(fs::remove(NativePath::fromWtf8(path)));
+    EXPECT_FALSE(fs::exists(NativePath::fromWtf8(path)));
 }
 
 #ifdef _WINDOWS

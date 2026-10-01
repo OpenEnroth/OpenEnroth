@@ -1,4 +1,3 @@
-#include <filesystem>
 #include <ranges>
 #include <string>
 #include <vector>
@@ -9,12 +8,13 @@
 #include "Library/FileSystem/Directory/DirectoryFileSystem.h"
 
 #include "Utility/Streams/FileOutputStream.h"
+#include "Utility/System/Fs.h"
 
 UNIT_TEST(DirectoryFileSystem, LsRoot) {
     // Make sure passing empty paths works as intended.
     ScopedTestFile tmp("1.txt", "");
 
-    DirectoryFileSystem fs1(NativePath("")); // Current dir.
+    DirectoryFileSystem fs1(fs::cwd());
     std::vector<DirectoryEntry> entries = fs1.ls("");
     EXPECT_TRUE(std::ranges::find(entries, "1.txt", &DirectoryEntry::name) != std::ranges::end(entries))
         << "size = " << entries.size() << ", [0] = " << (entries.empty() ? "<nothing>" : entries[0].name);
@@ -30,19 +30,19 @@ UNIT_TEST(DirectoryFileSystem, LsFile) {
     // Make sure ls() throws when called on a file.
     ScopedTestFile tmp("1.txt", "");
 
-    DirectoryFileSystem fs(NativePath("")); // Current dir.
-    EXPECT_ANY_THROW((void) fs.ls("1.txt"));
+    DirectoryFileSystem fs(fs::cwd());
+    EXPECT_THROW_MESSAGE((void) fs.ls("1.txt"), "is not a directory");
 }
 
 UNIT_TEST(DirectoryFileSystem, LsNonExistent) {
     // Make sure ls() throws when called on a folder that doesn't exist.
-    DirectoryFileSystem fs(NativePath("")); // Current dir.
-    EXPECT_ANY_THROW((void) fs.ls("this_dir_doesnt_exist"));
+    DirectoryFileSystem fs(fs::cwd());
+    EXPECT_THROW_MESSAGE((void) fs.ls("this_dir_doesnt_exist"), "doesn't exist");
 }
 
 UNIT_TEST(DirectoryFileSystem, ExistsRoot) {
     // Make sure exists("") works as intented.
-    DirectoryFileSystem fs1(NativePath("")); // Current dir.
+    DirectoryFileSystem fs1(fs::cwd());
     EXPECT_TRUE(fs1.exists(""));
 
     DirectoryFileSystem fs2(NativePath("this_dir_doesnt_exist"));
@@ -55,7 +55,7 @@ UNIT_TEST(DirectoryFileSystem, ExistsRoot) {
 
 UNIT_TEST(DirectoryFileSystem, StatRoot) {
     // Make sure stat("") works as intented.
-    DirectoryFileSystem fs1(NativePath("")); // Current dir.
+    DirectoryFileSystem fs1(fs::cwd());
     EXPECT_EQ(fs1.stat("").type, FILE_DIRECTORY);
 
     DirectoryFileSystem fs2(NativePath("this_dir_doesnt_exist")); // Non-existent dir.
@@ -80,15 +80,36 @@ UNIT_TEST(DirectoryFileSystem, WriteRootAsFile) {
     EXPECT_ANY_THROW(fs.write("", Blob()));
 }
 
+UNIT_TEST(DirectoryFileSystem, WriteCreatesDirs) {
+    // Writing creates the missing directories, the root included.
+    ScopedTestFolder dir("tmp_dfs_dir");
+    DirectoryFileSystem fs(NativePath("tmp_dfs_dir/root"));
+
+    fs.write("1.txt", Blob::fromString("a"));
+    fs.openForWriting("a/b/2.txt")->write("bc");
+    EXPECT_EQ(fs.read("1.txt").str(), "a");
+    EXPECT_EQ(fs.read("a/b/2.txt").str(), "bc");
+}
+
+#ifndef _WINDOWS
+UNIT_TEST(DirectoryFileSystem, LsHidesBackslashNames) {
+    // A backslash is an ordinary character in a POSIX file name, but a separator in a FileSystem path.
+    ScopedTestFolder dir("tmp_dfs_backslash");
+    ScopedTestFile tmp("tmp_dfs_backslash/a\\b.txt", "");
+
+    DirectoryFileSystem fs(NativePath("tmp_dfs_backslash"));
+    EXPECT_TRUE(fs.ls("").empty());
+}
+#endif
+
 UNIT_TEST(DirectoryFileSystem, DisplayPathSymmetry) {
     ScopedTestFile tmp("1.txt", "");
 
-    DirectoryFileSystem fs(NativePath(""));
+    DirectoryFileSystem fs(fs::cwd());
     Blob blob = fs.read("1.txt");
     std::unique_ptr<InputStream> stream = fs.openForReading("1.txt");
 
-    EXPECT_TRUE(blob.displayPath().ends_with("1.txt"));
-    EXPECT_TRUE(std::filesystem::path(blob.displayPath()).is_absolute());
+    EXPECT_EQ(blob.displayPath(), (fs::cwd() / NativePath("1.txt")).displayString());
     EXPECT_EQ(blob.displayPath(), stream->displayPath());
 }
 
@@ -110,7 +131,7 @@ UNIT_TEST(DirectoryFileSystem, EscapingPaths) {
 }
 
 UNIT_TEST(DirectoryFileSystem, EscapingDisplayPath) {
-    DirectoryFileSystem fs(NativePath(""));
+    DirectoryFileSystem fs(fs::cwd());
 
     EXPECT_TRUE(fs.displayPath("..").ends_with(".."));
 }

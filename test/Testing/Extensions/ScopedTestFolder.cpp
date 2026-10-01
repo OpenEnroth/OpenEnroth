@@ -2,19 +2,19 @@
 
 #include <gtest/gtest.h>
 
-#include <filesystem>
+#include "Utility/System/Fs.h"
 
 ScopedTestFolder::ScopedTestFolder(const NativePath &path) : _path(path) {
-    std::error_code ec;
-    std::filesystem::remove_all(_path.toStdPath(), ec); // An earlier run could have left the folder behind.
-    std::filesystem::create_directories(_path.toStdPath());
+    fs::remove(_path); // An earlier run could have left the folder behind.
+    fs::mkdirs(_path);
 
-    EXPECT_TRUE(std::filesystem::exists(_path.toStdPath()));
+    EXPECT_TRUE(fs::exists(_path));
 }
 
 ScopedTestFolder::~ScopedTestFolder() {
-    std::error_code ec;
-    std::filesystem::remove_all(_path.toStdPath(), ec);
+    try {
+        fs::remove(_path);
+    } catch (...) {} // Cleanup errors shouldn't throw out of a dtor.
 
-    EXPECT_FALSE(std::filesystem::exists(_path.toStdPath())); // A folder left behind poisons the next run.
+    EXPECT_FALSE(fs::exists(_path)); // A folder left behind poisons the next run.
 }

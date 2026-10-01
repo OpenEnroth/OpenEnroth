@@ -2,12 +2,13 @@
 
 #include <string>
 #include <vector>
-#include <filesystem>
 
 #include "Library/Logger/Logger.h"
 #include "Library/Environment/Interface/Environment.h"
 #include "Library/FileSystem/Directory/DirectoryFileSystem.h"
 #include "Library/FileSystem/Lowercase/LowercaseFileSystem.h"
+
+#include "Utility/System/Fs.h"
 
 static const std::vector<std::string_view> globalValidateList = {
     {"anims/magic7.vid"},
@@ -75,7 +76,7 @@ static std::vector<NativePath> resolvePaths(Environment *environment, const Path
     std::vector<NativePath> result;
 
     // Otherwise we check PWD first.
-    result.push_back(NativePath::fromStdPath(std::filesystem::current_path()));
+    result.push_back(fs::cwd());
 
     // Then we check paths from registry on Windows,...
     for (const char *registryKey : config.registryKeys) {
@@ -139,7 +140,7 @@ NativePath resolveMm7UserPath(Environment *environment) {
 #ifdef _WINDOWS
     std::string savedGames = environment->path(PATH_WINDOWS_SAVED_GAMES);
     if (savedGames.empty())
-        return {}; // Shouldn't really happen.
+        return fs::cwd(); // Shouldn't really happen.
     return NativePath::fromWtf8(fmt::format("{}/OpenEnroth", savedGames));
 #elif __ANDROID__
     return NativePath::fromWtf8(fmt::format("{}/.openenroth", environment->path(PATH_ANDROID_STORAGE_INTERNAL)));
