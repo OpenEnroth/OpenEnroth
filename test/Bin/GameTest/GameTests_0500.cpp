@@ -866,7 +866,7 @@ GAME_TEST(Issues, Issue792) {
     game.startNewGame();
     game.teleportTo(MAP_ERATHIA, Vec3f(-12216, 1900, 961), 90); // Next to a well.
     game.tick(20); // Erathia's timers fire once on the first visit.
-    game.pressAndReleaseKey(PlatformKey::KEY_SPACE); // Drink. Erathia's 1am timer clears the drinker's mark.
+    game.pressAndReleaseKey(PlatformKey::KEY_SPACE); // Drinking sets a character bit that a daily Erathia timer clears at 1am.
     game.tick(2);
 
     auto mapTape = tapes.map();
