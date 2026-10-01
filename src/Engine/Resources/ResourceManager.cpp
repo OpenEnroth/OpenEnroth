@@ -45,6 +45,8 @@ static Palette maskedPalette(const LodImage &image, const ResourceMask &mask) {
     return result;
 }
 
+// TODO(captainurist): move the edge blending and the PCX color keying into Library/Image. Sprites and generated
+//                     tiles will need them too.
 static Color processTransparentPixel(const GrayscaleImage &image, const Palette &palette, size_t x, size_t y) {
     size_t count = 0;
     size_t r = 0, g = 0, b = 0;
@@ -137,6 +139,7 @@ RgbaImage ResourceManager::bitmap(std::string_view filename) {
     }
 
     LodImage image = lod::decodeImage(_bitmapsLodReader.read(name));
+    // TODO(captainurist): PaletteManager lives in engine_graphics, above engine_resources. Move desaturation down.
     Palette palette = PaletteManager::createLoadedPalette(maskedPalette(image, valueOr(_masks.bitmaps, name)));
     if (std::ranges::all_of(palette.colors, _1 != 0, &Color::a))
         return makeRgbaImage(image.image, palette);

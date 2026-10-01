@@ -752,6 +752,8 @@ void FinalInitialization() {
 void MM7_LoadLods() {
     engine->resources()->open();
 
+    // TODO(captainurist): ResourceManager opens icons.lod and bitmaps.lod too. Move the buff loader, GUIFont,
+    //                     TileGenerator and PaletteManager over to it and drop these two caches.
     pIcons_LOD = new LodTextureCache;
     pIcons_LOD->open(dfs->read("data/icons.lod"));
 
