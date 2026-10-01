@@ -40,6 +40,7 @@ env:
   NDK_VERSION: '28.1.13356709'
   XCODE_VERSION: '16.3'
   JAVA_VERSION: '17'
+  DMGBUILD_VERSION: '1.6.7'
   # This is required for ccache to work for android build, otherwise we get 100% cache misses.
   CCACHE_COMPILERCHECK: content
 
@@ -162,6 +163,11 @@ jobs:
               sudo apt-get install -y libglu1-mesa-dev
             fi
 
+      - name: '[darwin] Install dependencies'
+        if: matrix.platform == 'darwin'
+        run: |
+          pipx install "dmgbuild==$DMGBUILD_VERSION"
+
       - name: '[windows] Set up MSVC environment'
         if: matrix.platform == 'windows'
         uses: ilammy/msvc-dev-cmd@v1
@@ -253,22 +259,16 @@ jobs:
             cp android/openenroth/build/outputs/apk/release/openenroth-release*.apk "$RELEASE_FILE" # -unsigned without a keystore.
           fi
 
-      - name: '[darwin] Prepare files for release'
-        if: matrix.platform == 'darwin'
-        uses: Wandalen/wretry.action@v3.8.0
-        with:
-          attempt_limit: 3
-          attempt_delay: 5000
-          command: |
-            mkdir -p dist
-            cp -r build/src/Bin/OpenEnroth/OpenEnroth.app dist/
-            hdiutil create "$RELEASE_FILE" -ov -volname "OpenEnroth" -fs HFS+ -srcfolder dist
-
-      - name: '[windows] Prepare files for release'
-        if: matrix.platform == 'windows'
-        working-directory: build/src/Bin/OpenEnroth
+      - name: '[darwin/windows] Package'
+        if: matrix.platform == 'darwin' || matrix.platform == 'windows'
+        working-directory: build
         run: |
-          7z a -tzip "$GITHUB_WORKSPACE/$RELEASE_FILE" OpenEnroth.exe OpenEnroth.pdb
+          ninja OpenEnroth_Package
+
+      - name: '[darwin/windows] Prepare files for release'
+        if: matrix.platform == 'darwin' || matrix.platform == 'windows'
+        run: |
+          mv "build/distribution/OpenEnroth.${{matrix.release_extension}}" "$RELEASE_FILE"
 
       - name: '[darwin/windows/android] Publish release'
         if: inputs.releaseTag != '' && matrix.platform != 'linux' # Linux ships as a Flatpak.
