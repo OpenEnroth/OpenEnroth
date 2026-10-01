@@ -25,8 +25,8 @@ namespace fs {
 [[nodiscard]] FileStat stat(const NativePath &path);
 
 /**
- * Lists a directory. Once the directory is open, errors are ignored. Entries that can't be stat'ed are skipped, so
- * the result is always in sync with what `stat` returns.
+ * Lists a directory. Entries that can't be stat'ed are skipped, so the result is always in sync with what `stat`
+ * returns.
  *
  * @param path                          Path to a directory to list.
  * @return                              Directory entries, in unspecified order. Names are WTF-8 on Windows, byte
