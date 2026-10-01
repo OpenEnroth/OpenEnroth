@@ -5,17 +5,13 @@
 #include "Utility/System/FileStat.h"
 #include "Utility/System/NativePath.h"
 
-/**
- * File system calls on `NativePath`s. An empty path is invalid. `exists`, `stat` and `remove` treat it as a path that
- * doesn't exist, and the other calls throw.
- */
 namespace fs {
 
 /**
  * Checks whether `path` exists. Never throws, errors read as a missing path.
  *
  * @param path                          Path to check.
- * @return                              Whether `path` exists.
+ * @return                              Whether `path` exists. `false` for an empty path.
  */
 [[nodiscard]] bool exists(const NativePath &path);
 
@@ -23,8 +19,8 @@ namespace fs {
  * Looks up the type and size of `path`. Never throws.
  *
  * @param path                          Path to stat.
- * @return                              Stats for `path`, or an empty `FileStat` on errors, or if `path` is neither
- *                                      a file nor a directory.
+ * @return                              Stats for `path`, or an empty `FileStat` on errors, for an empty path, or
+ *                                      if `path` is neither a file nor a directory.
  */
 [[nodiscard]] FileStat stat(const NativePath &path);
 
@@ -35,7 +31,8 @@ namespace fs {
  * @param path                          Path to a directory to list.
  * @return                              Directory entries, in unspecified order. Names are WTF-8 on Windows, byte
  *                                      strings on POSIX.
- * @throws Exception                    If the directory can't be opened, e.g. if `path` doesn't exist or is a file.
+ * @throws Exception                    If the directory can't be opened, e.g. if `path` is empty, doesn't exist,
+ *                                      or is a file.
  */
 [[nodiscard]] std::vector<DirectoryEntry> ls(const NativePath &path);
 
@@ -52,7 +49,7 @@ void ls(const NativePath &path, std::vector<DirectoryEntry> *entries);
  * Removes the file or directory at `path`. A directory is removed with everything that's in it.
  *
  * @param path                          Path to remove.
- * @return                              Whether anything was removed.
+ * @return                              Whether anything was removed. `false` for an empty path.
  * @throws Exception                    On errors, e.g. missing permissions.
  */
 bool remove(const NativePath &path);
@@ -61,7 +58,7 @@ bool remove(const NativePath &path);
  * Creates the directory at `path`, along with all missing parents. Does nothing if it already exists.
  *
  * @param path                          Path to the directory to create.
- * @throws Exception                    On errors.
+ * @throws Exception                    On errors, and for an empty path.
  */
 void mkdirs(const NativePath &path);
 
@@ -85,7 +82,7 @@ void mkdirs(const NativePath &path);
  *
  * @param path                          Path to resolve.
  * @return                              Absolute copy of `path`.
- * @throws Exception                    On errors.
+ * @throws Exception                    On errors, and for an empty path.
  */
 [[nodiscard]] NativePath absolute(const NativePath &path);
 

@@ -19,6 +19,9 @@
  * done by our own code, and the OS is only ever handed `wchar_t` strings. `native` / `fromNative` are the conversions
  * to use when talking to the OS.
  *
+ * An empty path names nothing. It is what a default-constructed `NativePath` holds, and joining it is a no-op, so
+ * `"" / "a"` is `"a"`. The `fs::` calls treat it as invalid.
+ *
  * File names on Linux are arbitrary byte strings, and these bytes are passed through as-is, so the string returned
  * by `toWtf8` is not necessarily valid UTF-8, and not even necessarily valid WTF-8. Nothing is validated on the way
  * in either, so on Windows it is the caller that keeps the string valid WTF-8, and `native` is where an invalid
