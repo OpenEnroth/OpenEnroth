@@ -596,6 +596,7 @@ void Game::processQueuedMessages() {
                                     onEscape();
                                     continue;
                                 case SCREEN_INPUT_BLV:  // click escape
+                                    dropEventContinuation();
                                     if (uCurrentHouse_Animation == 153) // TODO(Nik-RE-dev): what is this? Btw, 153 == HOUSE_EARTH_GUILD_STONE_CITY.
                                         playHouseSound(HOUSE_EARTH_GUILD_STONE_CITY, HOUSE_SOUND_MAGIC_GUILD_MEMBERS_ONLY);
                                     pMediaPlayer->Unload();
@@ -709,8 +710,9 @@ void Game::processQueuedMessages() {
                         pParty->GetPlayingTime() += Duration::fromDays(4);
                 } else if (std::optional<PartyPlacement> placement = destination.resolvePlacement()) {
                     placeParty(*placement);
+                    dropEventContinuation();
                 } else {
-                    eventProcessor(savedEventID, Pid(), 1, savedEventStep);
+                    runEventContinuation();
                 }
 
                 PlayButtonClickSound();
@@ -721,6 +723,7 @@ void Game::processQueuedMessages() {
             }
             case UIMSG_CancelIndoorEntryExit:
                 PlayButtonClickSound();
+                dropEventContinuation();
                 pMediaPlayer->Unload();
                 DialogueEnding();
                 back_to_game();

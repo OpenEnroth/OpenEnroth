@@ -1,5 +1,7 @@
 #include "Processor.h"
 
+#include <optional>
+#include <utility>
 #include <vector>
 #include <string>
 
@@ -43,9 +45,7 @@ static std::vector<int> decorationsWithEvents;
 // Do not needed in practice but can be considered optimization to avoid checking timers too often.
 static Time timerGuard;
 
-int savedEventID;
-int savedEventStep;
-LevelDecoration *savedDecoration;
+static std::optional<EvtContinuation> eventContinuation;
 
 void initDecorationEvents() {
     DecorationId id = pDecorationTable->decorationId("Event Trigger");
@@ -147,21 +147,17 @@ static void registerTimerTriggers(EvtOpcode triggerType, std::vector<MapTimer> *
     }
 }
 
-void eventProcessor(int eventId, Pid targetObj, bool canShowMessages, int startStep) {
-    if (!eventId) {
+static void runEvent(const EvtContext &context, int startStep) {
+    if (!context.eventId) {
         engine->_statusBar->nothingHere();
         return;
     }
 
+    const EvtProgram &program = context.source == EVT_SOURCE_GLOBAL ? engine->_globalEventMap : engine->_localEventMap;
     EvtInterpreter interpreter;
     MM_TRACE("Executing regular event starting from step {}", startStep);
-    if (activeLevelDecoration) {
-        engine->_globalEventMap.dump(eventId);
-        interpreter.prepare(engine->_globalEventMap, eventId, targetObj, canShowMessages);
-    } else {
-        engine->_localEventMap.dump(eventId);
-        interpreter.prepare(engine->_localEventMap, eventId, targetObj, canShowMessages);
-    }
+    program.dump(context.eventId, context.source);
+    interpreter.prepare(program, context);
 
     if (!interpreter.isValid()) {
         MM_WARNING("Face has invalid event ID");
@@ -174,6 +170,28 @@ void eventProcessor(int eventId, Pid targetObj, bool canShowMessages, int startS
     }
 }
 
+void eventProcessor(int eventId, Pid targetObj, bool canShowMessages, int startStep) {
+    runEvent({EVT_SOURCE_MAP, eventId, targetObj, canShowMessages}, startStep);
+}
+
+void globalEventProcessor(int eventId, Pid targetObj) {
+    runEvent({EVT_SOURCE_GLOBAL, eventId, targetObj, true}, 0);
+}
+
+void setEventContinuation(const EvtContinuation &continuation) {
+    assert(!eventContinuation);
+    eventContinuation = continuation;
+}
+
+void runEventContinuation() {
+    if (std::optional<EvtContinuation> continuation = std::exchange(eventContinuation, std::nullopt))
+        runEvent(continuation->context, continuation->step);
+}
+
+void dropEventContinuation() {
+    eventContinuation.reset();
+}
+
 bool npcDialogueEventProcessor(int eventId, int startStep) {
     if (!eventId) {
         return false;
@@ -182,11 +200,8 @@ bool npcDialogueEventProcessor(int eventId, int startStep) {
     EvtInterpreter interpreter;
 
     MM_TRACE("Executing NPC dialogue event starting from step {}", startStep);
-    LevelDecoration *oldDecoration = activeLevelDecoration;
-    activeLevelDecoration = (LevelDecoration *)1; // Required for correct printing of messages
-    engine->_globalEventMap.dump(eventId);
-    activeLevelDecoration = oldDecoration;
-    interpreter.prepare(engine->_globalEventMap, eventId, Pid(), false);
+    engine->_globalEventMap.dump(eventId, EVT_SOURCE_GLOBAL);
+    interpreter.prepare(engine->_globalEventMap, {EVT_SOURCE_GLOBAL, eventId, Pid(), false});
     return interpreter.executeNpcDialogue(startStep);
 }
 
@@ -209,6 +224,8 @@ static void registerEventTriggers() {
 }
 
 void onMapLoad() {
+    dropEventContinuation(); // A game load replaces the map without leaving it.
+
     // Register all triggers when map done loading
     registerEventTriggers();
 
@@ -220,6 +237,8 @@ void onMapLoad() {
 }
 
 void onMapLeave() {
+    dropEventContinuation();
+
     for (EventTrigger &triggers : onMapLeaveTriggers) {
         eventProcessor(triggers.eventId, Pid(), true, triggers.eventStep + 1);
     }

@@ -12,7 +12,6 @@
 
 std::vector<LevelDecoration> pLevelDecorations;
 std::vector<int> decorationsWithSound;
-LevelDecoration *activeLevelDecoration;
 
 //----- (004583B0) --------------------------------------------------------
 LevelDecoration::LevelDecoration() { memset(this, 0, sizeof(*this)); }

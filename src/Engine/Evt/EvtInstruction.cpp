@@ -7,7 +7,6 @@
 #include <utility>
 
 #include "Engine/Evt/EvtEnums.h"
-#include "Engine/Objects/Decoration.h"
 #include "Engine/Tables/HouseTable.h"
 #include "Engine/Tables/NPCTable.h"
 #include "Engine/Engine.h"
@@ -668,7 +667,7 @@ static std::string getVariableCompareStr(EvtVariable type, int value) {
     }
 }
 
-std::string EvtInstruction::toString() const {
+std::string EvtInstruction::toString(EvtSource source) const {
     switch (opcode) {
         case EVENT_Exit:
             return fmt::format("{}: Exit", step);
@@ -744,7 +743,7 @@ std::string EvtInstruction::toString() const {
                 return fmt::format("{}: InputString({})", step, data.text_id);
             }
         case EVENT_StatusText:
-            if (activeLevelDecoration) {
+            if (source == EVT_SOURCE_GLOBAL) {
                 return fmt::format("{}: StatusMessage(\"{}\")", step, pNPCTopics[data.text_id - 1].pText);
             } else if (data.text_id < engine->_levelStrings.size()) {
                 return fmt::format("{}: StatusMessage(\"{}\")", step, engine->_levelStrings[data.text_id]);
@@ -752,7 +751,7 @@ std::string EvtInstruction::toString() const {
                 return fmt::format("{}: StatusMessage({})", step, data.text_id);
             }
         case EVENT_ShowMessage:
-            if (activeLevelDecoration) {
+            if (source == EVT_SOURCE_GLOBAL) {
                 return fmt::format("{}: ShowMessage(\"{}\")", step, pNPCTopics[data.text_id - 1].pText);
             } else if (data.text_id < engine->_levelStrings.size()) {
                 return fmt::format("{}: ShowMessage(\"{}\")", step, engine->_levelStrings[data.text_id]);
