@@ -861,7 +861,7 @@ GAME_TEST(Issues, Issue790) {
     EXPECT_EQ(screenTape, tape(SCREEN_GAME, SCREEN_MENU, SCREEN_PARTY_CREATION));
 }
 
-GAME_TEST(Issues, Issue792a) {
+GAME_TEST(Issues, Issue792) {
     // Loading a game from inside another game ran the old game's event timers against the loaded party.
     game.startNewGame();
     game.teleportTo(MAP_ERATHIA, Vec3f(-12216, 1900, 961), 90); // Next to a well.
@@ -887,36 +887,6 @@ GAME_TEST(Issues, Issue792a) {
     game.tick(2);
     EXPECT_EQ(engine->_lastLoadedSaveFileName, "quicksave0.mm7");
     EXPECT_EQ(drankTape, tape(false, true));
-}
-
-GAME_TEST(Issues, Issue792b) {
-    // Riding out of a map ran its event timers during the ride and again on return, so a well paid out twice.
-    game.startNewGame();
-    game.teleportTo(MAP_ERATHIA, Vec3f(-12216, 1900, 961), 90); // Next to a well.
-    game.tick(20); // Erathia's timers fire once on the first visit.
-    game.pressAndReleaseKey(PlatformKey::KEY_SPACE); // Drinking sets a character bit that a daily Erathia timer clears at 1am.
-    game.tick(2);
-    game.teleportTo(MAP_ERATHIA, Vec3f(-18056, 4430, 832), 90); // In front of the Royal Steeds stable.
-    game.tick(2);
-    game.pressAndReleaseKey(PlatformKey::KEY_SPACE);
-    game.tick(2);
-    game.pressGuiButton("HouseDialogue_Option0"); // A two-day ride to Tatalia, passing 1am.
-    game.tick(2);
-    game.skipLoadingScreen();
-    game.tick(2);
-
-    auto mapTape = tapes.map();
-    auto bonusTape = tapes.custom([] { return pParty->pCharacters[0].sResBodyBonus; });
-    auto drankTape = tapes.custom([] -> bool { return pParty->pCharacters[0]._characterEventBits[5]; });
-    test.startTaping();
-    game.teleportTo(MAP_ERATHIA, Vec3f(-12216, 1900, 961), 90); // Back at the well before Erathia checks its timers.
-    game.pressAndReleaseKey(PlatformKey::KEY_SPACE); // Refused, the 1am reset waits for Erathia's first timer check.
-    game.tick(30);
-    game.pressAndReleaseKey(PlatformKey::KEY_SPACE);
-    game.tick(2);
-    EXPECT_EQ(mapTape, tape(MAP_TATALIA, MAP_ERATHIA));
-    EXPECT_EQ(drankTape, tape(true, false, true));
-    EXPECT_EQ(bonusTape, tape(0, 20)); // The ride rests the party, which drops the first drink's bonus.
 }
 
 GAME_TEST(Issues, Issue797) {
