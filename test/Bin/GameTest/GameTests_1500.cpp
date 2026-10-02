@@ -876,7 +876,7 @@ GAME_TEST(Issues, Issue1890) {
     game.skipLoadingScreen();
     test.stopTaping();
     EXPECT_EQ(mapTape, tape(MAP_MERCENARY_GUILD, MAP_TATALIA));
-    EXPECT_EQ(pParty->pos.z, 3088); // The back of the party overlaps the first step, so it arrives on top of it.
+    EXPECT_EQ(pParty->pos.z, 3088); // The back of the party overlaps the first step, so it should stand on top of it.
 
     auto yTape = tapes.custom([] { return std::tuple(pParty->GetPlayingTime(), pParty->pos.y); });
     test.startTaping();
@@ -884,8 +884,8 @@ GAME_TEST(Issues, Issue1890) {
     game.pressKey(PlatformKey::KEY_UP);
     game.tick(10);
     game.releaseKey(PlatformKey::KEY_UP);
-    auto steps = yTape.map([](const auto &entry) { return std::get<1>(entry); }).adjacentDeltas();
-    EXPECT_LT(steps.max(), steps.min() / 2); // Forward is -y. No frame moves less than half the longest step.
+    auto steps = yTape.map([](const auto &entry) { return std::get<1>(entry); }).reverse().adjacentDeltas();
+    EXPECT_GT(steps.min(), steps.max() / 2); // No frame is held back to less than half the longest step.
 }
 
 // 1900
