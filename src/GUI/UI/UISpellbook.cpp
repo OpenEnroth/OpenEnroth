@@ -220,10 +220,10 @@ void GUIWindow_Spellbook::loadSpellbook() {
             std::string pContainer;
 
             pContainer = fmt::format("SB{}S{:02}", spellbook_texture_filename_suffices[page], pSpellbookSpellIndices[page][index + 1]);
-            SBPageSSpellsTextureList[index + 1] = assets->getImage_Solid(pContainer);
+            SBPageSSpellsTextureList[index + 1] = assets->getIcon(pContainer);
 
             pContainer = fmt::format("SB{}C{:02}", spellbook_texture_filename_suffices[page], pSpellbookSpellIndices[page][index + 1]);
-            SBPageCSpellsTextureList[index + 1] = assets->getImage_Solid(pContainer);
+            SBPageCSpellsTextureList[index + 1] = assets->getIcon(pContainer);
         }
     }
 }
@@ -242,15 +242,15 @@ void GUIWindow_Spellbook::drawCurrentSchoolBackground() {
 void GUIWindow_Spellbook::initializeTextures() {
     pAudioPlayer->playUISound(SOUND_openbook);
 
-    ui_spellbook_btn_close = assets->getImage_Solid("ib-m5-u");
-    ui_spellbook_btn_close_click = assets->getImage_Solid("ib-m5-d");
-    ui_spellbook_btn_quckspell = assets->getImage_Solid("ib-m6-u");
-    ui_spellbook_btn_quckspell_click = assets->getImage_Solid("ib-m6-d");
+    ui_spellbook_btn_close = assets->getIcon("ib-m5-u");
+    ui_spellbook_btn_close_click = assets->getIcon("ib-m5-d");
+    ui_spellbook_btn_quckspell = assets->getIcon("ib-m6-u");
+    ui_spellbook_btn_quckspell_click = assets->getIcon("ib-m6-d");
 
     for (MagicSchool page : allMagicSchools()) {
-        ui_spellbook_school_backgrounds[page] = assets->getImage_ColorKey(texNames[page]);
-        ui_spellbook_school_tabs[page][0] = assets->getImage_Alpha(fmt::format("tab{}a", std::to_underlying(page) + 1));
-        ui_spellbook_school_tabs[page][1] = assets->getImage_Alpha(fmt::format("tab{}b", std::to_underlying(page) + 1));
+        ui_spellbook_school_backgrounds[page] = assets->getIcon(texNames[page]);
+        ui_spellbook_school_tabs[page][0] = assets->getIcon(fmt::format("tab{}a", std::to_underlying(page) + 1));
+        ui_spellbook_school_tabs[page][1] = assets->getIcon(fmt::format("tab{}b", std::to_underlying(page) + 1));
     }
 }
 

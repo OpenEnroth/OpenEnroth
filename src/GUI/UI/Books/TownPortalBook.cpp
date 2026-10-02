@@ -96,19 +96,19 @@ GUIWindow_TownPortalBook::GUIWindow_TownPortalBook(Pid casterPid, SpellCastFlags
         : _casterPid(casterPid), _castFlags(castFlags) {
     this->eWindowType = WINDOW_TOWN_PORTAL;
 
-    ui_book_townportal_background = assets->getImage_Solid("townport");
+    ui_book_townportal_background = assets->getIcon("townport");
 
-    ui_book_townportal_icons[0] = assets->getImage_ColorKey("tpharmndy");
-    ui_book_townportal_icons[1] = assets->getImage_ColorKey("tpelf");
-    ui_book_townportal_icons[2] = assets->getImage_ColorKey("tpwarlock");
-    ui_book_townportal_icons[3] = assets->getImage_ColorKey("tpisland");
-    ui_book_townportal_icons[4] = assets->getImage_ColorKey("tpheaven");
-    ui_book_townportal_icons[5] = assets->getImage_ColorKey("tphell");
+    ui_book_townportal_icons[0] = assets->getIcon("tpharmndy");
+    ui_book_townportal_icons[1] = assets->getIcon("tpelf");
+    ui_book_townportal_icons[2] = assets->getIcon("tpwarlock");
+    ui_book_townportal_icons[3] = assets->getIcon("tpisland");
+    ui_book_townportal_icons[4] = assets->getIcon("tpheaven");
+    ui_book_townportal_icons[5] = assets->getIcon("tphell");
 
     // cheat locations
-    ui_townportal_cheat_destination_icon = assets->getImage_ColorKey("tab-an-2a");
+    ui_townportal_cheat_destination_icon = assets->getIcon("tab-an-2a");
     for (int i = TOWN_PORTAL_DESTINATION_COUNT; i < TOWN_PORTAL_DESTINATION_COUNT_WITH_CHEATS; ++i) {
-        ui_book_townportal_icons[i] = assets->getImage_ColorKey("tab-an-2b");
+        ui_book_townportal_icons[i] = assets->getIcon("tab-an-2b");
     }
 
     int count = TOWN_PORTAL_DESTINATION_COUNT;

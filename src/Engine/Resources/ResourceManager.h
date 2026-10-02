@@ -2,8 +2,11 @@
 
 #include <string_view>
 
+#include "Engine/Tables/ResourceMaskTable.h"
+
 #include "Utility/Memory/Blob.h"
 
+#include "Library/Image/Image.h"
 #include "Library/Lod/LodReader.h"
 
 /**
@@ -18,6 +21,21 @@ class ResourceManager {
 
     Blob eventsData(std::string_view filename);
 
+    /**
+     * @param filename                  Name of an image in `icons.lod`, case-insensitive.
+     * @return                          The icon, or an empty image if there is no such icon.
+     */
+    RgbaImage icon(std::string_view filename);
+
+    /**
+     * @param filename                  Name of an image in `bitmaps.lod`, case-insensitive.
+     * @return                          The desaturated bitmap, or an empty image if there is no such bitmap.
+     */
+    RgbaImage bitmap(std::string_view filename);
+
  private:
     LodReader _eventsLodReader;
+    LodReader _iconsLodReader;
+    LodReader _bitmapsLodReader;
+    ResourceMaskTable _masks;
 };

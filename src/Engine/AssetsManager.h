@@ -4,7 +4,6 @@
 #include <unordered_map>
 #include <memory>
 
-#include "Library/Color/ColorTable.h"
 #include "GUI/GUIFont.h"
 
 class GraphicsImage;
@@ -23,13 +22,8 @@ class AssetsManager {
      */
     void releaseImage(GraphicsImage *image);
 
-    GraphicsImage *getImage_ColorKey(std::string_view name, Color colorkey = colorTable.TealMask);
-    GraphicsImage *getImage_Paletted(std::string_view name);
-    GraphicsImage *getImage_Solid(std::string_view name);
-    GraphicsImage *getImage_Alpha(std::string_view name);
+    GraphicsImage *getIcon(std::string_view name);
     GraphicsImage *getImage_Buff(std::string_view name);
-
-    GraphicsImage *getImage_PCXFromIconsLOD(std::string_view name, Color colorkey = Color());
 
     GraphicsImage *getBitmap(std::string_view name, bool generated = false);
     GraphicsImage *getSprite(std::string_view name);

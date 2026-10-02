@@ -572,42 +572,42 @@ GUIWindow_PartyCreation::GUIWindow_PartyCreation() :
     engine->_messageQueue->clear();
     errorMessageExpireTime = Duration(); // Clear any lingering error popup from previous session.
 
-    main_menu_background = assets->getImage_PCXFromIconsLOD("makeme.pcx");
+    main_menu_background = assets->getIcon("makeme.pcx");
 
     current_screen_type = SCREEN_PARTY_CREATION;
     uPlayerCreationUI_SelectedCharacter = 0;
     int v0 = assets->pFontCreate->GetHeight() - 2;
 
-    ui_partycreation_class_icons[0] = assets->getImage_ColorKey("IC_KNIGHT");
-    ui_partycreation_class_icons[1] = assets->getImage_ColorKey("IC_THIEF");
-    ui_partycreation_class_icons[2] = assets->getImage_ColorKey("IC_MONK");
-    ui_partycreation_class_icons[3] = assets->getImage_ColorKey("IC_PALAD");
-    ui_partycreation_class_icons[4] = assets->getImage_ColorKey("IC_ARCH");
-    ui_partycreation_class_icons[5] = assets->getImage_ColorKey("IC_RANGER");
-    ui_partycreation_class_icons[6] = assets->getImage_ColorKey("IC_CLER");
-    ui_partycreation_class_icons[7] = assets->getImage_ColorKey("IC_DRUID");
-    ui_partycreation_class_icons[8] = assets->getImage_ColorKey("IC_SORC");
+    ui_partycreation_class_icons[0] = assets->getIcon("IC_KNIGHT");
+    ui_partycreation_class_icons[1] = assets->getIcon("IC_THIEF");
+    ui_partycreation_class_icons[2] = assets->getIcon("IC_MONK");
+    ui_partycreation_class_icons[3] = assets->getIcon("IC_PALAD");
+    ui_partycreation_class_icons[4] = assets->getIcon("IC_ARCH");
+    ui_partycreation_class_icons[5] = assets->getIcon("IC_RANGER");
+    ui_partycreation_class_icons[6] = assets->getIcon("IC_CLER");
+    ui_partycreation_class_icons[7] = assets->getIcon("IC_DRUID");
+    ui_partycreation_class_icons[8] = assets->getIcon("IC_SORC");
 
-    ui_partycreation_top = assets->getImage_Alpha("MAKETOP");
-    ui_partycreation_sky_scroller = assets->getImage_Solid("MAKESKY");
+    ui_partycreation_top = assets->getIcon("MAKETOP");
+    ui_partycreation_sky_scroller = assets->getIcon("MAKESKY");
 
-    ui_partycreation_character_frame = assets->getImage_Solid("aframe1");
+    ui_partycreation_character_frame = assets->getIcon("aframe1");
 
     for (int uX = 0; uX < 22; ++uX) {
-        ui_partycreation_portraits[uX] = assets->getImage_ColorKey(fmt::format("{}01", pPlayerPortraitsNames[uX]));
+        ui_partycreation_portraits[uX] = assets->getIcon(fmt::format("{}01", pPlayerPortraitsNames[uX]));
     }
 
-    ui_partycreation_minus = assets->getImage_ColorKey("buttminu");
-    ui_partycreation_plus = assets->getImage_ColorKey("buttplus");
-    ui_partycreation_right = assets->getImage_ColorKey("presrigh");
-    ui_partycreation_left = assets->getImage_ColorKey("presleft");
+    ui_partycreation_minus = assets->getIcon("buttminu");
+    ui_partycreation_plus = assets->getIcon("buttplus");
+    ui_partycreation_right = assets->getIcon("presrigh");
+    ui_partycreation_left = assets->getIcon("presleft");
 
     // sprites number go from (1 to 19)
     assert(ui_partycreation_arrow_l.size() == 19);
     assert(ui_partycreation_arrow_r.size() == 19);
     for (int i = 0; i < ui_partycreation_arrow_l.size(); ++i) {
-        ui_partycreation_arrow_l[i] = assets->getImage_Alpha(fmt::format("arrowl{}", i + 1));
-        ui_partycreation_arrow_r[i] = assets->getImage_Alpha(fmt::format("arrowr{}", i + 1));
+        ui_partycreation_arrow_l[i] = assets->getIcon(fmt::format("arrowl{}", i + 1));
+        ui_partycreation_arrow_r[i] = assets->getIcon(fmt::format("arrowr{}", i + 1));
     }
 
     int uX = 8;
@@ -686,8 +686,8 @@ GUIWindow_PartyCreation::GUIWindow_PartyCreation() :
         ++uControlParam;
     } while (uControlParam < 9);
 
-    ui_partycreation_buttmake = assets->getImage_Solid("BUTTMAKE");
-    ui_partycreation_buttmake2 = assets->getImage_Solid("BUTTMAKE2");
+    ui_partycreation_buttmake = assets->getIcon("BUTTMAKE");
+    ui_partycreation_buttmake2 = assets->getIcon("BUTTMAKE2");
 
     pPlayerCreationUI_BtnOK = CreateButton("PartyCreation_OK", {580, 431}, {51, 39}, BUTTON_TYPE_NORMAL, 0,
                                            UIMSG_PlayerCreationClickOK, 0, INPUT_ACTION_PARTY_CREATION_DONE, "",

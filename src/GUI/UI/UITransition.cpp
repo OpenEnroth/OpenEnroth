@@ -58,7 +58,7 @@ int getSpecialTransferMessageIndex(std::string_view locationName) {
 GUIWindow_Transition::GUIWindow_Transition(WindowType windowType, ScreenType screenType) : GUIWindow(windowType, {0, 0}, render->GetRenderDimensions()) {
     gameTimer->setPaused(true);
 
-    game_ui_dialogue_background = assets->getImage_Solid(dialogueBackgroundResourceByAlignment[pParty->alignment]);
+    game_ui_dialogue_background = assets->getIcon(dialogueBackgroundResourceByAlignment[pParty->alignment]);
 
     prev_screen_type = current_screen_type;
     current_screen_type = screenType;
@@ -93,7 +93,7 @@ GUIWindow_Transition::~GUIWindow_Transition() {
 GUIWindow_Travel::GUIWindow_Travel() : GUIWindow_Transition(WINDOW_TRAVEL, SCREEN_CHANGE_LOCATION) {
     std::string hint;
 
-    transition_ui_icon = assets->getImage_Solid("outside");
+    transition_ui_icon = assets->getIcon("outside");
 
     if (engine->_currentLoadedMapId != MAP_INVALID) {
         hint = localization->format(LSTR_LEAVE_S, pMapTable->pInfos[engine->_currentLoadedMapId].name);
@@ -142,7 +142,7 @@ GUIWindow_IndoorEntryExit::GUIWindow_IndoorEntryExit(HouseId transitionHouse, un
 
     _mapName = locationName;
 
-    transition_ui_icon = assets->getImage_Solid(pHouse_ExitPictures[exit_pic_id]);
+    transition_ui_icon = assets->getIcon(pHouse_ExitPictures[exit_pic_id]);
 
     // animation or special transfer message
     if (transitionHouse != HOUSE_INVALID || getSpecialTransferMessageIndex(locationName)) {

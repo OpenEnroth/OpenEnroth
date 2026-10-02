@@ -77,12 +77,12 @@ GUIWindow_Rest::GUIWindow_Rest()
     current_screen_type = SCREEN_REST;
 
     hourglassLoopTimer = 0_ticks;
-    rest_ui_restmain = assets->getImage_Alpha("restmain");
-    rest_ui_btn_1 = assets->getImage_Alpha("restb1");
-    rest_ui_btn_2 = assets->getImage_Alpha("restb2");
-    rest_ui_btn_3 = assets->getImage_Alpha("restb3");
-    rest_ui_btn_4 = assets->getImage_Alpha("restb4");
-    rest_ui_btn_exit = assets->getImage_Alpha("restexit");
+    rest_ui_restmain = assets->getIcon("restmain");
+    rest_ui_btn_1 = assets->getIcon("restb1");
+    rest_ui_btn_2 = assets->getIcon("restb2");
+    rest_ui_btn_3 = assets->getIcon("restb3");
+    rest_ui_btn_4 = assets->getIcon("restb4");
+    rest_ui_btn_exit = assets->getIcon("restexit");
 
     OutdoorLocation::LoadActualSkyFrame();
 
@@ -121,7 +121,7 @@ void GUIWindow_Rest::Update() {
             hourglass_icon_idx = 1;
         }
 
-        rest_ui_hourglass_frame_current = assets->getImage_ColorKey(fmt::format("hglas{:03}", hourglass_icon_idx));
+        rest_ui_hourglass_frame_current = assets->getIcon(fmt::format("hglas{:03}", hourglass_icon_idx));
         render->DrawQuad2D(rest_ui_hourglass_frame_current, {267, 159});
 
         tmp_button.rect = Recti(24, 154, 171, 37);

@@ -575,12 +575,12 @@ GUIWindow_CharacterRecord::GUIWindow_CharacterRecord(ScreenType screen)
 
     fillAwardsData();
 
-    ui_character_skills_background = assets->getImage_ColorKey("fr_skill");
-    ui_character_awards_background = assets->getImage_ColorKey("fr_award");
-    ui_character_stats_background = assets->getImage_ColorKey("fr_stats");
-    ui_character_inventory_background_strip = assets->getImage_ColorKey("fr_strip");
+    ui_character_skills_background = assets->getIcon("fr_skill");
+    ui_character_awards_background = assets->getIcon("fr_award");
+    ui_character_stats_background = assets->getIcon("fr_stats");
+    ui_character_inventory_background_strip = assets->getIcon("fr_strip");
 
-    scrollstop = assets->getImage_ColorKey("con_x");
+    scrollstop = assets->getIcon("con_x");
 }
 
 void GUIWindow_CharacterRecord::releaseAwardsScrollBar() {
@@ -626,7 +626,7 @@ void GUIWindow_CharacterRecord::Update() {
             CharacterUI_ReleaseButtons();
             releaseAwardsScrollBar();
             CharacterUI_StatsTab_Draw(player);
-            render->DrawQuad2D(assets->getImage_ColorKey("ib-cd1-d"), pCharacterScreen_StatsBtn->rect.topLeft());
+            render->DrawQuad2D(assets->getIcon("ib-cd1-d"), pCharacterScreen_StatsBtn->rect.topLeft());
             break;
         }
         case WINDOW_CHARACTER_SKILLS: {
@@ -636,21 +636,21 @@ void GUIWindow_CharacterRecord::Update() {
             }
             releaseAwardsScrollBar();
             CharacterUI_SkillsTab_Draw(player);
-            render->DrawQuad2D(assets->getImage_ColorKey("ib-cd2-d"), pCharacterScreen_SkillsBtn->rect.topLeft());
+            render->DrawQuad2D(assets->getIcon("ib-cd2-d"), pCharacterScreen_SkillsBtn->rect.topLeft());
             break;
         }
         case WINDOW_CHARACTER_AWARDS: {
             CharacterUI_ReleaseButtons();
             createAwardsScrollBar();
             CharacterUI_AwardsTab_Draw(player);
-            render->DrawQuad2D(assets->getImage_ColorKey("ib-cd4-d"), pCharacterScreen_AwardsBtn->rect.topLeft());
+            render->DrawQuad2D(assets->getIcon("ib-cd4-d"), pCharacterScreen_AwardsBtn->rect.topLeft());
             break;
         }
         case WINDOW_CHARACTER_INVENTORY: {
             CharacterUI_ReleaseButtons();
             releaseAwardsScrollBar();
             CharacterUI_InventoryTab_Draw(player, false);
-            render->DrawQuad2D(assets->getImage_ColorKey("ib-cd3-d"), pCharacterScreen_InventoryBtn->rect.topLeft());
+            render->DrawQuad2D(assets->getIcon("ib-cd3-d"), pCharacterScreen_InventoryBtn->rect.topLeft());
             break;
         }
         default:
@@ -998,7 +998,7 @@ void CharacterUI_DrawPaperdoll(Character *player) {
 
             GraphicsImage *texture = nullptr;
             if (itemMainHand->itemId == ITEM_BLASTER)
-                texture = assets->getImage_Alpha("item64v1");
+                texture = assets->getIcon("item64v1");
 
             CharacterUI_DrawItem(item_X, item_Y, itemMainHand.get(), itemMainHand.index(), texture, !bRingsShownInCharScreen);
         }
@@ -1153,7 +1153,7 @@ void CharacterUI_DrawPaperdoll(Character *player) {
 
             GraphicsImage *texture = nullptr;
             if (itemMainHand->itemId == ITEM_BLASTER)
-                texture = assets->getImage_Alpha("item64v1");
+                texture = assets->getIcon("item64v1");
 
             CharacterUI_DrawItem(item_X, item_Y, itemMainHand.get(), itemMainHand.index(), texture, !bRingsShownInCharScreen);
         }
@@ -1226,7 +1226,7 @@ void CharacterUI_InventoryTab_Draw(Character *player, bool Cover_Strip) {
     render->DrawQuad2D(ui_character_inventory_background, {8, 8});
 
     if (Cover_Strip) {
-        ui_character_inventory_background_strip = assets->getImage_ColorKey("fr_strip");
+        ui_character_inventory_background_strip = assets->getIcon("fr_strip");
         render->DrawQuad2D(ui_character_inventory_background_strip, {8, 305});
     }
 
@@ -1240,7 +1240,7 @@ void CharacterUI_InventoryTab_Draw(Character *player, bool Cover_Strip) {
 
         Pointi cellPos = mapFromInventoryGrid(entry.geometry().topLeft(), Pointi(14, 17));
 
-        GraphicsImage *pTexture = assets->getImage_Alpha(entry->GetIconName());
+        GraphicsImage *pTexture = assets->getIcon(entry->GetIconName());
 
         signed int X_offset = itemOffset(pTexture->width());
         signed int Y_offset = itemOffset(pTexture->height());
@@ -1268,18 +1268,18 @@ void CharacterUI_DrawPickedItemUnderlay(Vec2i gridOffset) {
 
 static void CharacterUI_DrawItem(int x, int y, Item *item, int id, GraphicsImage *item_texture, bool doZDraw) {
     if (!item_texture)
-        item_texture = assets->getImage_Alpha(item->GetIconName());
+        item_texture = assets->getIcon(item->GetIconName());
 
     if (item->ItemEnchanted()) { // enchant animation
         GraphicsImage *enchantment_texture = nullptr;
         if (item->AuraEffectRed())
-            enchantment_texture = assets->getImage_ColorKey("sptext01");
+            enchantment_texture = assets->getIcon("sptext01");
         else if (item->AuraEffectBlue())
-            enchantment_texture = assets->getImage_ColorKey("sp28a");
+            enchantment_texture = assets->getIcon("sp28a");
         else if (item->AuraEffectGreen())
-            enchantment_texture = assets->getImage_ColorKey("sp30a");
+            enchantment_texture = assets->getIcon("sp30a");
         else if (item->AuraEffectPurple())
-            enchantment_texture = assets->getImage_ColorKey("sp91a");
+            enchantment_texture = assets->getIcon("sp91a");
         else
             assert(false);
 
@@ -1332,9 +1332,9 @@ void CharacterUI_DrawPaperdollWithRingOverlay(Character *player) {
 
 //----- (0043BCA7) --------------------------------------------------------
 void CharacterUI_LoadPaperdollTextures() {
-    ui_character_inventory_magnification_glass = assets->getImage_Alpha("MAGNIF-B");
-    ui_character_inventory_paperdoll_background = assets->getImage_ColorKey("BACKDOLL");
-    ui_character_inventory_paperdoll_rings_background = assets->getImage_Alpha("BACKHAND");
+    ui_character_inventory_magnification_glass = assets->getIcon("MAGNIF-B");
+    ui_character_inventory_paperdoll_background = assets->getIcon("BACKDOLL");
+    ui_character_inventory_paperdoll_rings_background = assets->getIcon("BACKHAND");
 
     for (int i = 0; i < pParty->pCharacters.size(); ++i) {
         if (pParty->pCharacters[i].hasUnderwaterSuitEquipped()) {
@@ -1344,20 +1344,20 @@ void CharacterUI_LoadPaperdollTextures() {
         }
     }
 
-    ui_ar_up_up = assets->getImage_Solid("ar_up_up");
-    ui_ar_up_dn = assets->getImage_Solid("ar_up_dn");
-    ui_ar_dn_up = assets->getImage_Solid("ar_dn_up");
-    ui_ar_dn_dn = assets->getImage_Solid("ar_dn_dn");
+    ui_ar_up_up = assets->getIcon("ar_up_up");
+    ui_ar_up_dn = assets->getIcon("ar_up_dn");
+    ui_ar_dn_up = assets->getIcon("ar_dn_up");
+    ui_ar_dn_dn = assets->getIcon("ar_dn_dn");
 
-    paperdoll_dbrds[9] = assets->getImage_Solid("ib-cd1-d");
-    paperdoll_dbrds[7] = assets->getImage_Solid("ib-cd2-d");
-    paperdoll_dbrds[5] = assets->getImage_Solid("ib-cd3-d");
-    paperdoll_dbrds[3] = assets->getImage_Solid("ib-cd4-d");
-    paperdoll_dbrds[1] = assets->getImage_Solid("ib-cd5-d");
+    paperdoll_dbrds[9] = assets->getIcon("ib-cd1-d");
+    paperdoll_dbrds[7] = assets->getIcon("ib-cd2-d");
+    paperdoll_dbrds[5] = assets->getIcon("ib-cd3-d");
+    paperdoll_dbrds[3] = assets->getIcon("ib-cd4-d");
+    paperdoll_dbrds[1] = assets->getIcon("ib-cd5-d");
 
     auto loadTexture = [&](const auto &map, int itemIndex, BodyType bodyType, int shoulderIndex) {
         std::string name = GetItemTextureFilename(*valuePtr(map, itemIndex), std::to_underlying(bodyType), shoulderIndex);
-        return assets->getImage_Alpha(name);
+        return assets->getIcon(name);
     };
 
     for (BodyType bodyType : {BODY_TYPE_HUMAN_MALE, BODY_TYPE_HUMAN_FEMALE}) {
@@ -1371,7 +1371,7 @@ void CharacterUI_LoadPaperdollTextures() {
             paperdoll_helm_texture[bodyType][j] = loadTexture(paperdoll_helm_typeByIndex, j, bodyType, 0);
 
         if (IsDwarfPresentInParty(true))
-            paperdoll_dbrds[11] = assets->getImage_Alpha("item092v3");
+            paperdoll_dbrds[11] = assets->getIcon("item092v3");
     }
 
     for (BodyType bodyType : allBodyTypes()) {
@@ -1638,12 +1638,12 @@ void GUIWindow_CharacterRecord::fillAwardsData() {
 void WetsuitOn(int characterIndex) {
     Character *player = &pParty->pCharacters[characterIndex];
     int texture_num = std::to_underlying(player->bodyType());
-    paperdoll_dbods[characterIndex] = assets->getImage_Alpha(fmt::format("pc23v{}Bod", texture_num));  // Body texture
-    paperdoll_dlads[characterIndex] = assets->getImage_Alpha(fmt::format("pc23v{}lad", texture_num));  // Left Hand
-    paperdoll_dlaus[characterIndex] = assets->getImage_Alpha(fmt::format("pc23v{}lau", texture_num));  // Left Hand2
-    paperdoll_drhs[characterIndex] = assets->getImage_Alpha(fmt::format("pc23v{}rh", texture_num));  // Right Hand
-    paperdoll_dlhs[characterIndex] = assets->getImage_Alpha(fmt::format("pc23v{}lh", texture_num));  // Left Palm
-    paperdoll_dlhus[characterIndex] = assets->getImage_Alpha(fmt::format("pc23v{}lhu", texture_num));  // Left Fist
+    paperdoll_dbods[characterIndex] = assets->getIcon(fmt::format("pc23v{}Bod", texture_num));  // Body texture
+    paperdoll_dlads[characterIndex] = assets->getIcon(fmt::format("pc23v{}lad", texture_num));  // Left Hand
+    paperdoll_dlaus[characterIndex] = assets->getIcon(fmt::format("pc23v{}lau", texture_num));  // Left Hand2
+    paperdoll_drhs[characterIndex] = assets->getIcon(fmt::format("pc23v{}rh", texture_num));  // Right Hand
+    paperdoll_dlhs[characterIndex] = assets->getIcon(fmt::format("pc23v{}lh", texture_num));  // Left Palm
+    paperdoll_dlhus[characterIndex] = assets->getIcon(fmt::format("pc23v{}lhu", texture_num));  // Left Fist
 
     if (player->uCurrentFace == 12 || player->uCurrentFace == 13) {
         paperdoll_dbrds[player->uCurrentFace] = nullptr;
@@ -1654,18 +1654,18 @@ void WetsuitOn(int characterIndex) {
 void WetsuitOff(int characterIndex) {
     Character *player = &pParty->pCharacters[characterIndex];
 
-    paperdoll_dbods[characterIndex] = assets->getImage_Alpha(dbod_texnames_by_face[player->uCurrentFace]);
-    paperdoll_dlads[characterIndex] = assets->getImage_Alpha(dlad_texnames_by_face[player->uCurrentFace]);
-    paperdoll_dlaus[characterIndex] = assets->getImage_Alpha(dlau_texnames_by_face[player->uCurrentFace]);
-    paperdoll_drhs[characterIndex] = assets->getImage_Alpha(drh_texnames_by_face[player->uCurrentFace]);
-    paperdoll_dlhs[characterIndex] = assets->getImage_Alpha(dlh_texnames_by_face[player->uCurrentFace]);
-    paperdoll_dlhus[characterIndex] = assets->getImage_Alpha(dlhu_texnames_by_face[player->uCurrentFace]);
+    paperdoll_dbods[characterIndex] = assets->getIcon(dbod_texnames_by_face[player->uCurrentFace]);
+    paperdoll_dlads[characterIndex] = assets->getIcon(dlad_texnames_by_face[player->uCurrentFace]);
+    paperdoll_dlaus[characterIndex] = assets->getIcon(dlau_texnames_by_face[player->uCurrentFace]);
+    paperdoll_drhs[characterIndex] = assets->getIcon(drh_texnames_by_face[player->uCurrentFace]);
+    paperdoll_dlhs[characterIndex] = assets->getIcon(dlh_texnames_by_face[player->uCurrentFace]);
+    paperdoll_dlhus[characterIndex] = assets->getIcon(dlhu_texnames_by_face[player->uCurrentFace]);
 
     if (player->uCurrentFace == 12 || player->uCurrentFace == 13) {
-        paperdoll_dbrds[player->uCurrentFace] = assets->getImage_Alpha(fmt::format("pc{:02}brd", player->uCurrentFace + 1));
+        paperdoll_dbrds[player->uCurrentFace] = assets->getIcon(fmt::format("pc{:02}brd", player->uCurrentFace + 1));
     }
 
-    paperdoll_flying_feet[player->uCurrentFace] = assets->getImage_Alpha(fmt::format("item281pc{:02}", player->uCurrentFace + 1));
+    paperdoll_flying_feet[player->uCurrentFace] = assets->getIcon(fmt::format("item281pc{:02}", player->uCurrentFace + 1));
 }
 
 //----- (00468F8A) --------------------------------------------------------

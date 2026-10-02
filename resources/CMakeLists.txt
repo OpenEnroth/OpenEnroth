@@ -1,6 +1,7 @@
 cmake_minimum_required(VERSION 3.27 FATAL_ERROR)
 
 set(RESOURCE_SOURCES
+        data/resource_mask_table.json
         images/OpenEnroth.png
         scripts/_definitions/bindings/audio.lua
         scripts/_definitions/bindings/config.lua

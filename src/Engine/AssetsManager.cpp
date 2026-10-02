@@ -5,6 +5,7 @@
 #include <string>
 #include <utility>
 
+#include "Engine/Engine.h"
 #include "Engine/Graphics/ImageLoader.h"
 #include "Engine/Graphics/Image.h"
 #include "Engine/Resources/LodTextureCache.h"
@@ -66,45 +67,12 @@ void AssetsManager::releaseImage(GraphicsImage *image) {
     assert(false && "Image is not in the cache");
 }
 
-GraphicsImage *AssetsManager::getImage_Paletted(std::string_view name) {
+GraphicsImage *AssetsManager::getIcon(std::string_view name) {
     std::string filename = ascii::toLower(name);
 
     auto i = images.find(filename);
     if (i == images.end())
-        i = images.emplace(filename, GraphicsImage::Create(std::make_unique<Paletted_Img_Loader>(pIcons_LOD, filename))).first;
-
-    return i->second.get();
-}
-
-
-GraphicsImage *AssetsManager::getImage_ColorKey(std::string_view name, Color colorkey) {
-    std::string filename = ascii::toLower(name);
-
-    auto i = images.find(filename);
-    if (i == images.end())
-        i = images.emplace(filename, GraphicsImage::Create(std::make_unique<ColorKey_LOD_Loader>(pIcons_LOD, filename, colorkey))).first;
-
-    return i->second.get();
-}
-
-
-
-GraphicsImage *AssetsManager::getImage_Solid(std::string_view name) {
-    std::string filename = ascii::toLower(name);
-
-    auto i = images.find(filename);
-    if (i == images.end())
-        i = images.emplace(filename, GraphicsImage::Create(std::make_unique<Image16bit_LOD_Loader>(pIcons_LOD, filename))).first;
-
-    return i->second.get();
-}
-
-GraphicsImage *AssetsManager::getImage_Alpha(std::string_view name) {
-    std::string filename = ascii::toLower(name);
-
-    auto i = images.find(filename);
-    if (i == images.end())
-        i = images.emplace(filename, GraphicsImage::Create(std::make_unique<Alpha_LOD_Loader>(pIcons_LOD, filename))).first;
+        i = images.emplace(filename, GraphicsImage::Create(std::make_unique<Icon_LOD_Loader>(engine->resources(), filename))).first;
 
     return i->second.get();
 }
@@ -119,16 +87,6 @@ GraphicsImage *AssetsManager::getImage_Buff(std::string_view name) {
     return i->second.get();
 }
 
-GraphicsImage *AssetsManager::getImage_PCXFromIconsLOD(std::string_view name, Color colorkey) {
-    std::string filename = ascii::toLower(name);
-
-    auto i = images.find(filename);
-    if (i == images.end())
-        i = images.emplace(filename, GraphicsImage::Create(std::make_unique<PCX_LOD_Compressed_Loader>(pIcons_LOD, filename, colorkey))).first;
-
-    return i->second.get();
-}
-
 GraphicsImage *AssetsManager::getBitmap(std::string_view name, bool generated) {
     std::string filename = ascii::toLower(name);
 
@@ -138,7 +96,7 @@ GraphicsImage *AssetsManager::getBitmap(std::string_view name, bool generated) {
         if (generated) {
             loader = std::make_unique<Bitmaps_GEN_Loader>(filename);
         } else {
-            loader = std::make_unique<Bitmaps_LOD_Loader>(pBitmaps_LOD, filename);
+            loader = std::make_unique<Bitmaps_LOD_Loader>(engine->resources(), filename);
         }
         i = bitmaps.emplace(filename, GraphicsImage::Create(std::move(loader))).first;
     }

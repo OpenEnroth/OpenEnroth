@@ -35,7 +35,7 @@ void GUIWindow_Chest::Update() {
         int chestWidthCells = chestTable[chestDescId].size.w;
         int chestHeghtCells = chestTable[chestDescId].size.h;
 
-        GraphicsImage *chest_background = assets->getImage_ColorKey(chestTable[chestDescId].textureName);
+        GraphicsImage *chest_background = assets->getIcon(chestTable[chestDescId].textureName);
         render->DrawQuad2D(chest_background, {8, 8});
 
         render->SetUIClipRect({ chest_offs_x, chest_offs_y, 32 * chestWidthCells, 32 * chestHeghtCells });
@@ -46,7 +46,7 @@ void GUIWindow_Chest::Update() {
             if (entry.zone() != INVENTORY_ZONE_GRID)
                 continue;
 
-            auto item_texture = assets->getImage_ColorKey(entry->GetIconName());
+            auto item_texture = assets->getIcon(entry->GetIconName());
             int X_offset = itemOffset(item_texture->width());
             int Y_offset = itemOffset(item_texture->height());
             int itemPixelPosX = chest_offs_x + 32 * entry.geometry().x + X_offset;

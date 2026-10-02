@@ -55,14 +55,14 @@ void initializeNPCDialogue(int npcId, int bPlayerSaysHello, Actor *actor) {
         }
     }
 
-    game_ui_dialogue_background = assets->getImage_Solid(dialogueBackgroundResourceByAlignment[pParty->alignment]);
+    game_ui_dialogue_background = assets->getIcon(dialogueBackgroundResourceByAlignment[pParty->alignment]);
 
     currentHouseNpc = 0;
 
     HouseNpcDesc desc;
     desc.type = HOUSE_NPC;
     desc.label = localization->format(LSTR_CONVERSE_WITH_S, pNPCInfo->name);
-    desc.icon = assets->getImage_ColorKey(fmt::format("npc{:03}", pNPCInfo->portraitId));
+    desc.icon = assets->getIcon(fmt::format("npc{:03}", pNPCInfo->portraitId));
     desc.npc = pNPCInfo;
 
     houseNpcs.push_back(desc);

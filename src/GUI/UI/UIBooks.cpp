@@ -84,7 +84,7 @@ GUIWindow_Book::GUIWindow_Book() : GUIWindow(WINDOW_BOOK, {0, 0}, render->GetRen
 void GUIWindow_Book::initializeFonts() {
     pAudioPlayer->playUISound(SOUND_openbook);
 
-    ui_book_map_frame = assets->getImage_Alpha("mapbordr");
+    ui_book_map_frame = assets->getIcon("mapbordr");
 
     if (!assets->pFontBookCalendar)
         assets->pFontBookCalendar = GUIFont::LoadFont("book.fnt");

@@ -15,12 +15,12 @@
 
 GUIWindow_MainMenu::GUIWindow_MainMenu() :
     GUIWindow(WINDOW_MAIN_MENU, {0, 0}, render->GetRenderDimensions()) {
-    main_menu_background = assets->getImage_PCXFromIconsLOD("title.pcx");
+    main_menu_background = assets->getIcon("title.pcx");
 
-    ui_mainmenu_new = assets->getImage_ColorKey("title_new");
-    ui_mainmenu_load = assets->getImage_ColorKey("title_load");
-    ui_mainmenu_credits = assets->getImage_ColorKey("title_cred");
-    ui_mainmenu_exit = assets->getImage_ColorKey("title_exit");
+    ui_mainmenu_new = assets->getIcon("title_new");
+    ui_mainmenu_load = assets->getIcon("title_load");
+    ui_mainmenu_credits = assets->getIcon("title_cred");
+    ui_mainmenu_exit = assets->getIcon("title_exit");
 
     pBtnNew = CreateButton("MainMenu_NewGame", {495, 172}, ui_mainmenu_new->size(), BUTTON_TYPE_NORMAL, 0,
                            UIMSG_MainMenu_ShowPartyCreationWnd, 0, INPUT_ACTION_NEW_GAME, "", {ui_mainmenu_new});
@@ -52,19 +52,19 @@ void GUIWindow_MainMenu::Update() {
             int pY = 0;
             switch (pControlParam) {  // backlight for buttons
                 case 0:
-                    pTexture = assets->getImage_ColorKey("title_new");
+                    pTexture = assets->getIcon("title_new");
                     pY = 172;
                     break;
                 case 1:
-                    pTexture = assets->getImage_ColorKey("title_load");
+                    pTexture = assets->getIcon("title_load");
                     pY = 227;
                     break;
                 case 2:
-                    pTexture = assets->getImage_ColorKey("title_cred");
+                    pTexture = assets->getIcon("title_cred");
                     pY = 282;
                     break;
                 case 3:
-                    pTexture = assets->getImage_ColorKey("title_exit");
+                    pTexture = assets->getIcon("title_exit");
                     pY = 337;
                     break;
             }

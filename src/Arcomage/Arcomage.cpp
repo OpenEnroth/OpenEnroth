@@ -527,7 +527,7 @@ bool ArcomageGame::MsgLoop(int a1, ArcomageGame_InputMSG *a2) {
 
 bool ArcomageGame::LoadSprites() {
     // load layout sprite
-    pArcomageGame->pSprites = assets->getImage_PCXFromIconsLOD("sprites.pcx", colorTable.Blue);
+    pArcomageGame->pSprites = assets->getIcon("sprites.pcx");
     return true;
 }
 
@@ -2849,7 +2849,7 @@ void ArcomageGame::PrepareArcomage() {
 
     // load in background pic and render
     render->BeginScene2D();
-    pArcomageGame->pGameBackground = assets->getImage_PCXFromIconsLOD("layout.pcx");
+    pArcomageGame->pGameBackground = assets->getIcon("layout.pcx");
     render->DrawQuad2D(pArcomageGame->pGameBackground, {0, 0});
     render->Present();
 

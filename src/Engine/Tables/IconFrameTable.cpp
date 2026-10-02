@@ -41,6 +41,6 @@ GraphicsImage *IconFrameTable::loadTexture(int frameId) {
     assert(_textures.size() == _frames.size());
 
     if (!_textures[frameId])
-        _textures[frameId] = assets->getImage_ColorKey(_frames[frameId].textureName);
+        _textures[frameId] = assets->getIcon(_frames[frameId].textureName);
     return _textures[frameId];
 }

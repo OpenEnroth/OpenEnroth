@@ -1,13 +1,12 @@
 #pragma once
 
 #include <string>
-#include <functional>
 
-#include "Library/Color/Color.h"
 #include "Library/Image/Image.h"
 
 class LodSpriteCache;
 class LodTextureCache;
+class ResourceManager;
 class LodReader;
 
 class ImageLoader {
@@ -21,58 +20,17 @@ class ImageLoader {
     std::string resource_name;
 };
 
-class Paletted_Img_Loader : public ImageLoader {
+class Icon_LOD_Loader : public ImageLoader {
  public:
-    inline Paletted_Img_Loader(LodTextureCache *lod, std::string_view filename) {
+    inline Icon_LOD_Loader(ResourceManager *resources, std::string_view filename) {
         this->resource_name = filename;
-        this->lod = lod;
+        this->resources = resources;
     }
 
     virtual bool Load(RgbaImage *rgbaImage) override;
 
  protected:
-    LodTextureCache *lod = nullptr;
-};
-
-class ColorKey_LOD_Loader : public ImageLoader {
- public:
-    inline ColorKey_LOD_Loader(LodTextureCache *lod, std::string_view filename, Color colorkey) {
-        this->resource_name = filename;
-        this->colorkey = colorkey;
-        this->lod = lod;
-    }
-
-    virtual bool Load(RgbaImage *rgbaImage) override;
-
- protected:
-    Color colorkey;
-    LodTextureCache *lod = nullptr;
-};
-
-class Image16bit_LOD_Loader : public ImageLoader {
- public:
-    inline Image16bit_LOD_Loader(LodTextureCache *lod, std::string_view filename) {
-        this->resource_name = filename;
-        this->lod = lod;
-    }
-
-    virtual bool Load(RgbaImage *rgbaImage) override;
-
- protected:
-    LodTextureCache *lod = nullptr;
-};
-
-class Alpha_LOD_Loader : public ImageLoader {
- public:
-    inline Alpha_LOD_Loader(LodTextureCache *lod, std::string_view filename) {
-        this->resource_name = filename;
-        this->lod = lod;
-    }
-
-    virtual bool Load(RgbaImage *rgbaImage) override;
-
- protected:
-    LodTextureCache *lod = nullptr;
+    ResourceManager *resources = nullptr;
 };
 
 class Buff_LOD_Loader : public ImageLoader {
@@ -106,36 +64,17 @@ class PCX_LOD_Raw_Loader : public PCX_Loader {
     LodReader *lod = nullptr;
 };
 
-class PCX_LOD_Compressed_Loader : public PCX_Loader {
- public:
-    // TODO(captainurist): this is the next level of ugly, redo.
-    template<class Lod>
-    inline PCX_LOD_Compressed_Loader(Lod *lod, std::string_view filename, Color colorkey) {
-        this->colorkey = colorkey;
-        resource_name = filename;
-        blob_func = [this, lod] {
-            return lod->LoadCompressedTexture(resource_name);
-        };
-    }
-
-    virtual bool Load(RgbaImage *rgbaImage) override;
-
- protected:
-    std::function<Blob()> blob_func;
-    Color colorkey;
-};
-
 class Bitmaps_LOD_Loader : public ImageLoader {
  public:
-    inline Bitmaps_LOD_Loader(LodTextureCache *lod, std::string_view filename) {
+    inline Bitmaps_LOD_Loader(ResourceManager *resources, std::string_view filename) {
         this->resource_name = filename;
-        this->lod = lod;
+        this->resources = resources;
     }
 
     virtual bool Load(RgbaImage *rgbaImage) override;
 
  protected:
-    LodTextureCache *lod = nullptr;
+    ResourceManager *resources = nullptr;
 };
 
 class Bitmaps_GEN_Loader : public ImageLoader {

@@ -41,12 +41,12 @@ GUIWindow_CalendarBook::GUIWindow_CalendarBook() : GUIWindow_Book() {
 
     pChildBooksOverlay = std::make_unique<GUIWindow_BooksButtonOverlay>(Pointi{570, 354}, Sizei{0, 0}, pBtn_Calendar);
 
-    ui_book_calendar_background = assets->getImage_ColorKey("sbdate-time");
-    ui_book_calendar_moon_new = assets->getImage_ColorKey("moon_new");
-    ui_book_calendar_moon_4 = assets->getImage_ColorKey("moon_4");
-    ui_book_calendar_moon_2 = assets->getImage_ColorKey("moon_2");
-    ui_book_calendar_moon_2_2 = assets->getImage_ColorKey("moon_2");
-    ui_book_calendar_moon_full = assets->getImage_ColorKey("moon_ful");
+    ui_book_calendar_background = assets->getIcon("sbdate-time");
+    ui_book_calendar_moon_new = assets->getIcon("moon_new");
+    ui_book_calendar_moon_4 = assets->getIcon("moon_4");
+    ui_book_calendar_moon_2 = assets->getIcon("moon_2");
+    ui_book_calendar_moon_2_2 = assets->getIcon("moon_2");
+    ui_book_calendar_moon_full = assets->getIcon("moon_ful");
 }
 
 /**

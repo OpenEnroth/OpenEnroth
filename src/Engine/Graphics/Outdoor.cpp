@@ -446,7 +446,7 @@ void OutdoorLocation::Load(std::string_view filename, int days_played, int respa
     std::string_view minimap_filename = filename.substr(0, filename.length() - 4);
     if (viewparams->location_minimap)
         assets->releaseImage(viewparams->location_minimap);
-    viewparams->location_minimap = assets->getImage_Solid(minimap_filename);
+    viewparams->location_minimap = assets->getIcon(minimap_filename);
 
     std::string odm_filename = std::string(filename);
     odm_filename.replace(odm_filename.length() - 4, 4, ".odm");
@@ -879,7 +879,7 @@ void OutdoorLocation::LoadActualSkyFrame() {
         rest_ui_hourglass_frame_current = nullptr;
     }
 
-    rest_ui_sky_frame_current = assets->getImage_ColorKey(
+    rest_ui_sky_frame_current = assets->getIcon(
         fmt::format("TERRA{:03}", pParty->uCurrentMinute / 6 + 10 * pParty->uCurrentHour));
 }
 
