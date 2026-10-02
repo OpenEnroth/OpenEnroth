@@ -49,7 +49,7 @@ static void dropDuplicateFaceVertices(Face *face) {
 
     // First pass - collapse everything that doesn't wrap around.
     int writeIdx = 0;
-    for (int readIdx = 0; readIdx < face->numVertices; readIdx++) {
+    for (int readIdx = 0; readIdx < face->vertexIds.size(); readIdx++) {
         if (writeIdx > 0 && face->vertexIds[readIdx] == face->vertexIds[writeIdx - 1])
             continue; // AA -> A.
         if (writeIdx > 1 && face->vertexIds[readIdx] == face->vertexIds[writeIdx - 2]) {
@@ -82,11 +82,11 @@ static void dropDuplicateFaceVertices(Face *face) {
             copyVertex(i, i - l);
     }
 
-    face->numVertices = r - l + 1;
+    const int numVertices = r - l + 1;
 
-    face->vertexIds.resize(face->numVertices);
-    face->textureUs.resize(face->numVertices);
-    face->textureVs.resize(face->numVertices);
+    face->vertexIds.resize(numVertices);
+    face->textureUs.resize(numVertices);
+    face->textureVs.resize(numVertices);
 }
 
 /**
@@ -98,9 +98,9 @@ template<class Face>
 static std::optional<Vec3f> faceNormal(const Face &face, std::span<const Vec3f> vertices) {
     // Compute the normal from the first non-degenerate edge pair.
     Vec3f normal;
-    for (int i = 0; i < face.numVertices; i++) {
-        Vec3f dir1 = vertices[face.vertexIds[(i + 1) % face.numVertices]] - vertices[face.vertexIds[i]];
-        Vec3f dir2 = vertices[face.vertexIds[(i + 2) % face.numVertices]] - vertices[face.vertexIds[(i + 1) % face.numVertices]];
+    for (int i = 0; i < face.vertexIds.size(); i++) {
+        Vec3f dir1 = vertices[face.vertexIds[(i + 1) % face.vertexIds.size()]] - vertices[face.vertexIds[i]];
+        Vec3f dir2 = vertices[face.vertexIds[(i + 2) % face.vertexIds.size()]] - vertices[face.vertexIds[(i + 1) % face.vertexIds.size()]];
         normal = cross(dir1, dir2);
         if (normal.lengthSqr() > 1e-12f)
             break;
@@ -113,9 +113,9 @@ static std::optional<Vec3f> faceNormal(const Face &face, std::span<const Vec3f> 
     // For non-planar polygons a single edge pair can give a wrong normal. Check against the Newell's method
     // normal (sum of all cross products) and use it instead if the two disagree.
     Vec3f sumNormal;
-    for (int i = 0; i < face.numVertices; i++) {
-        Vec3f dir1 = vertices[face.vertexIds[(i + 1) % face.numVertices]] - vertices[face.vertexIds[i]];
-        Vec3f dir2 = vertices[face.vertexIds[(i + 2) % face.numVertices]] - vertices[face.vertexIds[(i + 1) % face.numVertices]];
+    for (int i = 0; i < face.vertexIds.size(); i++) {
+        Vec3f dir1 = vertices[face.vertexIds[(i + 1) % face.vertexIds.size()]] - vertices[face.vertexIds[i]];
+        Vec3f dir2 = vertices[face.vertexIds[(i + 2) % face.vertexIds.size()]] - vertices[face.vertexIds[(i + 1) % face.vertexIds.size()]];
         sumNormal += cross(dir1, dir2);
     }
     if (dot(normal, sumNormal) <= 0)
@@ -135,7 +135,7 @@ static std::optional<Vec3f> faceNormal(const Face &face, std::span<const Vec3f> 
  */
 template<class Face>
 static void repairFaceNormal(Face *face, std::span<const Vec3f> vertices, std::span<const Vec3f> closedVertices) {
-    if (face->numVertices < 3)
+    if (face->vertexIds.size() < 3)
         return;
 
     std::optional<Vec3f> normal = faceNormal(*face, vertices);
@@ -144,7 +144,9 @@ static void repairFaceNormal(Face *face, std::span<const Vec3f> vertices, std::s
 
     if (!normal) {
         // TODO(captainurist): drop such faces instead, ids are referenced from sectors, doors, the bsp tree and saves.
-        face->numVertices = 2;
+        face->vertexIds.resize(2);
+        face->textureUs.resize(2);
+        face->textureVs.resize(2);
         return;
     }
 
@@ -162,25 +164,26 @@ void reconstruct(const IndoorLocation_MM7 &src, IndoorLocation *dst) {
     reconstruct(src.faceData, &faceData);
 
     for (size_t i = 0, j = 0; i < dst->faces.size(); ++i) {
+		const int vertexCount = src.faces[i].numVertices;
         BLVFace *pFace = &dst->faces[i];
 
-        pFace->vertexIds.assign(faceData.data() + j, faceData.data() + j + pFace->numVertices);
-        j += pFace->numVertices + 1; // +1 to skip closing vertex in source data.
+        pFace->vertexIds.assign(faceData.data() + j, faceData.data() + j + vertexCount);
+        j += vertexCount + 1; // +1 to skip closing vertex in source data.
 
         // Skipping pXInterceptDisplacements.
-        j += pFace->numVertices + 1;
+        j += vertexCount + 1;
 
         // Skipping pYInterceptDisplacements.
-        j += pFace->numVertices + 1;
+        j += vertexCount + 1;
 
         // Skipping pZInterceptDisplacements.
-        j += pFace->numVertices + 1;
+        j += vertexCount + 1;
 
-        pFace->textureUs = std::vector<int16_t>(faceData.data() + j, faceData.data() + j + pFace->numVertices);
-        j += pFace->numVertices + 1;
+        pFace->textureUs = std::vector<int16_t>(faceData.data() + j, faceData.data() + j + vertexCount);
+        j += vertexCount + 1;
 
-        pFace->textureVs = std::vector<int16_t>(faceData.data() + j, faceData.data() + j + pFace->numVertices);
-        j += pFace->numVertices + 1;
+        pFace->textureVs = std::vector<int16_t>(faceData.data() + j, faceData.data() + j + vertexCount);
+        j += vertexCount + 1;
 
         if (j > faceData.size())
             throw Exception("BLV face data overflow: offset {} exceeds size {}", j, faceData.size());

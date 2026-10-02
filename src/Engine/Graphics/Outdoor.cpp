@@ -797,7 +797,7 @@ float ODM_GetFloorLevel(const Vec3f &pos, bool *pIsOnWater, int *faceId) {
             if (face.Ethereal())
                 continue;
 
-            if (face.numVertices == 0)
+            if (face.vertexIds.size() == 0)
                 continue;
 
             if (face.polygonType != POLYGON_Floor && face.polygonType != POLYGON_InBetweenFloorAndWall)

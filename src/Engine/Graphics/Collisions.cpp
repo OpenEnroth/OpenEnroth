@@ -101,7 +101,7 @@ static bool CollideSphereWithFace(BLVFace* face, const Vec3f& pos, float radius,
     if (ignore_ethereal && face->Ethereal())
         return false;
 
-    if (face->numVertices < 3)
+    if (face->vertexIds.size() < 3)
         return false; // Apparently this happens.
 
     float dir_normal_projection = dot(dir, face->facePlane.normal);
@@ -157,7 +157,7 @@ static bool CollideSphereWithFace(BLVFace* face, const Vec3f& pos, float radius,
 
     // now collide with vertices - point sphere collision
     a = dir.lengthSqr();
-    for (int i = 0; i < face->numVertices; ++i) {
+    for (int i = 0; i < face->vertexIds.size(); ++i) {
         Vec3f vertPos;
         if (model_idx == MODEL_INDOOR) {
             vertPos = pIndoor->vertices[face->vertexIds[i]];
@@ -176,9 +176,9 @@ static bool CollideSphereWithFace(BLVFace* face, const Vec3f& pos, float radius,
     }
 
     // now collide with edges
-    for (int i = 0; i < face->numVertices; ++i) {
+    for (int i = 0; i < face->vertexIds.size(); ++i) {
         Vec3f vert1, vert2;
-        int i2 = (i + 1) % face->numVertices;
+        int i2 = (i + 1) % face->vertexIds.size();
         if (model_idx == MODEL_INDOOR) {
             vert1 = pIndoor->vertices[face->vertexIds[i]];
             vert2 = pIndoor->vertices[face->vertexIds[i2]];

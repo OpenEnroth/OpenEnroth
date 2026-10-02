@@ -20,7 +20,7 @@ void BspRenderer::AddFace(const int node_id, const int uFaceID) {
     // NOTE(yoctozepto): the below happens, e.g., on various stairs
     // TODO(yoctozepto): might be nice to check if the vertices actually form a plane and not a line;
     //                   this could be done when loading the location and filtering out such broken faces
-    if (pFace->numVertices < 3) {
+    if (pFace->vertexIds.size() < 3) {
         return;  // nothing to render
     }
 
@@ -34,13 +34,11 @@ void BspRenderer::AddFace(const int node_id, const int uFaceID) {
     static RenderVertexSoft clippedFaceVertices[64];
 
     // TODO(yoctozepto): are face vertices consecutive? are face vertices shared/overlapping?
-    for (unsigned k = 0; k < pFace->numVertices; ++k) {
-        originalFaceVertices[k].vWorldPosition.x = pIndoor->vertices[pFace->vertexIds[k]].x;
-        originalFaceVertices[k].vWorldPosition.y = pIndoor->vertices[pFace->vertexIds[k]].y;
-        originalFaceVertices[k].vWorldPosition.z = pIndoor->vertices[pFace->vertexIds[k]].z;
+    for (unsigned k = 0; k < pFace->vertexIds.size(); ++k) {
+        originalFaceVertices[k].vWorldPosition = pIndoor->vertices[pFace->vertexIds[k]];
     }
 
-    unsigned int pNewNumVertices = pFace->numVertices;
+    unsigned int pNewNumVertices = pFace->vertexIds.size();
 
     // TODO(yoctozepto): original vertices could have been just Vec3f
     // clip to current viewing node frustum

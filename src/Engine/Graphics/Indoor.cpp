@@ -471,17 +471,17 @@ void BLVFace::Flatten(FlatFace *points, int model_idx, FaceAttributes override_p
 
     auto do_flatten = [&](auto &&vertex_accessor) {
         if (plane & FACE_XY_PLANE) {
-            for (int i = 0; i < this->numVertices; i++) {
+            for (int i = 0; i < this->vertexIds.size(); i++) {
                 points->u[i] = vertex_accessor(i).x;
                 points->v[i] = vertex_accessor(i).y;
             }
         } else if (plane & FACE_XZ_PLANE) {
-            for (int i = 0; i < this->numVertices; i++) {
+            for (int i = 0; i < this->vertexIds.size(); i++) {
                 points->u[i] = vertex_accessor(i).x;
                 points->v[i] = vertex_accessor(i).z;
             }
         } else {
-            for (int i = 0; i < this->numVertices; i++) {
+            for (int i = 0; i < this->vertexIds.size(); i++) {
                 points->u[i] = vertex_accessor(i).y;
                 points->v[i] = vertex_accessor(i).z;
             }
@@ -507,7 +507,7 @@ bool BLVFace::Contains(const Vec3f &pos, int model_idx, int slack, FaceAttribute
     // float d = std::abs(this->facePlane.signedDistanceTo(pos.toFloat()));
     // assert(d < 0.01f);
 
-    if (this->numVertices < 3)
+    if (this->vertexIds.size() < 3)
         return false; // This does happen.
 
     FaceAttributes plane = override_plane;
@@ -547,7 +547,7 @@ bool BLVFace::Contains(const Vec3f &pos, int model_idx, int slack, FaceAttribute
     // The polygons we're dealing with are convex, so instead of the usual ray casting algorithm we can simply
     // check that the point in question lies on the same side relative to all of the polygon's edges.
     int sign = 0;
-    for (int i = 0, j = this->numVertices - 1; i < this->numVertices; j = i++) {
+    for (int i = 0, j = this->vertexIds.size() - 1; i < this->vertexIds.size(); j = i++) {
         float a_u = points.u[j] - points.u[i];
         float a_v = points.v[j] - points.v[i];
         float b_u = u - points.u[i];
@@ -681,7 +681,7 @@ void BLV_UpdateDoorGeometry(BLVDoor* door, int distance) {
         float minV = std::numeric_limits<float>::infinity();
         float maxU = -std::numeric_limits<float>::infinity();
         float maxV = -std::numeric_limits<float>::infinity();
-        for (unsigned k = 0; k < face->numVertices; ++k) {
+        for (unsigned k = 0; k < face->vertexIds.size(); ++k) {
             Vec3f point = pIndoor->vertices[face->vertexIds[k]];
             float pointU = dot(point, u);
             float pointV = dot(point, v);
