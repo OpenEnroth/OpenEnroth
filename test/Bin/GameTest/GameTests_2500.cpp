@@ -1214,3 +1214,29 @@ GAME_TEST(Issues, Issue2945) {
         EXPECT_EQ(barTape, tape(0, 12, 25, 37, 50, 62, 75, 87, 100));
     }
 }
+
+GAME_TEST(Prs, Pr2876) {
+    // Loading a game with a transition dialogue open should drop the event that waits on the dialogue.
+    auto mapTape = tapes.map();
+    auto screenTape = tapes.screen();
+    game.startNewGame();
+    game.teleportTo(MAP_HIDDEN_TOMB, Vec3f(-111, -25, 1), 0); // Just inside the entrance, facing the exit.
+    game.pressKey(PlatformKey::KEY_UP);
+    game.tick(10);
+    game.releaseKey(PlatformKey::KEY_UP);
+    game.pressAndReleaseKey(PlatformKey::KEY_F5); // Quicksave.
+    game.tick(2);
+    test.startTaping();
+    game.pressAndReleaseKey(PlatformKey::KEY_SPACE);
+    game.tick();
+    game.pressAndReleaseKey(PlatformKey::KEY_F9); // Quickload.
+    game.skipLoadingScreen();
+    game.tick(2);
+    game.pressAndReleaseKey(PlatformKey::KEY_SPACE);
+    game.tick();
+    game.pressGuiButton("Transition_Yes");
+    game.tick();
+    game.skipLoadingScreen();
+    EXPECT_EQ(screenTape, tape(SCREEN_INPUT_BLV, SCREEN_GAME, SCREEN_INPUT_BLV, SCREEN_GAME));
+    EXPECT_EQ(mapTape, tape(MAP_HIDDEN_TOMB, MAP_ERATHIA));
+}

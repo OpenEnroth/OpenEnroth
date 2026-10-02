@@ -1,11 +1,17 @@
 #pragma once
 
-#include <functional>
 #include <string>
 
 #include "Engine/Pid.h"
+#include "Engine/Evt/EvtContext.h"
 
-struct LevelDecoration;
+/**
+ * An event paused on a dialogue.
+ */
+struct EvtContinuation {
+    EvtContext context;
+    int step = 0; // Step the event resumes from.
+};
 
 /**
  * @offset 0x4613C4
@@ -23,25 +29,24 @@ void eventProcessor(int eventId, Pid targetObj, bool canShowMessages, int startS
  * Runs an event from global.evt.
  *
  * @param eventId                       Event to run.
- * @param decoration                    Interactive decoration the event runs for, or `nullptr` for an NPC topic.
- * @param startStep                     Step to start from.
+ * @param targetObj                     Interactive decoration the event runs for, or an empty pid for an NPC topic.
  */
-void globalEventProcessor(int eventId, LevelDecoration *decoration, int startStep = 0);
+void globalEventProcessor(int eventId, Pid targetObj);
 
 /**
- * @param continuation                  Callback that resumes an event paused on a dialogue, or `nullptr` for none.
+ * @param continuation                  Event to resume when the dialogue it paused on closes.
  */
-void setEventContinuation(std::function<void()> continuation);
+void setEventContinuation(const EvtContinuation &continuation);
 
 /**
- * Runs the stored continuation, if there is one, and clears it.
+ * Resumes the stored continuation, if there is one, and clears it.
  */
-void continueSavedEvent();
+void runEventContinuation();
 
 /**
- * Clears the stored continuation without running it.
+ * Clears the stored continuation without resuming it.
  */
-void cancelSavedEvent();
+void dropEventContinuation();
 
 bool npcDialogueEventProcessor(int eventId, int startStep = 0);
 bool hasEventHint(int eventId);
