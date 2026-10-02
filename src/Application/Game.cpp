@@ -195,7 +195,7 @@ bool Game::loop() {
             pMediaPlayer->PlayFullscreenMovie("Intro Post");
             saveNewGame();
             if (engine->config->debug.NoMargaret.value()) {
-                pParty->_questBits.set(QBIT_EMERALD_ISLAND_MARGARETH_OFF);
+                pParty->_questBits.set(QBIT_EMERALD_ISLAND_MARGARET_TOUR_OFF);
             }
 
             gameLoop();

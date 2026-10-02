@@ -102,7 +102,7 @@ GAME_TEST(Issues, Issue2018a) {
     game.startNewGame();
     test.startTaping();
 
-    pParty->_questBits[QBIT_FOUNTAIN_IN_STEADWICK_ACTIVATED] = true;
+    pParty->_questBits[QBIT_TOWN_PORTAL_TO_ERATHIA] = true;
     pParty->pCharacters[3].mana = 10;
 
     // A scroll casts Town Portal at master, where it fails half the time.

@@ -30,12 +30,13 @@ void ItemInteraction(int item_id) {
 
         engine->_statusBar->setEvent(LSTR_YOU_FOUND_AN_ITEM_S, pItemTable->items[pSpriteObjects[item_id].containing_item.itemId].unidentifiedName);
 
-        // TODO: WTF? 184 / 185 qbits are associated with Tatalia's Mercenery Guild Harmondale raids. Are these about castle's tapestries ?
+        // TODO(captainurist): vanilla MM7 does this too, but its scripts use bits 184 and 185 for the Harmondale raid. In MM6
+        //                     these are the seer's quest item bits, so this looks like MM6 code left in the MM7 exe.
         if (pSpriteObjects[item_id].containing_item.itemId == ITEM_ARTIFACT_SPLITTER) {
-            pParty->_questBits.set(QBIT_SPLITTER_FOUND);
+            pParty->_questBits.set(QBIT_CASTLE_HARMONDALE_RAIDERS_KILLED);
         }
         if (pSpriteObjects[item_id].containing_item.itemId == ITEM_SPELLBOOK_REMOVE_FEAR) {
-            pParty->_questBits.set(QBIT_REMOVE_FEAR_FOUND);
+            pParty->_questBits.set(QBIT_HARMONDALE_RAIDERS_KILLED);
         }
         if (!pParty->addItemToParty(&pSpriteObjects[item_id].containing_item)) {
             pParty->setHoldingItem(pSpriteObjects[item_id].containing_item);

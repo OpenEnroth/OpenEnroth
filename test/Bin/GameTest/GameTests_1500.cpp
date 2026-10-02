@@ -727,14 +727,14 @@ GAME_TEST(Issues, Issue1725) {
     // Finishing Strike the Devils quest on dark path glitches out game menus
     auto screenTape = tapes.screen();
     auto textTape = tapes.allGUIWindowsText();
-    auto bit120Tape = tapes.questBit(QBIT_120);
-    auto bit123Tape = tapes.questBit(QBIT_123);
+    auto finishedTape = tapes.questBit(QBIT_XENOFEX_QUEST_FINISHED);
+    auto activeTape = tapes.questBit(QBIT_XENOFEX_DARK_ACTIVE);
     test.playTraceFromTestData("issue_1725.mm7", "issue_1725.json");
     EXPECT_EQ(screenTape.back(), SCREEN_HOUSE); // Make sure we end up back in the throne room
     EXPECT_GT(textTape.flatten().filter([](const auto &s) { return s.starts_with("THAT WAS AWESOME!"); }).size(), 0);
     EXPECT_CONTAINS(textTape.flatten(), "Exit Building"); // And can exit it
-    EXPECT_EQ(bit120Tape, tape(false, true));
-    EXPECT_EQ(bit123Tape, tape(true, false));
+    EXPECT_EQ(finishedTape, tape(false, true));
+    EXPECT_EQ(activeTape, tape(true, false));
 }
 
 GAME_TEST(Issues, Issue1726) {
