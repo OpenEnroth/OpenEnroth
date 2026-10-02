@@ -644,22 +644,18 @@ GAME_TEST(Prs, Pr2157b) {
 }
 
 GAME_TEST(Issues, Issue2186a) {
-    // Objects falling through a floor portal kept the sector above it and fell through the floor below.
-    auto armorZTape = tapes.custom([] {
-        AccessibleVector<int> result;
-        for (const SpriteObject &sprite : pSpriteObjects)
-            if (sprite.uObjectDescID != 0 && sprite.containing_item.itemId == ITEM_LEATHER_ARMOR)
-                result.push_back(sprite.vPosition.z);
-        return result;
-    });
+    // Actors falling through the hole in the Grand Temple of the Sun upper level ended up deep underground.
     game.startNewGame();
-    game.teleportTo(MAP_GRAND_TEMPLE_OF_THE_SUN, Vec3f(-880, 800, 648), 0); // Upper level, facing the hole over the hall.
+    game.teleportTo(MAP_GRAND_TEMPLE_OF_THE_SUN, Vec3f(-1470, -650, 416), 90); // Foot of the stairs to the upper level.
+    game.pressKey(PlatformKey::KEY_UP);
+    game.tick(16);
+    game.releaseKey(PlatformKey::KEY_UP);
+    Actor *cleric = game.spawnMonster(Vec3f(0, 550, 800), MONSTER_CLERIC_SUN_C, SPAWN_FRIENDLY); // Over the hole.
+    auto clericZTape = actorTapes.custom(cleric->id, [](const Actor &actor) { return static_cast<int>(actor.pos.z); });
     test.startTaping();
-    pParty->setHoldingItem(Item(ITEM_LEATHER_ARMOR));
-    game.pressAndReleaseButton(BUTTON_LEFT, pViewport.center()); // Throw it down the hole.
-    game.tick(30);
+    game.tick(50);
 
-    EXPECT_EQ(armorZTape.back(), tape(129)); // Lying on the floor below.
+    EXPECT_EQ(clericZTape.back(), 0); // On the floor of the hall below.
 }
 
 GAME_TEST(Issues, Issue2186b) {
@@ -679,6 +675,25 @@ GAME_TEST(Issues, Issue2186b) {
         EXPECT_LT(act.pos.z, 400); // they have fallen through the transition
     for (const auto &act : pActors)
         EXPECT_GT(act.pos.z, -1000); // and no actors are underground
+}
+
+GAME_TEST(Issues, Issue2186c) {
+    // Items thrown down the hole in the Grand Temple of the Sun upper level fell through the floor of the hall below.
+    auto armorZTape = tapes.custom([] {
+        AccessibleVector<int> result;
+        for (const SpriteObject &sprite : pSpriteObjects)
+            if (sprite.uObjectDescID != 0 && sprite.containing_item.itemId == ITEM_LEATHER_ARMOR)
+                result.push_back(sprite.vPosition.z);
+        return result;
+    });
+    game.startNewGame();
+    game.teleportTo(MAP_GRAND_TEMPLE_OF_THE_SUN, Vec3f(-880, 800, 648), 0); // Upper level, facing the hole over the hall.
+    test.startTaping();
+    pParty->setHoldingItem(Item(ITEM_LEATHER_ARMOR));
+    game.pressAndReleaseButton(BUTTON_LEFT, pViewport.center()); // Throw it down the hole.
+    game.tick(30);
+
+    EXPECT_EQ(armorZTape.back(), tape(129)); // Lying on the floor below.
 }
 
 GAME_TEST(Issues, Issue2188) {
