@@ -863,17 +863,21 @@ GAME_TEST(Issues, Issue790) {
 
 GAME_TEST(Issues, Issue792) {
     // Loading a game from inside another game ran the old game's event timers against the loaded party.
+    auto bonusTape = tapes.custom([] { return pParty->pCharacters[0].sResBodyBonus; });
+    auto drankTape = tapes.custom([] -> bool { return pParty->pCharacters[0]._characterEventBits[5]; });
     game.startNewGame();
     game.teleportTo(MAP_ERATHIA, Vec3f(-12216, 1900, 961), 90); // Next to a well.
     game.tick(20); // Erathia's timers fire once on the first visit.
-    game.pressAndReleaseKey(PlatformKey::KEY_SPACE); // Drinking sets a character bit that a daily Erathia timer clears at 1am.
+    test.startTaping();
+    game.tick();
+    game.pressAndReleaseKey(PlatformKey::KEY_SPACE); // Drink. A daily Erathia timer clears the drank bit at 1am.
     game.tick(2);
+    test.stopTaping();
     game.pressAndReleaseKey(PlatformKey::KEY_F5); // Quicksave. A save from the menu stores the game timer paused.
     game.tick(2);
 
     game.startNewGame();
     game.teleportTo(MAP_ERATHIA, Vec3f(-12216, 1900, 961), 90); // First visit, the 1am timer is due and runs 30 game seconds in.
-    auto drankTape = tapes.custom([] -> bool { return pParty->pCharacters[0]._characterEventBits[5]; });
     test.startTaping();
     game.pressAndReleaseKey(PlatformKey::KEY_ESCAPE); // The menu pauses the game before that.
     game.tick(2);
@@ -886,7 +890,8 @@ GAME_TEST(Issues, Issue792) {
     game.skipLoadingScreen();
     game.tick(2);
     EXPECT_EQ(engine->_lastLoadedSaveFileName, "quicksave0.mm7");
-    EXPECT_EQ(drankTape, tape(false, true));
+    EXPECT_EQ(bonusTape, tape(0, 20, 0, 20)); // The well gives +20 Body Resistance, the new game has none, the load brings it back.
+    EXPECT_EQ(drankTape, tape(false, true, false, true));
 }
 
 GAME_TEST(Issues, Issue797) {
