@@ -828,8 +828,8 @@ enum class ItemId : int32_t {
     ITEM_673 = 673,                                  // Lich Jar Placeholder, unused.
     ITEM_674 = 674,                                  // Elixir Placeholder, unused.
     ITEM_QUEST_CONTROL_CUBE = 675,
-    ITEM_QUEST_ALTAR_PIECE_1 = 676,
-    ITEM_QUEST_ALTAR_PIECE_2 = 677,
+    ITEM_QUEST_ALTAR_PIECE_LIGHT = 676,
+    ITEM_QUEST_ALTAR_PIECE_DARK = 677,
     ITEM_678 = 678,                                  // Final Part Placeholder, unused.
     ITEM_679 = 679,                                  // Level Design Placeholder, unused.
     ITEM_680 = 680,                                  // Artifact Placeholder (Elf vs. Human), unused.
