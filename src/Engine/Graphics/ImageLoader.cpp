@@ -14,7 +14,6 @@
 
 #include "Library/Image/Pcx.h"
 #include "Library/Image/Png.h"
-#include "Library/LodFormats/LodFormats.h"
 #include "Library/LodFormats/LodImage.h"
 #include "Library/Logger/Logger.h"
 

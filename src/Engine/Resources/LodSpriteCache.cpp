@@ -1,9 +1,8 @@
 #include "LodSpriteCache.h"
 
 #include <optional>
-#include <vector>
-#include <utility>
 #include <string>
+#include <vector>
 
 #include "Engine/AssetsManager.h" // TODO(captainurist): dependency doesn't belong here
 

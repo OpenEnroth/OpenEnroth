@@ -1,13 +1,11 @@
 #pragma once
 
 #include <string>
+#include <string_view>
 #include <unordered_map>
 #include <vector>
-#include <memory>
 
 #include "Engine/Graphics/Sprites.h"
-
-#include "Library/Image/Image.h"
 
 class ResourceManager;
 
