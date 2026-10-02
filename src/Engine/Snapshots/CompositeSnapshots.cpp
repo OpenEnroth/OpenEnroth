@@ -164,7 +164,7 @@ void reconstruct(const IndoorLocation_MM7 &src, IndoorLocation *dst) {
     reconstruct(src.faceData, &faceData);
 
     for (size_t i = 0, j = 0; i < dst->faces.size(); ++i) {
-		const int vertexCount = src.faces[i].numVertices;
+        const int vertexCount = src.faces[i].numVertices;
         BLVFace *pFace = &dst->faces[i];
 
         pFace->vertexIds.assign(faceData.data() + j, faceData.data() + j + vertexCount);
