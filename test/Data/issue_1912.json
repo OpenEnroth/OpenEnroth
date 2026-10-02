@@ -38,6 +38,11 @@
                 "value": "mersenne_twister"
             },
             {
+                "key": "trace_single_frame_loading_screen",
+                "section": "debug",
+                "value": "true"
+            },
+            {
                 "key": "destroy_discharged_wands",
                 "section": "gameplay",
                 "value": "true"

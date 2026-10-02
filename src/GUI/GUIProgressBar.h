@@ -22,6 +22,9 @@ class GUIProgressBar {
     bool IsActive();
 
  protected:
+    void releaseImages();
+    void drawIfNotSingleFrame();
+
     int uX = 0;
     int uY = 0;
     int uWidth = 0;

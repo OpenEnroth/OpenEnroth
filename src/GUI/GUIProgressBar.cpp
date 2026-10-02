@@ -28,7 +28,7 @@ bool GUIProgressBar::Initialize(Type type) {
         return false;
     }
 
-    Release();
+    releaseImages();
 
     if (type == TYPE_None)
         return true;
@@ -48,7 +48,7 @@ bool GUIProgressBar::Initialize(Type type) {
         uProgressMax = 26;
 
         progressbar_loading = assets->getIcon("loadprog");
-        Draw();
+        drawIfNotSingleFrame();
         return true;
     } else {
         progressbar_dungeon = assets->getIcon(ProgressBarResourceByAlignment[pParty->alignment]);
@@ -56,7 +56,7 @@ bool GUIProgressBar::Initialize(Type type) {
 
     uProgressCurrent = 0;
     uProgressMax = 26;
-    Draw();
+    drawIfNotSingleFrame();
     return true;
 }
 
@@ -67,10 +67,19 @@ void GUIProgressBar::Reset(uint8_t uMaxProgress) {
 
 void GUIProgressBar::Progress() {
     uProgressCurrent = std::min((uint8_t)(uProgressCurrent + 1), uProgressMax);
-    Draw();
+    drawIfNotSingleFrame();
 }
 
 void GUIProgressBar::Release() {
+    if (uType != TYPE_None && engine->config->debug.SingleFrameLoadingScreen.value()) {
+        uProgressCurrent = uProgressMax;
+        Draw();
+    }
+
+    releaseImages();
+}
+
+void GUIProgressBar::releaseImages() {
     if (loading_bg != nullptr) {
         assets->releaseImage(loading_bg);
         loading_bg = nullptr;
@@ -111,6 +120,11 @@ void GUIProgressBar::Draw() {
     }
 
     render->Present();
+}
+
+void GUIProgressBar::drawIfNotSingleFrame() {
+    if (!engine->config->debug.SingleFrameLoadingScreen.value())
+        Draw();
 }
 
 bool GUIProgressBar::IsActive() {
