@@ -873,7 +873,7 @@ GAME_TEST(Issues, Issue792) {
     game.pressAndReleaseKey(PlatformKey::KEY_SPACE); // Drink. A daily Erathia timer clears the drank bit at 1am.
     game.tick(2);
     test.stopTaping();
-    game.pressAndReleaseKey(PlatformKey::KEY_F5); // Quicksave. A save from the menu stores the game timer paused.
+    game.pressAndReleaseKey(PlatformKey::KEY_F5); // Quicksave.
     game.tick(2);
 
     game.startNewGame();
