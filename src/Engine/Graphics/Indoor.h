@@ -153,13 +153,13 @@ struct BLVFace {
     FaceAttributes attributes;
 
     /** Indices into the vertex array for this face's vertices. Indoor faces index `IndoorLocation::vertices`; outdoor
-     * faces index `OutdoorLocation::vertices`. Has `numVertices` elements. */
+     * faces index `OutdoorLocation::vertices`. */
     std::vector<int> vertexIds;
 
-    /** U (horizontal) texture coordinates for each vertex, in texture pixels. Has `numVertices` elements. */
+    /** U (horizontal) texture coordinates for each vertex, in texture pixels. */
     std::vector<int16_t> textureUs;
 
-    /** V (vertical) texture coordinates for each vertex, in texture pixels. Has `numVertices` elements. */
+    /** V (vertical) texture coordinates for each vertex, in texture pixels. */
     std::vector<int16_t> textureVs;
 
     GraphicsImage *texture = nullptr; // Face texture, or nullptr if this face is animated.
@@ -171,7 +171,6 @@ struct BLVFace {
     int backSectorId = 0;
     BBoxf boundingBox;
     PolygonType polygonType = POLYGON_Invalid;
-    uint8_t numVertices = 0;
 
     bool HasEventHint();
 
