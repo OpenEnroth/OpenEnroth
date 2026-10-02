@@ -324,29 +324,46 @@ GAME_TEST(Issues, Issue293c) {
 }
 
 GAME_TEST(Issues, Issue294a) {
-    // Blades and Sharpmetal flew over a point-blank rat because their projectiles spawned at half the party height.
-    for (SpellId spell : {SPELL_EARTH_BLADES, SPELL_DARK_SHARPMETAL}) {
-        SCOPED_TRACE(fmt::format("spell={}", std::to_underlying(spell)));
-        test.prepareForNextTest(100, RANDOM_ENGINE_MERSENNE_TWISTER);
-        engine->config->debug.NoActors.setValue(true);
-        engine->config->debug.AllMagic.setValue(true);
-        game.startNewGame();
-        test.startTaping();
-        prepareForBattleTest();
-        engine->config->debug.NoActors.setValue(false);
+    // Sharpmetal couldn't kill a point-blank rat because its blades spawned at half the party height and flew over it.
+    test.prepareForNextTest(100, RANDOM_ENGINE_MERSENNE_TWISTER);
+    engine->config->debug.NoActors.setValue(true);
+    engine->config->debug.AllMagic.setValue(true);
+    game.startNewGame();
+    test.startTaping();
+    prepareForBattleTest();
+    engine->config->debug.NoActors.setValue(false);
 
-        auto hpTape = actorTapes.hp(0);
-        game.spawnMonster(pParty->pos + Vec3f(0, 80, 0), MONSTER_RAT_A, SPAWN_DUMMY); // Right in front of the party.
-        game.tick(); // Quick spell targeting picks from the last rendered frame.
-        game.castQuickSpell(0, spell);
-        game.tick(30);
-        test.stopTaping();
+    auto stateTape = actorTapes.aiState(0);
+    game.spawnMonster(pParty->pos + Vec3f(0, 80, 0), MONSTER_RAT_A, SPAWN_DUMMY); // Right in front of the party.
+    game.tick(); // Quick spell targeting picks from the last rendered frame.
+    game.castQuickSpell(0, SPELL_DARK_SHARPMETAL);
+    game.tick(30);
+    test.stopTaping();
 
-        EXPECT_LT(hpTape.delta(), 0);
-    }
+    EXPECT_EQ(stateTape.frontBack(), tape(Standing, Dead));
 }
 
 GAME_TEST(Issues, Issue294b) {
+    // Blades flew over a point-blank rat because the projectile spawned at half the party height.
+    test.prepareForNextTest(100, RANDOM_ENGINE_MERSENNE_TWISTER);
+    engine->config->debug.NoActors.setValue(true);
+    engine->config->debug.AllMagic.setValue(true);
+    game.startNewGame();
+    test.startTaping();
+    prepareForBattleTest();
+    engine->config->debug.NoActors.setValue(false);
+
+    auto hpTape = actorTapes.hp(0);
+    game.spawnMonster(pParty->pos + Vec3f(0, 80, 0), MONSTER_RAT_A, SPAWN_DUMMY); // Right in front of the party.
+    game.tick(); // Quick spell targeting picks from the last rendered frame.
+    game.castQuickSpell(0, SPELL_EARTH_BLADES);
+    game.tick(30);
+    test.stopTaping();
+
+    EXPECT_LT(hpTape.delta(), 0);
+}
+
+GAME_TEST(Issues, Issue294c) {
     // Blaster shots flew over a point-blank rat because they spawned at half the party height.
     engine->config->debug.NoActors.setValue(true);
     game.startNewGame();
