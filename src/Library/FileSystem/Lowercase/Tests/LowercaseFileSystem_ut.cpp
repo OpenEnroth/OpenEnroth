@@ -5,7 +5,7 @@
 
 #include "Library/FileSystem/Lowercase/LowercaseFileSystem.h"
 #include "Library/FileSystem/Memory/MemoryFileSystem.h"
-#include "Library/FileSystem/Directory/DirectoryFileSystem.h"
+#include "Library/FileSystem/Native/NativeFileSystem.h"
 
 UNIT_TEST(LowercaseFileSystem, Empty) {
     MemoryFileSystem fs0("");
@@ -28,7 +28,7 @@ UNIT_TEST(LowercaseFileSystem, ExistsStatUppercase) {
 UNIT_TEST(LowercaseFileSystem, KeepEmptyFolders) {
     ScopedTestFolder tmp("tmp_dir");
 
-    DirectoryFileSystem fs0(NativePath("tmp_dir"));
+    NativeFileSystem fs0(NativePath("tmp_dir"));
     fs0.write("a/b/c.bin", Blob());
     fs0.write("a/c/b.bin", Blob());
 

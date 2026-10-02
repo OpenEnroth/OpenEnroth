@@ -5,7 +5,7 @@
 
 #include "Library/Logger/Logger.h"
 #include "Library/Environment/Interface/Environment.h"
-#include "Library/FileSystem/Directory/DirectoryFileSystem.h"
+#include "Library/FileSystem/Native/NativeFileSystem.h"
 #include "Library/FileSystem/Lowercase/LowercaseFileSystem.h"
 
 #include "Utility/System/Fs.h"
@@ -123,7 +123,7 @@ std::vector<NativePath> resolveMm8Paths(Environment *environment) {
 }
 
 bool validateMm7Path(const NativePath &dataPath, std::string *missingFile) {
-    DirectoryFileSystem dirFs(dataPath);
+    NativeFileSystem dirFs(dataPath);
     LowercaseFileSystem lowerFs(&dirFs);
 
     for (std::string_view entry : globalValidateList) {
