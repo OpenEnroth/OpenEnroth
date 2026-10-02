@@ -30,8 +30,9 @@ void ItemInteraction(int item_id) {
 
         engine->_statusBar->setEvent(LSTR_YOU_FOUND_AN_ITEM_S, pItemTable->items[pSpriteObjects[item_id].containing_item.itemId].unidentifiedName);
 
-        // TODO(captainurist): vanilla MM7 does this too, but its scripts use bits 184 and 185 for the Harmondale raid. In MM6
-        //                     these are the seer's quest item bits, so this looks like MM6 code left in the MM7 exe.
+        // TODO(captainurist): #mm6 remnant. MM6 sets bits 184 and 185 when the party picks up the Devil Plans (506) and the
+        //                     Dragon Claw (455), the seer's quest items. Vanilla MM7 kept the code with MM7's items 506
+        //                     and 455, while its scripts use these bits for the Harmondale raid.
         if (pSpriteObjects[item_id].containing_item.itemId == ITEM_ARTIFACT_SPLITTER) {
             pParty->_questBits.set(QBIT_CASTLE_HARMONDALE_RAIDERS_KILLED);
         }
