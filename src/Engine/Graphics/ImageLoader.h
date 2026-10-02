@@ -4,7 +4,6 @@
 
 #include "Library/Image/Image.h"
 
-class LodSpriteCache;
 class LodTextureCache;
 class ResourceManager;
 class LodReader;
@@ -88,13 +87,13 @@ class Bitmaps_GEN_Loader : public ImageLoader {
 
 class Sprites_LOD_Loader : public ImageLoader {
  public:
-    inline Sprites_LOD_Loader(LodSpriteCache *lod, std::string_view filename) {
+    inline Sprites_LOD_Loader(ResourceManager *resources, std::string_view filename) {
         this->resource_name = filename;
-        this->lod = lod;
+        this->resources = resources;
     }
 
     virtual bool Load(RgbaImage *rgbaImage) override;
 
  protected:
-    LodSpriteCache *lod = nullptr;
+    ResourceManager *resources = nullptr;
 };

@@ -8,16 +8,13 @@
 #include "Engine/Graphics/Sprites.h"
 
 #include "Library/Image/Image.h"
-#include "Library/Lod/LodReader.h"
 
-class LodReader;
+class ResourceManager;
 
 class LodSpriteCache {
  public:
-    LodSpriteCache();
+    explicit LodSpriteCache(ResourceManager *resources);
     ~LodSpriteCache();
-
-    bool open(Blob blob);
 
     void reserveLoadedSprites();
     void releaseUnreserved();
@@ -28,15 +25,11 @@ class LodSpriteCache {
      */
     Sprite *loadSprite(std::string_view pContainerName);
 
-    Blob read(std::string_view pContainer) const; // TODO(captainurist): drop this, the texture loader shouldn't read through the sprite cache.
-
  private:
-    LodReader _reader;
+    ResourceManager *_resources = nullptr;
     int _reservedCount = 0;
     std::unordered_map<std::string, Sprite> _spriteByName;
     std::vector<std::string> _spritesInOrder;
 };
 
 extern LodSpriteCache *pSprites_LOD;
-extern LodSpriteCache *pSprites_LOD_mm6;
-extern LodSpriteCache *pSprites_LOD_mm8;

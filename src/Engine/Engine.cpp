@@ -760,8 +760,7 @@ void MM7_LoadLods() {
     pBitmaps_LOD = new LodTextureCache;
     pBitmaps_LOD->open(dfs->read("data/bitmaps.lod"));
 
-    pSprites_LOD = new LodSpriteCache;
-    pSprites_LOD->open(dfs->read("data/sprites.lod"));
+    pSprites_LOD = new LodSpriteCache(engine->resources());
 
     // TODO(captainurist):
     // on error in `open` we had this:

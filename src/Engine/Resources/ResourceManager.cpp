@@ -12,6 +12,7 @@
 #include "Library/Json/Json.h"
 #include "Library/LodFormats/LodFormats.h"
 #include "Library/LodFormats/LodImage.h"
+#include "Library/LodFormats/LodSprite.h"
 #include "Library/Logger/Logger.h"
 #include "Library/FileSystem/Interface/FileSystem.h"
 
@@ -99,6 +100,7 @@ void ResourceManager::open() {
     _eventsLodReader.open(dfs->read("data/events.lod"));
     _iconsLodReader.open(dfs->read("data/icons.lod"));
     _bitmapsLodReader.open(dfs->read("data/bitmaps.lod"));
+    _spritesLodReader.open(dfs->read("data/sprites.lod"));
     from_json(Json::parse(dfs->read("data/resource_mask_table.json").str()), _masks);
     // TODO(captainurist):
     //  on exception:
@@ -158,4 +160,27 @@ RgbaImage ResourceManager::bitmap(std::string_view filename) {
         }
     }
     return result;
+}
+
+RgbaImage ResourceManager::sprite(std::string_view filename) {
+    std::string name = ascii::toLower(filename);
+    if (!_spritesLodReader.exists(name)) {
+        MM_ERROR("Trying to load non-existent LOD entry '{}'.", _spritesLodReader.displayPath(name));
+        return {};
+    }
+
+    LodSprite sprite = lod::decodeSprite(_spritesLodReader.read(name));
+    RgbaImage result = RgbaImage::uninitialized(sprite.image.width(), sprite.image.height());
+    auto srcPixels = sprite.image.pixels();
+    auto dstPixels = result.pixels();
+    for (size_t i = 0, size = srcPixels.size(); i < size; i++)
+        dstPixels[i] = Color(srcPixels[i], 0, 0, srcPixels[i] == 0 ? 0 : 255);
+    return result;
+}
+
+std::optional<Sizei> ResourceManager::spriteSize(std::string_view filename) {
+    std::string name = ascii::toLower(filename);
+    if (!_spritesLodReader.exists(name))
+        return std::nullopt;
+    return lod::decodeSpriteSize(_spritesLodReader.read(name));
 }
