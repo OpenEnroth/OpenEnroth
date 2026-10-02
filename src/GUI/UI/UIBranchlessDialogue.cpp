@@ -77,14 +77,13 @@ void startBranchlessDialogue(EvtOpcode type) {
     if (!pGUIWindow_BranchlessDialogue) {
         animTimer->setPaused(true);
         gameTimer->setPaused(true);
-        cancelSavedEvent();
         pGUIWindow_BranchlessDialogue = std::make_unique<GUIWindow_BranchlessDialogue>(type);
     }
 }
 
 void releaseBranchlessDialogue() {
     pGUIWindow_BranchlessDialogue = nullptr;
-    continueSavedEvent();
+    runEventContinuation();
     gameTimer->setPaused(false);
 }
 

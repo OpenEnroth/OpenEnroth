@@ -2189,7 +2189,7 @@ void CastSpellInfoHelpers::castSpell() {
                             pLevelDecorations[obj_id].uFlags |= LEVEL_DECORATION_VISIBLE_ON_MAP;
                         } else if (pLevelDecorations[obj_id].IsInteractive()) {
                             int eventId = engine->_persistentVariables.decorVars[pLevelDecorations[obj_id].eventVarId] + 380; // 380 is the MM7 dispatch base, see EVENT_ChangeEvent.
-                            globalEventProcessor(eventId, &pLevelDecorations[obj_id]);
+                            globalEventProcessor(eventId, spell_targeted_at);
                         }
                     }
                     if (spell_targeted_at.type() == OBJECT_Face) {

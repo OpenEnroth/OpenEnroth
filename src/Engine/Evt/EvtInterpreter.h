@@ -2,13 +2,11 @@
 
 #include <vector>
 
-#include "Engine/Pid.h"
+#include "Engine/Evt/EvtContext.h"
 #include "Engine/Evt/EvtInstruction.h"
 #include "Engine/Evt/EvtProgram.h"
 
 #include "Library/Geometry/Vec.h"
-
-struct LevelDecoration;
 
 /**
  * What an instruction tells the interpreter to do next.
@@ -36,16 +34,10 @@ class EvtInterpreter {
      bool executeNpcDialogue(int startStep);
 
      /**
-      * @param eventMap                 Program to take the event from.
-      * @param source                   Evt file the program was loaded from.
-      * @param eventId                  Event to run.
-      * @param objectPid                Object that triggered the event.
-      * @param canShowMessages          Whether the event can show status texts and open dialogues.
-      * @param decoration               Interactive decoration a global event runs for, the one `ChangeEvent` changes.
-      *                                 `nullptr` for a global event that runs for an NPC topic, and for map events.
+      * @param eventMap                 Program to take the event from, the one `context.source` names.
+      * @param context                  Event to run, and what it runs for.
       */
-     void prepare(const EvtProgram &eventMap, EvtSource source, int eventId, Pid objectPid, bool canShowMessages,
-                  LevelDecoration *decoration = nullptr);
+     void prepare(const EvtProgram &eventMap, const EvtContext &context);
      bool isValid();
 
  protected:
@@ -67,12 +59,8 @@ class EvtInterpreter {
      [[nodiscard]] bool validateVariableValue(const EvtInstruction &ir) const;
 
  private:
-     int _eventId = 0;
+     EvtContext _context;
      std::vector<EvtInstruction> _events;
-     EvtSource _source = EVT_SOURCE_MAP;
-     LevelDecoration *_decoration = nullptr;
-     Pid _objectPid = Pid();
-     bool _canShowMessages = false;
      bool _canShowOption = true;
      bool _readyToExit = false;
      bool _mapExitTriggered = false;
