@@ -14,7 +14,7 @@ if(OE_BUILD_TESTS)
     set(TEST_LIBRARY_FILESYSTEM_LOWERCASE_SOURCES Tests/LowercaseFileSystem_ut.cpp)
 
     add_library(test_library_filesystem_lowercase OBJECT ${TEST_LIBRARY_FILESYSTEM_LOWERCASE_SOURCES})
-    target_link_libraries(test_library_filesystem_lowercase PUBLIC testing_unit library_filesystem_lowercase library_filesystem_memory library_filesystem_directory)
+    target_link_libraries(test_library_filesystem_lowercase PUBLIC testing_unit library_filesystem_lowercase library_filesystem_memory library_filesystem_native)
 
     target_check_style(test_library_filesystem_lowercase)
 

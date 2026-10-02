@@ -21,10 +21,10 @@
  * folder never throws, and is in sync with what `stat` / `exists` return. This means that some files or folders that
  * are observable through `ls` in bash won't be observable through this filesystem.
  */
-class DirectoryFileSystem : public FileSystem {
+class NativeFileSystem : public FileSystem {
  public:
-    explicit DirectoryFileSystem(const NativePath &root);
-    virtual ~DirectoryFileSystem();
+    explicit NativeFileSystem(const NativePath &root);
+    virtual ~NativeFileSystem();
 
  private:
     virtual bool _exists(FileSystemPathView path) const override;
