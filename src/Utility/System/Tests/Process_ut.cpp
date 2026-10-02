@@ -1,0 +1,101 @@
+#include <chrono>
+#include <cstdlib>
+#include <string>
+#include <utility>
+#include <vector>
+
+#include "Testing/Unit/UnitTest.h"
+
+#include "Utility/Exception.h"
+#include "Utility/System/Process.h"
+
+using namespace std::chrono_literals; // NOLINT
+
+static ProcessResult runShell(std::string command, std::chrono::milliseconds timeout = {}) {
+#ifdef _WINDOWS
+    return runProcess(NativePath::fromWtf8(std::getenv("ComSpec")), {"/c", std::move(command)}, timeout);
+#else
+    return runProcess("/bin/sh", {"-c", std::move(command)}, timeout);
+#endif
+}
+
+UNIT_TEST(Process, ExitCode) {
+    EXPECT_EQ(runShell("exit 0").exitCode, 0);
+    EXPECT_EQ(runShell("exit 3").exitCode, 3);
+}
+
+UNIT_TEST(Process, Output) {
+    ProcessResult result = runShell("echo hello");
+    EXPECT_EQ(result.exitCode, 0);
+    EXPECT_TRUE(result.stdOut.starts_with("hello")) << result.stdOut; // The line ending is platform-specific.
+}
+
+UNIT_TEST(Process, StandardErrorIsCaptured) {
+    ProcessResult result = runShell("echo oops 1>&2");
+    EXPECT_TRUE(result.stdErr.starts_with("oops")) << result.stdErr;
+    EXPECT_TRUE(result.stdOut.empty()) << result.stdOut;
+}
+
+UNIT_TEST(Process, LargeOutput) {
+    // Way more than a pipe buffer holds, so this hangs if the output isn't read while the process is running.
+#ifdef _WINDOWS
+    ProcessResult result = runShell("for /L %i in (1,1,20000) do @echo 0123456789");
+#else
+    ProcessResult result = runShell("i=0; while [ $i -lt 20000 ]; do echo 0123456789; i=$((i+1)); done");
+#endif
+    EXPECT_EQ(result.exitCode, 0);
+    EXPECT_GE(result.stdOut.size(), 20000 * 11);
+}
+
+UNIT_TEST(Process, LargeOutputOnBothStreams) {
+    // Both pipes are filled at once, so this hangs if either of them isn't read while the process is running.
+#ifdef _WINDOWS
+    ProcessResult result = runShell("for /L %i in (1,1,20000) do @(echo 0123456789& echo 0123456789 1>&2)", 30s);
+#else
+    ProcessResult result = runShell("i=0; while [ $i -lt 20000 ]; do echo 0123456789; echo 0123456789 1>&2; i=$((i+1)); done", 30s);
+#endif
+    EXPECT_FALSE(result.timedOut);
+    EXPECT_EQ(result.exitCode, 0);
+    EXPECT_GE(result.stdOut.size(), 20000 * 11);
+    EXPECT_GE(result.stdErr.size(), 20000 * 11);
+}
+
+UNIT_TEST(Process, ReadingStandardInput) {
+    // sort reads its standard input until end of file, so this hangs if the child's stdin stays open.
+    ProcessResult result = runShell("sort", 30s);
+    EXPECT_FALSE(result.timedOut);
+    EXPECT_EQ(result.exitCode, 0);
+}
+
+UNIT_TEST(Process, Timeout) {
+#ifdef _WINDOWS
+    std::string command = "ping -n 6 127.0.0.1"; // There is no sleep, and timeout.exe refuses to run without a console.
+#else
+    std::string command = "sleep 5";
+#endif
+    auto start = std::chrono::steady_clock::now();
+    ProcessResult result = runShell(command, 200ms);
+    EXPECT_TRUE(result.timedOut);
+    EXPECT_NE(result.exitCode, 0);
+    EXPECT_LT(std::chrono::steady_clock::now() - start, 10s);
+}
+
+UNIT_TEST(Process, LongTimeout) {
+    // A timeout too long for steady_clock's nanoseconds must not kill the process.
+    ProcessResult result = runShell("exit 0", std::chrono::milliseconds::max());
+    EXPECT_FALSE(result.timedOut);
+    EXPECT_EQ(result.exitCode, 0);
+}
+
+UNIT_TEST(Process, MissingExecutable) {
+    EXPECT_THROW((void) runProcess("no_such_executable_here", {}), Exception);
+}
+
+UNIT_TEST(Process, RelativeNameIsNotSearched) {
+    // A bare name is resolved against the current directory on every platform, while Windows would search PATH.
+#ifdef _WINDOWS
+    EXPECT_THROW((void) runProcess("cmd.exe", {"/c", "exit 0"}), Exception);
+#else
+    EXPECT_THROW((void) runProcess("sh", {"-c", "exit 0"}), Exception);
+#endif
+}

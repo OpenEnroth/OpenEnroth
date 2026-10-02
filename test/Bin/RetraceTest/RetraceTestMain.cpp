@@ -6,6 +6,8 @@
 
 #include "Application/Startup/GameStarter.h"
 
+#include "Testing/Extensions/GoogleTestHelp.h"
+
 #include "Library/StackTrace/StackTraceOnCrash.h"
 
 #include "Utility/String/Format.h"
@@ -20,8 +22,10 @@ int platformMain(int argc, char **argv) {
         StackTraceOnCrash st(nullptr, STACK_TRACE_LOAD_SYMBOLS_ON_CRASH);
         UnicodeCrt _(argc, argv);
         RetraceTestOptions opts = RetraceTestOptions::parse(argc, argv);
-        if (opts.helpPrinted)
+        if (opts.helpPrinted) {
+            printGoogleTestHelp(argv[0]);
             return 1;
+        }
 
         std::vector<std::string> traceNames;
         for (const DirectoryEntry &entry : fs::ls(opts.testPath))
