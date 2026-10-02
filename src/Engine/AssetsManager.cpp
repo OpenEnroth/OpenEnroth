@@ -109,7 +109,7 @@ GraphicsImage *AssetsManager::getSprite(std::string_view name) {
 
     auto i = sprites.find(filename);
     if (i == sprites.end())
-        i = sprites.emplace(filename, GraphicsImage::Create(std::make_unique<Sprites_LOD_Loader>(pSprites_LOD, filename))).first;
+        i = sprites.emplace(filename, GraphicsImage::Create(std::make_unique<Sprites_LOD_Loader>(engine->resources(), filename))).first;
 
     return i->second.get();
 }

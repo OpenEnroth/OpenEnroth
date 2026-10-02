@@ -1,30 +1,25 @@
 #include "LodSpriteCache.h"
 
-#include <vector>
-#include <utility>
+#include <optional>
 #include <string>
+#include <vector>
 
 #include "Engine/AssetsManager.h" // TODO(captainurist): dependency doesn't belong here
 
-#include "Library/LodFormats/LodFormats.h"
+#include "Library/Geometry/Size.h"
 
 #include "Utility/String/Ascii.h"
 #include "Utility/MapAccess.h"
 
-LodSpriteCache *pSprites_LOD = nullptr;
-LodSpriteCache *pSprites_LOD_mm6 = nullptr;
-LodSpriteCache *pSprites_LOD_mm8 = nullptr;
+#include "ResourceManager.h"
 
-LodSpriteCache::LodSpriteCache() = default;
+LodSpriteCache *pSprites_LOD = nullptr;
+
+LodSpriteCache::LodSpriteCache(ResourceManager *resources) : _resources(resources) {}
 
 LodSpriteCache::~LodSpriteCache() {
     for (auto &[_, sprite] : _spriteByName)
         sprite.Release();
-}
-
-bool LodSpriteCache::open(Blob blob) {
-    _reader.open(std::move(blob));
-    return true;
 }
 
 void LodSpriteCache::reserveLoadedSprites() {  // final init
@@ -47,20 +42,15 @@ Sprite *LodSpriteCache::loadSprite(std::string_view pContainerName) {
     if (result)
         return result;
 
-    if (!_reader.exists(name))
+    std::optional<Sizei> size = _resources->spriteSize(name);
+    if (!size)
         return nullptr;
-
-    Sizei size = lod::decodeSpriteSize(_reader.read(name));
 
     Sprite &sprite = _spriteByName[name];
     sprite.pName = pContainerName;
-    sprite.uWidth = size.w;
-    sprite.uHeight = size.h;
+    sprite.uWidth = size->w;
+    sprite.uHeight = size->h;
     sprite.texture = assets->getSprite(pContainerName); // TODO(captainurist): very weird dependency here.
     _spritesInOrder.push_back(name);
     return &sprite;
-}
-
-Blob LodSpriteCache::read(std::string_view pContainer) const {
-    return _reader.read(pContainer);
 }

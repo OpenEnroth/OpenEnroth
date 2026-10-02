@@ -11,13 +11,10 @@
 #include "Engine/Graphics/TileGenerator.h"
 #include "Engine/Resources/LodTextureCache.h"
 #include "Engine/Resources/ResourceManager.h"
-#include "Engine/Resources/LodSpriteCache.h"
 
 #include "Library/Image/Pcx.h"
 #include "Library/Image/Png.h"
-#include "Library/LodFormats/LodFormats.h"
 #include "Library/LodFormats/LodImage.h"
-#include "Library/LodFormats/LodSprite.h"
 #include "Library/Logger/Logger.h"
 
 #include "Utility/Math/Float.h"
@@ -118,15 +115,7 @@ bool Bitmaps_GEN_Loader::Load(RgbaImage *rgbaImage) {
 }
 
 bool Sprites_LOD_Loader::Load(RgbaImage *rgbaImage) {
-    LodSprite sprite = lod::decodeSprite(lod->read(this->resource_name));
-
-    *rgbaImage = RgbaImage::uninitialized(sprite.image.width(), sprite.image.height());
-
-    auto srcPixels = sprite.image.pixels();
-    auto dstPixels = rgbaImage->pixels();
-    for (size_t i = 0, size = srcPixels.size(); i < size; i++)
-        dstPixels[i] = Color(srcPixels[i], 0, 0, srcPixels[i] == 0 ? 0 : 255);
-
-    return true;
+    *rgbaImage = resources->sprite(resource_name);
+    return static_cast<bool>(*rgbaImage);
 }
 
