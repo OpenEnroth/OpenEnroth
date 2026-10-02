@@ -1568,7 +1568,7 @@ void reconstruct(const ODMFace_MM7 &src, BLVFace *dst, ContextTag<int> faceIndex
     reconstruct(src.facePlane, &dst->facePlane);
     dst->zCalc.init(dst->facePlane);
     dst->attributes = FaceAttributes(src.attributes);
-    dst->vertexIds = std::vector<int16_t>(src.vertexIds.begin(), src.vertexIds.begin() + src.numVertices);
+    dst->vertexIds.assign(src.vertexIds.begin(), src.vertexIds.begin() + src.numVertices);
     dst->textureUs = std::vector<int16_t>(src.textureUs.begin(), src.textureUs.begin() + src.numVertices);
     dst->textureVs = std::vector<int16_t>(src.textureVs.begin(), src.textureVs.begin() + src.numVertices);
     dst->texture = nullptr;

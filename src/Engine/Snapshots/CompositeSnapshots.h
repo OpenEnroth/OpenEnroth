@@ -80,7 +80,8 @@ struct BSPModelExtras_MM7 {
     std::vector<std::array<char, 10>> faceTextures;
 };
 
-void reconstruct(std::tuple<const BSPModelData_MM7 &, const BSPModelExtras_MM7 &> src, BSPModel *dst);
+void reconstruct(std::tuple<const BSPModelData_MM7 &, const BSPModelExtras_MM7 &> src, BSPModel *dst,
+                 std::vector<Vec3f> *vertices, std::vector<BLVFace> *faces);
 
 
 struct OutdoorLocation_MM7 {

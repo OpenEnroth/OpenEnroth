@@ -290,10 +290,9 @@ void SpriteObject::updateObjectODM(unsigned int uLayingItemID) {
         }
 
         if (collision_state.pid.type() == OBJECT_Face) {
-            const BSPModel *bmodel = &pOutdoor->model(collision_state.pid);
             const BLVFace *face = &pOutdoor->face(collision_state.pid);
             if (face->polygonType == POLYGON_Floor) {
-                pSpriteObjects[uLayingItemID].vPosition.z = bmodel->vertices[face->vertexIds[0]].z + 1;
+                pSpriteObjects[uLayingItemID].vPosition.z = pOutdoor->vertices[face->vertexIds[0]].z + 1;
                 if (pSpriteObjects[uLayingItemID].vVelocity.xy().lengthSqr() >= 400) {
                     if (face->attributes & FACE_TriggerByObject) {
                         eventProcessor(face->eventId, Pid(), 1);
