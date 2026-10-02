@@ -4,9 +4,9 @@
 
 #include "Library/Image/Image.h"
 
+class LodReader;
 class LodTextureCache;
 class ResourceManager;
-class LodReader;
 
 class ImageLoader {
  public:
