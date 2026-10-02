@@ -325,7 +325,6 @@ GAME_TEST(Issues, Issue293c) {
 
 GAME_TEST(Issues, Issue294a) {
     // Sharpmetal couldn't kill a point-blank rat because its blades spawned at half the party height and flew over it.
-    test.prepareForNextTest(100, RANDOM_ENGINE_MERSENNE_TWISTER);
     engine->config->debug.NoActors.setValue(true);
     engine->config->debug.AllMagic.setValue(true);
     game.startNewGame();
@@ -345,7 +344,6 @@ GAME_TEST(Issues, Issue294a) {
 
 GAME_TEST(Issues, Issue294b) {
     // Blades flew over a point-blank rat because the projectile spawned at half the party height.
-    test.prepareForNextTest(100, RANDOM_ENGINE_MERSENNE_TWISTER);
     engine->config->debug.NoActors.setValue(true);
     engine->config->debug.AllMagic.setValue(true);
     game.startNewGame();
