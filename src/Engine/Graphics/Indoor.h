@@ -152,9 +152,9 @@ struct BLVFace {
     PlaneZCalcf zCalc;
     FaceAttributes attributes;
 
-    /** Indices into the vertex array for this face's vertices. Points into `IndoorLocation::pVertices` for
-     * indoor faces. Has `numVertices` elements. */
-    std::vector<int16_t> vertexIds;
+    /** Indices into the vertex array for this face's vertices. Indoor faces index `IndoorLocation::vertices`; outdoor
+     * faces index `OutdoorLocation::vertices`. Has `numVertices` elements. */
+    std::vector<int> vertexIds;
 
     /** U (horizontal) texture coordinates for each vertex, in texture pixels. Has `numVertices` elements. */
     std::vector<int16_t> textureUs;
@@ -175,7 +175,7 @@ struct BLVFace {
 
     bool HasEventHint();
 
-    int faceId; // index into pIndoor->faces
+    int faceId; // Index into IndoorLocation::faces or OutdoorLocation::faces.
     uint16_t additionalBitmapId; // TODO(captainurist): why is this one unused?
     int16_t textureDeltaU;
     int16_t textureDeltaV;

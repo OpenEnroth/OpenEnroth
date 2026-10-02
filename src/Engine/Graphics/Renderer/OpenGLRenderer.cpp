@@ -2272,7 +2272,8 @@ void OpenGLRenderer::DrawOutdoorBuildings() {
             //int reachable;
             //if (IsBModelVisible(&model, &reachable)) {
             if (!model.faces.empty()) {
-                for (BLVFace &face : model.faces) {
+                for (size_t faceIndex = 0; faceIndex < model.faces.size(); ++faceIndex) {
+                    BLVFace &face = pOutdoor->faces[model.faces[faceIndex]];
                     if (!face.Invisible()) {
                         // TODO(pskelton): Same as indoors. When ODM and BLV face is combined - seperate out function
 
@@ -2460,7 +2461,8 @@ void OpenGLRenderer::DrawOutdoorBuildings() {
             if (IsBModelVisible(&model, 256, &reachable)) {
                 //if (model.index == 35) continue;
                 if (!model.faces.empty()) {
-                    for (BLVFace &face : model.faces) {
+                    for (size_t faceIndex = 0; faceIndex < model.faces.size(); ++faceIndex) {
+                        BLVFace &face = pOutdoor->faces[model.faces[faceIndex]];
                         if (!face.Invisible()) {
                             if (pCamera3D->is_face_faced_to_camera(&face)) {
                                 int texunit = 0;
@@ -2520,7 +2522,7 @@ void OpenGLRenderer::DrawOutdoorBuildings() {
 
                                     // copy first
                                     ShaderVertex &v0 = _outbuildVertices[texunit].emplace_back();
-                                    v0.pos = model.vertices[face.vertexIds[0]];
+                                    v0.pos = pOutdoor->vertices[face.vertexIds[0]];
                                     v0.texuv = Vec2f(face.textureUs[0] + face.textureDeltaU,
                                                      face.textureVs[0] + face.textureDeltaV);
                                     v0.texturelayer = texlayer;
@@ -2530,7 +2532,7 @@ void OpenGLRenderer::DrawOutdoorBuildings() {
                                     // copy other two (z+1)(z+2)
                                     for (unsigned i = 1; i < 3; ++i) {
                                         ShaderVertex &v = _outbuildVertices[texunit].emplace_back();
-                                        v.pos = model.vertices[face.vertexIds[z + i]];
+                                        v.pos = pOutdoor->vertices[face.vertexIds[z + i]];
                                         v.texuv = Vec2f(face.textureUs[z + i] + face.textureDeltaU,
                                                         face.textureVs[z + i] + face.textureDeltaV);
                                         v.texturelayer = texlayer;
@@ -2692,7 +2694,8 @@ void OpenGLRenderer::DrawOutdoorBuildings() {
         }
         if (!found) continue;
 
-        for (BLVFace &face : model.faces) {
+        for (size_t faceIndex = 0; faceIndex < model.faces.size(); ++faceIndex) {
+            BLVFace &face = pOutdoor->faces[model.faces[faceIndex]];
             if (face.Invisible()) {
                 continue;
             }
@@ -2702,11 +2705,11 @@ void OpenGLRenderer::DrawOutdoorBuildings() {
 
             for (unsigned vertex_id = 1; vertex_id <= face.numVertices; vertex_id++) {
                 array_73D150[vertex_id - 1].vWorldPosition.x =
-                    model.vertices[face.vertexIds[vertex_id - 1]].x;
+                    pOutdoor->vertices[face.vertexIds[vertex_id - 1]].x;
                 array_73D150[vertex_id - 1].vWorldPosition.y =
-                    model.vertices[face.vertexIds[vertex_id - 1]].y;
+                    pOutdoor->vertices[face.vertexIds[vertex_id - 1]].y;
                 array_73D150[vertex_id - 1].vWorldPosition.z =
-                    model.vertices[face.vertexIds[vertex_id - 1]].z;
+                    pOutdoor->vertices[face.vertexIds[vertex_id - 1]].z;
             }
 
             for (int vertex_id = 0; vertex_id < face.numVertices; ++vertex_id) {

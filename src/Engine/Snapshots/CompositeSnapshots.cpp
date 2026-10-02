@@ -2,6 +2,7 @@
 
 #include <string>
 #include <algorithm>
+#include <iterator>
 #include <optional>
 #include <span>
 #include <tuple>
@@ -163,7 +164,7 @@ void reconstruct(const IndoorLocation_MM7 &src, IndoorLocation *dst) {
     for (size_t i = 0, j = 0; i < dst->faces.size(); ++i) {
         BLVFace *pFace = &dst->faces[i];
 
-        pFace->vertexIds = std::vector<int16_t>(faceData.data() + j, faceData.data() + j + pFace->numVertices);
+        pFace->vertexIds.assign(faceData.data() + j, faceData.data() + j + pFace->numVertices);
         j += pFace->numVertices + 1; // +1 to skip closing vertex in source data.
 
         // Skipping pXInterceptDisplacements.
@@ -471,7 +472,8 @@ void deserialize(InputStream &src, IndoorDelta_MM7 *dst, ContextTag<IndoorLocati
     deserialize(src, &dst->weather);
 }
 
-void reconstruct(std::tuple<const BSPModelData_MM7 &, const BSPModelExtras_MM7 &> src, BSPModel *dst) {
+void reconstruct(std::tuple<const BSPModelData_MM7 &, const BSPModelExtras_MM7 &> src, BSPModel *dst,
+                 std::vector<Vec3f> *locationVertices, std::vector<BLVFace> *locationFaces) {
     const auto &[srcData, srcExtras] = src;
 
     // dst->index is set externally.
@@ -485,31 +487,52 @@ void reconstruct(std::tuple<const BSPModelData_MM7 &, const BSPModelExtras_MM7 &
     dst->boundingCenter = srcData.boundingCenter.toFloat();
     dst->boundingRadius = srcData.boundingRadius;
 
-    reconstruct(srcExtras.vertices, &dst->vertices);
-    dst->faces.clear();
-    dst->faces.resize(srcExtras.faces.size());
+    std::vector<Vec3f> vertices;
+    reconstruct(srcExtras.vertices, &vertices);
+    std::vector<BLVFace> faces(srcExtras.faces.size());
     for (int i = 0; i < srcExtras.faces.size(); i++) {
-        reconstruct(srcExtras.faces[i], &dst->faces[i], tags::context(i)); // tag to set indexes in dst->faces
+        reconstruct(srcExtras.faces[i], &faces[i], tags::context(i)); // tag to set indexes in faces
     }
 
-    for (BLVFace &face : dst->faces) {
+    for (BLVFace &face : faces) {
         dropDuplicateFaceVertices(&face);
-        repairFaceNormal(&face, dst->vertices, {});
+        repairFaceNormal(&face, vertices, {});
     }
 
     reconstruct(srcExtras.bspNodes, &dst->nodes);
 
     std::string textureName;
-    for (size_t i = 0; i < dst->faces.size(); ++i) {
+    for (size_t i = 0; i < faces.size(); ++i) {
         reconstruct(srcExtras.faceTextures[i], &textureName);
-        dst->faces[i].SetTexture(textureName);
+        faces[i].SetTexture(textureName);
 
-        if (dst->faces[i].eventId) {
-            if (dst->faces[i].HasEventHint())
-                dst->faces[i].attributes |= FACE_EVENT_IS_HINT;
+        if (faces[i].eventId) {
+            if (faces[i].HasEventHint())
+                faces[i].attributes |= FACE_EVENT_IS_HINT;
             else
-                dst->faces[i].attributes &= ~FACE_EVENT_IS_HINT;
+                faces[i].attributes &= ~FACE_EVENT_IS_HINT;
         }
+    }
+
+    const size_t vertexOffset = locationVertices->size();
+    const size_t faceOffset = locationFaces->size();
+    const size_t faceCount = faces.size();
+    for (BLVFace &face : faces) {
+        for (int &vertexId : face.vertexIds)
+            vertexId += vertexOffset;
+    }
+
+    locationVertices->insert(locationVertices->end(), std::make_move_iterator(vertices.begin()),
+                             std::make_move_iterator(vertices.end()));
+    locationFaces->insert(locationFaces->end(), std::make_move_iterator(faces.begin()),
+                          std::make_move_iterator(faces.end()));
+
+    dst->faces.clear();
+    dst->faces.reserve(faceCount);
+    for (size_t i = 0; i < faceCount; ++i) {
+        int faceId = static_cast<int>(faceOffset + i);
+        (*locationFaces)[faceOffset + i].faceId = faceId;
+        dst->faces.push_back(faceId);
     }
 }
 
@@ -559,10 +582,20 @@ void reconstruct(const OutdoorLocation_MM7 &src, OutdoorLocation *dst) {
     reconstruct(src, &dst->pTerrain);
 
     dst->pBModels.clear();
+    dst->vertices.clear();
+    dst->faces.clear();
+    size_t totalVertices = 0;
+    size_t totalFaces = 0;
+    for (const BSPModelExtras_MM7 &extras : src.modelExtras) {
+        totalVertices += extras.vertices.size();
+        totalFaces += extras.faces.size();
+    }
+    dst->vertices.reserve(totalVertices);
+    dst->faces.reserve(totalFaces);
     for (size_t i = 0; i < src.models.size(); i++) {
         BSPModel &model = dst->pBModels.emplace_back();
         model.index = i;
-        reconstruct(std::forward_as_tuple(src.models[i], src.modelExtras[i]), &model);
+        reconstruct(std::forward_as_tuple(src.models[i], src.modelExtras[i]), &model, &dst->vertices, &dst->faces);
 
         // Recalculate bounding spheres, the ones stored in data files are borked.
         model.boundingCenter = model.boundingBox.center().toFloat();
@@ -629,8 +662,10 @@ void snapshot(const OutdoorLocation &src, OutdoorDelta_MM7 *dst) {
     // Symmetric to what's happening in reconstruct - no all attributes need to be saved in a delta.
     dst->faceAttributes.clear();
     for (const BSPModel &model : src.pBModels)
-        for (const BLVFace &face : model.faces)
+        for (size_t i = 0; i < model.faces.size(); ++i) {
+            const BLVFace &face = src.faces[model.faces[i]];
             dst->faceAttributes.push_back(std::to_underlying(face.attributes & ~(FACE_EVENT_IS_HINT | FACE_ANIMATED)));
+        }
 
     dst->decorationFlags.clear();
     for (const LevelDecoration &decoration : pLevelDecorations)
@@ -654,7 +689,8 @@ void reconstruct(const OutdoorDelta_MM7 &src, OutdoorLocation *dst) {
     // Not all of the attributes need to be restored.
     size_t attributeIndex = 0;
     for (BSPModel &model : dst->pBModels) {
-        for (BLVFace &face : model.faces) {
+        for (size_t i = 0; i < model.faces.size(); ++i) {
+            BLVFace &face = dst->faces[model.faces[i]];
             face.attributes &= FACE_ANIMATED | FACE_EVENT_IS_HINT;
             face.attributes |= FaceAttributes(src.faceAttributes[attributeIndex++]) & ~(FACE_EVENT_IS_HINT | FACE_ANIMATED);
         }

@@ -61,9 +61,8 @@ Vis_ObjectInfo *Vis::DetermineFacetIntersection(BLVFace *face, Pid pid, float pi
             }
         }
     } else if (uCurrentlyLoadedLevelType == LEVEL_OUTDOOR) {
-        const std::vector<Vec3f> &v = pOutdoor->model(pid).vertices;
         for (unsigned i = 0; i < face->numVertices; ++i)
-            static_DetermineFacetIntersection_array_F8F200[i].vWorldPosition = v[face->vertexIds[i]];
+            static_DetermineFacetIntersection_array_F8F200[i].vWorldPosition = pOutdoor->vertices[face->vertexIds[i]];
     } else {
         assert(false);
     }
@@ -356,7 +355,8 @@ void Vis::PickOutdoorFaces_Mouse(float fDepth, const Vec3f &rayOrigin, const Vec
             continue;
         }
 
-        for (BLVFace &face : model.faces) {
+        for (size_t faceIndex = 0; faceIndex < model.faces.size(); ++faceIndex) {
+            BLVFace &face = pOutdoor->faces[model.faces[faceIndex]];
             face.attributes &= ~FACE_OUTLINED;
 
             if (isFacePartOfSelection(&face, filter)) {
@@ -367,7 +367,7 @@ void Vis::PickOutdoorFaces_Mouse(float fDepth, const Vec3f &rayOrigin, const Vec
                     // int v13 = fixpoint_from_float(/*v12,
                     // */intersection.vWorldViewPosition.x); v13 &= 0xFFFF0000;
                     // v13 += Pid(OBJECT_Face, j | (i << 6));
-                    Pid pid = Pid(OBJECT_Face, face.faceId | (model.index << 6));
+                    Pid pid = Pid::blvFace(face.faceId);
                     list->AddObject(VisObjectType_Face, intersection.vWorldViewPosition.x, pid);
 
                     if (engine->config->debug.ShowPickedFace.value())
@@ -885,9 +885,10 @@ void Vis::PickOutdoorFaces_Keyboard(float pick_depth, Vis_SelectionList *list,
         bool reachable;
         if (IsBModelVisible(&model, pick_depth, &reachable)) {
             if (reachable) {
-                for (BLVFace &face : model.faces) {
+                for (size_t faceIndex = 0; faceIndex < model.faces.size(); ++faceIndex) {
+                    BLVFace &face = pOutdoor->faces[model.faces[faceIndex]];
                     if (isFacePartOfSelection(&face, filter)) {
-                        Pid pid = Pid(OBJECT_Face, face.faceId | (model.index << 6));
+                        Pid pid = Pid::blvFace(face.faceId);
                         if (Vis_ObjectInfo *object_info =
                                 DetermineFacetIntersection(&face, pid, pick_depth)) {
                             list->AddObject(object_info->object_type, object_info->depth, object_info->object_pid);

@@ -125,21 +125,14 @@ void DoInteractionWithTopmostZObject(Pid pid) {
 
         case OBJECT_Face:
             if (uCurrentlyLoadedLevelType == LEVEL_OUTDOOR) {
-                int bmodel_id = id >> 6;
-                int face_id = id & 0x3F;
+                BLVFace &face = pOutdoor->faces[id];
 
-                if (bmodel_id >= pOutdoor->pBModels.size()) {
-                    return;
-                }
-
-                BLVFace &model = pOutdoor->pBModels[bmodel_id].faces[face_id];
-
-                if (model.attributes & FACE_EVENT_IS_HINT || model.eventId == 0) {
+                if (face.attributes & FACE_EVENT_IS_HINT || face.eventId == 0) {
                     return;
                 }
 
                 if (pParty->hasActiveCharacter()) {
-                    eventProcessor(pOutdoor->pBModels[bmodel_id].faces[face_id].eventId, pid, 1);
+                    eventProcessor(face.eventId, pid, 1);
                 } else {
                     engine->_statusBar->setEvent(LSTR_NOBODY_IS_IN_CONDITION);
                 }
