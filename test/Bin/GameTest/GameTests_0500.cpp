@@ -867,18 +867,26 @@ GAME_TEST(Issues, Issue792a) {
     game.teleportTo(MAP_ERATHIA, Vec3f(-12216, 1900, 961), 90); // Next to a well.
     game.tick(20); // Erathia's timers fire once on the first visit.
     game.pressAndReleaseKey(PlatformKey::KEY_SPACE); // Drinking sets a character bit that a daily Erathia timer clears at 1am.
-    game.tick(100);
-    game.pressAndReleaseKey(PlatformKey::KEY_F5); // Quicksave.
+    game.tick(2);
+    game.pressAndReleaseKey(PlatformKey::KEY_F5); // Quicksave. A save from the menu stores the game timer paused.
     game.tick(2);
 
     game.startNewGame();
-    game.teleportTo(MAP_ERATHIA, Vec3f(-12216, 1900, 961), 90); // First visit, so the 1am timer is due right away.
+    game.teleportTo(MAP_ERATHIA, Vec3f(-12216, 1900, 961), 90); // First visit, the 1am timer is due and runs 30 game seconds in.
     auto drankTape = tapes.custom([] -> bool { return pParty->pCharacters[0]._characterEventBits[5]; });
     test.startTaping();
-    game.pressAndReleaseKey(PlatformKey::KEY_F9); // Quickload.
+    game.pressAndReleaseKey(PlatformKey::KEY_ESCAPE); // The menu pauses the game before that.
+    game.tick(2);
+    game.pressGuiButton("GameMenu_LoadGame");
+    game.tick(3);
+    game.pressGuiButton("LoadMenu_Slot1"); // The new game's autosave comes first.
+    game.tick(2);
+    game.pressGuiButton("LoadMenu_Load");
+    game.tick(2);
     game.skipLoadingScreen();
     game.tick(2);
-    EXPECT_EQ(drankTape, tape(true));
+    EXPECT_EQ(engine->_lastLoadedSaveFileName, "quicksave0.mm7");
+    EXPECT_EQ(drankTape, tape(false, true));
 }
 
 GAME_TEST(Issues, Issue792b) {
@@ -899,6 +907,7 @@ GAME_TEST(Issues, Issue792b) {
 
     auto mapTape = tapes.map();
     auto bonusTape = tapes.custom([] { return pParty->pCharacters[0].sResBodyBonus; });
+    auto drankTape = tapes.custom([] -> bool { return pParty->pCharacters[0]._characterEventBits[5]; });
     test.startTaping();
     game.teleportTo(MAP_ERATHIA, Vec3f(-12216, 1900, 961), 90); // Back at the well before Erathia checks its timers.
     game.pressAndReleaseKey(PlatformKey::KEY_SPACE); // Refused, the 1am reset waits for Erathia's first timer check.
@@ -906,6 +915,7 @@ GAME_TEST(Issues, Issue792b) {
     game.pressAndReleaseKey(PlatformKey::KEY_SPACE);
     game.tick(2);
     EXPECT_EQ(mapTape, tape(MAP_TATALIA, MAP_ERATHIA));
+    EXPECT_EQ(drankTape, tape(true, false, true));
     EXPECT_EQ(bonusTape, tape(0, 20)); // The ride rests the party, which drops the first drink's bonus.
 }
 
