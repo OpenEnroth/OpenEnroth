@@ -4,11 +4,11 @@
 #include <vector>
 #include <utility>
 
-#include "Library/FileSystem/Native/NativeFileSystem.h"
 #include "Library/FileSystem/Embedded/EmbeddedFileSystem.h"
 #include "Library/FileSystem/Lowercase/LowercaseFileSystem.h"
 #include "Library/FileSystem/Merging/MergingFileSystem.h"
 #include "Library/FileSystem/Memory/MemoryFileSystem.h"
+#include "Library/FileSystem/Native/NativeFileSystem.h"
 
 #include "Engine/Resources/EngineFileSystem.h"
 
