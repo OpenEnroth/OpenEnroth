@@ -246,7 +246,7 @@ enum class QuestBit : uint16_t {
     QBIT_CASE_OF_SOUL_JARS_RECOVERABLE = 231,
     QBIT_ALTAR_PIECE_LIGHT_RECOVERABLE = 232,
     QBIT_ALTAR_PIECE_DARK_RECOVERABLE = 233,
-    QBIT_CONTROL_CUBE_RECOVERABLE = 234, // Never cleared by MM7 scripts, so it outlives the hand-in.
+    QBIT_CONTROL_CUBE_RECOVERABLE = 234, // No MM7 script clears it, so it stays set after Robert the Wise or Tolberti takes the cube.
     QBIT_WETSUIT_RECOVERABLE = 235,
     QBIT_OSCILLATION_OVERTHRUSTER_RECOVERABLE = 236,
     QBIT_LICH_JAR_FULL_RECOVERABLE = 237, // No MM7 script sets it.
