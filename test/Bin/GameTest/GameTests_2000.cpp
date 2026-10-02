@@ -645,17 +645,25 @@ GAME_TEST(Prs, Pr2157b) {
 
 GAME_TEST(Issues, Issue2186a) {
     // Actors falling through the hole in the Grand Temple of the Sun upper level ended up deep underground.
+    auto partyZTape = tapes.custom([] { return static_cast<int>(pParty->pos.z); });
     game.startNewGame();
-    game.teleportTo(MAP_GRAND_TEMPLE_OF_THE_SUN, Vec3f(-1470, -650, 416), 90); // Foot of the stairs to the upper level.
+    game.teleportTo(MAP_GRAND_TEMPLE_OF_THE_SUN, Vec3f(-1470, -650, 416), 90); // Stairs to the upper level, facing up.
+    test.startTaping();
     game.pressKey(PlatformKey::KEY_UP);
     game.tick(16);
     game.releaseKey(PlatformKey::KEY_UP);
+    game.pressKey(PlatformKey::KEY_RIGHT);
+    game.tick(5);
+    game.releaseKey(PlatformKey::KEY_RIGHT);
+    game.pressKey(PlatformKey::KEY_UP);
+    game.tick(8);
+    game.releaseKey(PlatformKey::KEY_UP);
     Actor *cleric = game.spawnMonster(Vec3f(0, 550, 800), MONSTER_CLERIC_SUN_C, SPAWN_FRIENDLY); // Over the hole.
     auto clericZTape = actorTapes.custom(cleric->id, [](const Actor &actor) { return static_cast<int>(actor.pos.z); });
-    test.startTaping();
     game.tick(50);
 
-    EXPECT_EQ(clericZTape.back(), 0); // On the floor of the hall below.
+    EXPECT_EQ(partyZTape.back(), 648); // Upper level floor.
+    EXPECT_EQ(clericZTape.back(), 0); // Sunken floor in the middle of the hall below.
 }
 
 GAME_TEST(Issues, Issue2186b) {
@@ -693,7 +701,7 @@ GAME_TEST(Issues, Issue2186c) {
     game.pressAndReleaseButton(BUTTON_LEFT, pViewport.center()); // Throw it down the hole.
     game.tick(30);
 
-    EXPECT_EQ(armorZTape.back(), tape(129)); // Lying on the floor below.
+    EXPECT_EQ(armorZTape.back(), tape(129)); // Raised floor along the west side of the hall below.
 }
 
 GAME_TEST(Issues, Issue2188) {
