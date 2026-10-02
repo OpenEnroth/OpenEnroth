@@ -91,6 +91,11 @@ int runItemIdCodeGen(const CodeGenOptions &options, ResourceManager *resourceMan
             }
         }
 
+        // Both altar pieces have the same name and description. 676 lies in the Temple of the Light, 677 in the Temple
+        // of the Dark.
+        if (enumName == "ALTAR_PIECE")
+            enumName += i == ITEM_QUEST_ALTAR_PIECE_LIGHT ? "_LIGHT" : "_DARK";
+
         if (enumName == "THE_PERFECT_BOW")
             if (!description.contains("off-balance"))
                 enumName += "_FIXED";
