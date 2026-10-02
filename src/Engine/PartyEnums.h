@@ -282,7 +282,7 @@ enum class QuestBit : uint16_t {
     QBIT_HARMONDALE_SOUTH_SIGNAL_FIRE_LIT = 267,
     QBIT_HARMONDALE_NORTH_SIGNAL_FIRE_LIT = 268,
     QBIT_HARMONDALE_WEST_SIGNAL_FIRE_LIT = 269,
-    QBIT_ALLIED_GUARDS_ANGERED = 270, // Cleared 720 hours later on loading Celeste, Castle Lambent or Bracada Desert on the light path, or the Pit, Castle Gloaming or Deyja on the dark path.
+    QBIT_ALLIED_GUARDS_ANGERED = 270, // Cleared 720 hours after it was set, on loading Celeste, Castle Lambent or Bracada Desert (light path) or the Pit, Castle Gloaming or Deyja (dark path).
     QBIT_HARMONDALE_FACTION_BANNERS_HUNG = 271,
 
     QBIT_FIRST = 1,
