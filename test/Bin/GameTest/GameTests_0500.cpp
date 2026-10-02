@@ -877,9 +877,9 @@ GAME_TEST(Issues, Issue792) {
     game.tick(2);
 
     game.startNewGame();
-    game.teleportTo(MAP_ERATHIA, Vec3f(-12216, 1900, 961), 90); // First visit, the 1am timer is due and runs 30 game seconds in.
+    game.teleportTo(MAP_ERATHIA, Vec3f(-12216, 1900, 961), 90); // Daily timers fire on a first visit, 30 game seconds in.
     test.startTaping();
-    game.pressAndReleaseKey(PlatformKey::KEY_ESCAPE); // The menu pauses the game before that.
+    game.pressAndReleaseKey(PlatformKey::KEY_ESCAPE); // The menu pauses the game before they fire.
     game.tick(2);
     game.pressGuiButton("GameMenu_LoadGame");
     game.tick(3);
