@@ -1019,6 +1019,27 @@ GAME_TEST(Prs, Pr2354) {
             OutdoorLocation location;
             reconstruct(rawLocation, &location);
 
+            size_t vertexOffset = 0;
+            for (size_t modelIndex = 0; modelIndex < location.pBModels.size(); ++modelIndex) {
+                const BSPModel &model = location.pBModels[modelIndex];
+                size_t vertexCount = rawLocation.models[modelIndex].numVertices;
+                for (size_t faceIndex = 0; faceIndex < model.faces.size(); ++faceIndex) {
+                    int faceId = model.faces[faceIndex];
+                    const BLVFace &face = location.faces[faceId];
+                    EXPECT_EQ(face.faceId, faceId);
+                    Pid pid = Pid::blvFace(faceId);
+                    EXPECT_EQ(&location.face(pid), &face);
+                    for (int vertexId : face.vertexIds) {
+                        EXPECT_GE(vertexId, 0);
+                        size_t globalVertexId = static_cast<size_t>(vertexId);
+                        EXPECT_GE(globalVertexId, vertexOffset);
+                        EXPECT_LT(globalVertexId, vertexOffset + vertexCount);
+                        EXPECT_LT(globalVertexId, location.vertices.size());
+                    }
+                }
+                vertexOffset += vertexCount;
+            }
+
             // Deserialize and reconstruct the default delta (.ddm).
             std::string ddmFilename = fmt::format("{}.ddm", baseName);
             OutdoorDelta_MM7 rawDelta;

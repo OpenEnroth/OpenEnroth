@@ -509,13 +509,13 @@ GAME_TEST(Issues, Issue1290) {
     // Can't interact with the Accuracy well in Harmondale with the mouse.
     auto statusTape = tapes.statusBar();
     auto accuracyTape = charTapes.stat(0, ATTRIBUTE_ACCURACY);
-    Pid wellFace = Pid::odmFace(97, 10);
 
     engine->config->debug.NoActors.setValue(true);
     game.startNewGame();
     test.startTaping();
     game.teleportTo(MAP_HARMONDALE, Vec3f(-8864, 17936, 384), 90, -45); // Look down into the well.
 
+    Pid wellFace = Pid::blvFace(pOutdoor->pBModels[97].faces[10]);
     const BLVFace &well = pOutdoor->face(wellFace);
     ASSERT_EQ(well.eventId, 228);
     ASSERT_EQ(pParty->activeCharacterIndex(), 0);

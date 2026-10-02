@@ -291,7 +291,9 @@ void reconstruct(const BLVFace_MM7 &src, BLVFace *dst) {
     dst->backSectorId = src.backSectorId;
     reconstruct(src.bounding, &dst->boundingBox);
     dst->polygonType = static_cast<PolygonType>(src.polygonType);
-    dst->numVertices = src.numVertices;
+    dst->vertexIds.resize(src.numVertices);
+    dst->textureUs.resize(src.numVertices);
+    dst->textureVs.resize(src.numVertices);
 }
 
 void reconstruct(const TileData_MM7 &src, TileData *dst) {
@@ -1568,7 +1570,7 @@ void reconstruct(const ODMFace_MM7 &src, BLVFace *dst, ContextTag<int> faceIndex
     reconstruct(src.facePlane, &dst->facePlane);
     dst->zCalc.init(dst->facePlane);
     dst->attributes = FaceAttributes(src.attributes);
-    dst->vertexIds = std::vector<int16_t>(src.vertexIds.begin(), src.vertexIds.begin() + src.numVertices);
+    dst->vertexIds.assign(src.vertexIds.begin(), src.vertexIds.begin() + src.numVertices);
     dst->textureUs = std::vector<int16_t>(src.textureUs.begin(), src.textureUs.begin() + src.numVertices);
     dst->textureVs = std::vector<int16_t>(src.textureVs.begin(), src.textureVs.begin() + src.numVertices);
     dst->texture = nullptr;
@@ -1578,7 +1580,6 @@ void reconstruct(const ODMFace_MM7 &src, BLVFace *dst, ContextTag<int> faceIndex
     reconstruct(src.boundingBox, &dst->boundingBox);
     dst->cogNumber = src.cogNumber;
     dst->eventId = src.eventId;
-    dst->numVertices = src.numVertices;
     dst->polygonType = static_cast<PolygonType>(src.polygonType);
     dst->faceId = *faceIndex;
 }

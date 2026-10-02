@@ -110,7 +110,7 @@ void CalcPolygonLimits(const BLVFace *pFace, RenderVertexSoft *pOutVertices) {
     float y_max = points.v[0];
     unsigned y_max_idx = 0;
 
-    for (unsigned i = 0; i < pFace->numVertices; ++i) {
+    for (unsigned i = 0; i < pFace->vertexIds.size(); ++i) {
         if (points.u[i] < x_min) {
             x_min = points.u[i];
             x_min_idx = i;
