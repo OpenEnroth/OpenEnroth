@@ -143,13 +143,11 @@ RgbaImage ResourceManager::icon(std::string_view filename) {
 }
 
 RgbaImage ResourceManager::bitmap(std::string_view filename) {
-    std::string name = ascii::toLower(filename);
-    if (!_bitmapsLodReader.exists(name)) {
-        MM_ERROR("Trying to load non-existent LOD entry '{}'.", _bitmapsLodReader.displayPath(name));
+    LodImage image = rawBitmap(filename);
+    if (!image.image)
         return {};
-    }
 
-    LodImage image = lod::decodeImage(_bitmapsLodReader.read(name));
+    std::string name = ascii::toLower(filename);
     // TODO(captainurist): PaletteManager lives in engine_graphics, above engine_resources. Move desaturation down.
     Palette palette = PaletteManager::createLoadedPalette(maskedPalette(image, valueOr(_masks.bitmaps, name)));
     if (std::ranges::all_of(palette.colors, _1 != 0, &Color::a))

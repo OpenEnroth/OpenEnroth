@@ -9,10 +9,9 @@
 #include <utility>
 
 #include "Engine/Engine.h"
-#include "Engine/Resources/ResourceManager.h"
-
 #include "Engine/Graphics/Renderer/Renderer.h"
 #include "Engine/Graphics/Image.h"
+#include "Engine/Resources/ResourceManager.h"
 
 static Color parseColorTag(const char *tag, const Color &defaultColor) {
     char color_code[20];

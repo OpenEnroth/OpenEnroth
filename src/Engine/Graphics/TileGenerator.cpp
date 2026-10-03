@@ -12,7 +12,6 @@
 #include "Engine/Graphics/Image.h"
 #include "Library/Image/ImageFunctions.h"
 #include "Library/Image/Png.h"
-#include "Library/LodFormats/LodFormats.h"
 #include "Library/LodFormats/LodImage.h"
 #include "Library/Logger/Logger.h"
 
@@ -91,6 +90,7 @@ RgbaImageView TileGenerator::loadTile(Tileset tileset, TileVariant variant) {
         return *result;
 
     LodImage image = engine->resources()->rawBitmap(pTileTable->tile(pTileTable->tileId(tileset, variant)).textureName);
+    assert(image.image);
     return _tileByTilesetVariant.emplace(key, makeRgbaImage(image.image, image.palette)).first->second;
 }
 

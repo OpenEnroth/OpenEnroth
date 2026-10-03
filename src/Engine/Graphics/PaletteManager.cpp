@@ -1,12 +1,9 @@
 #include "PaletteManager.h"
 
-#include <algorithm>
-
 #include "Engine/Resources/ResourceManager.h"
 #include "Engine/Engine.h"
 
 #include "Library/Color/Color.h"
-#include "Library/Logger/Logger.h"
 
 #include "Utility/Math/Float.h"
 

@@ -53,8 +53,9 @@ class ResourceManager {
     LodImage rawBitmap(std::string_view filename);
 
     /**
-     * @param filename                  Name of a font in `icons.lod`.
-     * @return                          The font. Throws if there is no such font.
+     * @param filename                  Name of a font in `icons.lod`, case-insensitive.
+     * @return                          The font.
+     * @throws Exception                If there is no such font.
      */
     LodFont font(std::string_view filename);
 
