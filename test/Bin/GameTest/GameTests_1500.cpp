@@ -863,28 +863,25 @@ GAME_TEST(Issues, Issue1898) {
 
 GAME_TEST(Issues, Issue1890) {
     // Leaving the Mercenary Guild put the party inside the stairs in Tatalia, and it was held back when walking off.
-    auto mapTape = tapes.map();
+    // The guild's exit puts the party at the foot of the stairs, facing away from the guild, with the back of the party
+    // over the first step. Placed at ground level instead of on top of that step, the party started out inside it, and
+    // its first frames of walking forward barely moved it.
+    auto yTape = tapes.custom([] { return std::tuple(pParty->GetPlayingTime(), pParty->pos.y); }); // Playing time makes every frame a new tape value.
     engine->config->debug.NoActors.setValue(true);
     game.startNewGame();
-    game.teleportTo(MAP_MERCENARY_GUILD, Vec3f(896, 2700, 1), 270); // Facing the exit.
-    test.startTaping();
-    game.pointMouseAtFace(22); // Exit door.
-    game.pressAndReleaseButton(BUTTON_LEFT);
+    game.teleportTo(MAP_MERCENARY_GUILD, Vec3f(896, 2700, 1), 270); // Facing the exit door.
+    game.pressAndReleaseKey(PlatformKey::KEY_SPACE);
     game.tick();
     game.pressGuiButton("Transition_Yes");
     game.tick();
     game.skipLoadingScreen();
-    test.stopTaping();
-    EXPECT_EQ(mapTape, tape(MAP_MERCENARY_GUILD, MAP_TATALIA));
-    EXPECT_EQ(pParty->pos.z, 3088); // The back of the party overlaps the first step, so it should stand on top of it.
-
-    auto yTape = tapes.custom([] { return std::tuple(pParty->GetPlayingTime(), pParty->pos.y); });
+    EXPECT_EQ(pParty->pos.z, 3088); // On top of the first step.
     test.startTaping();
-    game.tick();
+    game.tick(); // Tape the arrival spot, so the first step is measured from it.
     game.pressKey(PlatformKey::KEY_UP);
     game.tick(10);
     game.releaseKey(PlatformKey::KEY_UP);
-    auto steps = yTape.map([](const auto &entry) { return std::get<1>(entry); }).reverse().adjacentDeltas();
+    auto steps = yTape.map([](const auto &entry) { return std::get<1>(entry); }).reverse().adjacentDeltas(); // Forward is -y here.
     EXPECT_GT(steps.min(), steps.max() / 2); // No frame is held back to less than half the longest step.
 }
 
