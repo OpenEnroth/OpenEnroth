@@ -27,10 +27,8 @@ bool Icon_LOD_Loader::Load(RgbaImage *rgbaImage) {
 
 bool Buff_LOD_Loader::Load(RgbaImage *rgbaImage) {
     LodImage tex = resources->rawIcon(resource_name);
-    if (!tex.image) {
-        *rgbaImage = RgbaImage::solid(Color(), 16, 8); // One transparent pixel per atlas cell.
-        return true;
-    }
+    if (!tex.image)
+        tex.image = GrayscaleImage::solid(0, 1, 1); // Transparent, the palette is all zeros.
 
     // So, the way this works.
     //
