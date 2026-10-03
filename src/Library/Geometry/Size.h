@@ -26,6 +26,8 @@ struct Size {
         return w <= 0 || h <= 0;
     }
 
+    [[nodiscard]] constexpr friend bool operator==(const Size &l, const Size &r) = default;
+
     [[nodiscard]] constexpr explicit operator bool() const {
         return !isEmpty();
     }
@@ -33,8 +35,6 @@ struct Size {
     [[nodiscard]] constexpr bool operator!() const {
         return isEmpty();
     }
-
-    [[nodiscard]] constexpr friend bool operator==(const Size &l, const Size &r) = default;
 };
 
 using Sizei = Size<int>;

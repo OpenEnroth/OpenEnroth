@@ -96,6 +96,8 @@ struct Rect {
         return w <= 0 || h <= 0;
     }
 
+    [[nodiscard]] friend bool operator==(const Rect &l, const Rect &r) = default;
+
     [[nodiscard]] explicit operator bool() const {
         return !isEmpty();
     }
@@ -103,8 +105,6 @@ struct Rect {
     [[nodiscard]] bool operator!() const {
         return isEmpty();
     }
-
-    [[nodiscard]] friend bool operator==(const Rect &l, const Rect &r) = default;
 };
 
 using Recti = Rect<int>;

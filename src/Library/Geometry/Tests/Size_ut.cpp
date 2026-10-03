@@ -10,13 +10,16 @@ UNIT_TEST(Size, IsEmpty) {
 }
 
 UNIT_TEST(Size, Bool) {
-    EXPECT_FALSE(Sizei());
-    EXPECT_FALSE(Sizei(0, 10));
-    EXPECT_FALSE(Sizei(10, -1));
-    EXPECT_TRUE(Sizei(1, 1));
-    EXPECT_TRUE(!Sizei());
-    EXPECT_FALSE(!Sizef(0.5f, 0.5f));
+    EXPECT_FALSE(static_cast<bool>(Sizei()));
+    EXPECT_FALSE(static_cast<bool>(Sizei(0, 10)));
+    EXPECT_FALSE(static_cast<bool>(Sizei(10, -1)));
+    EXPECT_TRUE(static_cast<bool>(Sizei(1, 1)));
+    EXPECT_TRUE(static_cast<bool>(Sizef(0.5f, 0.5f)));
 
-    static_assert(!Sizei());
+    EXPECT_TRUE(!Sizei());
+    EXPECT_FALSE(!Sizei(1, 1));
+
+    static_assert(!static_cast<bool>(Sizei()));
     static_assert(static_cast<bool>(Sizei(1, 1)));
+    static_assert(!Sizei());
 }

@@ -82,10 +82,12 @@ UNIT_TEST(Rect, IntersectsCrossType) {
 }
 
 UNIT_TEST(Rect, Bool) {
-    EXPECT_FALSE(Recti());
-    EXPECT_FALSE(Recti(5, 5, 0, 10));
-    EXPECT_FALSE(Recti(5, 5, 10, -1));
-    EXPECT_TRUE(Recti(5, 5, 1, 1));
+    EXPECT_FALSE(static_cast<bool>(Recti()));
+    EXPECT_FALSE(static_cast<bool>(Recti(5, 5, 0, 10)));
+    EXPECT_FALSE(static_cast<bool>(Recti(5, 5, 10, -1)));
+    EXPECT_TRUE(static_cast<bool>(Recti(5, 5, 1, 1)));
+    EXPECT_TRUE(static_cast<bool>(Recti(-5, -5, 1, 1)));
+
     EXPECT_TRUE(!Recti());
     EXPECT_FALSE(!Recti(-5, -5, 1, 1));
 }
