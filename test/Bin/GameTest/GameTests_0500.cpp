@@ -68,7 +68,6 @@ GAME_TEST(Issues, Issue503) {
     // A Dwarven Commander walks up to the party and starts hitting it, then the party casts Town Portal and keeps the
     // book open. The game clock and the party's hp should freeze while the book is up. With the bug the clock kept
     // running and the commander kept landing hits.
-    test.prepareForNextTest(100, RANDOM_ENGINE_MERSENNE_TWISTER);
     auto timeTape = tapes.custom([] { return std::pair(current_screen_type, pParty->GetPlayingTime()); });
     auto hpTape = tapes.custom([] { return std::pair(current_screen_type, pParty->pCharacters[0].health); });
     auto inBook = [](const auto &pair) { return pair.first == SCREEN_BOOKS; };
