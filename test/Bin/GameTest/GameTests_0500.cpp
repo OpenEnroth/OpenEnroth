@@ -875,13 +875,11 @@ GAME_TEST(Issues, Issue792) {
     game.tick();
     game.pressAndReleaseKey(PlatformKey::KEY_SPACE); // Drink.
     game.tick();
-    test.stopTaping();
     game.pressAndReleaseKey(PlatformKey::KEY_F5); // Quicksave.
     game.tick();
 
     game.startNewGame();
     game.teleportTo(MAP_ERATHIA, Vec3f(-12216, 1900, 961), 90); // Daily timers fire on a first visit, 30 game seconds in.
-    test.startTaping();
     game.pressAndReleaseKey(PlatformKey::KEY_ESCAPE); // The menu pauses the game before they fire.
     game.tick();
     game.pressGuiButton("GameMenu_LoadGame");
