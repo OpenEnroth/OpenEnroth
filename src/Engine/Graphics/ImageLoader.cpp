@@ -27,8 +27,10 @@ bool Icon_LOD_Loader::Load(RgbaImage *rgbaImage) {
 
 bool Buff_LOD_Loader::Load(RgbaImage *rgbaImage) {
     LodImage tex = resources->rawIcon(resource_name);
-    if (!tex.image)
-        tex = resources->rawIcon("pending");
+    if (!tex.image) {
+        *rgbaImage = RgbaImage::solid(Color(), 16, 8); // One transparent pixel per atlas cell.
+        return true;
+    }
 
     // So, the way this works.
     //
