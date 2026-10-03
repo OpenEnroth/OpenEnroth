@@ -1,22 +1,24 @@
 #include "TileGenerator.h"
 
 #include <cassert>
+#include <string>
 #include <utility>
 
 #include "Engine/AssetsManager.h"
+#include "Engine/Engine.h"
 #include "Engine/Resources/EngineFileSystem.h"
-#include "Engine/Resources/LodTextureCache.h"
+#include "Engine/Resources/ResourceManager.h"
 #include "Engine/Data/TileEnumFunctions.h"
 #include "Engine/Tables/TileTable.h"
 #include "Engine/Graphics/Image.h"
 #include "Library/Image/ImageFunctions.h"
 #include "Library/Image/Png.h"
-#include "Library/LodFormats/LodFormats.h"
 #include "Library/LodFormats/LodImage.h"
 #include "Library/Logger/Logger.h"
 
 #include "Library/Serialization/Serialization.h"
 
+#include "Utility/Exception.h"
 #include "Utility/MapAccess.h"
 
 TileGenerator *pTileGenerator = nullptr;
@@ -89,8 +91,10 @@ RgbaImageView TileGenerator::loadTile(Tileset tileset, TileVariant variant) {
     if (const RgbaImage *result = valuePtr(_tileByTilesetVariant, key))
         return *result;
 
-    // Need to load directly from LOD, caching layer contains desaturated images.
-    LodImage image = lod::decodeImage(pBitmaps_LOD->read(pTileTable->tile(pTileTable->tileId(tileset, variant)).textureName));
+    const std::string &textureName = pTileTable->tile(pTileTable->tileId(tileset, variant)).textureName;
+    LodImage image = engine->resources()->rawBitmap(textureName);
+    if (!image.image)
+        throw Exception("Tile texture '{}' is missing", textureName);
     return _tileByTilesetVariant.emplace(key, makeRgbaImage(image.image, image.palette)).first->second;
 }
 

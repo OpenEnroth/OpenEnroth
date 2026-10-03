@@ -10,6 +10,7 @@
 #include "Library/Image/ImageFunctions.h"
 #include "Library/Image/Pcx.h"
 #include "Library/Json/Json.h"
+#include "Library/LodFormats/LodFont.h"
 #include "Library/LodFormats/LodFormats.h"
 #include "Library/LodFormats/LodImage.h"
 #include "Library/LodFormats/LodSprite.h"
@@ -17,6 +18,7 @@
 #include "Library/FileSystem/Interface/FileSystem.h"
 
 #include "Utility/String/Ascii.h"
+#include "Utility/String/Format.h"
 #include "Utility/Lambda.h"
 #include "Utility/MapAccess.h"
 
@@ -93,6 +95,13 @@ static Color processTransparentPixel(const GrayscaleImage &image, const Palette 
     return Color(static_cast<uint8_t>(r), static_cast<uint8_t>(g), static_cast<uint8_t>(b), 0);
 }
 
+static Palette grayscalePalette() {
+    Palette result;
+    for (int i = 0; i < 256; i++)
+        result.colors[i] = Color(i, i, i, 255);
+    return result;
+}
+
 ResourceManager::ResourceManager() = default;
 ResourceManager::~ResourceManager() = default;
 
@@ -134,13 +143,11 @@ RgbaImage ResourceManager::icon(std::string_view filename) {
 }
 
 RgbaImage ResourceManager::bitmap(std::string_view filename) {
-    std::string name = ascii::toLower(filename);
-    if (!_bitmapsLodReader.exists(name)) {
-        MM_ERROR("Trying to load non-existent LOD entry '{}'.", _bitmapsLodReader.displayPath(name));
+    LodImage image = rawBitmap(filename);
+    if (!image.image)
         return {};
-    }
 
-    LodImage image = lod::decodeImage(_bitmapsLodReader.read(name));
+    std::string name = ascii::toLower(filename);
     // TODO(captainurist): PaletteManager lives in engine_graphics, above engine_resources. Move desaturation down.
     Palette palette = PaletteManager::createLoadedPalette(maskedPalette(image, valueOr(_masks.bitmaps, name)));
     if (std::ranges::all_of(palette.colors, _1 != 0, &Color::a))
@@ -160,6 +167,35 @@ RgbaImage ResourceManager::bitmap(std::string_view filename) {
         }
     }
     return result;
+}
+
+LodImage ResourceManager::rawIcon(std::string_view filename) {
+    std::string name = ascii::toLower(filename);
+    if (!_iconsLodReader.exists(name)) {
+        MM_ERROR("Trying to load non-existent LOD entry '{}'.", _iconsLodReader.displayPath(name));
+        return {};
+    }
+    return lod::decodeImage(_iconsLodReader.read(name));
+}
+
+LodImage ResourceManager::rawBitmap(std::string_view filename) {
+    std::string name = ascii::toLower(filename);
+    if (!_bitmapsLodReader.exists(name)) {
+        MM_ERROR("Trying to load non-existent LOD entry '{}'.", _bitmapsLodReader.displayPath(name));
+        return {};
+    }
+    return lod::decodeImage(_bitmapsLodReader.read(name));
+}
+
+LodFont ResourceManager::font(std::string_view filename) {
+    return lod::decodeFont(lod::decodeMaybeCompressed(_iconsLodReader.read(filename)));
+}
+
+Palette ResourceManager::palette(int paletteId) {
+    std::string name = fmt::format("pal{:03}", paletteId);
+    if (!_bitmapsLodReader.exists(name))
+        return grayscalePalette();
+    return lod::decodeImage(_bitmapsLodReader.read(name)).palette;
 }
 
 RgbaImage ResourceManager::sprite(std::string_view filename) {
