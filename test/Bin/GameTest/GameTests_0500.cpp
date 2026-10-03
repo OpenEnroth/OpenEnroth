@@ -867,34 +867,37 @@ GAME_TEST(Issues, Issue792) {
     // Erathia, where a first visit leaves the daily well reset pending. Loading the quicksave from the game menu let that
     // pending reset clear the loaded party's "drank today" bit, so the well paid out a second time, for +40.
     auto bonusTape = tapes.custom([] { return pParty->pCharacters[0].sResBodyBonus; });
+    auto statusTape = tapes.statusBar();
     game.startNewGame();
     game.teleportTo(MAP_ERATHIA, Vec3f(-12216, 1900, 961), 90); // Next to a well.
     game.tick(20); // Erathia's timers fire once on the first visit.
     test.startTaping();
     game.tick();
     game.pressAndReleaseKey(PlatformKey::KEY_SPACE); // Drink.
-    game.tick(2);
+    game.tick();
     test.stopTaping();
     game.pressAndReleaseKey(PlatformKey::KEY_F5); // Quicksave.
-    game.tick(2);
+    game.tick();
 
     game.startNewGame();
     game.teleportTo(MAP_ERATHIA, Vec3f(-12216, 1900, 961), 90); // Daily timers fire on a first visit, 30 game seconds in.
     test.startTaping();
     game.pressAndReleaseKey(PlatformKey::KEY_ESCAPE); // The menu pauses the game before they fire.
-    game.tick(2);
+    game.tick();
     game.pressGuiButton("GameMenu_LoadGame");
     game.tick(3);
     game.pressGuiButton("LoadMenu_Slot1"); // The new game's autosave comes first.
-    game.tick(2);
+    game.tick();
     game.pressGuiButton("LoadMenu_Load");
-    game.tick(2);
+    game.tick();
     game.skipLoadingScreen();
-    game.tick(2);
+    game.tick();
     game.pressAndReleaseKey(PlatformKey::KEY_SPACE); // Drink again, the well should refuse.
-    game.tick(2);
+    game.tick();
     EXPECT_EQ(engine->_lastLoadedSaveFileName, "quicksave0.mm7");
     EXPECT_EQ(bonusTape, tape(0, 20, 0, 20)); // The new game has no bonus, the load brings back the first drink's +20.
+    EXPECT_EQ(statusTape.count("+20 Body Resistance (Temporary)"), 1); // Only the first drink pays.
+    EXPECT_CONTAINS(statusTape, "Refreshing!"); // The second one is refused.
 }
 
 GAME_TEST(Issues, Issue797) {
