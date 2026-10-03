@@ -670,22 +670,19 @@ GAME_TEST(Issues, Issue2186a) {
 }
 
 GAME_TEST(Issues, Issue2186b) {
-    // Load in the save and drop actors through the transition
-    test.loadGameFromTestData("issue_2186.mm7");
+    // Monsters above the hole in the Grand Temple of the Sun upper level hung in the air instead of dropping through.
+    // The hole is a portal between the upper level and the hall below. Monsters spawned above it should fall to
+    // whatever is under them in the hall. With the bug a monster over the hole found no floor and froze in place.
+    game.startNewGame();
+    game.teleportTo(MAP_GRAND_TEMPLE_OF_THE_SUN, Vec3f(-880, 800, 648), 0); // Upper level, facing the hole over the hall.
+    Actor *cleric0 = game.spawnMonster(Vec3f(0, 550, 800), MONSTER_CLERIC_SUN_C); // Above the sunken middle of the hall.
+    Actor *cleric1 = game.spawnMonster(Vec3f(-650, 800, 800), MONSTER_CLERIC_SUN_C); // Above its raised west side.
+    auto clericZTape = actorTapes.custom({cleric0->id, cleric1->id},
+                                         [](const Actor &actor) { return static_cast<int>(actor.pos.z); });
+    test.startTaping();
+    game.tick(10); // The fall takes half a second.
 
-    pActors.clear();
-    nextActorReuseScanStart = 0;
-    // add new actors above the transition and tick
-    for (int i = -500; i <= 500; i+=250) {
-        for (int j = 300; j <= 1300; j+=250)
-            game.spawnMonster(Vec3f(i, j, 800), MONSTER_CLERIC_SUN_C);
-    }
-    game.tick(200);
-
-    for (auto &act : pActors)
-        EXPECT_LT(act.pos.z, 400); // they have fallen through the transition
-    for (const auto &act : pActors)
-        EXPECT_GT(act.pos.z, -1000); // and no actors are underground
+    EXPECT_EQ(clericZTape.back(), tape(0, 128));
 }
 
 GAME_TEST(Issues, Issue2186c) {
