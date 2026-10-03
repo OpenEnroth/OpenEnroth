@@ -1,6 +1,7 @@
 #include "TileGenerator.h"
 
 #include <cassert>
+#include <string>
 #include <utility>
 
 #include "Engine/AssetsManager.h"
@@ -17,6 +18,7 @@
 
 #include "Library/Serialization/Serialization.h"
 
+#include "Utility/Exception.h"
 #include "Utility/MapAccess.h"
 
 TileGenerator *pTileGenerator = nullptr;
@@ -89,8 +91,10 @@ RgbaImageView TileGenerator::loadTile(Tileset tileset, TileVariant variant) {
     if (const RgbaImage *result = valuePtr(_tileByTilesetVariant, key))
         return *result;
 
-    LodImage image = engine->resources()->rawBitmap(pTileTable->tile(pTileTable->tileId(tileset, variant)).textureName);
-    assert(image.image);
+    const std::string &textureName = pTileTable->tile(pTileTable->tileId(tileset, variant)).textureName;
+    LodImage image = engine->resources()->rawBitmap(textureName);
+    if (!image.image)
+        throw Exception("Tile texture '{}' is missing", textureName);
     return _tileByTilesetVariant.emplace(key, makeRgbaImage(image.image, image.palette)).first->second;
 }
 
