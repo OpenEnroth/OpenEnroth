@@ -20,6 +20,7 @@
 #include "Engine/Objects/Actor.h"
 #include "Engine/Objects/Chest.h"
 #include "Engine/Objects/MonsterEnumFunctions.h"
+#include "Engine/Objects/SpriteObject.h"
 #include "Engine/Resources/EngineFileSystem.h"
 #include "Engine/Resources/LOD.h"
 #include "Engine/SaveLoad.h"
@@ -643,35 +644,66 @@ GAME_TEST(Prs, Pr2157b) {
 }
 
 GAME_TEST(Issues, Issue2186a) {
-    // Consistent crashing in Grand Temple of the Sun Upper Level
-    auto maps = tapes.map();
-    test.playTraceFromTestData("issue_2186.mm7", "issue_2186.json");
+    // Actors falling through the hole in the Grand Temple of the Sun upper level ended up deep underground.
+    // The party walks up the stairs onto the upper level, which runs around a hole over the hall below, and a monster
+    // drops through that hole. With the bug it kept the upper level as its sector, found no floor under it and fell
+    // through the hall floor. In the report the game crashed a few seconds after that.
+    auto partyZTape = tapes.custom([] { return static_cast<int>(pParty->pos.z); });
+    game.startNewGame();
+    game.teleportTo(MAP_GRAND_TEMPLE_OF_THE_SUN, Vec3f(-1470, -650, 416), 90); // Stairs to the upper level, facing up.
+    test.startTaping();
+    game.pressKey(PlatformKey::KEY_UP);
+    game.tick(16);
+    game.releaseKey(PlatformKey::KEY_UP);
+    game.pressKey(PlatformKey::KEY_RIGHT); // Turn to face the hole.
+    game.tick(5);
+    game.releaseKey(PlatformKey::KEY_RIGHT);
+    game.pressKey(PlatformKey::KEY_UP);
+    game.tick(8);
+    game.releaseKey(PlatformKey::KEY_UP);
+    Actor *cleric = game.spawnMonster(Vec3f(0, 550, 800), MONSTER_CLERIC_SUN_C); // Above the hole.
+    auto clericZTape = actorTapes.custom(cleric->id, [](const Actor &actor) { return static_cast<int>(actor.pos.z); });
+    game.tick(10); // The fall takes half a second.
 
-    EXPECT_CONTAINS(maps, MAP_EVENMORN_ISLAND); // we made it outside
-    EXPECT_EQ(maps.back(), MAP_GRAND_TEMPLE_OF_THE_SUN); // and back in
-    // and no actors are still underground
-    for (const auto &act : pActors) {
-        EXPECT_GT(act.pos.z, -1000);
-    }
+    EXPECT_EQ(partyZTape.back(), 648); // Upper level floor.
+    EXPECT_EQ(clericZTape.back(), 0); // Sunken floor in the middle of the hall below.
 }
 
 GAME_TEST(Issues, Issue2186b) {
-    // Load in the save and drop actors through the transition
-    test.loadGameFromTestData("issue_2186.mm7");
+    // Monsters above the hole in the Grand Temple of the Sun upper level hung in the air instead of dropping through.
+    // The hole is a portal between the upper level and the hall below. Monsters spawned above it should fall to
+    // whatever is under them in the hall. With the bug a monster over the hole found no floor and froze in place.
+    game.startNewGame();
+    game.teleportTo(MAP_GRAND_TEMPLE_OF_THE_SUN, Vec3f(-880, 800, 648), 0); // Upper level, facing the hole over the hall.
+    Actor *cleric0 = game.spawnMonster(Vec3f(0, 550, 800), MONSTER_CLERIC_SUN_C); // Above the sunken middle of the hall.
+    Actor *cleric1 = game.spawnMonster(Vec3f(-650, 800, 800), MONSTER_CLERIC_SUN_C); // Above its raised west side.
+    auto clericZTape = actorTapes.custom({cleric0->id, cleric1->id},
+                                         [](const Actor &actor) { return static_cast<int>(actor.pos.z); });
+    test.startTaping();
+    game.tick(10); // The fall takes half a second.
 
-    pActors.clear();
-    nextActorReuseScanStart = 0;
-    // add new actors above the transition and tick
-    for (int i = -500; i <= 500; i+=250) {
-        for (int j = 300; j <= 1300; j+=250)
-            game.spawnMonster(Vec3f(i, j, 800), MONSTER_CLERIC_SUN_C);
-    }
-    game.tick(200);
+    EXPECT_EQ(clericZTape.back(), tape(0, 128));
+}
 
-    for (auto &act : pActors)
-        EXPECT_LT(act.pos.z, 400); // they have fallen through the transition
-    for (const auto &act : pActors)
-        EXPECT_GT(act.pos.z, -1000); // and no actors are underground
+GAME_TEST(Issues, Issue2186c) {
+    // Items thrown down the hole in the Grand Temple of the Sun upper level fell through the floor of the hall below.
+    // The party stands at the railing around the hole and throws an item over it. With the bug the item kept the upper
+    // level as its sector while falling, so the hall floor never stopped it and the item was lost.
+    auto armorZTape = tapes.custom([] {
+        AccessibleVector<int> result;
+        for (const SpriteObject &sprite : pSpriteObjects)
+            if (sprite.uObjectDescID != 0 && sprite.containing_item.itemId == ITEM_LEATHER_ARMOR)
+                result.push_back(sprite.vPosition.z);
+        return result;
+    });
+    game.startNewGame();
+    game.teleportTo(MAP_GRAND_TEMPLE_OF_THE_SUN, Vec3f(-880, 800, 648), 0); // Upper level, facing the hole over the hall.
+    test.startTaping();
+    pParty->setHoldingItem(Item(ITEM_LEATHER_ARMOR));
+    game.pressAndReleaseButton(BUTTON_LEFT, pViewport.center()); // Throw it down the hole.
+    game.tick(30); // It bounces along the railing top, then drops to the hall.
+
+    EXPECT_EQ(armorZTape.back(), tape(129)); // Raised floor along the west side of the hall below.
 }
 
 GAME_TEST(Issues, Issue2188) {
