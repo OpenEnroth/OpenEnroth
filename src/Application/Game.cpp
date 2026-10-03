@@ -34,7 +34,6 @@
 #include "Engine/Graphics/TurnBasedOverlay.h"
 #include "Engine/Localization.h"
 #include "Engine/PartyPlacement.h"
-#include "Engine/Resources/LodTextureCache.h"
 #include "Engine/Objects/Actor.h"
 #include "Engine/Objects/Chest.h"
 #include "Engine/Tables/ObjectTable.h"
@@ -1508,7 +1507,6 @@ void Game::gameLoop() {
 
     extern bool use_music_folder;
     GameUI_LoadPlayerPortraitsAndVoices();
-    pIcons_LOD->reserveLoadedTextures();
     // pAudioPlayer->SetMusicVolume(engine->config->music_level);
 
     while (true) {

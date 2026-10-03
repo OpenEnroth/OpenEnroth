@@ -5,7 +5,6 @@
 #include "Library/Image/Image.h"
 
 class LodReader;
-class LodTextureCache;
 class ResourceManager;
 
 class ImageLoader {
@@ -34,15 +33,15 @@ class Icon_LOD_Loader : public ImageLoader {
 
 class Buff_LOD_Loader : public ImageLoader {
  public:
-    inline Buff_LOD_Loader(LodTextureCache *lod, std::string_view filename) {
+    inline Buff_LOD_Loader(ResourceManager *resources, std::string_view filename) {
         this->resource_name = filename;
-        this->lod = lod;
+        this->resources = resources;
     }
 
     virtual bool Load(RgbaImage *rgbaImage) override;
 
  protected:
-    LodTextureCache *lod = nullptr;
+    ResourceManager *resources = nullptr;
 };
 
 class PCX_Loader : public ImageLoader {

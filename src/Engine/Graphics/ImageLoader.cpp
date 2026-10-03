@@ -9,7 +9,6 @@
 #include "Engine/Graphics/AtlasLayout.h"
 #include "Engine/Graphics/Renderer/Renderer.h"
 #include "Engine/Graphics/TileGenerator.h"
-#include "Engine/Resources/LodTextureCache.h"
 #include "Engine/Resources/ResourceManager.h"
 
 #include "Library/Image/Pcx.h"
@@ -27,9 +26,9 @@ bool Icon_LOD_Loader::Load(RgbaImage *rgbaImage) {
 }
 
 bool Buff_LOD_Loader::Load(RgbaImage *rgbaImage) {
-    LodImage *tex = lod->loadTexture(resource_name);
-    if (tex == nullptr)
-        return false;
+    LodImage tex = resources->rawIcon(resource_name);
+    if (!tex.image)
+        tex = resources->rawIcon("pending");
 
     // So, the way this works.
     //
@@ -52,7 +51,7 @@ bool Buff_LOD_Loader::Load(RgbaImage *rgbaImage) {
     // This used to be done on draw, we're just generating a texture atlas. Alternative is to do this in-shader,
     // but generating an atlas is easier to do.
 
-    AtlasLayout layout({16, 8}, tex->image.size());
+    AtlasLayout layout({16, 8}, tex.image.size());
     RgbaImage result = RgbaImage::uninitialized(layout.geometry().size());
 
     for (int i = 0; i < 126; i++) {
@@ -62,13 +61,13 @@ bool Buff_LOD_Loader::Load(RgbaImage *rgbaImage) {
             int remap = (index + i) % (2 * 63);
             if (remap >= 63)
                 remap = (2 * 63) - remap;
-            palette.colors[index] = tex->palette.colors[remap];
+            palette.colors[index] = tex.palette.colors[remap];
         }
 
         Recti cell = layout[i];
         for (int y = 0; y < cell.h; y++)
             for (int x = 0; x < cell.w; x++)
-                result[y + cell.y][x + cell.x] = palette.colors[tex->image[y][x]];
+                result[y + cell.y][x + cell.x] = palette.colors[tex.image[y][x]];
     }
 
     *rgbaImage = std::move(result);

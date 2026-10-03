@@ -4,14 +4,12 @@ set(ENGINE_RESOURCES_SOURCES
         EngineFileSystem.cpp
         LOD.cpp
         LodSpriteCache.cpp
-        LodTextureCache.cpp
         ResourceManager.cpp)
 
 set(ENGINE_RESOURCES_HEADERS
         EngineFileSystem.h
         LOD.h
         LodSpriteCache.h
-        LodTextureCache.h
         ResourceManager.h)
 
 add_library(engine_resources STATIC ${ENGINE_RESOURCES_SOURCES} ${ENGINE_RESOURCES_HEADERS})

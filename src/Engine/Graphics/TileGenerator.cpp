@@ -4,8 +4,9 @@
 #include <utility>
 
 #include "Engine/AssetsManager.h"
+#include "Engine/Engine.h"
 #include "Engine/Resources/EngineFileSystem.h"
-#include "Engine/Resources/LodTextureCache.h"
+#include "Engine/Resources/ResourceManager.h"
 #include "Engine/Data/TileEnumFunctions.h"
 #include "Engine/Tables/TileTable.h"
 #include "Engine/Graphics/Image.h"
@@ -89,8 +90,7 @@ RgbaImageView TileGenerator::loadTile(Tileset tileset, TileVariant variant) {
     if (const RgbaImage *result = valuePtr(_tileByTilesetVariant, key))
         return *result;
 
-    // Need to load directly from LOD, caching layer contains desaturated images.
-    LodImage image = lod::decodeImage(pBitmaps_LOD->read(pTileTable->tile(pTileTable->tileId(tileset, variant)).textureName));
+    LodImage image = engine->resources()->rawBitmap(pTileTable->tile(pTileTable->tileId(tileset, variant)).textureName);
     return _tileByTilesetVariant.emplace(key, makeRgbaImage(image.image, image.palette)).first->second;
 }
 

@@ -8,7 +8,6 @@
 #include "Engine/Engine.h"
 #include "Engine/Graphics/ImageLoader.h"
 #include "Engine/Graphics/Image.h"
-#include "Engine/Resources/LodTextureCache.h"
 #include "Engine/Resources/LodSpriteCache.h"
 
 #include "GUI/GUIFont.h"
@@ -82,7 +81,7 @@ GraphicsImage *AssetsManager::getImage_Buff(std::string_view name) {
 
     auto i = images.find(filename);
     if (i == images.end())
-        i = images.emplace(filename, GraphicsImage::Create(std::make_unique<Buff_LOD_Loader>(pIcons_LOD, filename))).first;
+        i = images.emplace(filename, GraphicsImage::Create(std::make_unique<Buff_LOD_Loader>(engine->resources(), filename))).first;
 
     return i->second.get();
 }

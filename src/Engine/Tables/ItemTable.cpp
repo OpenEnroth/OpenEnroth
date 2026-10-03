@@ -305,7 +305,7 @@ void ItemTable::LoadItemSizes() {
     for (ItemId itemId : items.indices()) {
         std::string iconName = items[itemId].iconName;
 
-        Sizei iconSize(1, 1); // Actual icon name that will be used in this case is "pending", see LodTextureCache.
+        Sizei iconSize(1, 1); // Actual icon name that will be used in this case is "pending", see Icon_LOD_Loader.
         if (reader.exists(iconName))
             iconSize = lod::decodeImageSize(reader.read(iconName));
 
