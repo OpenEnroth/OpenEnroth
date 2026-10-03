@@ -35,7 +35,7 @@ UNIT_TEST(FileInputStream, ExceptionMessages) {
     const char *fileName = "afjhrbluxnkskghelxrigjmgdhckeog.txt";
 
     EXPECT_FALSE(fs::exists(fileName));
-    EXPECT_THROW_MESSAGE(FileInputStream in{NativePath(fileName)}, fileName);
+    EXPECT_THROW_MESSAGE(FileInputStream in(fileName), fileName);
 }
 
 UNIT_TEST(FileInputStream, ReadUntil) {
