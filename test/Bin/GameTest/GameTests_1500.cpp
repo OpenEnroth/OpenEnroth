@@ -3,6 +3,7 @@
 #include <unordered_set>
 #include <ranges>
 #include <string>
+#include <tuple>
 #include <regex>
 #include <vector>
 
@@ -861,12 +862,27 @@ GAME_TEST(Issues, Issue1898) {
 }
 
 GAME_TEST(Issues, Issue1890) {
-    // Stuck *in* stairs when leaving the Mercenary Guild
-    auto yPos = tapes.custom([]() { return static_cast<int>(pParty->pos.y); });
-    test.playTraceFromTestData("issue_1890.mm7", "issue_1890.json");
-    EXPECT_EQ(engine->_currentLoadedMapId, MAP_TATALIA);
-    EXPECT_CONTAINS(yPos, 16803); // starting point
-    EXPECT_LT(yPos.back(), 16700); // moved forwards
+    // Leaving the Mercenary Guild put the party inside the stairs in Tatalia, so the stairs held it back when it walked forward.
+    // The guild's exit puts the party at the foot of the stairs, facing away from the guild, with the back of the party
+    // over the first step. Placed at ground level instead of on top of that step, the party started out inside it, and
+    // its first frames of walking forward barely moved it.
+    auto yTape = tapes.custom([] { return std::tuple(pParty->GetPlayingTime(), pParty->pos.y); }); // Playing time makes every frame a new tape value.
+    engine->config->debug.NoActors.setValue(true);
+    game.startNewGame();
+    game.teleportTo(MAP_MERCENARY_GUILD, Vec3f(896, 2700, 1), 270); // Facing the exit door.
+    game.pressAndReleaseKey(PlatformKey::KEY_SPACE);
+    game.tick();
+    game.pressGuiButton("Transition_Yes");
+    game.tick();
+    game.skipLoadingScreen();
+    EXPECT_EQ(pParty->pos.z, 3088); // On top of the first step.
+    test.startTaping();
+    game.tick(); // Tape the arrival spot, so the first step is measured from it.
+    game.pressKey(PlatformKey::KEY_UP);
+    game.tick(10);
+    game.releaseKey(PlatformKey::KEY_UP);
+    auto steps = yTape.map([](const auto &entry) { return std::get<1>(entry); }).reverse().adjacentDeltas(); // Forward is -y here.
+    EXPECT_GT(steps.min(), steps.max() / 2); // No frame is held back to less than half the longest step.
 }
 
 // 1900
