@@ -22,7 +22,19 @@ struct Size {
         return {l.x - r.w, l.y - r.h};
     }
 
+    [[nodiscard]] constexpr bool isEmpty() const {
+        return w <= 0 || h <= 0;
+    }
+
     [[nodiscard]] constexpr friend bool operator==(const Size &l, const Size &r) = default;
+
+    [[nodiscard]] constexpr explicit operator bool() const {
+        return !isEmpty();
+    }
+
+    [[nodiscard]] constexpr bool operator!() const {
+        return isEmpty();
+    }
 };
 
 using Sizei = Size<int>;
