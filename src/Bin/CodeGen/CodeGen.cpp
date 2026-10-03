@@ -94,7 +94,7 @@ int runItemIdCodeGen(const CodeGenOptions &options, ResourceManager *resourceMan
         // Both altar pieces have the same name and description. 676 lies in the Temple of the Light, 677 in the Temple
         // of the Dark.
         if (enumName == "ALTAR_PIECE")
-            enumName += i == ITEM_QUEST_ALTAR_PIECE_LIGHT ? "_LIGHT" : "_DARK";
+            enumName += i == static_cast<ItemId>(676) ? "_LIGHT" : "_DARK";
 
         if (enumName == "THE_PERFECT_BOW")
             if (!description.contains("off-balance"))
@@ -241,7 +241,7 @@ int runHouseIdCodeGen(const CodeGenOptions &options, ResourceManager *resourceMa
         if (hasMap)
             mapName = fmt::format("{}", fmt::join(mapNamesByHouseId[i], "_"));
 
-        if (i == HOUSE_JAIL) {
+        if (i == static_cast<HouseId>(187)) {
             map.insert(i, "JAIL", "");
         } else if (desc.uType == HOUSE_TYPE_INVALID && hasMap) {
             map.insert(i, "", fmt::format("Used in MAP_{} but invalid, hmm...", mapName));
@@ -416,18 +416,18 @@ int runMusicCodeGen(const CodeGenOptions &options, ResourceManager *resourceMana
     for (const auto &[musicId, mapEnumNames] : mapEnumNamesByMusicId) {
         if (mapEnumNames.size() <= 3) {
             map.insert(musicId, fmt::format("{}", fmt::join(mapEnumNames, "_")), "");
-        } else if (musicId == MUSIC_DUNGEON) {
+        } else if (musicId == static_cast<MusicId>(3)) {
             map.insert(musicId, "DUNGEON", "Most of the game dungeons.");
-        } else if (musicId == MUSIC_BARROWS) {
+        } else if (musicId == static_cast<MusicId>(5)) {
             map.insert(musicId, "BARROWS", "Barrows I-XV & Zokarr's Tomb.");
         } else {
             std::string comment = fmt::format("{}.", fmt::join(mapNamesByMusicId[musicId], ", "));
 
-            if (musicId == MUSIC_CASTLE_HARMONDALE) {
+            if (musicId == static_cast<MusicId>(19)) {
                 map.insert(musicId, "CASTLE_HARMONDALE", comment);
-            } else if (musicId == MUSIC_TEMPLES) {
+            } else if (musicId == static_cast<MusicId>(13)) {
                 map.insert(musicId, "TEMPLES", comment);
-            } else if (musicId == MUSIC_ENDGAME_DUNGEON) {
+            } else if (musicId == static_cast<MusicId>(16)) {
                 map.insert(musicId, "ENDGAME_DUNGEON", comment);
             } else {
                 throw Exception("Unhandled music id value.");
