@@ -325,6 +325,12 @@ GAME_TEST(Issues, Issue293c) {
 
 GAME_TEST(Issues, Issue294a) {
     // Sharpmetal couldn't kill a point-blank rat because its blades spawned at half the party height and flew over it.
+    // A giant rat stands right in front of the party and Zoltan quick-casts Sharpmetal at it. The blades are aimed from
+    // a third of the party height down at the rat. Spawned at half the party height, they cleared a rat this close
+    // and it took no damage.
+    auto hpTape = actorTapes.hp(0);
+    auto stateTape = actorTapes.aiState(0);
+    auto statusTape = tapes.statusBar();
     engine->config->debug.NoActors.setValue(true);
     engine->config->debug.AllMagic.setValue(true);
     game.startNewGame();
@@ -332,18 +338,19 @@ GAME_TEST(Issues, Issue294a) {
     prepareForBattleTest();
     engine->config->debug.NoActors.setValue(false);
 
-    auto stateTape = actorTapes.aiState(0);
     game.spawnMonster(pParty->pos + Vec3f(0, 80, 0), MONSTER_RAT_A, SPAWN_DUMMY); // Right in front of the party.
-    game.tick(); // Quick spell targeting picks from the last rendered frame.
     game.castQuickSpell(0, SPELL_DARK_SHARPMETAL);
-    game.tick(30);
-    test.stopTaping();
-
-    EXPECT_EQ(stateTape.frontBack(), tape(Standing, Dead));
+    EXPECT_EQ(hpTape, tape(6, 0));
+    EXPECT_EQ(stateTape, tape(Standing, Dying));
+    EXPECT_CONTAINS(statusTape, "Zoltan inflicts 35 points killing Giant Rat");
 }
 
 GAME_TEST(Issues, Issue294b) {
     // Blades flew over a point-blank rat because the projectile spawned at half the party height.
+    // Same scenario as Issue294a, but Blades goes through the code shared with Acid Burst, Flying Fist and Toxic Cloud.
+    auto hpTape = actorTapes.hp(0);
+    auto stateTape = actorTapes.aiState(0);
+    auto statusTape = tapes.statusBar();
     engine->config->debug.NoActors.setValue(true);
     engine->config->debug.AllMagic.setValue(true);
     game.startNewGame();
@@ -351,18 +358,19 @@ GAME_TEST(Issues, Issue294b) {
     prepareForBattleTest();
     engine->config->debug.NoActors.setValue(false);
 
-    auto hpTape = actorTapes.hp(0);
     game.spawnMonster(pParty->pos + Vec3f(0, 80, 0), MONSTER_RAT_A, SPAWN_DUMMY); // Right in front of the party.
-    game.tick(); // Quick spell targeting picks from the last rendered frame.
     game.castQuickSpell(0, SPELL_EARTH_BLADES);
-    game.tick(30);
-    test.stopTaping();
-
-    EXPECT_LT(hpTape.delta(), 0);
+    EXPECT_EQ(hpTape, tape(6, 0));
+    EXPECT_EQ(stateTape, tape(Standing, Dying));
+    EXPECT_CONTAINS(statusTape, "Zoltan inflicts 42 points killing Giant Rat");
 }
 
 GAME_TEST(Issues, Issue294c) {
     // Blaster shots flew over a point-blank rat because they spawned at half the party height.
+    // Same scenario as Issue294a, but Zoltan shoots the rat with a blaster by pressing A.
+    auto hpTape = actorTapes.hp(0);
+    auto stateTape = actorTapes.aiState(0);
+    auto statusTape = tapes.statusBar();
     engine->config->debug.NoActors.setValue(true);
     game.startNewGame();
     test.startTaping();
@@ -373,14 +381,13 @@ GAME_TEST(Issues, Issue294c) {
     shooter.inventory.equip(ITEM_SLOT_MAIN_HAND, Item(ITEM_BLASTER));
     shooter.setSkillValue(SKILL_BLASTER, CombinedSkillValue(10, MASTERY_GRANDMASTER));
 
-    auto hpTape = actorTapes.hp(0);
     game.spawnMonster(pParty->pos + Vec3f(0, 80, 0), MONSTER_RAT_A, SPAWN_DUMMY); // Right in front of the party.
-    game.tick(); // Attack targeting picks from the last rendered frame.
+    game.tick(); // The shot lands in the frame that processes A, so the tapes need a frame of the rat alive first.
     game.pressAndReleaseKey(PlatformKey::KEY_A);
-    game.tick(30);
-    test.stopTaping();
-
-    EXPECT_LT(hpTape.delta(), 0);
+    game.tick();
+    EXPECT_EQ(hpTape, tape(6, 0));
+    EXPECT_EQ(stateTape, tape(Standing, Dying));
+    EXPECT_CONTAINS(statusTape, "Zoltan inflicts 20 points killing Giant Rat");
 }
 
 // 300
