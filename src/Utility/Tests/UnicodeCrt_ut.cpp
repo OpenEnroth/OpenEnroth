@@ -52,9 +52,9 @@ UNIT_TEST(UnicodeCrt, fopen) {
     EXPECT_EQ(status2, 0);
 #endif
 
-    EXPECT_TRUE(fs::exists(NativePath::fromWtf8(path)));
-    EXPECT_TRUE(fs::remove(NativePath::fromWtf8(path)));
-    EXPECT_FALSE(fs::exists(NativePath::fromWtf8(path)));
+    EXPECT_TRUE(fs::exists(NativePath(path)));
+    EXPECT_TRUE(fs::remove(NativePath(path)));
+    EXPECT_FALSE(fs::exists(NativePath(path)));
 }
 
 UNIT_TEST(UnicodeCrt, filesystem_exists_remove) {
@@ -63,7 +63,7 @@ UNIT_TEST(UnicodeCrt, filesystem_exists_remove) {
     std::u8string u8path = std::u8string(u8prefix) + u8"_exists";
     std::string path = reinterpret_cast<const char *>(u8path.c_str());
 
-    FileOutputStream s(NativePath::fromWtf8(path));
+    FileOutputStream s{NativePath(path)};
     s.write("something");
     s.close();
 
@@ -90,7 +90,7 @@ UNIT_TEST(UnicodeCrt, filesystem_rename) {
     std::string path = reinterpret_cast<const char *>(u8path.c_str());
     std::string path2 = path + "2";
 
-    FileOutputStream s(NativePath::fromWtf8(path));
+    FileOutputStream s{NativePath(path)};
     s.write("something_else");
     s.close();
 
@@ -125,9 +125,9 @@ UNIT_TEST(UnicodeCrt, fstreams) {
 
     EXPECT_EQ(std::string_view(buffer), std::string_view(data));
 
-    EXPECT_TRUE(fs::exists(NativePath::fromWtf8(path)));
-    EXPECT_TRUE(fs::remove(NativePath::fromWtf8(path)));
-    EXPECT_FALSE(fs::exists(NativePath::fromWtf8(path)));
+    EXPECT_TRUE(fs::exists(NativePath(path)));
+    EXPECT_TRUE(fs::remove(NativePath(path)));
+    EXPECT_FALSE(fs::exists(NativePath(path)));
 }
 
 #ifdef _WINDOWS

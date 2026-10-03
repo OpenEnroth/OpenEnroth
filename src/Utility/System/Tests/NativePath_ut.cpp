@@ -12,19 +12,19 @@
 UNIT_TEST(NativePath, ConversionsAreChecked) {
     static_assert(std::is_convertible_v<const char *, NativePath>);
     static_assert(std::is_convertible_v<std::string_view, NativePath>);
-    static_assert(std::is_same_v<decltype(NativePath().toWtf8()), const std::string &>); // No copy on every call.
+    static_assert(std::is_same_v<decltype(NativePath().str()), const std::string &>); // No copy on every call.
 }
 
 UNIT_TEST(NativePath, NativeRoundTrip) {
     // The conversion to the OS encoding goes through wchar_t on Windows, so WTF-8 has to survive it, unpaired
     // surrogates included.
     for (std::string_view path : {"\xd0\xbb\xd0\xbe\xd0\xbb.txt", "lol\xed\xb0\x80kek.txt"})
-        EXPECT_EQ(NativePath::fromNative(NativePath::fromWtf8(path).native()).toWtf8(), path);
+        EXPECT_EQ(NativePath::fromNative(NativePath(path).native()).str(), path);
 }
 
 UNIT_TEST(NativePath, Composition) {
     auto testOne = [] (std::string_view head, std::string_view tail, std::string_view result) {
-        EXPECT_EQ((NativePath::fromWtf8(head) / NativePath::fromWtf8(tail)).toWtf8(), result)
+        EXPECT_EQ((NativePath(head) / NativePath(tail)).str(), result)
             << "for '" << head << "' / '" << tail << "'";
     };
 
@@ -42,7 +42,7 @@ UNIT_TEST(NativePath, Composition) {
 
 UNIT_TEST(NativePath, WithExtension) {
     auto testOne = [] (std::string_view path, std::string_view extension, std::string_view result) {
-        EXPECT_EQ(NativePath::fromWtf8(path).withExtension(extension).toWtf8(), result)
+        EXPECT_EQ(NativePath(path).withExtension(extension).str(), result)
             << "for '" << path << "' with '" << extension << "'";
     };
 
@@ -69,18 +69,18 @@ UNIT_TEST(NativePath, WithExtension) {
 #ifdef _WINDOWS
 UNIT_TEST(NativePath, WindowsRoots) {
     auto testJoin = [] (std::string_view head, std::string_view tail, std::string_view result) {
-        EXPECT_EQ((NativePath::fromWtf8(head) / NativePath::fromWtf8(tail)).toWtf8(), result)
+        EXPECT_EQ((NativePath(head) / NativePath(tail)).str(), result)
             << "for '" << head << "' / '" << tail << "'";
     };
     auto testExtension = [] (std::string_view path, std::string_view extension, std::string_view result) {
-        EXPECT_EQ(NativePath::fromWtf8(path).withExtension(extension).toWtf8(), result)
+        EXPECT_EQ(NativePath(path).withExtension(extension).str(), result)
             << "for '" << path << "' with '" << extension << "'";
     };
     auto testNative = [] (std::string_view path, const std::wstring &result) {
-        EXPECT_EQ(NativePath::fromWtf8(path).native(), result) << "for '" << path << "'";
+        EXPECT_EQ(NativePath(path).native(), result) << "for '" << path << "'";
     };
 
-    EXPECT_EQ(NativePath::fromWtf8("a\\b").toWtf8(), "a/b"); // Both slashes separate components on Windows.
+    EXPECT_EQ(NativePath("a\\b").str(), "a/b"); // Both slashes separate components on Windows.
 
     testJoin("C:/a", "D:/b", "D:/b"); // Another drive replaces everything.
     testJoin("C:/a", "/b", "C:/b"); // A rooted tail keeps our drive.
@@ -129,7 +129,7 @@ UNIT_TEST(NativePath, WindowsRoots) {
     testNative("//?/C:/Games", L"\\\\?\\C:\\Games");
     testNative("//./UNC/server/share/f", L"\\\\.\\UNC\\server\\share\\f");
     testNative("C:/Games/MM7", L"C:/Games/MM7"); // Everything else keeps them.
-    EXPECT_EQ(NativePath::fromNative(L"C:\\a\\b").toWtf8(), "C:/a/b"); // Separators from the OS get converted too.
+    EXPECT_EQ(NativePath::fromNative(L"C:\\a\\b").str(), "C:/a/b"); // Separators from the OS get converted too.
 
     // A root name is never a file name, so a dot inside one doesn't start an extension.
     testExtension("//ser.ver/sh.are", "", "//ser.ver/sh.are");
@@ -145,7 +145,7 @@ UNIT_TEST(NativePath, ExtendedLengthReachesWin32) {
 
     // A single component is capped at 255 characters, so it takes two to get over MAX_PATH wherever temp is.
     NativePath dir = fs::tmp() / NativePath("oe_" + std::string(150, 'd'));
-    NativePath prefixed = NativePath::fromWtf8("//?/" + dir.toWtf8());
+    NativePath prefixed = NativePath("//?/" + dir.str());
     ScopedTestFolder folder(dir);
 
     for (const std::string &name : {"oe_" + std::string(150, 'x') + ".txt", std::string("oe_trailing_dot.")}) {
@@ -159,10 +159,10 @@ UNIT_TEST(NativePath, ExtendedLengthReachesWin32) {
 #endif
 
 UNIT_TEST(NativePath, DisplayString) {
-    EXPECT_EQ(NativePath::fromWtf8("a/b/\xd0\xbb\xd0\xbe\xd0\xbb.txt").displayString(), "a/b/\xd0\xbb\xd0\xbe\xd0\xbb.txt");
+    EXPECT_EQ(NativePath("a/b/\xd0\xbb\xd0\xbe\xd0\xbb.txt").displayString(), "a/b/\xd0\xbb\xd0\xbe\xd0\xbb.txt");
 
     // WTF-8-encoded surrogates are not valid UTF-8, so they have to come out as replacement characters.
-    std::string display = NativePath::fromWtf8("lol\xed\xb0\x80kek.txt").displayString();
+    std::string display = NativePath("lol\xed\xb0\x80kek.txt").displayString();
     EXPECT_TRUE(display.starts_with("lol"));
     EXPECT_TRUE(display.ends_with("kek.txt"));
     EXPECT_NE(display.find("\xEF\xBF\xBD"), std::string::npos); // U+FFFD.
@@ -197,22 +197,22 @@ UNIT_TEST(NativePath, LexicalCast) {
 #ifndef _WINDOWS
 UNIT_TEST(NativePath, PosixSyntax) {
     auto testExtension = [] (std::string_view path, std::string_view extension, std::string_view result) {
-        EXPECT_EQ(NativePath::fromWtf8(path).withExtension(extension).toWtf8(), result)
+        EXPECT_EQ(NativePath(path).withExtension(extension).str(), result)
             << "for '" << path << "' with '" << extension << "'";
     };
 
     // Backslashes and Windows roots are ordinary text on POSIX, where the only separator is a forward slash.
-    EXPECT_EQ(NativePath::fromWtf8("a\\b").toWtf8(), "a\\b");
+    EXPECT_EQ(NativePath("a\\b").str(), "a\\b");
     testExtension("a.b\\c", "", "a"); // One file name, so ".b\c" is its extension.
     testExtension("C:", ".x", "C:.x");
     testExtension("//a.b", "", "//a");
 }
 
 UNIT_TEST(NativePath, InvalidUtf8RoundTrip) {
-    // File names on POSIX are byte strings, so fromWtf8 / toWtf8 have to pass invalid UTF-8 through as-is. "\xD0" is
-    // an incomplete UTF-8 sequence, "\xFF" can't appear in UTF-8 at all.
+    // File names on POSIX are byte strings, so the constructor and str have to pass invalid UTF-8 through as-is.
+    // "\xD0" is an incomplete UTF-8 sequence, "\xFF" can't appear in UTF-8 at all.
     for (std::string_view name : {"lol\xD0kek.txt", "lol\xFFkek.txt", "trailing\xD0"})
-        EXPECT_EQ(NativePath::fromWtf8(name).toWtf8(), name);
+        EXPECT_EQ(NativePath(name).str(), name);
 }
 #endif
 
@@ -223,7 +223,7 @@ UNIT_TEST(NativePath, InvalidUtf8FileNames) {
     NativePath tmpDir = fs::tmp(); // A build dir can sit on an APFS-backed mount in a dev container.
 
     for (std::string_view name : {"tmp_lol\xD0kek.txt", "tmp_lol\xFFkek.txt", "tmp_trailing\xD0"}) {
-        NativePath path = tmpDir / NativePath::fromWtf8(name);
+        NativePath path = tmpDir / NativePath(name);
 
         ASSERT_NO_THROW(FileOutputStream(path).close()) << name;
         EXPECT_TRUE(fs::exists(path)) << name;
