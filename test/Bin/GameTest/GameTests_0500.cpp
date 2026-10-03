@@ -25,6 +25,8 @@
 
 #include "Utility/ScopeGuard.h"
 
+#include "GameTestCommon.h"
+
 static std::initializer_list<CharacterBuff> allPotionBuffs() {
     static constexpr std::initializer_list<CharacterBuff> result = {
         CHARACTER_BUFF_RESIST_AIR,
@@ -62,16 +64,29 @@ GAME_TEST(Issues, Issue502) {
 }
 
 GAME_TEST(Issues, Issue503) {
-    // Check that town portal book actually pauses game.
-    auto hpTape = charTapes.hps();
-    auto noDamageTape = tapes.config(engine->config->debug.NoDamage);
-    auto screenTape = tapes.screen();
-    auto mapTape = tapes.map();
-    test.playTraceFromTestData("issue_503.mm7", "issue_503.json");
-    EXPECT_EQ(hpTape, tape({1147, 699, 350, 242})); // Game was paused, the party wasn't shot at, no HP change.
-    EXPECT_EQ(noDamageTape, tape(false)); // HP change was actually possible.
-    EXPECT_EQ(screenTape, tape(SCREEN_GAME, SCREEN_BOOKS, SCREEN_GAME)); // TP book was opened.
-    EXPECT_EQ(mapTape, tape(MAP_DRAGON_CAVES, MAP_CASTLE_HARMONDALE)); // And party was teleported to Harmondale.
+    // Town Portal book didn't pause the game, monsters kept attacking the party while it was open.
+    // A Dwarven Commander walks up to the party and starts hitting it, then the party casts Town Portal and keeps the
+    // book open. The game clock and the party's hp should freeze while the book is up. With the bug the clock kept
+    // running and the commander kept landing hits.
+    auto timeTape = tapes.custom([] { return std::pair(current_screen_type, pParty->GetPlayingTime()); });
+    auto hpTape = tapes.custom([] { return std::pair(current_screen_type, pParty->pCharacters[0].health); });
+    auto inBook = [](const auto &pair) { return pair.first == SCREEN_BOOKS; };
+
+    engine->config->debug.NoActors.setValue(true);
+    engine->config->debug.AllMagic.setValue(true); // Casts at grandmaster, Town Portal below that fails with hostiles around.
+    game.startNewGame();
+    prepareForBattleTest();
+    test.startTaping();
+
+    engine->config->debug.NoActors.setValue(false);
+    game.spawnMonster(pParty->pos + Vec3f(0, 200, 0), MONSTER_DWARF_C);
+    game.tick(30); // Long enough to walk up and land the first hit.
+    game.castSpell(0, SPELL_WATER_TOWN_PORTAL);
+    game.tick(50); // The commander swings every couple of seconds.
+
+    EXPECT_EQ(timeTape.filter(inBook).size(), 1); // The clock stands still.
+    ASSERT_EQ(hpTape.filter(inBook).size(), 1); // No hits while the book is open.
+    EXPECT_LT(hpTape.filter(inBook).front().second, hpTape.front().second); // The commander hit the party before the book opened.
 }
 
 GAME_TEST(Issues, Issue504) {
