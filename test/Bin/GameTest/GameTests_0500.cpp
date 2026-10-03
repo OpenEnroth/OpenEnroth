@@ -862,10 +862,32 @@ GAME_TEST(Issues, Issue790) {
 }
 
 GAME_TEST(Issues, Issue792) {
-    // Test that event timers do not fire in-between game loading process
-    auto screenTape = tapes.screen();
-    test.playTraceFromTestData("issue_792.mm7", "issue_792.json"); // Should not assert
-    EXPECT_EQ(screenTape, tape(SCREEN_GAME, SCREEN_MENU, SCREEN_GAME, SCREEN_PARTY_CREATION, SCREEN_GAME, SCREEN_MENU, SCREEN_LOADGAME, SCREEN_GAME));
+    // Loading a game from inside another game ran the old game's event timers against the loaded party.
+    // The exploit: drink from an Erathia well for +20 Body Resistance and quicksave. Then start a new game and walk into
+    // Erathia, where a first visit leaves the daily well reset pending. Quickloading let that pending reset clear the
+    // loaded party's "drank today" bit, so the well paid out a second time, for +40.
+    auto bonusTape = tapes.custom([] { return pParty->pCharacters[0].sResBodyBonus; });
+    auto statusTape = tapes.statusBar();
+    game.startNewGame();
+    game.teleportTo(MAP_ERATHIA, Vec3f(-12216, 1900, 961), 90); // Next to a well.
+    game.tick(20); // Erathia's timers fire once on the first visit.
+    test.startTaping();
+    game.tick();
+    game.pressAndReleaseKey(PlatformKey::KEY_SPACE); // Drink.
+    game.tick();
+    game.pressAndReleaseKey(PlatformKey::KEY_F5); // Quicksave.
+    game.tick();
+
+    game.startNewGame();
+    game.teleportTo(MAP_ERATHIA, Vec3f(-12216, 1900, 961), 90); // Daily timers fire on a first visit, 30 game seconds in.
+    game.pressAndReleaseKey(PlatformKey::KEY_F9); // Quickload before they do.
+    game.skipLoadingScreen();
+    game.tick();
+    game.pressAndReleaseKey(PlatformKey::KEY_SPACE); // Drink again, the well should refuse.
+    game.tick();
+    EXPECT_EQ(bonusTape, tape(0, 20, 0, 20)); // The new game has no bonus, the load brings back the first drink's +20.
+    EXPECT_EQ(statusTape.count("+20 Body Resistance (Temporary)"), 1); // Only the first drink pays.
+    EXPECT_CONTAINS(statusTape, "Refreshing!"); // The second one is refused.
 }
 
 GAME_TEST(Issues, Issue797) {
