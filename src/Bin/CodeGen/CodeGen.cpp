@@ -48,7 +48,7 @@ int runItemIdCodeGen(const CodeGenOptions &options, ResourceManager *resourceMan
     itemTable.Initialize(resourceManager);
 
     CodeGenMap map;
-    map.insert(ITEM_NULL, "NULL", "");
+    map.insert(static_cast<ItemId>(0), "NULL", "");
 
     for(ItemId i : itemTable.items.indices()) {
         const ItemData &desc = itemTable.items[i];
@@ -165,7 +165,7 @@ int runMapIdCodeGen(const CodeGenOptions &options, ResourceManager *resourceMana
     mapTable.Initialize(resourceManager->eventsData("MapStats.txt"));
 
     CodeGenMap map;
-    map.insert(MAP_INVALID, "INVALID", "");
+    map.insert(static_cast<MapId>(0), "INVALID", "");
 
     for (MapId i : mapTable.pInfos.indices())
         map.insert(i, mapIdEnumName(mapTable.pInfos[i]), "");
@@ -219,20 +219,20 @@ int runHouseIdCodeGen(const CodeGenOptions &options, ResourceManager *resourceMa
 
         for (const EventTrigger &trigger : eventMap.enumerateTriggers(EVENT_SpeakInHouse)) {
             HouseId houseId = eventMap.instruction(trigger.eventId, trigger.eventStep).data.house_id;
-            if (houseId == HOUSE_INVALID)
+            if (houseId == static_cast<HouseId>(0))
                 throw Exception("Invalid house id encountered in house event");
             mapNamesByHouseId[houseId].insert(mapName);
         }
 
         for (const EventTrigger &trigger : eventMap.enumerateTriggers(EVENT_MoveToMap)) {
             HouseId houseId = eventMap.instruction(trigger.eventId, trigger.eventStep).data.move_map_descr.house_id;
-            if (houseId != HOUSE_INVALID)
+            if (houseId != static_cast<HouseId>(0))
                 mapNamesByHouseId[houseId].insert(mapName);
         }
     }
 
     CodeGenMap map;
-    map.insert(HOUSE_INVALID, "INVALID", "");
+    map.insert(static_cast<HouseId>(0), "INVALID", "");
 
     for (HouseId i : houseTable.indices()) {
         const HouseData &desc = houseTable[i];
@@ -295,7 +295,7 @@ int runMonsterIdCodeGen(const CodeGenOptions &options, ResourceManager *resource
     MonsterStats monsterStats = loadMonsterStats(resourceManager);
 
     CodeGenMap map;
-    map.insert(MONSTER_INVALID, "INVALID", "");
+    map.insert(static_cast<MonsterId>(0), "INVALID", "");
 
     for (const MonsterId i : allMonsters()) {
         const MonsterDesc &desc = pMonsterList->monsters[i];
@@ -331,7 +331,7 @@ int runMonsterTypeCodeGen(const CodeGenOptions &options, ResourceManager *resour
     MonsterStats monsterStats = loadMonsterStats(resourceManager);
 
     CodeGenMap map;
-    map.insert(MONSTER_TYPE_INVALID, "INVALID", "");
+    map.insert(static_cast<MonsterType>(0), "INVALID", "");
 
     int counter = 0;
     for (const MonsterId i : allMonsters()) {
@@ -411,7 +411,7 @@ int runMusicCodeGen(const CodeGenOptions &options, ResourceManager *resourceMana
     }
 
     CodeGenMap map;
-    map.insert(MUSIC_INVALID, "INVALID", "");
+    map.insert(static_cast<MusicId>(0), "INVALID", "");
 
     for (const auto &[musicId, mapEnumNames] : mapEnumNamesByMusicId) {
         if (mapEnumNames.size() <= 3) {
@@ -446,7 +446,7 @@ int runDecorationsCodegen(const CodeGenOptions &options, ResourceManager *resour
     // Decoration naming & numbering is very weird, and there is no sane approach to naming except just using the
     // id values as a suffix. So this is what we're doing here.
 
-    map.insert(DECORATION_NULL, "NULL", "");
+    map.insert(static_cast<DecorationId>(0), "NULL", "");
     for (size_t index = 1; index < pDecorationTable->decorations.size(); index++) {
         DecorationId i = static_cast<DecorationId>(index);
         const DecorationData& dd = pDecorationTable->decorations[index];
