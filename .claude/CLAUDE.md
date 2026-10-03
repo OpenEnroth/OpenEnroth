@@ -45,7 +45,8 @@ You write game tests in code. The trace recording workflow in `HACKING.md` is fo
 A test reproduces what a player would do and checks what a player would see:
 * Reproduce the scenario from the issue, as the issue describes it. A test of something nearby that happens to break too is not a test for this issue. A second scenario is welcome as its own test, but the original one comes first.
 * Act through input. Reach a house by teleporting in front of its door and pressing Space, not with `enterHouse()`. Select a character with a digit key, not with `setActiveCharacterIndex()`. Aim with the `pointMouseAt*` helpers and `hoverGuiButton()`, then click with `pressAndReleaseButton(BUTTON_LEFT)`.
-* Let time pass with `game.tick()`, *NEVER* by writing to the party's playing time. A frame is 100 ms and game time runs 30 times faster, so `tick(100)` is five game minutes. Use the fewest ticks that work, a single `tick()` is usually enough for an input to land. Don't comment on how many ticks you picked.
+* Let time pass with `game.tick()`, *NEVER* by writing to the party's playing time. A frame is 100 ms and game time runs 30 times faster, so `tick(100)` is five game minutes.
+* Tick the minimal number of times. Tick once after an input, run the test, and tick more only if it actually needs more. *NEVER* write `tick(2)` because two ticks feel like enough. Don't comment on how many ticks you picked.
 * Check the result where the bug shows. A test that only looks a value up in a table proves nothing, go to the shop and check the greeting that played.
 * A bug a player can hit gets a game test against the real game data, not a unit test with made-up data. If a fix has no symptom a player could see, ask before writing a test for it.
 
