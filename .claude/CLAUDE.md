@@ -14,7 +14,9 @@ Build `Run_UnitTest` and `Run_GameTest_Headless_Parallel` targets to test your c
 
 Before every commit, do a deletion pass over the comments in the diff, as a separate step. For each added comment ask whether it describes the code or defends the change, and delete the ones that defend it. Then check what's left against the Comments section. You *MUST* do this, the review rounds exist for design questions, not for comment cleanup you could have caught yourself.
 
-*NEVER* amend a commit or rewrite pushed history unless explicitly asked to. Fixes go on top as new commits with their own messages, and squashing is the human's call.
+*NEVER* amend a commit or rewrite pushed history unless explicitly asked to. Fixes go on top as new commits with their own messages, and squashing is the human's call. The one exception is keeping up with master. When a PR branch falls behind or conflicts, rebase it onto master and push with `--force-with-lease`. *NEVER* merge master into it.
+
+Push your work to the branch it belongs on, an open PR under review included. For a follow-up commit on an open PR, build and run the tests it touches, then push. The style checks, the full test suite and CI run after the push. *NEVER* sit in a loop waiting for them, the human wants the conversation back. Launch them detached and report the results once they're in. A failure found later goes on top as its own commit.
 
 The commit message is where the reasoning lives. Say what was wrong and why this is the fix, in a paragraph. Every "why" about the diff that you were tempted to put in a comment goes here instead. A "why" about the game or the platform stays in the source, see Comments.
 
