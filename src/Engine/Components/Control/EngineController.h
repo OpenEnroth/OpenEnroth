@@ -151,6 +151,9 @@ class EngineController {
     void restAndHeal();
 
     /**
+     * Spawns a monster and ticks one frame, so the monster has been drawn and has run its AI once by the time
+     * this returns.
+     *
      * @param position                  Position to spawn a monster at.
      * @param id                        Id of the monster to spawn.
      * @param flags                     Post-spawn tweaks to apply.

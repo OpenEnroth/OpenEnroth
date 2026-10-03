@@ -1273,7 +1273,6 @@ GAME_TEST(Issues, Issue2464a) {
     game.startNewGame();
     Actor *npc = game.spawnMonster(pParty->pos + Vec3f(0, 200, 0), MONSTER_PEASANT_DWARF_MALE_A_A, SPAWN_FRIENDLY | SPAWN_STATIONARY);
     npc->npcId = 19; // Margaret the Docent.
-    game.tick();
     game.pointMouseAtActor(npc->id);
     game.pressAndReleaseButton(BUTTON_LEFT);
     game.tick();

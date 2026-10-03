@@ -370,7 +370,6 @@ GAME_TEST(Issues, Issue1251a) {
         return result;
     });
     game.spawnMonster(pParty->pos + Vec3f(0, 1500, 0), MONSTER_TITAN_C, SPAWN_DUMMY); // No fire resistance, so damage rolls aren't halved. Beefy enough to take all twenty.
-    game.tick(); // Baseline tick records 20 charges.
 
     for (int i = 0; i < 1000 && pParty->pCharacters[0].inventory.entry(ITEM_SLOT_MAIN_HAND)->numCharges > 0; i++) {
         game.pressAndReleaseKey(PlatformKey::KEY_A);
@@ -400,11 +399,10 @@ GAME_TEST(Issues, Issue1251b) {
     Item wand(ITEM_ALACORN_WAND_OF_CHARMS);
     wand.numCharges = wand.maxCharges = 3;
     pParty->pCharacters[0].inventory.equip(ITEM_SLOT_MAIN_HAND, wand);
+    auto charmedTape = actorTapes.countByBuff(ACTOR_BUFF_CHARM);
     for (int i = 0; i < 3; i++)
         game.spawnMonster(pParty->pos + Vec3f(0, 600 + 300 * i, 0), MONSTER_TITAN_A, SPAWN_DUMMY); // No mind resistance, so charm always lands.
 
-    auto charmedTape = actorTapes.countByBuff(ACTOR_BUFF_CHARM);
-    game.tick(); // The wand targets what's on screen, and the titans get there a frame after spawning.
     for (int i = 0; i < 200 && pParty->pCharacters[0].inventory.entry(ITEM_SLOT_MAIN_HAND)->numCharges > 0; i++) {
         game.pressAndReleaseKey(PlatformKey::KEY_A);
         game.tick();
@@ -750,7 +748,6 @@ GAME_TEST(Issues, Issue1341) {
     pParty->pCharacters[1].setSkillValue(SKILL_STEALING, CombinedSkillValue(10, MASTERY_GRANDMASTER));
     Actor *peasant = game.spawnMonster(pParty->pos + Vec3f(0, 200, 0), MONSTER_PEASANT_DWARF_MALE_A_A,
                                        SPAWN_FRIENDLY | SPAWN_STATIONARY);
-    game.tick();
 
     // Only some steals go for the gold, so keep trying.
     for (int i = 0; i < 20 && goldTape.delta() == 0; i++) {
@@ -829,10 +826,8 @@ GAME_TEST(Issues, Issue1368) {
 
     // Floating eyes cast sleep, spawn some & see what happens.
     engine->config->debug.NoActors.setValue(false);
-    for (int i = 0; i < 10; i++) {
+    for (int i = 0; i < 10; i++)
         game.spawnMonster(pParty->pos + Vec3f(0, 200, 0) + Vec3f(grng->randomInSegment(-50, 50), grng->randomInSegment(-50, 50), 0), MONSTER_BEHOLDER_A);
-        game.tick();
-    }
     game.tick(100);
 
     EXPECT_EQ(canActTape.min(), 0); // No one can act - try waking.

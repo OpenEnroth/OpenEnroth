@@ -144,7 +144,7 @@ GAME_TEST(Issues, Issue1515) {
         Actor *wizard = game.spawnMonster(pParty->pos + Vec3f(0, 700 + 100 * i, 0), MONSTER_MAGE_B);
         wizard->monsterInfo.spell1Id = SPELL_LIGHT_DISPEL_MAGIC;
         wizard->monsterInfo.spell1UseChance = 100;
-        game.tick(3); // Each wizard casts a few frames after the one before it.
+        game.tick(); // Each wizard casts a few frames after the one before it.
     }
     game.tick(100);
 
