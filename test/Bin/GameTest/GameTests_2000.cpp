@@ -12,6 +12,7 @@
 #include "Engine/MapEnums.h"
 #include "Engine/Tables/MapTable.h"
 #include "Engine/Party.h"
+#include "Engine/Random/Random.h"
 #include "Engine/Graphics/DecalBuilder.h"
 #include "Engine/Graphics/Image.h"
 #include "Engine/Graphics/Indoor.h"
@@ -213,14 +214,40 @@ GAME_TEST(Issues, Issue2066) {
 }
 
 GAME_TEST(Issues, Issue2074) {
-    // Re-entering castle gryphonheart causes NPCs to become hostile
-    auto mapTape = tapes.map();
-    test.playTraceFromTestData("issue_2074.mm7", "issue_2074.json");
-    EXPECT_EQ(mapTape, tape(MAP_ERATHIA, MAP_CASTLE_GRYPHONHEART, MAP_ERATHIA, MAP_CASTLE_GRYPHONHEART));
-
-    for (const auto& actor : pActors)
-        EXPECT_EQ(std::to_underlying(actor.attributes & ACTOR_AGGRESSOR), 0); // Check that the NPCs arent hostile
-    EXPECT_EQ(engine->_persistentVariables.mapVars[4], 0); // check for persistant castle aggro var - 2 when angered
+    // Re-entering Castle Gryphonheart made its NPCs hostile.
+    // The first visit to the castle spawns its soldiers from encounter spawn points. A soldier whose spawn roll landed
+    // too far from its spawn point was removed, and removed counts as killed. On leaving, the castle checks whether any
+    // of its soldiers was killed and turns hostile on the next visit if so. Thus walking out and back in made the
+    // Masters of the Sword attack the party.
+    Vec3f castleEntrance(641, 0, 0);
+    Vec3f nextToSwordMasters(-3300, 0, 0);
+    for (int i = 0; i < 16; i++) { // Only one spawn point in the castle can roll too far, and only about half of the time.
+        test.prepareForNextTest();
+        auto castleNotAliveTape = tapes.custom([] {
+            if (engine->_currentLoadedMapId != MAP_CASTLE_GRYPHONHEART)
+                return 0;
+            return static_cast<int>(std::ranges::count_if(pActors, &Actor::IsNotAlive));
+        });
+        auto castleHostileTape = tapes.custom([] {
+            return engine->_currentLoadedMapId == MAP_CASTLE_GRYPHONHEART &&
+                   std::ranges::any_of(pActors, [](const Actor &actor) { return actor.attributes & ACTOR_AGGRESSOR; });
+        });
+        auto hpTape = tapes.totalHp();
+        game.startNewGame();
+        grng->seed(i); // Each iteration rolls the encounter spawns differently.
+        test.startTaping();
+        game.teleportTo(MAP_CASTLE_GRYPHONHEART, castleEntrance, 0); // Facing the exit door, Space below opens it.
+        game.pressAndReleaseKey(PlatformKey::KEY_SPACE);
+        game.tick();
+        game.pressGuiButton("Transition_Yes");
+        game.tick();
+        game.skipLoadingScreen();
+        game.teleportTo(MAP_CASTLE_GRYPHONHEART, nextToSwordMasters, 180);
+        game.tick(100); // The swordmasters take a few seconds to walk up and strike.
+        EXPECT_EQ(castleNotAliveTape, tape(0)); // Every soldier the castle spawned is still there.
+        EXPECT_EQ(castleHostileTape, tape(false)); // Nobody in the castle turns hostile.
+        EXPECT_EQ(hpTape.min(), hpTape.front()); // Nobody attacks the party.
+    }
 }
 
 GAME_TEST(Issues, Issue2075) {
