@@ -35,7 +35,7 @@ UNIT_TEST(Blob, FromEmptyFile) {
 
 UNIT_TEST(Blob, FromFileNonAscii) {
     // Non-ASCII file names have to open through both Blob and FileInputStream.
-    NativePath fileName = NativePath::fromWtf8("\xd0\xbb\xd0\xbe\xd0\xbb.tmp");
+    NativePath fileName = NativePath("\xd0\xbb\xd0\xbe\xd0\xbb.tmp");
     ScopedTestFile tmp(fileName, "lol");
 
     EXPECT_EQ(Blob::fromFile(fileName).str(), "lol");
@@ -95,5 +95,5 @@ UNIT_TEST(Blob, ExceptionMessages) {
     NativePath fileName = NativePath("lknjdfgsbiuherqbhvdfnjkkvsdhjkweqguy.txt");
 
     EXPECT_FALSE(fs::exists(fileName));
-    EXPECT_THROW_MESSAGE((void) Blob::fromFile(fileName), fileName.toWtf8());
+    EXPECT_THROW_MESSAGE((void) Blob::fromFile(fileName), fileName.str());
 }

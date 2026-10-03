@@ -8,7 +8,7 @@
 #include "Utility/String/Ascii.h"
 #include "Utility/String/Encoding.h"
 
-static constexpr char separator = '/'; // The only separator in the stored string, fromWtf8 converts backslashes.
+static constexpr char separator = '/'; // The only separator in the stored string, the constructor converts backslashes.
 
 enum class PathRootKind {
     PATH_ROOT_NONE, // No root name, as in "x" and "/x", and every path on POSIX.
@@ -94,26 +94,19 @@ static size_t extensionOffset(std::string_view path, size_t nameOffset) {
     return nameOffset + dotPos;
 }
 
-NativePath::NativePath(std::string_view path) {
-    *this = fromWtf8(path);
-}
-
-NativePath NativePath::fromWtf8(std::string_view path) {
-    NativePath result;
-    result._path = path;
+NativePath::NativePath(std::string_view path) : _path(path) {
 #ifdef _WINDOWS
-    std::ranges::replace(result._path, '\\', separator); // Both slashes separate components on Windows.
+    std::ranges::replace(_path, '\\', separator); // Both slashes separate components on Windows.
 #endif
-    return result;
 }
 
 #ifdef _WINDOWS
 NativePath NativePath::fromNative(std::wstring_view path) {
-    return fromWtf8(txt::wideToWtf8(path));
+    return NativePath(txt::wideToWtf8(path));
 }
 #else
 NativePath NativePath::fromNative(std::string_view path) {
-    return fromWtf8(path);
+    return NativePath(path);
 }
 #endif
 

@@ -23,7 +23,7 @@
  * `"" / "a"` is `"a"`. The `fs::` calls treat it as invalid.
  *
  * File names on Linux are arbitrary byte strings, and these bytes are passed through as-is, so the string returned
- * by `toWtf8` is not necessarily valid UTF-8, and not even necessarily valid WTF-8. Nothing is validated on the way
+ * by `str` is not necessarily valid UTF-8, and not even necessarily valid WTF-8. Nothing is validated on the way
  * in either, so on Windows it is the caller that keeps the string valid WTF-8, and `native` is where an invalid
  * sequence turns into a replacement character. And MacOS is different again, APFS only takes file names that are
  * valid UTF-8.
@@ -33,24 +33,16 @@ class NativePath {
     NativePath() = default;
 
     /**
-     * Implicit constructor from a byte string, same as `std::filesystem::path`. The bytes are taken as-is, with no
-     * charset conversion performed on them.
+     * Implicit constructor from a string, same as `std::filesystem::path`. No charset conversion is performed. On
+     * Windows backslashes become forward slashes.
      *
      * The `const char *` overload is what lets a string literal convert. Going through `std::string_view` alone
      * would need two user-defined conversions, and that's ill-formed.
      *
-     * @param path                      Path as a byte string.
+     * @param path                      Path string. WTF-8 on Windows, byte string on POSIX.
      */
     NativePath(std::string_view path); // NOLINT: intentionally implicit.
     NativePath(const char *path) : NativePath(std::string_view(path)) {} // NOLINT: intentionally implicit.
-
-    // TODO(captainurist): fromWtf8 / toWtf8 are misnomers, the strings are WTF-8 on Windows only. Rename.
-
-    /**
-     * @param path                      Path string. WTF-8 on Windows, byte string on POSIX.
-     * @return                          `NativePath` for the given string.
-     */
-    [[nodiscard]] static NativePath fromWtf8(std::string_view path);
 
     /**
      * @param path                      Path as the OS spells it, a `wchar_t` string on Windows.
@@ -66,7 +58,7 @@ class NativePath {
      * @return                          This path as a string, always using forward slashes. WTF-8 on Windows,
      *                                  byte string on POSIX.
      */
-    [[nodiscard]] const std::string &toWtf8() const {
+    [[nodiscard]] const std::string &str() const {
         return _path;
     }
 
@@ -86,7 +78,7 @@ class NativePath {
     /**
      * @return                          This path as a valid UTF-8 string for displaying to the user, with everything
      *                                  that's not valid UTF-8 replaced with U+FFFD. Unlike the string returned by
-     *                                  `toWtf8`, it might not round-trip back into the same path.
+     *                                  `str`, it might not round-trip back into the same path.
      */
     [[nodiscard]] std::string displayString() const;
 
@@ -121,7 +113,7 @@ class NativePath {
      * POSIX.
      */
     friend bool lexical_cast(const std::string &input, NativePath &output) {
-        output = NativePath::fromWtf8(input);
+        output = NativePath(input);
         return true;
     }
 
@@ -132,6 +124,6 @@ class NativePath {
 template<>
 struct fmt::formatter<NativePath> : fmt::formatter<std::string> {
     auto format(const NativePath &path, format_context &ctx) const {
-        return fmt::formatter<std::string>::format(path.toWtf8(), ctx);
+        return fmt::formatter<std::string>::format(path.str(), ctx);
     }
 };

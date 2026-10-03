@@ -31,7 +31,7 @@ int platformMain(int argc, char **argv) {
 
         for (const std::string &traceName : traceNames) {
             NativePath traceFile(traceName);
-            testing::RegisterTest("Retrace", traceFile.withExtension("").toWtf8().c_str(),
+            testing::RegisterTest("Retrace", traceFile.withExtension("").str().c_str(),
                                   nullptr, nullptr, __FILE__, __LINE__,
                                   [tracePath = opts.testPath / traceFile] { return new RetraceTest(tracePath); });
         }

@@ -90,7 +90,7 @@ void fs::ls(const NativePath &path, std::vector<DirectoryEntry> *entries) {
         if (!isRegular && !isDirectory)
             continue;
 
-        entries->emplace_back(fromStdPath(entry.path().filename()).toWtf8(),
+        entries->emplace_back(fromStdPath(entry.path().filename()).str(),
                               isRegular ? FILE_REGULAR : FILE_DIRECTORY);
     }
 }
