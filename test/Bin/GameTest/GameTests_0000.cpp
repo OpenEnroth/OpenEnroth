@@ -627,10 +627,6 @@ GAME_TEST(Issues, Issue415a) {
     engine->config->debug.NoActors.setValue(false);
 
     // Spawn a paralyzed titan & a stoned one.
-    auto hpTape = actorTapes.hps({0, 1});
-    auto paralyzedTape = actorTapes.hasBuff(0, ACTOR_BUFF_PARALYZED);
-    auto stonedTape = actorTapes.hasBuff(1, ACTOR_BUFF_STONED);
-    auto stateTape = actorTapes.aiStates({0, 1});
     Time tomorrow = pParty->GetPlayingTime() + Duration::fromDays(1);
     Actor *paralyzedTitan = game.spawnMonster(pParty->pos + Vec3f(0, 1000, 0), MONSTER_TITAN_A, SPAWN_DUMMY);
     paralyzedTitan->buffs[ACTOR_BUFF_PARALYZED].Apply(tomorrow, MASTERY_GRANDMASTER, 0, 0, 0);
@@ -640,6 +636,10 @@ GAME_TEST(Issues, Issue415a) {
     stonedTitan->buffs[ACTOR_BUFF_STONED].Apply(tomorrow, MASTERY_GRANDMASTER, 0, 0, 0);
     EXPECT_FALSE(stonedTitan->CanAct()); // Stoned monsters can't act...
     EXPECT_FALSE(stonedTitan->CanBeDamaged()); // ...and are invulnerable statues.
+    auto hpTape = actorTapes.hps({0, 1});
+    auto paralyzedTape = actorTapes.hasBuff(0, ACTOR_BUFF_PARALYZED);
+    auto stonedTape = actorTapes.hasBuff(1, ACTOR_BUFF_STONED);
+    auto stateTape = actorTapes.aiStates({0, 1});
 
     // Armageddon deals damage when its 256-tick timer runs out, wait it out.
     game.castSpell(0, SPELL_DARK_ARMAGEDDON);
@@ -668,13 +668,13 @@ GAME_TEST(Issues, Issue415b) {
 
     // Titan #0 is the fireball's auto-picked target, paralyzed titan #1 behind it and stoned titan #2 to the side
     // only get the AoE splash.
-    auto hpTape = actorTapes.hps({0, 1, 2});
     Time tomorrow = pParty->GetPlayingTime() + Duration::fromDays(1);
     game.spawnMonster(pParty->pos + Vec3f(0, 800, 0), MONSTER_TITAN_A, SPAWN_DUMMY);
     Actor *paralyzed = game.spawnMonster(pParty->pos + Vec3f(0, 1100, 0), MONSTER_TITAN_A, SPAWN_DUMMY);
     paralyzed->buffs[ACTOR_BUFF_PARALYZED].Apply(tomorrow, MASTERY_GRANDMASTER, 0, 0, 0);
     Actor *stoned = game.spawnMonster(pParty->pos + Vec3f(0, 900, 0), MONSTER_TITAN_A, SPAWN_DUMMY);
     stoned->buffs[ACTOR_BUFF_STONED].Apply(tomorrow, MASTERY_GRANDMASTER, 0, 0, 0);
+    auto hpTape = actorTapes.hps({0, 1, 2});
 
     game.castQuickSpell(0, SPELL_FIRE_FIREBALL);
     game.tick(30);
@@ -698,13 +698,13 @@ GAME_TEST(Issues, Issue415c) {
     engine->config->debug.NoActors.setValue(false);
 
     // Same layout as in Issue415b - shrinking ray hits titan #0, paralyzed titan #1 and stoned titan #2 are in AoE range.
-    auto shrinkTape = actorTapes.haveBuffs({0, 1, 2}, ACTOR_BUFF_SHRINK);
     Time tomorrow = pParty->GetPlayingTime() + Duration::fromDays(1);
     game.spawnMonster(pParty->pos + Vec3f(0, 800, 0), MONSTER_TITAN_A, SPAWN_DUMMY);
     Actor *paralyzed = game.spawnMonster(pParty->pos + Vec3f(0, 1000, 0), MONSTER_TITAN_A, SPAWN_DUMMY);
     paralyzed->buffs[ACTOR_BUFF_PARALYZED].Apply(tomorrow, MASTERY_GRANDMASTER, 0, 0, 0);
     Actor *stoned = game.spawnMonster(pParty->pos + Vec3f(0, 900, 0), MONSTER_TITAN_A, SPAWN_DUMMY);
     stoned->buffs[ACTOR_BUFF_STONED].Apply(tomorrow, MASTERY_GRANDMASTER, 0, 0, 0);
+    auto shrinkTape = actorTapes.haveBuffs({0, 1, 2}, ACTOR_BUFF_SHRINK);
 
     game.castQuickSpell(0, SPELL_DARK_SHRINKING_RAY);
     game.tick(30);
@@ -732,10 +732,10 @@ GAME_TEST(Issues, Issue415d) {
 
         // Titan #0 to the left of the party is the closest-monster fallback bait, buffed titan #1 stands to the
         // right, slightly further away but still within melee reach.
-        auto hpTape = actorTapes.hps({0, 1});
         game.spawnMonster(pParty->pos + Vec3f(-200, 300, 0), MONSTER_TITAN_A, SPAWN_DUMMY);
         Actor *buffed = game.spawnMonster(pParty->pos + Vec3f(220, 380, 0), MONSTER_TITAN_A, SPAWN_DUMMY);
         buffed->buffs[buff].Apply(pParty->GetPlayingTime() + Duration::fromDays(1), MASTERY_GRANDMASTER, 0, 0, 0);
+        auto hpTape = actorTapes.hps({0, 1});
         game.pointMouseAtActor(1);
 
         // Swing at the titan under the cursor until one of the titans is hit.
@@ -769,10 +769,10 @@ GAME_TEST(Issues, Issue415e) {
 
         // Same layout as in Issue415d - the titans are on the opposite sides of the view, so the bolt's flight path
         // to one always clears the other.
-        auto hpTape = actorTapes.hps({0, 1});
         game.spawnMonster(pParty->pos + Vec3f(-200, 300, 0), MONSTER_TITAN_A, SPAWN_DUMMY);
         Actor *buffed = game.spawnMonster(pParty->pos + Vec3f(220, 380, 0), MONSTER_TITAN_A, SPAWN_DUMMY);
         buffed->buffs[buff].Apply(pParty->GetPlayingTime() + Duration::fromDays(1), MASTERY_GRANDMASTER, 0, 0, 0);
+        auto hpTape = actorTapes.hps({0, 1});
         game.pointMouseAtActor(1);
 
         game.castQuickSpell(0, SPELL_WATER_ICE_BOLT);

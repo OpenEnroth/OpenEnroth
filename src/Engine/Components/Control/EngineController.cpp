@@ -344,7 +344,7 @@ Actor *EngineController::spawnMonster(Vec3f position, MonsterId id, SpawnFlags f
     if (flags & SPAWN_LEVEL_1)
         actor->monsterInfo.level = 1;
 
-    // TODO(captainurist): tick(1) here, wands and quick spells can't target a monster until a frame has drawn it.
+    tick(1); // Wands and quick spells can't target a monster until a frame has drawn it.
     return actor;
 }
 
