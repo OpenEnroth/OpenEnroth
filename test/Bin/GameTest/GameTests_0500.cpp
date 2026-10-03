@@ -863,14 +863,16 @@ GAME_TEST(Issues, Issue790) {
 
 GAME_TEST(Issues, Issue792) {
     // Loading a game from inside another game ran the old game's event timers against the loaded party.
+    // The exploit: drink from an Erathia well for +20 Body Resistance and quicksave. Then start a new game and walk into
+    // Erathia, where a first visit leaves the daily well reset pending. Loading the quicksave from the game menu let that
+    // pending reset clear the loaded party's "drank today" bit, so the well paid out a second time, for +40.
     auto bonusTape = tapes.custom([] { return pParty->pCharacters[0].sResBodyBonus; });
-    auto drankTape = tapes.custom([] -> bool { return pParty->pCharacters[0]._characterEventBits[5]; });
     game.startNewGame();
     game.teleportTo(MAP_ERATHIA, Vec3f(-12216, 1900, 961), 90); // Next to a well.
     game.tick(20); // Erathia's timers fire once on the first visit.
     test.startTaping();
     game.tick();
-    game.pressAndReleaseKey(PlatformKey::KEY_SPACE); // Drink. A daily Erathia timer clears the drank bit at 1am.
+    game.pressAndReleaseKey(PlatformKey::KEY_SPACE); // Drink.
     game.tick(2);
     test.stopTaping();
     game.pressAndReleaseKey(PlatformKey::KEY_F5); // Quicksave.
@@ -889,9 +891,10 @@ GAME_TEST(Issues, Issue792) {
     game.tick(2);
     game.skipLoadingScreen();
     game.tick(2);
+    game.pressAndReleaseKey(PlatformKey::KEY_SPACE); // Drink again, the well should refuse.
+    game.tick(2);
     EXPECT_EQ(engine->_lastLoadedSaveFileName, "quicksave0.mm7");
-    EXPECT_EQ(bonusTape, tape(0, 20, 0, 20)); // The well gives +20 Body Resistance, the new game has none, the load brings it back.
-    EXPECT_EQ(drankTape, tape(false, true, false, true));
+    EXPECT_EQ(bonusTape, tape(0, 20, 0, 20)); // The new game has no bonus, the load brings back the first drink's +20.
 }
 
 GAME_TEST(Issues, Issue797) {
