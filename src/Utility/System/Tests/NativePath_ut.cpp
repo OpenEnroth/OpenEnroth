@@ -194,6 +194,13 @@ UNIT_TEST(NativePath, LexicalCast) {
     EXPECT_EQ(path, NativePath("a/b"));
 }
 
+UNIT_TEST(NativePath, InvalidUtf8RoundTrip) {
+    // Nothing is validated on the way in, so invalid UTF-8 passes through the constructor and str as-is. "\xD0" is an
+    // incomplete UTF-8 sequence, "\xFF" can't appear in UTF-8 at all.
+    for (std::string_view name : {"lol\xD0kek.txt", "lol\xFFkek.txt", "trailing\xD0"})
+        EXPECT_EQ(NativePath(name).str(), name);
+}
+
 #ifndef _WINDOWS
 UNIT_TEST(NativePath, PosixSyntax) {
     auto testExtension = [] (std::string_view path, std::string_view extension, std::string_view result) {
@@ -206,13 +213,6 @@ UNIT_TEST(NativePath, PosixSyntax) {
     testExtension("a.b\\c", "", "a"); // One file name, so ".b\c" is its extension.
     testExtension("C:", ".x", "C:.x");
     testExtension("//a.b", "", "//a");
-}
-
-UNIT_TEST(NativePath, InvalidUtf8RoundTrip) {
-    // File names on POSIX are byte strings, so the constructor and str have to pass invalid UTF-8 through as-is.
-    // "\xD0" is an incomplete UTF-8 sequence, "\xFF" can't appear in UTF-8 at all.
-    for (std::string_view name : {"lol\xD0kek.txt", "lol\xFFkek.txt", "trailing\xD0"})
-        EXPECT_EQ(NativePath(name).str(), name);
 }
 #endif
 
