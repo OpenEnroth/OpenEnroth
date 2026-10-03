@@ -1,6 +1,5 @@
 #pragma once
 
-#include <optional>
 #include <string_view>
 
 #include "Engine/Tables/ResourceMaskTable.h"
@@ -44,9 +43,9 @@ class ResourceManager {
 
     /**
      * @param filename                  Name of a sprite in `sprites.lod`, case-insensitive.
-     * @return                          The sprite's size, or `std::nullopt` if there is no such sprite.
+     * @return                          The sprite's size, or an empty size if there is no such sprite.
      */
-    std::optional<Sizei> spriteSize(std::string_view filename);
+    Sizei spriteSize(std::string_view filename);
 
  private:
     LodReader _eventsLodReader;

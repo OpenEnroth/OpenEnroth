@@ -96,6 +96,14 @@ struct Rect {
         return w <= 0 || h <= 0;
     }
 
+    [[nodiscard]] explicit operator bool() const {
+        return !isEmpty();
+    }
+
+    [[nodiscard]] bool operator!() const {
+        return isEmpty();
+    }
+
     [[nodiscard]] friend bool operator==(const Rect &l, const Rect &r) = default;
 };
 
