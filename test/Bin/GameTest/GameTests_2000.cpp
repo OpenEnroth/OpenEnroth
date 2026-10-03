@@ -222,7 +222,6 @@ GAME_TEST(Issues, Issue2074) {
     Vec3f castleEntrance(641, 0, 0);
     Vec3f nextToSwordMasters(-3300, 0, 0);
     for (int i = 0; i < 16; i++) { // Only one spawn point in the castle can roll too far, and only about half of the time.
-        SCOPED_TRACE(fmt::format("i={}", i));
         test.prepareForNextTest();
         auto castleNotAliveTape = tapes.custom([] {
             if (engine->_currentLoadedMapId != MAP_CASTLE_GRYPHONHEART)
