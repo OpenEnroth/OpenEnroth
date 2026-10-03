@@ -228,6 +228,10 @@ GAME_TEST(Issues, Issue2074) {
                 return 0;
             return static_cast<int>(std::ranges::count_if(pActors, &Actor::IsNotAlive));
         });
+        auto castleHostileTape = tapes.custom([] {
+            return engine->_currentLoadedMapId == MAP_CASTLE_GRYPHONHEART &&
+                   std::ranges::any_of(pActors, [](const Actor &actor) { return actor.attributes & ACTOR_AGGRESSOR; });
+        });
         auto hpTape = tapes.totalHp();
         game.startNewGame();
         grng->seed(i); // Each iteration rolls the encounter spawns differently.
@@ -241,6 +245,7 @@ GAME_TEST(Issues, Issue2074) {
         game.teleportTo(MAP_CASTLE_GRYPHONHEART, nextToSwordMasters, 180);
         game.tick(100); // The swordmasters take a few seconds to walk up and strike.
         EXPECT_EQ(castleNotAliveTape, tape(0)); // Every soldier the castle spawned is still there.
+        EXPECT_EQ(castleHostileTape, tape(false)); // Nobody in the castle turns hostile.
         EXPECT_EQ(hpTape.min(), hpTape.front()); // Nobody attacks the party.
     }
 }
