@@ -21,6 +21,7 @@
 #include "Engine/Objects/Actor.h"
 #include "Engine/Objects/Chest.h"
 #include "Engine/Objects/MonsterEnumFunctions.h"
+#include "Engine/Objects/SpriteObject.h"
 #include "Engine/Resources/EngineFileSystem.h"
 #include "Engine/Resources/LOD.h"
 #include "Engine/SaveLoad.h"
@@ -670,35 +671,48 @@ GAME_TEST(Prs, Pr2157b) {
 }
 
 GAME_TEST(Issues, Issue2186a) {
-    // Consistent crashing in Grand Temple of the Sun Upper Level
-    auto maps = tapes.map();
-    test.playTraceFromTestData("issue_2186.mm7", "issue_2186.json");
+    // Actors falling through the hole in the Grand Temple of the Sun upper level ended up deep underground.
+    // Monsters spawned over the hole should land on the hall floor below. With #2229's bug they hung in the air instead.
+    game.startNewGame();
+    game.teleportTo(MAP_GRAND_TEMPLE_OF_THE_SUN, Vec3f(-880, 800, 648), 0); // Upper level, facing the hole over the hall.
+    Actor *cleric0 = game.spawnMonster(Vec3f(0, 550, 800), MONSTER_CLERIC_SUN_C); // Above the sunken middle of the hall.
+    Actor *cleric1 = game.spawnMonster(Vec3f(-650, 800, 800), MONSTER_CLERIC_SUN_C); // Above its raised west side.
+    auto clericZTape = actorTapes.custom({cleric0->id, cleric1->id},
+                                         [](const Actor &actor) { return static_cast<int>(actor.pos.z); });
+    auto clericSectorTape = actorTapes.custom({cleric0->id, cleric1->id}, [](const Actor &actor) { return actor.sectorId; });
+    test.startTaping();
+    game.tick(10); // The fall takes half a second.
 
-    EXPECT_CONTAINS(maps, MAP_EVENMORN_ISLAND); // we made it outside
-    EXPECT_EQ(maps.back(), MAP_GRAND_TEMPLE_OF_THE_SUN); // and back in
-    // and no actors are still underground
-    for (const auto &act : pActors) {
-        EXPECT_GT(act.pos.z, -1000);
-    }
+    EXPECT_EQ(clericZTape.back(), tape(0, 128));
+    EXPECT_EQ(clericSectorTape, tape({4, 4}, {3, 3})); // Upper level, then the hall.
 }
 
 GAME_TEST(Issues, Issue2186b) {
-    // Load in the save and drop actors through the transition
-    test.loadGameFromTestData("issue_2186.mm7");
+    // Items thrown down the hole in the Grand Temple of the Sun upper level fell through the floor of the hall below.
+    // Unlike actors, items don't recompute their sector every frame, so they kept the upper level's.
+    auto armorZTape = tapes.custom([] {
+        AccessibleVector<int> result;
+        for (const SpriteObject &sprite : pSpriteObjects)
+            if (sprite.uObjectDescID != 0 && sprite.containing_item.itemId == ITEM_LEATHER_ARMOR)
+                result.push_back(sprite.vPosition.z);
+        return result;
+    });
+    auto armorSectorTape = tapes.custom([] {
+        AccessibleVector<int> result;
+        for (const SpriteObject &sprite : pSpriteObjects)
+            if (sprite.uObjectDescID != 0 && sprite.containing_item.itemId == ITEM_LEATHER_ARMOR)
+                result.push_back(sprite.uSectorID);
+        return result;
+    });
+    game.startNewGame();
+    game.teleportTo(MAP_GRAND_TEMPLE_OF_THE_SUN, Vec3f(-880, 800, 648), 0); // Upper level, facing the hole over the hall.
+    pParty->setHoldingItem(Item(ITEM_LEATHER_ARMOR));
+    game.pressAndReleaseButton(BUTTON_LEFT, pViewport.center()); // Throw it down the hole.
+    test.startTaping();
+    game.tick(30); // It bounces along the railing top, then drops to the hall.
 
-    pActors.clear();
-    nextActorReuseScanStart = 0;
-    // add new actors above the transition and tick
-    for (int i = -500; i <= 500; i+=250) {
-        for (int j = 300; j <= 1300; j+=250)
-            game.spawnMonster(Vec3f(i, j, 800), MONSTER_CLERIC_SUN_C);
-    }
-    game.tick(200);
-
-    for (auto &act : pActors)
-        EXPECT_LT(act.pos.z, 400); // they have fallen through the transition
-    for (const auto &act : pActors)
-        EXPECT_GT(act.pos.z, -1000); // and no actors are underground
+    EXPECT_EQ(armorZTape.back(), tape(129)); // Raised floor along the west side of the hall below.
+    EXPECT_EQ(armorSectorTape, tape({4}, {3})); // Upper level, then the hall.
 }
 
 GAME_TEST(Issues, Issue2188) {
