@@ -864,6 +864,7 @@ GAME_TEST(Issues, Issue1898) {
 GAME_TEST(Issues, Issue1890) {
     // Leaving the Mercenary Guild put the party inside the stairs in Tatalia, so the stairs held it back when it walked forward.
     // The back of the party lands over the first step. Placed at ground level, it started inside the step.
+    test.prepareForNextTest(125, RANDOM_ENGINE_MERSENNE_TWISTER); // 125 ms is exactly 16 game ticks, every frame moves the party equally.
     auto yTape = tapes.custom([] { return std::tuple(pParty->GetPlayingTime(), pParty->pos.y); }); // Playing time makes every frame a new tape value.
     engine->config->debug.NoActors.setValue(true);
     game.startNewGame();
@@ -880,7 +881,7 @@ GAME_TEST(Issues, Issue1890) {
     game.tick(10);
     game.releaseKey(PlatformKey::KEY_UP);
     auto steps = yTape.map([](const auto &entry) { return std::get<1>(entry); }).reverse().adjacentDeltas(); // Forward is -y here.
-    EXPECT_GT(steps.min(), steps.max() * 3 / 4); // No frame is held back to less than three quarters of the longest step.
+    EXPECT_EQ(steps.min(), steps.max()); // The party moves the same distance every frame.
 }
 
 // 1900
