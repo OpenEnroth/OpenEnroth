@@ -3,7 +3,7 @@
 #include <vector>
 
 #include "Utility/System/FileStat.h"
-#include "Utility/System/NativePath.h"
+#include "Utility/System/Path.h"
 
 namespace fs {
 
@@ -13,7 +13,7 @@ namespace fs {
  * @param path                          Path to check.
  * @return                              Whether `path` exists. `false` for an empty path.
  */
-[[nodiscard]] bool exists(const NativePath &path);
+[[nodiscard]] bool exists(const Path &path);
 
 /**
  * Looks up the type and size of `path`. Never throws.
@@ -22,7 +22,7 @@ namespace fs {
  * @return                              Stats for `path`, or an empty `FileStat` on errors, for an empty path, or
  *                                      if `path` is neither a file nor a directory.
  */
-[[nodiscard]] FileStat stat(const NativePath &path);
+[[nodiscard]] FileStat stat(const Path &path);
 
 /**
  * Lists a directory. Entries that can't be stat'ed are skipped, and a directory that can't be opened lists as empty,
@@ -34,7 +34,7 @@ namespace fs {
  * @throws Exception                    If `path` isn't a directory, e.g. if it is empty, doesn't exist, or is a
  *                                      file.
  */
-[[nodiscard]] std::vector<DirectoryEntry> ls(const NativePath &path);
+[[nodiscard]] std::vector<DirectoryEntry> ls(const Path &path);
 
 /**
  * Same as `ls` above, but appends into a vector the caller already has, saving an allocation.
@@ -43,7 +43,7 @@ namespace fs {
  * @param[out] entries                  Vector to append the entries to.
  * @throws Exception                    Same as the overload above.
  */
-void ls(const NativePath &path, std::vector<DirectoryEntry> *entries);
+void ls(const Path &path, std::vector<DirectoryEntry> *entries);
 
 /**
  * Removes the file or directory at `path`. A directory is removed with everything that's in it.
@@ -52,7 +52,7 @@ void ls(const NativePath &path, std::vector<DirectoryEntry> *entries);
  * @return                              Whether anything was removed. `false` for an empty path.
  * @throws Exception                    On errors, e.g. missing permissions.
  */
-bool remove(const NativePath &path);
+bool remove(const Path &path);
 
 /**
  * Creates the directory at `path`, along with all missing parents. Does nothing if it already exists.
@@ -60,19 +60,19 @@ bool remove(const NativePath &path);
  * @param path                          Path to the directory to create.
  * @throws Exception                    On errors, and for an empty path.
  */
-void mkdirs(const NativePath &path);
+void mkdirs(const Path &path);
 
 /**
  * @return                              Current working directory.
  * @throws Exception                    On errors.
  */
-[[nodiscard]] NativePath cwd();
+[[nodiscard]] Path cwd();
 
 /**
  * @return                              Directory for temporary files.
  * @throws Exception                    On errors.
  */
-[[nodiscard]] NativePath tmp();
+[[nodiscard]] Path tmp();
 
 /**
  * Resolves `path` against the current directory.
@@ -84,6 +84,6 @@ void mkdirs(const NativePath &path);
  * @return                              Absolute copy of `path`.
  * @throws Exception                    On errors, and for an empty path.
  */
-[[nodiscard]] NativePath absolute(const NativePath &path);
+[[nodiscard]] Path absolute(const Path &path);
 
 } // namespace fs

@@ -14,7 +14,7 @@
 #   define fseeko _fseeki64
 #endif
 
-FileInputStream::FileInputStream(const NativePath &path, size_t bufferSize) {
+FileInputStream::FileInputStream(const Path &path, size_t bufferSize) {
     open(path, bufferSize);
 }
 
@@ -22,7 +22,7 @@ FileInputStream::~FileInputStream() {
     destroy();
 }
 
-void FileInputStream::open(const NativePath &path, size_t bufferSize) {
+void FileInputStream::open(const Path &path, size_t bufferSize) {
     assert(bufferSize > 0);
 
     std::string displayString = fs::absolute(path).displayString(); // Absolute, so that it's still meaningful in logs.

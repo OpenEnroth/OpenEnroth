@@ -7,7 +7,7 @@
 #include "Utility/String/Format.h"
 
 /**
- * The repo's vocabulary type for native paths - everything that takes a native path takes a `NativePath`.
+ * The repo's vocabulary type for native paths - everything that takes a native path takes a `Path`.
  *
  * The path is stored as a string, WTF-8 on Windows and a byte string on POSIX, and path manipulation is lexical.
  * Everything that asks the OS lives in `Fs.h`. Separators are normalized to forward slashes on Windows, where
@@ -19,7 +19,7 @@
  * done by our own code, and the OS is only ever handed `wchar_t` strings. `native` / `fromNative` are the conversions
  * to use when talking to the OS.
  *
- * An empty path names nothing. It is what a default-constructed `NativePath` holds, and joining it is a no-op, so
+ * An empty path names nothing. It is what a default-constructed `Path` holds, and joining it is a no-op, so
  * `"" / "a"` is `"a"`. The `fs::` calls treat it as invalid.
  *
  * File names on Linux are arbitrary byte strings, and these bytes are passed through as-is, so the string returned
@@ -28,9 +28,9 @@
  * sequence turns into a replacement character. And MacOS is different again, APFS only takes file names that are
  * valid UTF-8.
  */
-class NativePath {
+class Path {
  public:
-    NativePath() = default;
+    Path() = default;
 
     /**
      * Implicit constructor from a string, same as `std::filesystem::path`. No charset conversion is performed. On
@@ -41,17 +41,17 @@ class NativePath {
      *
      * @param path                      Path string. WTF-8 on Windows, byte string on POSIX.
      */
-    NativePath(std::string_view path); // NOLINT: intentionally implicit.
-    NativePath(const char *path) : NativePath(std::string_view(path)) {} // NOLINT: intentionally implicit.
+    Path(std::string_view path); // NOLINT: intentionally implicit.
+    Path(const char *path) : Path(std::string_view(path)) {} // NOLINT: intentionally implicit.
 
     /**
      * @param path                      Path as the OS spells it, a `wchar_t` string on Windows.
-     * @return                          `NativePath` for the given string.
+     * @return                          `Path` for the given string.
      */
 #ifdef _WINDOWS
-    [[nodiscard]] static NativePath fromNative(std::wstring_view path);
+    [[nodiscard]] static Path fromNative(std::wstring_view path);
 #else
-    [[nodiscard]] static NativePath fromNative(std::string_view path);
+    [[nodiscard]] static Path fromNative(std::string_view path);
 #endif
 
     /**
@@ -90,7 +90,7 @@ class NativePath {
      *                                  as `".bashrc"`, or a name like `"..."` whose stem would be all dots, has no
      *                                  extension. A path without a file name gets the extension as one.
      */
-    [[nodiscard]] NativePath withExtension(std::string_view extension) const;
+    [[nodiscard]] Path withExtension(std::string_view extension) const;
 
     [[nodiscard]] bool isEmpty() const {
         return _path.empty();
@@ -103,17 +103,17 @@ class NativePath {
      *                                  name. A bare drive letter takes a separator too, so `"C:" / "x"` is `"C:/x"`
      *                                  and not the drive-relative `"C:x"`, which has to be spelled out if wanted.
      */
-    [[nodiscard]] NativePath operator/(const NativePath &tail) const;
+    [[nodiscard]] Path operator/(const Path &tail) const;
 
-    friend auto operator<=>(const NativePath &l, const NativePath &r) = default;
+    friend auto operator<=>(const Path &l, const Path &r) = default;
 
     /**
-     * CLI11 picks this function up through ADL, so that options can bind `NativePath` fields directly. Note that
+     * CLI11 picks this function up through ADL, so that options can bind `Path` fields directly. Note that
      * `argv` is WTF-8 on Windows, where `UnicodeCrt` converts it from the wide command line, and a byte string on
      * POSIX.
      */
-    friend bool lexical_cast(const std::string &input, NativePath &output) {
-        output = NativePath(input);
+    friend bool lexical_cast(const std::string &input, Path &output) {
+        output = Path(input);
         return true;
     }
 
@@ -122,8 +122,8 @@ class NativePath {
 };
 
 template<>
-struct fmt::formatter<NativePath> : fmt::formatter<std::string> {
-    auto format(const NativePath &path, format_context &ctx) const {
+struct fmt::formatter<Path> : fmt::formatter<std::string> {
+    auto format(const Path &path, format_context &ctx) const {
         return fmt::formatter<std::string>::format(path.str(), ctx);
     }
 };

@@ -3,7 +3,7 @@
 #include "Utility/Streams/FileOutputStream.h"
 #include "Utility/System/Fs.h"
 
-ScopedTestFile::ScopedTestFile(const NativePath &path, std::string_view contents) : _path(path) {
+ScopedTestFile::ScopedTestFile(const Path &path, std::string_view contents) : _path(path) {
     FileOutputStream stream(_path);
     stream.write(contents);
     stream.close();

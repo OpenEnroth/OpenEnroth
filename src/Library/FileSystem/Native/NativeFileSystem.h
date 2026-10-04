@@ -6,7 +6,7 @@
 
 #include "Library/FileSystem/Interface/FileSystem.h"
 
-#include "Utility/System/NativePath.h"
+#include "Utility/System/Path.h"
 
 /**
  * View over a directory on a file system.
@@ -23,7 +23,7 @@
  */
 class NativeFileSystem : public FileSystem {
  public:
-    explicit NativeFileSystem(const NativePath &root);
+    explicit NativeFileSystem(const Path &root);
     virtual ~NativeFileSystem();
 
  private:
@@ -37,8 +37,8 @@ class NativeFileSystem : public FileSystem {
     virtual bool _remove(FileSystemPathView path) override;
     virtual std::string _displayPath(FileSystemPathView path) const override;
 
-    NativePath makeBasePath(FileSystemPathView path) const;
+    Path makeBasePath(FileSystemPathView path) const;
 
  private:
-    NativePath _root;
+    Path _root;
 };

@@ -1,4 +1,4 @@
-#include "NativePath.h"
+#include "Path.h"
 
 #include <algorithm>
 #include <cstddef>
@@ -94,24 +94,24 @@ static size_t extensionOffset(std::string_view path, size_t nameOffset) {
     return nameOffset + dotPos;
 }
 
-NativePath::NativePath(std::string_view path) : _path(path) {
+Path::Path(std::string_view path) : _path(path) {
 #ifdef _WINDOWS
     std::ranges::replace(_path, '\\', separator); // Both slashes separate components on Windows.
 #endif
 }
 
 #ifdef _WINDOWS
-NativePath NativePath::fromNative(std::wstring_view path) {
-    return NativePath(txt::wideToWtf8(path));
+Path Path::fromNative(std::wstring_view path) {
+    return Path(txt::wideToWtf8(path));
 }
 #else
-NativePath NativePath::fromNative(std::string_view path) {
-    return NativePath(path);
+Path Path::fromNative(std::string_view path) {
+    return Path(path);
 }
 #endif
 
 #ifdef _WINDOWS
-std::wstring NativePath::native() const {
+std::wstring Path::native() const {
     std::wstring result = txt::wtf8ToWide(_path);
 
     // Win32 only recognizes a literal "\\?\". Spelled with forward slashes the prefix gets parsed like any other path,
@@ -124,15 +124,15 @@ std::wstring NativePath::native() const {
 }
 #endif
 
-std::string NativePath::displayString() const {
+std::string Path::displayString() const {
     return txt::encodedToUtf8(_path, ENCODING_UTF8); // UTF-8 to UTF-8 conversion replaces all the invalid parts.
 }
 
-NativePath NativePath::withExtension(std::string_view extension) const {
+Path Path::withExtension(std::string_view extension) const {
     PathRoot root = parseRoot(_path);
     size_t nameOffset = fileNameOffset(_path, root);
 
-    NativePath result;
+    Path result;
     result._path = _path.substr(0, extensionOffset(_path, nameOffset));
     if (extension.empty())
         return result;
@@ -145,7 +145,7 @@ NativePath NativePath::withExtension(std::string_view extension) const {
     return result;
 }
 
-NativePath NativePath::operator/(const NativePath &tail) const {
+Path Path::operator/(const Path &tail) const {
     PathRoot root = parseRoot(_path);
     PathRoot tailRoot = parseRoot(tail._path);
     std::string_view rootName = std::string_view(_path).substr(0, root.size);
@@ -155,7 +155,7 @@ NativePath NativePath::operator/(const NativePath &tail) const {
     if (tailRoot.isAbsolute() || tailNamesAnotherRoot)
         return tail;
 
-    NativePath result;
+    Path result;
     if (tailRoot.hasRootDirectory) {
         result._path = _path.substr(0, root.size); // A rooted tail keeps our root name, and drops everything after it.
     } else {

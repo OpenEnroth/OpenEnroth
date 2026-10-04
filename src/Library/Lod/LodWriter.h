@@ -7,18 +7,18 @@
 
 #include "Utility/Streams/OutputStream.h"
 #include "Utility/Memory/Blob.h"
-#include "Utility/System/NativePath.h"
+#include "Utility/System/Path.h"
 
 #include "LodInfo.h"
 
 class LodWriter {
  public:
     LodWriter();
-    LodWriter(const NativePath &path, LodInfo info);
+    LodWriter(const Path &path, LodInfo info);
     LodWriter(OutputStream *stream, LodInfo info);
     ~LodWriter();
 
-    void open(const NativePath &path, LodInfo info);
+    void open(const Path &path, LodInfo info);
     void open(OutputStream *stream, LodInfo info);
 
     void close();

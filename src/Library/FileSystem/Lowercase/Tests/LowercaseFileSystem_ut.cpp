@@ -28,7 +28,7 @@ UNIT_TEST(LowercaseFileSystem, ExistsStatUppercase) {
 UNIT_TEST(LowercaseFileSystem, KeepEmptyFolders) {
     ScopedTestFolder tmp("tmp_dir");
 
-    NativeFileSystem fs0(NativePath("tmp_dir"));
+    NativeFileSystem fs0(Path("tmp_dir"));
     fs0.write("a/b/c.bin", Blob());
     fs0.write("a/c/b.bin", Blob());
 

@@ -30,7 +30,7 @@ int platformMain(int argc, char **argv) {
         std::ranges::sort(traceNames);
 
         for (const std::string &traceName : traceNames) {
-            NativePath traceFile(traceName);
+            Path traceFile(traceName);
             testing::RegisterTest("Retrace", traceFile.withExtension("").str().c_str(),
                                   nullptr, nullptr, __FILE__, __LINE__,
                                   [tracePath = opts.testPath / traceFile] { return new RetraceTest(tracePath); });

@@ -8,7 +8,7 @@
 #include "Utility/Exception.h"
 #include "Utility/System/Fs.h"
 
-FileOutputStream::FileOutputStream(const NativePath &path, size_t bufferSize) {
+FileOutputStream::FileOutputStream(const Path &path, size_t bufferSize) {
     open(path, bufferSize);
 }
 
@@ -16,7 +16,7 @@ FileOutputStream::~FileOutputStream() {
     destroy();
 }
 
-void FileOutputStream::open(const NativePath &path, size_t bufferSize) {
+void FileOutputStream::open(const Path &path, size_t bufferSize) {
     assert(bufferSize > 0);
 
     std::string displayString = fs::absolute(path).displayString(); // Absolute, so that it's still meaningful in logs.

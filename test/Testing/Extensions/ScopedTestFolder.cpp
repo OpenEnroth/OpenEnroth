@@ -4,7 +4,7 @@
 
 #include "Utility/System/Fs.h"
 
-ScopedTestFolder::ScopedTestFolder(const NativePath &path) : _path(path) {
+ScopedTestFolder::ScopedTestFolder(const Path &path) : _path(path) {
     fs::remove(_path); // An earlier run could have left the folder behind.
     fs::mkdirs(_path);
 
