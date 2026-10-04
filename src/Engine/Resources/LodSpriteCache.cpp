@@ -1,6 +1,5 @@
 #include "LodSpriteCache.h"
 
-#include <optional>
 #include <string>
 #include <vector>
 
@@ -42,14 +41,14 @@ Sprite *LodSpriteCache::loadSprite(std::string_view pContainerName) {
     if (result)
         return result;
 
-    std::optional<Sizei> size = _resources->spriteSize(name);
+    Sizei size = _resources->spriteSize(name);
     if (!size)
         return nullptr;
 
     Sprite &sprite = _spriteByName[name];
     sprite.pName = pContainerName;
-    sprite.uWidth = size->w;
-    sprite.uHeight = size->h;
+    sprite.uWidth = size.w;
+    sprite.uHeight = size.h;
     sprite.texture = assets->getSprite(pContainerName); // TODO(captainurist): very weird dependency here.
     _spritesInOrder.push_back(name);
     return &sprite;

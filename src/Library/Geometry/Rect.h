@@ -97,6 +97,14 @@ struct Rect {
     }
 
     [[nodiscard]] friend bool operator==(const Rect &l, const Rect &r) = default;
+
+    [[nodiscard]] explicit operator bool() const {
+        return !isEmpty();
+    }
+
+    [[nodiscard]] bool operator!() const {
+        return isEmpty();
+    }
 };
 
 using Recti = Rect<int>;

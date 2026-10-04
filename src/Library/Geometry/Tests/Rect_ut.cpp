@@ -80,3 +80,14 @@ UNIT_TEST(Rect, IntersectsCrossType) {
     // Float rect entirely inside int rect.
     EXPECT_TRUE(Recti(0, 0, 100, 100).intersects(Rectf(25.5f, 25.5f, 10.25f, 10.25f)));
 }
+
+UNIT_TEST(Rect, Bool) {
+    EXPECT_FALSE(static_cast<bool>(Recti()));
+    EXPECT_FALSE(static_cast<bool>(Recti(5, 5, 0, 10)));
+    EXPECT_FALSE(static_cast<bool>(Recti(5, 5, 10, -1)));
+    EXPECT_TRUE(static_cast<bool>(Recti(5, 5, 1, 1)));
+    EXPECT_TRUE(static_cast<bool>(Recti(-5, -5, 1, 1)));
+
+    EXPECT_TRUE(!Recti());
+    EXPECT_FALSE(!Recti(-5, -5, 1, 1));
+}

@@ -178,11 +178,11 @@ RgbaImage ResourceManager::sprite(std::string_view filename) {
     return result;
 }
 
-std::optional<Sizei> ResourceManager::spriteSize(std::string_view filename) {
+Sizei ResourceManager::spriteSize(std::string_view filename) {
     std::string name = ascii::toLower(filename);
     if (!_spritesLodReader.exists(name)) {
         MM_ERROR("Trying to load non-existent LOD entry '{}'.", _spritesLodReader.displayPath(name));
-        return std::nullopt;
+        return {};
     }
     return lod::decodeSpriteSize(_spritesLodReader.read(name));
 }
