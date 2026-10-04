@@ -652,10 +652,12 @@ GAME_TEST(Issues, Issue2186a) {
     Actor *cleric1 = game.spawnMonster(Vec3f(-650, 800, 800), MONSTER_CLERIC_SUN_C); // Above its raised west side.
     auto clericZTape = actorTapes.custom({cleric0->id, cleric1->id},
                                          [](const Actor &actor) { return static_cast<int>(actor.pos.z); });
+    auto clericSectorTape = actorTapes.custom({cleric0->id, cleric1->id}, [](const Actor &actor) { return actor.sectorId; });
     test.startTaping();
     game.tick(10); // The fall takes half a second.
 
     EXPECT_EQ(clericZTape.back(), tape(0, 128));
+    EXPECT_EQ(clericSectorTape, tape({4, 4}, {3, 3})); // Upper level, then the hall.
 }
 
 GAME_TEST(Issues, Issue2186b) {
@@ -668,14 +670,22 @@ GAME_TEST(Issues, Issue2186b) {
                 result.push_back(sprite.vPosition.z);
         return result;
     });
+    auto armorSectorTape = tapes.custom([] {
+        AccessibleVector<int> result;
+        for (const SpriteObject &sprite : pSpriteObjects)
+            if (sprite.uObjectDescID != 0 && sprite.containing_item.itemId == ITEM_LEATHER_ARMOR)
+                result.push_back(sprite.uSectorID);
+        return result;
+    });
     game.startNewGame();
     game.teleportTo(MAP_GRAND_TEMPLE_OF_THE_SUN, Vec3f(-880, 800, 648), 0); // Upper level, facing the hole over the hall.
-    test.startTaping();
     pParty->setHoldingItem(Item(ITEM_LEATHER_ARMOR));
     game.pressAndReleaseButton(BUTTON_LEFT, pViewport.center()); // Throw it down the hole.
+    test.startTaping();
     game.tick(30); // It bounces along the railing top, then drops to the hall.
 
     EXPECT_EQ(armorZTape.back(), tape(129)); // Raised floor along the west side of the hall below.
+    EXPECT_EQ(armorSectorTape, tape({4}, {3})); // Upper level, then the hall.
 }
 
 GAME_TEST(Issues, Issue2188) {
