@@ -8,10 +8,10 @@
 #include <string>
 #include <utility>
 
-#include "Engine/Resources/LodTextureCache.h"
-
+#include "Engine/Engine.h"
 #include "Engine/Graphics/Renderer/Renderer.h"
 #include "Engine/Graphics/Image.h"
+#include "Engine/Resources/ResourceManager.h"
 
 static Color parseColorTag(const char *tag, const Color &defaultColor) {
     char color_code[20];
@@ -34,7 +34,7 @@ GUIFont::~GUIFont() {
 std::unique_ptr<GUIFont> GUIFont::LoadFont(std::string_view pFontFile) {
     std::unique_ptr<GUIFont> result = std::make_unique<GUIFont>();
 
-    result->_font = lod::decodeFont(pIcons_LOD->LoadCompressedTexture(pFontFile));
+    result->_font = engine->resources()->font(pFontFile);
     result->CreateFontTex();
 
     return result;

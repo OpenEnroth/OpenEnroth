@@ -33,7 +33,6 @@
 #include "Engine/Graphics/Weather.h"
 #include "Engine/Graphics/TileGenerator.h"
 #include "Engine/Graphics/TurnBasedOverlay.h"
-#include "Engine/Resources/LodTextureCache.h"
 #include "Engine/Resources/LodSpriteCache.h"
 #include "Engine/Localization.h"
 #include "Engine/Objects/Actor.h"
@@ -744,21 +743,11 @@ void DoPrepareWorld(bool bLoading, int _1_fullscreen_loading_2_box) {
 //----- (004647AB) --------------------------------------------------------
 void FinalInitialization() {
     InitializeTurnBasedAnimations(&stru_50C198);
-    pBitmaps_LOD->reserveLoadedTextures();
     pSprites_LOD->reserveLoadedSprites();
-    pIcons_LOD->reserveLoadedTextures();
 }
 
 void MM7_LoadLods() {
     engine->resources()->open();
-
-    // TODO(captainurist): ResourceManager opens icons.lod and bitmaps.lod too. Move the buff loader, GUIFont,
-    //                     TileGenerator and PaletteManager over to it and drop these two caches.
-    pIcons_LOD = new LodTextureCache;
-    pIcons_LOD->open(dfs->read("data/icons.lod"));
-
-    pBitmaps_LOD = new LodTextureCache;
-    pBitmaps_LOD->open(dfs->read("data/bitmaps.lod"));
 
     pSprites_LOD = new LodSpriteCache(engine->resources());
 
@@ -768,7 +757,7 @@ void MM7_LoadLods() {
     // however, at this point localization isn't initialized yet, so this was a guaranteed crash.
     // Implement proper user-facing error reporting!
 
-    pPaletteManager->load(pBitmaps_LOD);
+    pPaletteManager->load(engine->resources());
 }
 
 //----- (004651F4) --------------------------------------------------------
@@ -898,7 +887,6 @@ void Engine::SecondaryInitialization() {
 
     engine->_globalEventMap = EvtProgram::load(engine->resources()->eventsData("global.evt"));
 
-    pBitmaps_LOD->reserveLoadedTextures();
     pSprites_LOD->reserveLoadedSprites();
 
     Initialize_GamesLOD_NewLOD();
@@ -959,9 +947,7 @@ void Engine::ResetCursor_Palettes_LODs_Level_Audio_SFT_Windows() {
     // Render billboards are used in hit tests, but we're releasing textures, so can't use them anymore.
     render->uNumBillboardsToDraw = 0;
 
-    pBitmaps_LOD->releaseUnreserved();
     pSprites_LOD->releaseUnreserved();
-    pIcons_LOD->releaseUnreserved();
 
     if (uCurrentlyLoadedLevelType == LEVEL_INDOOR)
         pIndoor->Release();
