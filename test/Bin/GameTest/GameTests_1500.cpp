@@ -880,7 +880,7 @@ GAME_TEST(Issues, Issue1890) {
     game.tick(10);
     game.releaseKey(PlatformKey::KEY_UP);
     auto steps = yTape.map([](const auto &entry) { return std::get<1>(entry); }).reverse().adjacentDeltas(); // Forward is -y here.
-    EXPECT_GT(steps.min(), steps.max() / 2); // No frame is held back to less than half the longest step.
+    EXPECT_GT(steps.min(), steps.max() * 3 / 4); // No frame is held back to less than three quarters of the longest step.
 }
 
 // 1900
