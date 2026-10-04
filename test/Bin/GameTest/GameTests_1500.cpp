@@ -863,9 +863,7 @@ GAME_TEST(Issues, Issue1898) {
 
 GAME_TEST(Issues, Issue1890) {
     // Leaving the Mercenary Guild put the party inside the stairs in Tatalia, so the stairs held it back when it walked forward.
-    // The guild's exit puts the party at the foot of the stairs, facing away from the guild, with the back of the party
-    // over the first step. Placed at ground level instead of on top of that step, the party started out inside it, and
-    // its first frames of walking forward barely moved it.
+    // The back of the party lands over the first step. Placed at ground level, it started inside the step.
     auto yTape = tapes.custom([] { return std::tuple(pParty->GetPlayingTime(), pParty->pos.y); }); // Playing time makes every frame a new tape value.
     engine->config->debug.NoActors.setValue(true);
     game.startNewGame();
