@@ -16,7 +16,7 @@ Before every commit, do a deletion pass over the comments in the diff, as a sepa
 
 *NEVER* amend a commit or rewrite pushed history unless explicitly asked to. Fixes go on top as new commits with their own messages, and squashing is the human's call. The one exception is keeping up with master. When a PR branch falls behind or conflicts, rebase it onto master and push with `--force-with-lease`. *NEVER* merge master into it.
 
-For a follow-up commit on an open PR, build and run the tests it touches, then push. The style checks, the full test suite and CI run after the push. *NEVER* sit in a loop waiting for them, the human wants the conversation back. Launch them detached and report the results once they're in. A failure found later goes on top as its own commit.
+For a follow-up commit on an open PR, build and run the tests it touches, then push. The style checks, the full test suite and CI run after the push. *NEVER* sit in a loop waiting for them. Launch them detached, so the human can keep working with you while they run, and report the results once they're in. A failure found later goes on top as its own commit.
 
 The commit message is where the reasoning lives. Say what was wrong and why this is the fix, in a paragraph. Every "why" about the diff that you were tempted to put in a comment goes here instead. A "why" about the game or the platform stays in the source, see Comments.
 
