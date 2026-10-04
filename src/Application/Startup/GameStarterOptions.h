@@ -4,11 +4,11 @@
 
 #include "Library/Logger/LogEnums.h"
 
-#include "Utility/System/NativePath.h"
+#include "Utility/System/Path.h"
 
 struct GameStarterOptions {
-    NativePath dataPath; // Path to game data.
-    NativePath userPath; // Path to user data.
+    Path dataPath; // Path to game data.
+    Path userPath; // Path to user data.
     std::optional<LogLevel> logLevel; // Override log level.
     bool ramFsUserData = false; // Use in-memory file system for user data, don't read/write config & saves
                                 // from/to disk. This also means that default config will be used.

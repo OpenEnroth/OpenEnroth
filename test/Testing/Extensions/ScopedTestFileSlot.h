@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Utility/System/NativePath.h"
+#include "Utility/System/Path.h"
 
 /**
  * Helper class to remove a file in ctor and when leaving the current scope.
@@ -10,9 +10,9 @@
  */
 class ScopedTestFileSlot {
  public:
-    explicit ScopedTestFileSlot(const NativePath &path);
+    explicit ScopedTestFileSlot(const Path &path);
     ~ScopedTestFileSlot();
 
  private:
-    NativePath _path;
+    Path _path;
 };

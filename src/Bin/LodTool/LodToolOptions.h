@@ -2,7 +2,7 @@
 
 #include <string>
 
-#include "Utility/System/NativePath.h"
+#include "Utility/System/Path.h"
 
 struct LodToolOptions {
     enum class Subcommand {
@@ -18,16 +18,16 @@ struct LodToolOptions {
     };
 
     struct ExtractOptions {
-        NativePath output;
+        Path output;
     };
 
     Subcommand subcommand = SUBCOMMAND_DUMP;
-    NativePath path;
+    Path path;
     bool helpPrinted = false; // True means that help message was already printed.
     CatOptions cat;
     ExtractOptions extract;
     bool raw = false; // Raw flag, shared by cat & extract.
-    NativePath palettesLodPath; // Path to bitmaps.lod for sprite palettes.
+    Path palettesLodPath; // Path to bitmaps.lod for sprite palettes.
 
     static LodToolOptions parse(int argc, char **argv);
 };

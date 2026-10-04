@@ -8,7 +8,7 @@
 #include "Utility/System/Fs.h"
 
 UNIT_TEST(Blob, FromFile) {
-    NativePath fileName = NativePath("abcdefghijklmnopqrstuvwxyz.tmp");
+    Path fileName = Path("abcdefghijklmnopqrstuvwxyz.tmp");
     std::string fileContents = "abcd";
 
     ScopedTestFileSlot tmp(fileName);
@@ -25,7 +25,7 @@ UNIT_TEST(Blob, FromFile) {
 }
 
 UNIT_TEST(Blob, FromEmptyFile) {
-    NativePath fileName = NativePath("1.txt");
+    Path fileName = Path("1.txt");
     ScopedTestFile tmp(fileName, "");
 
     Blob blob = Blob::fromFile(fileName); // Shouldn't throw.
@@ -35,7 +35,7 @@ UNIT_TEST(Blob, FromEmptyFile) {
 
 UNIT_TEST(Blob, FromFileNonAscii) {
     // Non-ASCII file names have to open through both Blob and FileInputStream.
-    NativePath fileName = NativePath("\xd0\xbb\xd0\xbe\xd0\xbb.tmp");
+    Path fileName = Path("\xd0\xbb\xd0\xbe\xd0\xbb.tmp");
     ScopedTestFile tmp(fileName, "lol");
 
     EXPECT_EQ(Blob::fromFile(fileName).str(), "lol");
@@ -43,7 +43,7 @@ UNIT_TEST(Blob, FromFileNonAscii) {
 }
 
 UNIT_TEST(Blob, SharedFromFile) {
-    NativePath fileName = NativePath("abcdefghijklmnopqrstuvwxyz1.tmp");
+    Path fileName = Path("abcdefghijklmnopqrstuvwxyz1.tmp");
     std::string fileContents = "0123456789";
 
     ScopedTestFile tmp(fileName, fileContents);
@@ -67,7 +67,7 @@ UNIT_TEST(Blob, DisplayPathCopyShare) {
 }
 
 UNIT_TEST(Blob, DisplayPathFromFile) {
-    NativePath fileName = NativePath("1.bin");
+    Path fileName = Path("1.bin");
     ScopedTestFile tmp(fileName, "123");
 
     std::string displayPath = Blob::fromFile(fileName).displayPath();
@@ -75,7 +75,7 @@ UNIT_TEST(Blob, DisplayPathFromFile) {
 }
 
 UNIT_TEST(Blob, DisplayPathFromEmptyFile) {
-    NativePath fileName = NativePath("1.txt");
+    Path fileName = Path("1.txt");
     ScopedTestFile tmp(fileName, "");
 
     std::string displayPath = Blob::fromFile(fileName).displayPath();
@@ -83,7 +83,7 @@ UNIT_TEST(Blob, DisplayPathFromEmptyFile) {
 }
 
 UNIT_TEST(Blob, DisplayPathFromStream) {
-    NativePath fileName = NativePath("1.bin");
+    Path fileName = Path("1.bin");
     ScopedTestFile tmp(fileName, "123");
 
     FileInputStream in(fileName);
@@ -92,7 +92,7 @@ UNIT_TEST(Blob, DisplayPathFromStream) {
 }
 
 UNIT_TEST(Blob, ExceptionMessages) {
-    NativePath fileName = NativePath("lknjdfgsbiuherqbhvdfnjkkvsdhjkweqguy.txt");
+    Path fileName = Path("lknjdfgsbiuherqbhvdfnjkkvsdhjkweqguy.txt");
 
     EXPECT_FALSE(fs::exists(fileName));
     EXPECT_THROW_MESSAGE((void) Blob::fromFile(fileName), fileName.str());

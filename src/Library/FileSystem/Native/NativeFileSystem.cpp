@@ -12,7 +12,7 @@
 #include "Utility/Exception.h"
 #include "Utility/System/Fs.h"
 
-NativeFileSystem::NativeFileSystem(const NativePath &root) {
+NativeFileSystem::NativeFileSystem(const Path &root) {
     _root = fs::absolute(root);
 }
 
@@ -29,7 +29,7 @@ FileStat NativeFileSystem::_stat(FileSystemPathView path) const {
 }
 
 void NativeFileSystem::_ls(FileSystemPathView path, std::vector<DirectoryEntry> *entries) const {
-    NativePath basePath = makeBasePath(path);
+    Path basePath = makeBasePath(path);
 
     try {
         fs::ls(basePath, entries);
@@ -53,7 +53,7 @@ Blob NativeFileSystem::_read(FileSystemPathView path) const {
 
 void NativeFileSystem::_write(FileSystemPathView path, const Blob &data) {
     assert(!path.isEmpty());
-    NativePath basePath = makeBasePath(path);
+    Path basePath = makeBasePath(path);
     fs::mkdirs(makeBasePath(FileSystemPath(path).parent()));
     FileOutputStream stream(basePath);
     stream.write(data.data(), data.size());
@@ -67,7 +67,7 @@ std::unique_ptr<InputStream> NativeFileSystem::_openForReading(FileSystemPathVie
 
 std::unique_ptr<OutputStream> NativeFileSystem::_openForWriting(FileSystemPathView path) {
     assert(!path.isEmpty());
-    NativePath basePath = makeBasePath(path);
+    Path basePath = makeBasePath(path);
     fs::mkdirs(makeBasePath(FileSystemPath(path).parent()));
     return std::make_unique<FileOutputStream>(basePath);
 }
@@ -81,6 +81,6 @@ std::string NativeFileSystem::_displayPath(FileSystemPathView path) const {
     return makeBasePath(path).displayString();
 }
 
-NativePath NativeFileSystem::makeBasePath(FileSystemPathView path) const {
-    return _root / NativePath(path.string());
+Path NativeFileSystem::makeBasePath(FileSystemPathView path) const {
+    return _root / Path(path.string());
 }

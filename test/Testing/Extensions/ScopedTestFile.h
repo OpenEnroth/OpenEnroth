@@ -2,7 +2,7 @@
 
 #include <string_view>
 
-#include "Utility/System/NativePath.h"
+#include "Utility/System/Path.h"
 
 /**
  * Helper class to create a temporary file at the given path with the given contents & remove it when leaving the
@@ -10,9 +10,9 @@
  */
 class ScopedTestFile {
  public:
-    ScopedTestFile(const NativePath &path, std::string_view contents);
+    ScopedTestFile(const Path &path, std::string_view contents);
     ~ScopedTestFile();
 
  private:
-    NativePath _path;
+    Path _path;
 };

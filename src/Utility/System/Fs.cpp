@@ -8,24 +8,24 @@
 
 #include "Utility/Exception.h"
 
-[[noreturn]] static void throwError(std::string_view action, const NativePath &path, std::error_code ec) {
+[[noreturn]] static void throwError(std::string_view action, const Path &path, std::error_code ec) {
     throw Exception("Couldn't {} '{}': {}", action, path.displayString(), ec.message());
 }
 
-static void checkNotEmpty(std::string_view action, const NativePath &path) {
+static void checkNotEmpty(std::string_view action, const Path &path) {
     if (path.isEmpty())
         throwError(action, path, std::make_error_code(std::errc::invalid_argument));
 }
 
-static std::filesystem::path toStdPath(const NativePath &path) {
+static std::filesystem::path toStdPath(const Path &path) {
     return std::filesystem::path(path.native()); // A wchar_t string on Windows, so no C locale conversion.
 }
 
-static NativePath fromStdPath(const std::filesystem::path &path) {
-    return NativePath::fromNative(path.native());
+static Path fromStdPath(const std::filesystem::path &path) {
+    return Path::fromNative(path.native());
 }
 
-bool fs::exists(const NativePath &path) {
+bool fs::exists(const Path &path) {
     if (path.isEmpty())
         return false;
 
@@ -33,7 +33,7 @@ bool fs::exists(const NativePath &path) {
     return std::filesystem::exists(toStdPath(path), ec); // Returns false on error.
 }
 
-FileStat fs::stat(const NativePath &path) {
+FileStat fs::stat(const Path &path) {
     if (path.isEmpty())
         return {};
 
@@ -56,13 +56,13 @@ FileStat fs::stat(const NativePath &path) {
     return FileStat(isRegular ? FILE_REGULAR : FILE_DIRECTORY, size);
 }
 
-std::vector<DirectoryEntry> fs::ls(const NativePath &path) {
+std::vector<DirectoryEntry> fs::ls(const Path &path) {
     std::vector<DirectoryEntry> result;
     ls(path, &result);
     return result;
 }
 
-void fs::ls(const NativePath &path, std::vector<DirectoryEntry> *entries) {
+void fs::ls(const Path &path, std::vector<DirectoryEntry> *entries) {
     checkNotEmpty("list", path);
 
     std::error_code walkEc;
@@ -95,7 +95,7 @@ void fs::ls(const NativePath &path, std::vector<DirectoryEntry> *entries) {
     }
 }
 
-bool fs::remove(const NativePath &path) {
+bool fs::remove(const Path &path) {
     if (path.isEmpty())
         return false;
 
@@ -106,7 +106,7 @@ bool fs::remove(const NativePath &path) {
     return removed > 0;
 }
 
-void fs::mkdirs(const NativePath &path) {
+void fs::mkdirs(const Path &path) {
     checkNotEmpty("create", path);
 
     std::error_code ec;
@@ -115,7 +115,7 @@ void fs::mkdirs(const NativePath &path) {
         throwError("create", path, ec);
 }
 
-NativePath fs::cwd() {
+Path fs::cwd() {
     std::error_code ec;
     std::filesystem::path result = std::filesystem::current_path(ec);
     if (ec)
@@ -123,7 +123,7 @@ NativePath fs::cwd() {
     return fromStdPath(result);
 }
 
-NativePath fs::tmp() {
+Path fs::tmp() {
     std::error_code ec;
     std::filesystem::path result = std::filesystem::temp_directory_path(ec);
     if (ec)
@@ -131,7 +131,7 @@ NativePath fs::tmp() {
     return fromStdPath(result);
 }
 
-NativePath fs::absolute(const NativePath &path) {
+Path fs::absolute(const Path &path) {
     checkNotEmpty("resolve", path);
 
     std::error_code ec;

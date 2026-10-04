@@ -229,7 +229,7 @@ void GameStarter::resolveUserPath(Environment *environment, GameStarterOptions *
 }
 
 void GameStarter::resolveDataPath(Environment *environment, GameStarterOptions *options) {
-    std::vector<NativePath> candidates;
+    std::vector<Path> candidates;
     if (!options->dataPath.isEmpty()) {
         candidates.push_back(options->dataPath);
     } else {
@@ -255,7 +255,7 @@ void GameStarter::resolveDataPath(Environment *environment, GameStarterOptions *
         options->dataPath = candidates.back();
 }
 
-void GameStarter::failOnInvalidPath(const NativePath &dataPath, Platform *platform) {
+void GameStarter::failOnInvalidPath(const Path &dataPath, Platform *platform) {
     std::string missingFile;
     if (validateMm7Path(dataPath, &missingFile))
         return;
