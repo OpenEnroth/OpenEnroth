@@ -645,10 +645,7 @@ GAME_TEST(Prs, Pr2157b) {
 
 GAME_TEST(Issues, Issue2186a) {
     // Actors falling through the hole in the Grand Temple of the Sun upper level ended up deep underground.
-    // The upper level runs around a hole over the hall below, and two monsters are spawned above that hole. They should
-    // drop through it and land on the hall floor. With the bug a monster kept the upper level as its sector, found no
-    // floor under it and fell through the hall floor, and in the report the game crashed a few seconds later. Without
-    // the portal floor that lets things drop through such holes (#2229), they hung in the air instead.
+    // Monsters spawned over the hole should land on the hall floor below. With #2229's bug they hung in the air instead.
     game.startNewGame();
     game.teleportTo(MAP_GRAND_TEMPLE_OF_THE_SUN, Vec3f(-880, 800, 648), 0); // Upper level, facing the hole over the hall.
     Actor *cleric0 = game.spawnMonster(Vec3f(0, 550, 800), MONSTER_CLERIC_SUN_C); // Above the sunken middle of the hall.
@@ -663,8 +660,7 @@ GAME_TEST(Issues, Issue2186a) {
 
 GAME_TEST(Issues, Issue2186b) {
     // Items thrown down the hole in the Grand Temple of the Sun upper level fell through the floor of the hall below.
-    // The party stands at the railing around the hole and throws an item over it. With the bug the item kept the upper
-    // level as its sector while falling, so the hall floor never stopped it and the item was lost.
+    // Unlike actors, items don't recompute their sector every frame, so they kept the upper level's.
     auto armorZTape = tapes.custom([] {
         AccessibleVector<int> result;
         for (const SpriteObject &sprite : pSpriteObjects)
