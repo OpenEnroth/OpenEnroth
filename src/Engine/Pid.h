@@ -21,8 +21,6 @@ class Pid {
  public:
     enum {
         ID_MAX = 0xFFFF >> 3,
-        ODM_FACE_ID_MAX = 0x3F,
-        ODM_MODEL_ID_MAX = 0x7F
     };
 
     constexpr Pid() = default;
@@ -51,12 +49,6 @@ class Pid {
 
     static constexpr Pid decoration(int id) {
         return Pid(OBJECT_Decoration, id);
-    }
-
-    static constexpr Pid odmFace(int modelId, int faceId) {
-        assert(modelId >= 0 && modelId <= ODM_MODEL_ID_MAX);
-        assert(faceId >= 0 && faceId <= ODM_FACE_ID_MAX);
-        return Pid(OBJECT_Face, (modelId << 6) + faceId);
     }
 
     static constexpr Pid blvFace(int id) {
