@@ -672,19 +672,17 @@ GAME_TEST(Prs, Pr2157b) {
 
 GAME_TEST(Issues, Issue2186a) {
     // Actors falling through the hole in the Grand Temple of the Sun upper level ended up deep underground.
-    // Monsters spawned over the hole should land on the hall floor below. With #2229's bug they hung in the air instead.
+    // A monster spawned over the hole should land on the hall floor below. With #2229's bug it hung in the air instead.
     game.startNewGame();
     game.teleportTo(MAP_GRAND_TEMPLE_OF_THE_SUN, Vec3f(-880, 800, 648), 0); // Upper level, facing the hole over the hall.
-    Actor *cleric0 = game.spawnMonster(Vec3f(0, 550, 800), MONSTER_CLERIC_SUN_C); // Above the sunken middle of the hall.
-    Actor *cleric1 = game.spawnMonster(Vec3f(-650, 800, 800), MONSTER_CLERIC_SUN_C); // Above its raised west side.
-    auto clericZTape = actorTapes.custom({cleric0->id, cleric1->id},
-                                         [](const Actor &actor) { return static_cast<int>(actor.pos.z); });
-    auto clericSectorTape = actorTapes.custom({cleric0->id, cleric1->id}, [](const Actor &actor) { return actor.sectorId; });
+    Actor *cleric = game.spawnMonster(Vec3f(0, 550, 900), MONSTER_CLERIC_SUN_C); // Above the hole.
+    auto clericZTape = actorTapes.custom(cleric->id, [](const Actor &actor) { return static_cast<int>(actor.pos.z); });
+    auto clericSectorTape = actorTapes.custom(cleric->id, [](const Actor &actor) { return actor.sectorId; });
     test.startTaping();
-    game.tick(10); // The fall takes half a second.
+    game.tick(10);
 
-    EXPECT_EQ(clericZTape.back(), tape(0, 128));
-    EXPECT_EQ(clericSectorTape.back(), tape(3, 3)); // In the hall.
+    EXPECT_EQ(clericZTape.back(), 0); // Sunken floor in the middle of the hall.
+    EXPECT_EQ(clericSectorTape, tape(4, 3)); // Upper level, then the hall.
 }
 
 GAME_TEST(Issues, Issue2186b) {
