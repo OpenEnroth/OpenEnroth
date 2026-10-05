@@ -60,7 +60,7 @@ void InteractWithActor(int id) {
         if (pNPCStats->pGroups[pActors[id].group]) {
             if (!pNPCStats->pCatchPhrases[pNPCStats->pGroups[pActors[id].group]].empty()) {
                 branchless_dialogue_str = pNPCStats->pCatchPhrases[pNPCStats->pGroups[pActors[id].group]];
-                startBranchlessDialogue(0, 0, EVENT_Invalid);
+                startBranchlessDialogue(EVENT_Invalid);
             }
         }
     }
@@ -72,9 +72,7 @@ void DecorationInteraction(int id, Pid pid) {
         pLevelDecorations[id].uFlags |= LEVEL_DECORATION_VISIBLE_ON_MAP;
     } else {
         if (pLevelDecorations[id].IsInteractive()) {
-            activeLevelDecoration = &pLevelDecorations[id];
-            eventProcessor(engine->_persistentVariables.decorVars[pLevelDecorations[id].eventVarId] + 380, Pid(), 1); // 380 is the MM7 dispatch base, see EVENT_ChangeEvent.
-            activeLevelDecoration = nullptr;
+            globalEventProcessor(engine->_persistentVariables.decorVars[pLevelDecorations[id].eventVarId] + 380, pid); // 380 is the MM7 dispatch base, see EVENT_ChangeEvent.
         }
     }
 }
