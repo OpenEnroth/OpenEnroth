@@ -7,6 +7,9 @@
 
 #include "Utility/String/Ascii.h"
 #include "Utility/String/Encoding.h"
+#include "Utility/String/Join.h"
+#include "Utility/String/Split.h"
+#include "Utility/SmallVector.h"
 
 static constexpr char separator = '/'; // The only separator in the stored string, the constructor converts backslashes.
 
@@ -94,6 +97,87 @@ static size_t extensionOffset(std::string_view path, size_t nameOffset) {
     return nameOffset + dotPos;
 }
 
+static size_t rootEnd(PathRoot root) {
+    return root.size + (root.hasRootDirectory ? 1 : 0);
+}
+
+static std::string normalizePath(std::string_view path) {
+    PathRoot root = parseRoot(path);
+
+    gch::small_vector<std::string_view, 32> segments;
+    for (std::string_view segment : split(path.substr(rootEnd(root))).by(separator)) {
+        if (segment.empty() || segment == ".")
+            continue;
+
+        if (segment == "..") {
+            if (!segments.empty() && segments.back() != "..") {
+                segments.pop_back();
+                continue;
+            }
+            if (root.hasRootDirectory)
+                continue; // Nothing is above a root directory, so "/.." is "/".
+        }
+
+        segments.push_back(segment);
+    }
+
+    std::string result(path.substr(0, root.size));
+    if (root.hasRootDirectory)
+        result += separator;
+    result += join(segments, separator);
+    return result;
+}
+
+static bool isNormalizedPath(std::string_view path) {
+    PathRoot root = parseRoot(path);
+    std::string_view tail = path.substr(rootEnd(root));
+    if (tail.empty())
+        return true;
+    if (tail.back() == separator)
+        return false;
+
+    bool leading = true;
+    for (std::string_view segment : split(tail).by(separator)) {
+        if (segment.empty() || segment == ".")
+            return false;
+
+        if (segment == "..") {
+            if (root.hasRootDirectory || !leading)
+                return false;
+        } else {
+            leading = false;
+        }
+    }
+    return true;
+}
+
+static bool isEscapingPath(std::string_view path) {
+    PathRoot root = parseRoot(path);
+    if (rootEnd(root) > 0)
+        return false;
+
+    int depth = 0;
+    for (std::string_view segment : split(path).by(separator)) {
+        if (segment.empty() || segment == ".")
+            continue;
+
+        if (segment != "..") {
+            depth++;
+        } else if (--depth < 0) {
+            return true;
+        }
+    }
+    return false;
+}
+
+static size_t parentEnd(std::string_view path) {
+    PathRoot root = parseRoot(path);
+    size_t end = fileNameOffset(path, root);
+    while (end > rootEnd(root) && path[end - 1] == separator)
+        end--;
+    return end;
+}
+
 Path::Path(std::string_view path) : _path(path) {
 #ifdef _WINDOWS
     std::ranges::replace(_path, '\\', separator); // Both slashes separate components on Windows.
@@ -126,6 +210,32 @@ std::wstring Path::native() const {
 
 std::string Path::displayString() const {
     return txt::encodedToUtf8(_path, ENCODING_UTF8); // UTF-8 to UTF-8 conversion replaces all the invalid parts.
+}
+
+Path Path::normalized() const {
+    Path result;
+    result._path = normalizePath(_path);
+    return result;
+}
+
+std::string_view Path::name() const {
+    return std::string_view(_path).substr(fileNameOffset(_path, parseRoot(_path)));
+}
+
+std::string_view Path::extension() const {
+    size_t offset = extensionOffset(_path, fileNameOffset(_path, parseRoot(_path)));
+    return offset == std::string_view::npos ? std::string_view() : std::string_view(_path).substr(offset);
+}
+
+std::string_view Path::stem() const {
+    std::string_view name = this->name();
+    return name.substr(0, name.size() - extension().size());
+}
+
+Path Path::parent() const {
+    Path result;
+    result._path = _path.substr(0, parentEnd(_path));
+    return result;
 }
 
 Path Path::withExtension(std::string_view extension) const {
@@ -166,4 +276,20 @@ Path Path::operator/(const Path &tail) const {
 
     result._path.append(tail._path, tailRoot.size);
     return result;
+}
+
+std::string_view PathView::root() const {
+    return _path.substr(0, rootEnd(parseRoot(_path)));
+}
+
+bool PathView::isEscaping() const {
+    return isEscapingPath(_path);
+}
+
+bool PathView::isNormalized() const {
+    return isNormalizedPath(_path);
+}
+
+PathSplit PathView::split() const {
+    return PathSplit(_path.substr(root().size()));
 }

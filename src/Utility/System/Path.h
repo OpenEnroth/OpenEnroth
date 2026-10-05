@@ -6,6 +6,8 @@
 
 #include "Utility/String/Format.h"
 
+#include "PathView.h"
+
 /**
  * The repo's vocabulary type for native paths - everything that takes a native path takes a `Path`.
  *
@@ -43,6 +45,8 @@ class Path {
      */
     Path(std::string_view path); // NOLINT: intentionally implicit.
     Path(const char *path) : Path(std::string_view(path)) {} // NOLINT: intentionally implicit.
+
+    explicit Path(PathView path) : _path(path.str()) {}
 
     /**
      * @param path                      Path as the OS spells it, a `wchar_t` string on Windows.
@@ -97,6 +101,70 @@ class Path {
     }
 
     /**
+     * @return                          The root name and root directory this path starts with, empty if there are
+     *                                  none. That's `"/"`, or `"C:"`, `"C:/"` and `"//server/share/"` on Windows.
+     */
+    [[nodiscard]] std::string_view root() const {
+        return PathView(*this).root();
+    }
+
+    /**
+     * @return                          Copy of this path in lexical normal form. The root is kept as it is, then
+     *                                  come single separators with no trailing one, no `.` segments, and `..`
+     *                                  collapsed. A `..` survives only as the leading run of a path without a root
+     *                                  directory, and above a root directory it's dropped, so `"/.."` is `"/"`. A lone
+     *                                  `"."` normalizes to the empty path.
+     */
+    [[nodiscard]] Path normalized() const;
+
+    /**
+     * @return                          Whether `normalized` would return this path unchanged. Allocates nothing.
+     */
+    [[nodiscard]] bool isNormalized() const {
+        return PathView(*this).isNormalized();
+    }
+
+    /**
+     * @return                          Whether this path points above its starting point. `".."` and `"a/../.."` do,
+     *                                  `"a/../b"` doesn't. Always `false` for a path with a root. Doesn't require
+     *                                  normal form.
+     */
+    [[nodiscard]] bool isEscaping() const {
+        return PathView(*this).isEscaping();
+    }
+
+    /**
+     * @return                          The last segment, empty if there is none. `"a/b.txt"` gives `"b.txt"`.
+     */
+    [[nodiscard]] std::string_view name() const;
+
+    /**
+     * @return                          The extension of the file name with its leading dot, empty if there is none,
+     *                                  by the same rules as `withExtension`.
+     */
+    [[nodiscard]] std::string_view extension() const;
+
+    /**
+     * @return                          The file name without its extension. `"a/b.tar.gz"` gives `"b.tar"`.
+     */
+    [[nodiscard]] std::string_view stem() const;
+
+    /**
+     * @return                          Lexical parent, which keeps the root. The parent of `"a"` is `""`, and the
+     *                                  parent of `"/a"` and of `"/"` is `"/"`. The lexical parent of `"../.."` is
+     *                                  `".."`, which is not its semantic parent.
+     */
+    [[nodiscard]] Path parent() const;
+
+    /**
+     * @return                          The segments after the root. Empty segments show up for doubled separators, so
+     *                                  this is meant for paths in normal form.
+     */
+    [[nodiscard]] PathSplit split() const {
+        return PathView(*this).split();
+    }
+
+    /**
      * @param tail                      Path to append.
      * @return                          The two paths joined with a separator. An absolute `tail`, or one naming
      *                                  another root, replaces this path. A rooted `tail` keeps only this path's root
@@ -104,6 +172,10 @@ class Path {
      *                                  and not the drive-relative `"C:x"`, which has to be spelled out if wanted.
      */
     [[nodiscard]] Path operator/(const Path &tail) const;
+
+    Path &operator/=(PathView tail) {
+        return *this = *this / Path(tail);
+    }
 
     friend auto operator<=>(const Path &l, const Path &r) = default;
 
@@ -120,6 +192,12 @@ class Path {
  private:
     std::string _path;
 };
+
+inline PathView::PathView(const Path &path) : _path(path.str()) {}
+
+[[nodiscard]] inline Path operator/(PathView head, PathView tail) {
+    return Path(head) / Path(tail);
+}
 
 template<>
 struct fmt::formatter<Path> : fmt::formatter<std::string> {
