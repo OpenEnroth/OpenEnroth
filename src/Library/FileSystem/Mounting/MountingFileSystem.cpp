@@ -1,5 +1,6 @@
 #include "MountingFileSystem.h"
 
+#include <cassert>
 #include <vector>
 #include <memory>
 #include <ranges>
@@ -20,7 +21,9 @@ void MountingFileSystem::mount(std::string_view path, FileSystem *fileSystem) {
 }
 
 void MountingFileSystem::mount(PathView path, FileSystem *fileSystem) {
-    _trie.insertOrAssign(NormalizedFileSystemPath(path), fileSystem);
+    NormalizedFileSystemPath normalPath(path);
+    assert(normalPath.isAccessible());
+    _trie.insertOrAssign(normalPath, fileSystem);
 }
 
 bool MountingFileSystem::unmount(std::string_view path) {
