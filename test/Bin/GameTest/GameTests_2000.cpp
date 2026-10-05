@@ -704,6 +704,7 @@ GAME_TEST(Issues, Issue2186b) {
     });
     game.startNewGame();
     game.teleportTo(MAP_GRAND_TEMPLE_OF_THE_SUN, Vec3f(-880, 800, 648), 0); // Upper level, facing the hole over the hall.
+    game.tick();
     pParty->setHoldingItem(Item(ITEM_LEATHER_ARMOR));
     game.pressAndReleaseButton(BUTTON_LEFT, pViewport.center()); // Throw it down the hole.
     test.startTaping();
