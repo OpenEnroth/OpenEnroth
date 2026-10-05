@@ -870,7 +870,7 @@ GAME_TEST(Issues, Issue792) {
     auto statusTape = tapes.statusBar();
     game.startNewGame();
     game.teleportTo(MAP_ERATHIA, Vec3f(-12216, 1900, 961), 90); // Next to a well.
-    game.tick(20); // Erathia's timers fire once on the first visit.
+    game.tick(20);
     test.startTaping();
     game.tick();
     game.pressAndReleaseKey(PlatformKey::KEY_SPACE); // Drink.
