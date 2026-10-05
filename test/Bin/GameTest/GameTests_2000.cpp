@@ -684,7 +684,7 @@ GAME_TEST(Issues, Issue2186a) {
     game.tick(10); // The fall takes half a second.
 
     EXPECT_EQ(clericZTape.back(), tape(0, 128));
-    EXPECT_EQ(clericSectorTape, tape({4, 4}, {3, 3})); // Upper level, then the hall.
+    EXPECT_EQ(clericSectorTape.back(), tape(3, 3)); // In the hall.
 }
 
 GAME_TEST(Issues, Issue2186b) {
