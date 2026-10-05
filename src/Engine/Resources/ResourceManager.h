@@ -74,8 +74,8 @@ class ResourceManager {
 
     /**
      * @param paletteId                 Palette id, the `NNN` in the `palNNN` image in `bitmaps.lod`.
-     * @return                          The desaturated palette, or a desaturated grayscale palette if `bitmaps.lod`
-     *                                  has no such palette.
+     * @return                          The palette adjusted per `open()`, or a grayscale one if `bitmaps.lod` has no
+     *                                  such palette.
      *                                  Most ids are unused, so a missing palette isn't logged.
      */
     Palette palette(int paletteId);

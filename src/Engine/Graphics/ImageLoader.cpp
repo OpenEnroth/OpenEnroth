@@ -15,7 +15,6 @@
 #include "Library/LodFormats/LodImage.h"
 #include "Library/Logger/Logger.h"
 
-
 bool Icon_LOD_Loader::Load(RgbaImage *rgbaImage) {
     *rgbaImage = resources->icon(resource_name);
     if (!*rgbaImage)

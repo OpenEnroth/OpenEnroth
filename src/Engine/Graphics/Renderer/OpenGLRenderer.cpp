@@ -4,6 +4,7 @@
 
 #include <cmath>
 #include <algorithm>
+#include <iterator>
 #include <memory>
 #include <utility>
 #include <map>
@@ -61,7 +62,7 @@
     #define LOWORD(l) ((unsigned short)(((std::uintptr_t)(l)) & 0xFFFF))
 #endif
 
-static constexpr GLint paltex2D_id = 1;
+static constexpr GLint PALETTE_TEXTURE_UNIT = 1;
 static constexpr int PALETTE_COUNT = 1000; // pal000 to pal999 in bitmaps.lod.
 
 static constexpr int DEFAULT_AMBIENT_LIGHT_LEVEL = 0;
@@ -1842,7 +1843,6 @@ void OpenGLRenderer::DoRenderBillboards_D3D() {
     glDepthMask(GL_TRUE);
 }
 
-// name better
 void OpenGLRenderer::ensurePaletteTexture() {
     if (paltex2D != 0)
         return;
@@ -1852,7 +1852,7 @@ void OpenGLRenderer::ensurePaletteTexture() {
     for (int paletteId = 0; paletteId < PALETTE_COUNT; paletteId++)
         std::ranges::copy(engine->resources()->palette(paletteId).colors, std::back_inserter(palettes));
 
-    glActiveTexture(GL_TEXTURE0 + paltex2D_id);
+    glActiveTexture(GL_TEXTURE0 + PALETTE_TEXTURE_UNIT);
     glGenTextures(1, &paltex2D);
     glBindTexture(GL_TEXTURE_2D, paltex2D);
     glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, 256, PALETTE_COUNT, 0, GL_RGBA, GL_UNSIGNED_BYTE, palettes.data());
@@ -1860,6 +1860,7 @@ void OpenGLRenderer::ensurePaletteTexture() {
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 }
 
+// name better
 void OpenGLRenderer::DrawBillboards() {
     if (_billboardVertices.empty()) return;
 
@@ -1881,7 +1882,7 @@ void OpenGLRenderer::DrawBillboards() {
     billbshader.use();
 
     // set sampler to palette
-    glActiveTexture(GL_TEXTURE0 + paltex2D_id);
+    glActiveTexture(GL_TEXTURE0 + PALETTE_TEXTURE_UNIT);
     glBindTexture(GL_TEXTURE_2D, paltex2D);
 
     glActiveTexture(GL_TEXTURE0);
@@ -1891,7 +1892,7 @@ void OpenGLRenderer::DrawBillboards() {
     uniforms.view = viewmat;
     uniforms.fog = fog;
     uniforms.gamma = gamma;
-    uniforms.paltex2D = paltex2D_id;
+    uniforms.paltex2D = PALETTE_TEXTURE_UNIT;
     uniforms.submit(billbshader);
 
     size_t offset = 0;
@@ -3666,7 +3667,7 @@ void OpenGLRenderer::DrawTwodVerts() {
     twodshader.use();
 
     // set sampler to palette
-    glActiveTexture(GL_TEXTURE0 + paltex2D_id);
+    glActiveTexture(GL_TEXTURE0 + PALETTE_TEXTURE_UNIT);
     glBindTexture(GL_TEXTURE_2D, paltex2D);
 
     glActiveTexture(GL_TEXTURE0);
@@ -3677,7 +3678,7 @@ void OpenGLRenderer::DrawTwodVerts() {
     TwoDUniforms uniforms;
     uniforms.projection = projmat;
     uniforms.view = viewmat;
-    uniforms.paltex2D = paltex2D_id;
+    uniforms.paltex2D = PALETTE_TEXTURE_UNIT;
     uniforms.submit(twodshader);
 
     size_t offset = 0;
