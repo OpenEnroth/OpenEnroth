@@ -54,27 +54,27 @@ class LowercaseFileSystem : public FileSystem {
     void refresh();
 
  private:
-    virtual bool _exists(FileSystemPathView path) const override;
-    virtual FileStat _stat(FileSystemPathView path) const override;
-    virtual void _ls(FileSystemPathView path, std::vector<DirectoryEntry> *entries) const override;
-    virtual Blob _read(FileSystemPathView path) const override;
-    virtual void _write(FileSystemPathView path, const Blob &data) override;
-    virtual std::unique_ptr<InputStream> _openForReading(FileSystemPathView path) const override;
-    virtual std::unique_ptr<OutputStream> _openForWriting(FileSystemPathView path) override;
-    virtual bool _remove(FileSystemPathView path) override;
-    virtual std::string _displayPath(FileSystemPathView path) const override;
+    virtual bool _exists(PathView path) const override;
+    virtual FileStat _stat(PathView path) const override;
+    virtual void _ls(PathView path, std::vector<DirectoryEntry> *entries) const override;
+    virtual Blob _read(PathView path) const override;
+    virtual void _write(PathView path, const Blob &data) override;
+    virtual std::unique_ptr<InputStream> _openForReading(PathView path) const override;
+    virtual std::unique_ptr<OutputStream> _openForWriting(PathView path) override;
+    virtual bool _remove(PathView path) override;
+    virtual std::string _displayPath(PathView path) const override;
 
  private:
     using Node = FileSystemTrieNode<detail::LowercaseFileData>;
 
-    std::tuple<FileSystemPath, Node *, FileSystemPathView> walk(FileSystemPathView path) const;
-    void cacheLs(Node *node, FileSystemPathView basePath) const;
+    std::tuple<Path, Node *, PathView> walk(PathView path) const;
+    void cacheLs(Node *node, PathView basePath) const;
     void invalidateLs(Node *node) const;
     void cacheRemove(Node *node) const;
-    void cacheInsert(Node *node, FileSystemPathView tail, FileType type) const;
+    void cacheInsert(Node *node, PathView tail, FileType type) const;
 
-    FileSystemPath locateForReading(FileSystemPathView path) const;
-    std::tuple<FileSystemPath, Node *, FileSystemPathView> locateForWriting(FileSystemPathView path);
+    Path locateForReading(PathView path) const;
+    std::tuple<Path, Node *, PathView> locateForWriting(PathView path);
 
  private:
     FileSystem *_base = nullptr;
