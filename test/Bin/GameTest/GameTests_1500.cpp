@@ -882,7 +882,7 @@ GAME_TEST(Issues, Issue1890) {
     game.releaseKey(PlatformKey::KEY_UP);
     auto steps = yTape.map([](const auto &entry) { return entry.second; }).reverse().adjacentDeltas(); // Forward is -y here.
     EXPECT_EQ(zTape.front(), 3088); // Arrived on top of the first step.
-    EXPECT_LT(zTape.adjacentDeltas().max(), 0); // Stepped down off it and kept going down the slope, never bouncing up.
+    EXPECT_LT(zTape.adjacentDeltas().max(), 0); // Only goes down. A party stuck in the step gets pushed up and out of it by collisions.
     EXPECT_EQ(steps.min(), steps.max()); // The party moves the same distance every frame.
 }
 
