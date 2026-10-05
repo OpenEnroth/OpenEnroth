@@ -3,7 +3,7 @@
 #include <unordered_set>
 #include <ranges>
 #include <string>
-#include <tuple>
+#include <utility>
 #include <regex>
 #include <vector>
 
@@ -865,7 +865,8 @@ GAME_TEST(Issues, Issue1890) {
     // Leaving the Mercenary Guild, the party landed inside the first step of the stairs in Tatalia instead of on top of it.
     // Stuck in the step, it was held back when walking forward.
     test.prepareForNextTest(125, RANDOM_ENGINE_MERSENNE_TWISTER); // 125 ms is exactly 16 game ticks, every frame moves the party equally.
-    auto yTape = tapes.custom([] { return std::tuple(pParty->GetPlayingTime(), pParty->pos.y); }); // Playing time makes every frame a new tape value.
+    auto yTape = tapes.custom([] { return std::pair(pParty->GetPlayingTime(), pParty->pos.y); }); // Playing time makes every frame a new tape value.
+    auto zTape = tapes.custom([] { return static_cast<int>(pParty->pos.z); });
     engine->config->debug.NoActors.setValue(true);
     game.startNewGame();
     game.teleportTo(MAP_MERCENARY_GUILD, Vec3f(896, 2700, 1), 270); // Facing the exit door.
@@ -874,13 +875,14 @@ GAME_TEST(Issues, Issue1890) {
     game.pressGuiButton("Transition_Yes");
     game.tick();
     game.skipLoadingScreen();
-    EXPECT_EQ(pParty->pos.z, 3088); // On top of the first step.
     test.startTaping();
     game.tick(); // Tape the arrival spot, so the first step is measured from it.
     game.pressKey(PlatformKey::KEY_UP);
     game.tick(10);
     game.releaseKey(PlatformKey::KEY_UP);
-    auto steps = yTape.map([](const auto &entry) { return std::get<1>(entry); }).reverse().adjacentDeltas(); // Forward is -y here.
+    auto steps = yTape.map([](const auto &entry) { return entry.second; }).reverse().adjacentDeltas(); // Forward is -y here.
+    EXPECT_EQ(zTape.front(), 3088); // Arrived on top of the first step.
+    EXPECT_LT(zTape.adjacentDeltas().max(), 0); // Stepped down off it and kept going down the slope, never bouncing up.
     EXPECT_EQ(steps.min(), steps.max()); // The party moves the same distance every frame.
 }
 
