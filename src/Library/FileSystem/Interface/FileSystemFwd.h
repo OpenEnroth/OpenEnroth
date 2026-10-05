@@ -12,5 +12,4 @@ class FileSystemTrie;
 } // namespace detail
 
 class FileSystem;
-class FileSystemPath;
-class FileSystemPathView;
+class PathView;

@@ -4,121 +4,127 @@
 #include <memory>
 #include <string>
 
-#include "FileSystemPath.h"
+#include "NormalizedFileSystemPath.h"
 
 #include "FileSystemException.h"
 
 bool FileSystem::exists(std::string_view path) const {
-    return exists(FileSystemPath(path));
+    return exists(Path(path));
 }
 
-bool FileSystem::exists(FileSystemPathView path) const {
-    if (path.isEmpty())
+bool FileSystem::exists(PathView path) const {
+    NormalizedFileSystemPath normalPath(path);
+    if (normalPath.isEmpty())
         return true; // Root always exists.
-    if (path.isEscaping())
-        return false; // Escaping paths are not accessible through this interface.
-    return _exists(path);
+    if (!normalPath.isAccessible())
+        return false;
+    return _exists(normalPath);
 }
 
 FileStat FileSystem::stat(std::string_view path) const {
-    return stat(FileSystemPath(path));
+    return stat(Path(path));
 }
 
-FileStat FileSystem::stat(FileSystemPathView path) const {
-    if (path.isEmpty())
+FileStat FileSystem::stat(PathView path) const {
+    NormalizedFileSystemPath normalPath(path);
+    if (normalPath.isEmpty())
         return FileStat(FILE_DIRECTORY, 0);
-    if (path.isEscaping())
+    if (!normalPath.isAccessible())
         return FileStat();
-    return _stat(path);
+    return _stat(normalPath);
 }
 
 std::vector<DirectoryEntry> FileSystem::ls(std::string_view path) const {
-    return ls(FileSystemPath(path));
+    return ls(Path(path));
 }
 
-std::vector<DirectoryEntry> FileSystem::ls(FileSystemPathView path) const {
-    if (path.isEscaping())
-        FileSystemException::raise(this, FS_LS_FAILED_PATH_NOT_ACCESSIBLE, path);
+std::vector<DirectoryEntry> FileSystem::ls(PathView path) const {
     std::vector<DirectoryEntry> result;
-    _ls(path, &result);
+    ls(path, &result);
     return result;
 }
 
 void FileSystem::ls(std::string_view path, std::vector<DirectoryEntry> *entries) const {
-    ls(FileSystemPath(path), entries);
+    ls(Path(path), entries);
 }
 
-void FileSystem::ls(FileSystemPathView path, std::vector<DirectoryEntry> *entries) const {
-    if (path.isEscaping())
+void FileSystem::ls(PathView path, std::vector<DirectoryEntry> *entries) const {
+    NormalizedFileSystemPath normalPath(path);
+    if (!normalPath.isAccessible())
         FileSystemException::raise(this, FS_LS_FAILED_PATH_NOT_ACCESSIBLE, path);
     entries->clear();
-    _ls(path, entries);
+    _ls(normalPath, entries);
 }
 
 Blob FileSystem::read(std::string_view path) const {
-    return read(FileSystemPath(path));
+    return read(Path(path));
 }
 
-Blob FileSystem::read(FileSystemPathView path) const {
-    if (path.isEmpty())
+Blob FileSystem::read(PathView path) const {
+    NormalizedFileSystemPath normalPath(path);
+    if (normalPath.isEmpty())
         FileSystemException::raise(this, FS_READ_FAILED_PATH_IS_DIR, path);
-    if (path.isEscaping())
+    if (!normalPath.isAccessible())
         FileSystemException::raise(this, FS_READ_FAILED_PATH_NOT_ACCESSIBLE, path);
-    return _read(path);
+    return _read(normalPath);
 }
 
 void FileSystem::write(std::string_view path, const Blob &data) {
-    return write(FileSystemPath(path), data);
+    return write(Path(path), data);
 }
 
-void FileSystem::write(FileSystemPathView path, const Blob &data) {
-    if (path.isEmpty())
+void FileSystem::write(PathView path, const Blob &data) {
+    NormalizedFileSystemPath normalPath(path);
+    if (normalPath.isEmpty())
         FileSystemException::raise(this, FS_WRITE_FAILED_PATH_IS_DIR, path);
-    if (path.isEscaping())
+    if (!normalPath.isAccessible())
         FileSystemException::raise(this, FS_WRITE_FAILED_PATH_NOT_ACCESSIBLE, path);
-    _write(path, data);
+    _write(normalPath, data);
 }
 
 std::unique_ptr<InputStream> FileSystem::openForReading(std::string_view path) const {
-    return openForReading(FileSystemPath(path));
+    return openForReading(Path(path));
 }
 
-std::unique_ptr<InputStream> FileSystem::openForReading(FileSystemPathView path) const {
-    if (path.isEmpty())
+std::unique_ptr<InputStream> FileSystem::openForReading(PathView path) const {
+    NormalizedFileSystemPath normalPath(path);
+    if (normalPath.isEmpty())
         FileSystemException::raise(this, FS_READ_FAILED_PATH_IS_DIR, path);
-    if (path.isEscaping())
+    if (!normalPath.isAccessible())
         FileSystemException::raise(this, FS_READ_FAILED_PATH_NOT_ACCESSIBLE, path);
-    return _openForReading(path);
+    return _openForReading(normalPath);
 }
 
 std::unique_ptr<OutputStream> FileSystem::openForWriting(std::string_view path) {
-    return openForWriting(FileSystemPath(path));
+    return openForWriting(Path(path));
 }
 
-std::unique_ptr<OutputStream> FileSystem::openForWriting(FileSystemPathView path) {
-    if (path.isEmpty())
+std::unique_ptr<OutputStream> FileSystem::openForWriting(PathView path) {
+    NormalizedFileSystemPath normalPath(path);
+    if (normalPath.isEmpty())
         FileSystemException::raise(this, FS_WRITE_FAILED_PATH_IS_DIR, path);
-    if (path.isEscaping())
+    if (!normalPath.isAccessible())
         FileSystemException::raise(this, FS_WRITE_FAILED_PATH_NOT_ACCESSIBLE, path);
-    return _openForWriting(path);
+    return _openForWriting(normalPath);
 }
 
 bool FileSystem::remove(std::string_view path) {
-    return remove(FileSystemPath(path));
+    return remove(Path(path));
 }
 
-bool FileSystem::remove(FileSystemPathView path) {
-    if (path.isEmpty())
+bool FileSystem::remove(PathView path) {
+    NormalizedFileSystemPath normalPath(path);
+    if (normalPath.isEmpty())
         FileSystemException::raise(this, FS_REMOVE_FAILED_PATH_NOT_WRITEABLE, path);
-    if (path.isEscaping())
+    if (!normalPath.isAccessible())
         FileSystemException::raise(this, FS_REMOVE_FAILED_PATH_NOT_ACCESSIBLE, path);
-    return _remove(path);
+    return _remove(normalPath);
 }
 
 std::string FileSystem::displayPath(std::string_view path) const {
-    return displayPath(FileSystemPath(path));
+    return displayPath(Path(path));
 }
 
-std::string FileSystem::displayPath(FileSystemPathView path) const {
-    return _displayPath(path);
+std::string FileSystem::displayPath(PathView path) const {
+    return _displayPath(NormalizedFileSystemPath(path)); // Never refuses, raising an exception formats the path through here.
 }

@@ -9,9 +9,9 @@
  */
 class ReadOnlyFileSystem : public FileSystem {
  private:
-    virtual void _write(FileSystemPathView path, const Blob &data) override;
-    virtual std::unique_ptr<OutputStream> _openForWriting(FileSystemPathView path) override;
-    virtual bool _remove(FileSystemPathView path) override;
+    virtual void _write(PathView path, const Blob &data) override;
+    virtual std::unique_ptr<OutputStream> _openForWriting(PathView path) override;
+    virtual bool _remove(PathView path) override;
 
-    [[noreturn]] void reportWriteError(FileSystemPathView path) const;
+    [[noreturn]] void reportWriteError(PathView path) const;
 };
