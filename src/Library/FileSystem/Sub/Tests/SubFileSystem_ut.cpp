@@ -1,4 +1,6 @@
 #include <string>
+#include <string_view>
+#include <vector>
 
 #include "Testing/Unit/UnitTest.h"
 
@@ -117,4 +119,25 @@ UNIT_TEST(SubFileSystem, RootWhenBasePathIsEmpty) {
     EXPECT_EQ(sub.stat(""), FileStat(FILE_DIRECTORY, 0));
     EXPECT_EQ(sub.ls("").size(), 1);
     EXPECT_EQ(sub.read("1.txt").str(), "lol");
+}
+
+UNIT_TEST(SubFileSystem, InaccessibleBasePath) {
+    // A base path the base file system refuses gets every call refused, the root included.
+    MemoryFileSystem base("memfs");
+    base.write("file.txt", Blob::fromString("hello"));
+
+    std::vector<std::string_view> basePaths = {"..", "a/../..", "/../x"};
+#ifdef _WINDOWS
+    basePaths.push_back("C:");
+    basePaths.push_back("C:x");
+    basePaths.push_back("./C:/x");
+#endif
+
+    for (std::string_view basePath : basePaths) {
+        SubFileSystem sub(basePath, &base);
+        EXPECT_FALSE(sub.exists("file.txt")) << basePath;
+        EXPECT_ANY_THROW((void) sub.read("file.txt")) << basePath;
+        EXPECT_ANY_THROW(sub.write("file.txt", Blob())) << basePath;
+        EXPECT_TRUE(sub.ls("").empty()) << basePath;
+    }
 }
