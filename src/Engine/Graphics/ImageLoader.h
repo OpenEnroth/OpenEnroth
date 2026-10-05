@@ -77,11 +77,15 @@ class Bitmaps_LOD_Loader : public ImageLoader {
 
 class Bitmaps_GEN_Loader : public ImageLoader {
  public:
-    explicit inline Bitmaps_GEN_Loader(std::string_view filename) {
+    inline Bitmaps_GEN_Loader(ResourceManager *resources, std::string_view filename) {
         this->resource_name = filename;
+        this->resources = resources;
     }
 
     virtual bool Load(RgbaImage *rgbaImage) override;
+
+ protected:
+    ResourceManager *resources = nullptr;
 };
 
 class Sprites_LOD_Loader : public ImageLoader {

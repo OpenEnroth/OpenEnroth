@@ -107,6 +107,8 @@ class OpenGLRenderer : public BaseRenderer {
 
     void SetFogParametersGL();
 
+    void ensurePaletteTexture();
+
     void _initImGui();
     void _shutdownImGui();
     void _initWaterTiles();

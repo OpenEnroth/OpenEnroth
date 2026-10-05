@@ -5,7 +5,6 @@
 #include <string>
 
 #include "Engine/Data/ResourceMask.h"
-#include "Engine/Graphics/PaletteManager.h"
 
 #include "Library/Image/ImageFunctions.h"
 #include "Library/Image/Pcx.h"
@@ -17,6 +16,7 @@
 #include "Library/Logger/Logger.h"
 #include "Library/FileSystem/Interface/FileSystem.h"
 
+#include "Utility/Math/Float.h"
 #include "Utility/String/Ascii.h"
 #include "Utility/String/Format.h"
 #include "Utility/Lambda.h"
@@ -105,7 +105,9 @@ static Palette grayscalePalette() {
 ResourceManager::ResourceManager() = default;
 ResourceManager::~ResourceManager() = default;
 
-void ResourceManager::open() {
+void ResourceManager::open(float saturation, float lightness) {
+    _saturation = saturation;
+    _lightness = lightness;
     _eventsLodReader.open(dfs->read("data/events.lod"));
     _iconsLodReader.open(dfs->read("data/icons.lod"));
     _bitmapsLodReader.open(dfs->read("data/bitmaps.lod"));
@@ -115,6 +117,14 @@ void ResourceManager::open() {
     //  on exception:
     //      Error(localization->str(LSTR_MIGHT_AND_MAGIC_VII_IS_HAVING_TROUBLE), localization->str(LSTR_REINSTALL_NECESSARY));
     // but we can't use localization object here cause it's not yet initialized.
+}
+
+void ResourceManager::desaturate(std::span<Color> colors) const {
+    if (fuzzyEquals(_saturation, 1.0f) && fuzzyEquals(_lightness, 1.0f))
+        return;
+
+    for (Color &color : colors)
+        color = color.toHsvColorf().adjusted(0, _saturation, _lightness).toColor();
 }
 
 Blob ResourceManager::eventsData(std::string_view filename) {
@@ -148,8 +158,8 @@ RgbaImage ResourceManager::bitmap(std::string_view filename) {
         return {};
 
     std::string name = ascii::toLower(filename);
-    // TODO(captainurist): PaletteManager lives in engine_graphics, above engine_resources. Move desaturation down.
-    Palette palette = PaletteManager::createLoadedPalette(maskedPalette(image, valueOr(_masks.bitmaps, name)));
+    Palette palette = maskedPalette(image, valueOr(_masks.bitmaps, name));
+    desaturate(palette.colors);
     if (std::ranges::all_of(palette.colors, _1 != 0, &Color::a))
         return makeRgbaImage(image.image, palette);
 
@@ -193,9 +203,9 @@ LodFont ResourceManager::font(std::string_view filename) {
 
 Palette ResourceManager::palette(int paletteId) {
     std::string name = fmt::format("pal{:03}", paletteId);
-    if (!_bitmapsLodReader.exists(name))
-        return grayscalePalette();
-    return lod::decodeImage(_bitmapsLodReader.read(name)).palette;
+    Palette result = _bitmapsLodReader.exists(name) ? lod::decodeImage(_bitmapsLodReader.read(name)).palette : grayscalePalette();
+    desaturate(result.colors);
+    return result;
 }
 
 RgbaImage ResourceManager::sprite(std::string_view filename) {

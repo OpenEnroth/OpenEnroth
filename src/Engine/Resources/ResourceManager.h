@@ -1,5 +1,6 @@
 #pragma once
 
+#include <span>
 #include <string_view>
 
 #include "Engine/Tables/ResourceMaskTable.h"
@@ -21,7 +22,20 @@ class ResourceManager {
     ResourceManager();
     ~ResourceManager();
 
-    void open();
+    /**
+     * Opens the LODs in `data` and loads the mask table.
+     *
+     * @param saturation                Saturation multiplier for bitmaps, palettes and `desaturate()`.
+     * @param lightness                 Lightness multiplier for bitmaps, palettes and `desaturate()`.
+     */
+    void open(float saturation = 1.0f, float lightness = 1.0f);
+
+    /**
+     * Applies the saturation and lightness passed to `open()`.
+     *
+     * @param colors                    Colors to adjust in place.
+     */
+    void desaturate(std::span<Color> colors) const;
 
     Blob eventsData(std::string_view filename);
 
@@ -60,7 +74,8 @@ class ResourceManager {
 
     /**
      * @param paletteId                 Palette id, the `NNN` in the `palNNN` image in `bitmaps.lod`.
-     * @return                          The palette, or a grayscale palette if `bitmaps.lod` has no such palette.
+     * @return                          The desaturated palette, or a desaturated grayscale palette if `bitmaps.lod`
+     *                                  has no such palette.
      *                                  Most ids are unused, so a missing palette isn't logged.
      */
     Palette palette(int paletteId);
@@ -84,4 +99,6 @@ class ResourceManager {
     LodReader _bitmapsLodReader;
     LodReader _spritesLodReader;
     ResourceMaskTable _masks;
+    float _saturation = 1.0f;
+    float _lightness = 1.0f;
 };

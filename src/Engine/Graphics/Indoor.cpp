@@ -889,10 +889,6 @@ void loadAndPrepareBLV(MapId mapid, bool bLoading) {
 
     engine->SetUnderwater(isMapUnderwater(mapid));
 
-    //pPaletteManager->pPalette_tintColor[0] = 0;
-    //pPaletteManager->pPalette_tintColor[1] = 0;
-    //pPaletteManager->pPalette_tintColor[2] = 0;
-    //pPaletteManager->RecalculateAll();
     pParty->_delayedReactionTimer = 0_ticks;
 
     mapFilename = pMapTable->pInfos[mapid].fileName;
@@ -921,13 +917,6 @@ void loadAndPrepareBLV(MapId mapid, bool bLoading) {
     }
 
     BLV_InitialiseDoors();
-
-    /*for (unsigned i = 0; i < pIndoor->uNumFaces; ++i)
-    {
-        if (pIndoor->pFaces[i].uBitmapID != -1)
-            pBitmaps_LOD->pTextures[pIndoor->pFaces[i].uBitmapID].palette_id2 =
-    pPaletteManager->LoadPalette(pBitmaps_LOD->pTextures[pIndoor->pFaces[i].uBitmapID].palette_id1);
-    }*/
 
     pGameLoadingUI_ProgressBar->Progress();
     decorationsWithSound.clear();

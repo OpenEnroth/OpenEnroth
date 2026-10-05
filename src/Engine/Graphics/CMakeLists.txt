@@ -18,7 +18,6 @@ set(ENGINE_GRAPHICS_SOURCES
         LocationFunctions.cpp
         Outdoor.cpp
         Overlays.cpp
-        PaletteManager.cpp
         ParticleEngine.cpp
         PortalFunctions.cpp
         Sprites.cpp
@@ -47,7 +46,6 @@ set(ENGINE_GRAPHICS_HEADERS
         MapWeather.h
         Outdoor.h
         Overlays.h
-        PaletteManager.h
         ParticleEngine.h
         PortalFunctions.h
         RenderEntities.h
