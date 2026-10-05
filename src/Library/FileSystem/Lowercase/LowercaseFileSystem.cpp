@@ -228,6 +228,7 @@ std::tuple<Path, LowercaseFileSystem::Node *, PathView> LowercaseFileSystem::loc
     if (node->value().conflicting)
         FileSystemException::raise(this, FS_WRITE_FAILED_PATH_NOT_WRITEABLE, path);
 
-    basePath /= tail;
+    if (!tail.isEmpty())
+        basePath /= tail;
     return result;
 }

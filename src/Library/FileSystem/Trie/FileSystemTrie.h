@@ -8,8 +8,7 @@
 #include <string>
 
 #include "Utility/String/TransparentFunctors.h"
-
-#include "Utility/System/Path.h"
+#include "Utility/System/PathView.h"
 
 namespace detail {
 
@@ -66,7 +65,7 @@ class FileSystemTrieNode {
 };
 
 /**
- * Trie map from a normalized `Path` to `T`.
+ * Trie map from a normalized path to `T`.
  * 
  * Each node can contain a value, even if it's not a leaf node. If the user needs a trie that only contains values in
  * the leaf nodes, then it's up to the user to maintain this invariant.

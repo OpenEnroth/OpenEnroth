@@ -141,3 +141,14 @@ UNIT_TEST(SubFileSystem, InaccessibleBasePath) {
         EXPECT_TRUE(sub.ls("").empty()) << basePath;
     }
 }
+
+UNIT_TEST(SubFileSystem, BasePathIsNormalized) {
+    // Every spelling of the base path points at the same directory.
+    MemoryFileSystem base("memfs");
+    base.write("dir/file.txt", Blob::fromString("hello"));
+
+    for (std::string_view basePath : {"/dir/", "./dir", "dir\\", "x/../dir"}) {
+        SubFileSystem sub(basePath, &base);
+        EXPECT_EQ(sub.read("file.txt").str(), "hello") << basePath;
+    }
+}

@@ -5,7 +5,7 @@
 /**
  * A path inside a `FileSystem`, brought to the normal form the file system layer works in. A backslash is a
  * separator on every platform, leading separators are dropped, so `"/a"` is `"a"`, and the rest is normalized. A
- * path that's in normal form already is viewed rather than copied.
+ * path that's in normal form already is viewed rather than copied, so it has to outlive this object.
  */
 class NormalizedFileSystemPath {
  public:
@@ -24,11 +24,11 @@ class NormalizedFileSystemPath {
 
     /**
      * @return                          Whether a file system can reach this path. It can't if the path escapes the
-     *                                  root, or names a drive on Windows, as `"C:/a"` and `"./C:/a"` do.
+     *                                  root. On Windows it can't if a segment starts with a drive, as in `"C:/a"`
+     *                                  or `"a/c:b"`, because a split hands out tails that start at a segment, and
+     *                                  such a tail reads as a root.
      */
-    [[nodiscard]] bool isAccessible() const {
-        return _view.root().empty() && !_view.isEscaping();
-    }
+    [[nodiscard]] bool isAccessible() const;
 
  private:
     Path _owned;
