@@ -123,42 +123,30 @@ void DoInteractionWithTopmostZObject(Pid pid) {
             }
             break;
 
-        case OBJECT_Face:
+        case OBJECT_Face: {
+            const BLVFace *face = nullptr;
             if (uCurrentlyLoadedLevelType == LEVEL_OUTDOOR) {
-                int bmodel_id = id >> 6;
-                int face_id = id & 0x3F;
-
-                if (bmodel_id >= pOutdoor->pBModels.size()) {
+                if ((id >> 6) >= pOutdoor->pBModels.size())
                     return;
-                }
-
-                BLVFace &model = pOutdoor->pBModels[bmodel_id].faces[face_id];
-
-                if (model.attributes & FACE_EVENT_IS_HINT || model.eventId == 0) {
-                    return;
-                }
-
-                if (pParty->hasActiveCharacter()) {
-                    eventProcessor(pOutdoor->pBModels[bmodel_id].faces[face_id].eventId, pid, 1);
-                } else {
-                    engine->_statusBar->setEvent(LSTR_NOBODY_IS_IN_CONDITION);
-                }
+                face = &pOutdoor->face(pid);
             } else {
-                if (!(pIndoor->faces[id].attributes & FACE_CLICKABLE)) {
-                    engine->_statusBar->nothingHere();
-                    return;
-                }
-                if (pIndoor->faces[id].attributes & FACE_EVENT_IS_HINT || !pIndoor->faces[id].eventId) {
-                    return;
-                }
+                face = &pIndoor->faces[id];
+            }
 
-                if (pParty->hasActiveCharacter()) {
-                    eventProcessor((int16_t)pIndoor->faces[id].eventId, pid, 1);
-                } else {
-                    engine->_statusBar->setEvent(LSTR_NOBODY_IS_IN_CONDITION);
-                }
+            if (!face->Clickable()) {
+                engine->_statusBar->nothingHere();
+                return;
+            }
+            if (face->attributes & FACE_EVENT_IS_HINT || face->eventId == 0)
+                return;
+
+            if (pParty->hasActiveCharacter()) {
+                eventProcessor(face->eventId, pid, 1);
+            } else {
+                engine->_statusBar->setEvent(LSTR_NOBODY_IS_IN_CONDITION);
             }
             break;
+        }
 
         default:
             MM_WARNING("Warning: Invalid ID reached!");

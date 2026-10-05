@@ -6,11 +6,14 @@
 #include <optional>
 #include <ranges>
 #include <string>
+#include <unordered_set>
 #include <utility>
+#include <vector>
 
 #include "Engine/Engine.h"
 #include "Engine/EngineGlobals.h"
 #include "Engine/AssetsManager.h"
+#include "Engine/Evt/EvtProgram.h"
 #include "Engine/Evt/Processor.h"
 #include "Engine/Graphics/BspRenderer.h"
 #include "Engine/Graphics/Collisions.h"
@@ -320,6 +323,11 @@ void IndoorLocation::Load(std::string_view filename, int num_days_played, int re
     }
 
     reconstruct(delta, this);
+
+    std::vector<BLVFace *> allFaces;
+    for (BLVFace &face : faces)
+        allFaces.push_back(&face);
+    repairClickableFaces(allFaces);
 
     if (respawnTimed || respawnInitial)
         dlv.lastRespawnDay = num_days_played;
@@ -1310,6 +1318,53 @@ bool Check_LOS_Obscurred_Outdoors_Bmodels(const Vec3f &target, const Vec3f &from
     }
 
     return false;
+}
+
+static bool isInteractiveEvent(int eventId) {
+    const EvtProgram &program = engine->_localEventMap;
+    if (!program.hasEvent(eventId))
+        return false;
+
+    for (const EvtInstruction &ir : program.function(eventId)) {
+        if (ir.step != 0)
+            continue;
+
+        switch (ir.opcode) {
+        case EVENT_Exit:
+        case EVENT_OnTimer:
+        case EVENT_OnMapReload:
+        case EVENT_OnLongTimer:
+        case EVENT_OnCanShowDialogItemCmp:
+        case EVENT_OnMapLeave:
+        case EVENT_OnDateTimer:
+            return false;
+        default:
+            return true;
+        }
+    }
+    return false;
+}
+
+void repairClickableFaces(std::span<BLVFace *> faces) {
+    const FaceAttributes triggers = FACE_PRESSURE_PLATE | FACE_TriggerByObject | FACE_TriggerByMonster;
+
+    std::unordered_set<int> clickableEvents;
+    std::unordered_set<int> triggeredEvents;
+    for (const BLVFace *face : faces) {
+        if (face->attributes & FACE_CLICKABLE)
+            clickableEvents.insert(face->eventId);
+        if (face->attributes & triggers)
+            triggeredEvents.insert(face->eventId);
+    }
+
+    for (BLVFace *face : faces) {
+        if (!face->eventId || (face->attributes & (FACE_CLICKABLE | triggers)))
+            continue;
+        if (triggeredEvents.contains(face->eventId) && !clickableEvents.contains(face->eventId))
+            continue;
+        if (isInteractiveEvent(face->eventId))
+            face->attributes |= FACE_CLICKABLE;
+    }
 }
 
 //----- (0046BDF1) --------------------------------------------------------
