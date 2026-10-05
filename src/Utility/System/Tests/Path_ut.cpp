@@ -114,6 +114,8 @@ UNIT_TEST(Path, Normalized) {
     testOne("//server/share/a/..", "//server/share/");
     testOne("//server/share/..", "//server/share/");
     testOne("./C:/a", "C:/a"); // Dropping the "." leaves the drive letter leading.
+    testOne("./C:.", "C:"); // The new drive's "." goes in the same call.
+    testOne("./C:./a", "C:a");
 #endif
 }
 
@@ -154,6 +156,7 @@ UNIT_TEST(Path, Decomposition) {
     testOne("b.c", "", "b.c", "b", ".c");
     testOne("a/b", "a", "b", "b", "");
     testOne("a/b.c", "a", "b.c", "b", ".c");
+    testOne("a/", "a", "", "", "");
     testOne("1/2/3/xyz.txt", "1/2/3", "xyz.txt", "xyz", ".txt");
     testOne("x.y/z.f/a.b.c.d", "x.y/z.f", "a.b.c.d", "a.b.c", ".d");
     testOne("x/y/z/some.", "x/y/z", "some.", "some", ".");
@@ -196,7 +199,8 @@ UNIT_TEST(Path, Root) {
 UNIT_TEST(Path, Split) {
     auto segments = [] (std::string_view path) {
         std::vector<std::string> result;
-        for (std::string_view segment : Path(path).split())
+        Path owner(path);
+        for (std::string_view segment : owner.split())
             result.emplace_back(segment);
         return result;
     };
@@ -229,11 +233,28 @@ UNIT_TEST(Path, SplitTails) {
 }
 
 UNIT_TEST(Path, AppendView) {
+    // Appending a view joins the same way operator/ does.
+    auto testOne = [] (std::string_view head, std::string_view tail) {
+        Path result(head);
+        result /= Path(tail);
+        EXPECT_EQ(result, Path(head) / Path(tail)) << "for '" << head << "' and '" << tail << "'";
+    };
+
+    testOne("", "a");
+    testOne("a", "");
+    testOne("a", "b/c");
+    testOne("a/", "b");
+    testOne("/", "a");
+    testOne("a", "/b");
+#ifdef _WINDOWS
+    testOne("C:", "a");
+    testOne("C:/a", "D:b");
+    testOne("C:/a", "c:b");
+#endif
+
     Path head("a");
     Path tail("b/c");
-    head /= PathView(tail);
-    EXPECT_EQ(head, Path("a/b/c"));
-    EXPECT_EQ(PathView(head) / PathView(tail), Path("a/b/c/b/c"));
+    EXPECT_EQ(PathView(head) / PathView(tail), Path("a/b/c"));
 }
 
 #ifdef _WINDOWS

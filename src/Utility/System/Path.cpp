@@ -125,6 +125,11 @@ static std::string normalizePath(std::string_view path) {
     if (root.hasRootDirectory)
         result += separator;
     result += join(segments, separator);
+
+    // Dropping the leading segments can turn the first remaining one into a drive, and "./C:." becomes "C:.", whose
+    // "." only goes away on a second pass.
+    if (rootEnd(parseRoot(result)) != rootEnd(root))
+        return normalizePath(result);
     return result;
 }
 
@@ -236,6 +241,16 @@ Path Path::parent() const {
     Path result;
     result._path = _path.substr(0, parentEnd(_path));
     return result;
+}
+
+Path &Path::operator/=(PathView tail) {
+    if (!tail.root().empty())
+        return *this = *this / Path(tail);
+
+    if (!_path.empty() && _path.back() != separator)
+        _path += separator;
+    _path += tail.str();
+    return *this;
 }
 
 Path Path::withExtension(std::string_view extension) const {

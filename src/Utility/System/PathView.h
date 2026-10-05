@@ -61,6 +61,11 @@ class PathView {
     friend auto operator<=>(PathView l, PathView r) = default;
 
  private:
+    friend class PathSplit; // A tail of a split is a slice of the split path, so it's taken as is.
+
+    explicit PathView(std::string_view path) : _path(path) {}
+
+ private:
     std::string_view _path;
 };
 
@@ -68,14 +73,14 @@ class PathView {
     std::string_view path = str();
     assert(chunk.data() >= path.data() && chunk.data() + chunk.size() <= path.data() + path.size());
     size_t offset = chunk.data() - path.data();
-    return PathView::fromNormalized(path.substr(offset));
+    return PathView(path.substr(offset));
 }
 
 [[nodiscard]] inline PathView PathSplit::tailAfter(std::same_as<std::string_view> auto chunk) const {
     std::string_view path = str(); // NOLINT: not std::string.
 
     if (chunk.empty())
-        return PathView::fromNormalized(path);
+        return PathView(path);
 
     assert(chunk.data() >= path.data() && chunk.data() + chunk.size() <= path.data() + path.size());
 
@@ -83,6 +88,6 @@ class PathView {
         return {};
     } else {
         size_t offset = chunk.data() + chunk.size() - path.data() + 1;
-        return PathView::fromNormalized(path.substr(offset));
+        return PathView(path.substr(offset));
     }
 }

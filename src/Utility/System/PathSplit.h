@@ -1,7 +1,8 @@
 #pragma once
 
-#include <ranges>
 #include <concepts>
+#include <ranges>
+#include <string_view>
 
 #include "Utility/String/Split.h"
 

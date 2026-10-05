@@ -1,3 +1,4 @@
+#include <algorithm>
 #include <ranges>
 #include <string>
 #include <vector>
@@ -152,7 +153,7 @@ UNIT_TEST(NativeFileSystem, NonAsciiFileNames) {
 
     NativeFileSystem fs("tmp_native_dir");
     std::vector<DirectoryEntry> entries = fs.ls("");
-    ASSERT_EQ(entries.size(), 1);
+    ASSERT_EQ(entries.size(), 1u);
 
     std::string name = entries[0].name;
     EXPECT_EQ(name, "\xD0\xBB\xD0\xBE\xD0\xBB.txt");

@@ -1,5 +1,6 @@
 #include "MaskingFileSystem.h"
 
+#include <cassert>
 #include <vector>
 #include <memory>
 #include <string>
@@ -19,7 +20,9 @@ void MaskingFileSystem::mask(std::string_view path) {
 }
 
 void MaskingFileSystem::mask(PathView path) {
-    _masks.insertOrAssign(NormalizedFileSystemPath(path), true);
+    NormalizedFileSystemPath normalPath(path);
+    assert(normalPath.isAccessible());
+    _masks.insertOrAssign(normalPath, true);
 }
 
 bool MaskingFileSystem::unmask(std::string_view path) {

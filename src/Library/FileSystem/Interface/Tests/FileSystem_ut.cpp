@@ -55,7 +55,7 @@ UNIT_TEST(FileSystem, DrivePathsAreRefused) {
     MemoryFileSystem fs("ram");
     fs.write("foo", Blob::fromString("lol"));
 
-    for (std::string_view path : {"C:/foo", "C:foo", "C:", "./C:/foo", "a/../C:/foo"}) {
+    for (std::string_view path : {"C:/foo", "C:foo", "C:", "./C:/foo", "a/../C:/foo", "a/c:foo", "a/C:"}) {
         EXPECT_FALSE(fs.exists(path)) << path;
         EXPECT_ANY_THROW((void) fs.read(path)) << path;
         EXPECT_ANY_THROW(fs.write(path, Blob())) << path;
@@ -65,6 +65,16 @@ UNIT_TEST(FileSystem, DrivePathsAreRefused) {
     // Leading separators are dropped before the root is read, so these aren't shares.
     EXPECT_TRUE(fs.exists("//foo"));
     EXPECT_TRUE(fs.exists("\\\\foo"));
+}
+#else
+UNIT_TEST(FileSystem, DriveLikeNamesAreNames) {
+    // Outside Windows a drive letter is an ordinary name.
+    MemoryFileSystem fs("ram");
+    fs.write("C:/foo", Blob::fromString("lol"));
+    fs.write("a/c:foo", Blob::fromString("kek"));
+
+    EXPECT_EQ(fs.read("C:/foo").str(), "lol");
+    EXPECT_EQ(fs.read("a/c:foo").str(), "kek");
 }
 #endif
 

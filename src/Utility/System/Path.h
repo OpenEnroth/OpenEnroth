@@ -12,9 +12,9 @@
  * The repo's vocabulary type for native paths - everything that takes a native path takes a `Path`.
  *
  * The path is stored as a string, WTF-8 on Windows and a byte string on POSIX, and path manipulation is lexical.
- * Everything that asks the OS lives in `Fs.h`. Separators are normalized to forward slashes on Windows, where
- * both slashes separate path components. On POSIX a backslash is an ordinary character in a file name, so it is left
- * alone.
+ * Everything that asks the OS lives in `Fs.h`. Backslashes are converted to forward slashes on Windows, where both
+ * slashes separate path components. On POSIX a backslash is an ordinary character in a file name, so it is left
+ * alone. Otherwise a path keeps the bytes it was built from, and `normalized` brings it to normal form.
  *
  * Unlike `std::filesystem::path`, this class does not depend on the C locale. On Windows constructing an
  * `std::filesystem::path` from a narrow string converts it per the C locale, while here all charset conversions are
@@ -173,9 +173,7 @@ class Path {
      */
     [[nodiscard]] Path operator/(const Path &tail) const;
 
-    Path &operator/=(PathView tail) {
-        return *this = *this / Path(tail);
-    }
+    Path &operator/=(PathView tail);
 
     friend auto operator<=>(const Path &l, const Path &r) = default;
 
