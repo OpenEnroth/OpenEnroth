@@ -161,3 +161,14 @@ UNIT_TEST(MountingFileSystem, LsMergeWithManyVirtualDirs) {
     EXPECT_TRUE(std::ranges::contains(entries, DirectoryEntry("x", FILE_REGULAR)));
 }
 
+UNIT_TEST(MountingFileSystem, MountPathsAreNormalized) {
+    // A mount point is keyed by the normal form of its path.
+    MemoryFileSystem mfs("");
+    mfs.write("x", Blob::fromString("lol"));
+
+    MountingFileSystem fs("");
+    fs.mount("/m/", &mfs);
+    EXPECT_EQ(fs.read("m/x").str(), "lol");
+    EXPECT_TRUE(fs.unmount("m\\"));
+    EXPECT_FALSE(fs.exists("m/x"));
+}
