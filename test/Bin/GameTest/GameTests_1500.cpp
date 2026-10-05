@@ -876,7 +876,7 @@ GAME_TEST(Issues, Issue1890) {
     game.tick();
     game.skipLoadingScreen();
     test.startTaping();
-    game.tick(); // Tape the arrival spot, so the first step is measured from it.
+    game.tick();
     game.pressKey(PlatformKey::KEY_UP);
     game.tick(10);
     game.releaseKey(PlatformKey::KEY_UP);
