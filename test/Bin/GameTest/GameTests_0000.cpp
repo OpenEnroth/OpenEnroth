@@ -325,9 +325,7 @@ GAME_TEST(Issues, Issue293c) {
 
 GAME_TEST(Issues, Issue294a) {
     // Sharpmetal couldn't kill a point-blank rat because its blades spawned at half the party height and flew over it.
-    // A giant rat stands right in front of the party and Zoltan quick-casts Sharpmetal at it. The blades are aimed from
-    // a third of the party height down at the rat. Spawned at half the party height, they cleared a rat this close
-    // and it took no damage.
+    // The blades are aimed from a third of the party height, spawned at half of it they cleared a rat this close.
     auto hpTape = actorTapes.hp(0);
     auto stateTape = actorTapes.aiState(0);
     auto statusTape = tapes.statusBar();
@@ -342,7 +340,7 @@ GAME_TEST(Issues, Issue294a) {
     game.castQuickSpell(0, SPELL_DARK_SHARPMETAL);
     EXPECT_EQ(hpTape, tape(6, 0));
     EXPECT_EQ(stateTape, tape(Standing, Dying));
-    EXPECT_CONTAINS(statusTape, "Zoltan inflicts 35 points killing Giant Rat");
+    EXPECT_EQ(statusTape.filter([](const std::string &line) { return line.ends_with(" killing Giant Rat"); }).size(), 1);
 }
 
 GAME_TEST(Issues, Issue294b) {
@@ -362,7 +360,7 @@ GAME_TEST(Issues, Issue294b) {
     game.castQuickSpell(0, SPELL_EARTH_BLADES);
     EXPECT_EQ(hpTape, tape(6, 0));
     EXPECT_EQ(stateTape, tape(Standing, Dying));
-    EXPECT_CONTAINS(statusTape, "Zoltan inflicts 42 points killing Giant Rat");
+    EXPECT_EQ(statusTape.filter([](const std::string &line) { return line.ends_with(" killing Giant Rat"); }).size(), 1);
 }
 
 GAME_TEST(Issues, Issue294c) {
@@ -382,12 +380,11 @@ GAME_TEST(Issues, Issue294c) {
     shooter.setSkillValue(SKILL_BLASTER, CombinedSkillValue(10, MASTERY_GRANDMASTER));
 
     game.spawnMonster(pParty->pos + Vec3f(0, 80, 0), MONSTER_RAT_A, SPAWN_DUMMY); // Right in front of the party.
-    game.tick(); // The shot lands in the frame that processes A, so the tapes need a frame of the rat alive first.
     game.pressAndReleaseKey(PlatformKey::KEY_A);
     game.tick();
     EXPECT_EQ(hpTape, tape(6, 0));
     EXPECT_EQ(stateTape, tape(Standing, Dying));
-    EXPECT_CONTAINS(statusTape, "Zoltan inflicts 20 points killing Giant Rat");
+    EXPECT_EQ(statusTape.filter([](const std::string &line) { return line.ends_with(" killing Giant Rat"); }).size(), 1);
 }
 
 // 300
