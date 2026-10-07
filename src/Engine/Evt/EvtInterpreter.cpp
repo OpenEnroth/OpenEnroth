@@ -275,6 +275,11 @@ EvtFlow EvtInterpreter::executeInstruction(EvtInstruction ir) {
             } else {
                 pGameLoadingUI_ProgressBar->Initialize((GUIProgressBar::Type)((activeLevelDecoration == NULL) + 1));
                 startMapTransition(destination);
+                if (_travelTime) {
+                    Rest(_travelTime);
+                    pParty->restAndHeal();
+                    pParty->days_played_without_rest = 0;
+                }
                 _mapExitTriggered = true;
                 if (current_screen_type == SCREEN_HOUSE) {
                     if (uGameState == GAME_STATE_CHANGE_LOCATION) {
@@ -333,9 +338,7 @@ EvtFlow EvtInterpreter::executeInstruction(EvtInstruction ir) {
                 pParty->alignment = PartyAlignment::PartyAlignment_Evil;
                 SetUserInterface(pParty->alignment);
             } else if (!movieName.compare("pcout01")) { // moving to harmondale from emerald isle
-                Rest(Duration::fromDays(7));
-                pParty->restAndHeal();
-                pParty->days_played_without_rest = 0;
+                _travelTime = Duration::fromDays(7);
             }
 
             // is this block is needed anymore?
