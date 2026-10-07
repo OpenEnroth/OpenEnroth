@@ -348,8 +348,8 @@ GAME_TEST(Issues, Issue294a) {
 }
 
 GAME_TEST(Issues, Issue294b) {
-    // Blaster shots flew over a point-blank rat because they spawned at half the party height.
-    // Same scenario as Issue294a, but Zoltan shoots the rat with a blaster by pressing A.
+    // Blaster shots couldn't kill a point-blank rat. They were aimed from a third of the party height but spawned at
+    // half of it, so they flew parallel to the aim and over the rat.
     auto hpTape = actorTapes.hp(0);
     auto stateTape = actorTapes.aiState(0);
     auto statusTape = tapes.statusBar();
