@@ -3,6 +3,7 @@
 #include <unordered_set>
 #include <ranges>
 #include <string>
+#include <utility>
 #include <regex>
 #include <vector>
 
@@ -861,12 +862,28 @@ GAME_TEST(Issues, Issue1898) {
 }
 
 GAME_TEST(Issues, Issue1890) {
-    // Stuck *in* stairs when leaving the Mercenary Guild
-    auto yPos = tapes.custom([]() { return static_cast<int>(pParty->pos.y); });
-    test.playTraceFromTestData("issue_1890.mm7", "issue_1890.json");
-    EXPECT_EQ(engine->_currentLoadedMapId, MAP_TATALIA);
-    EXPECT_CONTAINS(yPos, 16803); // starting point
-    EXPECT_LT(yPos.back(), 16700); // moved forwards
+    // Leaving the Mercenary Guild, the party landed inside the first step of the stairs in Tatalia instead of on top of it.
+    // Stuck in the step, it was held back when walking forward.
+    test.prepareForNextTest(125, RANDOM_ENGINE_MERSENNE_TWISTER); // 125 ms is exactly 16 game ticks, every frame moves the party equally.
+    auto yTape = tapes.custom([] { return std::pair(pParty->GetPlayingTime(), pParty->pos.y); }); // Playing time makes every frame a new tape value.
+    auto zTape = tapes.custom([] { return static_cast<int>(pParty->pos.z); });
+    engine->config->debug.NoActors.setValue(true);
+    game.startNewGame();
+    game.teleportTo(MAP_MERCENARY_GUILD, Vec3f(896, 2700, 1), 270); // Facing the exit door.
+    game.pressAndReleaseKey(PlatformKey::KEY_SPACE);
+    game.tick();
+    game.pressGuiButton("Transition_Yes");
+    game.tick();
+    game.skipLoadingScreen();
+    test.startTaping();
+    game.tick(); // Tape the arrival spot, so the first step is measured from it.
+    game.pressKey(PlatformKey::KEY_UP);
+    game.tick(10);
+    game.releaseKey(PlatformKey::KEY_UP);
+    auto steps = yTape.map([](const auto &entry) { return entry.second; }).reverse().adjacentDeltas(); // Forward is -y here.
+    EXPECT_EQ(zTape.front(), 3088); // Arrived on top of the first step.
+    EXPECT_LT(zTape.adjacentDeltas().max(), 0); // Only goes down. A party stuck in the step gets pushed up and out of it by collisions.
+    EXPECT_EQ(steps.min(), steps.max()); // The party moves the same distance every frame.
 }
 
 // 1900
