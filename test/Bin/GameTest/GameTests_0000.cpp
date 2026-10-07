@@ -343,7 +343,7 @@ GAME_TEST(Issues, Issue294a) {
         game.castQuickSpell(0, spell);
         EXPECT_EQ(hpTape, tape(6, 0));
         EXPECT_EQ(stateTape, tape(Standing, Dying));
-        EXPECT_CONTAINS(statusTape.map([](const std::string &line) { return line.ends_with(" killing Giant Rat"); }), true);
+        EXPECT_CONTAINS(statusTape, [](std::string_view status) { return status.ends_with(" killing Giant Rat"); });
     }
 }
 
@@ -368,7 +368,7 @@ GAME_TEST(Issues, Issue294b) {
     game.tick();
     EXPECT_EQ(hpTape, tape(6, 0));
     EXPECT_EQ(stateTape, tape(Standing, Dying));
-    EXPECT_CONTAINS(statusTape.map([](const std::string &line) { return line.ends_with(" killing Giant Rat"); }), true);
+    EXPECT_CONTAINS(statusTape, [](std::string_view status) { return status.ends_with(" killing Giant Rat"); });
 }
 
 // 300
