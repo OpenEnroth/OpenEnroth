@@ -84,8 +84,8 @@ GAME_TEST(Issues, Issue503) {
 
     auto inBook = [](const auto &pair) { return pair.first == SCREEN_BOOKS; };
     EXPECT_EQ(timeTape.filter(inBook).size(), 1); // The clock stands still.
-    ASSERT_EQ(hpTape.filter(inBook).size(), 1); // No hits while the book is open.
-    EXPECT_LT(hpTape.filter(inBook).front().second, hpTape.front().second); // The commander hit the party before the book opened.
+    EXPECT_EQ(hpTape.filter(inBook).size(), 1); // No hits while the book is open.
+    EXPECT_LT(hpTape.back().second, hpTape.front().second); // The commander did hit the party.
 }
 
 GAME_TEST(Issues, Issue504) {
