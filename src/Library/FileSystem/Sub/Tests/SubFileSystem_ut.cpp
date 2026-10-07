@@ -122,24 +122,20 @@ UNIT_TEST(SubFileSystem, RootWhenBasePathIsEmpty) {
 }
 
 UNIT_TEST(SubFileSystem, InaccessibleBasePath) {
-    // A base path the base file system refuses gets every call refused, the root included.
+    // A base path the base file system can't reach is refused up front, since calls go straight to the base's
+    // implementation without being checked again.
     MemoryFileSystem base("memfs");
     base.write("file.txt", Blob::fromString("hello"));
 
-    std::vector<std::string_view> basePaths = {"..", "a/../..", "/../x"};
+    std::vector<std::string_view> basePaths = {"..", "a/../..", "/", "/x", "\\x"};
 #ifdef _WINDOWS
     basePaths.push_back("C:");
     basePaths.push_back("C:x");
     basePaths.push_back("./C:/x");
 #endif
 
-    for (std::string_view basePath : basePaths) {
-        SubFileSystem sub(basePath, &base);
-        EXPECT_FALSE(sub.exists("file.txt")) << basePath;
-        EXPECT_ANY_THROW((void) sub.read("file.txt")) << basePath;
-        EXPECT_ANY_THROW(sub.write("file.txt", Blob())) << basePath;
-        EXPECT_TRUE(sub.ls("").empty()) << basePath;
-    }
+    for (std::string_view basePath : basePaths)
+        EXPECT_ANY_THROW(SubFileSystem(basePath, &base)) << basePath;
 }
 
 UNIT_TEST(SubFileSystem, BasePathIsNormalized) {

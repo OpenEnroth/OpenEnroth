@@ -7,9 +7,15 @@
 
 #include "Library/FileSystem/Interface/NormalizedFileSystemPath.h"
 
-SubFileSystem::SubFileSystem(PathView basePath, FileSystem *base)
-    : _base(base), _basePath(PathView(NormalizedFileSystemPath(basePath))) {
+#include "Utility/Exception.h"
+
+SubFileSystem::SubFileSystem(PathView basePath, FileSystem *base) : _base(base) {
     assert(_base);
+
+    NormalizedFileSystemPath normalPath(basePath);
+    if (!normalPath.isAccessible())
+        throw Exception("Base path '{}' of a sub file system is not accessible in '{}'", basePath.str(), _base->displayPath(""));
+    _basePath = Path(PathView(normalPath));
 }
 
 SubFileSystem::SubFileSystem(std::string_view basePath, FileSystem *base)
@@ -17,41 +23,45 @@ SubFileSystem::SubFileSystem(std::string_view basePath, FileSystem *base)
 }
 
 bool SubFileSystem::_exists(PathView path) const {
-    return _base->exists(_basePath / path);
+    return existsOf(_base, basePath(path));
 }
 
 FileStat SubFileSystem::_stat(PathView path) const {
-    return _base->stat(_basePath / path);
+    return statOf(_base, basePath(path));
 }
 
 void SubFileSystem::_ls(PathView path, std::vector<DirectoryEntry> *entries) const {
     // A root always exists, so ls("") has to work even if the base path doesn't, or isn't a directory.
-    if (path.isEmpty() && _base->stat(_basePath).type != FILE_DIRECTORY)
+    if (path.isEmpty() && statOf(_base, _basePath).type != FILE_DIRECTORY)
         return;
 
-    _base->ls(_basePath / path, entries);
+    lsOf(_base, basePath(path), entries);
 }
 
 Blob SubFileSystem::_read(PathView path) const {
-    return _base->read(_basePath / path);
+    return readOf(_base, basePath(path));
 }
 
 void SubFileSystem::_write(PathView path, const Blob &data) {
-    _base->write(_basePath / path, data);
+    writeOf(_base, basePath(path), data);
 }
 
 std::unique_ptr<InputStream> SubFileSystem::_openForReading(PathView path) const {
-    return _base->openForReading(_basePath / path);
+    return openForReadingOf(_base, basePath(path));
 }
 
 std::unique_ptr<OutputStream> SubFileSystem::_openForWriting(PathView path) {
-    return _base->openForWriting(_basePath / path);
+    return openForWritingOf(_base, basePath(path));
 }
 
 bool SubFileSystem::_remove(PathView path) {
-    return _base->remove(_basePath / path);
+    return removeOf(_base, basePath(path));
 }
 
 std::string SubFileSystem::_displayPath(PathView path) const {
-    return _base->displayPath(_basePath / path);
+    return displayPathOf(_base, basePath(path));
+}
+
+Path SubFileSystem::basePath(PathView path) const {
+    return path.isEmpty() ? _basePath : _basePath / Path(path);
 }

@@ -133,7 +133,21 @@ class FileSystem {
     template<class T>
     using FileSystemTrie = detail::FileSystemTrie<T>;
 
-    friend class ProxyFileSystem; // It's OK for the default proxy implementation to call into the private methods.
+    /**
+     * Calls into another file system, for file systems that delegate to one. These do what the public methods do,
+     * answering for the root included, but skip normalizing and validating the path, so the caller has to pass a
+     * path that's in normal form and accessible already, like the one its own `_` method got. They are static
+     * because a derived class can only reach a protected member through its own type.
+     */
+    static bool existsOf(const FileSystem *fs, PathView path);
+    static FileStat statOf(const FileSystem *fs, PathView path);
+    static void lsOf(const FileSystem *fs, PathView path, std::vector<DirectoryEntry> *entries);
+    static Blob readOf(const FileSystem *fs, PathView path);
+    static void writeOf(FileSystem *fs, PathView path, const Blob &data);
+    static std::unique_ptr<InputStream> openForReadingOf(const FileSystem *fs, PathView path);
+    static std::unique_ptr<OutputStream> openForWritingOf(FileSystem *fs, PathView path);
+    static bool removeOf(FileSystem *fs, PathView path);
+    static std::string displayPathOf(const FileSystem *fs, PathView path);
 
  protected:
     [[nodiscard]] virtual bool _exists(PathView path) const = 0;
