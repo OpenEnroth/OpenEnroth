@@ -26,8 +26,9 @@
 class SubFileSystem : public FileSystem {
  public:
     /**
-     * @param basePath          Path prefix to apply to all operations.
-     * @param base              The underlying file system.
+     * @param basePath                  Path prefix to apply to all operations.
+     * @param base                      The underlying file system.
+     * @throws Exception                If `base` can't reach `basePath`, e.g. because it escapes `base`'s root.
      */
     SubFileSystem(PathView basePath, FileSystem *base);
     SubFileSystem(std::string_view basePath, FileSystem *base);
@@ -42,6 +43,9 @@ class SubFileSystem : public FileSystem {
     virtual std::unique_ptr<OutputStream> _openForWriting(PathView path) override;
     virtual bool _remove(PathView path) override;
     virtual std::string _displayPath(PathView path) const override;
+
+ private:
+    [[nodiscard]] Path basePath(PathView path) const;
 
  private:
     FileSystem *_base = nullptr;
