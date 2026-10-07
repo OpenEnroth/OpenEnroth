@@ -139,15 +139,15 @@ class FileSystem {
      * path that's in normal form and accessible already, like the one its own `_` method got. They are static
      * because a derived class can only reach a protected member through its own type.
      */
-    static bool existsOf(const FileSystem *fs, PathView path);
-    static FileStat statOf(const FileSystem *fs, PathView path);
-    static void lsOf(const FileSystem *fs, PathView path, std::vector<DirectoryEntry> *entries);
-    static Blob readOf(const FileSystem *fs, PathView path);
-    static void writeOf(FileSystem *fs, PathView path, const Blob &data);
-    static std::unique_ptr<InputStream> openForReadingOf(const FileSystem *fs, PathView path);
-    static std::unique_ptr<OutputStream> openForWritingOf(FileSystem *fs, PathView path);
-    static bool removeOf(FileSystem *fs, PathView path);
-    static std::string displayPathOf(const FileSystem *fs, PathView path);
+    static bool existsIn(const FileSystem *fs, PathView path);
+    static FileStat statIn(const FileSystem *fs, PathView path);
+    static void lsIn(const FileSystem *fs, PathView path, std::vector<DirectoryEntry> *entries);
+    static Blob readIn(const FileSystem *fs, PathView path);
+    static void writeIn(FileSystem *fs, PathView path, const Blob &data);
+    static std::unique_ptr<InputStream> openForReadingIn(const FileSystem *fs, PathView path);
+    static std::unique_ptr<OutputStream> openForWritingIn(FileSystem *fs, PathView path);
+    static bool removeIn(FileSystem *fs, PathView path);
+    static std::string displayPathIn(const FileSystem *fs, PathView path);
 
  protected:
     [[nodiscard]] virtual bool _exists(PathView path) const = 0;
