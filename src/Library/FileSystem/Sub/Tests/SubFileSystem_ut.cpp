@@ -147,7 +147,7 @@ UNIT_TEST(SubFileSystem, BasePathIsNormalized) {
     MemoryFileSystem base("memfs");
     base.write("dir/file.txt", Blob::fromString("hello"));
 
-    for (std::string_view basePath : {"/dir/", "./dir", "dir\\", "x/../dir"}) {
+    for (std::string_view basePath : {"dir/", "./dir", "dir\\", "x/../dir"}) {
         SubFileSystem sub(basePath, &base);
         EXPECT_EQ(sub.read("file.txt").str(), "hello") << basePath;
     }
