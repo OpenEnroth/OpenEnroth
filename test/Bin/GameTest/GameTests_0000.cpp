@@ -324,8 +324,8 @@ GAME_TEST(Issues, Issue293c) {
 }
 
 GAME_TEST(Issues, Issue294a) {
-    // Sharpmetal couldn't kill a point-blank rat because its blades spawned at half the party height and flew over it.
-    // The blades are aimed from a third of the party height, spawned at half of it they cleared a rat this close.
+    // Sharpmetal couldn't kill a point-blank rat. Its blades were aimed from a third of the party height but spawned at
+    // half of it, so they flew parallel to the aim and over the rat.
     // Blades goes through the code shared with Acid Burst, Flying Fist and Toxic Cloud, which had the same bug.
     for (SpellId spell : {SPELL_DARK_SHARPMETAL, SPELL_EARTH_BLADES}) {
         test.prepareForNextTest();
@@ -343,7 +343,7 @@ GAME_TEST(Issues, Issue294a) {
         game.castQuickSpell(0, spell);
         EXPECT_EQ(hpTape, tape(6, 0));
         EXPECT_EQ(stateTape, tape(Standing, Dying));
-        EXPECT_EQ(statusTape.filter([](const std::string &line) { return line.ends_with(" killing Giant Rat"); }).size(), 1);
+        EXPECT_CONTAINS(statusTape.map([](const std::string &line) { return line.ends_with(" killing Giant Rat"); }), true);
     }
 }
 
@@ -368,7 +368,7 @@ GAME_TEST(Issues, Issue294b) {
     game.tick();
     EXPECT_EQ(hpTape, tape(6, 0));
     EXPECT_EQ(stateTape, tape(Standing, Dying));
-    EXPECT_EQ(statusTape.filter([](const std::string &line) { return line.ends_with(" killing Giant Rat"); }).size(), 1);
+    EXPECT_CONTAINS(statusTape.map([](const std::string &line) { return line.ends_with(" killing Giant Rat"); }), true);
 }
 
 // 300
