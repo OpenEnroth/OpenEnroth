@@ -107,11 +107,6 @@ class ResourceManager {
     Sizei spriteSize(std::string_view filename);
 
  private:
-    /**
-     * Applies the saturation and lightness passed to `open()`.
-     *
-     * @param colors                    Colors to adjust in place.
-     */
     void desaturate(std::span<Color> colors) const;
 
  private:

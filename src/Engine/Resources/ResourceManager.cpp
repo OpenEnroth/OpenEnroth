@@ -216,7 +216,10 @@ LodFont ResourceManager::font(std::string_view filename) {
 
 Palette ResourceManager::palette(int paletteId) {
     std::string name = fmt::format("pal{:03}", paletteId);
-    Palette result = _bitmapsLodReader.exists(name) ? lod::decodeImage(_bitmapsLodReader.read(name)).palette : grayscalePalette();
+    if (!_bitmapsLodReader.exists(name))
+        return grayscalePalette();
+
+    Palette result = lod::decodeImage(_bitmapsLodReader.read(name)).palette;
     desaturate(result.colors);
     return result;
 }
