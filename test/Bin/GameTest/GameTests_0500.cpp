@@ -79,7 +79,7 @@ GAME_TEST(Issues, Issue503) {
 
     engine->config->debug.NoActors.setValue(false);
     game.spawnMonster(pParty->pos + Vec3f(0, 200, 0), MONSTER_DWARF_C);
-    game.tick(15); // Long enough to walk up and land the first hit.
+    game.tick(30); // Long enough to walk up and swing a few times.
     game.castSpell(0, SPELL_WATER_TOWN_PORTAL);
     game.tick(25); // The commander swings every couple of seconds.
 
