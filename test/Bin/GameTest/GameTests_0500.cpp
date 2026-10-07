@@ -25,6 +25,8 @@
 
 #include "Utility/ScopeGuard.h"
 
+#include "GameTestCommon.h"
+
 static std::initializer_list<CharacterBuff> allPotionBuffs() {
     static constexpr std::initializer_list<CharacterBuff> result = {
         CHARACTER_BUFF_RESIST_AIR,
@@ -62,16 +64,29 @@ GAME_TEST(Issues, Issue502) {
 }
 
 GAME_TEST(Issues, Issue503) {
-    // Check that town portal book actually pauses game.
-    auto hpTape = charTapes.hps();
-    auto noDamageTape = tapes.config(engine->config->debug.NoDamage);
-    auto screenTape = tapes.screen();
-    auto mapTape = tapes.map();
-    test.playTraceFromTestData("issue_503.mm7", "issue_503.json");
-    EXPECT_EQ(hpTape, tape({1147, 699, 350, 242})); // Game was paused, the party wasn't shot at, no HP change.
-    EXPECT_EQ(noDamageTape, tape(false)); // HP change was actually possible.
-    EXPECT_EQ(screenTape, tape(SCREEN_GAME, SCREEN_BOOKS, SCREEN_GAME)); // TP book was opened.
-    EXPECT_EQ(mapTape, tape(MAP_DRAGON_CAVES, MAP_CASTLE_HARMONDALE)); // And party was teleported to Harmondale.
+    // Town Portal book didn't pause the game, monsters kept attacking the party while it was open.
+    // A monster hits the party, then the party opens the Town Portal book. The clock and the party's hp should freeze.
+    test.prepareForNextTest(200, RANDOM_ENGINE_MERSENNE_TWISTER);
+    auto timeTape = tapes.custom([] { return std::pair(current_screen_type, pParty->GetPlayingTime()); });
+    auto screenHpTape = tapes.custom([] { return std::pair(current_screen_type, pParty->pCharacters[0].health); });
+    auto hpTape = charTapes.hp(0);
+
+    engine->config->debug.NoActors.setValue(true);
+    engine->config->debug.AllMagic.setValue(true); // Casts at grandmaster, Town Portal below that fails with hostiles around.
+    game.startNewGame();
+    test.startTaping();
+    prepareForBattleTest();
+
+    engine->config->debug.NoActors.setValue(false);
+    game.spawnMonster(pParty->pos + Vec3f(0, 200, 0), MONSTER_DWARF_C);
+    game.tick(30); // Long enough to walk up and swing a few times.
+    game.castSpell(0, SPELL_WATER_TOWN_PORTAL);
+    game.tick(30); // The commander swings every couple of seconds.
+
+    auto inBook = [](const auto &pair) { return pair.first == SCREEN_BOOKS; };
+    EXPECT_EQ(timeTape.filter(inBook).size(), 1); // The clock stands still.
+    EXPECT_EQ(screenHpTape.filter(inBook).size(), 1); // No hits while the book is open.
+    EXPECT_LT(hpTape.delta(), 0); // The commander did hit the party.
 }
 
 GAME_TEST(Issues, Issue504) {
