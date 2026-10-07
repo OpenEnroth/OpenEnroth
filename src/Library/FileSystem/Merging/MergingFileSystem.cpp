@@ -18,7 +18,7 @@ MergingFileSystem::~MergingFileSystem() = default;
 
 bool MergingFileSystem::_exists(PathView path) const {
     for (const FileSystem *base : _bases)
-        if (base->exists(path))
+        if (existsOf(base, path))
             return true;
     return false;
 }
@@ -26,7 +26,7 @@ bool MergingFileSystem::_exists(PathView path) const {
 FileStat MergingFileSystem::_stat(PathView path) const {
     bool dirFound = false;
     for (const FileSystem *base : _bases) {
-        FileStat stat = base->stat(path);
+        FileStat stat = statOf(base, path);
         if (stat.type == FILE_REGULAR)
             return stat; // Return the first file found, if any.
         if (stat.type == FILE_DIRECTORY)
@@ -40,13 +40,13 @@ void MergingFileSystem::_ls(PathView path, std::vector<DirectoryEntry> *entries)
 
     bool hasOne = false;
     for (const FileSystem *base : _bases) {
-        if (base->stat(path).type != FILE_DIRECTORY)
+        if (statOf(base, path).type != FILE_DIRECTORY)
             continue;
 
         // We will throw here if the folder was deleted between stat() and ls() calls. That's probably OK.
         hasOne = true;
 
-        base->ls(path, &buffer);
+        lsOf(base, path, &buffer);
         std::ranges::move(buffer, std::back_inserter(*entries));
     }
 
@@ -60,11 +60,11 @@ void MergingFileSystem::_ls(PathView path, std::vector<DirectoryEntry> *entries)
 }
 
 Blob MergingFileSystem::_read(PathView path) const {
-    return locateForReading(path)->read(path);
+    return readOf(locateForReading(path), path);
 }
 
 std::unique_ptr<InputStream> MergingFileSystem::_openForReading(PathView path) const {
-    return locateForReading(path)->openForReading(path);
+    return openForReadingOf(locateForReading(path), path);
 }
 
 std::string MergingFileSystem::_displayPath(PathView path) const {
@@ -74,10 +74,10 @@ std::string MergingFileSystem::_displayPath(PathView path) const {
     // TODO(captainurist): This is not ideal, we might want to know ALL merged paths, e.g. see
     //                     ScriptingSystem::_initPackageTable. But the API that we have here doesn't allow that.
     for (const FileSystem *base : _bases)
-        if (base->stat(path).type != FILE_INVALID)
-            return base->displayPath(path);
+        if (statOf(base, path).type != FILE_INVALID)
+            return displayPathOf(base, path);
 
-    return _bases[0]->displayPath(path);
+    return displayPathOf(_bases[0], path);
 }
 
 const FileSystem *MergingFileSystem::locateForReading(PathView path) const {
@@ -89,7 +89,7 @@ const FileSystem *MergingFileSystem::locateForReading(PathView path) const {
 
 const FileSystem *MergingFileSystem::locateForReadingOrNull(PathView path) const {
     for (const FileSystem *base : _bases)
-        if (base->stat(path).type == FILE_REGULAR)
+        if (statOf(base, path).type == FILE_REGULAR)
             return base;
 
     return nullptr;
