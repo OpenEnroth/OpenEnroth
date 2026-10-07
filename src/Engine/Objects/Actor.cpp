@@ -867,6 +867,9 @@ void Actor::GetDirectionInfo(Pid uObj1ID, Pid uObj2ID,
             break;
         }
         case OBJECT_Character: {
+            // TODO(captainurist): party projectiles spawn at pParty->pos + height / 3 in CastSpellInfo.cpp without the
+            //                     sideways offset below, so they fly parallel to the aim instead of along it. Compute
+            //                     this origin in one place and spawn them from it.
             out1 = pParty->pos + Vec3f(0, 0, pParty->height / 3);
             if (id1 == 0) {
                 // Do nothing.
