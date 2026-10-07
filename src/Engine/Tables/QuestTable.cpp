@@ -19,6 +19,6 @@ void initializeQuests(const Blob &quests) {
     for (std::string_view line : split(quests.str()).by("\r\n").drop(1).skip("")) {
         std::array<std::string_view, 2> tokens = split(line).by('\t');
         QuestBit qbit = static_cast<QuestBit>(fromString<int>(tokens[0]));
-        pQuestTable[qbit] = unquote(tokens[1]);
+        pQuestTable[qbit] = tokens[1] == "0" ? "" : unquote(tokens[1]); // Rows without a quest have "0" for text.
     }
 }

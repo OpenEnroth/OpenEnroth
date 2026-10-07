@@ -927,3 +927,37 @@ GAME_TEST(Issues, Issue2834) {
     EXPECT_EQ(golemHeadPlacedTape, tape(true, false));
     EXPECT_EQ(abbeyHeadPlacedTape, tape(false, true));
 }
+
+GAME_TEST(Issues, Issue2903) {
+    // Castle Harmondale's war banners put an entry that reads "0" into the quest book.
+    auto mapTape = tapes.map();
+    auto bannersTape = tapes.questBit(QBIT_HARMONDALE_FACTION_BANNERS_HUNG);
+    auto flashTape = tapes.custom([] { return bFlashQuestBook; });
+    auto soundsTape = tapes.sounds();
+    auto screenTape = tapes.screen();
+    auto textTape = tapes.allGUIWindowsText();
+    game.startNewGame();
+    pParty->_questBits.reset(); // Without the Emerald Island quests the quest book has a single page.
+    pParty->_questBits.set(QBIT_BUTLER_MET); // The castle door leads inside instead of to the butler.
+    pParty->_questBits.set(QBIT_FALSE_LOREN_GIVEN);
+    game.teleportTo(MAP_HARMONDALE, Vec3f(-18118, 12544, 480), 180); // In front of the castle door.
+    game.pressAndReleaseKey(PlatformKey::KEY_Q); // Opening the quest book stops it flashing.
+    game.tick();
+    game.pressAndReleaseKey(PlatformKey::KEY_ESCAPE);
+    game.tick();
+    test.startTaping();
+    game.pressAndReleaseKey(PlatformKey::KEY_SPACE);
+    game.tick();
+    game.pressGuiButton("Transition_Yes");
+    game.skipLoadingScreen();
+    game.pressAndReleaseKey(PlatformKey::KEY_Q);
+    game.tick();
+
+    EXPECT_EQ(mapTape, tape(MAP_HARMONDALE, MAP_CASTLE_HARMONDALE));
+    EXPECT_EQ(bannersTape, tape(false, true));
+    EXPECT_EQ(flashTape, tape(false));
+    EXPECT_MISSES(soundsTape.flatten(), SOUND_quest);
+    EXPECT_EQ(screenTape.back(), SCREEN_BOOKS);
+    EXPECT_CONTAINS(textTape.flatten(), "Current Quests");
+    EXPECT_MISSES(textTape.flatten(), "0");
+}
