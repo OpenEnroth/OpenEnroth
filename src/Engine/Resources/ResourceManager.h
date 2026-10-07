@@ -1,5 +1,6 @@
 #pragma once
 
+#include <memory>
 #include <span>
 #include <string_view>
 
@@ -14,6 +15,8 @@
 #include "Library/LodFormats/LodFont.h"
 #include "Library/LodFormats/LodImage.h"
 
+class TileGenerator;
+
 /**
  * This class provides access to everything in `/data` folder.
  */
@@ -25,17 +28,10 @@ class ResourceManager {
     /**
      * Opens the LODs in `data` and loads the mask table.
      *
-     * @param saturation                Saturation multiplier for bitmaps, palettes and `desaturate()`.
-     * @param lightness                 Lightness multiplier for bitmaps, palettes and `desaturate()`.
+     * @param saturation                Saturation multiplier for the bitmaps and palettes this class returns.
+     * @param lightness                 Lightness multiplier for the bitmaps and palettes this class returns.
      */
     void open(float saturation = 1.0f, float lightness = 1.0f);
-
-    /**
-     * Applies the saturation and lightness passed to `open()`.
-     *
-     * @param colors                    Colors to adjust in place.
-     */
-    void desaturate(std::span<Color> colors) const;
 
     Blob eventsData(std::string_view filename);
 
@@ -50,6 +46,19 @@ class ResourceManager {
      * @return                          The desaturated bitmap, or an empty image if there is no such bitmap.
      */
     RgbaImage bitmap(std::string_view filename);
+
+    /**
+     * @param filename                  Name of a generated transition tile, as `addGeneratedTiles()` put it into the
+     *                                  tile table. The tile is generated on first use.
+     * @return                          The desaturated tile.
+     */
+    RgbaImage generated(std::string_view filename);
+
+    /**
+     * Adds the generated transition tiles to `pTileTable`. Their images are only generated once `generated()` asks
+     * for them.
+     */
+    void addGeneratedTiles();
 
     /**
      * @param filename                  Name of an image in `icons.lod`, case-insensitive.
@@ -94,6 +103,14 @@ class ResourceManager {
     Sizei spriteSize(std::string_view filename);
 
  private:
+    /**
+     * Applies the saturation and lightness passed to `open()`.
+     *
+     * @param colors                    Colors to adjust in place.
+     */
+    void desaturate(std::span<Color> colors) const;
+
+ private:
     LodReader _eventsLodReader;
     LodReader _iconsLodReader;
     LodReader _bitmapsLodReader;
@@ -101,4 +118,5 @@ class ResourceManager {
     ResourceMaskTable _masks;
     float _saturation = 1.0f;
     float _lightness = 1.0f;
+    std::unique_ptr<TileGenerator> _tileGenerator;
 };

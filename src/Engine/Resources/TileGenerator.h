@@ -12,6 +12,7 @@
 #include "Utility/Hash.h"
 #include "Utility/String/TransparentFunctors.h"
 
+class ResourceManager;
 class TileTable;
 
 /**
@@ -21,7 +22,7 @@ class TileTable;
  */
 class TileGenerator {
  public:
-    TileGenerator();
+    explicit TileGenerator(ResourceManager *resources);
     ~TileGenerator();
 
     /**
@@ -42,6 +43,8 @@ class TileGenerator {
     void blendTile(RgbaImageView base, RgbaImageView dirt, RgbaImageView layer1, RgbaImage *layer0) const;
 
  private:
+    ResourceManager *_resources = nullptr;
+
     /** All standard transition tiles & their directions. */
     std::vector<std::pair<TileVariant, Directions>> _standardTiles;
 
@@ -53,5 +56,3 @@ class TileGenerator {
      * the name. */
     std::unordered_map<std::string, std::pair<Tileset, TileVariant>, TransparentStringHash, TransparentStringEquals> _tilesetVariantByName;
 };
-
-extern TileGenerator *pTileGenerator;

@@ -30,7 +30,6 @@
 #include "Engine/Graphics/Viewport.h"
 #include "Engine/Graphics/Vis.h"
 #include "Engine/Graphics/Weather.h"
-#include "Engine/Graphics/TileGenerator.h"
 #include "Engine/Graphics/TurnBasedOverlay.h"
 #include "Engine/Resources/LodSpriteCache.h"
 #include "Engine/Localization.h"
@@ -818,9 +817,8 @@ void Engine::MM7_Initialize() {
     pMediaPlayer = new MPlayer();
     pMediaPlayer->Initialize();
 
-    pTileGenerator = new TileGenerator();
     if (engine->config->graphics.GenerateTiles.value())
-        pTileGenerator->fillTable();
+        engine->resources()->addGeneratedTiles();
 
     engineFlags |= ENGINE_ESCAPE_ENABLED;
 }

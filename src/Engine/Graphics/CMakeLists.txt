@@ -21,7 +21,6 @@ set(ENGINE_GRAPHICS_SOURCES
         ParticleEngine.cpp
         PortalFunctions.cpp
         Sprites.cpp
-        TileGenerator.cpp
         TurnBasedOverlay.cpp
         Viewport.cpp
         Vis.cpp
@@ -52,7 +51,6 @@ set(ENGINE_GRAPHICS_HEADERS
         Sprites.h
         SpriteEnums.h
         SpriteEnumFunctions.h
-        TileGenerator.h
         TurnBasedOverlay.h
         Viewport.h
         Vis.h

@@ -8,6 +8,7 @@
 
 #include "Library/Image/ImageFunctions.h"
 #include "Library/Image/Pcx.h"
+#include "Library/Image/Png.h"
 #include "Library/Json/Json.h"
 #include "Library/LodFormats/LodFont.h"
 #include "Library/LodFormats/LodFormats.h"
@@ -23,6 +24,7 @@
 #include "Utility/MapAccess.h"
 
 #include "EngineFileSystem.h"
+#include "TileGenerator.h"
 
 static Palette maskedPalette(const LodImage &image, const ResourceMask &mask) {
     Palette result = image.palette;
@@ -102,7 +104,7 @@ static Palette grayscalePalette() {
     return result;
 }
 
-ResourceManager::ResourceManager() = default;
+ResourceManager::ResourceManager() : _tileGenerator(std::make_unique<TileGenerator>(this)) {}
 ResourceManager::~ResourceManager() = default;
 
 void ResourceManager::open(float saturation, float lightness) {
@@ -177,6 +179,17 @@ RgbaImage ResourceManager::bitmap(std::string_view filename) {
         }
     }
     return result;
+}
+
+RgbaImage ResourceManager::generated(std::string_view filename) {
+    _tileGenerator->ensureTile(filename);
+    RgbaImage result = png::decode(ufs->read(filename));
+    desaturate(result.pixels());
+    return result;
+}
+
+void ResourceManager::addGeneratedTiles() {
+    _tileGenerator->fillTable();
 }
 
 LodImage ResourceManager::rawIcon(std::string_view filename) {

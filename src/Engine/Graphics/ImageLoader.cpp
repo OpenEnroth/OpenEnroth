@@ -4,14 +4,11 @@
 #include <memory>
 #include <utility>
 
-#include "Engine/Resources/EngineFileSystem.h"
 #include "Engine/Graphics/AtlasLayout.h"
 #include "Engine/Graphics/Renderer/Renderer.h"
-#include "Engine/Graphics/TileGenerator.h"
 #include "Engine/Resources/ResourceManager.h"
 
 #include "Library/Image/Pcx.h"
-#include "Library/Image/Png.h"
 #include "Library/LodFormats/LodImage.h"
 #include "Library/Logger/Logger.h"
 
@@ -95,9 +92,7 @@ bool Bitmaps_LOD_Loader::Load(RgbaImage *rgbaImage) {
 }
 
 bool Bitmaps_GEN_Loader::Load(RgbaImage *rgbaImage) {
-    pTileGenerator->ensureTile(this->resource_name);
-    *rgbaImage = png::decode(ufs->read(this->resource_name));
-    resources->desaturate(rgbaImage->pixels());
+    *rgbaImage = resources->generated(resource_name);
     return true;
 }
 
