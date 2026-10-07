@@ -78,9 +78,9 @@ GAME_TEST(Issues, Issue503) {
 
     engine->config->debug.NoActors.setValue(false);
     game.spawnMonster(pParty->pos + Vec3f(0, 200, 0), MONSTER_DWARF_C);
-    game.tick(30);
+    game.tick(30); // Long enough to walk up and land the first hit.
     game.castSpell(0, SPELL_WATER_TOWN_PORTAL);
-    game.tick(50);
+    game.tick(50); // The commander swings every couple of seconds.
 
     EXPECT_EQ(timeTape.filter(inBook).size(), 1); // The clock stands still.
     ASSERT_EQ(hpTape.filter(inBook).size(), 1); // No hits while the book is open.
