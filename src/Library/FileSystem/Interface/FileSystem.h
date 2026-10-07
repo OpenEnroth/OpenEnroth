@@ -32,11 +32,11 @@
  *
  * Paths are normalized internally, and then processed by the implementation in a derived class. A backslash is a
  * separator on every platform. Both `".."` and `"."` special dirs are supported, but peeking outside the root directory
- * is not. Passing such a path will throw, `exists` will return `false`, and `stat` will return `FILE_INVALID`. The
- * same goes for a path that names a drive on Windows, like `"C:/foo"`.
+ * is not. Passing such a path will throw, `exists` will return `false`, and `stat` will return `FILE_INVALID`.
  *
- * Unlike a real file system, this interface doesn't have a concept of a "current directory." All methods take
- * root-relative paths, so `"foo/bar"` and `"/foo/bar"` are equivalent.
+ * Unlike a real file system, this interface doesn't have a concept of a "current directory." All methods take paths
+ * relative to the root, and a path with a root of its own, like `"/foo/bar"` or `"C:/foo"` on Windows, is refused the
+ * same way.
  *
  * Root folder of the file system always exists. Thus, `exists("")` always returns `true`, `stat("")` always returns
  * `FILE_DIRECTORY`, `ls("")` never throws, and `remove("")` always throws.
