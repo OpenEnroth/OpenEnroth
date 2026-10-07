@@ -121,14 +121,6 @@ void ResourceManager::open(float saturation, float lightness) {
     // but we can't use localization object here cause it's not yet initialized.
 }
 
-void ResourceManager::desaturate(std::span<Color> colors) const {
-    if (fuzzyEquals(_saturation, 1.0f) && fuzzyEquals(_lightness, 1.0f))
-        return;
-
-    for (Color &color : colors)
-        color = color.toHsvColorf().adjusted(0, _saturation, _lightness).toColor();
-}
-
 Blob ResourceManager::eventsData(std::string_view filename) {
     return lod::decodeMaybeCompressed(_eventsLodReader.read(filename));
 }
@@ -247,4 +239,12 @@ Sizei ResourceManager::spriteSize(std::string_view filename) {
         return {};
     }
     return lod::decodeSpriteSize(_spritesLodReader.read(name));
+}
+
+void ResourceManager::desaturate(std::span<Color> colors) const {
+    if (fuzzyEquals(_saturation, 1.0f) && fuzzyEquals(_lightness, 1.0f))
+        return;
+
+    for (Color &color : colors)
+        color = color.toHsvColorf().adjusted(0, _saturation, _lightness).toColor();
 }
