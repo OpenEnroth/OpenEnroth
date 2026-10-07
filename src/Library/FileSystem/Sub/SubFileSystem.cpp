@@ -23,43 +23,43 @@ SubFileSystem::SubFileSystem(std::string_view basePath, FileSystem *base)
 }
 
 bool SubFileSystem::_exists(PathView path) const {
-    return existsOf(_base, basePath(path));
+    return existsIn(_base, basePath(path));
 }
 
 FileStat SubFileSystem::_stat(PathView path) const {
-    return statOf(_base, basePath(path));
+    return statIn(_base, basePath(path));
 }
 
 void SubFileSystem::_ls(PathView path, std::vector<DirectoryEntry> *entries) const {
     // A root always exists, so ls("") has to work even if the base path doesn't, or isn't a directory.
-    if (path.isEmpty() && statOf(_base, _basePath).type != FILE_DIRECTORY)
+    if (path.isEmpty() && statIn(_base, _basePath).type != FILE_DIRECTORY)
         return;
 
-    lsOf(_base, basePath(path), entries);
+    lsIn(_base, basePath(path), entries);
 }
 
 Blob SubFileSystem::_read(PathView path) const {
-    return readOf(_base, basePath(path));
+    return readIn(_base, basePath(path));
 }
 
 void SubFileSystem::_write(PathView path, const Blob &data) {
-    writeOf(_base, basePath(path), data);
+    writeIn(_base, basePath(path), data);
 }
 
 std::unique_ptr<InputStream> SubFileSystem::_openForReading(PathView path) const {
-    return openForReadingOf(_base, basePath(path));
+    return openForReadingIn(_base, basePath(path));
 }
 
 std::unique_ptr<OutputStream> SubFileSystem::_openForWriting(PathView path) {
-    return openForWritingOf(_base, basePath(path));
+    return openForWritingIn(_base, basePath(path));
 }
 
 bool SubFileSystem::_remove(PathView path) {
-    return removeOf(_base, basePath(path));
+    return removeIn(_base, basePath(path));
 }
 
 std::string SubFileSystem::_displayPath(PathView path) const {
-    return displayPathOf(_base, basePath(path));
+    return displayPathIn(_base, basePath(path));
 }
 
 Path SubFileSystem::basePath(PathView path) const {

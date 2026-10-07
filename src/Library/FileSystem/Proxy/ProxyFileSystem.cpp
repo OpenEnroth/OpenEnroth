@@ -6,39 +6,39 @@
 #include <string>
 
 bool ProxyFileSystem::_exists(PathView path) const {
-    return existsOf(nonNullBase(), path);
+    return existsIn(nonNullBase(), path);
 }
 
 FileStat ProxyFileSystem::_stat(PathView path) const {
-    return statOf(nonNullBase(), path);
+    return statIn(nonNullBase(), path);
 }
 
 void ProxyFileSystem::_ls(PathView path, std::vector<DirectoryEntry> *entries) const {
-    lsOf(nonNullBase(), path, entries);
+    lsIn(nonNullBase(), path, entries);
 }
 
 Blob ProxyFileSystem::_read(PathView path) const {
-    return readOf(nonNullBase(), path);
+    return readIn(nonNullBase(), path);
 }
 
 void ProxyFileSystem::_write(PathView path, const Blob &data) {
-    return writeOf(nonNullBase(), path, data);
+    return writeIn(nonNullBase(), path, data);
 }
 
 std::unique_ptr<InputStream> ProxyFileSystem::_openForReading(PathView path) const {
-    return openForReadingOf(nonNullBase(), path);
+    return openForReadingIn(nonNullBase(), path);
 }
 
 std::unique_ptr<OutputStream> ProxyFileSystem::_openForWriting(PathView path) {
-    return openForWritingOf(nonNullBase(), path);
+    return openForWritingIn(nonNullBase(), path);
 }
 
 bool ProxyFileSystem::_remove(PathView path) {
-    return removeOf(nonNullBase(), path);
+    return removeIn(nonNullBase(), path);
 }
 
 std::string ProxyFileSystem::_displayPath(PathView path) const {
-    return displayPathOf(nonNullBase(), path);
+    return displayPathIn(nonNullBase(), path);
 }
 
 FileSystem *ProxyFileSystem::nonNullBase() const {
