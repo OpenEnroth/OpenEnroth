@@ -8,12 +8,11 @@
 
 NormalizedFileSystemPath::NormalizedFileSystemPath(PathView path) : _view(path) {
     std::string_view str = path.str();
-    if (!str.contains('\\') && !str.starts_with('/') && path.isNormalized())
+    if (!str.contains('\\') && path.isNormalized())
         return;
 
     std::string copy(str);
     std::ranges::replace(copy, '\\', '/');
-    copy.erase(0, copy.find_first_not_of('/'));
     _owned = Path(copy).normalized();
     _view = _owned;
 }
