@@ -81,7 +81,7 @@ GAME_TEST(Issues, Issue503) {
     game.spawnMonster(pParty->pos + Vec3f(0, 200, 0), MONSTER_DWARF_C);
     game.tick(30); // Long enough to walk up and swing a few times.
     game.castSpell(0, SPELL_WATER_TOWN_PORTAL);
-    game.tick(25); // The commander swings every couple of seconds.
+    game.tick(30); // The commander swings every couple of seconds.
 
     auto inBook = [](const auto &pair) { return pair.first == SCREEN_BOOKS; };
     EXPECT_EQ(timeTape.filter(inBook).size(), 1); // The clock stands still.
