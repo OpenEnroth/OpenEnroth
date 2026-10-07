@@ -27,8 +27,10 @@ class TileGenerator {
 
     /**
      * Fills the tile table with the new tiles. Be sure to call `ensureTile` for each of the tiles you'll actually use.
+     *
+     * @param table                     Tile table to add the new tiles to.
      */
-    void fillTable();
+    void fillTable(TileTable *table);
 
     /**
      * @param name                      Name of the tile to generate if it doesn't exist yet. Name must come from

@@ -26,7 +26,7 @@ TileGenerator::TileGenerator(ResourceManager *resources) : _resources(resources)
 
 TileGenerator::~TileGenerator() = default;
 
-void TileGenerator::fillTable() {
+void TileGenerator::fillTable(TileTable *table) {
     for (Tileset tileset : allTerrainTilesets()) {
         if (tileset == TILESET_DIRT || tileset == TILESET_WATER)
             continue; // We don't generate tiles for dirt and water tilesets. For dirt, it makes no sense, and for water we have a skill issue.
@@ -38,7 +38,7 @@ void TileGenerator::fillTable() {
             tileData.variant = variant;
             tileData.flags = TILE_TRANSITION | TILE_GENERATED_TRANSITION;
             _tilesetVariantByName.emplace(tileData.textureName, std::pair(tileset, variant));
-            pTileTable->addTile(std::move(tileData));
+            table->addTile(std::move(tileData));
         }
     }
 }

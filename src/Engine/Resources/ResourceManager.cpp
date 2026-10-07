@@ -188,8 +188,8 @@ RgbaImage ResourceManager::generated(std::string_view filename) {
     return result;
 }
 
-void ResourceManager::addGeneratedTiles() {
-    _tileGenerator->fillTable();
+void ResourceManager::addGeneratedTiles(TileTable *table) {
+    _tileGenerator->fillTable(table);
 }
 
 LodImage ResourceManager::rawIcon(std::string_view filename) {

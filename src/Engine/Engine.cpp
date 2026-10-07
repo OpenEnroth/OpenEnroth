@@ -818,7 +818,7 @@ void Engine::MM7_Initialize() {
     pMediaPlayer->Initialize();
 
     if (engine->config->graphics.GenerateTiles.value())
-        engine->resources()->addGeneratedTiles();
+        engine->resources()->addGeneratedTiles(pTileTable);
 
     engineFlags |= ENGINE_ESCAPE_ENABLED;
 }

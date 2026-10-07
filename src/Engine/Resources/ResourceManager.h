@@ -16,6 +16,7 @@
 #include "Library/LodFormats/LodImage.h"
 
 class TileGenerator;
+class TileTable;
 
 /**
  * This class provides access to everything in `/data` folder.
@@ -54,11 +55,14 @@ class ResourceManager {
      */
     RgbaImage generated(std::string_view filename);
 
+    // TODO(captainurist): maybe return the generated tile data and let the caller add it to the table?
     /**
-     * Adds the generated transition tiles to `pTileTable`. Their images are only generated once `generated()` asks
+     * Adds the generated transition tiles to the tile table. Their images are only generated once `generated()` asks
      * for them.
+     *
+     * @param table                     Tile table to add the generated tiles to.
      */
-    void addGeneratedTiles();
+    void addGeneratedTiles(TileTable *table);
 
     /**
      * @param filename                  Name of an image in `icons.lod`, case-insensitive.
