@@ -66,9 +66,9 @@ GAME_TEST(Issues, Issue502) {
 GAME_TEST(Issues, Issue503) {
     // Town Portal book didn't pause the game, monsters kept attacking the party while it was open.
     // A monster hits the party, then the party opens the Town Portal book. The clock and the party's hp should freeze.
+    test.prepareForNextTest(200, RANDOM_ENGINE_MERSENNE_TWISTER);
     auto timeTape = tapes.custom([] { return std::pair(current_screen_type, pParty->GetPlayingTime()); });
     auto hpTape = tapes.custom([] { return std::pair(current_screen_type, pParty->pCharacters[0].health); });
-    auto inBook = [](const auto &pair) { return pair.first == SCREEN_BOOKS; };
 
     engine->config->debug.NoActors.setValue(true);
     engine->config->debug.AllMagic.setValue(true); // Casts at grandmaster, Town Portal below that fails with hostiles around.
@@ -78,10 +78,11 @@ GAME_TEST(Issues, Issue503) {
 
     engine->config->debug.NoActors.setValue(false);
     game.spawnMonster(pParty->pos + Vec3f(0, 200, 0), MONSTER_DWARF_C);
-    game.tick(30); // Long enough to walk up and land the first hit.
+    game.tick(15); // Long enough to walk up and land the first hit.
     game.castSpell(0, SPELL_WATER_TOWN_PORTAL);
-    game.tick(50); // The commander swings every couple of seconds.
+    game.tick(25); // The commander swings every couple of seconds.
 
+    auto inBook = [](const auto &pair) { return pair.first == SCREEN_BOOKS; };
     EXPECT_EQ(timeTape.filter(inBook).size(), 1); // The clock stands still.
     ASSERT_EQ(hpTape.filter(inBook).size(), 1); // No hits while the book is open.
     EXPECT_LT(hpTape.filter(inBook).front().second, hpTape.front().second); // The commander hit the party before the book opened.
