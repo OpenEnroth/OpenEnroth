@@ -56,7 +56,7 @@ UNIT_TEST(MaskingFileSystem, MaskPathsAreNormalized) {
     fs0.write("b/c", Blob());
 
     MaskingFileSystem fs(&fs0);
-    fs.mask("/a");
+    fs.mask("./a");
     fs.mask("b\\c");
     EXPECT_FALSE(fs.exists("a"));
     EXPECT_FALSE(fs.exists("b/c"));
