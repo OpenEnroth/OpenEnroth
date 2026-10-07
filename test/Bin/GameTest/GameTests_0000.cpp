@@ -323,33 +323,52 @@ GAME_TEST(Issues, Issue293c) {
     EXPECT_EQ(pParty->pCharacters[3].sResAirBase, 18);
 }
 
-GAME_TEST(Issues, Issue294) {
-    // Testing that party auto-casting shrapnel successfully targets rats & kills them, gaining experience.
-    auto deadActorsTape = actorTapes.countByState(Dead);
-    auto ratStateTape = actorTapes.aiState(79);
-    auto ratPositionTape = tapes.custom([] { return pActors[79].pos; });
-    auto recoveringTape = charTapes.areRecovering();
-    auto spritesTape = tapes.sprites();
-    test.playTraceFromTestData("issue_294.mm7", "issue_294.json");
+GAME_TEST(Issues, Issue294a) {
+    // Sharpmetal couldn't kill a point-blank rat. Its blades were aimed from a third of the party height but spawned at
+    // half of it, so they flew parallel to the aim and over the rat.
+    // Blades goes through the code shared with Acid Burst, Flying Fist and Toxic Cloud, which had the same bug.
+    for (SpellId spell : {SPELL_DARK_SHARPMETAL, SPELL_EARTH_BLADES}) {
+        test.prepareForNextTest();
+        auto hpTape = actorTapes.hp(0);
+        auto stateTape = actorTapes.aiState(0);
+        auto statusTape = tapes.statusBar();
+        engine->config->debug.NoActors.setValue(true);
+        engine->config->debug.AllMagic.setValue(true);
+        game.startNewGame();
+        test.startTaping();
+        prepareForBattleTest();
+        engine->config->debug.NoActors.setValue(false);
 
-    // Only the 4th char acted.
-    EXPECT_EQ(recoveringTape.slice(0).unique(), tape(false));
-    EXPECT_EQ(recoveringTape.slice(1).unique(), tape(false));
-    EXPECT_EQ(recoveringTape.slice(2).unique(), tape(false));
-    EXPECT_EQ(recoveringTape.slice(3).unique(), tape(false, true, false));
+        game.spawnMonster(pParty->pos + Vec3f(0, 80, 0), MONSTER_RAT_A, SPAWN_DUMMY); // Right in front of the party.
+        game.castQuickSpell(0, spell);
+        EXPECT_EQ(hpTape, tape(6, 0));
+        EXPECT_EQ(stateTape, tape(Standing, Dying));
+        EXPECT_CONTAINS(statusTape, [](std::string_view status) { return status.ends_with(" killing Giant Rat"); });
+    }
+}
 
-    // Sharpmetal was cast.
-    EXPECT_CONTAINS(spritesTape.flatten(), SPRITE_SPELL_DARK_SHARPMETAL_IMPACT);
+GAME_TEST(Issues, Issue294b) {
+    // Blaster shots couldn't kill a point-blank rat. They were aimed from a third of the party height but spawned at
+    // half of it, so they flew parallel to the aim and over the rat.
+    auto hpTape = actorTapes.hp(0);
+    auto stateTape = actorTapes.aiState(0);
+    auto statusTape = tapes.statusBar();
+    engine->config->debug.NoActors.setValue(true);
+    game.startNewGame();
+    test.startTaping();
+    prepareForBattleTest();
+    engine->config->debug.NoActors.setValue(false);
 
-    // Giant rat died after a sharpmetal cast from character #4.
-    EXPECT_EQ(deadActorsTape.delta(), +1);
-    EXPECT_EQ(ratStateTape.frontBack(), tape(Standing, Dead));
+    Character &shooter = pParty->pCharacters[0];
+    shooter.inventory.equip(ITEM_SLOT_MAIN_HAND, Item(ITEM_BLASTER));
+    shooter.setSkillValue(SKILL_BLASTER, CombinedSkillValue(10, MASTERY_GRANDMASTER));
 
-    // Rat didn't move much.
-    Vec3f positionJitter = BBoxf::forPoints(ratPositionTape).size();
-    EXPECT_LT(positionJitter.x, 100);
-    EXPECT_LT(positionJitter.y, 100);
-    EXPECT_LT(positionJitter.z, 100);
+    game.spawnMonster(pParty->pos + Vec3f(0, 80, 0), MONSTER_RAT_A, SPAWN_DUMMY); // Right in front of the party.
+    game.pressAndReleaseKey(PlatformKey::KEY_A);
+    game.tick();
+    EXPECT_EQ(hpTape, tape(6, 0));
+    EXPECT_EQ(stateTape, tape(Standing, Dying));
+    EXPECT_CONTAINS(statusTape, [](std::string_view status) { return status.ends_with(" killing Giant Rat"); });
 }
 
 // 300
