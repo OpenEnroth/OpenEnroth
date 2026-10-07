@@ -426,6 +426,7 @@ void OutdoorLocation::Release() {
 }
 
 void OutdoorLocation::Load(std::string_view filename, int days_played, int respawn_interval_days, bool *outdoors_was_respawned) {
+    // TODO(captainurist): figure out whether we still need the underwater tint and mist color below.
     //if (engine->IsUnderwater()) {
     //    pPaletteManager->pPalette_tintColor[0] = 0x10;
     //    pPaletteManager->pPalette_tintColor[1] = 0xC2;

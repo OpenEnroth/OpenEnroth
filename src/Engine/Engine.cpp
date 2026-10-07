@@ -24,14 +24,12 @@
 #include "Engine/Graphics/Indoor.h"
 #include "Engine/Graphics/BspRenderer.h"
 #include "Engine/Graphics/Overlays.h"
-#include "Engine/Graphics/PaletteManager.h"
 #include "Engine/Graphics/ParticleEngine.h"
 #include "Engine/Graphics/Sprites.h"
 #include "Engine/Tables/TextureFrameTable.h"
 #include "Engine/Graphics/Viewport.h"
 #include "Engine/Graphics/Vis.h"
 #include "Engine/Graphics/Weather.h"
-#include "Engine/Graphics/TileGenerator.h"
 #include "Engine/Graphics/TurnBasedOverlay.h"
 #include "Engine/Resources/LodSpriteCache.h"
 #include "Engine/Localization.h"
@@ -747,7 +745,7 @@ void FinalInitialization() {
 }
 
 void MM7_LoadLods() {
-    engine->resources()->open();
+    engine->resources()->open(engine->config->graphics.Saturation.value(), engine->config->graphics.Lightness.value());
 
     pSprites_LOD = new LodSpriteCache(engine->resources());
 
@@ -756,8 +754,6 @@ void MM7_LoadLods() {
     // Error(localization->str(LSTR_MIGHT_AND_MAGIC_VII_IS_HAVING_TROUBLE), localization->str(LSTR_REINSTALL_NECESSARY));
     // however, at this point localization isn't initialized yet, so this was a guaranteed crash.
     // Implement proper user-facing error reporting!
-
-    pPaletteManager->load(engine->resources());
 }
 
 //----- (004651F4) --------------------------------------------------------
@@ -821,9 +817,8 @@ void Engine::MM7_Initialize() {
     pMediaPlayer = new MPlayer();
     pMediaPlayer->Initialize();
 
-    pTileGenerator = new TileGenerator();
     if (engine->config->graphics.GenerateTiles.value())
-        pTileGenerator->fillTable();
+        engine->resources()->addGeneratedTiles(pTileTable);
 
     engineFlags |= ENGINE_ESCAPE_ENABLED;
 }
@@ -853,8 +848,6 @@ void Engine::SecondaryInitialization() {
 
     initializeHouses(engine->resources()->eventsData("2dEvents.txt"));
 
-    //pPaletteManager->SetMistColor(128, 128, 128);
-    //pPaletteManager->RecalculateAll();
     pObjectTable->InitializeSprites();
     pOverlayTable->initializeSprites();
 
@@ -1054,9 +1047,6 @@ void setTexture(unsigned int uFaceCog, std::string_view pFilename) {
         // unsigned int texture = pBitmaps_LOD->LoadTexture(pFilename);
         // if (texture != -1)
         {
-            // pBitmaps_LOD->pTextures[texture].palette_id2 =
-            // pPaletteManager->LoadPalette(pBitmaps_LOD->pTextures[texture].palette_id1);
-
             if (uCurrentlyLoadedLevelType == LEVEL_INDOOR) {
                 sub_44861E_set_texture_indoor(uFaceCog, pFilename);
             } else {

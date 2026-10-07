@@ -18,11 +18,9 @@ set(ENGINE_GRAPHICS_SOURCES
         LocationFunctions.cpp
         Outdoor.cpp
         Overlays.cpp
-        PaletteManager.cpp
         ParticleEngine.cpp
         PortalFunctions.cpp
         Sprites.cpp
-        TileGenerator.cpp
         TurnBasedOverlay.cpp
         Viewport.cpp
         Vis.cpp
@@ -47,14 +45,12 @@ set(ENGINE_GRAPHICS_HEADERS
         MapWeather.h
         Outdoor.h
         Overlays.h
-        PaletteManager.h
         ParticleEngine.h
         PortalFunctions.h
         RenderEntities.h
         Sprites.h
         SpriteEnums.h
         SpriteEnumFunctions.h
-        TileGenerator.h
         TurnBasedOverlay.h
         Viewport.h
         Vis.h

@@ -93,7 +93,7 @@ GraphicsImage *AssetsManager::getBitmap(std::string_view name, bool generated) {
     if (i == bitmaps.end()) {
         std::unique_ptr<ImageLoader> loader;
         if (generated) {
-            loader = std::make_unique<Bitmaps_GEN_Loader>(filename);
+            loader = std::make_unique<Bitmaps_GEN_Loader>(engine->resources(), filename);
         } else {
             loader = std::make_unique<Bitmaps_LOD_Loader>(engine->resources(), filename);
         }

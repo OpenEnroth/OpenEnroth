@@ -21,7 +21,6 @@
 #include "Engine/Graphics/Sprites.h"
 #include "Engine/Graphics/Viewport.h"
 #include "Engine/Graphics/Vis.h"
-#include "Engine/Graphics/PaletteManager.h"
 #include "Engine/Graphics/ParticleEngine.h"
 #include "Engine/Objects/Decoration.h"
 #include "Engine/Tables/DecorationTable.h"

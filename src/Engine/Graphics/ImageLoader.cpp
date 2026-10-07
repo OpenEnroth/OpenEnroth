@@ -4,19 +4,13 @@
 #include <memory>
 #include <utility>
 
-#include "Engine/Engine.h"
-#include "Engine/Resources/EngineFileSystem.h"
 #include "Engine/Graphics/AtlasLayout.h"
 #include "Engine/Graphics/Renderer/Renderer.h"
-#include "Engine/Graphics/TileGenerator.h"
 #include "Engine/Resources/ResourceManager.h"
 
 #include "Library/Image/Pcx.h"
-#include "Library/Image/Png.h"
 #include "Library/LodFormats/LodImage.h"
 #include "Library/Logger/Logger.h"
-
-#include "Utility/Math/Float.h"
 
 bool Icon_LOD_Loader::Load(RgbaImage *rgbaImage) {
     *rgbaImage = resources->icon(resource_name);
@@ -98,18 +92,7 @@ bool Bitmaps_LOD_Loader::Load(RgbaImage *rgbaImage) {
 }
 
 bool Bitmaps_GEN_Loader::Load(RgbaImage *rgbaImage) {
-    pTileGenerator->ensureTile(this->resource_name);
-    *rgbaImage = png::decode(ufs->read(this->resource_name));
-
-    // Desaturate.
-    float xs = engine->config->graphics.Saturation.value();
-    float xv = engine->config->graphics.Lightness.value();
-    if (fuzzyEquals(xs, 1.0f) && fuzzyEquals(xv, 1.0f))
-        return true;
-
-    for (Color &pixel : rgbaImage->pixels())
-        pixel = pixel.toHsvColorf().adjusted(0, xs, xv).toColor();
-
+    *rgbaImage = resources->generated(resource_name);
     return true;
 }
 

@@ -4,13 +4,15 @@ set(ENGINE_RESOURCES_SOURCES
         EngineFileSystem.cpp
         LOD.cpp
         LodSpriteCache.cpp
-        ResourceManager.cpp)
+        ResourceManager.cpp
+        TileGenerator.cpp)
 
 set(ENGINE_RESOURCES_HEADERS
         EngineFileSystem.h
         LOD.h
         LodSpriteCache.h
-        ResourceManager.h)
+        ResourceManager.h
+        TileGenerator.h)
 
 add_library(engine_resources STATIC ${ENGINE_RESOURCES_SOURCES} ${ENGINE_RESOURCES_HEADERS})
 target_link_libraries(engine_resources PUBLIC engine_tables library_image library_json library_lod library_lod_formats library_logger library_filesystem_interface utility)

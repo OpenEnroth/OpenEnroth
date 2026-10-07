@@ -4,13 +4,10 @@
 #include <string>
 #include <utility>
 
-#include "Engine/AssetsManager.h"
-#include "Engine/Engine.h"
 #include "Engine/Resources/EngineFileSystem.h"
 #include "Engine/Resources/ResourceManager.h"
 #include "Engine/Data/TileEnumFunctions.h"
 #include "Engine/Tables/TileTable.h"
-#include "Engine/Graphics/Image.h"
 #include "Library/Image/ImageFunctions.h"
 #include "Library/Image/Png.h"
 #include "Library/LodFormats/LodImage.h"
@@ -21,9 +18,7 @@
 #include "Utility/Exception.h"
 #include "Utility/MapAccess.h"
 
-TileGenerator *pTileGenerator = nullptr;
-
-TileGenerator::TileGenerator() {
+TileGenerator::TileGenerator(ResourceManager *resources) : _resources(resources) {
     for (TileVariant variant : allTransitionTileVariants())
         if (!allGeneratedTileVariants().contains(variant))
             _standardTiles.emplace_back(variant, transitionDirectionsForTileVariant(variant));
@@ -31,7 +26,7 @@ TileGenerator::TileGenerator() {
 
 TileGenerator::~TileGenerator() = default;
 
-void TileGenerator::fillTable() {
+void TileGenerator::fillTable(TileTable *table) {
     for (Tileset tileset : allTerrainTilesets()) {
         if (tileset == TILESET_DIRT || tileset == TILESET_WATER)
             continue; // We don't generate tiles for dirt and water tilesets. For dirt, it makes no sense, and for water we have a skill issue.
@@ -43,7 +38,7 @@ void TileGenerator::fillTable() {
             tileData.variant = variant;
             tileData.flags = TILE_TRANSITION | TILE_GENERATED_TRANSITION;
             _tilesetVariantByName.emplace(tileData.textureName, std::pair(tileset, variant));
-            pTileTable->addTile(std::move(tileData));
+            table->addTile(std::move(tileData));
         }
     }
 }
@@ -92,7 +87,7 @@ RgbaImageView TileGenerator::loadTile(Tileset tileset, TileVariant variant) {
         return *result;
 
     const std::string &textureName = pTileTable->tile(pTileTable->tileId(tileset, variant)).textureName;
-    LodImage image = engine->resources()->rawBitmap(textureName);
+    LodImage image = _resources->rawBitmap(textureName);
     if (!image.image)
         throw Exception("Tile texture '{}' is missing", textureName);
     return _tileByTilesetVariant.emplace(key, makeRgbaImage(image.image, image.palette)).first->second;

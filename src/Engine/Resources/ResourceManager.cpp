@@ -5,10 +5,10 @@
 #include <string>
 
 #include "Engine/Data/ResourceMask.h"
-#include "Engine/Graphics/PaletteManager.h"
 
 #include "Library/Image/ImageFunctions.h"
 #include "Library/Image/Pcx.h"
+#include "Library/Image/Png.h"
 #include "Library/Json/Json.h"
 #include "Library/LodFormats/LodFont.h"
 #include "Library/LodFormats/LodFormats.h"
@@ -17,12 +17,14 @@
 #include "Library/Logger/Logger.h"
 #include "Library/FileSystem/Interface/FileSystem.h"
 
+#include "Utility/Math/Float.h"
 #include "Utility/String/Ascii.h"
 #include "Utility/String/Format.h"
 #include "Utility/Lambda.h"
 #include "Utility/MapAccess.h"
 
 #include "EngineFileSystem.h"
+#include "TileGenerator.h"
 
 static Palette maskedPalette(const LodImage &image, const ResourceMask &mask) {
     Palette result = image.palette;
@@ -102,10 +104,12 @@ static Palette grayscalePalette() {
     return result;
 }
 
-ResourceManager::ResourceManager() = default;
+ResourceManager::ResourceManager() : _tileGenerator(std::make_unique<TileGenerator>(this)) {}
 ResourceManager::~ResourceManager() = default;
 
-void ResourceManager::open() {
+void ResourceManager::open(float saturation, float lightness) {
+    _saturation = saturation;
+    _lightness = lightness;
     _eventsLodReader.open(dfs->read("data/events.lod"));
     _iconsLodReader.open(dfs->read("data/icons.lod"));
     _bitmapsLodReader.open(dfs->read("data/bitmaps.lod"));
@@ -148,8 +152,8 @@ RgbaImage ResourceManager::bitmap(std::string_view filename) {
         return {};
 
     std::string name = ascii::toLower(filename);
-    // TODO(captainurist): PaletteManager lives in engine_graphics, above engine_resources. Move desaturation down.
-    Palette palette = PaletteManager::createLoadedPalette(maskedPalette(image, valueOr(_masks.bitmaps, name)));
+    Palette palette = maskedPalette(image, valueOr(_masks.bitmaps, name));
+    desaturate(palette.colors);
     if (std::ranges::all_of(palette.colors, _1 != 0, &Color::a))
         return makeRgbaImage(image.image, palette);
 
@@ -167,6 +171,17 @@ RgbaImage ResourceManager::bitmap(std::string_view filename) {
         }
     }
     return result;
+}
+
+RgbaImage ResourceManager::generated(std::string_view filename) {
+    _tileGenerator->ensureTile(filename);
+    RgbaImage result = png::decode(ufs->read(filename));
+    desaturate(result.pixels());
+    return result;
+}
+
+void ResourceManager::addGeneratedTiles(TileTable *table) {
+    _tileGenerator->fillTable(table);
 }
 
 LodImage ResourceManager::rawIcon(std::string_view filename) {
@@ -195,7 +210,10 @@ Palette ResourceManager::palette(int paletteId) {
     std::string name = fmt::format("pal{:03}", paletteId);
     if (!_bitmapsLodReader.exists(name))
         return grayscalePalette();
-    return lod::decodeImage(_bitmapsLodReader.read(name)).palette;
+
+    Palette result = lod::decodeImage(_bitmapsLodReader.read(name)).palette;
+    desaturate(result.colors);
+    return result;
 }
 
 RgbaImage ResourceManager::sprite(std::string_view filename) {
@@ -221,4 +239,12 @@ Sizei ResourceManager::spriteSize(std::string_view filename) {
         return {};
     }
     return lod::decodeSpriteSize(_spritesLodReader.read(name));
+}
+
+void ResourceManager::desaturate(std::span<Color> colors) const {
+    if (fuzzyEquals(_saturation, 1.0f) && fuzzyEquals(_lightness, 1.0f))
+        return;
+
+    for (Color &color : colors)
+        color = color.toHsvColorf().adjusted(0, _saturation, _lightness).toColor();
 }
