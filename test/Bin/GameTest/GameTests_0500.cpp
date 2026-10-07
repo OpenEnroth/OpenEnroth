@@ -69,7 +69,7 @@ GAME_TEST(Issues, Issue503) {
     test.prepareForNextTest(200, RANDOM_ENGINE_MERSENNE_TWISTER);
     auto timeTape = tapes.custom([] { return std::pair(current_screen_type, pParty->GetPlayingTime()); });
     auto screenHpTape = tapes.custom([] { return std::pair(current_screen_type, pParty->pCharacters[0].health); });
-    auto commanderStateTape = actorTapes.aiState(0);
+    auto hpTape = charTapes.hp(0);
 
     engine->config->debug.NoActors.setValue(true);
     engine->config->debug.AllMagic.setValue(true); // Casts at grandmaster, Town Portal below that fails with hostiles around.
@@ -86,7 +86,7 @@ GAME_TEST(Issues, Issue503) {
     auto inBook = [](const auto &pair) { return pair.first == SCREEN_BOOKS; };
     EXPECT_EQ(timeTape.filter(inBook).size(), 1); // The clock stands still.
     EXPECT_EQ(screenHpTape.filter(inBook).size(), 1); // No hits while the book is open.
-    EXPECT_CONTAINS(commanderStateTape, AttackingMelee); // The commander did attack the party, whether or not it hit.
+    EXPECT_LT(hpTape.delta(), 0); // The commander did hit the party.
 }
 
 GAME_TEST(Issues, Issue504) {
