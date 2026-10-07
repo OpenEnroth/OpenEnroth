@@ -933,6 +933,7 @@ GAME_TEST(Issues, Issue2903) {
     auto mapTape = tapes.map();
     auto bannersTape = tapes.questBit(QBIT_HARMONDALE_FACTION_BANNERS_HUNG);
     auto flashTape = tapes.custom([] { return bFlashQuestBook; });
+    auto soundsTape = tapes.sounds();
     auto screenTape = tapes.screen();
     auto textTape = tapes.allGUIWindowsText();
     game.startNewGame();
@@ -955,6 +956,7 @@ GAME_TEST(Issues, Issue2903) {
     EXPECT_EQ(mapTape, tape(MAP_HARMONDALE, MAP_CASTLE_HARMONDALE));
     EXPECT_EQ(bannersTape, tape(false, true));
     EXPECT_EQ(flashTape, tape(false));
+    EXPECT_MISSES(soundsTape.flatten(), SOUND_quest);
     EXPECT_EQ(screenTape.back(), SCREEN_BOOKS);
     EXPECT_CONTAINS(textTape.flatten(), "Current Quests");
     EXPECT_MISSES(textTape.flatten(), "0");
