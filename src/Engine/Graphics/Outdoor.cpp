@@ -426,6 +426,24 @@ void OutdoorLocation::Release() {
 }
 
 void OutdoorLocation::Load(std::string_view filename, int days_played, int respawn_interval_days, bool *outdoors_was_respawned) {
+    // TODO(captainurist): figure out whether we still need the underwater tint and mist color below.
+    //if (engine->IsUnderwater()) {
+    //    pPaletteManager->pPalette_tintColor[0] = 0x10;
+    //    pPaletteManager->pPalette_tintColor[1] = 0xC2;
+    //    pPaletteManager->pPalette_tintColor[2] = 0x99;
+    //    pPaletteManager->SetMistColor(37, 143, 92);
+    //} else {
+    //    pPaletteManager->pPalette_tintColor[0] = 0;
+    //    pPaletteManager->pPalette_tintColor[1] = 0;
+    //    pPaletteManager->pPalette_tintColor[2] = 0;
+    //    if (pPaletteManager->pPalette_mistColor[0] != 128 ||
+    //        pPaletteManager->pPalette_mistColor[1] != 128 ||
+    //        pPaletteManager->pPalette_mistColor[2] != 128) {
+    //        pPaletteManager->SetMistColor(128, 128, 128);
+    //        //pPaletteManager->RecalculateAll();
+    //    }
+    //}
+
     std::string_view minimap_filename = filename.substr(0, filename.length() - 4);
     if (viewparams->location_minimap)
         assets->releaseImage(viewparams->location_minimap);
