@@ -244,7 +244,7 @@ GAME_TEST(Issues, Issue2074) {
         game.tick();
         game.skipLoadingScreen();
         game.teleportTo(MAP_CASTLE_GRYPHONHEART, nextToSwordMasters, 180);
-        game.tick(100);
+        game.tick(100); // The swordmasters take a few seconds to walk up and strike.
         EXPECT_EQ(castleNotAliveTape, tape(0)); // Every soldier the castle spawned is still there.
         EXPECT_EQ(castleHostileTape, tape(false)); // Nobody in the castle turns hostile.
         EXPECT_EQ(hpTape.min(), hpTape.front()); // Nobody attacks the party.
@@ -707,7 +707,7 @@ GAME_TEST(Issues, Issue2186b) {
     pParty->setHoldingItem(Item(ITEM_LEATHER_ARMOR));
     game.pressAndReleaseButton(BUTTON_LEFT, pViewport.center()); // Throw it down the hole.
     test.startTaping();
-    game.tick(30);
+    game.tick(30); // It bounces along the railing top, then drops to the hall.
 
     EXPECT_EQ(armorZTape.back(), tape(129)); // Raised floor along the west side of the hall below.
     EXPECT_EQ(armorSectorTape, tape({4}, {3})); // Upper level, then the hall.
