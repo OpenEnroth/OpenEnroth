@@ -82,7 +82,8 @@ bool GraphicsImage::initialize() {
         return true;
 
     assert(_loader);
-    _initialized = _loader->Load(&_rgba);
+    _rgba = _loader->load();
+    _initialized = static_cast<bool>(_rgba);
     // TODO(captainurist): _initialized == false happens, investigate
 
     return _initialized;

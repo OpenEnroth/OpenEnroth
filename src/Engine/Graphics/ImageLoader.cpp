@@ -1,25 +1,21 @@
 #include "ImageLoader.h"
 
 #include <string_view>
-#include <memory>
-#include <utility>
 
 #include "Engine/Graphics/AtlasLayout.h"
 #include "Engine/Graphics/Renderer/Renderer.h"
 #include "Engine/Resources/ResourceManager.h"
 
-#include "Library/Image/Pcx.h"
 #include "Library/LodFormats/LodImage.h"
-#include "Library/Logger/Logger.h"
 
-bool Icon_LOD_Loader::Load(RgbaImage *rgbaImage) {
-    *rgbaImage = resources->icon(resource_name);
-    if (!*rgbaImage)
-        *rgbaImage = resources->icon("pending");
-    return true;
+RgbaImage Icon_LOD_Loader::load() {
+    RgbaImage result = resources->icon(resource_name);
+    if (!result)
+        result = resources->icon("pending");
+    return result;
 }
 
-bool Buff_LOD_Loader::Load(RgbaImage *rgbaImage) {
+RgbaImage Buff_LOD_Loader::load() {
     LodImage tex = resources->rawIcon(resource_name);
     if (!tex.image)
         tex.image = GrayscaleImage::solid(0, 1, 1); // Transparent, the palette is all zeros.
@@ -64,40 +60,21 @@ bool Buff_LOD_Loader::Load(RgbaImage *rgbaImage) {
                 result[y + cell.y][x + cell.x] = palette.colors[tex.image[y][x]];
     }
 
-    *rgbaImage = std::move(result);
-
-    return true;
+    return result;
 }
 
-bool PCX_Loader::InternalLoad(const Blob &data, RgbaImage *rgbaImage) {
-    *rgbaImage = pcx::decode(data);
-    return true;
+RgbaImage Bitmaps_LOD_Loader::load() {
+    RgbaImage result = resources->bitmap(resource_name);
+    if (!result)
+        result = resources->bitmap("pending");
+    return result;
 }
 
-bool PCX_LOD_Raw_Loader::Load(RgbaImage *rgbaImage) {
-    Blob data = lod->read(resource_name);
-    if (!data) {
-        MM_WARNING("Unable to load {}", this->resource_name);
-        return false;
-    }
-
-    return InternalLoad(data, rgbaImage);
+RgbaImage Bitmaps_GEN_Loader::load() {
+    return resources->generated(resource_name);
 }
 
-bool Bitmaps_LOD_Loader::Load(RgbaImage *rgbaImage) {
-    *rgbaImage = resources->bitmap(resource_name);
-    if (!*rgbaImage)
-        *rgbaImage = resources->bitmap("pending");
-    return true;
-}
-
-bool Bitmaps_GEN_Loader::Load(RgbaImage *rgbaImage) {
-    *rgbaImage = resources->generated(resource_name);
-    return true;
-}
-
-bool Sprites_LOD_Loader::Load(RgbaImage *rgbaImage) {
-    *rgbaImage = resources->sprite(resource_name);
-    return static_cast<bool>(*rgbaImage);
+RgbaImage Sprites_LOD_Loader::load() {
+    return resources->sprite(resource_name);
 }
 
