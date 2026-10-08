@@ -1256,8 +1256,8 @@ bool Check_LOS_Obscurred_Outdoors_Bmodels(const Vec3f &target, const Vec3f &from
 
     for (BSPModel &model : pOutdoor->pBModels) {
         if (CalcDistPointToLine(target.x, target.y, from.x, from.y, model.position.x, model.position.y) <= model.boundingRadius + 128) {
-            for (size_t i = 0; i < model.faces.size(); ++i) {
-                BLVFace &face = pOutdoor->faces[model.faces[i]];
+            for (int faceId : model.faces) {
+                BLVFace &face = pOutdoor->faces[faceId];
                 if (face.Ethereal()) continue;
 
                 float dirDotNormal = dot(dir, face.facePlane.normal);

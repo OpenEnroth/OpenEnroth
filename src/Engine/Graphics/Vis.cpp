@@ -47,7 +47,7 @@ Vis_ObjectInfo *Vis::DetermineFacetIntersection(BLVFace *face, Pid pid, float pi
     RenderVertexSoft static_DetermineFacetIntersection_array_F8F200[64];
 
     if (uCurrentlyLoadedLevelType == LEVEL_INDOOR) {
-        if ((signed int)face->vertexIds.size() > 0) {
+        if (!face->vertexIds.empty()) {
             for (int i = 0; i < face->vertexIds.size(); i++) {
                 static_DetermineFacetIntersection_array_F8F200[i]
                     .vWorldPosition.x =
@@ -355,8 +355,8 @@ void Vis::PickOutdoorFaces_Mouse(float fDepth, const Vec3f &rayOrigin, const Vec
             continue;
         }
 
-        for (size_t faceIndex = 0; faceIndex < model.faces.size(); ++faceIndex) {
-            BLVFace &face = pOutdoor->faces[model.faces[faceIndex]];
+        for (int faceId : model.faces) {
+            BLVFace &face = pOutdoor->faces[faceId];
             face.attributes &= ~FACE_OUTLINED;
 
             if (isFacePartOfSelection(&face, filter)) {
@@ -367,7 +367,7 @@ void Vis::PickOutdoorFaces_Mouse(float fDepth, const Vec3f &rayOrigin, const Vec
                     // int v13 = fixpoint_from_float(/*v12,
                     // */intersection.vWorldViewPosition.x); v13 &= 0xFFFF0000;
                     // v13 += Pid(OBJECT_Face, j | (i << 6));
-                    Pid pid = Pid::blvFace(face.faceId);
+                    Pid pid = Pid::face(face.faceId);
                     list->AddObject(VisObjectType_Face, intersection.vWorldViewPosition.x, pid);
 
                     if (engine->config->debug.ShowPickedFace.value())
@@ -885,10 +885,10 @@ void Vis::PickOutdoorFaces_Keyboard(float pick_depth, Vis_SelectionList *list,
         bool reachable;
         if (IsBModelVisible(&model, pick_depth, &reachable)) {
             if (reachable) {
-                for (size_t faceIndex = 0; faceIndex < model.faces.size(); ++faceIndex) {
-                    BLVFace &face = pOutdoor->faces[model.faces[faceIndex]];
+                for (int faceId : model.faces) {
+                    BLVFace &face = pOutdoor->faces[faceId];
                     if (isFacePartOfSelection(&face, filter)) {
-                        Pid pid = Pid::blvFace(face.faceId);
+                        Pid pid = Pid::face(face.faceId);
                         if (Vis_ObjectInfo *object_info =
                                 DetermineFacetIntersection(&face, pid, pick_depth)) {
                             list->AddObject(object_info->object_type, object_info->depth, object_info->object_pid);

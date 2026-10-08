@@ -709,14 +709,10 @@ void DoPrepareWorld(bool bLoading, int _1_fullscreen_loading_2_box) {
 
     // OE fix - the Accuracy well's face lacks FACE_CLICKABLE in map data, so Space reaches it but the mouse doesn't.
     // TODO(captainurist): move to patched data tables.
-    if (engine->_currentLoadedMapId == MAP_HARMONDALE) {
-        for (BSPModel &model : pOutdoor->pBModels)
-            for (size_t i = 0; i < model.faces.size(); ++i) {
-                BLVFace &face = pOutdoor->faces[model.faces[i]];
-                if (face.eventId == 228) // The Accuracy well, "+2 Accuracy (Permanent)" in out02.evt.
-                    face.attributes |= FACE_CLICKABLE;
-            }
-    }
+    if (engine->_currentLoadedMapId == MAP_HARMONDALE)
+        for (BLVFace &face : pOutdoor->faces)
+            if (face.eventId == 228) // The Accuracy well, "+2 Accuracy (Permanent)" in out02.evt.
+                face.attributes |= FACE_CLICKABLE;
 
     bDialogueUI_InitializeActor_NPC_ID = 0;
     engine->_pendingTransition.reset();
@@ -1036,14 +1032,9 @@ void sub_44861E_set_texture_indoor(unsigned int uFaceCog, std::string_view filen
 }
 
 void sub_44861E_set_texture_outdoor(unsigned int uFaceCog, std::string_view filename) {
-    for (BSPModel &model : pOutdoor->pBModels) {
-        for (size_t i = 0; i < model.faces.size(); ++i) {
-            BLVFace &face = pOutdoor->faces[model.faces[i]];
-            if (face.cogNumber == uFaceCog) {
-                face.SetTexture(filename);
-            }
-        }
-    }
+    for (BLVFace &face : pOutdoor->faces)
+        if (face.cogNumber == uFaceCog)
+            face.SetTexture(filename);
 }
 
 void setTexture(unsigned int uFaceCog, std::string_view pFilename) {
@@ -1072,15 +1063,12 @@ void setFacesBit(int sCogNumber, FaceAttribute bit, int on) {
                 }
             }
         } else {
-            for (BSPModel &model : pOutdoor->pBModels) {
-                for (size_t i = 0; i < model.faces.size(); ++i) {
-                    BLVFace &face = pOutdoor->faces[model.faces[i]];
-                    if (face.cogNumber == sCogNumber) {
-                        if (on) {
-                            face.attributes |= bit;
-                        } else {
-                            face.attributes &= ~bit;
-                        }
+            for (BLVFace &face : pOutdoor->faces) {
+                if (face.cogNumber == sCogNumber) {
+                    if (on) {
+                        face.attributes |= bit;
+                    } else {
+                        face.attributes &= ~bit;
                     }
                 }
             }

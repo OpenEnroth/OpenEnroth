@@ -672,8 +672,8 @@ std::string GameUI_GetMinimapHintText() {
             v7 = Vec2i((int)model.boundingCenter.x - global_coord_X,
                        (int)model.boundingCenter.y - global_coord_Y).length();
             if (v7 < 2 * model.boundingRadius) {
-                for (size_t i = 0; i < model.faces.size(); ++i) {
-                    BLVFace &face = pOutdoor->faces[model.faces[i]];
+                for (int faceId : model.faces) {
+                    BLVFace &face = pOutdoor->faces[faceId];
                     if (face.eventId) {
                         if (!(face.attributes & FACE_EVENT_IS_HINT)) {
                             std::string hintString = getEventHintString(face.eventId);
@@ -829,7 +829,6 @@ void GameUI_WritePointedObjectStatusString() {
     int invmatrixindex;                // eax@41
     // int v16;                           // ecx@46
     Vis_PIDAndDepth pickedObject;        // eax@55
-    signed int v18b;
     signed int pickedObjectID = 0;     // ecx@63
     BLVFace *pFace;                    // eax@69
     UIMessageType pMessageType2;  // esi@110

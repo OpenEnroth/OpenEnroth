@@ -513,7 +513,7 @@ GAME_TEST(Issues, Issue1290) {
     test.startTaping();
     game.teleportTo(MAP_HARMONDALE, Vec3f(-8864, 17936, 384), 90, -45); // Look down into the well.
 
-    Pid wellFace = Pid::blvFace(pOutdoor->pBModels[97].faces[10]);
+    Pid wellFace = Pid::face(pOutdoor->pBModels[97].faces[10]);
     const BLVFace &well = pOutdoor->face(wellFace);
     ASSERT_EQ(well.eventId, 228);
     ASSERT_EQ(pParty->activeCharacterIndex(), 0);

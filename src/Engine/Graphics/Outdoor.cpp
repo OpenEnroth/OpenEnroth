@@ -793,12 +793,12 @@ float ODM_GetFloorLevel(const Vec3f &pos, bool *pIsOnWater, int *faceId) {
         if (model.faces.empty())
             continue;
 
-        for (size_t faceIndex = 0; faceIndex < model.faces.size(); ++faceIndex) {
-            BLVFace &face = pOutdoor->faces[model.faces[faceIndex]];
+        for (int faceId : model.faces) {
+            BLVFace &face = pOutdoor->faces[faceId];
             if (face.Ethereal())
                 continue;
 
-            if (face.vertexIds.size() == 0)
+            if (face.vertexIds.empty())
                 continue;
 
             if (face.polygonType != POLYGON_Floor && face.polygonType != POLYGON_InBetweenFloorAndWall)
@@ -1503,8 +1503,8 @@ int GetCeilingHeight(int Party_X, signed int Party_Y, int Party_ZHeight, int *pF
         if (!model.boundingBox.containsXY(Party_X, Party_Y))
             continue;
 
-        for (size_t faceIndex = 0; faceIndex < model.faces.size(); ++faceIndex) {
-            BLVFace &face = pOutdoor->faces[model.faces[faceIndex]];
+        for (int faceId : model.faces) {
+            BLVFace &face = pOutdoor->faces[faceId];
             if (face.Ethereal())
                 continue;
 

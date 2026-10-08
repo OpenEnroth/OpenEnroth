@@ -20,7 +20,7 @@ using enum ObjectType;
 class Pid {
  public:
     enum {
-        ID_MAX = 0xFFFF >> 3,
+        ID_MAX = 0xFFFF >> 3
     };
 
     constexpr Pid() = default;
@@ -51,7 +51,7 @@ class Pid {
         return Pid(OBJECT_Decoration, id);
     }
 
-    static constexpr Pid blvFace(int id) {
+    static constexpr Pid face(int id) {
         return Pid(OBJECT_Face, id);
     }
 
