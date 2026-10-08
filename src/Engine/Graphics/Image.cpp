@@ -34,7 +34,7 @@ std::unique_ptr<GraphicsImage> GraphicsImage::Create(Sizei size) {
 
 std::unique_ptr<GraphicsImage> GraphicsImage::Create(std::unique_ptr<ImageLoader> loader) {
     std::unique_ptr<GraphicsImage> result(new GraphicsImage());
-    result->_name = loader->GetResourceName();
+    result->_name = loader->name();
     result->_loader = std::move(loader);
     return result;
 }

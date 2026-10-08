@@ -9,10 +9,10 @@ class ResourceManager;
 
 class ImageLoader {
  public:
-    ImageLoader(ResourceManager *resources, std::string_view name) : resources(resources), resource_name(name) {}
+    ImageLoader(ResourceManager *resources, std::string_view name) : _resources(resources), _name(name) {}
     virtual ~ImageLoader() = default;
 
-    const std::string &GetResourceName() const { return this->resource_name; }
+    const std::string &name() const { return _name; }
 
     /**
      * @return                          Loaded image, or an empty image if loading failed.
@@ -20,8 +20,11 @@ class ImageLoader {
     virtual RgbaImage load() = 0;
 
  protected:
-    ResourceManager *resources = nullptr;
-    std::string resource_name;
+    ResourceManager *resources() const { return _resources; }
+
+ private:
+    ResourceManager *_resources;
+    std::string _name;
 };
 
 class Icon_LOD_Loader : public ImageLoader {

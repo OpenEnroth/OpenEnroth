@@ -1,22 +1,19 @@
 #include "ImageLoader.h"
 
-#include <string_view>
-
 #include "Engine/Graphics/AtlasLayout.h"
-#include "Engine/Graphics/Renderer/Renderer.h"
 #include "Engine/Resources/ResourceManager.h"
 
 #include "Library/LodFormats/LodImage.h"
 
 RgbaImage Icon_LOD_Loader::load() {
-    RgbaImage result = resources->icon(resource_name);
+    RgbaImage result = resources()->icon(name());
     if (!result)
-        result = resources->icon("pending");
+        result = resources()->icon("pending");
     return result;
 }
 
 RgbaImage Buff_LOD_Loader::load() {
-    LodImage tex = resources->rawIcon(resource_name);
+    LodImage tex = resources()->rawIcon(name());
     if (!tex.image)
         tex.image = GrayscaleImage::solid(0, 1, 1); // Transparent, the palette is all zeros.
 
@@ -64,17 +61,17 @@ RgbaImage Buff_LOD_Loader::load() {
 }
 
 RgbaImage Bitmaps_LOD_Loader::load() {
-    RgbaImage result = resources->bitmap(resource_name);
+    RgbaImage result = resources()->bitmap(name());
     if (!result)
-        result = resources->bitmap("pending");
+        result = resources()->bitmap("pending");
     return result;
 }
 
 RgbaImage Bitmaps_GEN_Loader::load() {
-    return resources->generated(resource_name);
+    return resources()->generated(name());
 }
 
 RgbaImage Sprites_LOD_Loader::load() {
-    return resources->sprite(resource_name);
+    return resources()->sprite(name());
 }
 
