@@ -986,7 +986,7 @@ GAME_TEST(Issues, Issue2908) {
     game.tick();
     game.pressAndReleaseKey(PlatformKey::KEY_ESCAPE);
     game.tick();
-    game.teleportTo(MAP_EMERALD_ISLAND, Vec3f(11008, 34, 192), 90); // In front of the Lady Margaret.
+    game.teleportTo(MAP_EMERALD_ISLAND, Vec3f(11008, 34, 193), 90); // In front of the Lady Margaret.
     game.pressAndReleaseKey(PlatformKey::KEY_SPACE);
     game.tick(2);
     game.pressGuiButton("HouseNpcDialogue_Option0"); // Cast off!
