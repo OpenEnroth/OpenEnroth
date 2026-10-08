@@ -2,8 +2,6 @@
 
 #include <vector>
 
-#include "Core/Time/Duration.h"
-
 #include "Engine/Pid.h"
 #include "Engine/Evt/EvtInstruction.h"
 #include "Engine/Evt/EvtProgram.h"
@@ -64,7 +62,6 @@ class EvtInterpreter {
      bool _canShowOption = true;
      bool _readyToExit = false;
      bool _mapExitTriggered = false;
-     Duration _travelTime; // Time at sea, passes once the map move that follows has autosaved.
      EvtTargetCharacter _who = CHOOSE_PARTY;
 };
 

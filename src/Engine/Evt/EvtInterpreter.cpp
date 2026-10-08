@@ -275,8 +275,8 @@ EvtFlow EvtInterpreter::executeInstruction(EvtInstruction ir) {
             } else {
                 pGameLoadingUI_ProgressBar->Initialize((GUIProgressBar::Type)((activeLevelDecoration == NULL) + 1));
                 startMapTransition(destination);
-                if (_travelTime) {
-                    Rest(_travelTime);
+                if (engine->_currentLoadedMapId == MAP_EMERALD_ISLAND && destination.map() == MAP_HARMONDALE) { // The ship, a week at sea.
+                    Rest(Duration::fromDays(7));
                     pParty->restAndHeal();
                     pParty->days_played_without_rest = 0;
                 }
@@ -337,8 +337,6 @@ EvtFlow EvtInterpreter::executeInstruction(EvtInstruction ir) {
             } else if (!movieName.compare("arbiter evil")) { // change alignment to evil
                 pParty->alignment = PartyAlignment::PartyAlignment_Evil;
                 SetUserInterface(pParty->alignment);
-            } else if (!movieName.compare("pcout01")) { // moving to harmondale from emerald isle
-                _travelTime = Duration::fromDays(7);
             }
 
             // is this block is needed anymore?
