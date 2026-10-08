@@ -6,6 +6,7 @@
 #include "Engine/Spells/SpellEnums.h"
 #include "Engine/Objects/MonsterEnums.h"
 #include "Engine/MapEnums.h"
+#include "Engine/Pid.h"
 
 #include "Library/Geometry/Point.h"
 #include "Library/Platform/Interface/PlatformEnums.h"
@@ -226,6 +227,18 @@ class EngineController {
     void pressOrReleaseButton(PlatformEventType type, PlatformMouseButton button, int x, int y, bool isDoubleClick);
 
     GUIButton *existingButton(std::string_view buttonId);
+
+    /**
+     * Moves the mouse to a point in the clickable part of the 3D view where the pick hits the target, starting at the
+     * projection of `center` and trying points around it.
+     *
+     * @param target                    Object to point at.
+     * @param center                    World position to start the search from.
+     * @param pickDepth                 Pick depth to check the target with.
+     * @param targetName                Name of the target for error messages, e.g. "actor #3".
+     * @throws Exception                If no point in the search hits the target.
+     */
+    void pointMouseAt(Pid target, Vec3f center, int pickDepth, std::string_view targetName);
 
  private:
     EngineControlStateHandle _state;

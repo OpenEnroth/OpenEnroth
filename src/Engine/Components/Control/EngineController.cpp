@@ -410,63 +410,19 @@ void EngineController::castQuickSpellAtActor(int characterIndex, SpellId spell, 
 }
 
 void EngineController::pointMouseAtActor(int actorId) {
-    // Camera matrices are updated when a frame is rendered, so if the party was teleported without ticking, the
-    // camera is still at the old position. Tick once to let it catch up.
-    tick(1);
-
     Vec3f center = pActors[actorId].pos + Vec3f(0, 0, pActors[actorId].height / 2);
-    Vec3f viewPos = pCamera3D->ViewTransform(&center);
-    if (viewPos.x <= 0)
-        throw Exception("Actor #{} is behind the camera", actorId);
-    Vec2f screenPos = pCamera3D->Project(viewPos);
-
-    moveMouse(screenPos.x, screenPos.y);
-    tick(1); // The mouse move is a queued event, the pick sees the new position only once it's processed.
-    if (engine->PickMouseForTargeting().pid != Pid(OBJECT_Actor, actorId))
-        throw Exception("Failed to point mouse at actor #{}", actorId);
+    pointMouseAt(Pid(OBJECT_Actor, actorId), center, engine->config->gameplay.RangedAttackDepth.value(), fmt::format("actor #{}", actorId));
 }
 
 void EngineController::pointMouseAtDecoration(int decorationId) {
-    // Camera matrices are updated when a frame is rendered, so if the party was teleported without ticking, the
-    // camera is still at the old position. Tick once to let it catch up.
-    tick(1);
-
     const DecorationData *desc = pDecorationTable->decoration(pLevelDecorations[decorationId].uDecorationDescID);
     Vec3f center = pLevelDecorations[decorationId].vPosition + Vec3f(0, 0, desc->uDecorationHeight / 2);
-    Vec3f viewPos = pCamera3D->ViewTransform(&center);
-    if (viewPos.x <= 0)
-        throw Exception("Decoration #{} is behind the camera", decorationId);
-    Pointi screenPos = pCamera3D->Project(viewPos).toInt();
-
-    // Decoration sprites can be transparent in places, and a pick there goes through to whatever is behind.
-    std::vector<Pointi> points = {screenPos};
-    for (int distance = 5; distance <= 50; distance += 5)
-        points.insert(points.end(), {screenPos - Pointi(0, distance), screenPos + Pointi(0, distance), screenPos - Pointi(distance, 0), screenPos + Pointi(distance, 0)});
-    auto target = std::ranges::find(points, Pid(OBJECT_Decoration, decorationId), [](Pointi point) {
-        return engine->PickMouse(engine->config->gameplay.RangedAttackDepth.value(), point.x, point.y, &vis_anything_filter, &vis_face_filter).pid;
-    });
-
-    moveMouse(target != points.end() ? *target : screenPos);
-    tick(1); // The mouse move is a queued event, the pick sees the new position only once it's processed.
-    if (engine->PickMouseForTargeting().pid != Pid(OBJECT_Decoration, decorationId))
-        throw Exception("Failed to point mouse at decoration #{}", decorationId);
+    pointMouseAt(Pid(OBJECT_Decoration, decorationId), center, engine->config->gameplay.RangedAttackDepth.value(), fmt::format("decoration #{}", decorationId));
 }
 
 void EngineController::pointMouseAtFace(int faceId) {
-    // Camera matrices are updated when a frame is rendered, so if the party was teleported without ticking, the
-    // camera is still at the old position. Tick once to let it catch up.
-    tick(1);
-
     Vec3f center = pIndoor->faces[faceId].boundingBox.center();
-    Vec3f viewPos = pCamera3D->ViewTransform(&center);
-    if (viewPos.x <= 0)
-        throw Exception("Face #{} is behind the camera", faceId);
-    Vec2f screenPos = pCamera3D->Project(viewPos);
-
-    moveMouse(screenPos.x, screenPos.y);
-    tick(1); // The mouse move is a queued event, the pick sees the new position only once it's processed.
-    if (engine->PickMouseForInteraction().pid != Pid(OBJECT_Face, faceId))
-        throw Exception("Failed to point mouse at face #{}", faceId);
+    pointMouseAt(Pid(OBJECT_Face, faceId), center, engine->config->gameplay.MouseInteractionDepth.value(), fmt::format("face #{}", faceId));
 }
 
 void EngineController::activateCharacter(int characterIndex) {
@@ -557,3 +513,32 @@ GUIButton *EngineController::existingButton(std::string_view buttonId) {
     return result;
 }
 
+void EngineController::pointMouseAt(Pid target, Vec3f center, int pickDepth, std::string_view targetName) {
+    // Camera matrices are updated when a frame is rendered, so if the party was teleported without ticking, the
+    // camera is still at the old position. Tick once to let it catch up.
+    tick(1);
+
+    Vec3f viewPos = pCamera3D->ViewTransform(&center);
+    if (viewPos.x <= 0)
+        throw Exception("Can't point mouse at {}, it's behind the camera", targetName);
+    Pointi screenPos = pCamera3D->Project(viewPos).toInt();
+
+    // Sprites can be transparent in places, and a pick there goes through to whatever is behind. The pick also covers
+    // a couple of rows and columns at the edges of the 3D view that a click there doesn't reach.
+    auto viewport = std::ranges::find(pPrimaryWindow->vButtons, "Game_Viewport", &GUIButton::id);
+    assert(viewport != pPrimaryWindow->vButtons.end());
+    auto pickAt = [pickDepth](Pointi point) {
+        return engine->PickMouse(pickDepth, point.x, point.y, &vis_anything_filter, &vis_face_filter).pid;
+    };
+    std::vector<Pointi> points = {screenPos};
+    for (int distance = 5; distance <= 50; distance += 5)
+        points.insert(points.end(), {screenPos - Pointi(0, distance), screenPos + Pointi(0, distance), screenPos - Pointi(distance, 0), screenPos + Pointi(distance, 0)});
+    auto point = std::ranges::find_if(points, [&](Pointi point) { return (*viewport)->Contains(point) && pickAt(point) == target; });
+    if (point == points.end())
+        throw Exception("Failed to point mouse at {}", targetName);
+
+    moveMouse(*point);
+    tick(1); // The mouse move is a queued event, the pick sees the new position only once it's processed.
+    if (pickAt(mouse->position()) != target)
+        throw Exception("Failed to point mouse at {}", targetName);
+}
