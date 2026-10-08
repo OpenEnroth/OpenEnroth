@@ -380,12 +380,9 @@ void UpdateChestPositions() {
     };
 
     if (uCurrentlyLoadedLevelType == LEVEL_OUTDOOR) {
-        for (const BSPModel &model : pOutdoor->pBModels)
-            for (size_t i = 0; i < model.faces.size(); ++i) {
-                const BLVFace &face = pOutdoor->faces[model.faces[i]];
-                if (face.eventId)
-                    processEvent(face.eventId, face.boundingBox.center());
-            }
+        for (const BLVFace &face : pOutdoor->faces)
+            if (face.eventId)
+                processEvent(face.eventId, face.boundingBox.center());
     } else {
         for (const BLVFace &face : pIndoor->faces)
             if (int eventId = face.eventId)

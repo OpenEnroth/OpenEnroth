@@ -1062,11 +1062,10 @@ GAME_TEST(Prs, Pr2354) {
             for (size_t modelIndex = 0; modelIndex < location.pBModels.size(); ++modelIndex) {
                 const BSPModel &model = location.pBModels[modelIndex];
                 size_t vertexCount = rawLocation.models[modelIndex].numVertices;
-                for (size_t faceIndex = 0; faceIndex < model.faces.size(); ++faceIndex) {
-                    int faceId = model.faces[faceIndex];
+                for (int faceId : model.faces) {
                     const BLVFace &face = location.faces[faceId];
                     EXPECT_EQ(face.faceId, faceId);
-                    Pid pid = Pid::blvFace(faceId);
+                    Pid pid = Pid::face(faceId);
                     EXPECT_EQ(&location.face(pid), &face);
                     for (int vertexId : face.vertexIds) {
                         EXPECT_GE(vertexId, 0);

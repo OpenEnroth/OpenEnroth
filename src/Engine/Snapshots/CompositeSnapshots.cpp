@@ -2,7 +2,7 @@
 
 #include <string>
 #include <algorithm>
-#include <iterator>
+#include <numeric>
 #include <optional>
 #include <span>
 #include <tuple>
@@ -490,16 +490,23 @@ void reconstruct(std::tuple<const BSPModelData_MM7 &, const BSPModelExtras_MM7 &
     dst->boundingCenter = srcData.boundingCenter.toFloat();
     dst->boundingRadius = srcData.boundingRadius;
 
+    const int vertexOffset = locationVertices->size();
     std::vector<Vec3f> vertices;
     reconstruct(srcExtras.vertices, &vertices);
-    std::vector<BLVFace> faces(srcExtras.faces.size());
-    for (int i = 0; i < srcExtras.faces.size(); i++) {
-        reconstruct(srcExtras.faces[i], &faces[i], tags::context(i)); // tag to set indexes in faces
+    locationVertices->insert(locationVertices->end(), vertices.begin(), vertices.end());
+
+    const int faceOffset = locationFaces->size();
+    locationFaces->resize(faceOffset + srcExtras.faces.size());
+    std::span<BLVFace> faces = std::span(*locationFaces).subspan(faceOffset);
+    for (int i = 0; i < faces.size(); i++) {
+        reconstruct(srcExtras.faces[i], &faces[i], tags::context(faceOffset + i)); // tag to set faceId
+        for (int &vertexId : faces[i].vertexIds)
+            vertexId += vertexOffset;
     }
 
     for (BLVFace &face : faces) {
         dropDuplicateFaceVertices(&face);
-        repairFaceNormal(&face, vertices, {});
+        repairFaceNormal(&face, *locationVertices, {});
     }
 
     reconstruct(srcExtras.bspNodes, &dst->nodes);
@@ -517,26 +524,8 @@ void reconstruct(std::tuple<const BSPModelData_MM7 &, const BSPModelExtras_MM7 &
         }
     }
 
-    const size_t vertexOffset = locationVertices->size();
-    const size_t faceOffset = locationFaces->size();
-    const size_t faceCount = faces.size();
-    for (BLVFace &face : faces) {
-        for (int &vertexId : face.vertexIds)
-            vertexId += vertexOffset;
-    }
-
-    locationVertices->insert(locationVertices->end(), std::make_move_iterator(vertices.begin()),
-                             std::make_move_iterator(vertices.end()));
-    locationFaces->insert(locationFaces->end(), std::make_move_iterator(faces.begin()),
-                          std::make_move_iterator(faces.end()));
-
-    dst->faces.clear();
-    dst->faces.reserve(faceCount);
-    for (size_t i = 0; i < faceCount; ++i) {
-        int faceId = static_cast<int>(faceOffset + i);
-        (*locationFaces)[faceOffset + i].faceId = faceId;
-        dst->faces.push_back(faceId);
-    }
+    dst->faces.resize(faces.size());
+    std::iota(dst->faces.begin(), dst->faces.end(), faceOffset);
 }
 
 static int mapToGlobalTileId(const std::array<int, 4> &baseIds, int localTileId) {
@@ -653,9 +642,7 @@ void deserialize(InputStream &src, OutdoorLocation_MM7 *dst) {
 
 void snapshot(const OutdoorLocation &src, OutdoorDelta_MM7 *dst) {
     snapshot(src.ddm, &dst->header.info);
-    dst->header.totalFacesCount = 0;
-    for (const BSPModel &model : src.pBModels)
-        dst->header.totalFacesCount += model.faces.size();
+    dst->header.totalFacesCount = src.faces.size();
     dst->header.bmodelCount = src.pBModels.size();
     dst->header.decorationCount = pLevelDecorations.size();
 
@@ -664,11 +651,8 @@ void snapshot(const OutdoorLocation &src, OutdoorDelta_MM7 *dst) {
 
     // Symmetric to what's happening in reconstruct - no all attributes need to be saved in a delta.
     dst->faceAttributes.clear();
-    for (const BSPModel &model : src.pBModels)
-        for (size_t i = 0; i < model.faces.size(); ++i) {
-            const BLVFace &face = src.faces[model.faces[i]];
-            dst->faceAttributes.push_back(std::to_underlying(face.attributes & ~(FACE_EVENT_IS_HINT | FACE_ANIMATED)));
-        }
+    for (const BLVFace &face : src.faces)
+        dst->faceAttributes.push_back(std::to_underlying(face.attributes & ~(FACE_EVENT_IS_HINT | FACE_ANIMATED)));
 
     dst->decorationFlags.clear();
     for (const LevelDecoration &decoration : pLevelDecorations)
@@ -690,13 +674,10 @@ void reconstruct(const OutdoorDelta_MM7 &src, OutdoorLocation *dst) {
     reconstruct(src.partiallyRevealedCells, &dst->uPartiallyRevealedCellOnMap);
 
     // Not all of the attributes need to be restored.
-    size_t attributeIndex = 0;
-    for (BSPModel &model : dst->pBModels) {
-        for (size_t i = 0; i < model.faces.size(); ++i) {
-            BLVFace &face = dst->faces[model.faces[i]];
-            face.attributes &= FACE_ANIMATED | FACE_EVENT_IS_HINT;
-            face.attributes |= FaceAttributes(src.faceAttributes[attributeIndex++]) & ~(FACE_EVENT_IS_HINT | FACE_ANIMATED);
-        }
+    for (size_t i = 0; i < dst->faces.size(); ++i) {
+        BLVFace &face = dst->faces[i];
+        face.attributes &= FACE_ANIMATED | FACE_EVENT_IS_HINT;
+        face.attributes |= FaceAttributes(src.faceAttributes[i]) & ~(FACE_EVENT_IS_HINT | FACE_ANIMATED);
     }
 
     for (size_t i = 0; i < pLevelDecorations.size(); ++i)

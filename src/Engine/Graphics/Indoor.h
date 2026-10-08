@@ -152,7 +152,7 @@ struct BLVFace {
     PlaneZCalcf zCalc;
     FaceAttributes attributes;
 
-    /** Indices into the vertex array for this face's vertices. Indoor faces index `IndoorLocation::vertices`; outdoor
+    /** Indices into the vertex array for this face's vertices. Indoor faces index `IndoorLocation::vertices`, outdoor
      * faces index `OutdoorLocation::vertices`. */
     std::vector<int> vertexIds;
 

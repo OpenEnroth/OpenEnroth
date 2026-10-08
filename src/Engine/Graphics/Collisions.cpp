@@ -458,15 +458,15 @@ void CollideOutdoorWithModels(bool ignore_ethereal) {
         if (!collision_state.bbox.intersects(model.boundingBox))
             continue;
 
-        for (size_t faceIndex = 0; faceIndex < model.faces.size(); ++faceIndex) {
-            BLVFace &mface = pOutdoor->faces[model.faces[faceIndex]];
+        for (int faceId : model.faces) {
+            BLVFace &mface = pOutdoor->faces[faceId];
             if (!collision_state.bbox.intersects(mface.boundingBox))
                 continue;
 
             if (mface.isPortal())
                 continue;
 
-            Pid pid = Pid::blvFace(mface.faceId);
+            Pid pid = Pid::face(mface.faceId);
             CollideBodyWithFace(&mface, pid, ignore_ethereal, model.index);
         }
     }
