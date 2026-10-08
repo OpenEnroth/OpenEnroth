@@ -272,21 +272,31 @@ EvtFlow EvtInterpreter::executeInstruction(EvtInstruction ir) {
                     placeParty(*placement);
                     pAudioPlayer->playUISound(SOUND_teleport);
                 }
-            } else {
-                pGameLoadingUI_ProgressBar->Initialize((GUIProgressBar::Type)((activeLevelDecoration == NULL) + 1));
-                startMapTransition(destination);
-                _mapExitTriggered = true;
-                if (current_screen_type == SCREEN_HOUSE) {
-                    if (uGameState == GAME_STATE_CHANGE_LOCATION) {
-                        while (houseDialogPressEscape()) {}
-                        pMediaPlayer->Unload();
-                        window_SpeakInHouse = nullptr;
-                        engine->_messageQueue->clear();
-                        current_screen_type = SCREEN_GAME;
-                        pDialogueWindow = nullptr;
-                    }
-                    return {EVT_FLOW_STOP};
+                break;
+            }
+
+            pGameLoadingUI_ProgressBar->Initialize((GUIProgressBar::Type)((activeLevelDecoration == NULL) + 1));
+            startMapTransition(destination);
+
+            // TODO(captainurist): this should be a data mod. The Emerald Island ship sails to Harmondale for a week, and
+            //                     the week passes after the autosave that startMapTransition writes.
+            if (engine->_currentLoadedMapId == MAP_EMERALD_ISLAND && destination.map() == MAP_HARMONDALE) {
+                Rest(Duration::fromDays(7));
+                pParty->restAndHeal();
+                pParty->days_played_without_rest = 0;
+            }
+
+            _mapExitTriggered = true;
+            if (current_screen_type == SCREEN_HOUSE) {
+                if (uGameState == GAME_STATE_CHANGE_LOCATION) {
+                    while (houseDialogPressEscape()) {}
+                    pMediaPlayer->Unload();
+                    window_SpeakInHouse = nullptr;
+                    engine->_messageQueue->clear();
+                    current_screen_type = SCREEN_GAME;
+                    pDialogueWindow = nullptr;
                 }
+                return {EVT_FLOW_STOP};
             }
             break;
         }
@@ -332,10 +342,6 @@ EvtFlow EvtInterpreter::executeInstruction(EvtInstruction ir) {
             } else if (!movieName.compare("arbiter evil")) { // change alignment to evil
                 pParty->alignment = PartyAlignment::PartyAlignment_Evil;
                 SetUserInterface(pParty->alignment);
-            } else if (!movieName.compare("pcout01")) { // moving to harmondale from emerald isle
-                Rest(Duration::fromDays(7));
-                pParty->restAndHeal();
-                pParty->days_played_without_rest = 0;
             }
 
             // is this block is needed anymore?

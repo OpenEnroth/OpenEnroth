@@ -961,3 +961,41 @@ GAME_TEST(Issues, Issue2903) {
     EXPECT_CONTAINS(textTape.flatten(), "Current Quests");
     EXPECT_MISSES(textTape.flatten(), "0");
 }
+
+GAME_TEST(Issues, Issue2908) {
+    // The autosave taken when sailing from Emerald Island was written after the week at sea, so loading it put the
+    // party back on the island a week later with its buffs gone.
+    auto mapTape = tapes.map();
+    auto daysTape = tapes.custom([] { return pParty->GetPlayingTime().toDays(); });
+    auto eyeTape = tapes.custom([] { return pParty->pPartyBuffs[PARTY_BUFF_WIZARD_EYE].Active(); });
+    engine->config->debug.NoMargaret.setValue(true); // Her tour would stop the party at the door.
+    game.startNewGame();
+    pParty->_questBits.set(QBIT_EMERALD_ISLAND_SCAVENGER_HUNT_WON); // Lord Markham hands the ship to the winners.
+    pParty->pPartyBuffs[PARTY_BUFF_WIZARD_EYE].Apply(pParty->GetPlayingTime() + Duration::fromHours(1), MASTERY_NOVICE, 0, 0, -1);
+    test.startTaping();
+    game.teleportTo(MAP_EMERALD_ISLAND, Vec3f(16154, 8560, 128), 180); // In front of Markham's Headquarters.
+    game.pressAndReleaseKey(PlatformKey::KEY_SPACE);
+    game.tick(2);
+    game.pressGuiButton("House_Npc0"); // Lord Markham.
+    game.tick();
+    game.pressGuiButton("HouseNpcDialogue_Option0"); // Congratulations.
+    game.tick();
+    game.pressGuiButton("HouseNpcDialogue_Option0"); // Your ship.
+    game.tick();
+    game.pressAndReleaseKey(PlatformKey::KEY_ESCAPE);
+    game.tick();
+    game.pressAndReleaseKey(PlatformKey::KEY_ESCAPE);
+    game.tick();
+    game.teleportTo(MAP_EMERALD_ISLAND, Vec3f(11008, 34, 193), 90); // In front of the Lady Margaret.
+    game.pressAndReleaseKey(PlatformKey::KEY_SPACE);
+    game.tick(2);
+    game.pressGuiButton("HouseNpcDialogue_Option0"); // Cast off!
+    game.tick();
+    game.skipLoadingScreen();
+    game.loadGame(ufs->read("saves/autosave.mm7"));
+
+    EXPECT_EQ(mapTape, tape(MAP_EMERALD_ISLAND, MAP_HARMONDALE, MAP_EMERALD_ISLAND));
+    EXPECT_EQ(daysTape, tape(0, 7, 0));
+    EXPECT_EQ(eyeTape, tape(true, false, true));
+    EXPECT_EQ(pParty->pos, Vec3f(11008, 34, 193)); // In front of the Lady Margaret, where the party boarded.
+}
