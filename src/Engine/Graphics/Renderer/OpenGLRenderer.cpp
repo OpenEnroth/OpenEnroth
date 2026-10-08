@@ -633,7 +633,7 @@ void OpenGLRenderer::BlendTextures(int x, int y, GraphicsImage *imgin, GraphicsI
 // TODO(pskelton): renderbase
 void OpenGLRenderer::DrawIndoorSky(int /*uNumVertices*/, int uFaceID) {
     BLVFace *pFace = &pIndoor->faces[uFaceID];
-    if (pFace->vertexIds.size() <= 0) return;
+    if (pFace->vertexIds.empty()) return;
 
     // TODO(yoctozepto, pskelton): we should probably try to handle these faces as they are otherwise marked as visible (see also BSPRenderer)
     if (!pFace->GetTexture()) return;
@@ -2281,8 +2281,8 @@ void OpenGLRenderer::DrawOutdoorBuildings() {
             //int reachable;
             //if (IsBModelVisible(&model, &reachable)) {
             if (!model.faces.empty()) {
-                for (size_t faceIndex = 0; faceIndex < model.faces.size(); ++faceIndex) {
-                    BLVFace &face = pOutdoor->faces[model.faces[faceIndex]];
+                for (int faceId : model.faces) {
+                    BLVFace &face = pOutdoor->faces[faceId];
                     if (!face.Invisible()) {
                         // TODO(pskelton): Same as indoors. When ODM and BLV face is combined - seperate out function
 
@@ -2470,8 +2470,10 @@ void OpenGLRenderer::DrawOutdoorBuildings() {
             if (IsBModelVisible(&model, 256, &reachable)) {
                 //if (model.index == 35) continue;
                 if (!model.faces.empty()) {
-                    for (size_t faceIndex = 0; faceIndex < model.faces.size(); ++faceIndex) {
-                        BLVFace &face = pOutdoor->faces[model.faces[faceIndex]];
+                    for (int faceId : model.faces) {
+                        BLVFace &face = pOutdoor->faces[faceId];
+                        if (face.vertexIds.size() < 3)
+                            continue; // Collapsed to a line or a point by dropDuplicateFaceVertices, e.g. the Harmondale well.
                         if (!face.Invisible()) {
                             if (pCamera3D->is_face_faced_to_camera(&face)) {
                                 int texunit = 0;
@@ -2703,8 +2705,8 @@ void OpenGLRenderer::DrawOutdoorBuildings() {
         }
         if (!found) continue;
 
-        for (size_t faceIndex = 0; faceIndex < model.faces.size(); ++faceIndex) {
-            BLVFace &face = pOutdoor->faces[model.faces[faceIndex]];
+        for (int faceId : model.faces) {
+            BLVFace &face = pOutdoor->faces[faceId];
             if (face.Invisible()) {
                 continue;
             }
