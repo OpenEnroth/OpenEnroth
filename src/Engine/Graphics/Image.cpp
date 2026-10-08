@@ -34,7 +34,7 @@ std::unique_ptr<GraphicsImage> GraphicsImage::Create(Sizei size) {
 
 std::unique_ptr<GraphicsImage> GraphicsImage::Create(std::unique_ptr<ImageLoader> loader) {
     std::unique_ptr<GraphicsImage> result(new GraphicsImage());
-    result->_name = loader->GetResourceName();
+    result->_name = loader->name();
     result->_loader = std::move(loader);
     return result;
 }
@@ -82,7 +82,8 @@ bool GraphicsImage::initialize() {
         return true;
 
     assert(_loader);
-    _initialized = _loader->Load(&_rgba);
+    _rgba = _loader->load();
+    _initialized = static_cast<bool>(_rgba);
     // TODO(captainurist): _initialized == false happens, investigate
 
     return _initialized;
