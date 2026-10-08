@@ -997,4 +997,5 @@ GAME_TEST(Issues, Issue2908) {
     EXPECT_EQ(mapTape, tape(MAP_EMERALD_ISLAND, MAP_HARMONDALE, MAP_EMERALD_ISLAND));
     EXPECT_EQ(daysTape, tape(0, 7, 0));
     EXPECT_EQ(eyeTape, tape(true, false, true));
+    EXPECT_EQ(pParty->pos, Vec3f(11008, 34, 193)); // In front of the Lady Margaret, where the party boarded.
 }
