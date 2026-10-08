@@ -401,6 +401,7 @@ void OutdoorLocation::SetFog() {
 //----- (0047CDE2) --------------------------------------------------------
 void OutdoorLocation::CreateDebugLocation() {
     this->pTerrain.createDebugTerrain();
+    // Drop model views before clearing their backing storage.
     this->pBModels.clear();
     this->vertices.clear();
     this->faces.clear();
