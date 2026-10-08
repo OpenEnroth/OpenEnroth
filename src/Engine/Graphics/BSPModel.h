@@ -14,7 +14,6 @@ class BSPModel {
     Vec3f boundingCenter {};
     float boundingRadius = 0;
 
-    std::vector<Vec3f> vertices;
-    std::vector<BLVFace> faces;
+    std::vector<int> faces; // Indices into OutdoorLocation::faces.
     std::vector<BSPNode> nodes;
 };

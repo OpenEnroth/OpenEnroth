@@ -2,6 +2,7 @@
 
 #include <string>
 #include <algorithm>
+#include <iterator>
 #include <optional>
 #include <span>
 #include <tuple>
@@ -48,7 +49,7 @@ static void dropDuplicateFaceVertices(Face *face) {
 
     // First pass - collapse everything that doesn't wrap around.
     int writeIdx = 0;
-    for (int readIdx = 0; readIdx < face->numVertices; readIdx++) {
+    for (int readIdx = 0; readIdx < face->vertexIds.size(); readIdx++) {
         if (writeIdx > 0 && face->vertexIds[readIdx] == face->vertexIds[writeIdx - 1])
             continue; // AA -> A.
         if (writeIdx > 1 && face->vertexIds[readIdx] == face->vertexIds[writeIdx - 2]) {
@@ -81,11 +82,11 @@ static void dropDuplicateFaceVertices(Face *face) {
             copyVertex(i, i - l);
     }
 
-    face->numVertices = r - l + 1;
+    const int numVertices = r - l + 1;
 
-    face->vertexIds.resize(face->numVertices);
-    face->textureUs.resize(face->numVertices);
-    face->textureVs.resize(face->numVertices);
+    face->vertexIds.resize(numVertices);
+    face->textureUs.resize(numVertices);
+    face->textureVs.resize(numVertices);
 }
 
 /**
@@ -97,9 +98,9 @@ template<class Face>
 static std::optional<Vec3f> faceNormal(const Face &face, std::span<const Vec3f> vertices) {
     // Compute the normal from the first non-degenerate edge pair.
     Vec3f normal;
-    for (int i = 0; i < face.numVertices; i++) {
-        Vec3f dir1 = vertices[face.vertexIds[(i + 1) % face.numVertices]] - vertices[face.vertexIds[i]];
-        Vec3f dir2 = vertices[face.vertexIds[(i + 2) % face.numVertices]] - vertices[face.vertexIds[(i + 1) % face.numVertices]];
+    for (int i = 0; i < face.vertexIds.size(); i++) {
+        Vec3f dir1 = vertices[face.vertexIds[(i + 1) % face.vertexIds.size()]] - vertices[face.vertexIds[i]];
+        Vec3f dir2 = vertices[face.vertexIds[(i + 2) % face.vertexIds.size()]] - vertices[face.vertexIds[(i + 1) % face.vertexIds.size()]];
         normal = cross(dir1, dir2);
         if (normal.lengthSqr() > 1e-12f)
             break;
@@ -112,9 +113,9 @@ static std::optional<Vec3f> faceNormal(const Face &face, std::span<const Vec3f> 
     // For non-planar polygons a single edge pair can give a wrong normal. Check against the Newell's method
     // normal (sum of all cross products) and use it instead if the two disagree.
     Vec3f sumNormal;
-    for (int i = 0; i < face.numVertices; i++) {
-        Vec3f dir1 = vertices[face.vertexIds[(i + 1) % face.numVertices]] - vertices[face.vertexIds[i]];
-        Vec3f dir2 = vertices[face.vertexIds[(i + 2) % face.numVertices]] - vertices[face.vertexIds[(i + 1) % face.numVertices]];
+    for (int i = 0; i < face.vertexIds.size(); i++) {
+        Vec3f dir1 = vertices[face.vertexIds[(i + 1) % face.vertexIds.size()]] - vertices[face.vertexIds[i]];
+        Vec3f dir2 = vertices[face.vertexIds[(i + 2) % face.vertexIds.size()]] - vertices[face.vertexIds[(i + 1) % face.vertexIds.size()]];
         sumNormal += cross(dir1, dir2);
     }
     if (dot(normal, sumNormal) <= 0)
@@ -134,7 +135,7 @@ static std::optional<Vec3f> faceNormal(const Face &face, std::span<const Vec3f> 
  */
 template<class Face>
 static void repairFaceNormal(Face *face, std::span<const Vec3f> vertices, std::span<const Vec3f> closedVertices) {
-    if (face->numVertices < 3)
+    if (face->vertexIds.size() < 3)
         return;
 
     std::optional<Vec3f> normal = faceNormal(*face, vertices);
@@ -143,7 +144,9 @@ static void repairFaceNormal(Face *face, std::span<const Vec3f> vertices, std::s
 
     if (!normal) {
         // TODO(captainurist): drop such faces instead, ids are referenced from sectors, doors, the bsp tree and saves.
-        face->numVertices = 2;
+        face->vertexIds.resize(2);
+        face->textureUs.resize(2);
+        face->textureVs.resize(2);
         return;
     }
 
@@ -161,25 +164,26 @@ void reconstruct(const IndoorLocation_MM7 &src, IndoorLocation *dst) {
     reconstruct(src.faceData, &faceData);
 
     for (size_t i = 0, j = 0; i < dst->faces.size(); ++i) {
+        const int vertexCount = src.faces[i].numVertices;
         BLVFace *pFace = &dst->faces[i];
 
-        pFace->vertexIds = std::vector<int16_t>(faceData.data() + j, faceData.data() + j + pFace->numVertices);
-        j += pFace->numVertices + 1; // +1 to skip closing vertex in source data.
+        pFace->vertexIds.assign(faceData.data() + j, faceData.data() + j + vertexCount);
+        j += vertexCount + 1; // +1 to skip closing vertex in source data.
 
         // Skipping pXInterceptDisplacements.
-        j += pFace->numVertices + 1;
+        j += vertexCount + 1;
 
         // Skipping pYInterceptDisplacements.
-        j += pFace->numVertices + 1;
+        j += vertexCount + 1;
 
         // Skipping pZInterceptDisplacements.
-        j += pFace->numVertices + 1;
+        j += vertexCount + 1;
 
-        pFace->textureUs = std::vector<int16_t>(faceData.data() + j, faceData.data() + j + pFace->numVertices);
-        j += pFace->numVertices + 1;
+        pFace->textureUs = std::vector<int16_t>(faceData.data() + j, faceData.data() + j + vertexCount);
+        j += vertexCount + 1;
 
-        pFace->textureVs = std::vector<int16_t>(faceData.data() + j, faceData.data() + j + pFace->numVertices);
-        j += pFace->numVertices + 1;
+        pFace->textureVs = std::vector<int16_t>(faceData.data() + j, faceData.data() + j + vertexCount);
+        j += vertexCount + 1;
 
         if (j > faceData.size())
             throw Exception("BLV face data overflow: offset {} exceeds size {}", j, faceData.size());
@@ -471,7 +475,8 @@ void deserialize(InputStream &src, IndoorDelta_MM7 *dst, ContextTag<IndoorLocati
     deserialize(src, &dst->weather);
 }
 
-void reconstruct(std::tuple<const BSPModelData_MM7 &, const BSPModelExtras_MM7 &> src, BSPModel *dst) {
+void reconstruct(std::tuple<const BSPModelData_MM7 &, const BSPModelExtras_MM7 &> src, BSPModel *dst,
+                 std::vector<Vec3f> *locationVertices, std::vector<BLVFace> *locationFaces) {
     const auto &[srcData, srcExtras] = src;
 
     // dst->index is set externally.
@@ -485,31 +490,52 @@ void reconstruct(std::tuple<const BSPModelData_MM7 &, const BSPModelExtras_MM7 &
     dst->boundingCenter = srcData.boundingCenter.toFloat();
     dst->boundingRadius = srcData.boundingRadius;
 
-    reconstruct(srcExtras.vertices, &dst->vertices);
-    dst->faces.clear();
-    dst->faces.resize(srcExtras.faces.size());
+    std::vector<Vec3f> vertices;
+    reconstruct(srcExtras.vertices, &vertices);
+    std::vector<BLVFace> faces(srcExtras.faces.size());
     for (int i = 0; i < srcExtras.faces.size(); i++) {
-        reconstruct(srcExtras.faces[i], &dst->faces[i], tags::context(i)); // tag to set indexes in dst->faces
+        reconstruct(srcExtras.faces[i], &faces[i], tags::context(i)); // tag to set indexes in faces
     }
 
-    for (BLVFace &face : dst->faces) {
+    for (BLVFace &face : faces) {
         dropDuplicateFaceVertices(&face);
-        repairFaceNormal(&face, dst->vertices, {});
+        repairFaceNormal(&face, vertices, {});
     }
 
     reconstruct(srcExtras.bspNodes, &dst->nodes);
 
     std::string textureName;
-    for (size_t i = 0; i < dst->faces.size(); ++i) {
+    for (size_t i = 0; i < faces.size(); ++i) {
         reconstruct(srcExtras.faceTextures[i], &textureName);
-        dst->faces[i].SetTexture(textureName);
+        faces[i].SetTexture(textureName);
 
-        if (dst->faces[i].eventId) {
-            if (dst->faces[i].HasEventHint())
-                dst->faces[i].attributes |= FACE_EVENT_IS_HINT;
+        if (faces[i].eventId) {
+            if (faces[i].HasEventHint())
+                faces[i].attributes |= FACE_EVENT_IS_HINT;
             else
-                dst->faces[i].attributes &= ~FACE_EVENT_IS_HINT;
+                faces[i].attributes &= ~FACE_EVENT_IS_HINT;
         }
+    }
+
+    const size_t vertexOffset = locationVertices->size();
+    const size_t faceOffset = locationFaces->size();
+    const size_t faceCount = faces.size();
+    for (BLVFace &face : faces) {
+        for (int &vertexId : face.vertexIds)
+            vertexId += vertexOffset;
+    }
+
+    locationVertices->insert(locationVertices->end(), std::make_move_iterator(vertices.begin()),
+                             std::make_move_iterator(vertices.end()));
+    locationFaces->insert(locationFaces->end(), std::make_move_iterator(faces.begin()),
+                          std::make_move_iterator(faces.end()));
+
+    dst->faces.clear();
+    dst->faces.reserve(faceCount);
+    for (size_t i = 0; i < faceCount; ++i) {
+        int faceId = static_cast<int>(faceOffset + i);
+        (*locationFaces)[faceOffset + i].faceId = faceId;
+        dst->faces.push_back(faceId);
     }
 }
 
@@ -559,10 +585,20 @@ void reconstruct(const OutdoorLocation_MM7 &src, OutdoorLocation *dst) {
     reconstruct(src, &dst->pTerrain);
 
     dst->pBModels.clear();
+    dst->vertices.clear();
+    dst->faces.clear();
+    size_t totalVertices = 0;
+    size_t totalFaces = 0;
+    for (const BSPModelExtras_MM7 &extras : src.modelExtras) {
+        totalVertices += extras.vertices.size();
+        totalFaces += extras.faces.size();
+    }
+    dst->vertices.reserve(totalVertices);
+    dst->faces.reserve(totalFaces);
     for (size_t i = 0; i < src.models.size(); i++) {
         BSPModel &model = dst->pBModels.emplace_back();
         model.index = i;
-        reconstruct(std::forward_as_tuple(src.models[i], src.modelExtras[i]), &model);
+        reconstruct(std::forward_as_tuple(src.models[i], src.modelExtras[i]), &model, &dst->vertices, &dst->faces);
 
         // Recalculate bounding spheres, the ones stored in data files are borked.
         model.boundingCenter = model.boundingBox.center().toFloat();
@@ -629,8 +665,10 @@ void snapshot(const OutdoorLocation &src, OutdoorDelta_MM7 *dst) {
     // Symmetric to what's happening in reconstruct - no all attributes need to be saved in a delta.
     dst->faceAttributes.clear();
     for (const BSPModel &model : src.pBModels)
-        for (const BLVFace &face : model.faces)
+        for (size_t i = 0; i < model.faces.size(); ++i) {
+            const BLVFace &face = src.faces[model.faces[i]];
             dst->faceAttributes.push_back(std::to_underlying(face.attributes & ~(FACE_EVENT_IS_HINT | FACE_ANIMATED)));
+        }
 
     dst->decorationFlags.clear();
     for (const LevelDecoration &decoration : pLevelDecorations)
@@ -654,7 +692,8 @@ void reconstruct(const OutdoorDelta_MM7 &src, OutdoorLocation *dst) {
     // Not all of the attributes need to be restored.
     size_t attributeIndex = 0;
     for (BSPModel &model : dst->pBModels) {
-        for (BLVFace &face : model.faces) {
+        for (size_t i = 0; i < model.faces.size(); ++i) {
+            BLVFace &face = dst->faces[model.faces[i]];
             face.attributes &= FACE_ANIMATED | FACE_EVENT_IS_HINT;
             face.attributes |= FaceAttributes(src.faceAttributes[attributeIndex++]) & ~(FACE_EVENT_IS_HINT | FACE_ANIMATED);
         }

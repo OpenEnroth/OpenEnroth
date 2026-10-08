@@ -12,7 +12,7 @@ enum class ObjectType {
     OBJECT_Actor = 0x3,         // Pid id is index in pActors array.
     OBJECT_Character = 0x4,     // Pid id is character index in [0..3].
     OBJECT_Decoration = 0x5,    // Pid id is index in pLevelDecorations array.
-    OBJECT_Face = 0x6,          // Pid id is ((model_id << 6) + face_id) outdoors, face_id indoors.
+    OBJECT_Face = 0x6,          // Pid id is the face index in the current location.
     OBJECT_Light = 0x7,
 };
 using enum ObjectType;
@@ -21,8 +21,6 @@ class Pid {
  public:
     enum {
         ID_MAX = 0xFFFF >> 3,
-        ODM_FACE_ID_MAX = 0x3F,
-        ODM_MODEL_ID_MAX = 0x7F
     };
 
     constexpr Pid() = default;
@@ -51,12 +49,6 @@ class Pid {
 
     static constexpr Pid decoration(int id) {
         return Pid(OBJECT_Decoration, id);
-    }
-
-    static constexpr Pid odmFace(int modelId, int faceId) {
-        assert(modelId >= 0 && modelId <= ODM_MODEL_ID_MAX);
-        assert(faceId >= 0 && faceId <= ODM_FACE_ID_MAX);
-        return Pid(OBJECT_Face, (modelId << 6) + faceId);
     }
 
     static constexpr Pid blvFace(int id) {

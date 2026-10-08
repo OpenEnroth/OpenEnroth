@@ -1,5 +1,6 @@
 #pragma once
 
+#include <algorithm>
 #include <array>
 #include <vector>
 #include <string>
@@ -76,16 +77,15 @@ struct OutdoorLocation {
 
     BLVFace &face(Pid pid) {
         assert(pid.type() == OBJECT_Face);
-        return pBModels[pid.id() >> 6].faces[pid.id() & 0x3F];
-    }
-
-    BSPModel &model(Pid pid) {
-        assert(pid.type() == OBJECT_Face);
-        return pBModels[pid.id() >> 6];
+        return faces[pid.id()];
     }
 
     std::string sky_texture_filename;
     OutdoorTerrain pTerrain;
+
+    std::vector<Vec3f> vertices;
+    std::vector<BLVFace> faces;
+
     std::vector<BSPModel> pBModels;
     std::vector<Pid> pFaceIDLIST;
     std::array<uint32_t, 128 * 128> pOMAP;

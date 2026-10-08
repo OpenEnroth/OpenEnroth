@@ -401,6 +401,10 @@ void OutdoorLocation::SetFog() {
 //----- (0047CDE2) --------------------------------------------------------
 void OutdoorLocation::CreateDebugLocation() {
     this->pTerrain.createDebugTerrain();
+    // Drop model views before clearing their backing storage.
+    this->pBModels.clear();
+    this->vertices.clear();
+    this->faces.clear();
     this->pSpawnPoints.clear();
 
     this->pOMAP.fill(0);
@@ -414,6 +418,8 @@ void OutdoorLocation::Release() {
     this->sky_texture_filename = "sky043";
 
     pBModels.clear();
+    vertices.clear();
+    faces.clear();
     pSpawnPoints.clear();
     pFaceIDLIST.clear();
 
@@ -773,9 +779,7 @@ void OutdoorLocation::PrepareActorsDrawList() {
 
 float ODM_GetFloorLevel(const Vec3f &pos, bool *pIsOnWater, int *faceId) {
     std::array<int, 20> current_Face_id{};                   // dword_721110
-    std::array<int, 20> current_BModel_id{};                 // dword_721160
     std::array<float, 20> odm_floor_level{};                   // idb
-    current_BModel_id[0] = -1;
     current_Face_id[0] = -1;
     odm_floor_level[0] = pOutdoor->pTerrain.heightByPos(pos);
     *pIsOnWater = pOutdoor->pTerrain.isWaterByPos(pos);
@@ -789,11 +793,12 @@ float ODM_GetFloorLevel(const Vec3f &pos, bool *pIsOnWater, int *faceId) {
         if (model.faces.empty())
             continue;
 
-        for (BLVFace &face : model.faces) {
+        for (size_t faceIndex = 0; faceIndex < model.faces.size(); ++faceIndex) {
+            BLVFace &face = pOutdoor->faces[model.faces[faceIndex]];
             if (face.Ethereal())
                 continue;
 
-            if (face.numVertices == 0)
+            if (face.vertexIds.size() == 0)
                 continue;
 
             if (face.polygonType != POLYGON_Floor && face.polygonType != POLYGON_InBetweenFloorAndWall)
@@ -808,12 +813,11 @@ float ODM_GetFloorLevel(const Vec3f &pos, bool *pIsOnWater, int *faceId) {
 
             int floor_level;
             if (face.polygonType == POLYGON_Floor) {
-                floor_level = model.vertices[face.vertexIds[0]].z;
+                floor_level = pOutdoor->vertices[face.vertexIds[0]].z;
             } else {
                 floor_level = face.zCalc.calculate(pos.x, pos.y);
             }
             odm_floor_level[surface_count] = floor_level;
-            current_BModel_id[surface_count] = model.index;
             current_Face_id[surface_count] = face.faceId;
             surface_count++;
 
@@ -843,10 +847,10 @@ float ODM_GetFloorLevel(const Vec3f &pos, bool *pIsOnWater, int *faceId) {
             current_idx = i;
         }
     }
-    *faceId = current_Face_id[current_idx] | (current_BModel_id[current_idx] << 6); // -1 for terrain, the sentinels merge.
+    *faceId = current_Face_id[current_idx];
 
     if (current_idx)
-        *pIsOnWater = pOutdoor->pBModels[current_BModel_id[current_idx]].faces[current_Face_id[current_idx]].isFluid();
+        *pIsOnWater = pOutdoor->faces[current_Face_id[current_idx]].isFluid();
 
     return std::max(odm_floor_level[0], odm_floor_level[current_idx]);
 }
@@ -962,12 +966,9 @@ void ODM_ProcessPartyActions() {
     int triggerID = 0;
     if (!partyNotTouchingFloor) {
         if (pParty->floor_face_id != floorFaceId && floorFaceId != -1) {
-            int BModel_id = floorFaceId >> 6;
-            if (BModel_id < pOutdoor->pBModels.size()) {
-                int face_id = floorFaceId & 0x3F;
-                if (pOutdoor->pBModels[BModel_id].faces[face_id].attributes & FACE_PRESSURE_PLATE) {
-                    triggerID = pOutdoor->pBModels[BModel_id].faces[face_id].eventId;
-                }
+            const BLVFace &face = pOutdoor->faces[floorFaceId];
+            if (face.attributes & FACE_PRESSURE_PLATE) {
+                triggerID = face.eventId;
             }
         }
         pParty->floor_face_id = floorFaceId;
@@ -1453,10 +1454,8 @@ void ODM_ProcessPartyActions() {
                 // - for walk limit was >= 8
                 // - stop sound if delta < 8
                 if (!partyNotTouchingFloor || partyCloseToGround) {
-                    int modelId = pParty->floor_face_id >> 6;
-                    int faceId = pParty->floor_face_id & 0x3F;
                     bool isModelWalk = !partyNotOnModel && pParty->floor_face_id != -1 &&
-                                       pOutdoor->pBModels[modelId].faces[faceId].Visible();
+                                       pOutdoor->faces[pParty->floor_face_id].Visible();
                     SoundId sound = SOUND_Invalid;
                     if (partyIsRunning) {
                         if (walkDelta >= 4) {
@@ -1494,9 +1493,7 @@ void ODM_ProcessPartyActions() {
 
 int GetCeilingHeight(int Party_X, signed int Party_Y, int Party_ZHeight, int *pFaceID) {
     std::array<int, 20> face_indices{};
-    std::array<int, 20> model_indices{};
     std::array<int, 20> ceiling_height_level{};
-    model_indices[0] = -1;
     face_indices[0] = -1;
     ceiling_height_level[0] = 10000;  // no ceiling
 
@@ -1506,7 +1503,8 @@ int GetCeilingHeight(int Party_X, signed int Party_Y, int Party_ZHeight, int *pF
         if (!model.boundingBox.containsXY(Party_X, Party_Y))
             continue;
 
-        for (BLVFace &face : model.faces) {
+        for (size_t faceIndex = 0; faceIndex < model.faces.size(); ++faceIndex) {
+            BLVFace &face = pOutdoor->faces[model.faces[faceIndex]];
             if (face.Ethereal())
                 continue;
 
@@ -1525,12 +1523,11 @@ int GetCeilingHeight(int Party_X, signed int Party_Y, int Party_ZHeight, int *pF
 
             int height_level;
             if (face.polygonType == POLYGON_Ceiling)
-                height_level = model.vertices[face.vertexIds[0]].z;
+                height_level = pOutdoor->vertices[face.vertexIds[0]].z;
             else
                 height_level = face.zCalc.calculate(Party_X, Party_Y);
 
             ceiling_height_level[ceiling_count] = height_level;
-            model_indices[ceiling_count] = model.index;
             face_indices[ceiling_count] = face.faceId;
 
             ++ceiling_count;
@@ -1553,7 +1550,7 @@ int GetCeilingHeight(int Party_X, signed int Party_Y, int Party_ZHeight, int *pF
     }
 
     if (result_idx != 0) {
-        *pFaceID = face_indices[result_idx] | (model_indices[result_idx] << 6);
+        *pFaceID = face_indices[result_idx];
         return ceiling_height_level[result_idx];
     } else {
         *pFaceID = 0;
