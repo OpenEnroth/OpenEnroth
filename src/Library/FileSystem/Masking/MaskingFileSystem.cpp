@@ -6,7 +6,6 @@
 #include <string>
 
 #include "Library/FileSystem/Interface/FileSystemException.h"
-#include "Library/FileSystem/Interface/NormalizedFileSystemPath.h"
 
 #include "Utility/String/Encoding.h"
 #include "Utility/String/Join.h"
@@ -20,9 +19,9 @@ void MaskingFileSystem::mask(std::string_view path) {
 }
 
 void MaskingFileSystem::mask(PathView path) {
-    NormalizedFileSystemPath normalPath(path);
+    NormalPath normalPath(path);
     assert(normalPath.isAccessible());
-    _masks.insertOrAssign(normalPath, true);
+    _masks.insertOrAssign(normalPath.path(), true);
 }
 
 bool MaskingFileSystem::unmask(std::string_view path) {
@@ -30,7 +29,7 @@ bool MaskingFileSystem::unmask(std::string_view path) {
 }
 
 bool MaskingFileSystem::unmask(PathView path) {
-    FileSystemTrieNode<bool> *node = _masks.find(NormalizedFileSystemPath(path));
+    FileSystemTrieNode<bool> *node = _masks.find(NormalPath(path).path());
     if (!node || !node->hasValue() || !node->value())
         return false; // Can only unmask what was previously masked.
     node->value() = false;
@@ -56,19 +55,19 @@ bool MaskingFileSystem::isMasked(PathView path) const {
     return node->hasValue() && node->value();
 }
 
-bool MaskingFileSystem::_exists(PathView path) const {
+bool MaskingFileSystem::_exists(NormalPathView path) const {
     if (isMasked(path))
         return false;
     return ProxyFileSystem::_exists(path);
 }
 
-FileStat MaskingFileSystem::_stat(PathView path) const {
+FileStat MaskingFileSystem::_stat(NormalPathView path) const {
     if (isMasked(path))
         return {};
     return ProxyFileSystem::_stat(path);
 }
 
-void MaskingFileSystem::_ls(PathView path, std::vector<DirectoryEntry> *entries) const {
+void MaskingFileSystem::_ls(NormalPathView path, std::vector<DirectoryEntry> *entries) const {
     if (isMasked(path)) {
         if (path.isEmpty()) {
             return; // Pretend root exists even if it was masked.
@@ -90,37 +89,37 @@ void MaskingFileSystem::_ls(PathView path, std::vector<DirectoryEntry> *entries)
     }
 }
 
-Blob MaskingFileSystem::_read(PathView path) const {
+Blob MaskingFileSystem::_read(NormalPathView path) const {
     if (isMasked(path))
         FileSystemException::raise(this, FS_READ_FAILED_PATH_DOESNT_EXIST, path);
     return ProxyFileSystem::_read(path);
 }
 
-void MaskingFileSystem::_write(PathView path, const Blob &data) {
+void MaskingFileSystem::_write(NormalPathView path, const Blob &data) {
     if (isMasked(path))
         FileSystemException::raise(this, FS_WRITE_FAILED_PATH_NOT_WRITEABLE, path);
     ProxyFileSystem::_write(path, data);
 }
 
-std::unique_ptr<InputStream> MaskingFileSystem::_openForReading(PathView path) const {
+std::unique_ptr<InputStream> MaskingFileSystem::_openForReading(NormalPathView path) const {
     if (isMasked(path))
         FileSystemException::raise(this, FS_READ_FAILED_PATH_DOESNT_EXIST, path);
     return ProxyFileSystem::_openForReading(path);
 }
 
-std::unique_ptr<OutputStream> MaskingFileSystem::_openForWriting(PathView path) {
+std::unique_ptr<OutputStream> MaskingFileSystem::_openForWriting(NormalPathView path) {
     if (isMasked(path))
         FileSystemException::raise(this, FS_WRITE_FAILED_PATH_NOT_WRITEABLE, path);
     return ProxyFileSystem::_openForWriting(path);
 }
 
-bool MaskingFileSystem::_remove(PathView path) {
+bool MaskingFileSystem::_remove(NormalPathView path) {
     if (isMasked(path))
         return false;
     return ProxyFileSystem::_remove(path);
 }
 
-std::string MaskingFileSystem::_displayPath(PathView path) const {
+std::string MaskingFileSystem::_displayPath(NormalPathView path) const {
     if (isMasked(path))
         return join("masked://", txt::encodedToUtf8(path.str(), ENCODING_UTF8)); // Replaces invalid UTF8.
     return ProxyFileSystem::_displayPath(path);

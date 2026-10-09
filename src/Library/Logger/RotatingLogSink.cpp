@@ -7,11 +7,10 @@
 #include <string>
 
 #include "Library/FileSystem/Interface/FileSystem.h"
-#include "Library/FileSystem/Interface/NormalizedFileSystemPath.h"
 
 #include "Utility/String/Format.h"
 
-RotatingLogSink::RotatingLogSink(std::string_view path, FileSystem *fs, int count): StreamLogSink(openRotatingStream(Path(NormalizedFileSystemPath(Path(path))), fs, count)) {}
+RotatingLogSink::RotatingLogSink(std::string_view path, FileSystem *fs, int count): StreamLogSink(openRotatingStream(NormalPath(path).path(), fs, count)) {}
 
 std::unique_ptr<OutputStream> RotatingLogSink::openRotatingStream(const Path &path, FileSystem *fs, int count) {
     assert(fs);
