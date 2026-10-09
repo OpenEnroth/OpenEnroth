@@ -41,26 +41,26 @@ class MountingFileSystem : public FileSystem {
     void clearMounts();
 
  private:
-    virtual bool _exists(PathView path) const override;
-    virtual FileStat _stat(PathView path) const override;
-    virtual void _ls(PathView path, std::vector<DirectoryEntry> *entries) const override;
-    virtual Blob _read(PathView path) const override;
-    virtual void _write(PathView path, const Blob &data) override;
-    virtual std::unique_ptr<InputStream> _openForReading(PathView path) const override;
-    virtual std::unique_ptr<OutputStream> _openForWriting(PathView path) override;
-    virtual bool _remove(PathView path) override;
-    virtual std::string _displayPath(PathView path) const override;
+    virtual bool _exists(NormalPathView path) const override;
+    virtual FileStat _stat(NormalPathView path) const override;
+    virtual void _ls(NormalPathView path, std::vector<DirectoryEntry> *entries) const override;
+    virtual Blob _read(NormalPathView path) const override;
+    virtual void _write(NormalPathView path, const Blob &data) override;
+    virtual std::unique_ptr<InputStream> _openForReading(NormalPathView path) const override;
+    virtual std::unique_ptr<OutputStream> _openForWriting(NormalPathView path) override;
+    virtual bool _remove(NormalPathView path) override;
+    virtual std::string _displayPath(NormalPathView path) const override;
 
  private:
     using Node = FileSystemTrieNode<FileSystem *>;
-    using WalkResult = std::tuple<Node *, FileSystem *, PathView>;
-    using ConstWalkResult = std::tuple<const Node *, const FileSystem *, PathView>;
+    using WalkResult = std::tuple<Node *, FileSystem *, NormalPathView>;
+    using ConstWalkResult = std::tuple<const Node *, const FileSystem *, NormalPathView>;
 
-    WalkResult walk(PathView path);
-    ConstWalkResult walk(PathView path) const;
+    WalkResult walk(NormalPathView path);
+    ConstWalkResult walk(NormalPathView path) const;
 
-    std::pair<const FileSystem *, PathView> walkForReading(PathView path) const;
-    std::pair<FileSystem *, PathView> walkForWriting(PathView path);
+    std::pair<const FileSystem *, NormalPathView> walkForReading(NormalPathView path) const;
+    std::pair<FileSystem *, NormalPathView> walkForWriting(NormalPathView path);
 
  private:
     std::string _displayName;
