@@ -2917,7 +2917,9 @@ void CastSpellInfoHelpers::castSpell() {
                     const auto getCoord = []{ return grng->randomInSegment(-rocksRadius, rocksRadius); };
 
                     for (int i = 0; i < rocksCount;) {
-                        Vec3f rand(getCoord(), getCoord(), 0);
+                        float y = getCoord();
+                        float x = getCoord();
+                        Vec3f rand(x, y, 0);
                         if (rand.lengthSqr() > rocksRadiusSqr)
                             continue;
                         int terr_height = pOutdoor->pTerrain.heightByPos(pParty->pos + rand);
