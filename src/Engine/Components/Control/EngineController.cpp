@@ -544,8 +544,8 @@ void EngineController::pointMouseAt(Pid target) {
         throw Exception("Can't point mouse at {}, it's behind the camera", targetName);
     Pointi screenPos = pCamera3D->Project(viewPos).toInt();
 
-    // Sprites can be transparent in places, and a pick there goes through to whatever is behind. A pick also works in
-    // a couple of rows and columns at the edges of the 3D view where a click doesn't reach the game.
+    // Sprites can be transparent in places, and a pick there goes through to whatever is behind. Points outside the
+    // viewport button are skipped, because a pick still works there but a click doesn't reach the game.
     auto viewport = std::ranges::find(pPrimaryWindow->vButtons, "Game_Viewport", &GUIButton::id);
     assert(viewport != pPrimaryWindow->vButtons.end());
     auto pickAt = [pickDepth](Pointi point) {
