@@ -1059,7 +1059,7 @@ void UI_Create() {
     ui_buttyes2 = assets->getIcon("BUTTYES2");
 
     pPrimaryWindow = std::make_unique<GUIWindow>(WINDOW_GAME_UI, Pointi{0, 0}, render->GetRenderDimensions());
-    pPrimaryWindow->CreateButton({7, 8}, {460, 343}, BUTTON_TYPE_NORMAL, 0, UIMSG_MouseLeftClickInGame, 0);
+    pPrimaryWindow->CreateButton("Game_Viewport", {7, 8}, {460, 343}, BUTTON_TYPE_NORMAL, 0, UIMSG_MouseLeftClickInGame, 0);
 
     pPrimaryWindow->CreateCharacterButtons();
 

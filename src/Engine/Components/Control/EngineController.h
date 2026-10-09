@@ -6,6 +6,7 @@
 #include "Engine/Spells/SpellEnums.h"
 #include "Engine/Objects/MonsterEnums.h"
 #include "Engine/MapEnums.h"
+#include "Engine/Pid.h"
 
 #include "Library/Geometry/Point.h"
 #include "Library/Platform/Interface/PlatformEnums.h"
@@ -211,8 +212,8 @@ class EngineController {
     void pointMouseAtDecoration(int decorationId);
 
     /**
-     * Finds a screen position at which the mouse points at the provided face of the current indoor level & moves the
-     * mouse there.
+     * Finds a screen position at which the mouse points at the provided face of the current level & moves the mouse
+     * there.
      *
      * @param faceId                    Id of the face to point at.
      * @throws Exception                If pointing at the face is not possible, e.g. it's not on the screen.
@@ -226,6 +227,8 @@ class EngineController {
     void pressOrReleaseButton(PlatformEventType type, PlatformMouseButton button, int x, int y, bool isDoubleClick);
 
     GUIButton *existingButton(std::string_view buttonId);
+
+    void pointMouseAt(Pid target);
 
  private:
     EngineControlStateHandle _state;
