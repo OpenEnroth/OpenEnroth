@@ -410,19 +410,15 @@ void EngineController::castQuickSpellAtActor(int characterIndex, SpellId spell, 
 }
 
 void EngineController::pointMouseAtActor(int actorId) {
-    Vec3f center = pActors[actorId].pos + Vec3f(0, 0, pActors[actorId].height / 2);
-    pointMouseAt(Pid(OBJECT_Actor, actorId), center, engine->config->gameplay.RangedAttackDepth.value(), fmt::format("actor #{}", actorId));
+    pointMouseAt(Pid::actor(actorId));
 }
 
 void EngineController::pointMouseAtDecoration(int decorationId) {
-    const DecorationData *desc = pDecorationTable->decoration(pLevelDecorations[decorationId].uDecorationDescID);
-    Vec3f center = pLevelDecorations[decorationId].vPosition + Vec3f(0, 0, desc->uDecorationHeight / 2);
-    pointMouseAt(Pid(OBJECT_Decoration, decorationId), center, engine->config->gameplay.RangedAttackDepth.value(), fmt::format("decoration #{}", decorationId));
+    pointMouseAt(Pid::decoration(decorationId));
 }
 
 void EngineController::pointMouseAtFace(int faceId) {
-    Vec3f center = pIndoor->faces[faceId].boundingBox.center();
-    pointMouseAt(Pid(OBJECT_Face, faceId), center, engine->config->gameplay.MouseInteractionDepth.value(), fmt::format("face #{}", faceId));
+    pointMouseAt(Pid::blvFace(faceId));
 }
 
 void EngineController::activateCharacter(int characterIndex) {
@@ -513,10 +509,35 @@ GUIButton *EngineController::existingButton(std::string_view buttonId) {
     return result;
 }
 
-void EngineController::pointMouseAt(Pid target, Vec3f center, int pickDepth, std::string_view targetName) {
+void EngineController::pointMouseAt(Pid target) {
     // Camera matrices are updated when a frame is rendered, so if the party was teleported without ticking, the
     // camera is still at the old position. Tick once to let it catch up.
     tick(1);
+
+    Vec3f center;
+    int pickDepth = engine->config->gameplay.RangedAttackDepth.value();
+    std::string targetName;
+    switch (target.type()) {
+    case OBJECT_Actor: {
+        const Actor &actor = pActors[target.id()];
+        center = actor.pos + Vec3f(0, 0, actor.height / 2);
+        targetName = fmt::format("actor #{}", target.id());
+        break;
+    }
+    case OBJECT_Decoration: {
+        const LevelDecoration &decoration = pLevelDecorations[target.id()];
+        center = decoration.vPosition + Vec3f(0, 0, pDecorationTable->decoration(decoration.uDecorationDescID)->uDecorationHeight / 2);
+        targetName = fmt::format("decoration #{}", target.id());
+        break;
+    }
+    case OBJECT_Face:
+        center = pIndoor->faces[target.id()].boundingBox.center();
+        pickDepth = engine->config->gameplay.MouseInteractionDepth.value();
+        targetName = fmt::format("face #{}", target.id());
+        break;
+    default:
+        throw Exception("Can't point mouse at an object of type {}", std::to_underlying(target.type()));
+    }
 
     Vec3f viewPos = pCamera3D->ViewTransform(&center);
     if (viewPos.x <= 0)
