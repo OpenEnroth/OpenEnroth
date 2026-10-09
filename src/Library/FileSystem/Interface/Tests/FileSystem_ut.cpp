@@ -94,3 +94,17 @@ UNIT_TEST(FileSystem, RootIsNotRemovable) {
 
     EXPECT_TRUE(fs.exists("foo"));
 }
+
+UNIT_TEST(NormalPath, Join) {
+    // Joining normal paths keeps them normal, an empty side included.
+    auto testOne = [] (std::string_view head, std::string_view tail, std::string_view result) {
+        EXPECT_EQ((NormalPath(head) / NormalPath(tail)).path().str(), result) << "for '" << head << "' and '" << tail << "'";
+    };
+
+    testOne("", "", "");
+    testOne("", "b", "b");
+    testOne("a", "", "a");
+    testOne("a", "b", "a/b");
+    testOne("a/b", "c/d", "a/b/c/d");
+    testOne("a\\b", "./c", "a/b/c");
+}
