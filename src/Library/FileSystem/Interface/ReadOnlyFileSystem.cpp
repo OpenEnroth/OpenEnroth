@@ -4,15 +4,15 @@
 
 #include "FileSystemException.h"
 
-void ReadOnlyFileSystem::_write(PathView path, const Blob &data) {
+void ReadOnlyFileSystem::_write(NormalPathView path, const Blob &data) {
     reportWriteError(path);
 }
 
-std::unique_ptr<OutputStream> ReadOnlyFileSystem::_openForWriting(PathView path) {
+std::unique_ptr<OutputStream> ReadOnlyFileSystem::_openForWriting(NormalPathView path) {
     reportWriteError(path);
 }
 
-bool ReadOnlyFileSystem::_remove(PathView path) {
+bool ReadOnlyFileSystem::_remove(NormalPathView path) {
     if (!_exists(path))
         return false;
 
