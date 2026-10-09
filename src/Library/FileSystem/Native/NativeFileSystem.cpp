@@ -18,17 +18,17 @@ NativeFileSystem::NativeFileSystem(const Path &root) {
 
 NativeFileSystem::~NativeFileSystem() = default;
 
-bool NativeFileSystem::_exists(PathView path) const {
+bool NativeFileSystem::_exists(NormalPathView path) const {
     assert(!path.isEmpty());
     return fs::exists(makeBasePath(path));
 }
 
-FileStat NativeFileSystem::_stat(PathView path) const {
+FileStat NativeFileSystem::_stat(NormalPathView path) const {
     assert(!path.isEmpty());
     return fs::stat(makeBasePath(path));
 }
 
-void NativeFileSystem::_ls(PathView path, std::vector<DirectoryEntry> *entries) const {
+void NativeFileSystem::_ls(NormalPathView path, std::vector<DirectoryEntry> *entries) const {
     Path basePath = makeBasePath(path);
 
     try {
@@ -46,12 +46,12 @@ void NativeFileSystem::_ls(PathView path, std::vector<DirectoryEntry> *entries) 
     std::erase_if(*entries, [](const DirectoryEntry &entry) { return entry.name.find('\\') != std::string::npos; });
 }
 
-Blob NativeFileSystem::_read(PathView path) const {
+Blob NativeFileSystem::_read(NormalPathView path) const {
     assert(!path.isEmpty());
     return Blob::fromFile(makeBasePath(path));
 }
 
-void NativeFileSystem::_write(PathView path, const Blob &data) {
+void NativeFileSystem::_write(NormalPathView path, const Blob &data) {
     assert(!path.isEmpty());
     Path basePath = makeBasePath(path);
     fs::mkdirs(makeBasePath(Path(path).parent()));
@@ -60,24 +60,24 @@ void NativeFileSystem::_write(PathView path, const Blob &data) {
     stream.close();
 }
 
-std::unique_ptr<InputStream> NativeFileSystem::_openForReading(PathView path) const {
+std::unique_ptr<InputStream> NativeFileSystem::_openForReading(NormalPathView path) const {
     assert(!path.isEmpty());
     return std::make_unique<FileInputStream>(makeBasePath(path));
 }
 
-std::unique_ptr<OutputStream> NativeFileSystem::_openForWriting(PathView path) {
+std::unique_ptr<OutputStream> NativeFileSystem::_openForWriting(NormalPathView path) {
     assert(!path.isEmpty());
     Path basePath = makeBasePath(path);
     fs::mkdirs(makeBasePath(Path(path).parent()));
     return std::make_unique<FileOutputStream>(basePath);
 }
 
-bool NativeFileSystem::_remove(PathView path) {
+bool NativeFileSystem::_remove(NormalPathView path) {
     assert(!path.isEmpty());
     return fs::remove(makeBasePath(path));
 }
 
-std::string NativeFileSystem::_displayPath(PathView path) const {
+std::string NativeFileSystem::_displayPath(NormalPathView path) const {
     return makeBasePath(path).displayString();
 }
 

@@ -12,6 +12,7 @@
 #include "Utility/System/Path.h"
 
 #include "FileSystemEnums.h"
+#include "NormalPath.h"
 #include "FileSystemFwd.h"
 
 // TODO(captainurist): I still think most of FSs should inherit from ProxyFS.
@@ -135,30 +136,31 @@ class FileSystem {
 
     /**
      * Calls into another file system, for file systems that delegate to one. These do what the public methods do,
-     * answering for the root included, but skip normalizing and validating the path, so the caller has to pass a
-     * path that's in normal form and accessible already, like the one its own `_` method got. They are static
-     * because a derived class can only reach a protected member through its own type.
+     * answering for the root included, but skip normalizing and validating the path. `NormalPathView` takes care of
+     * the normal form, and the caller has to pass an accessible path, like the one its own `_` method got or a tail
+     * or a join of it. They are static because a derived class can only reach a protected member through its own
+     * type.
      */
-    static bool existsIn(const FileSystem *fs, PathView path);
-    static FileStat statIn(const FileSystem *fs, PathView path);
-    static void lsIn(const FileSystem *fs, PathView path, std::vector<DirectoryEntry> *entries);
-    static Blob readIn(const FileSystem *fs, PathView path);
-    static void writeIn(FileSystem *fs, PathView path, const Blob &data);
-    static std::unique_ptr<InputStream> openForReadingIn(const FileSystem *fs, PathView path);
-    static std::unique_ptr<OutputStream> openForWritingIn(FileSystem *fs, PathView path);
-    static bool removeIn(FileSystem *fs, PathView path);
-    static std::string displayPathIn(const FileSystem *fs, PathView path);
+    static bool existsIn(const FileSystem *fs, NormalPathView path);
+    static FileStat statIn(const FileSystem *fs, NormalPathView path);
+    static void lsIn(const FileSystem *fs, NormalPathView path, std::vector<DirectoryEntry> *entries);
+    static Blob readIn(const FileSystem *fs, NormalPathView path);
+    static void writeIn(FileSystem *fs, NormalPathView path, const Blob &data);
+    static std::unique_ptr<InputStream> openForReadingIn(const FileSystem *fs, NormalPathView path);
+    static std::unique_ptr<OutputStream> openForWritingIn(FileSystem *fs, NormalPathView path);
+    static bool removeIn(FileSystem *fs, NormalPathView path);
+    static std::string displayPathIn(const FileSystem *fs, NormalPathView path);
 
  protected:
-    [[nodiscard]] virtual bool _exists(PathView path) const = 0;
-    [[nodiscard]] virtual FileStat _stat(PathView path) const = 0;
-    virtual void _ls(PathView path, std::vector<DirectoryEntry> *entries) const = 0;
-    [[nodiscard]] virtual Blob _read(PathView path) const = 0;
-    virtual void _write(PathView path, const Blob &data) = 0;
-    [[nodiscard]] virtual std::unique_ptr<InputStream> _openForReading(PathView path) const = 0;
-    [[nodiscard]] virtual std::unique_ptr<OutputStream> _openForWriting(PathView path) = 0;
-    virtual bool _remove(PathView path) = 0;
-    [[nodiscard]] virtual std::string _displayPath(PathView path) const = 0;
+    [[nodiscard]] virtual bool _exists(NormalPathView path) const = 0;
+    [[nodiscard]] virtual FileStat _stat(NormalPathView path) const = 0;
+    virtual void _ls(NormalPathView path, std::vector<DirectoryEntry> *entries) const = 0;
+    [[nodiscard]] virtual Blob _read(NormalPathView path) const = 0;
+    virtual void _write(NormalPathView path, const Blob &data) = 0;
+    [[nodiscard]] virtual std::unique_ptr<InputStream> _openForReading(NormalPathView path) const = 0;
+    [[nodiscard]] virtual std::unique_ptr<OutputStream> _openForWriting(NormalPathView path) = 0;
+    virtual bool _remove(NormalPathView path) = 0;
+    [[nodiscard]] virtual std::string _displayPath(NormalPathView path) const = 0;
 };
 
 

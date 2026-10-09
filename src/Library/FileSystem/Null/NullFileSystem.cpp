@@ -9,15 +9,15 @@
 #include "Utility/String/Encoding.h"
 #include "Utility/String/Join.h"
 
-bool NullFileSystem::_exists(PathView path) const {
+bool NullFileSystem::_exists(NormalPathView path) const {
     return false;
 }
 
-FileStat NullFileSystem::_stat(PathView path) const {
+FileStat NullFileSystem::_stat(NormalPathView path) const {
     return {};
 }
 
-void NullFileSystem::_ls(PathView path, std::vector<DirectoryEntry> *entries) const {
+void NullFileSystem::_ls(NormalPathView path, std::vector<DirectoryEntry> *entries) const {
     if (path.isEmpty()) {
         entries->clear();
         return;
@@ -25,15 +25,15 @@ void NullFileSystem::_ls(PathView path, std::vector<DirectoryEntry> *entries) co
     FileSystemException::raise(this, FS_LS_FAILED_PATH_DOESNT_EXIST, path);
 }
 
-Blob NullFileSystem::_read(PathView path) const {
+Blob NullFileSystem::_read(NormalPathView path) const {
     reportReadError(path);
 }
 
-std::unique_ptr<InputStream> NullFileSystem::_openForReading(PathView path) const {
+std::unique_ptr<InputStream> NullFileSystem::_openForReading(NormalPathView path) const {
     reportReadError(path);
 }
 
-std::string NullFileSystem::_displayPath(PathView path) const {
+std::string NullFileSystem::_displayPath(NormalPathView path) const {
     return join("null://", txt::encodedToUtf8(path.str(), ENCODING_UTF8)); // Replaces invalid UTF8.
 }
 
