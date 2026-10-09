@@ -533,7 +533,7 @@ GAME_TEST(Issues, Issue2142) {
         engine->config->debug.NoActors.setValue(false);
         for (int i = 0; i < 10; i++)
             game.spawnMonster(pParty->pos + Vec3f(0, 700, 0), monsterId);
-        game.tick(250);
+        game.tick(500);
 
         EXPECT_CONTAINS(specialAttack.flatten(), attack); // Check that the special attack was used.
         EXPECT_TRUE(pParty->pCharacters[0].conditions.has(condition)); // Check that the condition was applied.
@@ -704,6 +704,7 @@ GAME_TEST(Issues, Issue2186b) {
     });
     game.startNewGame();
     game.teleportTo(MAP_GRAND_TEMPLE_OF_THE_SUN, Vec3f(-880, 800, 648), 0); // Upper level, facing the hole over the hall.
+    game.tick();
     pParty->setHoldingItem(Item(ITEM_LEATHER_ARMOR));
     game.pressAndReleaseButton(BUTTON_LEFT, pViewport.center()); // Throw it down the hole.
     test.startTaping();

@@ -38,6 +38,11 @@
                 "value": "sequential"
             },
             {
+                "key": "trace_single_frame_loading_screen",
+                "section": "debug",
+                "value": "true"
+            },
+            {
                 "key": "quick_load",
                 "section": "gamepad",
                 "value": "F9"

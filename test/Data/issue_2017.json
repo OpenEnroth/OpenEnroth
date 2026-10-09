@@ -53,6 +53,11 @@
                 "value": "mersenne_twister"
             },
             {
+                "key": "trace_single_frame_loading_screen",
+                "section": "debug",
+                "value": "true"
+            },
+            {
                 "key": "wizard_eye",
                 "section": "debug",
                 "value": "true"

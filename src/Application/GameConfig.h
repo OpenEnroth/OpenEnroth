@@ -102,6 +102,9 @@ class GameConfig : public Config {
         Bool NoVideo = {this, "no_video", false,
             "Don't play any movies."};
 
+        Bool SingleFrameLoadingScreen = {this, "single_frame_loading_screen", false,
+            "Draw each loading screen once, fully loaded."};
+
         Bool NoActors = {this, "no_actors", false,
             "Disable all actors."};
 
@@ -130,6 +133,9 @@ class GameConfig : public Config {
 
         Bool TraceNoVideo = {this, "trace_no_video", true,
             "Don't play movies when recording traces."};
+
+        Bool TraceSingleFrameLoadingScreen = {this, "trace_single_frame_loading_screen", true,
+            "Draw each loading screen once, fully loaded, when recording traces."};
 
         Bool TraceNoPartyActorCollisions = {this, "trace_no_party_actor_collisions", false,
             "Disable collisions between the party and monsters on the map when recording traces."};
