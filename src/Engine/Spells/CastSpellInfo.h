@@ -55,11 +55,6 @@ using enum SpellCastFlag;
 MM_DECLARE_FLAGS(SpellCastFlags, SpellCastFlag)
 MM_DECLARE_OPERATORS_FOR_FLAGS(SpellCastFlags)
 
-// Scrolls or NPC spells casted with MASTER mastery of skill level 5
-static const CombinedSkillValue SCROLL_OR_NPC_SPELL_SKILL_VALUE(5, MASTERY_MASTER);
-// Wands cast at novice mastery skill level 8
-static const CombinedSkillValue WANDS_SKILL_VALUE(8, MASTERY_NOVICE);
-
 struct CastSpellInfo {
     std::unique_ptr<TargetedSpellUI> GetCastSpellInInventoryWindow();
 
@@ -122,6 +117,14 @@ void pushNPCSpell(SpellId spell);
  * @param casterIndex                   0-based index of the character casting the spell.
  */
 void pushScrollSpell(SpellId spell, int casterIndex);
+
+/**
+ * @param spell                         Spell being cast.
+ * @return                              Skill value that a spell scroll casts the spell with. This is the configured
+ *                                      value, with the mastery raised to what the spell takes to learn, but not above
+ *                                      master.
+ */
+CombinedSkillValue scrollSpellSkillValue(SpellId spell);
 
 /**
  * Process successful picking target for spell.
