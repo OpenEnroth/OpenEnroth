@@ -78,6 +78,7 @@ class Engine {
     bool isOverlayOpen() const;
 
     void Initialize();
+    // TODO(captainurist): take a Pointi instead of two coordinates.
     Vis_PIDAndDepth PickMouse(float fPickDepth, int uMouseX, int uMouseY,
                               Vis_SelectionFilter *sprite_filter, Vis_SelectionFilter *face_filter);
     Vis_PIDAndDepth PickKeyboard(float pick_depth, Vis_SelectionFilter *sprite_filter, Vis_SelectionFilter *face_filter);
