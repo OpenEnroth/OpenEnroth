@@ -22,6 +22,7 @@
 #include "Engine/Party.h"
 #include "Engine/Evt/Processor.h"
 #include "Engine/Graphics/Indoor.h"
+#include "Engine/Graphics/Outdoor.h"
 #include "Engine/Objects/Actor.h"
 #include "Engine/Objects/Decoration.h"
 #include "Engine/Tables/DecorationTable.h"
@@ -418,7 +419,7 @@ void EngineController::pointMouseAtDecoration(int decorationId) {
 }
 
 void EngineController::pointMouseAtFace(int faceId) {
-    pointMouseAt(Pid::blvFace(faceId));
+    pointMouseAt(Pid::face(faceId));
 }
 
 void EngineController::activateCharacter(int characterIndex) {
@@ -531,7 +532,7 @@ void EngineController::pointMouseAt(Pid target) {
         break;
     }
     case OBJECT_Face:
-        center = pIndoor->faces[target.id()].boundingBox.center();
+        center = (uCurrentlyLoadedLevelType == LEVEL_INDOOR ? pIndoor->faces[target.id()] : pOutdoor->face(target)).boundingBox.center();
         pickDepth = engine->config->gameplay.MouseInteractionDepth.value();
         targetName = fmt::format("face #{}", target.id());
         break;
@@ -547,7 +548,8 @@ void EngineController::pointMouseAt(Pid target) {
     // Sprites can be transparent in places, and a pick there goes through to whatever is behind. Points outside the
     // viewport button are skipped, because a pick still works there but a click doesn't reach the game.
     auto viewport = std::ranges::find(pPrimaryWindow->vButtons, "Game_Viewport", &GUIButton::id);
-    assert(viewport != pPrimaryWindow->vButtons.end());
+    if (viewport == pPrimaryWindow->vButtons.end())
+        throw Exception("GUI button 'Game_Viewport' not found");
     auto pickAt = [pickDepth](Pointi point) {
         return engine->PickMouse(pickDepth, point.x, point.y, &vis_anything_filter, &vis_face_filter).pid;
     };
