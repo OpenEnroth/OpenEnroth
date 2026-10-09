@@ -516,7 +516,6 @@ void EngineController::pointMouseAt(Pid target) {
     tick(1);
 
     Vec3f center;
-    int pickDepth = engine->config->gameplay.RangedAttackDepth.value();
     std::string targetName;
     if (target.type() == OBJECT_Actor) {
         center = pActors[target.id()].pos + Vec3f(0, 0, pActors[target.id()].height / 2);
@@ -527,7 +526,6 @@ void EngineController::pointMouseAt(Pid target) {
         targetName = fmt::format("decoration #{}", target.id());
     } else if (target.type() == OBJECT_Face) {
         center = (uCurrentlyLoadedLevelType == LEVEL_INDOOR ? pIndoor->faces[target.id()] : pOutdoor->face(target)).boundingBox.center();
-        pickDepth = engine->config->gameplay.MouseInteractionDepth.value();
         targetName = fmt::format("face #{}", target.id());
     } else {
         throw Exception("Can't point mouse at an object of type {}", std::to_underlying(target.type()));
@@ -543,8 +541,8 @@ void EngineController::pointMouseAt(Pid target) {
     auto viewport = std::ranges::find(pPrimaryWindow->vButtons, "Game_Viewport", &GUIButton::id);
     if (viewport == pPrimaryWindow->vButtons.end())
         throw Exception("GUI button 'Game_Viewport' not found");
-    auto pickAt = [pickDepth](Pointi point) {
-        return engine->PickMouse(pickDepth, point.x, point.y, &vis_anything_filter, &vis_face_filter).pid;
+    auto pickAt = [](Pointi point) {
+        return engine->PickMouse(engine->config->gameplay.RangedAttackDepth.value(), point.x, point.y, &vis_anything_filter, &vis_face_filter).pid;
     };
     std::vector<Pointi> points = {screenPos};
     for (int distance = 5; distance <= 50; distance += 5)
