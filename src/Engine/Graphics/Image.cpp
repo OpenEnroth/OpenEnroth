@@ -40,14 +40,22 @@ std::unique_ptr<GraphicsImage> GraphicsImage::Create(std::unique_ptr<ImageLoader
 }
 
 int GraphicsImage::width() {
-    return rgba().width();
+    return size().w;
 }
 
 int GraphicsImage::height() {
-    return rgba().height();
+    return size().h;
 }
 
 Sizei GraphicsImage::size() {
+    if (_initialized)
+        return _rgba.size();
+
+    if (!_loaderSize && _loader)
+        _loaderSize = _loader->size();
+    if (_loaderSize)
+        return _loaderSize;
+
     return rgba().size();
 }
 
@@ -84,6 +92,7 @@ bool GraphicsImage::initialize() {
     assert(_loader);
     _rgba = _loader->load();
     _initialized = static_cast<bool>(_rgba);
+    assert(!_initialized || !_loaderSize || _rgba.size() == _loaderSize);
     // TODO(captainurist): _initialized == false happens, investigate
 
     return _initialized;

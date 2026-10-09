@@ -38,6 +38,12 @@ class TileGenerator {
      */
     void ensureTile(std::string_view name);
 
+    /**
+     * @return                          Size of the generated tiles. They are all blended over the dirt tile, so they
+     *                                  are all the same size as that tile.
+     */
+    Sizei tileSize() const;
+
  private:
     RgbaImage generateTile(Tileset tileset, TileVariant variant);
     RgbaImageView loadTile(Tileset tileset, TileVariant variant);

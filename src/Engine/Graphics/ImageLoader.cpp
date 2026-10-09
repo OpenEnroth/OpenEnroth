@@ -12,6 +12,13 @@ RgbaImage Icon_LOD_Loader::load() {
     return result;
 }
 
+Sizei Icon_LOD_Loader::size() {
+    Sizei result = resources()->iconSize(name());
+    if (!result)
+        result = resources()->iconSize("pending");
+    return result;
+}
+
 RgbaImage Buff_LOD_Loader::load() {
     LodImage tex = resources()->rawIcon(name());
     if (!tex.image)
@@ -60,6 +67,13 @@ RgbaImage Buff_LOD_Loader::load() {
     return result;
 }
 
+Sizei Buff_LOD_Loader::size() {
+    Sizei iconSize = resources()->iconSize(name());
+    if (!iconSize)
+        iconSize = Sizei(1, 1);
+    return AtlasLayout({16, 8}, iconSize).geometry().size();
+}
+
 RgbaImage Bitmaps_LOD_Loader::load() {
     RgbaImage result = resources()->bitmap(name());
     if (!result)
@@ -67,11 +81,25 @@ RgbaImage Bitmaps_LOD_Loader::load() {
     return result;
 }
 
+Sizei Bitmaps_LOD_Loader::size() {
+    Sizei result = resources()->bitmapSize(name());
+    if (!result)
+        result = resources()->bitmapSize("pending");
+    return result;
+}
+
 RgbaImage Bitmaps_GEN_Loader::load() {
     return resources()->generated(name());
+}
+
+Sizei Bitmaps_GEN_Loader::size() {
+    return resources()->generatedSize();
 }
 
 RgbaImage Sprites_LOD_Loader::load() {
     return resources()->sprite(name());
 }
 
+Sizei Sprites_LOD_Loader::size() {
+    return resources()->spriteSize(name());
+}

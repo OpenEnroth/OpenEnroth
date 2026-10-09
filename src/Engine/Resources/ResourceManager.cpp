@@ -146,6 +146,18 @@ RgbaImage ResourceManager::icon(std::string_view filename) {
     return makeRgbaImage(image.image, maskedPalette(image, mask));
 }
 
+Sizei ResourceManager::iconSize(std::string_view filename) {
+    std::string name = ascii::toLower(filename);
+    if (!_iconsLodReader.exists(name)) {
+        MM_ERROR("Trying to load non-existent LOD entry '{}'.", _iconsLodReader.displayPath(name));
+        return {};
+    }
+
+    if (name.ends_with(".pcx"))
+        return pcx::decodeSize(lod::decodeMaybeCompressed(_iconsLodReader.read(name)));
+    return lod::decodeImageSize(_iconsLodReader.read(name));
+}
+
 RgbaImage ResourceManager::bitmap(std::string_view filename) {
     LodImage image = rawBitmap(filename);
     if (!image.image)
@@ -173,11 +185,24 @@ RgbaImage ResourceManager::bitmap(std::string_view filename) {
     return result;
 }
 
+Sizei ResourceManager::bitmapSize(std::string_view filename) {
+    std::string name = ascii::toLower(filename);
+    if (!_bitmapsLodReader.exists(name)) {
+        MM_ERROR("Trying to load non-existent LOD entry '{}'.", _bitmapsLodReader.displayPath(name));
+        return {};
+    }
+    return lod::decodeImageSize(_bitmapsLodReader.read(name));
+}
+
 RgbaImage ResourceManager::generated(std::string_view filename) {
     _tileGenerator->ensureTile(filename);
     RgbaImage result = png::decode(ufs->read(filename));
     desaturate(result.pixels());
     return result;
+}
+
+Sizei ResourceManager::generatedSize() const {
+    return _tileGenerator->tileSize();
 }
 
 void ResourceManager::addGeneratedTiles(TileTable *table) {

@@ -53,6 +53,10 @@ void TileGenerator::ensureTile(std::string_view name) {
     ufs->write(name, png::encode(generateTile(tileset, variant)));
 }
 
+Sizei TileGenerator::tileSize() const {
+    return _resources->bitmapSize(pTileTable->tile(pTileTable->tileId(TILESET_DIRT, TILE_VARIANT_BASE1)).textureName);
+}
+
 RgbaImage TileGenerator::generateTile(Tileset tileset, TileVariant variant) {
     assert(allGeneratedTileVariants().contains(variant));
 

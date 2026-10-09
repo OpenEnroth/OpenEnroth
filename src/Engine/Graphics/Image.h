@@ -40,6 +40,7 @@ class GraphicsImage {
     bool _initialized = false;
     std::string _name;
     std::unique_ptr<ImageLoader> _loader;
+    Sizei _loaderSize;
     RgbaImage _rgba;
     TextureRenderId _renderId;
 };

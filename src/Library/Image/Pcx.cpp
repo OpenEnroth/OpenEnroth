@@ -96,7 +96,7 @@ static int pcx_rle_decode(bstreamer *bs, uint8_t *dst, unsigned int bytes_per_sc
     return 0;
 }
 
-RgbaImage pcx::decode(const Blob &data) {
+static const PCXHeader *readHeader(const Blob &data) {
     if (data.size() < sizeof(PCXHeader))
         throw Exception("PCX image '{}' too small, expected at least {} bytes, got {}", data.displayPath(), sizeof(PCXHeader), data.size());
 
@@ -108,6 +108,12 @@ RgbaImage pcx::decode(const Blob &data) {
 
     if (header->version < PCX_VERSION_2_5 || header->version == PCX_VERSION_NOT_VALID || header->version > PCX_VERSION_3_0)
         throw Exception("Invalid PCX version '{}' in '{}'", header->version, data.displayPath());
+
+    return header;
+}
+
+RgbaImage pcx::decode(const Blob &data) {
+    const PCXHeader *header = readHeader(data);
 
     size_t width = header->xmax - header->xmin + 1;
     size_t height = header->ymax - header->ymin + 1;
@@ -146,6 +152,11 @@ RgbaImage pcx::decode(const Blob &data) {
     }
 
     return result;
+}
+
+Sizei pcx::decodeSize(const Blob &data) {
+    const PCXHeader *header = readHeader(data);
+    return Sizei(header->xmax - header->xmin + 1, header->ymax - header->ymin + 1);
 }
 
 void *writePcxHeader(void *pcx_data, int width, int height) {

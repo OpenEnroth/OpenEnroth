@@ -3,6 +3,7 @@
 #include <string>
 #include <string_view>
 
+#include "Library/Geometry/Size.h"
 #include "Library/Image/Image.h"
 
 class ResourceManager;
@@ -19,6 +20,14 @@ class ImageLoader {
      */
     virtual RgbaImage load() = 0;
 
+    /**
+     * @return                          Size of the image `load()` returns, or an empty size if it can't be known without
+     *                                  loading.
+     */
+    virtual Sizei size() {
+        return {};
+    }
+
  protected:
     ResourceManager *resources() const { return _resources; }
 
@@ -32,6 +41,7 @@ class Icon_LOD_Loader : public ImageLoader {
     using ImageLoader::ImageLoader;
 
     virtual RgbaImage load() override;
+    virtual Sizei size() override;
 };
 
 class Buff_LOD_Loader : public ImageLoader {
@@ -39,6 +49,7 @@ class Buff_LOD_Loader : public ImageLoader {
     using ImageLoader::ImageLoader;
 
     virtual RgbaImage load() override;
+    virtual Sizei size() override;
 };
 
 class Bitmaps_LOD_Loader : public ImageLoader {
@@ -46,6 +57,7 @@ class Bitmaps_LOD_Loader : public ImageLoader {
     using ImageLoader::ImageLoader;
 
     virtual RgbaImage load() override;
+    virtual Sizei size() override;
 };
 
 class Bitmaps_GEN_Loader : public ImageLoader {
@@ -53,6 +65,7 @@ class Bitmaps_GEN_Loader : public ImageLoader {
     using ImageLoader::ImageLoader;
 
     virtual RgbaImage load() override;
+    virtual Sizei size() override;
 };
 
 class Sprites_LOD_Loader : public ImageLoader {
@@ -60,4 +73,5 @@ class Sprites_LOD_Loader : public ImageLoader {
     using ImageLoader::ImageLoader;
 
     virtual RgbaImage load() override;
+    virtual Sizei size() override;
 };
