@@ -15,14 +15,14 @@ GAME_TEST(Screenshots, CharacterScreen) {
         game.tick(5);
         game.runGameRoutine([&] {
             Blob data = png::encode(render->MakeFullScreenshot());
-            FileOutputStream out(fmt::format("{}/{}.png", dir, name));
+            FileOutputStream out(Path(fmt::format("{}/{}.png", dir, name)));
             out.write(data.data(), data.size());
             out.close();
         });
     };
 
     game.startNewGame();
-    game.goToInventory(1); // Opens the character window. KEY_C from the game view opens the spellbook, not this.
+    game.goToInventory(0); // Opens the character window. KEY_C from the game view opens the spellbook, not this.
     screenshot("inventory");
     game.pressAndReleaseKey(PlatformKey::KEY_C); // Tab keys work only once the character window is open.
     screenshot("stats");
