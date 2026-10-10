@@ -43,10 +43,24 @@ class ResourceManager {
     RgbaImage icon(std::string_view filename);
 
     /**
+     * @param filename                  Name of an image in `icons.lod`, case-insensitive.
+     * @return                          The icon's size, read without decoding it, or an empty size if there is no
+     *                                  such icon.
+     */
+    Sizei iconSize(std::string_view filename);
+
+    /**
      * @param filename                  Name of an image in `bitmaps.lod`, case-insensitive.
      * @return                          The desaturated bitmap, or an empty image if there is no such bitmap.
      */
     RgbaImage bitmap(std::string_view filename);
+
+    /**
+     * @param filename                  Name of an image in `bitmaps.lod`, case-insensitive.
+     * @return                          The bitmap's size, read without decoding it, or an empty size if there is no
+     *                                  such bitmap.
+     */
+    Sizei bitmapSize(std::string_view filename);
 
     /**
      * @param filename                  Name of a generated transition tile, as `addGeneratedTiles()` put it into the
@@ -54,6 +68,11 @@ class ResourceManager {
      * @return                          The desaturated tile.
      */
     RgbaImage generated(std::string_view filename);
+
+    /**
+     * @return                          Size of the generated transition tiles, known without generating them.
+     */
+    Sizei generatedSize() const;
 
     // TODO(captainurist): maybe return the generated tile data and let the caller add it to the table?
     /**
@@ -102,7 +121,8 @@ class ResourceManager {
 
     /**
      * @param filename                  Name of a sprite in `sprites.lod`, case-insensitive.
-     * @return                          The sprite's size, or an empty size if there is no such sprite.
+     * @return                          The sprite's size, read without decoding it, or an empty size if there is no
+     *                                  such sprite.
      */
     Sizei spriteSize(std::string_view filename);
 

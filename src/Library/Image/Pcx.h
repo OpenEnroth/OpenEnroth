@@ -1,5 +1,6 @@
 #pragma once
 
+#include "Library/Geometry/Size.h"
 #include "Library/Image/Image.h"
 #include "Utility/Memory/Blob.h"
 
@@ -12,6 +13,13 @@ namespace pcx {
  * @throws Exception                    On error.
  */
 RgbaImage decode(const Blob &data);
+
+/**
+ * @param data                          Compressed PCX image.
+ * @return                              Size of the image, read from the header without decoding the pixels.
+ * @throws Exception                    On error.
+ */
+Sizei decodeSize(const Blob &data);
 
 Blob encode(RgbaImageView image);
 

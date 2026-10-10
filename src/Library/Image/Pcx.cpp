@@ -96,7 +96,11 @@ static int pcx_rle_decode(bstreamer *bs, uint8_t *dst, unsigned int bytes_per_sc
     return 0;
 }
 
-RgbaImage pcx::decode(const Blob &data) {
+static Sizei headerSize(const PCXHeader *header) {
+    return Sizei(header->xmax - header->xmin + 1, header->ymax - header->ymin + 1);
+}
+
+static const PCXHeader *decodeHeader(const Blob &data) {
     if (data.size() < sizeof(PCXHeader))
         throw Exception("PCX image '{}' too small, expected at least {} bytes, got {}", data.displayPath(), sizeof(PCXHeader), data.size());
 
@@ -109,43 +113,54 @@ RgbaImage pcx::decode(const Blob &data) {
     if (header->version < PCX_VERSION_2_5 || header->version == PCX_VERSION_NOT_VALID || header->version > PCX_VERSION_3_0)
         throw Exception("Invalid PCX version '{}' in '{}'", header->version, data.displayPath());
 
-    size_t width = header->xmax - header->xmin + 1;
-    size_t height = header->ymax - header->ymin + 1;
-
+    Sizei size = headerSize(header);
     unsigned int bytes_per_scanline = header->nplanes * header->bytes_per_row;
 
     //corruption check
-    if (bytes_per_scanline < (width * header->bpp * header->nplanes + 7) / 8 ||
-        (!header->compression && bytes_per_scanline > (data.size() - sizeof(PCXHeader)) / height)) {
+    if (bytes_per_scanline < (size.w * header->bpp * header->nplanes + 7) / 8 ||
+        (!header->compression && bytes_per_scanline > (data.size() - sizeof(PCXHeader)) / size.h)) {
         throw Exception("PCX header corrupted in '{}'", data.displayPath());
     }
 
     if ((header->nplanes != 3 && header->nplanes != 1) || header->bpp != 8)
         throw Exception("Unsupported PCX format in '{}', only 8-bit and 24-bit PCX images are supported", data.displayPath());
 
-    RgbaImage result = RgbaImage::uninitialized(width, height);
+    return header;
+}
+
+RgbaImage pcx::decode(const Blob &data) {
+    const PCXHeader *header = decodeHeader(data);
+
+    Sizei size = headerSize(header);
+    unsigned int bytes_per_scanline = header->nplanes * header->bytes_per_row;
+
+    RgbaImage result = RgbaImage::uninitialized(size);
 
     bstreamer bs;
     std::unique_ptr<uint8_t[], FreeDeleter> scanline(static_cast<uint8_t *>(malloc(bytes_per_scanline + 32)));
     bs_init(&bs, static_cast<const uint8_t *>(data.data()) + sizeof(PCXHeader), data.size() - sizeof(PCXHeader));
 
-    for (unsigned int y = 0; y < height; y++) {
+    for (int y = 0; y < size.h; y++) {
         int ret = pcx_rle_decode(&bs, scanline.get(), bytes_per_scanline, header->compression);
         if (ret < 0)
             throw Exception("PCX image data is corrupted in '{}'", data.displayPath());
 
         auto line = result[y];
         if (header->nplanes == 1) {
-            for (unsigned int x = 0; x < width; x++)
+            for (int x = 0; x < size.w; x++)
                 line[x] = Color(scanline[x], scanline[x], scanline[x]);
         } else {
             assert(header->nplanes == 3);
-            for (unsigned int x = 0; x < width; x++)
+            for (int x = 0; x < size.w; x++)
                 line[x] = Color(scanline[x], scanline[x + header->bytes_per_row], scanline[x + (header->bytes_per_row << 1)]);
         }
     }
 
     return result;
+}
+
+Sizei pcx::decodeSize(const Blob &data) {
+    return headerSize(decodeHeader(data));
 }
 
 void *writePcxHeader(void *pcx_data, int width, int height) {
