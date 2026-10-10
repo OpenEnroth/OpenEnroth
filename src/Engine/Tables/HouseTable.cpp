@@ -16,6 +16,14 @@
 
 IndexedArray<HouseData, HOUSE_FIRST, HOUSE_LAST> houseTable;
 
+static int intOrZero(std::string_view token) {
+    return token.empty() ? 0 : fromString<int>(token);
+}
+
+static float floatOrZero(std::string_view token) {
+    return token.empty() ? 0.0f : fromString<float>(token);
+}
+
 void initializeHouses(const Blob &houses) {
     // 2devents.txt table structure (column names are the headers from the data file):
     //  0: "#"                  - house id
@@ -71,25 +79,24 @@ void initializeHouses(const Blob &houses) {
     };
 
     for (std::string_view line : split(houses.str()).by("\r\n").drop(2).skip("")) {
-        // Some lines have only ~12 cols, and some cols are empty, so need both resize & replace.
-        std::array<std::string_view, 24> tokens = split(line).by('\t').replace("", "0").resize(24, "0");
+        std::array<std::string_view, 24> tokens = split(line).by('\t').resize(24, ""); // Some lines have only ~12 cols.
 
         // TODO(captainurist): We don't check if int is in range. A better way would be to deal away with enums
         //                     entirely, and just use typed ids. Do this once we iron out the details of how #mm6
         //                     enums will be handled by the engine. Also apply to other table parsers.
         HouseId houseId = static_cast<HouseId>(fromString<int>(tokens[0]));
-        houseTable[houseId].uType = valueOr(houseTypeMap, tokens[2], HOUSE_TYPE_MERCENARY_GUILD);
-        houseTable[houseId].uAnimationID = fromString<int>(tokens[4]);
+        houseTable[houseId].uType = tokens[2].empty() ? HOUSE_TYPE_INVALID : valueOr(houseTypeMap, tokens[2], HOUSE_TYPE_MERCENARY_GUILD);
+        houseTable[houseId].uAnimationID = intOrZero(tokens[4]);
         houseTable[houseId].name = unquote(tokens[5]);
         houseTable[houseId].pProprieterName = unquote(tokens[6]);
         houseTable[houseId].pProprieterTitle = unquote(tokens[7]);
-        houseTable[houseId].fPriceMultiplier = fromString<float>(tokens[12]);
-        houseTable[houseId].flt_24 = fromString<float>(tokens[13]);
-        houseTable[houseId].generation_interval_days = fromString<int>(tokens[15]);
-        houseTable[houseId].uOpenTime = fromString<int>(tokens[18]);
-        houseTable[houseId].uCloseTime = fromString<int>(tokens[19]);
-        houseTable[houseId].uExitPicID = fromString<int>(tokens[20]);
-        houseTable[houseId].uExitMapID = static_cast<MapId>(fromString<int>(tokens[21]));
-        houseTable[houseId]._quest_bit = static_cast<QuestBit>(fromString<int>(tokens[22]));
+        houseTable[houseId].fPriceMultiplier = floatOrZero(tokens[12]);
+        houseTable[houseId].flt_24 = floatOrZero(tokens[13]);
+        houseTable[houseId].generation_interval_days = intOrZero(tokens[15]);
+        houseTable[houseId].uOpenTime = intOrZero(tokens[18]);
+        houseTable[houseId].uCloseTime = intOrZero(tokens[19]);
+        houseTable[houseId].uExitPicID = intOrZero(tokens[20]);
+        houseTable[houseId].uExitMapID = static_cast<MapId>(intOrZero(tokens[21]));
+        houseTable[houseId]._quest_bit = static_cast<QuestBit>(intOrZero(tokens[22]));
     }
 }
