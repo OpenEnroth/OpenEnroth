@@ -801,16 +801,32 @@ GAME_TEST(Issues, Issue1362) {
 }
 
 GAME_TEST(Issues, Issue1364) {
-    // Saving in Arena should display an appropriate status message.
-    auto mapTape = tapes.map();
-    auto statusTape = tapes.statusBar();
-    auto screenTape = tapes.screen();
-    test.playTraceFromTestData("issue_1364.mm7", "issue_1364.json");
-    EXPECT_EQ(mapTape, tape(MAP_HARMONDALE, MAP_ARENA)); // Harmondale -> Arena.
-    EXPECT_CONTAINS(statusTape, "No saving in the Arena"); // Clicking the save button didn't work.
-    EXPECT_CONTAINS(screenTape, SCREEN_HOUSE); // We have visited the stables.
-    EXPECT_CONTAINS(screenTape, SCREEN_MENU); // Opened the game menu while in the Arena.
-    EXPECT_MISSES(screenTape, SCREEN_SAVEGAME); // But save menu didn't open on click.
+    // Saving in the Arena opened the save screen and reported the game saved, but no save was written. The game menu's
+    // save button should say "No saving in the Arena" there instead, and still open the save screen elsewhere.
+    for (auto [map, pos] : {std::pair(MAP_HARMONDALE, Vec3f(-5692, 11137, 1)), std::pair(MAP_ARENA, Vec3f(3844, 2906, 193))}) {
+        SCOPED_TRACE(fmt::format("map={}", std::to_underlying(map)));
+        test.prepareForNextTest();
+        auto screenTape = tapes.screen();
+        auto statusTape = tapes.statusBar();
+        auto soundsTape = tapes.sounds();
+        game.startNewGame();
+        game.teleportTo(map, pos, 0);
+        test.startTaping();
+        game.pressAndReleaseKey(PlatformKey::KEY_ESCAPE);
+        game.tick();
+        game.pressGuiButton("GameMenu_SaveGame");
+        game.tick(2);
+
+        if (map == MAP_ARENA) {
+            EXPECT_EQ(screenTape, tape(SCREEN_MENU));
+            EXPECT_CONTAINS(statusTape, "No saving in the Arena");
+            EXPECT_CONTAINS(soundsTape.flatten(), SOUND_error);
+        } else {
+            EXPECT_EQ(screenTape, tape(SCREEN_MENU, SCREEN_SAVEGAME));
+            EXPECT_MISSES(statusTape, "No saving in the Arena");
+            EXPECT_MISSES(soundsTape.flatten(), SOUND_error);
+        }
+    }
 }
 
 GAME_TEST(Issues, Issue1368) {
