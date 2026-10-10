@@ -79,8 +79,9 @@ UNIT_TEST(Path, Normalized) {
     };
 
     testOne("", "");
-    testOne(".", "");
-    testOne("./", "");
+    testOne(".", ".");
+    testOne("./", ".");
+    testOne("a/..", ".");
     testOne("a/b", "a/b");
     testOne("a/b/", "a/b");
     testOne("a//b", "a/b");
@@ -88,7 +89,7 @@ UNIT_TEST(Path, Normalized) {
     testOne("./a/b", "a/b");
     testOne("a/b/..", "a");
     testOne("a/../b", "b");
-    testOne("a/b/../..", "");
+    testOne("a/b/../..", ".");
     testOne("..", "..");
     testOne("../..", "../..");
     testOne("../../", "../..");

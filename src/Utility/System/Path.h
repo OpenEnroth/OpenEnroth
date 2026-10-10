@@ -115,8 +115,9 @@ class Path {
      * @return                          Copy of this path in lexical normal form. The root is kept as it is, then
      *                                  come single separators with no trailing one, no `.` segments, and `..`
      *                                  collapsed. A `..` survives only as the leading run of a path without a root
-     *                                  directory, and above a root directory it's dropped, so `"/.."` is `"/"`. A lone
-     *                                  `"."` normalizes to the empty path.
+     *                                  directory, and above a root directory it's dropped, so `"/.."` is `"/"`. A
+     *                                  path that collapses to nothing, like `"a/.."`, normalizes to `"."`, and only
+     *                                  the empty path stays empty.
      */
     [[nodiscard]] Path normalized() const;
 

@@ -131,10 +131,15 @@ static std::string normalizePath(std::string_view path) {
     // "." only goes away on a second pass.
     if (rootEnd(parseRoot(result)) != rootEnd(root))
         return normalizePath(result);
+    if (result.empty() && !path.empty())
+        return "."; // An empty path names nothing, while this one names the current directory.
     return result;
 }
 
 static bool isNormalizedPath(std::string_view path) {
+    if (path == ".")
+        return true;
+
     PathRoot root = parseRoot(path);
     std::string_view tail = path.substr(rootEnd(root));
     if (tail.empty())
