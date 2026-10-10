@@ -404,16 +404,41 @@ GAME_TEST(Issues, Issue315) {
     game.startNewGame(); // This shouldn't crash.
 }
 
-GAME_TEST(Issues, Issue331_679) {
-    // Assert when traveling by horse caused by out of bound access to pObjectTable->pObjects.
-    auto goldTape = tapes.gold();
+GAME_TEST(Issues, Issue331) {
+    // Riding from the Tularean Forest stables to Harmondale overflowed a buffer when Harmondale loaded. The map load
+    // looked up object flags by sprite id instead of object desc id, so a sword left on the ground was removed too.
     auto mapTape = tapes.map();
-    test.playTraceFromTestData("issue_331.mm7", "issue_331.json");
-    EXPECT_EQ(mapTape, tape(MAP_TULAREAN_FOREST, MAP_HARMONDALE, MAP_TULAREAN_FOREST)); // We did travel.
+    auto daysTape = tapes.custom([] { return pParty->GetPlayingTime().toDays(); });
+    auto groundSwordsTape = tapes.custom([] {
+        return static_cast<int>(std::ranges::count_if(pSpriteObjects, [](const SpriteObject &sprite) {
+            return sprite.uObjectDescID != 0 && sprite.containing_item.itemId == ITEM_CRUDE_LONGSWORD;
+        }));
+    });
+    game.startNewGame();
+    game.teleportTo(MAP_HARMONDALE, Vec3f(0, 22200, 2384), 90); // Next to the north edge, facing it.
+    test.startTaping();
+    pParty->setHoldingItem(Item(ITEM_CRUDE_LONGSWORD));
+    game.pressAndReleaseButton(BUTTON_LEFT, 240, 170); // A click in the viewport drops the held item.
+    game.tick();
 
-    // #679: Loading autosave after travelling by stables / boat results in gold loss.
-    EXPECT_EQ(goldTape.delta(), 0);
-    EXPECT_LT(goldTape.min(), goldTape.front()); // We did spend money.
+    // Walk off the north edge into Tularean Forest, five days on foot, which puts the Harmondale coach on the schedule.
+    game.pressKey(PlatformKey::KEY_UP);
+    game.tick(10); // The party walks off the edge and the travel window opens.
+    game.releaseKey(PlatformKey::KEY_UP);
+    game.pressGuiButton("Transition_Yes");
+    game.tick();
+    game.skipLoadingScreen();
+    game.tick();
+
+    game.teleportTo(MAP_TULAREAN_FOREST, Vec3f(-2638, -6646, 1152), 312); // In front of Hu's Stallions.
+    game.pressAndReleaseKey(PlatformKey::KEY_SPACE);
+    game.tick(2);
+    game.pressGuiButton("HouseDialogue_Option2"); // Two days to Harmondale.
+    game.skipLoadingScreen();
+
+    EXPECT_EQ(mapTape, tape(MAP_HARMONDALE, MAP_TULAREAN_FOREST, MAP_HARMONDALE));
+    EXPECT_EQ(daysTape, tape(0, 5, 7));
+    EXPECT_EQ(groundSwordsTape, tape(1, 0, 1));
 }
 
 GAME_TEST(Prs, Pr347) {
