@@ -801,16 +801,28 @@ GAME_TEST(Issues, Issue1362) {
 }
 
 GAME_TEST(Issues, Issue1364) {
-    // Saving in Arena should display an appropriate status message.
-    auto mapTape = tapes.map();
-    auto statusTape = tapes.statusBar();
-    auto screenTape = tapes.screen();
-    test.playTraceFromTestData("issue_1364.mm7", "issue_1364.json");
-    EXPECT_EQ(mapTape, tape(MAP_HARMONDALE, MAP_ARENA)); // Harmondale -> Arena.
-    EXPECT_CONTAINS(statusTape, "No saving in the Arena"); // Clicking the save button didn't work.
-    EXPECT_CONTAINS(screenTape, SCREEN_HOUSE); // We have visited the stables.
-    EXPECT_CONTAINS(screenTape, SCREEN_MENU); // Opened the game menu while in the Arena.
-    EXPECT_MISSES(screenTape, SCREEN_SAVEGAME); // But save menu didn't open on click.
+    // Saving in the Arena opened the save screen and reported the game saved, but no save was written. The game menu's
+    // save button should say "No saving in the Arena" there instead, and still open the save screen elsewhere.
+    for (MapId map : {MAP_HARMONDALE, MAP_ARENA}) {
+        test.prepareForNextTest();
+        auto screenTape = tapes.screen();
+        auto statusTape = tapes.statusBar();
+        game.startNewGame();
+        game.teleportTo(map, map == MAP_ARENA ? Vec3f(3844, 2906, 193) : Vec3f(-5692, 11137, 1), 0); // Where the coach from the stables arrives.
+        test.startTaping();
+        game.pressAndReleaseKey(PlatformKey::KEY_ESCAPE);
+        game.tick();
+        game.pressGuiButton("GameMenu_SaveGame");
+        game.tick(2);
+
+        if (map == MAP_ARENA) {
+            EXPECT_MISSES(screenTape, SCREEN_SAVEGAME);
+            EXPECT_CONTAINS(statusTape, "No saving in the Arena");
+        } else {
+            EXPECT_CONTAINS(screenTape, SCREEN_SAVEGAME);
+            EXPECT_MISSES(statusTape, "No saving in the Arena");
+        }
+    }
 }
 
 GAME_TEST(Issues, Issue1368) {
