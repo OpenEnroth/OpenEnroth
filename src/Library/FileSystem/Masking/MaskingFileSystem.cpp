@@ -29,7 +29,11 @@ bool MaskingFileSystem::unmask(std::string_view path) {
 }
 
 bool MaskingFileSystem::unmask(PathView path) {
-    FileSystemTrieNode<bool> *node = _masks.find(NormalPath(path).path());
+    NormalPath normalPath(path);
+    if (!normalPath.isAccessible())
+        return false; // mask refuses these, so nothing is masked there.
+
+    FileSystemTrieNode<bool> *node = _masks.find(normalPath.path());
     if (!node || !node->hasValue() || !node->value())
         return false; // Can only unmask what was previously masked.
     node->value() = false;

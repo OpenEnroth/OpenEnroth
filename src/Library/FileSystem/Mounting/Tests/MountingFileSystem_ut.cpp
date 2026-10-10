@@ -172,3 +172,14 @@ UNIT_TEST(MountingFileSystem, MountPathsAreNormalized) {
     EXPECT_TRUE(fs.unmount("m\\"));
     EXPECT_FALSE(fs.exists("m/x"));
 }
+
+UNIT_TEST(MountingFileSystem, UnmountInaccessiblePath) {
+    // mount refuses a rooted or escaping path, so unmount finds nothing there either.
+    MemoryFileSystem mfs("");
+    MountingFileSystem fs("");
+    fs.mount("m", &mfs);
+
+    EXPECT_FALSE(fs.unmount("/m"));
+    EXPECT_FALSE(fs.unmount("../m"));
+    EXPECT_TRUE(fs.exists("m"));
+}
