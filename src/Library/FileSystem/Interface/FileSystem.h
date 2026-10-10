@@ -136,10 +136,9 @@ class FileSystem {
 
     /**
      * Calls into another file system, for file systems that delegate to one. These do what the public methods do,
-     * answering for the root included, but skip normalizing and validating the path. `NormalPathView` takes care of
-     * the normal form, and the caller has to pass an accessible path, like the one its own `_` method got or a tail
-     * or a join of it. They are static because a derived class can only reach a protected member through its own
-     * type.
+     * including what they answer for the root, but skip normalizing and validating the path, since a
+     * `NormalPathView` is normal and accessible already. They are static because a derived class can only reach a
+     * protected member through its own type.
      */
     static bool existsIn(const FileSystem *fs, NormalPathView path);
     static FileStat statIn(const FileSystem *fs, NormalPathView path);
