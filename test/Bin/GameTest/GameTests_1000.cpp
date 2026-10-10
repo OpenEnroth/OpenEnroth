@@ -180,14 +180,28 @@ GAME_TEST(Issues, Issue1093) {
 // 1100
 
 GAME_TEST(Issues, Issue1115) {
-    // Entering Arena on level 21 should not crash the game
-    auto mapTape = tapes.map();
-    auto dialogueTape = tapes.dialogueType();
-    auto levelTape = charTapes.levels();
-    test.playTraceFromTestData("issue_1115.mm7", "issue_1115.json");
-    EXPECT_EQ(mapTape, tape(MAP_HARMONDALE, MAP_ARENA)); // Harmondale -> Arena.
-    EXPECT_CONTAINS(dialogueTape, DIALOGUE_ARENA_SELECT_LORD);
-    EXPECT_EQ(levelTape, tape({21, 21, 21, 21}));
+    // Picking a Knight or Lord fight in the Arena with a level 21 party smashed the stack, because more monster types
+    // fell into the level range than the fight setup had room for.
+    for (auto [option, dialogue] : {std::pair(2, DIALOGUE_ARENA_SELECT_KNIGHT), std::pair(3, DIALOGUE_ARENA_SELECT_LORD)}) {
+        test.prepareForNextTest();
+        auto dialogueTape = tapes.dialogueType();
+        auto actorCountTape = tapes.custom([] { return pActors.size(); });
+        game.startNewGame();
+        for (Character &character : pParty->pCharacters)
+            character.uLevel = 21;
+        game.teleportTo(MAP_ARENA, Vec3f(3840, 2810, 193), 270); // In front of the Arena Master's door.
+        test.startTaping();
+        game.pressAndReleaseKey(PlatformKey::KEY_SPACE);
+        game.tick();
+        game.pressGuiButton("NpcDialogue_Option0"); // Arena.
+        game.tick();
+        game.pressGuiButton(fmt::format("NpcDialogue_Option{}", option));
+        game.tick(2);
+
+        EXPECT_CONTAINS(dialogueTape, dialogue);
+        EXPECT_EQ(actorCountTape.front(), 0);
+        EXPECT_GT(actorCountTape.back(), 0); // The monsters were summoned.
+    }
 }
 
 GAME_TEST(Issues, Issue1155) {
