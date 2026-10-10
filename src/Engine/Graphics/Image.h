@@ -2,6 +2,7 @@
 
 #include <string>
 #include <memory>
+#include <optional>
 
 #include "Engine/Graphics/Renderer/TextureRenderId.h"
 
@@ -34,13 +35,10 @@ class GraphicsImage {
  private:
     GraphicsImage();
 
-    bool initialize();
-
  private:
-    bool _initialized = false;
     std::string _name;
     std::unique_ptr<ImageLoader> _loader;
-    Sizei _loaderSize;
-    RgbaImage _rgba;
+    std::optional<Sizei> _size; // Size reported by the loader, empty if it can't tell without loading.
+    std::optional<RgbaImage> _rgba; // Empty image if the loader failed.
     TextureRenderId _renderId;
 };
