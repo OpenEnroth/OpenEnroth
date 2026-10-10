@@ -408,6 +408,7 @@ GAME_TEST(Issues, Issue331) {
     // Riding from the Tularean Forest stables to Harmondale overflowed a buffer when Harmondale loaded. The map load
     // looked up object flags by sprite id instead of object desc id, so a sword left on the ground was removed too.
     auto mapTape = tapes.map();
+    auto daysTape = tapes.custom([] { return pParty->GetPlayingTime().toDays(); });
     auto groundSwordsTape = tapes.custom([] {
         return static_cast<int>(std::ranges::count_if(pSpriteObjects, [](const SpriteObject &sprite) {
             return sprite.uObjectDescID != 0 && sprite.containing_item.itemId == ITEM_CRUDE_LONGSWORD;
@@ -436,6 +437,7 @@ GAME_TEST(Issues, Issue331) {
     game.skipLoadingScreen();
 
     EXPECT_EQ(mapTape, tape(MAP_HARMONDALE, MAP_TULAREAN_FOREST, MAP_HARMONDALE));
+    EXPECT_EQ(daysTape, tape(0, 5, 7));
     EXPECT_EQ(groundSwordsTape, tape(1, 0, 1));
 }
 
