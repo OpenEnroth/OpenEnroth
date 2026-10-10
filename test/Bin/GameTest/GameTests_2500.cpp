@@ -999,3 +999,21 @@ GAME_TEST(Issues, Issue2908) {
     EXPECT_EQ(eyeTape, tape(true, false, true));
     EXPECT_EQ(pParty->pos, Vec3f(11008, 34, 193)); // In front of the Lady Margaret, where the party boarded.
 }
+
+GAME_TEST(Prs, Pr2922) {
+    // The Castle Harmondale throne room drew "0" as its title. Its row in 2dEvents.txt has no name, and the parser
+    // turned every empty cell into "0".
+    auto screenTape = tapes.screen();
+    auto houseTape = tapes.house();
+    auto textTape = tapes.allGUIWindowsText();
+    game.startNewGame();
+    test.startTaping();
+    game.teleportTo(MAP_CASTLE_HARMONDALE, Vec3f(-3770, 1664, 0), 0); // In front of the throne room door, facing it.
+    game.pressAndReleaseKey(PlatformKey::KEY_SPACE);
+    game.tick();
+
+    EXPECT_EQ(screenTape, tape(SCREEN_GAME, SCREEN_HOUSE));
+    EXPECT_EQ(houseTape, tape(HOUSE_INVALID, HOUSE_CASTLE_HARMONDALE__1));
+    EXPECT_CONTAINS(textTape.flatten(), "Exit Building"); // The house menu was drawn.
+    EXPECT_MISSES(textTape.flatten(), "0");
+}
