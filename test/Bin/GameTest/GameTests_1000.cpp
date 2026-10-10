@@ -803,12 +803,14 @@ GAME_TEST(Issues, Issue1362) {
 GAME_TEST(Issues, Issue1364) {
     // Saving in the Arena opened the save screen and reported the game saved, but no save was written. The game menu's
     // save button should say "No saving in the Arena" there instead, and still open the save screen elsewhere.
-    for (MapId map : {MAP_HARMONDALE, MAP_ARENA}) {
+    for (auto [map, pos] : {std::pair(MAP_HARMONDALE, Vec3f(-5692, 11137, 1)), std::pair(MAP_ARENA, Vec3f(3844, 2906, 193))}) {
+        SCOPED_TRACE(fmt::format("map={}", std::to_underlying(map)));
         test.prepareForNextTest();
         auto screenTape = tapes.screen();
         auto statusTape = tapes.statusBar();
+        auto soundsTape = tapes.sounds();
         game.startNewGame();
-        game.teleportTo(map, map == MAP_ARENA ? Vec3f(3844, 2906, 193) : Vec3f(-5692, 11137, 1), 0); // Where the coach from the stables arrives.
+        game.teleportTo(map, pos, 0); // Where the coach drops the party.
         test.startTaping();
         game.pressAndReleaseKey(PlatformKey::KEY_ESCAPE);
         game.tick();
@@ -816,11 +818,13 @@ GAME_TEST(Issues, Issue1364) {
         game.tick(2);
 
         if (map == MAP_ARENA) {
-            EXPECT_MISSES(screenTape, SCREEN_SAVEGAME);
+            EXPECT_EQ(screenTape, tape(SCREEN_MENU));
             EXPECT_CONTAINS(statusTape, "No saving in the Arena");
+            EXPECT_CONTAINS(soundsTape.flatten(), SOUND_error);
         } else {
-            EXPECT_CONTAINS(screenTape, SCREEN_SAVEGAME);
+            EXPECT_EQ(screenTape, tape(SCREEN_MENU, SCREEN_SAVEGAME));
             EXPECT_MISSES(statusTape, "No saving in the Arena");
+            EXPECT_MISSES(soundsTape.flatten(), SOUND_error);
         }
     }
 }
