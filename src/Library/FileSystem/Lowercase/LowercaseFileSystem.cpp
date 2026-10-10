@@ -181,8 +181,8 @@ void LowercaseFileSystem::cacheRemove(Node *node) const {
         _trie.erase(node);
     } else {
         // We don't know if the underlying FS keeps empty folders or not, so we just invalidate the caches. We might drop
-        // more than we really should, but the alternative approach here is to call ProxyFileSystem::exists, and we need
-        // to construct a base path for that... just not worth it.
+        // more than we really should, but the alternative approach here is to call existsIn, and we need to construct a
+        // base path for that... just not worth it.
         invalidateLs(next);
     }
 }

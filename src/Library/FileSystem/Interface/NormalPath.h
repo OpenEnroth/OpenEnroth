@@ -9,8 +9,9 @@
 class NormalPath;
 
 /**
- * View over a path in the normal form the file system layer works in. It can only come from a `NormalPath`, or be
- * a tail of another `NormalPathView`, so a function that takes one can rely on the form without checking it.
+ * View over a path that a file system can act on, in the normal form the file system layer works in. It can only come
+ * from a `NormalPath` that the caller checked with `isAccessible`, or be a tail of another `NormalPathView`, so a
+ * function that takes one can rely on both without checking.
  */
 class NormalPathView {
  public:
@@ -48,8 +49,6 @@ class NormalPathView {
         return NormalPathView(_path.split().tailAfter(segment));
     }
 
-    friend auto operator<=>(NormalPathView l, NormalPathView r) = default;
-
  private:
     friend class NormalPath;
 
@@ -61,8 +60,9 @@ class NormalPathView {
 
 /**
  * A path inside a `FileSystem`, in the normal form the file system layer works in. A backslash is a separator on every
- * platform, and the rest is normalized. A path that has a root or escapes stays representable, so that `displayPath`
- * can show it, and `isAccessible` says whether a file system can act on it.
+ * platform, and `.`, `..` and repeated separators are folded. A path that has a root or escapes stays representable,
+ * so that `displayPath` can show it, and `isAccessible` says whether a file system can act on it. Only an accessible
+ * one may be passed on as a `NormalPathView`.
  */
 class NormalPath {
  public:
@@ -76,10 +76,6 @@ class NormalPath {
 
     [[nodiscard]] const Path &path() const {
         return _path;
-    }
-
-    [[nodiscard]] bool isEmpty() const {
-        return _path.isEmpty();
     }
 
     /**

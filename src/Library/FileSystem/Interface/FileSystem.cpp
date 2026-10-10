@@ -101,7 +101,17 @@ bool FileSystem::remove(PathView path) {
 }
 
 std::string FileSystem::displayPath(std::string_view path) const {
-    return displayPathIn(this, NormalPath(path)); // Never refuses, raising an exception formats the path through here.
+    // Never refuses, raising an exception formats the path through here. An inaccessible path is shown next to the
+    // root, so that the implementation never gets to act on it.
+    NormalPath normalPath(path);
+    if (normalPath.isAccessible())
+        return displayPathIn(this, normalPath);
+
+    std::string result = displayPathIn(this, NormalPathView());
+    if (!result.ends_with('/'))
+        result += '/';
+    result += normalPath.path().displayString();
+    return result;
 }
 
 std::string FileSystem::displayPath(PathView path) const {

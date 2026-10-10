@@ -19,7 +19,7 @@
  * Usage:
  * ```
  * FileSystem *root = ...;
- * SubFileSystem shaders(root, "shaders/");
+ * SubFileSystem shaders("shaders", root);
  * shaders.read("precision.vert");  // reads root/shaders/precision.vert
  * ```
  */
@@ -28,7 +28,7 @@ class SubFileSystem : public FileSystem {
     /**
      * @param basePath                  Path prefix to apply to all operations.
      * @param base                      The underlying file system.
-     * @throws Exception                If `base` can't reach `basePath`, e.g. because it escapes `base`'s root.
+     * @throws Exception                If `basePath` has a root or escapes the root of `base`.
      */
     SubFileSystem(PathView basePath, FileSystem *base);
     SubFileSystem(std::string_view basePath, FileSystem *base);
