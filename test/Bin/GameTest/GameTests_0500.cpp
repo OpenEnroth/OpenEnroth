@@ -632,6 +632,23 @@ GAME_TEST(Issues, Issue677) {
                                    {CONDITION_WEAK, CONDITION_WEAK, CONDITION_WEAK, CONDITION_WEAK}));
 }
 
+GAME_TEST(Issues, Issue679) {
+    // The stables took the fare before autosaving, so loading the autosave after a ride lost the gold.
+    auto mapTape = tapes.map();
+    auto goldTape = tapes.gold();
+    game.startNewGame();
+    game.teleportTo(MAP_HARMONDALE, Vec3f(-5858, 10324, 0), 0); // In front of the J.V.C Corral.
+    test.startTaping();
+    game.pressAndReleaseKey(PlatformKey::KEY_SPACE);
+    game.tick(2);
+    game.pressGuiButton("HouseDialogue_Option0"); // Two days to Erathia.
+    game.tick(17); // The coach sound and the travel line play for a second and a half.
+    game.loadGame(ufs->read("saves/autosave.mm7"));
+
+    EXPECT_EQ(mapTape, tape(MAP_HARMONDALE, MAP_ERATHIA, MAP_HARMONDALE));
+    EXPECT_EQ(goldTape, tape(200, 150, 200));
+}
+
 GAME_TEST(Issues, Issue680) {
     // Chest items duplicate sometimes
     auto chestItemsCount = tapes.custom([] { return vChests[4].inventory.size(); });
