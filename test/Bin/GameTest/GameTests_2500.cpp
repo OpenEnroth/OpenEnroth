@@ -965,7 +965,7 @@ GAME_TEST(Issues, Issue2881b) {
     game.tick(30);
 
     EXPECT_GT(zTape.max(), 1); // Still jumping.
-    EXPECT_GT(airborneTape.count(true), 1);
+    EXPECT_GT(airborneTape.count(true), 5);
     EXPECT_EQ(soundNames(soundsTape).count("splash"), 0);
     EXPECT_EQ(hpTape.delta(), 0);
 }
