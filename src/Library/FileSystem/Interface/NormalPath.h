@@ -59,6 +59,14 @@ class NormalPathView {
 };
 
 /**
+ * @param head                          Path to join onto.
+ * @param tail                          Path to append.
+ * @return                              `head` and `tail` joined, built in one allocation. Joining two accessible paths
+ *                                      keeps the result normal.
+ */
+[[nodiscard]] NormalPath operator/(NormalPathView head, NormalPathView tail);
+
+/**
  * A path inside a `FileSystem`, in the normal form the file system layer works in. A backslash is a separator on every
  * platform, and `.`, `..` and repeated separators are folded. A path that has a root or escapes stays representable,
  * so that `displayPath` can show it, and `isAccessible` says whether a file system can act on it. Only an accessible
@@ -91,11 +99,7 @@ class NormalPath {
      */
     NormalPath &operator/=(NormalPathView tail);
 
-    /**
-     * @return                          `head` and `tail` joined, built in one allocation. Joining two accessible paths
-     *                                  keeps the result normal.
-     */
-    [[nodiscard]] friend NormalPath operator/(NormalPathView head, NormalPathView tail);
+    friend NormalPath operator/(NormalPathView head, NormalPathView tail);
 
  private:
     Path _path;
