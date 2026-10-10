@@ -810,7 +810,7 @@ GAME_TEST(Issues, Issue1364) {
         auto statusTape = tapes.statusBar();
         auto soundsTape = tapes.sounds();
         game.startNewGame();
-        game.teleportTo(map, pos, 0); // Where the coach drops the party.
+        game.teleportTo(map, pos, 0);
         test.startTaping();
         game.pressAndReleaseKey(PlatformKey::KEY_ESCAPE);
         game.tick();
