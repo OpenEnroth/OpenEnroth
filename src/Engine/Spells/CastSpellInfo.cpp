@@ -2917,6 +2917,8 @@ void CastSpellInfoHelpers::castSpell() {
                     const auto getCoord = []{ return grng->randomInSegment(-rocksRadius, rocksRadius); };
 
                     for (int i = 0; i < rocksCount;) {
+                        // Separate statements because function argument evaluation order is unspecified, and
+                        // compilers on different platforms would roll x and y in a different order.
                         float y = getCoord();
                         float x = getCoord();
                         Vec3f rand(x, y, 0);
