@@ -1000,7 +1000,7 @@ GAME_TEST(Issues, Issue2908) {
     EXPECT_EQ(pParty->pos, Vec3f(11008, 34, 193)); // In front of the Lady Margaret, where the party boarded.
 }
 
-GAME_TEST(Prs, Pr2922) {
+GAME_TEST(Issues, Issue2923) {
     // The Castle Harmondale throne room drew "0" as its title. Its row in 2dEvents.txt has no name, and the parser
     // turned every empty cell into "0".
     auto screenTape = tapes.screen();
