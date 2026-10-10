@@ -104,6 +104,7 @@ UNIT_TEST(Path, Normalized) {
     testOne("/..", "/");
     testOne("/a/../..", "/");
     testOne("/../a", "/a");
+    testOne("///a", "/a");
 
 #ifdef _WINDOWS
     testOne("C:", "C:");
@@ -119,6 +120,10 @@ UNIT_TEST(Path, Normalized) {
     testOne("./C:/a", "C:/a"); // Dropping the "." leaves the drive letter leading.
     testOne("./C:.", "C:"); // The new drive's "." goes in the same call.
     testOne("./C:./a", "C:a");
+    testOne("a/../C:/x", "C:/x"); // The drive ends up leading, so the result is absolute.
+    testOne("//a/b", "//a/b"); // A UNC root.
+#else
+    testOne("//a/b", "/a/b");
 #endif
 }
 
@@ -136,7 +141,7 @@ UNIT_TEST(Path, IsEscaping) {
     testOne("../a", true);
     testOne("a/../..", true);
     testOne("a//..//..", true); // Doesn't need normal form.
-    testOne("/..", false); // Clamped at the root directory.
+    testOne("/..", false); // A path with a root never escapes.
     testOne("/../..", false);
 #ifdef _WINDOWS
     testOne("C:..", false);
@@ -240,27 +245,44 @@ UNIT_TEST(Path, Tails) {
     PathView rootedView = rooted;
     EXPECT_EQ(rootedView.tailAfter(std::string_view()).str(), "/a/b"); // The root stays.
     EXPECT_EQ(rootedView.tailAt(*rootedView.split().begin()).str(), "a/b");
+    EXPECT_EQ(rootedView.tailAfter(*rootedView.split().begin()).str(), "b");
+#ifdef _WINDOWS
+    Path drive("C:/a/b");
+    PathView driveView = drive;
+    EXPECT_EQ(driveView.tailAt(*driveView.split().begin()).str(), "a/b");
+    EXPECT_EQ(driveView.tailAfter(*driveView.split().begin()).str(), "b");
+#endif
 }
 
-UNIT_TEST(Path, AppendView) {
-    // Appending a view joins the same way operator/ does.
-    auto testOne = [] (std::string_view head, std::string_view tail) {
-        Path result(head);
-        result /= Path(tail);
-        EXPECT_EQ(result, Path(head) / Path(tail)) << "for '" << head << "' and '" << tail << "'";
+UNIT_TEST(Path, Append) {
+    // Appending joins the same way operator/ does, also when the tail points into the path itself.
+    auto testOne = [] (std::string_view head, std::string_view tail, std::string_view result) {
+        Path appended(head);
+        appended /= PathView(Path(tail));
+        EXPECT_EQ(appended.str(), result) << "for '" << head << "' and '" << tail << "'";
+        EXPECT_EQ((Path(head) / Path(tail)).str(), result) << "for '" << head << "' and '" << tail << "'";
     };
 
-    testOne("", "a");
-    testOne("a", "");
-    testOne("a", "b/c");
-    testOne("a/", "b");
-    testOne("/", "a");
-    testOne("a", "/b");
+    testOne("", "a", "a");
+    testOne("a", "", "a/");
+    testOne("a", "b/c", "a/b/c");
+    testOne("a/", "b", "a/b");
+    testOne("/", "a", "/a");
+    testOne("a", "/b", "/b");
 #ifdef _WINDOWS
-    testOne("C:", "a");
-    testOne("C:/a", "D:b");
-    testOne("C:/a", "c:b");
+    testOne("C:", "a", "C:/a");
+    testOne("C:/a", "D:b", "D:b");
+    testOne("C:/a", "c:b", "C:/a/b");
 #endif
+
+    std::string longName(40, 'x'); // Longer than the small string buffer, so appending reallocates.
+    Path self(longName);
+    self /= PathView(self);
+    EXPECT_EQ(self.str(), longName + "/" + longName);
+
+    Path literal("a");
+    literal /= "b";
+    EXPECT_EQ(literal.str(), "a/b");
 
     Path head("a");
     Path tail("b/c");
@@ -283,6 +305,8 @@ UNIT_TEST(Path, WindowsRoots) {
 
     EXPECT_EQ(Path("a\\b").str(), "a/b"); // Both slashes separate components on Windows.
     EXPECT_EQ(Path(std::string("a\\b")).str(), "a/b");
+    std::string backslashed("a\\b");
+    EXPECT_EQ(Path(backslashed).str(), "a/b");
 
     testJoin("C:/a", "D:/b", "D:/b"); // Another drive replaces everything.
     testJoin("C:/a", "/b", "C:/b"); // A rooted tail keeps our drive.
@@ -413,6 +437,10 @@ UNIT_TEST(Path, PosixSyntax) {
     // Backslashes and Windows roots are ordinary text on POSIX, where the only separator is a forward slash.
     EXPECT_EQ(Path("a\\b").str(), "a\\b");
     EXPECT_EQ(Path(std::string("a\\b")).str(), "a\\b");
+    std::string backslashed("a\\b");
+    EXPECT_EQ(Path(backslashed).str(), "a\\b");
+    EXPECT_EQ(Path("C:/a").root(), "");
+    EXPECT_EQ(Path("C:a").parent().str(), ".");
     testExtension("a.b\\c", "", "a"); // One file name, so ".b\c" is its extension.
     testExtension("C:", ".x", "C:.x");
     testExtension("//a.b", "", "//a");

@@ -14,7 +14,6 @@ class PathSplit : public detail::SplitView<detail::CharSplitter> {
     PathSplit() = default;
 
  private:
-    friend class Path;
     friend class PathView;
     explicit PathSplit(std::string_view s) : base_type(s.empty() ? base_type() : base_type(s, detail::CharSplitter('/'))) {}
 };

@@ -257,9 +257,10 @@ Path &Path::operator/=(PathView tail) {
     if (!tail.root().empty())
         return *this = *this / Path(tail);
 
-    if (!_path.empty() && _path.back() != separator)
-        _path += separator;
-    _path += tail.str();
+    size_t size = _path.size();
+    _path += tail.str(); // Appending first is safe even when the tail points into this path.
+    if (size > 0 && _path[size - 1] != separator)
+        _path.insert(size, 1, separator);
     return *this;
 }
 
