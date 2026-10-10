@@ -215,3 +215,12 @@ UNIT_TEST(LowercaseFileSystem, RemoveDeep) {
     EXPECT_EQ(fs0.ls("A/B"), std::vector<DirectoryEntry>({{"1", FILE_REGULAR}}));
 }
 
+UNIT_TEST(LowercaseFileSystem, NonExistentNativeFolder) {
+    // Game data path validation runs on this stack, and a data folder that doesn't exist has to read as missing files.
+    NativeFileSystem fs0("this_dir_doesnt_exist");
+    LowercaseFileSystem fs(&fs0);
+
+    EXPECT_TRUE(fs.ls("").empty());
+    EXPECT_FALSE(fs.exists("anims/magic7.vid"));
+    EXPECT_EQ(fs.stat("anims/magic7.vid"), FileStat());
+}

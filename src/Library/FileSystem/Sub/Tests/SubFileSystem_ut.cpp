@@ -1,4 +1,6 @@
 #include <string>
+#include <string_view>
+#include <vector>
 
 #include "Testing/Unit/UnitTest.h"
 
@@ -117,4 +119,31 @@ UNIT_TEST(SubFileSystem, RootWhenBasePathIsEmpty) {
     EXPECT_EQ(sub.stat(""), FileStat(FILE_DIRECTORY, 0));
     EXPECT_EQ(sub.ls("").size(), 1);
     EXPECT_EQ(sub.read("1.txt").str(), "lol");
+}
+
+UNIT_TEST(SubFileSystem, InaccessibleBasePath) {
+    // A base path the base file system can't reach is refused up front.
+    MemoryFileSystem base("memfs");
+    base.write("file.txt", Blob::fromString("hello"));
+
+    std::vector<std::string_view> basePaths = {"..", "a/../..", "/", "/x", "\\x"};
+#ifdef _WINDOWS
+    basePaths.push_back("C:");
+    basePaths.push_back("C:x");
+    basePaths.push_back("./C:/x");
+#endif
+
+    for (std::string_view basePath : basePaths)
+        EXPECT_ANY_THROW(SubFileSystem(basePath, &base)) << basePath;
+}
+
+UNIT_TEST(SubFileSystem, BasePathIsNormalized) {
+    // Every spelling of the base path points at the same directory.
+    MemoryFileSystem base("memfs");
+    base.write("dir/file.txt", Blob::fromString("hello"));
+
+    for (std::string_view basePath : {"dir/", "./dir", "dir\\", "x/../dir"}) {
+        SubFileSystem sub(basePath, &base);
+        EXPECT_EQ(sub.read("file.txt").str(), "hello") << basePath;
+    }
 }

@@ -48,3 +48,30 @@ UNIT_TEST(MaskingFileSystem, PersistentMasking) {
     EXPECT_FALSE(fs1.exists("a"));
     EXPECT_TRUE(fs0.exists("a"));
 }
+
+UNIT_TEST(MaskingFileSystem, MaskPathsAreNormalized) {
+    // A mask is keyed by the normal form of its path, so any spelling of it hides the same file.
+    MemoryFileSystem fs0("");
+    fs0.write("a", Blob());
+    fs0.write("b/c", Blob());
+
+    MaskingFileSystem fs(&fs0);
+    fs.mask("./a");
+    fs.mask("b\\c");
+    EXPECT_FALSE(fs.exists("a"));
+    EXPECT_FALSE(fs.exists("b/c"));
+
+    EXPECT_TRUE(fs.unmask("./a/"));
+    EXPECT_TRUE(fs.exists("a"));
+}
+
+UNIT_TEST(MaskingFileSystem, UnmaskInaccessiblePath) {
+    // mask refuses a rooted or escaping path, so unmask finds nothing there either.
+    MemoryFileSystem fs0("");
+    fs0.write("a", Blob());
+    MaskingFileSystem fs(&fs0);
+    fs.mask("a");
+
+    EXPECT_FALSE(fs.unmask("/a"));
+    EXPECT_FALSE(fs.exists("a"));
+}
