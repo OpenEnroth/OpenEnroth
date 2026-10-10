@@ -642,7 +642,7 @@ GAME_TEST(Issues, Issue679) {
     game.pressAndReleaseKey(PlatformKey::KEY_SPACE);
     game.tick(2);
     game.pressGuiButton("HouseDialogue_Option0"); // Two days to Erathia.
-    game.tick(17); // The coach sound and the travel line play for a second and a half.
+    game.skipLoadingScreen();
     game.loadGame(ufs->read("saves/autosave.mm7"));
 
     EXPECT_EQ(mapTape, tape(MAP_HARMONDALE, MAP_ERATHIA, MAP_HARMONDALE));

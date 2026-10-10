@@ -406,7 +406,7 @@ GAME_TEST(Issues, Issue315) {
 
 GAME_TEST(Issues, Issue331) {
     // Riding from the Tularean Forest stables to Harmondale overflowed a buffer when Harmondale loaded. The map load
-    // looked up object flags by sprite id instead of object desc id, so a sword left on the ground was dropped too.
+    // looked up object flags by sprite id instead of object desc id, so a sword left on the ground was removed too.
     auto mapTape = tapes.map();
     auto groundSwordsTape = tapes.custom([] {
         return static_cast<int>(std::ranges::count_if(pSpriteObjects, [](const SpriteObject &sprite) {
@@ -418,11 +418,11 @@ GAME_TEST(Issues, Issue331) {
     test.startTaping();
     pParty->setHoldingItem(Item(ITEM_CRUDE_LONGSWORD));
     game.pressAndReleaseButton(BUTTON_LEFT, 240, 170); // A click in the viewport drops the held item.
-    game.tick(20); // The sword lands.
+    game.tick();
 
     // Walk off the north edge into Tularean Forest, five days on foot, which puts the Harmondale coach on the schedule.
     game.pressKey(PlatformKey::KEY_UP);
-    game.tick(10);
+    game.tick(10); // The party walks off the edge and the travel window opens.
     game.releaseKey(PlatformKey::KEY_UP);
     game.pressGuiButton("Transition_Yes");
     game.tick();
@@ -433,7 +433,7 @@ GAME_TEST(Issues, Issue331) {
     game.pressAndReleaseKey(PlatformKey::KEY_SPACE);
     game.tick(2);
     game.pressGuiButton("HouseDialogue_Option2"); // Two days to Harmondale.
-    game.tick(18); // The coach sound and the travel line play for a second and a half.
+    game.skipLoadingScreen();
 
     EXPECT_EQ(mapTape, tape(MAP_HARMONDALE, MAP_TULAREAN_FOREST, MAP_HARMONDALE));
     EXPECT_EQ(groundSwordsTape, tape(1, 0, 1));
