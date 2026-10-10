@@ -1013,7 +1013,7 @@ GAME_TEST(Prs, Pr2922) {
     game.tick();
 
     EXPECT_EQ(screenTape, tape(SCREEN_GAME, SCREEN_HOUSE));
-    EXPECT_EQ(houseTape, tape(HOUSE_INVALID, HOUSE_CASTLE_HARMONDALE__1));
+    EXPECT_EQ(houseTape, tape(HOUSE_INVALID, HOUSE_CASTLE_HARMONDALE_1));
     EXPECT_CONTAINS(textTape.flatten(), "Exit Building"); // The house menu was drawn.
     EXPECT_MISSES(textTape.flatten(), "0");
 }

@@ -254,7 +254,8 @@ int runHouseIdCodeGen(const CodeGenOptions &options, ResourceManager *resourceMa
         } else if (toUpperCaseEnum(desc.name) == fmt::format("HOUSE_{}", std::to_underlying(i))) {
             map.insert(i, "", fmt::format("Used in MAP_{}, named \"{}\", looks totally like a placeholder...", mapName, desc.name));
         } else if (desc.uType == HOUSE_TYPE_HOUSE || desc.uType == HOUSE_TYPE_MERCENARY_GUILD) {
-            map.insert(i, fmt::format("{}_{}", mapName, toUpperCaseEnum(desc.name)), "");
+            std::string houseName = toUpperCaseEnum(desc.name);
+            map.insert(i, houseName.empty() ? mapName : fmt::format("{}_{}", mapName, houseName), "");
         } else {
             map.insert(i, fmt::format("{}_{}", toString(desc.uType), mapName), fmt::format("\"{}\".", trim(desc.name)));
         }
