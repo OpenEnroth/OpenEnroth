@@ -96,7 +96,11 @@ static int pcx_rle_decode(bstreamer *bs, uint8_t *dst, unsigned int bytes_per_sc
     return 0;
 }
 
-static const PCXHeader *readHeader(const Blob &data) {
+static Sizei headerSize(const PCXHeader *header) {
+    return Sizei(header->xmax - header->xmin + 1, header->ymax - header->ymin + 1);
+}
+
+static const PCXHeader *decodeHeader(const Blob &data) {
     if (data.size() < sizeof(PCXHeader))
         throw Exception("PCX image '{}' too small, expected at least {} bytes, got {}", data.displayPath(), sizeof(PCXHeader), data.size());
 
@@ -109,15 +113,9 @@ static const PCXHeader *readHeader(const Blob &data) {
     if (header->version < PCX_VERSION_2_5 || header->version == PCX_VERSION_NOT_VALID || header->version > PCX_VERSION_3_0)
         throw Exception("Invalid PCX version '{}' in '{}'", header->version, data.displayPath());
 
-    return header;
-}
-
-RgbaImage pcx::decode(const Blob &data) {
-    const PCXHeader *header = readHeader(data);
-
-    size_t width = header->xmax - header->xmin + 1;
-    size_t height = header->ymax - header->ymin + 1;
-
+    Sizei size = headerSize(header);
+    size_t width = size.w;
+    size_t height = size.h;
     unsigned int bytes_per_scanline = header->nplanes * header->bytes_per_row;
 
     //corruption check
@@ -128,6 +126,17 @@ RgbaImage pcx::decode(const Blob &data) {
 
     if ((header->nplanes != 3 && header->nplanes != 1) || header->bpp != 8)
         throw Exception("Unsupported PCX format in '{}', only 8-bit and 24-bit PCX images are supported", data.displayPath());
+
+    return header;
+}
+
+RgbaImage pcx::decode(const Blob &data) {
+    const PCXHeader *header = decodeHeader(data);
+
+    Sizei size = headerSize(header);
+    size_t width = size.w;
+    size_t height = size.h;
+    unsigned int bytes_per_scanline = header->nplanes * header->bytes_per_row;
 
     RgbaImage result = RgbaImage::uninitialized(width, height);
 
@@ -155,8 +164,7 @@ RgbaImage pcx::decode(const Blob &data) {
 }
 
 Sizei pcx::decodeSize(const Blob &data) {
-    const PCXHeader *header = readHeader(data);
-    return Sizei(header->xmax - header->xmin + 1, header->ymax - header->ymin + 1);
+    return headerSize(decodeHeader(data));
 }
 
 void *writePcxHeader(void *pcx_data, int width, int height) {

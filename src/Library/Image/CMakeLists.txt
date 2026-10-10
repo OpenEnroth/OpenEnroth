@@ -17,7 +17,9 @@ target_link_libraries(library_image PUBLIC library_color library_geometry utilit
 target_check_style(library_image)
 
 if(OE_BUILD_TESTS)
-    set(TEST_LIBRARY_IMAGE_SOURCES Tests/Pcx_ut.cpp)
+    set(TEST_LIBRARY_IMAGE_SOURCES
+            Tests/Pcx_ut.cpp
+            Tests/Png_ut.cpp)
 
     add_library(test_library_image OBJECT ${TEST_LIBRARY_IMAGE_SOURCES})
     target_link_libraries(test_library_image PUBLIC testing_unit library_image)

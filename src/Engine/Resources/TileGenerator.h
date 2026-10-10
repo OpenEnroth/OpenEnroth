@@ -7,6 +7,7 @@
 
 #include "Engine/Data/TileEnums.h"
 
+#include "Library/Geometry/Size.h"
 #include "Library/Image/Image.h"
 
 #include "Utility/Hash.h"
@@ -39,8 +40,8 @@ class TileGenerator {
     void ensureTile(std::string_view name);
 
     /**
-     * @return                          Size of the generated tiles. They are all blended over the dirt tile, so they
-     *                                  are all the same size as that tile.
+     * @return                          Size of the generated tiles. `blendTile()` compares them with the dirt tile pixel
+     *                                  by pixel, so they all have the dirt tile's size.
      */
     Sizei tileSize() const;
 

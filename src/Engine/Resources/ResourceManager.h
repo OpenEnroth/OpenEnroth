@@ -121,7 +121,8 @@ class ResourceManager {
 
     /**
      * @param filename                  Name of a sprite in `sprites.lod`, case-insensitive.
-     * @return                          The sprite's size, or an empty size if there is no such sprite.
+     * @return                          The sprite's size, read without decoding it, or an empty size if there is no
+     *                                  such sprite.
      */
     Sizei spriteSize(std::string_view filename);
 

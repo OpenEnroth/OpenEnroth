@@ -46,7 +46,7 @@ void TileGenerator::fillTable(TileTable *table) {
 void TileGenerator::ensureTile(std::string_view name) {
     assert(_tilesetVariantByName.contains(name));
 
-    if (ufs->exists(name))
+    if (ufs->exists(name) && png::decodeSize(ufs->read(name)) == tileSize())
         return;
 
     auto [tileset, variant] = *valuePtr(_tilesetVariantByName, name);
