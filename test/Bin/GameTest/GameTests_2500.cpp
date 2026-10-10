@@ -928,6 +928,25 @@ GAME_TEST(Issues, Issue2834) {
     EXPECT_EQ(abbeyHeadPlacedTape, tape(false, true));
 }
 
+GAME_TEST(Issues, Issue2881) {
+    // Holding the jump key let the party bounce across water without taking damage.
+    auto hpTape = tapes.totalHp();
+    auto soundsTape = tapes.sounds();
+    auto zTape = tapes.custom([] { return static_cast<int>(pParty->pos.z); });
+    game.startNewGame();
+    game.teleportTo(MAP_EMERALD_ISLAND, Vec3f(12600, 20224, 0), 0); // On the shore, facing the sea to the east.
+    test.startTaping();
+    game.pressKey(PlatformKey::KEY_UP);
+    game.pressKey(PlatformKey::KEY_X);
+    game.tick(8);
+    game.releaseKey(PlatformKey::KEY_X);
+    game.releaseKey(PlatformKey::KEY_UP);
+
+    EXPECT_EQ(zTape, tape(35, 59, 69, 66, 49, 23, 1)); // One jump, then the party stays in the water.
+    EXPECT_EQ(soundNames(soundsTape).count("splash"), 1);
+    EXPECT_LT(hpTape.delta(), 0);
+}
+
 GAME_TEST(Issues, Issue2903) {
     // Castle Harmondale's war banners put an entry that reads "0" into the quest book.
     auto mapTape = tapes.map();

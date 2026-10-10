@@ -1187,7 +1187,7 @@ void ODM_ProcessPartyActions() {
                     // to avoid jump hesitancy when moving downhill
                     (!partyNotTouchingFloor || (partyCloseToGround && partyInputSpeed.z <= 0)) &&
                     pParty->jump_strength &&
-                    !(pParty->uFlags & PARTY_FLAG_WATER_DAMAGE) &&
+                    !(partyIsOnWater && partyNotOnModel && !waterWalkActive) &&
                     !(pParty->uFlags & PARTY_FLAG_BURNING)) {
                     partyNotTouchingFloor = true;
                     partyInputSpeed.z += pParty->jump_strength * 96.0f;
