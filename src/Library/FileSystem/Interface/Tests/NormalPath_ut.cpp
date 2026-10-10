@@ -12,6 +12,8 @@ UNIT_TEST(NormalPath, Normalizes) {
 
     testOne("", "");
     testOne(".", "");
+    testOne("./", "");
+    testOne("a/..", "");
     testOne("a/b", "a/b");
     testOne("a\\b", "a/b");
     testOne("./a//b/", "a/b");

@@ -18,6 +18,8 @@ NormalPath::NormalPath(std::string_view path) {
 
     if (!_path.isNormalized())
         _path = _path.normalized();
+    if (_path.str() == ".")
+        _path = Path(); // The file system's root is spelled "".
 }
 
 bool NormalPath::isAccessible() const {
