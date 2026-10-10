@@ -154,8 +154,9 @@ class Path {
     [[nodiscard]] std::string_view stem() const;
 
     /**
-     * @return                          Lexical parent, which keeps the root. The parent of `"a"` is `""`, and the
-     *                                  parent of `"/a"` and of `"/"` is `"/"`. The lexical parent of `"../.."` is
+     * @return                          Lexical parent, which keeps the root. The parent of `"a"` is `"."`, and the
+     *                                  parent of `"/a"` and of `"/"` is `"/"`. Only the empty path has an empty
+     *                                  parent. The lexical parent of `"../.."` is
      *                                  `".."`, which is not its semantic parent.
      */
     [[nodiscard]] Path parent() const;

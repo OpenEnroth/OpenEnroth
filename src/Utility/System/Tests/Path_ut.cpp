@@ -155,18 +155,19 @@ UNIT_TEST(Path, Decomposition) {
     };
 
     testOne("", "", "", "", "");
-    testOne("b", "", "b", "b", "");
-    testOne("b.c", "", "b.c", "b", ".c");
+    testOne(".", ".", ".", ".", "");
+    testOne("b", ".", "b", "b", "");
+    testOne("b.c", ".", "b.c", "b", ".c");
     testOne("a/b", "a", "b", "b", "");
     testOne("a/b.c", "a", "b.c", "b", ".c");
     testOne("a/", "a", "", "", "");
     testOne("1/2/3/xyz.txt", "1/2/3", "xyz.txt", "xyz", ".txt");
     testOne("x.y/z.f/a.b.c.d", "x.y/z.f", "a.b.c.d", "a.b.c", ".d");
     testOne("x/y/z/some.", "x/y/z", "some.", "some", ".");
-    testOne(".hidden", "", ".hidden", ".hidden", "");
-    testOne("..", "", "..", "..", "");
+    testOne(".hidden", ".", ".hidden", ".hidden", "");
+    testOne("..", ".", "..", "..", "");
     testOne("../..", "..", "..", "..", "");
-    testOne("..wat", "", "..wat", "..wat", ""); // The stem would be ".", all dots, so there's no extension.
+    testOne("..wat", ".", "..wat", "..wat", ""); // The stem would be ".", all dots, so there's no extension.
     testOne("a/...", "a", "...", "...", "");
 
     // The parent keeps the root.

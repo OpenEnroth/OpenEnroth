@@ -248,6 +248,8 @@ std::string_view Path::stem() const {
 Path Path::parent() const {
     Path result;
     result._path = _path.substr(0, parentEnd(_path));
+    if (result._path.empty() && !_path.empty())
+        result._path = "."; // An empty path names nothing, while this one names the current directory.
     return result;
 }
 
