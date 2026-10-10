@@ -38,7 +38,7 @@ class GraphicsImage {
  private:
     std::string _name;
     std::unique_ptr<ImageLoader> _loader;
-    std::optional<Sizei> _size; // Size reported by the loader before the image is loaded.
+    std::optional<Sizei> _size; // From the loader's loadSize() or from the loaded image, whichever comes first.
     std::optional<RgbaImage> _rgba; // Empty image if the loader failed.
     TextureRenderId _renderId;
 };

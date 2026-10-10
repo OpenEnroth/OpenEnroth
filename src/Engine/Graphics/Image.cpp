@@ -17,6 +17,7 @@ GraphicsImage::~GraphicsImage() {
 
 std::unique_ptr<GraphicsImage> GraphicsImage::Create(RgbaImage image) {
     std::unique_ptr<GraphicsImage> result(new GraphicsImage());
+    result->_size = image.size();
     result->_rgba = std::move(image);
     result->_renderId = render->CreateTexture(*result->_rgba);
     return result;
@@ -47,9 +48,6 @@ int GraphicsImage::height() {
 }
 
 Sizei GraphicsImage::size() {
-    if (_rgba)
-        return _rgba->size();
-
     if (!_size)
         _size = _loader->loadSize();
     return *_size;
@@ -59,6 +57,7 @@ RgbaImage &GraphicsImage::rgba() {
     if (!_rgba) {
         _rgba = _loader->loadRgba();
         assert(!_size || _rgba->size() == *_size);
+        _size = _rgba->size();
     }
     return *_rgba;
 }
