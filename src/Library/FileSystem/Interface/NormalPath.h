@@ -38,7 +38,7 @@ class NormalPathView {
      * @return                          The rest of this path, starting at `segment`.
      */
     [[nodiscard]] NormalPathView tailAt(std::same_as<std::string_view> auto segment) const {
-        return NormalPathView(_path.split().tailAt(segment));
+        return NormalPathView(_path.tailAt(segment));
     }
 
     /**
@@ -46,7 +46,7 @@ class NormalPathView {
      * @return                          The rest of this path after `segment`, or all of it for an empty `segment`.
      */
     [[nodiscard]] NormalPathView tailAfter(std::same_as<std::string_view> auto segment) const {
-        return NormalPathView(_path.split().tailAfter(segment));
+        return NormalPathView(_path.tailAfter(segment));
     }
 
  private:
