@@ -939,9 +939,11 @@ GAME_TEST(Issues, Issue2881a) {
     game.pressKey(PlatformKey::KEY_X);
     game.tick(10); // The party jumps off the shore and lands in the water.
     auto zTape = tapes.custom([] { return static_cast<int>(pParty->pos.z); });
+    auto airborneTape = tapes.custom([] { return pParty->isAirborne(); });
     game.tick(30);
 
     EXPECT_EQ(zTape, tape(1)); // The party stays in the water.
+    EXPECT_EQ(airborneTape, tape(false));
     EXPECT_EQ(soundNames(soundsTape).count("splash"), 1);
     EXPECT_LT(hpTape.delta(), 0); // The party is drowning.
 }
@@ -959,9 +961,11 @@ GAME_TEST(Issues, Issue2881b) {
     game.pressKey(PlatformKey::KEY_X);
     game.tick(10); // The party jumps off the shore and lands on the water.
     auto zTape = tapes.custom([] { return static_cast<int>(pParty->pos.z); });
+    auto airborneTape = tapes.custom([] { return pParty->isAirborne(); });
     game.tick(30);
 
     EXPECT_GT(zTape.max(), 1); // Still jumping.
+    EXPECT_GT(airborneTape.count(true), 1);
     EXPECT_EQ(soundNames(soundsTape).count("splash"), 0);
     EXPECT_EQ(hpTape.delta(), 0);
 }
