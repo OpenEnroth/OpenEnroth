@@ -3,6 +3,7 @@
 #include <string>
 #include <string_view>
 
+#include "Library/Geometry/Size.h"
 #include "Library/Image/Image.h"
 
 class ResourceManager;
@@ -17,7 +18,13 @@ class ImageLoader {
     /**
      * @return                          Loaded image, or an empty image if loading failed.
      */
-    virtual RgbaImage load() = 0;
+    virtual RgbaImage loadRgba() = 0;
+
+    /**
+     * @return                          Size of the image `loadRgba()` returns, read without loading it. Empty exactly
+     *                                  when `loadRgba()` fails.
+     */
+    virtual Sizei loadSize() = 0;
 
  protected:
     ResourceManager *resources() const { return _resources; }
@@ -31,33 +38,38 @@ class Icon_LOD_Loader : public ImageLoader {
  public:
     using ImageLoader::ImageLoader;
 
-    virtual RgbaImage load() override;
+    virtual RgbaImage loadRgba() override;
+    virtual Sizei loadSize() override;
 };
 
 class Buff_LOD_Loader : public ImageLoader {
  public:
     using ImageLoader::ImageLoader;
 
-    virtual RgbaImage load() override;
+    virtual RgbaImage loadRgba() override;
+    virtual Sizei loadSize() override;
 };
 
 class Bitmaps_LOD_Loader : public ImageLoader {
  public:
     using ImageLoader::ImageLoader;
 
-    virtual RgbaImage load() override;
+    virtual RgbaImage loadRgba() override;
+    virtual Sizei loadSize() override;
 };
 
 class Bitmaps_GEN_Loader : public ImageLoader {
  public:
     using ImageLoader::ImageLoader;
 
-    virtual RgbaImage load() override;
+    virtual RgbaImage loadRgba() override;
+    virtual Sizei loadSize() override;
 };
 
 class Sprites_LOD_Loader : public ImageLoader {
  public:
     using ImageLoader::ImageLoader;
 
-    virtual RgbaImage load() override;
+    virtual RgbaImage loadRgba() override;
+    virtual Sizei loadSize() override;
 };

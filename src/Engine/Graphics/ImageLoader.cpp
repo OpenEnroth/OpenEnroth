@@ -5,14 +5,21 @@
 
 #include "Library/LodFormats/LodImage.h"
 
-RgbaImage Icon_LOD_Loader::load() {
+RgbaImage Icon_LOD_Loader::loadRgba() {
     RgbaImage result = resources()->icon(name());
     if (!result)
         result = resources()->icon("pending");
     return result;
 }
 
-RgbaImage Buff_LOD_Loader::load() {
+Sizei Icon_LOD_Loader::loadSize() {
+    Sizei result = resources()->iconSize(name());
+    if (!result)
+        result = resources()->iconSize("pending");
+    return result;
+}
+
+RgbaImage Buff_LOD_Loader::loadRgba() {
     LodImage tex = resources()->rawIcon(name());
     if (!tex.image)
         tex.image = GrayscaleImage::solid(0, 1, 1); // Transparent, the palette is all zeros.
@@ -60,18 +67,39 @@ RgbaImage Buff_LOD_Loader::load() {
     return result;
 }
 
-RgbaImage Bitmaps_LOD_Loader::load() {
+Sizei Buff_LOD_Loader::loadSize() {
+    Sizei iconSize = resources()->iconSize(name());
+    if (!iconSize)
+        iconSize = Sizei(1, 1);
+    return AtlasLayout({16, 8}, iconSize).geometry().size();
+}
+
+RgbaImage Bitmaps_LOD_Loader::loadRgba() {
     RgbaImage result = resources()->bitmap(name());
     if (!result)
         result = resources()->bitmap("pending");
     return result;
 }
 
-RgbaImage Bitmaps_GEN_Loader::load() {
+Sizei Bitmaps_LOD_Loader::loadSize() {
+    Sizei result = resources()->bitmapSize(name());
+    if (!result)
+        result = resources()->bitmapSize("pending");
+    return result;
+}
+
+RgbaImage Bitmaps_GEN_Loader::loadRgba() {
     return resources()->generated(name());
 }
 
-RgbaImage Sprites_LOD_Loader::load() {
+Sizei Bitmaps_GEN_Loader::loadSize() {
+    return resources()->generatedSize();
+}
+
+RgbaImage Sprites_LOD_Loader::loadRgba() {
     return resources()->sprite(name());
 }
 
+Sizei Sprites_LOD_Loader::loadSize() {
+    return resources()->spriteSize(name());
+}

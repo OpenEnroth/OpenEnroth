@@ -46,11 +46,15 @@ void TileGenerator::fillTable(TileTable *table) {
 void TileGenerator::ensureTile(std::string_view name) {
     assert(_tilesetVariantByName.contains(name));
 
-    if (ufs->exists(name))
+    if (ufs->exists(name) && png::decodeSize(ufs->read(name)) == tileSize())
         return;
 
     auto [tileset, variant] = *valuePtr(_tilesetVariantByName, name);
     ufs->write(name, png::encode(generateTile(tileset, variant)));
+}
+
+Sizei TileGenerator::tileSize() const {
+    return _resources->bitmapSize(pTileTable->tile(pTileTable->tileId(TILESET_DIRT, TILE_VARIANT_BASE1)).textureName);
 }
 
 RgbaImage TileGenerator::generateTile(Tileset tileset, TileVariant variant) {

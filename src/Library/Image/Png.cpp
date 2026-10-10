@@ -28,6 +28,18 @@ RgbaImage png::decode(const Blob &data) {
     return result;
 }
 
+Sizei png::decodeSize(const Blob &data) {
+    png_image pngImage = {};
+    pngImage.version = PNG_IMAGE_VERSION;
+
+    if (!png_image_begin_read_from_memory(&pngImage, data.data(), data.size()))
+        throw Exception("Failed to read PNG image '{}' ({}).", data.displayPath(), pngImage.message);
+
+    Sizei result(pngImage.width, pngImage.height);
+    png_image_free(&pngImage);
+    return result;
+}
+
 template<class Color>
 static Blob encodeWithFormat(ImageView<Color> image, int format) {
     png_image pngImage = {};

@@ -17,9 +17,9 @@ GraphicsImage::~GraphicsImage() {
 
 std::unique_ptr<GraphicsImage> GraphicsImage::Create(RgbaImage image) {
     std::unique_ptr<GraphicsImage> result(new GraphicsImage());
-    result->_initialized = true;
+    result->_size = image.size();
     result->_rgba = std::move(image);
-    result->_renderId = render->CreateTexture(result->_rgba);
+    result->_renderId = render->CreateTexture(*result->_rgba);
     return result;
 }
 
@@ -40,20 +40,26 @@ std::unique_ptr<GraphicsImage> GraphicsImage::Create(std::unique_ptr<ImageLoader
 }
 
 int GraphicsImage::width() {
-    return rgba().width();
+    return size().w;
 }
 
 int GraphicsImage::height() {
-    return rgba().height();
+    return size().h;
 }
 
 Sizei GraphicsImage::size() {
-    return rgba().size();
+    if (!_size)
+        _size = _loader->loadSize();
+    return *_size;
 }
 
 RgbaImage &GraphicsImage::rgba() {
-    initialize();
-    return _rgba;
+    if (!_rgba) {
+        _rgba = _loader->loadRgba();
+        assert(!_size || _rgba->size() == *_size);
+        _size = _rgba->size();
+    }
+    return *_rgba;
 }
 
 const std::string &GraphicsImage::name() {
@@ -61,10 +67,8 @@ const std::string &GraphicsImage::name() {
 }
 
 [[nodiscard]] TextureRenderId GraphicsImage::renderId() {
-    if (!_renderId) {
-        initialize();
-        _renderId = render->CreateTexture(_rgba);
-    }
+    if (!_renderId)
+        _renderId = render->CreateTexture(rgba());
 
     return _renderId;
 }
@@ -75,16 +79,4 @@ void GraphicsImage::releaseRenderId() {
 
     render->DeleteTexture(_renderId);
     _renderId = TextureRenderId();
-}
-
-bool GraphicsImage::initialize() {
-    if (_initialized)
-        return true;
-
-    assert(_loader);
-    _rgba = _loader->load();
-    _initialized = static_cast<bool>(_rgba);
-    // TODO(captainurist): _initialized == false happens, investigate
-
-    return _initialized;
 }
