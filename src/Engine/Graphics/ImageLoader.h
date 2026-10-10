@@ -18,13 +18,13 @@ class ImageLoader {
     /**
      * @return                          Loaded image, or an empty image if loading failed.
      */
-    virtual RgbaImage load() = 0;
+    virtual RgbaImage loadRgba() = 0;
 
     /**
-     * @return                          Size of the image `load()` returns, or an empty size if it can't be known without
-     *                                  loading.
+     * @return                          Size of the image `loadRgba()` returns, or an empty size if it can't be known
+     *                                  without loading the image.
      */
-    virtual Sizei size() {
+    virtual Sizei loadSize() {
         return {};
     }
 
@@ -40,38 +40,38 @@ class Icon_LOD_Loader : public ImageLoader {
  public:
     using ImageLoader::ImageLoader;
 
-    virtual RgbaImage load() override;
-    virtual Sizei size() override;
+    virtual RgbaImage loadRgba() override;
+    virtual Sizei loadSize() override;
 };
 
 class Buff_LOD_Loader : public ImageLoader {
  public:
     using ImageLoader::ImageLoader;
 
-    virtual RgbaImage load() override;
-    virtual Sizei size() override;
+    virtual RgbaImage loadRgba() override;
+    virtual Sizei loadSize() override;
 };
 
 class Bitmaps_LOD_Loader : public ImageLoader {
  public:
     using ImageLoader::ImageLoader;
 
-    virtual RgbaImage load() override;
-    virtual Sizei size() override;
+    virtual RgbaImage loadRgba() override;
+    virtual Sizei loadSize() override;
 };
 
 class Bitmaps_GEN_Loader : public ImageLoader {
  public:
     using ImageLoader::ImageLoader;
 
-    virtual RgbaImage load() override;
-    virtual Sizei size() override;
+    virtual RgbaImage loadRgba() override;
+    virtual Sizei loadSize() override;
 };
 
 class Sprites_LOD_Loader : public ImageLoader {
  public:
     using ImageLoader::ImageLoader;
 
-    virtual RgbaImage load() override;
-    virtual Sizei size() override;
+    virtual RgbaImage loadRgba() override;
+    virtual Sizei loadSize() override;
 };

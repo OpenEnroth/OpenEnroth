@@ -51,13 +51,13 @@ Sizei GraphicsImage::size() {
         return _rgba->size();
 
     if (!_size)
-        _size = _loader->size();
+        _size = _loader->loadSize();
     return *_size ? *_size : rgba().size();
 }
 
 RgbaImage &GraphicsImage::rgba() {
     if (!_rgba) {
-        _rgba = _loader->load();
+        _rgba = _loader->loadRgba();
         assert(!*_rgba || !_size || !*_size || _rgba->size() == *_size);
     }
     return *_rgba;
