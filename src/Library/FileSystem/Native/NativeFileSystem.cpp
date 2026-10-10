@@ -54,7 +54,7 @@ Blob NativeFileSystem::_read(NormalPathView path) const {
 void NativeFileSystem::_write(NormalPathView path, const Blob &data) {
     assert(!path.isEmpty());
     Path basePath = makeBasePath(path);
-    fs::mkdirs(makeBasePath(Path(path).parent()));
+    fs::mkdirs(makeBasePath(path).parent());
     FileOutputStream stream(basePath);
     stream.write(data.data(), data.size());
     stream.close();
@@ -68,7 +68,7 @@ std::unique_ptr<InputStream> NativeFileSystem::_openForReading(NormalPathView pa
 std::unique_ptr<OutputStream> NativeFileSystem::_openForWriting(NormalPathView path) {
     assert(!path.isEmpty());
     Path basePath = makeBasePath(path);
-    fs::mkdirs(makeBasePath(Path(path).parent()));
+    fs::mkdirs(makeBasePath(path).parent());
     return std::make_unique<FileOutputStream>(basePath);
 }
 
