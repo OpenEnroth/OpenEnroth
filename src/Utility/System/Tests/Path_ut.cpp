@@ -218,21 +218,27 @@ UNIT_TEST(Path, Split) {
 #endif
 }
 
-UNIT_TEST(Path, SplitTails) {
+UNIT_TEST(Path, Tails) {
     Path path("a/b/c");
+    PathView view = path;
 
     using Tails = std::pair<std::string_view, std::string_view>;
     auto tails = [&] (std::string_view at) -> Tails {
-        for (std::string_view segment : path.split())
+        for (std::string_view segment : view.split())
             if (segment == at)
-                return {path.split().tailAt(segment).str(), path.split().tailAfter(segment).str()};
+                return {view.tailAt(segment).str(), view.tailAfter(segment).str()};
         return {};
     };
 
     EXPECT_EQ(tails("a"), Tails("a/b/c", "b/c"));
     EXPECT_EQ(tails("b"), Tails("b/c", "c"));
     EXPECT_EQ(tails("c"), Tails("c", ""));
-    EXPECT_EQ(path.split().tailAfter(std::string_view()).str(), "a/b/c");
+    EXPECT_EQ(view.tailAfter(std::string_view()).str(), "a/b/c");
+
+    Path rooted("/a/b");
+    PathView rootedView = rooted;
+    EXPECT_EQ(rootedView.tailAfter(std::string_view()).str(), "/a/b"); // The root stays.
+    EXPECT_EQ(rootedView.tailAt(*rootedView.split().begin()).str(), "a/b");
 }
 
 UNIT_TEST(Path, AppendView) {

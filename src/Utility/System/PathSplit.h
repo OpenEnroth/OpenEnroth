@@ -1,12 +1,9 @@
 #pragma once
 
-#include <concepts>
 #include <ranges>
 #include <string_view>
 
 #include "Utility/String/Split.h"
-
-class PathView;
 
 /**
  * Lazy view over the segments of a path that come after its root.
@@ -15,13 +12,6 @@ class PathSplit : public detail::SplitView<detail::CharSplitter> {
     using base_type = detail::SplitView<detail::CharSplitter>;
  public:
     PathSplit() = default;
-
-    // We disable conversions with `std::same_as<std::string_view> auto` because the only valid value to pass into the
-    // functions below is an element of this `SplitView`, and that's always a `std::string_view`. Copying this value
-    // into a separate `std::string` and then passing it in will blow up.
-
-    [[nodiscard]] inline PathView tailAt(std::same_as<std::string_view> auto chunk) const;
-    [[nodiscard]] inline PathView tailAfter(std::same_as<std::string_view> auto chunk) const;
 
  private:
     friend class Path;

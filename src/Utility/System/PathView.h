@@ -58,36 +58,38 @@ class PathView {
      */
     [[nodiscard]] PathSplit split() const;
 
+    // We disable conversions with `std::same_as<std::string_view> auto` because the only valid value to pass into the
+    // functions below is an element of `split()`, and that's always a `std::string_view`. Copying this value into a
+    // separate `std::string` and then passing it in will blow up.
+
+    /**
+     * @param segment                   Segment of this path, as handed out by `split`.
+     * @return                          The rest of this path, starting at `segment`.
+     */
+    [[nodiscard]] PathView tailAt(std::same_as<std::string_view> auto segment) const {
+        assert(segment.data() >= _path.data() && segment.data() + segment.size() <= _path.data() + _path.size());
+        return PathView(_path.substr(segment.data() - _path.data()));
+    }
+
+    /**
+     * @param segment                   Segment of this path, as handed out by `split`, or an empty view.
+     * @return                          The rest of this path after `segment`, or all of it for an empty `segment`.
+     */
+    [[nodiscard]] PathView tailAfter(std::same_as<std::string_view> auto segment) const {
+        if (segment.empty())
+            return *this;
+
+        assert(segment.data() >= _path.data() && segment.data() + segment.size() <= _path.data() + _path.size());
+        if (segment.data() + segment.size() == _path.data() + _path.size())
+            return {};
+        return PathView(_path.substr(segment.data() + segment.size() - _path.data() + 1));
+    }
+
     friend auto operator<=>(PathView l, PathView r) = default;
 
  private:
-    friend class PathSplit; // A tail of a split is a slice of the split path, so it's taken as is.
-
     explicit PathView(std::string_view path) : _path(path) {}
 
  private:
     std::string_view _path;
 };
-
-[[nodiscard]] inline PathView PathSplit::tailAt(std::same_as<std::string_view> auto chunk) const {
-    std::string_view path = str();
-    assert(chunk.data() >= path.data() && chunk.data() + chunk.size() <= path.data() + path.size());
-    size_t offset = chunk.data() - path.data();
-    return PathView(path.substr(offset));
-}
-
-[[nodiscard]] inline PathView PathSplit::tailAfter(std::same_as<std::string_view> auto chunk) const {
-    std::string_view path = str(); // NOLINT: not std::string.
-
-    if (chunk.empty())
-        return PathView(path);
-
-    assert(chunk.data() >= path.data() && chunk.data() + chunk.size() <= path.data() + path.size());
-
-    if (chunk.data() + chunk.size() == path.data() + path.size()) {
-        return {};
-    } else {
-        size_t offset = chunk.data() + chunk.size() - path.data() + 1;
-        return PathView(path.substr(offset));
-    }
-}

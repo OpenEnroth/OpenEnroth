@@ -131,7 +131,7 @@ class FileSystemTrie {
                 base = child;
             } else {
                 if (tail)
-                    *tail = relativePath.split().tailAt(chunk);
+                    *tail = relativePath.tailAt(chunk);
                 return base;
             }
         }
