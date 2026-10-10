@@ -21,12 +21,10 @@ class ImageLoader {
     virtual RgbaImage loadRgba() = 0;
 
     /**
-     * @return                          Size of the image `loadRgba()` returns, or an empty size if it can't be known
-     *                                  without loading the image.
+     * @return                          Size of the image `loadRgba()` returns, read without loading it. Empty exactly
+     *                                  when `loadRgba()` fails.
      */
-    virtual Sizei loadSize() {
-        return {};
-    }
+    virtual Sizei loadSize() = 0;
 
  protected:
     ResourceManager *resources() const { return _resources; }
