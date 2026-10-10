@@ -928,7 +928,7 @@ GAME_TEST(Issues, Issue2834) {
     EXPECT_EQ(abbeyHeadPlacedTape, tape(false, true));
 }
 
-GAME_TEST(Issues, Issue2881) {
+GAME_TEST(Issues, Issue2881a) {
     // Holding the jump key let the party bounce across water without taking damage.
     auto hpTape = tapes.totalHp();
     auto soundsTape = tapes.sounds();
@@ -939,12 +939,29 @@ GAME_TEST(Issues, Issue2881) {
     game.pressKey(PlatformKey::KEY_UP);
     game.pressKey(PlatformKey::KEY_X);
     game.tick(8);
-    game.releaseKey(PlatformKey::KEY_X);
-    game.releaseKey(PlatformKey::KEY_UP);
 
     EXPECT_EQ(zTape, tape(35, 59, 69, 66, 49, 23, 1)); // One jump, then the party stays in the water.
     EXPECT_EQ(soundNames(soundsTape).count("splash"), 1);
     EXPECT_LT(hpTape.delta(), 0);
+}
+
+GAME_TEST(Issues, Issue2881b) {
+    // A party under Water Walk should keep jumping across water.
+    auto hpTape = tapes.totalHp();
+    auto soundsTape = tapes.sounds();
+    auto zTape = tapes.custom([] { return static_cast<int>(pParty->pos.z); });
+    game.startNewGame();
+    engine->config->debug.AllMagic.setValue(true);
+    game.teleportTo(MAP_EMERALD_ISLAND, Vec3f(12600, 20224, 0), 0); // On the shore, facing the sea to the east.
+    game.castSpell(0, SPELL_WATER_WATER_WALK);
+    test.startTaping();
+    game.pressKey(PlatformKey::KEY_UP);
+    game.pressKey(PlatformKey::KEY_X);
+    game.tick(8);
+
+    EXPECT_EQ(zTape, tape(37, 59, 69, 66, 49, 20, 28, 21)); // Lands on the water and jumps again.
+    EXPECT_EQ(soundNames(soundsTape).count("splash"), 0);
+    EXPECT_EQ(hpTape.delta(), 0);
 }
 
 GAME_TEST(Issues, Issue2903) {
