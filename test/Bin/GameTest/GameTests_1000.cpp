@@ -1,5 +1,6 @@
 #include <unordered_set>
 #include <vector>
+#include <tuple>
 #include <utility>
 
 #include "Testing/Game/GameTest.h"
@@ -182,10 +183,12 @@ GAME_TEST(Issues, Issue1093) {
 GAME_TEST(Issues, Issue1115) {
     // Picking a Knight or Lord fight in the Arena with a level 21 party smashed the stack, because more monster types
     // fell into the level range than the fight setup had room for.
-    for (auto [option, dialogue] : {std::pair(2, DIALOGUE_ARENA_SELECT_KNIGHT), std::pair(3, DIALOGUE_ARENA_SELECT_LORD)}) {
+    for (auto [option, dialogue, monsters] : {std::tuple(2, DIALOGUE_ARENA_SELECT_KNIGHT, 20), std::tuple(3, DIALOGUE_ARENA_SELECT_LORD, 20)}) {
+        SCOPED_TRACE(fmt::format("option={}", option));
         test.prepareForNextTest();
         auto dialogueTape = tapes.dialogueType();
-        auto actorCountTape = tapes.custom([] { return pActors.size(); });
+        auto actorCountTape = tapes.custom([] { return static_cast<int>(pActors.size()); });
+        auto soundsTape = tapes.sounds();
         game.startNewGame();
         for (Character &character : pParty->pCharacters)
             character.uLevel = 21;
@@ -196,11 +199,11 @@ GAME_TEST(Issues, Issue1115) {
         game.pressGuiButton("NpcDialogue_Option0"); // Arena.
         game.tick();
         game.pressGuiButton(fmt::format("NpcDialogue_Option{}", option));
-        game.tick(2);
+        game.tick(2); // The Arena Master summons the monsters.
 
         EXPECT_CONTAINS(dialogueTape, dialogue);
-        EXPECT_EQ(actorCountTape.front(), 0);
-        EXPECT_GT(actorCountTape.back(), 0); // The monsters were summoned.
+        EXPECT_EQ(actorCountTape, tape(0, monsters));
+        EXPECT_CONTAINS(soundsTape.flatten(), SOUND_51heroism03);
     }
 }
 
