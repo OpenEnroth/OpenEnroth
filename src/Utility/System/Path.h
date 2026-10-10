@@ -117,7 +117,8 @@ class Path {
      *                                  collapsed. A `..` survives only as the leading run of a path without a root
      *                                  directory, and above a root directory it's dropped, so `"/.."` is `"/"`. A
      *                                  path that collapses to nothing, like `"a/.."`, normalizes to `"."`, and only
-     *                                  the empty path stays empty.
+     *                                  the empty path stays empty. On Windows, dropping segments can bring a drive
+     *                                  to the front, so `"a/../C:/x"` normalizes to the absolute `"C:/x"`.
      */
     [[nodiscard]] Path normalized() const;
 
@@ -156,14 +157,14 @@ class Path {
     /**
      * @return                          Lexical parent, which keeps the root. The parent of `"a"` is `"."`, and the
      *                                  parent of `"/a"` and of `"/"` is `"/"`. Only the empty path has an empty
-     *                                  parent. The lexical parent of `"../.."` is
-     *                                  `".."`, which is not its semantic parent.
+     *                                  parent. The lexical parent of `"../.."` is `".."`, which is not its semantic
+     *                                  parent.
      */
     [[nodiscard]] Path parent() const;
 
     /**
-     * @return                          The segments after the root. Empty segments show up for doubled separators, so
-     *                                  this is meant for paths in normal form.
+     * @return                          The segments after the root. Empty segments show up for doubled and trailing
+     *                                  separators, so this is meant for paths in normal form.
      */
     [[nodiscard]] PathSplit split() const {
         return PathView(*this).split();
@@ -178,7 +179,14 @@ class Path {
      */
     [[nodiscard]] Path operator/(const Path &tail) const;
 
+    /**
+     * @param tail                      Path to append, joined the same way `operator/` does it. It may point into
+     *                                  this path.
+     */
     Path &operator/=(PathView tail);
+    Path &operator/=(const Path &tail) {
+        return *this /= PathView(tail);
+    }
 
     friend auto operator<=>(const Path &l, const Path &r) = default;
 
