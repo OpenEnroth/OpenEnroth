@@ -91,13 +91,13 @@ class NormalPath {
      */
     NormalPath &operator/=(NormalPathView tail);
 
+    /**
+     * @return                          `head` and `tail` joined, built in one allocation. Joining two accessible paths
+     *                                  keeps the result normal.
+     */
+    [[nodiscard]] friend NormalPath operator/(NormalPathView head, NormalPathView tail);
+
  private:
     Path _path;
 };
 
-[[nodiscard]] inline NormalPath operator/(NormalPathView head, NormalPathView tail) {
-    NormalPath result;
-    result /= head;
-    result /= tail;
-    return result;
-}
