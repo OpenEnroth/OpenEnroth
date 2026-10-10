@@ -33,7 +33,7 @@ std::unique_ptr<OutputStream> RotatingLogSink::openRotatingStream(const Path &pa
     // not keen on bringing it back.
     std::ranges::sort(entries, std::ranges::greater());
     while (!entries.empty() && entries.size() >= count) {
-        fs->remove(path.parent() / Path(entries.back().name));
+        fs->remove(path.parent() / entries.back().name);
         entries.pop_back();
     }
 
@@ -43,7 +43,7 @@ std::unique_ptr<OutputStream> RotatingLogSink::openRotatingStream(const Path &pa
                                    path.stem().ends_with('_') ? "" : "_",
                                    std::chrono::floor<std::chrono::seconds>(std::chrono::system_clock::now()),
                                    path.extension());
-    return fs->openForWriting(path.parent() / Path(name));
+    return fs->openForWriting(path.parent() / name);
 }
 
 RotatingLogSink::~RotatingLogSink() = default;

@@ -35,23 +35,19 @@ class Path {
     Path() = default;
 
     /**
-     * Implicit constructor from a string, same as `std::filesystem::path`. No charset conversion is performed. On
+     * Implicit constructors from a string, same as `std::filesystem::path`. No charset conversion is performed. On
      * Windows backslashes become forward slashes.
      *
-     * The `const char *` overload is what lets a string literal convert. Going through `std::string_view` alone
-     * would need two user-defined conversions, and that's ill-formed.
+     * A string literal and a `std::string` get overloads of their own, since going through `std::string_view` would
+     * need two user-defined conversions, and that's ill-formed. The `std::string &&` one takes over the buffer
+     * instead of copying it.
      *
      * @param path                      Path string. WTF-8 on Windows, byte string on POSIX.
      */
     Path(std::string_view path); // NOLINT: intentionally implicit.
     Path(const char *path) : Path(std::string_view(path)) {} // NOLINT: intentionally implicit.
-
-    /**
-     * Same as the `std::string_view` constructor, but takes over the string's buffer instead of copying it.
-     *
-     * @param path                      Path string. WTF-8 on Windows, byte string on POSIX.
-     */
-    explicit Path(std::string &&path);
+    Path(const std::string &path) : Path(std::string_view(path)) {} // NOLINT: intentionally implicit.
+    Path(std::string &&path); // NOLINT: intentionally implicit.
 
     explicit Path(PathView path) : _path(path.str()) {}
 
