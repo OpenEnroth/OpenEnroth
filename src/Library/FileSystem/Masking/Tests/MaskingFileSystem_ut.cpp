@@ -64,3 +64,14 @@ UNIT_TEST(MaskingFileSystem, MaskPathsAreNormalized) {
     EXPECT_TRUE(fs.unmask("./a/"));
     EXPECT_TRUE(fs.exists("a"));
 }
+
+UNIT_TEST(MaskingFileSystem, UnmaskInaccessiblePath) {
+    // mask refuses a rooted or escaping path, so unmask finds nothing there either.
+    MemoryFileSystem fs0("");
+    fs0.write("a", Blob());
+    MaskingFileSystem fs(&fs0);
+    fs.mask("a");
+
+    EXPECT_FALSE(fs.unmask("/a"));
+    EXPECT_FALSE(fs.exists("a"));
+}

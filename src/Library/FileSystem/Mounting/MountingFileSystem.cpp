@@ -30,7 +30,11 @@ bool MountingFileSystem::unmount(std::string_view path) {
 }
 
 bool MountingFileSystem::unmount(PathView path) {
-    Node *node = _trie.find(NormalPath(path).path());
+    NormalPath normalPath(path);
+    if (!normalPath.isAccessible())
+        return false; // mount refuses these, so nothing is mounted there.
+
+    Node *node = _trie.find(normalPath.path());
     if (!node || !node->hasValue())
         return false; // Should be a real mount point, unmount("") is not equivalent to clearMounts().
 

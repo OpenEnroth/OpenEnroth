@@ -6,13 +6,17 @@
 
 #include "Utility/String/Ascii.h"
 
-NormalPath::NormalPath(std::string_view path) : _path(path) {
-    if (!_path.str().contains('\\') && _path.isNormalized())
-        return;
+NormalPath::NormalPath(std::string_view path) {
+    if (path.contains('\\')) {
+        std::string copy(path);
+        std::ranges::replace(copy, '\\', '/');
+        _path = Path(copy);
+    } else {
+        _path = Path(path);
+    }
 
-    std::string copy(_path.str());
-    std::ranges::replace(copy, '\\', '/');
-    _path = Path(copy).normalized();
+    if (!_path.isNormalized())
+        _path = _path.normalized();
 }
 
 bool NormalPath::isAccessible() const {

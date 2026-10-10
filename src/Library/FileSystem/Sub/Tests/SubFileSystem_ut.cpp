@@ -122,8 +122,7 @@ UNIT_TEST(SubFileSystem, RootWhenBasePathIsEmpty) {
 }
 
 UNIT_TEST(SubFileSystem, InaccessibleBasePath) {
-    // A base path the base file system can't reach is refused up front, since calls go straight to the base's
-    // implementation without being checked again.
+    // A base path the base file system can't reach is refused up front.
     MemoryFileSystem base("memfs");
     base.write("file.txt", Blob::fromString("hello"));
 

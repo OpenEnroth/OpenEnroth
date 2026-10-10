@@ -19,10 +19,12 @@ target_link_libraries(library_filesystem_interface PUBLIC utility)
 target_check_style(library_filesystem_interface)
 
 if(OE_BUILD_TESTS)
-    set(TEST_LIBRARY_FILESYSTEM_INTERFACE_SOURCES Tests/FileSystem_ut.cpp)
+    set(TEST_LIBRARY_FILESYSTEM_INTERFACE_SOURCES
+            Tests/FileSystem_ut.cpp
+            Tests/NormalPath_ut.cpp)
 
     add_library(test_library_filesystem_interface OBJECT ${TEST_LIBRARY_FILESYSTEM_INTERFACE_SOURCES})
-    target_link_libraries(test_library_filesystem_interface PUBLIC testing_unit library_filesystem_interface library_filesystem_memory)
+    target_link_libraries(test_library_filesystem_interface PUBLIC testing_unit library_filesystem_interface library_filesystem_memory library_filesystem_merging)
 
     target_check_style(test_library_filesystem_interface)
 

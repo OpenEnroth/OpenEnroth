@@ -5,6 +5,7 @@
 #include "Testing/Unit/UnitTest.h"
 
 #include "Library/FileSystem/Memory/MemoryFileSystem.h"
+#include "Library/FileSystem/Merging/MergingFileSystem.h"
 
 UNIT_TEST(FileSystem, PublicApiNormalizes) {
     // Every public method normalizes its path, so all of these spellings name the same file.
@@ -95,16 +96,12 @@ UNIT_TEST(FileSystem, RootIsNotRemovable) {
     EXPECT_TRUE(fs.exists("foo"));
 }
 
-UNIT_TEST(NormalPath, Join) {
-    // Joining normal paths keeps them normal, an empty side included.
-    auto testOne = [] (std::string_view head, std::string_view tail, std::string_view result) {
-        EXPECT_EQ((NormalPath(head) / NormalPath(tail)).path().str(), result) << "for '" << head << "' and '" << tail << "'";
-    };
+UNIT_TEST(FileSystem, DisplayPathOfInaccessiblePath) {
+    // An inaccessible path is shown next to the root, the implementation never sees it.
+    MemoryFileSystem fs("ram");
+    MergingFileSystem merged({&fs});
 
-    testOne("", "", "");
-    testOne("", "b", "b");
-    testOne("a", "", "a");
-    testOne("a", "b", "a/b");
-    testOne("a/b", "c/d", "a/b/c/d");
-    testOne("a\\b", "./c", "a/b/c");
+    EXPECT_EQ(fs.displayPath(".."), "ram://..");
+    EXPECT_EQ(fs.displayPath("a/../../b"), "ram://../b");
+    EXPECT_EQ(merged.displayPath("../b"), "ram://../b");
 }
