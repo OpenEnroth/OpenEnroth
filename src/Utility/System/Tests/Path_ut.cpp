@@ -272,6 +272,7 @@ UNIT_TEST(Path, WindowsRoots) {
     };
 
     EXPECT_EQ(Path("a\\b").str(), "a/b"); // Both slashes separate components on Windows.
+    EXPECT_EQ(Path(std::string("a\\b")).str(), "a/b");
 
     testJoin("C:/a", "D:/b", "D:/b"); // Another drive replaces everything.
     testJoin("C:/a", "/b", "C:/b"); // A rooted tail keeps our drive.
@@ -401,6 +402,7 @@ UNIT_TEST(Path, PosixSyntax) {
 
     // Backslashes and Windows roots are ordinary text on POSIX, where the only separator is a forward slash.
     EXPECT_EQ(Path("a\\b").str(), "a\\b");
+    EXPECT_EQ(Path(std::string("a\\b")).str(), "a\\b");
     testExtension("a.b\\c", "", "a"); // One file name, so ".b\c" is its extension.
     testExtension("C:", ".x", "C:.x");
     testExtension("//a.b", "", "//a");

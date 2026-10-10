@@ -46,6 +46,13 @@ class Path {
     Path(std::string_view path); // NOLINT: intentionally implicit.
     Path(const char *path) : Path(std::string_view(path)) {} // NOLINT: intentionally implicit.
 
+    /**
+     * Same as the `std::string_view` constructor, but takes over the string's buffer instead of copying it.
+     *
+     * @param path                      Path string. WTF-8 on Windows, byte string on POSIX.
+     */
+    explicit Path(std::string &&path);
+
     explicit Path(PathView path) : _path(path.str()) {}
 
     /**

@@ -4,6 +4,7 @@
 #include <cstddef>
 #include <string>
 #include <string_view>
+#include <utility>
 
 #include "Utility/String/Ascii.h"
 #include "Utility/String/Encoding.h"
@@ -183,7 +184,9 @@ static size_t parentEnd(std::string_view path) {
     return end;
 }
 
-Path::Path(std::string_view path) : _path(path) {
+Path::Path(std::string_view path) : Path(std::string(path)) {}
+
+Path::Path(std::string &&path) : _path(std::move(path)) {
 #ifdef _WINDOWS
     std::ranges::replace(_path, '\\', separator); // Both slashes separate components on Windows.
 #endif
