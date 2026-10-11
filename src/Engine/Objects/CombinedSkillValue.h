@@ -6,8 +6,13 @@
 
 #include "Engine/Objects/CharacterEnums.h"
 
+#include "Library/Serialization/SerializationFwd.h"
+
 /**
  * Simple POD-like class for storing full skill value (level and mastery).
+ *
+ * Serializes as the first letter of the mastery followed by the level, e.g. `M8` for master 8, same as in
+ * `monsters.txt`. An empty skill value serializes as `none`.
  */
 class CombinedSkillValue {
  public:
@@ -46,3 +51,5 @@ class CombinedSkillValue {
     int _level = 0;
     Mastery _mastery = MASTERY_NONE;
 };
+
+MM_DECLARE_SERIALIZATION_FUNCTIONS(CombinedSkillValue)
