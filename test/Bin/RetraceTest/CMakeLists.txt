@@ -9,7 +9,7 @@ set(RETRACE_TEST_HEADERS
         RetraceTestOptions.h)
 
 add_executable(OpenEnroth_RetraceTest ${RETRACE_TEST_SOURCES} ${RETRACE_TEST_HEADERS})
-target_link_libraries(OpenEnroth_RetraceTest PUBLIC application GTest::gtest library_cli library_platform_main library_stack_trace)
+target_link_libraries(OpenEnroth_RetraceTest PUBLIC application testing_extensions GTest::gtest library_cli library_platform_main library_stack_trace)
 
 target_check_style(OpenEnroth_RetraceTest)
 

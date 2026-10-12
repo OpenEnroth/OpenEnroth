@@ -15,4 +15,5 @@ struct GameStarterOptions {
     bool headless = false; // Run in headless mode.
     bool tracingRng = false; // Use tracing random engine?
     bool quickStart = false; // Skip whatever slow initialization that we have, including additional asset generation.
+    bool exitAfterStart = false; // Leave through the main menu as soon as the game is up.
 };
