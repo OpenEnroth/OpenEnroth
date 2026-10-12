@@ -149,7 +149,7 @@ void GUIWindow_Transport::transportDialogue() {
     if (_departureTime) {
         if (platform->tickCount() >= *_departureTime) {
             depart();
-            while (houseDialogPressEscape()) {}
+            while (houseDialogPressEscape()) {} // Back out to the house's top level. Each call clears the message queue, so the escape that leaves the house goes in after.
             engine->_messageQueue->addMessageCurrentFrame(UIMSG_Escape, 0, 0);
         }
         return;
