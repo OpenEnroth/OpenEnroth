@@ -4,7 +4,7 @@
 #include <string>
 #include <vector>
 
-#include "NativePath.h"
+#include "Path.h"
 
 struct ProcessResult {
     int exitCode = 0; // EXIT_FAILURE on POSIX if the process was killed by a signal.
@@ -26,4 +26,4 @@ struct ProcessResult {
  * @return                              Exit code and output of the process.
  * @throw Exception                     If the process couldn't be started.
  */
-ProcessResult runProcess(const NativePath &path, const std::vector<std::string> &args, std::chrono::milliseconds timeout = {});
+ProcessResult runProcess(const Path &path, const std::vector<std::string> &args, std::chrono::milliseconds timeout = {});
