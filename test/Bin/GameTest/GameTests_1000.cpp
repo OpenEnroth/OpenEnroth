@@ -520,7 +520,7 @@ GAME_TEST(Issues, Issue1282) {
     EXPECT_EQ(totalObjectsTape.delta(), -1);
 }
 
-GAME_TEST(Issues, Issue1290) {
+GAME_TEST(Issues, Issue1290a) {
     // Can't interact with the Accuracy well in Harmondale with the mouse.
     auto statusTape = tapes.statusBar();
     auto accuracyTape = charTapes.stat(0, ATTRIBUTE_ACCURACY);
@@ -548,6 +548,49 @@ GAME_TEST(Issues, Issue1290) {
     game.tick(3);
     EXPECT_EQ(accuracyTape.delta(), 2);
     EXPECT_CONTAINS(statusTape, "+2 Accuracy (Permanent)");
+}
+
+GAME_TEST(Issues, Issue1290b) {
+    // Can't enter Alloyed Weapons in Tatalia with the mouse, clicking its door says "Nothing here".
+    auto houseTape = tapes.house();
+
+    engine->config->debug.NoActors.setValue(true);
+    game.startNewGame();
+    game.teleportTo(MAP_TATALIA, Vec3f(-18100, 4810, 0), 0);
+    test.startTaping();
+    game.pointMouseAtFace(pOutdoor->pBModels[72].faces[41]); // The door of Alloyed Weapons.
+    game.pressAndReleaseButton(BUTTON_LEFT);
+    game.tick();
+    EXPECT_EQ(houseTape, tape(HOUSE_INVALID, HOUSE_WEAPON_SHOP_TATALIA_2));
+}
+
+GAME_TEST(Issues, Issue1290c) {
+    // A door in Fort Riverstride can't be opened from behind, clicking its back says "Nothing here".
+    auto doorTape = tapes.doorState(3);
+
+    engine->config->debug.NoActors.setValue(true);
+    game.startNewGame();
+    game.teleportTo(MAP_FORT_RIVERSTRIDE, Vec3f(-440, 1660, -453), 270);
+    test.startTaping();
+    game.pointMouseAtFace(618); // The back of the door. The map data makes its other faces clickable.
+    game.pressAndReleaseButton(BUTTON_LEFT);
+    game.tick(23); // The door swings open.
+    EXPECT_EQ(doorTape, tape(DOOR_CLOSED, DOOR_OPENING, DOOR_OPEN));
+}
+
+GAME_TEST(Issues, Issue1290d) {
+    // Clicking the floor next to the pressure plates in The Lincoln should say "Nothing here". Only stepping on the
+    // plates fires their event.
+    auto statusTape = tapes.statusBar();
+
+    engine->config->debug.NoActors.setValue(true);
+    game.startNewGame();
+    game.teleportTo(MAP_LINCOLN, Vec3f(2500, -4909, 1484), 180, -45);
+    test.startTaping();
+    game.pointMouseAtFace(571);
+    game.pressAndReleaseButton(BUTTON_LEFT);
+    game.tick();
+    EXPECT_CONTAINS(statusTape, "Nothing here");
 }
 
 GAME_TEST(Issues, Issue1293) {

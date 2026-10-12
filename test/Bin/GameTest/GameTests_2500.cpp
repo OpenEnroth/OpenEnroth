@@ -1059,3 +1059,19 @@ GAME_TEST(Issues, Issue2923) {
     EXPECT_CONTAINS(textTape.flatten(), "Exit Building"); // The house menu was drawn.
     EXPECT_MISSES(textTape.flatten(), "0");
 }
+
+GAME_TEST(Prs, Pr2772) {
+    // Space in front of The Knight's Blade on Emerald Island should enter the shop. The pressure plate that calls
+    // Margaret the Docent lies closer, and Space shouldn't stop at a face it can't trigger.
+    auto screenTape = tapes.screen();
+    auto houseTape = tapes.house();
+
+    engine->config->debug.NoActors.setValue(true);
+    game.startNewGame();
+    test.startTaping();
+    game.teleportTo(MAP_EMERALD_ISLAND, Vec3f(13360, 4480, 125), 0); // Facing the shop door, with the plate in between.
+    game.pressAndReleaseKey(PlatformKey::KEY_SPACE);
+    game.tick();
+    EXPECT_EQ(screenTape, tape(SCREEN_GAME, SCREEN_HOUSE));
+    EXPECT_EQ(houseTape, tape(HOUSE_INVALID, HOUSE_WEAPON_SHOP_EMERALD_ISLAND));
+}

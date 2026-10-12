@@ -5,6 +5,8 @@
 #include <algorithm>
 #include <memory>
 #include <optional>
+#include <span>
+#include <unordered_set>
 
 #include "Engine/Engine.h"
 
@@ -650,6 +652,36 @@ void PrepareWorld(int _0_box_loading_1_fullscreen) {
     gameTimer->setPaused(false);
 }
 
+/**
+ * Adds `FACE_CLICKABLE` to faces that the map data left unclickable although their event does something when run.
+ * Every face of an event that is already clickable somewhere gets it, and so does every face of an event that
+ * nothing can trigger at all. An event that only pressure plates, objects or monsters trigger is left alone.
+ *
+ * @param faces                         All faces of the location, with the save delta already applied.
+ * @param events                        The location's events.
+ */
+static void repairClickableFaces(std::span<BLVFace> faces, const EvtProgram &events) {
+    constexpr FaceAttributes triggers = FACE_PRESSURE_PLATE | FACE_TriggerByObject | FACE_TriggerByMonster;
+
+    std::unordered_set<int> clickableEvents;
+    std::unordered_set<int> triggeredEvents;
+    for (const BLVFace &face : faces) {
+        if (face.attributes & FACE_CLICKABLE)
+            clickableEvents.insert(face.eventId);
+        if (face.attributes & triggers)
+            triggeredEvents.insert(face.eventId);
+    }
+
+    for (BLVFace &face : faces) {
+        if (!face.eventId || (face.attributes & (FACE_CLICKABLE | triggers)))
+            continue;
+        if (triggeredEvents.contains(face.eventId) && !clickableEvents.contains(face.eventId))
+            continue;
+        if (events.isInteractive(face.eventId))
+            face.attributes |= FACE_CLICKABLE;
+    }
+}
+
 //----- (00464866) --------------------------------------------------------
 void DoPrepareWorld(bool bLoading, int _1_fullscreen_loading_2_box) {
     engine->ResetCursor_Palettes_LODs_Level_Audio_SFT_Windows();
@@ -682,6 +714,9 @@ void DoPrepareWorld(bool bLoading, int _1_fullscreen_loading_2_box) {
     else
         loadAndPrepareODM(transitionMapId, bLoading);
 
+    // After the load, because the save delta restores face attributes.
+    repairClickableFaces(isMapIndoor(transitionMapId) ? std::span(pIndoor->faces) : std::span(pOutdoor->faces), engine->_localEventMap);
+
     setNPCNamesOnLoad();
     engine->_461103_load_level_sub();
     if (engine->_currentLoadedMapId == MAP_BREEDING_ZONE || engine->_currentLoadedMapId == MAP_WALLS_OF_MIST) {
@@ -706,13 +741,6 @@ void DoPrepareWorld(bool bLoading, int _1_fullscreen_loading_2_box) {
         for (Actor& actor : pActors)
             if (actor.monsterInfo.spell2Id == SPELL_SPIRIT_SPIRIT_LASH)
                 actor.monsterInfo.spell2Id = SPELL_SPIRIT_BLESS;
-
-    // OE fix - the Accuracy well's face lacks FACE_CLICKABLE in map data, so Space reaches it but the mouse doesn't.
-    // TODO(captainurist): move to patched data tables.
-    if (engine->_currentLoadedMapId == MAP_HARMONDALE)
-        for (BLVFace &face : pOutdoor->faces)
-            if (face.eventId == 228) // The Accuracy well, "+2 Accuracy (Permanent)" in out02.evt.
-                face.attributes |= FACE_CLICKABLE;
 
     bDialogueUI_InitializeActor_NPC_ID = 0;
     engine->_pendingTransition.reset();

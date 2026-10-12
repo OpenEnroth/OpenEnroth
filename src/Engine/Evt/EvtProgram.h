@@ -54,6 +54,13 @@ class EvtProgram {
 
     /**
      * @param eventId                   Event id to check.
+     * @return                          Whether running the event does something. That is, a script exists for it
+     *                                  and its step 0 is neither `Exit` nor a trigger header like `OnTimer`.
+     */
+    bool isInteractive(int eventId) const;
+
+    /**
+     * @param eventId                   Event id to check.
      * @return                          Hint to show, if any. Note that unlike `events()`, this function returns
      *                                  an empty string for non-existent events.
      */
