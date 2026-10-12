@@ -1,5 +1,6 @@
 #include "EvtProgram.h"
 
+#include <algorithm>
 #include <ranges>
 #include <tuple>
 #include <vector>
@@ -88,6 +89,29 @@ bool EvtProgram::hasHint(int eventId) const {
         return false;
 
     return (*events)[0].opcode == EVENT_MouseOver && (*events)[1].opcode == EVENT_Exit;
+}
+
+bool EvtProgram::isInteractive(int eventId) const {
+    const auto *events = valuePtr(_eventsById, eventId);
+    if (!events)
+        return false;
+
+    auto ir = std::ranges::find(*events, 0, &EvtInstruction::step);
+    if (ir == events->end())
+        return false;
+
+    switch (ir->opcode) {
+    case EVENT_Exit:
+    case EVENT_OnTimer:
+    case EVENT_OnMapReload:
+    case EVENT_OnLongTimer:
+    case EVENT_OnCanShowDialogItemCmp:
+    case EVENT_OnMapLeave:
+    case EVENT_OnDateTimer:
+        return false;
+    default:
+        return true;
+    }
 }
 
 std::string EvtProgram::hint(int eventId) const {
