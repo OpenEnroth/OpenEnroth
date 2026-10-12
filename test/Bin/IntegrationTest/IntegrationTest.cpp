@@ -6,17 +6,18 @@
 #include <vector>
 
 #include "Utility/String/Format.h"
+#include "Utility/System/Fs.h"
 
-static NativePath globalBinaryPath;
+static Path globalBinaryPath;
 
-static NativePath testFolderPath() {
+static Path testFolderPath() {
     const testing::TestInfo *info = testing::UnitTest::GetInstance()->current_test_info();
-    return NativePath::fromWtf8(fmt::format("{}.{}", info->test_suite_name(), info->name())).absolute();
+    return fs::absolute(Path(fmt::format("{}.{}", info->test_suite_name(), info->name())));
 }
 
 IntegrationTest::IntegrationTest() : _userPath(testFolderPath()), _userFolder(_userPath) {}
 
-void IntegrationTest::init(const NativePath &binaryPath) {
+void IntegrationTest::init(const Path &binaryPath) {
     assert(globalBinaryPath.isEmpty() && !binaryPath.isEmpty());
     globalBinaryPath = binaryPath;
 }
