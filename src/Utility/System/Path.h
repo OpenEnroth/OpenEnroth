@@ -166,7 +166,7 @@ class Path {
      * @return                          The segments after the root. Runs of separators count as one, so there are
      *                                  no empty segments.
      */
-    [[nodiscard]] PathSplit split() const {
+    [[nodiscard]] auto split() const {
         return PathView(*this).split();
     }
 
@@ -182,6 +182,7 @@ class Path {
     /**
      * @param tail                      Path to append, joined the same way `operator/` does it. It may point into
      *                                  this path.
+     * @return                          This path.
      */
     Path &operator/=(PathView tail);
     Path &operator/=(const Path &tail) {

@@ -5,7 +5,7 @@
 #include <concepts>
 #include <string_view>
 
-#include "PathSplit.h"
+#include "Utility/String/Split.h"
 
 class Path;
 
@@ -56,7 +56,9 @@ class PathView {
     /**
      * @return                          The segments after the root. See `Path::split`.
      */
-    [[nodiscard]] PathSplit split() const;
+    [[nodiscard]] auto split() const {
+        return ::split(_path.substr(root().size())).by('/').skip("");
+    }
 
     /**
      * @param segment                   Segment of this path, as handed out by `split`. It has to point into this
@@ -71,8 +73,8 @@ class PathView {
     /**
      * @param segment                   Segment of this path, as handed out by `split`, or an empty view. It has to
      *                                  point into this path, so a copy of it in another string won't do.
-     * @return                          The rest of this path after `segment`, or all of it, root included, for an
-     *                                  empty `segment`.
+     * @return                          The rest of this path after `segment` and the separators that follow it, or
+     *                                  all of it, root included, for an empty `segment`.
      */
     [[nodiscard]] PathView tailAfter(std::same_as<std::string_view> auto segment) const {
         if (segment.empty())

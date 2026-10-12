@@ -1,3 +1,4 @@
+#include <iterator>
 #include <string>
 #include <string_view>
 #include <type_traits>
@@ -123,6 +124,8 @@ UNIT_TEST(Path, Normalized) {
     testOne("a/../C:/x", "C:/x"); // The drive ends up leading, so the result is absolute.
     testOne("//a/b", "//a/b"); // A UNC root.
     testOne("//?/UNC//share/a", "//?/UNC//share/a"); // An empty server, which the root keeps.
+    testOne("//?/UNC//share/..", "//?/UNC//share/");
+    testOne("//server//x/a", "//server//x/a"); // Win32 reads this as share "x" on "server", and the root is kept as is.
 #else
     testOne("//a/b", "/a/b");
 #endif
@@ -186,6 +189,7 @@ UNIT_TEST(Path, Decomposition) {
     testOne("C:/a.txt", "C:/", "a.txt", "a", ".txt");
     testOne("C:a", "C:", "a", "a", "");
     testOne("//server/share/a", "//server/share/", "a", "a", "");
+    testOne("//?/UNC//share/a", "//?/UNC//share/", "a", "a", "");
 #endif
 }
 
@@ -226,6 +230,8 @@ UNIT_TEST(Path, Split) {
     EXPECT_EQ(segments("/a/b"), std::vector<std::string>({"a", "b"})); // The root isn't a segment.
 #ifdef _WINDOWS
     EXPECT_EQ(segments("C:/a"), std::vector<std::string>({"a"}));
+    EXPECT_EQ(segments("C:a"), std::vector<std::string>({"a"}));
+    EXPECT_TRUE(segments("//server/share").empty()); // The share is part of the root.
 #endif
 }
 
@@ -254,6 +260,8 @@ UNIT_TEST(Path, Tails) {
 
     Path doubled("a//b//");
     PathView doubledView = doubled;
+    EXPECT_EQ(doubledView.tailAt(*doubledView.split().begin()).str(), "a//b//");
+    EXPECT_EQ(doubledView.tailAt(*std::next(doubledView.split().begin())).str(), "b//"); // The trailing run stays.
     EXPECT_EQ(doubledView.tailAfter(*doubledView.split().begin()).str(), "b//"); // The whole run of separators goes.
     EXPECT_EQ(doubledView.tailAfter(*std::next(doubledView.split().begin())).str(), "");
 #ifdef _WINDOWS
@@ -289,6 +297,11 @@ UNIT_TEST(Path, Append) {
     Path self(longName);
     self /= PathView(self);
     EXPECT_EQ(self.str(), longName + "/" + longName);
+
+    std::string otherName(40, 'y');
+    Path tailed(longName + "/" + otherName);
+    tailed /= PathView(tailed).tailAt(*std::next(tailed.split().begin()));
+    EXPECT_EQ(tailed.str(), longName + "/" + otherName + "/" + otherName);
 
     Path literal("a");
     literal /= "b";
@@ -359,7 +372,7 @@ UNIT_TEST(Path, WindowsRoots) {
     testJoin("//server///x", "/b", "//server///x/b");
     testJoin("//server//", "/b", "//server/b");
     testJoin("//?/UNC/", "/b", "//?/UNC/b");
-    testJoin("//?/UNC//share/a", "/b", "//?/UNC/b");
+    testJoin("//?/UNC//share/a", "/b", "//?/UNC//share/b"); // An empty component after "//?/" is still a component.
 
     // Extended-length and device paths go to Win32 with backslashes.
     testNative("//?/C:/Games", L"\\\\?\\C:\\Games");
