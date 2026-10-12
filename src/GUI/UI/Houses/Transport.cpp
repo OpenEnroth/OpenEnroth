@@ -228,9 +228,8 @@ void GUIWindow_Transport::houseSpecificDialogue() {
 
 void GUIWindow_Transport::updateDialogueOnEscape() {
     if (_departureTime) {
-        // The party has paid, so escape only skips the wait. The second escape leaves the house.
-        depart();
-        engine->_messageQueue->addMessageCurrentFrame(UIMSG_Escape, 0, 0);
+        _departureTime = platform->tickCount(); // The party has paid, so escape only skips the wait.
+        return;
     }
     GUIWindow_House::updateDialogueOnEscape();
 }

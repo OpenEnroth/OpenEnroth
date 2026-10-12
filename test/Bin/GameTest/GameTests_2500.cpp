@@ -41,6 +41,10 @@ static std::string portraitName(int face) {
     return fmt::format("{}01", pPlayerPortraitsNames[face]);
 }
 
+static bool paidInStables(const std::tuple<ScreenType, int, int64_t> &frame) {
+    return std::get<0>(frame) == SCREEN_HOUSE && std::get<1>(frame) == 150;
+}
+
 // 2500
 
 GAME_TEST(Issues, Issue2500a) {
@@ -1046,24 +1050,43 @@ GAME_TEST(Issues, Issue2908) {
     EXPECT_EQ(pParty->pos, Vec3f(11008, 34, 193)); // In front of the Lady Margaret, where the party boarded.
 }
 
-GAME_TEST(Prs, Pr2917) {
+GAME_TEST(Prs, Pr2917a) {
     // Paying for a coach ride should leave the stables on screen until the coach sound and the travel line end, and
     // then send the party on its way.
     auto mapTape = tapes.map();
     auto goldTape = tapes.gold();
-    auto frameTape = tapes.custom([] { return std::tuple(current_screen_type, pParty->GetGold(), platform->tickCount()); });
+    auto frameTape = tapes.custom([] { return std::tuple(current_screen_type, pParty->GetGold(), platform->tickCount()); }); // The tick count keeps every frame a separate sample.
     game.startNewGame();
     test.startTaping();
     game.teleportTo(MAP_HARMONDALE, Vec3f(-5858, 10324, 0), 0); // In front of the J.V.C Corral.
     game.pressAndReleaseKey(PlatformKey::KEY_SPACE);
     game.tick(2);
     game.pressGuiButton("HouseDialogue_Option0"); // Two days to Erathia.
-    game.tick(17); // The coach sound and the travel line play for a second and a half.
+    game.skipLoadingScreen();
 
-    auto paidInStables = [](const auto &frame) { return std::get<0>(frame) == SCREEN_HOUSE && std::get<1>(frame) == 150; };
     EXPECT_EQ(mapTape, tape(MAP_EMERALD_ISLAND, MAP_HARMONDALE, MAP_ERATHIA));
     EXPECT_EQ(goldTape, tape(200, 150));
-    EXPECT_EQ(frameTape.filter(paidInStables).size(), 15);
+    EXPECT_EQ(frameTape.filter(paidInStables).size(), 15); // The coach sound and the travel line play for a second and a half.
+}
+
+GAME_TEST(Prs, Pr2917b) {
+    // Escape while the coach sound and the travel line play should send the paid party on its way at once.
+    auto mapTape = tapes.map();
+    auto goldTape = tapes.gold();
+    auto frameTape = tapes.custom([] { return std::tuple(current_screen_type, pParty->GetGold(), platform->tickCount()); }); // The tick count keeps every frame a separate sample.
+    game.startNewGame();
+    test.startTaping();
+    game.teleportTo(MAP_HARMONDALE, Vec3f(-5858, 10324, 0), 0); // In front of the J.V.C Corral.
+    game.pressAndReleaseKey(PlatformKey::KEY_SPACE);
+    game.tick(2);
+    game.pressGuiButton("HouseDialogue_Option0"); // Two days to Erathia.
+    game.tick();
+    game.pressAndReleaseKey(PlatformKey::KEY_ESCAPE);
+    game.skipLoadingScreen();
+
+    EXPECT_EQ(mapTape, tape(MAP_EMERALD_ISLAND, MAP_HARMONDALE, MAP_ERATHIA));
+    EXPECT_EQ(goldTape, tape(200, 150));
+    EXPECT_EQ(frameTape.filter(paidInStables).size(), 2); // The frame the party paid in, and the one the escape lands in.
 }
 
 GAME_TEST(Issues, Issue2923) {
