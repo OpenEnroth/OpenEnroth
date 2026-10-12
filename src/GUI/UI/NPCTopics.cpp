@@ -14,7 +14,6 @@
 #include "Engine/Graphics/Indoor.h"
 #include "Engine/Graphics/Viewport.h"
 #include "Engine/Graphics/Renderer/Renderer.h"
-#include "Engine/Objects/Decoration.h"
 #include "Engine/Localization.h"
 #include "Engine/Objects/Actor.h"
 #include "Engine/Objects/NPC.h"
@@ -660,10 +659,8 @@ DialogueId handleScriptedNPCTopicSelection(DialogueId topic, NPCData *npcData) {
         topicEventId = eventId;
         return DIALOGUE_MASTERY_TEACHER_OFFER;
     } else {
-        activeLevelDecoration = (LevelDecoration *)1;
         current_npc_text.clear();
-        eventProcessor(eventId, Pid(), 1);
-        activeLevelDecoration = nullptr;
+        globalEventProcessor(eventId, Pid());
     }
 
     return DIALOGUE_MAIN;

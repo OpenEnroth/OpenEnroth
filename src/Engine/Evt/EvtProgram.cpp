@@ -117,20 +117,14 @@ std::string EvtProgram::hint(int eventId) const {
     return result;
 }
 
-void EvtProgram::dump(int eventId) const {
+void EvtProgram::dump(int eventId, EvtSource source) const {
     const auto *events = valuePtr(_eventsById, eventId);
     if (events) {
         MM_TRACE("Event: {}", eventId);
         for (const EvtInstruction &ir : *events) {
-            MM_TRACE("{}", ir.toString());
+            MM_TRACE("{}", ir.toString(source));
         }
     } else {
         MM_TRACE("Event {} not found", eventId);
-    }
-}
-
-void EvtProgram::dumpAll() const {
-    for (const auto &[id, _] : _eventsById) {
-        dump(id);
     }
 }

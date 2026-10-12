@@ -11,7 +11,6 @@
 #include "Engine/Data/AwardEnums.h"
 #include "Engine/Data/HouseEnumFunctions.h"
 #include "Engine/Graphics/Camera.h"
-#include "Engine/Objects/Decoration.h"
 #include "Engine/Graphics/Indoor.h"
 #include "Engine/Graphics/Image.h"
 #include "Engine/Graphics/Renderer/Renderer.h"
@@ -553,7 +552,6 @@ void selectProprietorDialogueOption(DialogueId option) {
 
 bool houseDialogPressEscape() {
     engine->_messageQueue->clear();
-    activeLevelDecoration = nullptr;
     current_npc_text.clear();
     pParty->placeHeldItemInInventoryOrDrop();
 

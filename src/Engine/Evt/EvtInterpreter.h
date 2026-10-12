@@ -2,7 +2,7 @@
 
 #include <vector>
 
-#include "Engine/Pid.h"
+#include "Engine/Evt/EvtContext.h"
 #include "Engine/Evt/EvtInstruction.h"
 #include "Engine/Evt/EvtProgram.h"
 
@@ -33,7 +33,11 @@ class EvtInterpreter {
      bool executeRegular(int startStep);
      bool executeNpcDialogue(int startStep);
 
-     void prepare(const EvtProgram &eventMap, int eventId, Pid objectPid, bool canShowMessages);
+     /**
+      * @param eventMap                 Program to take the event from, the one `context.source` names.
+      * @param context                  Event to run, and what it runs for.
+      */
+     void prepare(const EvtProgram &eventMap, const EvtContext &context);
      bool isValid();
 
  protected:
@@ -55,10 +59,8 @@ class EvtInterpreter {
      [[nodiscard]] bool validateVariableValue(const EvtInstruction &ir) const;
 
  private:
-     int _eventId = 0;
+     EvtContext _context;
      std::vector<EvtInstruction> _events;
-     Pid _objectPid = Pid();
-     bool _canShowMessages = false;
      bool _canShowOption = true;
      bool _readyToExit = false;
      bool _mapExitTriggered = false;

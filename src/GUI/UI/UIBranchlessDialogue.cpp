@@ -6,7 +6,6 @@
 #include "Engine/AssetsManager.h"
 #include "Engine/Evt/Processor.h"
 #include "Engine/Graphics/Renderer/Renderer.h"
-#include "Engine/Objects/Decoration.h"
 #include "Engine/Party.h"
 #include "Engine/mm7_data.h"
 #include "Engine/Graphics/Viewport.h"
@@ -74,26 +73,17 @@ void GUIWindow_BranchlessDialogue::Update() {
     }
 }
 
-void startBranchlessDialogue(int eventid, int entryline, EvtOpcode type) {
+void startBranchlessDialogue(EvtOpcode type) {
     if (!pGUIWindow_BranchlessDialogue) {
         animTimer->setPaused(true);
         gameTimer->setPaused(true);
-        savedEventID = eventid;
-        savedEventStep = entryline;
-        savedDecoration = activeLevelDecoration;
         pGUIWindow_BranchlessDialogue = std::make_unique<GUIWindow_BranchlessDialogue>(type);
     }
 }
 
 void releaseBranchlessDialogue() {
     pGUIWindow_BranchlessDialogue = nullptr;
-    if (savedEventID) {
-        // Do not run event engine whith no event, it may happen when you close talk window
-        // with NPC that only say catch phrases
-        activeLevelDecoration = savedDecoration;
-        eventProcessor(savedEventID, Pid(), 1, savedEventStep);
-    }
-    activeLevelDecoration = nullptr;
+    runEventContinuation();
     gameTimer->setPaused(false);
 }
 

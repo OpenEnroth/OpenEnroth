@@ -18,7 +18,11 @@ class InputStream;
 
 class EvtInstruction {
  public:
-    std::string toString() const;
+    /**
+     * @param source                    Evt file the instruction comes from, which picks the table its texts come from.
+     * @return                          The instruction in readable form, for logging.
+     */
+    std::string toString(EvtSource source) const;
     static EvtInstruction parse(InputStream &stream, size_t size);
 
     EvtOpcode opcode = EVENT_Invalid;
