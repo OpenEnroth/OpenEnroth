@@ -1,4 +1,5 @@
 #include <iterator>
+#include <ranges>
 #include <string>
 #include <string_view>
 #include <type_traits>
@@ -221,6 +222,7 @@ UNIT_TEST(Path, Split) {
     };
 
     EXPECT_TRUE(segments("").empty());
+    EXPECT_TRUE(std::ranges::empty(PathView().split())); // A default view has no string at all, not even an empty one.
     EXPECT_TRUE(segments("/").empty());
     EXPECT_TRUE(segments("///").empty());
     EXPECT_EQ(segments("a//b/"), std::vector<std::string>({"a", "b"}));
