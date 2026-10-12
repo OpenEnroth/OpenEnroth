@@ -928,6 +928,33 @@ GAME_TEST(Issues, Issue2834) {
     EXPECT_EQ(abbeyHeadPlacedTape, tape(false, true));
 }
 
+GAME_TEST(Prs, Pr2876) {
+    // Quickloading with a transition dialogue open, then confirming the dialogue again, should take the party out.
+    auto mapTape = tapes.map();
+    auto screenTape = tapes.screen();
+    auto saveTape = tapes.custom([] { return engine->_lastLoadedSaveFileName; });
+    game.startNewGame();
+    game.teleportTo(MAP_HIDDEN_TOMB, Vec3f(-111, -25, 1), 0); // Just inside the entrance, facing the exit.
+    test.startTaping();
+    auto walkToExit = [&] {
+        game.pressKey(PlatformKey::KEY_UP);
+        game.tick(10); // The party walks up to the exit.
+        game.releaseKey(PlatformKey::KEY_UP);
+        game.pressAndReleaseKey(PlatformKey::KEY_SPACE);
+        game.tick();
+    };
+    game.pressAndReleaseKey(PlatformKey::KEY_F5); // Quicksave.
+    walkToExit();
+    game.pressAndReleaseKey(PlatformKey::KEY_F9); // Quickload.
+    game.skipLoadingScreen();
+    walkToExit();
+    game.pressGuiButton("Transition_Yes");
+    game.skipLoadingScreen();
+    EXPECT_EQ(saveTape, tape(std::string(), getCurrentQuickSave()));
+    EXPECT_EQ(screenTape, tape(SCREEN_GAME, SCREEN_INPUT_BLV, SCREEN_GAME, SCREEN_INPUT_BLV, SCREEN_GAME));
+    EXPECT_EQ(mapTape, tape(MAP_HIDDEN_TOMB, MAP_ERATHIA));
+}
+
 GAME_TEST(Issues, Issue2881a) {
     // Holding the jump key let the party bounce across water without taking damage.
     auto hpTape = tapes.totalHp();
@@ -1058,30 +1085,4 @@ GAME_TEST(Issues, Issue2923) {
     EXPECT_EQ(houseTape, tape(HOUSE_INVALID, HOUSE_CASTLE_HARMONDALE_1));
     EXPECT_CONTAINS(textTape.flatten(), "Exit Building"); // The house menu was drawn.
     EXPECT_MISSES(textTape.flatten(), "0");
-}
-
-GAME_TEST(Prs, Pr2876) {
-    // Loading a game with a transition dialogue open should drop the event that waits on the dialogue.
-    auto mapTape = tapes.map();
-    auto screenTape = tapes.screen();
-    game.startNewGame();
-    game.teleportTo(MAP_HIDDEN_TOMB, Vec3f(-111, -25, 1), 0); // Just inside the entrance, facing the exit.
-    game.pressKey(PlatformKey::KEY_UP);
-    game.tick(10);
-    game.releaseKey(PlatformKey::KEY_UP);
-    game.pressAndReleaseKey(PlatformKey::KEY_F5); // Quicksave.
-    game.tick();
-    test.startTaping();
-    game.pressAndReleaseKey(PlatformKey::KEY_SPACE);
-    game.tick();
-    game.pressAndReleaseKey(PlatformKey::KEY_F9); // Quickload.
-    game.skipLoadingScreen();
-    game.tick();
-    game.pressAndReleaseKey(PlatformKey::KEY_SPACE);
-    game.tick();
-    game.pressGuiButton("Transition_Yes");
-    game.tick();
-    game.skipLoadingScreen();
-    EXPECT_EQ(screenTape, tape(SCREEN_INPUT_BLV, SCREEN_GAME, SCREEN_INPUT_BLV, SCREEN_GAME));
-    EXPECT_EQ(mapTape, tape(MAP_HIDDEN_TOMB, MAP_ERATHIA));
 }
