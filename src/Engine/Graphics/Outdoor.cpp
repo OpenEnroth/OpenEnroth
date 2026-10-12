@@ -263,7 +263,6 @@ bool OutdoorLocation::Initialize(std::string_view filename, int days_played,
     if (!filename.empty()) {
         Release();
 
-        // pSprites_LOD->DeleteSomeOtherSprites();
         // pSpriteFrameTable->ResetLoadedFlags();
 
         Load(filename, days_played, respawn_interval_days, outdoors_was_respawned);

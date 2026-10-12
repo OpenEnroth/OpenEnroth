@@ -1313,12 +1313,9 @@ void SpellFxRenderer::DrawPlayerBuffAnims() {
 
 //----- (004A90A0) --------------------------------------------------------
 void SpellFxRenderer::LoadAnimations() {
-    effpar01 = assets->getBitmap("effpar01");  // pBitmaps_LOD->LoadTexture("effpar01");
-    effpar02 = assets->getBitmap("effpar02");  // pBitmaps_LOD->LoadTexture("effpar02");
-    effpar03 = assets->getBitmap("effpar03");  // pBitmaps_LOD->LoadTexture("effpar03");
-
-    // spell not implemented in the game
-    // uSpriteID_sp57c = pSprites_LOD->LoadSprite("sp57c", 6);
+    effpar01 = assets->getBitmap("effpar01");
+    effpar02 = assets->getBitmap("effpar02");
+    effpar03 = assets->getBitmap("effpar03");
 
     pSpriteFrameTable->InitializeSprite(pSpriteFrameTable->FastFindSprite("spell01"));
     pSpriteFrameTable->InitializeSprite(pSpriteFrameTable->FastFindSprite("spell02"));

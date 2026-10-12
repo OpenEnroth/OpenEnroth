@@ -35,7 +35,7 @@ class AssetsManager {
     GraphicsImage *getSprite(std::string_view name);
 
     /**
-     * Makes every sprite loaded so far permanent, `releaseUnreservedSprites()` won't free them.
+     * Marks every sprite loaded so far as kept by `releaseUnreservedSprites()`.
      */
     void reserveLoadedSprites();
 
@@ -61,7 +61,7 @@ class AssetsManager {
     std::unordered_map<std::string, std::unique_ptr<GraphicsImage>> images;
 
  private:
-    std::vector<std::string> _spritesInOrder;
+    std::vector<std::string> _spriteLoadOrder;
     size_t _reservedSpriteCount = 0;
 };
 

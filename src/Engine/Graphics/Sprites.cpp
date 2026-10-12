@@ -7,7 +7,6 @@
 
 #include "Engine/AssetsManager.h"
 #include "Engine/Data/DecorationData.h"
-#include "Engine/Graphics/Image.h"
 #include "Engine/Seasons.h"
 
 #include "Library/Logger/Logger.h"
@@ -62,7 +61,6 @@ void SpriteFrameTable::InitializeSprite(signed int uSpriteID) {
                                     break;
                             }
                             GraphicsImage *sprite = assets->getSprite(spriteName);
-                            // pSpriteSFrames[iter_uSpriteID].pHwSpriteIDs[i]=v12;
                             assert(sprite);
                             pSpriteSFrames[iter_uSpriteID].sprites[i] = sprite;
                         }
@@ -94,7 +92,6 @@ void SpriteFrameTable::InitializeSprite(signed int uSpriteID) {
                                     break;
                             }
                             GraphicsImage *sprite = assets->getSprite(spriteName);
-                            // pSpriteSFrames[iter_uSpriteID].pHwSpriteIDs[i]=v12;
                             assert(sprite);
                             pSpriteSFrames[iter_uSpriteID].sprites[i] = sprite;
                         }
@@ -135,7 +132,6 @@ void SpriteFrameTable::InitializeSprite(signed int uSpriteID) {
                             }
 
                             GraphicsImage *sprite = assets->getSprite(spriteName);
-                            // pSpriteSFrames[iter_uSpriteID].pHwSpriteIDs[i]=v12;
                             assert(sprite);
                             pSpriteSFrames[iter_uSpriteID].sprites[i] = sprite;
                         }
