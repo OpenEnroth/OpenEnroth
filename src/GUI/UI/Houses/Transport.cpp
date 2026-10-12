@@ -227,10 +227,8 @@ void GUIWindow_Transport::houseSpecificDialogue() {
 }
 
 void GUIWindow_Transport::updateDialogueOnEscape() {
-    if (_departureTime) {
-        _departureTime = platform->tickCount(); // The party has paid, so escape only skips the wait.
-        return;
-    }
+    if (_departureTime)
+        return; // The party has paid and can't go back to the menu.
     GUIWindow_House::updateDialogueOnEscape();
 }
 
