@@ -1070,7 +1070,8 @@ GAME_TEST(Prs, Pr2917a) {
 }
 
 GAME_TEST(Prs, Pr2917b) {
-    // Escape while the coach sound and the travel line play should send the paid party on its way at once.
+    // Escape while the coach sound and the travel line play should change nothing. The paid party still leaves once they
+    // end.
     auto mapTape = tapes.map();
     auto goldTape = tapes.gold();
     auto frameTape = tapes.custom([] { return std::tuple(current_screen_type, pParty->GetGold(), platform->tickCount()); }); // The tick count keeps every frame a separate sample.
@@ -1086,7 +1087,7 @@ GAME_TEST(Prs, Pr2917b) {
 
     EXPECT_EQ(mapTape, tape(MAP_EMERALD_ISLAND, MAP_HARMONDALE, MAP_ERATHIA));
     EXPECT_EQ(goldTape, tape(200, 150));
-    EXPECT_EQ(frameTape.filter(paidInStables).size(), 2); // The frame the party paid in, and the one the escape lands in.
+    EXPECT_EQ(frameTape.filter(paidInStables).size(), 15);
 }
 
 GAME_TEST(Issues, Issue2923) {
