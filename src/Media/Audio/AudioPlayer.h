@@ -1,5 +1,6 @@
 #pragma once
 
+#include <cstdint>
 #include <string>
 #include <memory>
 
@@ -43,8 +44,15 @@ class AudioPlayer {
     void stopSounds();
     void stopVoiceSounds();
     void stopWalkingSounds();
-    void soundDrain();
     bool isWalkingSoundPlays();
+
+    /**
+     * @return                          Platform tick count by which every sound started so far has stopped
+     *                                  playing. Looping and walking sounds don't count.
+     */
+    int64_t soundsEndTime() const {
+        return _soundsEndTime;
+    }
 
     /**
      * Returns length of sound in seconds.
@@ -151,6 +159,7 @@ class AudioPlayer {
     AudioSamplePool _regularSoundPool = AudioSamplePool(false);
     AudioSamplePool _loopingSoundPool = AudioSamplePool(true);
     PAudioSample _currentWalkingSample;
+    int64_t _soundsEndTime = 0;
     SndReader _sndReader;
 };
 

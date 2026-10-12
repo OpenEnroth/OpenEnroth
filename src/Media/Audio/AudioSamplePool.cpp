@@ -99,12 +99,3 @@ void AudioSamplePool::setVolume(float value) {
         entry.samplePtr->SetVolume(value);
     }
 }
-
-bool AudioSamplePool::hasPlaying() {
-    for (AudioSamplePoolEntry &entry : _samplePool) {
-        if (!entry.samplePtr->IsStopped()) {
-            return true;
-        }
-    }
-    return false;
-}
