@@ -163,8 +163,8 @@ class Path {
     [[nodiscard]] Path parent() const;
 
     /**
-     * @return                          The segments after the root. Empty segments show up for doubled and trailing
-     *                                  separators, so this is meant for paths in normal form.
+     * @return                          The segments after the root. Runs of separators count as one, so there are
+     *                                  no empty segments.
      */
     [[nodiscard]] PathSplit split() const {
         return PathView(*this).split();

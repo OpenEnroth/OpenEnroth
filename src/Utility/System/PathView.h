@@ -79,9 +79,10 @@ class PathView {
             return *this;
 
         assert(segment.data() >= _path.data() && segment.data() + segment.size() <= _path.data() + _path.size());
-        if (segment.data() + segment.size() == _path.data() + _path.size())
+        size_t offset = _path.find_first_not_of('/', segment.data() + segment.size() - _path.data());
+        if (offset == std::string_view::npos)
             return {};
-        return PathView(_path.substr(segment.data() + segment.size() - _path.data() + 1));
+        return PathView(_path.substr(offset));
     }
 
     friend auto operator<=>(PathView l, PathView r) = default;

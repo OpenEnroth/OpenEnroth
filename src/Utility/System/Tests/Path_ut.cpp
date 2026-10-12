@@ -122,6 +122,7 @@ UNIT_TEST(Path, Normalized) {
     testOne("./C:./a", "C:a");
     testOne("a/../C:/x", "C:/x"); // The drive ends up leading, so the result is absolute.
     testOne("//a/b", "//a/b"); // A UNC root.
+    testOne("//?/UNC//share/a", "//?/UNC//share/a"); // An empty server, which the root keeps.
 #else
     testOne("//a/b", "/a/b");
 #endif
@@ -202,6 +203,7 @@ UNIT_TEST(Path, Root) {
     testOne("C:a", "C:");
     testOne("C:/a", "C:/");
     testOne("//server/share/a", "//server/share/");
+    testOne("//?/UNC//share/a", "//?/UNC//share/");
 #endif
 }
 
@@ -216,6 +218,9 @@ UNIT_TEST(Path, Split) {
 
     EXPECT_TRUE(segments("").empty());
     EXPECT_TRUE(segments("/").empty());
+    EXPECT_TRUE(segments("///").empty());
+    EXPECT_EQ(segments("a//b/"), std::vector<std::string>({"a", "b"}));
+    EXPECT_EQ(segments("/a//b//"), std::vector<std::string>({"a", "b"}));
     EXPECT_EQ(segments("a"), std::vector<std::string>({"a"}));
     EXPECT_EQ(segments("../a/b"), std::vector<std::string>({"..", "a", "b"}));
     EXPECT_EQ(segments("/a/b"), std::vector<std::string>({"a", "b"})); // The root isn't a segment.
@@ -246,6 +251,11 @@ UNIT_TEST(Path, Tails) {
     EXPECT_EQ(rootedView.tailAfter(std::string_view()).str(), "/a/b"); // The root stays.
     EXPECT_EQ(rootedView.tailAt(*rootedView.split().begin()).str(), "a/b");
     EXPECT_EQ(rootedView.tailAfter(*rootedView.split().begin()).str(), "b");
+
+    Path doubled("a//b//");
+    PathView doubledView = doubled;
+    EXPECT_EQ(doubledView.tailAfter(*doubledView.split().begin()).str(), "b//"); // The whole run of separators goes.
+    EXPECT_EQ(doubledView.tailAfter(*std::next(doubledView.split().begin())).str(), "");
 #ifdef _WINDOWS
     Path drive("C:/a/b");
     PathView driveView = drive;
