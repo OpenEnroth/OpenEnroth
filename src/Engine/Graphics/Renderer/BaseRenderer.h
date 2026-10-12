@@ -20,7 +20,7 @@ class BaseRenderer : public Renderer {
     virtual void Initialize() override;
 
     virtual void TransformBillboards() override;
-    virtual bool AddBillboardIfVisible(Sprite* spr, int palette, const Vec3f& pos, const Vec2f& scale, BillboardFlags flags, Pid id, int sector = 0) override;
+    virtual bool AddBillboardIfVisible(GraphicsImage *spr, int palette, const Vec3f& pos, const Vec2f& scale, BillboardFlags flags, Pid id, int sector = 0) override;
 
     virtual void DrawSpriteObjects() override;
     virtual void PrepareDecorationsRenderList_ODM() override;

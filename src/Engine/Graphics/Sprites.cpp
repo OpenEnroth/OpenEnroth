@@ -8,7 +8,6 @@
 #include "Engine/AssetsManager.h"
 #include "Engine/Data/DecorationData.h"
 #include "Engine/Graphics/Image.h"
-#include "Engine/Resources/LodSpriteCache.h"
 #include "Engine/Seasons.h"
 
 #include "Library/Logger/Logger.h"
@@ -16,12 +15,6 @@
 #include "Utility/String/Ascii.h"
 
 SpriteFrameTable *pSpriteFrameTable;
-
-void Sprite::Release() {
-    assets->releaseImage(this->texture);
-    this->texture = nullptr;
-    this->pName = "null";
-}
 
 //----- (0044D4F6) --------------------------------------------------------
 void SpriteFrameTable::ResetLoadedFlags() {
@@ -45,7 +38,7 @@ void SpriteFrameTable::InitializeSprite(signed int uSpriteID) {
 
                 while (1) {
                     if (uFlags & SPRITE_FRAME_IMAGE1) {
-                        Sprite *sprite = pSprites_LOD->loadSprite(pSpriteSFrames[iter_uSpriteID].textureName);
+                        GraphicsImage *sprite = assets->getSprite(pSpriteSFrames[iter_uSpriteID].textureName);
                         if (sprite == nullptr)
                             MM_WARNING("Sprite {} not loaded!", pSpriteSFrames[iter_uSpriteID].textureName);
                         for (unsigned i = 0; i < 8; ++i)
@@ -68,7 +61,7 @@ void SpriteFrameTable::InitializeSprite(signed int uSpriteID) {
                                     spriteName = pSpriteSFrames[iter_uSpriteID].textureName + "0";
                                     break;
                             }
-                            Sprite *sprite = pSprites_LOD->loadSprite(spriteName);
+                            GraphicsImage *sprite = assets->getSprite(spriteName);
                             // pSpriteSFrames[iter_uSpriteID].pHwSpriteIDs[i]=v12;
                             assert(sprite);
                             pSpriteSFrames[iter_uSpriteID].sprites[i] = sprite;
@@ -100,7 +93,7 @@ void SpriteFrameTable::InitializeSprite(signed int uSpriteID) {
                                     spriteName = pSpriteSFrames[iter_uSpriteID].textureName + "1";
                                     break;
                             }
-                            Sprite *sprite = pSprites_LOD->loadSprite(spriteName);
+                            GraphicsImage *sprite = assets->getSprite(spriteName);
                             // pSpriteSFrames[iter_uSpriteID].pHwSpriteIDs[i]=v12;
                             assert(sprite);
                             pSpriteSFrames[iter_uSpriteID].sprites[i] = sprite;
@@ -141,7 +134,7 @@ void SpriteFrameTable::InitializeSprite(signed int uSpriteID) {
                                 }
                             }
 
-                            Sprite *sprite = pSprites_LOD->loadSprite(spriteName);
+                            GraphicsImage *sprite = assets->getSprite(spriteName);
                             // pSpriteSFrames[iter_uSpriteID].pHwSpriteIDs[i]=v12;
                             assert(sprite);
                             pSpriteSFrames[iter_uSpriteID].sprites[i] = sprite;

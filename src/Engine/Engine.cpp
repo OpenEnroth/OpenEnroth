@@ -31,7 +31,6 @@
 #include "Engine/Graphics/Vis.h"
 #include "Engine/Graphics/Weather.h"
 #include "Engine/Graphics/TurnBasedOverlay.h"
-#include "Engine/Resources/LodSpriteCache.h"
 #include "Engine/Localization.h"
 #include "Engine/Objects/Actor.h"
 #include "Engine/Objects/Chest.h"
@@ -740,13 +739,11 @@ void DoPrepareWorld(bool bLoading, int _1_fullscreen_loading_2_box) {
 //----- (004647AB) --------------------------------------------------------
 void FinalInitialization() {
     InitializeTurnBasedAnimations(&stru_50C198);
-    pSprites_LOD->reserveLoadedSprites();
+    assets->reserveLoadedSprites();
 }
 
 void MM7_LoadLods() {
     engine->resources()->open(engine->config->graphics.Saturation.value(), engine->config->graphics.Lightness.value());
-
-    pSprites_LOD = new LodSpriteCache(engine->resources());
 
     // TODO(captainurist):
     // on error in `open` we had this:
@@ -879,7 +876,7 @@ void Engine::SecondaryInitialization() {
 
     engine->_globalEventMap = EvtProgram::load(engine->resources()->eventsData("global.evt"));
 
-    pSprites_LOD->reserveLoadedSprites();
+    assets->reserveLoadedSprites();
 
     Initialize_GamesLOD_NewLOD();
 }
@@ -939,7 +936,7 @@ void Engine::ResetCursor_Palettes_LODs_Level_Audio_SFT_Windows() {
     // Render billboards are used in hit tests, but we're releasing textures, so can't use them anymore.
     render->uNumBillboardsToDraw = 0;
 
-    pSprites_LOD->releaseUnreserved();
+    assets->releaseUnreservedSprites();
 
     if (uCurrentlyLoadedLevelType == LEVEL_INDOOR)
         pIndoor->Release();

@@ -114,9 +114,9 @@ bool Chest::open(int uChestID, Pid objectPid) {
             SpriteFrame *frame = pSpellObject.spriteFrame();
             if (frame->flags & SPRITE_FRAME_CENTER) {
                 // centering
-                pOut += Vec3f(0, 0, frame->sprites[0]->texture->height() / 4);
+                pOut += Vec3f(0, 0, frame->sprites[0]->height() / 4);
             } else {
-                pOut -= Vec3f(0, 0, (frame->sprites[0]->texture->height() - 64) / 2);
+                pOut -= Vec3f(0, 0, (frame->sprites[0]->height() - 64) / 2);
             }
             pSpellObject.vPosition = pOut;
 
