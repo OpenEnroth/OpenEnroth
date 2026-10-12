@@ -1,5 +1,6 @@
 #pragma once
 
+#include <cstdint>
 #include <string>
 #include <memory>
 
@@ -46,8 +47,8 @@ class AudioPlayer {
     bool isWalkingSoundPlays();
 
     /**
-     * @return                          Platform tick count at which the last started sound stops playing. Looping
-     *                                  and walking sounds don't count.
+     * @return                          Platform tick count by which every sound started so far has stopped
+     *                                  playing. Looping and walking sounds don't count.
      */
     int64_t soundsEndTime() const {
         return _soundsEndTime;
