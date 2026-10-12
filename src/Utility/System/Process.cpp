@@ -17,10 +17,11 @@
 
 #include "Utility/Exception.h"
 #include "Utility/ScopeGuard.h"
+#include "Utility/System/Fs.h"
 
 #ifdef __ANDROID__
 
-ProcessResult runProcess(const NativePath &path, const std::vector<std::string> &, std::chrono::milliseconds) {
+ProcessResult runProcess(const Path &path, const std::vector<std::string> &, std::chrono::milliseconds) {
     throw Exception("{}: can't start a process on Android", path.displayString()); // posix_spawn needs API level 28.
 }
 
@@ -44,13 +45,13 @@ ProcessResult runProcess(const NativePath &path, const std::vector<std::string> 
     }
 }
 
-ProcessResult runProcess(const NativePath &path, const std::vector<std::string> &args, std::chrono::milliseconds timeout) {
+ProcessResult runProcess(const Path &path, const std::vector<std::string> &args, std::chrono::milliseconds timeout) {
     assert(timeout >= timeout.zero());
 
-    NativePath absolutePath = path.absolute(); // Windows searches PATH and more for a relative name, POSIX doesn't.
+    Path absolutePath = fs::absolute(path); // Windows searches PATH and more for a relative name, POSIX doesn't.
     std::string displayString = absolutePath.displayString();
 
-    std::string program = absolutePath.toWtf8();
+    std::string program = absolutePath.str();
 #ifdef _WINDOWS
     std::ranges::replace(program, '/', '\\'); // cmd.exe reads a forward slash in its own path as the start of a switch.
 #endif

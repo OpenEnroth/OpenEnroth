@@ -1,9 +1,9 @@
 #pragma once
 
-#include "Utility/System/NativePath.h"
+#include "Utility/System/Path.h"
 
 struct IntegrationTestOptions {
-    NativePath binaryPath;
+    Path binaryPath;
     bool helpPrinted = false;
     bool listRequested = false;
 

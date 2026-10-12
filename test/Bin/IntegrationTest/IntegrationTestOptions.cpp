@@ -27,7 +27,7 @@ IntegrationTestOptions IntegrationTestOptions::parse(int argc, char **argv) {
 
     if (!result.listRequested && !result.helpPrinted && !binaryPath)
         throw CLI::RequiredError(binaryPathOption->get_name());
-    result.binaryPath = NativePath::fromWtf8(binaryPath.value_or(""));
+    result.binaryPath = Path(binaryPath.value_or(""));
 
     return result;
 }

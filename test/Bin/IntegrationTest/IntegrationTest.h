@@ -8,7 +8,7 @@
 #include "Testing/Extensions/ScopedTestFolder.h"
 #include "Testing/Extensions/ThrowingAssertions.h"
 
-#include "Utility/System/NativePath.h"
+#include "Utility/System/Path.h"
 #include "Utility/System/Process.h"
 
 /**
@@ -19,16 +19,16 @@ class IntegrationTest : public testing::Test {
  public:
     IntegrationTest();
 
-    static void init(const NativePath &binaryPath);
+    static void init(const Path &binaryPath);
 
  protected:
     [[nodiscard]] ProcessResult runOpenEnroth(const std::vector<std::string> &args) const;
 
-    [[nodiscard]] const NativePath &userPath() const {
+    [[nodiscard]] const Path &userPath() const {
         return _userPath;
     }
 
  private:
-    NativePath _userPath;
+    Path _userPath;
     ScopedTestFolder _userFolder;
 };

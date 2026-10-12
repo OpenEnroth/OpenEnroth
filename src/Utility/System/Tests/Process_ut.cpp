@@ -13,7 +13,7 @@ using namespace std::chrono_literals; // NOLINT
 
 static ProcessResult runShell(std::string command, std::chrono::milliseconds timeout = {}) {
 #ifdef _WINDOWS
-    return runProcess(NativePath::fromWtf8(std::getenv("ComSpec")), {"/c", std::move(command)}, timeout);
+    return runProcess(Path(std::getenv("ComSpec")), {"/c", std::move(command)}, timeout);
 #else
     return runProcess("/bin/sh", {"-c", std::move(command)}, timeout);
 #endif
