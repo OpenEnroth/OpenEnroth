@@ -81,6 +81,9 @@ OpenEnrothOptions OpenEnrothOptions::parse(int argc, char **argv) {
             result.dataPath = fs::cwd();
     }
 
+    if (result.exitAfterStart && result.subcommand != SUBCOMMAND_GAME)
+        throw Exception("--exit-after-start can't be used with a subcommand.");
+
     if (result.subcommand == SUBCOMMAND_RETRACE) {
         result.ramFsUserData = true; // No config & no user data if retracing.
         result.quickStart = true;
