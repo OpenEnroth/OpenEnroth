@@ -40,7 +40,9 @@ struct PathRoot {
  * @param path                      Path to parse.
  * @return                          What the path starts with. Win32 roots a UNC path at the share, so
  *                                  `"//server/share"` is a single root name, and a bare `"//server"` is a root name
- *                                  with nothing to open under it. POSIX has no root names at all.
+ *                                  with nothing to open under it. Doubled separators collapse in a plain UNC root,
+ *                                  so `"//server//x"` is share `"x"` on `"server"`, but not after `"//?/"`, where
+ *                                  `"//?/UNC//share"` has an empty server. POSIX has no root names at all.
  */
 static PathRoot parseRoot(std::string_view path) {
     PathRoot root;
@@ -63,8 +65,6 @@ static PathRoot parseRoot(std::string_view path) {
                 start++; // Win32 collapses doubled separators in a plain UNC root, but not after "//?/".
             if (start >= path.size())
                 break; // A missing component ends the root name early, as in a bare "//server".
-            if (!isExtended && path[start] == separator)
-                break; // After "//?/" an empty component is still a component, so "//?/UNC//share" has an empty server.
             end = std::min(path.find(separator, start), path.size());
         }
         root.size = end;
@@ -316,8 +316,4 @@ bool PathView::isEscaping() const {
 
 bool PathView::isNormalized() const {
     return isNormalizedPath(_path);
-}
-
-PathSplit PathView::split() const {
-    return PathSplit(_path.substr(root().size()));
 }
