@@ -9,7 +9,6 @@
 
 #include "Application/Startup/GameStarter.h"
 
-#include "Engine/Components/Control/EngineControlComponent.h"
 #include "Engine/Components/Control/EngineController.h"
 #include "Engine/Components/Trace/EngineTraceSimplePlayer.h"
 #include "Engine/Components/Trace/EngineTraceRecorder.h"
@@ -93,16 +92,7 @@ int runPlay(const OpenEnrothOptions &options) {
 }
 
 int runOpenEnroth(const OpenEnrothOptions &options) {
-    GameStarter starter(options);
-
-    if (options.exitAfterStart) {
-        starter.application()->component<EngineControlComponent>()->runControlRoutine([] (EngineController *game) {
-            game->goToMainMenu();
-            game->pressGuiButton("MainMenu_ExitGame");
-        });
-    }
-
-    starter.run();
+    GameStarter(options).run();
     return 0;
 }
 
