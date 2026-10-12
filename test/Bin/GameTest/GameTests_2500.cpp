@@ -1225,13 +1225,13 @@ GAME_TEST(Prs, Pr2876) {
     game.tick(10);
     game.releaseKey(PlatformKey::KEY_UP);
     game.pressAndReleaseKey(PlatformKey::KEY_F5); // Quicksave.
-    game.tick(2);
+    game.tick();
     test.startTaping();
     game.pressAndReleaseKey(PlatformKey::KEY_SPACE);
     game.tick();
     game.pressAndReleaseKey(PlatformKey::KEY_F9); // Quickload.
     game.skipLoadingScreen();
-    game.tick(2);
+    game.tick();
     game.pressAndReleaseKey(PlatformKey::KEY_SPACE);
     game.tick();
     game.pressGuiButton("Transition_Yes");
