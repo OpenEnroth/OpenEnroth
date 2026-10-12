@@ -37,11 +37,8 @@ void Renderer::DrawQuad2D(GraphicsImage *texture, const Recti &srcRect, Pointi d
 }
 
 void Renderer::DrawQuad2D(GraphicsImage *texture, Pointi dstPoint, Color color) {
-    int width = texture->width();
-    int height = texture->height();
-    Recti srcRect(0, 0, width, height);
-    Recti dstRect(dstPoint.x, dstPoint.y, width, height);
-    DrawQuad2D(texture, srcRect, dstRect, color);
+    Sizei size = texture ? texture->size() : Sizei();
+    DrawQuad2D(texture, Recti(Pointi(), size), Recti(dstPoint, size), color);
 }
 
 GraphicsImage *Renderer::solidFillTexture() {
