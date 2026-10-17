@@ -107,7 +107,7 @@ MM_NOINLINE std::string stackTraceMarkerFunction() {
     return trace.empty() ? std::string() : trace;
 }
 
-MM_NOINLINE int stackTraceCrashingFunction() {
+MM_NOUBSAN MM_NOINLINE int stackTraceCrashingFunction() {
     // Volatile pointer, not pointer to volatile, or the compiler knows it's null and traps instead of
     // faulting. The read feeds the return value because a store on its own is dead code that some compilers
     // drop, and then nothing crashes at all.
