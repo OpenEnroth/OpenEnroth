@@ -184,11 +184,11 @@ static bool isNormalizedPath(std::string_view path) {
 
 static bool isEscapingPath(std::string_view path) {
     PathRoot root = parseRoot(path);
-    if (rootEnd(root) > 0)
-        return false;
+    if (root.hasRootDirectory)
+        return false; // Nothing is above a root directory.
 
     int depth = 0;
-    for (std::string_view segment : split(path).by(separator)) {
+    for (std::string_view segment : split(path.substr(root.size)).by(separator)) {
         if (segment.empty() || segment == ".")
             continue;
 

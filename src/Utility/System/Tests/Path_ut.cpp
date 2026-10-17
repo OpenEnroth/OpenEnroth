@@ -149,8 +149,10 @@ UNIT_TEST(Path, IsEscaping) {
     testOne("/..", false); // A path with a root never escapes.
     testOne("/../..", false);
 #ifdef _WINDOWS
-    testOne("C:..", false);
+    testOne("C:..", true); // Above the current directory of drive C.
+    testOne("C:a/../..", true);
     testOne("C:/..", false);
+    testOne("//server/share/..", false);
 #endif
 }
 
