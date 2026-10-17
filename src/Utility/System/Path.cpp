@@ -122,10 +122,11 @@ static std::string normalRootName(std::string_view path, PathRoot root) {
 static std::string normalizePath(std::string_view path) {
     std::string result;
     std::string_view input = path;
+    gch::small_vector<std::string_view, 32> segments;
     while (true) {
         PathRoot root = parseRoot(input);
 
-        gch::small_vector<std::string_view, 32> segments;
+        segments.clear();
         for (std::string_view segment : split(input.substr(rootEnd(root))).by(separator)) {
             if (segment.empty() || segment == ".")
                 continue;
