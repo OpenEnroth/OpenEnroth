@@ -118,48 +118,43 @@ static std::string normalRootName(std::string_view path, PathRoot root) {
     return "//" + join(split(name.substr(2)).by(separator).skip(""), separator);
 }
 
-/**
- * @param path                      Path to normalize.
- * @param[out] rootChanged          Whether the result parses with a root other than the one it was built from.
- *                                  Dropping the leading segments can turn the first remaining one into a drive,
- *                                  and `"./C:."` becomes `"C:."`, whose `"."` only goes away on another pass.
- * @return                          `path` after one normalization pass.
- */
-static std::string normalizePathOnce(std::string_view path, bool *rootChanged) {
-    PathRoot root = parseRoot(path);
+static std::string normalizePath(std::string_view path) {
+    std::string result;
+    std::string_view input = path;
+    while (true) {
+        PathRoot root = parseRoot(input);
 
-    gch::small_vector<std::string_view, 32> segments;
-    for (std::string_view segment : split(path.substr(rootEnd(root))).by(separator)) {
-        if (segment.empty() || segment == ".")
-            continue;
-
-        if (segment == "..") {
-            if (!segments.empty() && segments.back() != "..") {
-                segments.pop_back();
+        gch::small_vector<std::string_view, 32> segments;
+        for (std::string_view segment : split(input.substr(rootEnd(root))).by(separator)) {
+            if (segment.empty() || segment == ".")
                 continue;
+
+            if (segment == "..") {
+                if (!segments.empty() && segments.back() != "..") {
+                    segments.pop_back();
+                    continue;
+                }
+                if (root.hasRootDirectory)
+                    continue; // Nothing is above a root directory, so "/.." is "/".
             }
-            if (root.hasRootDirectory)
-                continue; // Nothing is above a root directory, so "/.." is "/".
+
+            segments.push_back(segment);
         }
 
-        segments.push_back(segment);
+        std::string normal = normalRootName(input, root);
+        size_t normalRootEnd = normal.size() + (root.hasRootDirectory ? 1 : 0);
+        if (root.hasRootDirectory)
+            normal += separator;
+        normal += join(segments, separator);
+
+        // Dropping the leading segments can turn the first remaining one into a drive, and "./C:." becomes "C:.",
+        // whose "." only goes away on another pass.
+        bool rootChanged = rootEnd(parseRoot(normal)) != normalRootEnd;
+        result = std::move(normal);
+        if (!rootChanged)
+            break;
+        input = result;
     }
-
-    std::string result = normalRootName(path, root);
-    size_t resultRootEnd = result.size() + (root.hasRootDirectory ? 1 : 0);
-    if (root.hasRootDirectory)
-        result += separator;
-    result += join(segments, separator);
-
-    *rootChanged = rootEnd(parseRoot(result)) != resultRootEnd;
-    return result;
-}
-
-static std::string normalizePath(std::string_view path) {
-    bool rootChanged = false;
-    std::string result = normalizePathOnce(path, &rootChanged);
-    while (rootChanged)
-        result = normalizePathOnce(result, &rootChanged);
 
     if (result.empty() && !path.empty())
         return "."; // An empty path names nothing, while this one names the current directory.
