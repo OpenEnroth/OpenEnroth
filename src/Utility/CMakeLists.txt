@@ -15,6 +15,7 @@ set(UTILITY_SOURCES
         String/Transformations.cpp
         System/Fs.cpp
         System/Path.cpp
+        System/PathView.cpp
         UnicodeCrt.cpp
         String/Wrap.cpp)
 
