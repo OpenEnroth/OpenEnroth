@@ -10,38 +10,30 @@
 #include "PathView.h"
 
 /**
- * The repo's vocabulary type for native paths - everything that takes a native path takes a `Path`.
+ * The vocabulary type for native paths.
  *
  * The path is stored as a string, WTF-8 on Windows and a byte string on POSIX, and path manipulation is lexical.
- * Everything that asks the OS lives in `Fs.h`. Backslashes are converted to forward slashes on Windows, where both
- * slashes separate path components. On POSIX a backslash is an ordinary character in a file name, so it is left
- * alone. Otherwise a path keeps the bytes it was built from, and `normalized` brings it to normal form.
+ * Everything that asks the OS lives in `Fs.h`. Backslashes become forward slashes on Windows, where both separate
+ * components, and stay as they are on POSIX, where a backslash is an ordinary character in a file name.
  *
- * Unlike `std::filesystem::path`, this class does not depend on the C locale. On Windows constructing an
- * `std::filesystem::path` from a narrow string converts it per the C locale, while here all charset conversions are
- * done by our own code, and the OS is only ever handed `wchar_t` strings. `native` / `fromNative` are the conversions
- * to use when talking to the OS.
+ * Unlike `std::filesystem::path`, nothing here depends on the C locale. `native` and `fromNative` do the charset
+ * conversion, and on Windows the OS is only ever handed `wchar_t` strings.
  *
- * An empty path names nothing. It is what a default-constructed `Path` holds, and joining it is a no-op, so
- * `"" / "a"` is `"a"`. The `fs::` calls treat it as invalid.
+ * An empty path names nothing. A default-constructed `Path` holds one, `"" / "a"` is `"a"`, and the `fs::` calls
+ * treat it as invalid.
  *
- * File names on Linux are arbitrary byte strings, and these bytes are passed through as-is, so the string returned
- * by `str` is not necessarily valid UTF-8, and not even necessarily valid WTF-8. Nothing is validated on the way
- * in either, so on Windows it is the caller that keeps the string valid WTF-8, and `native` is where an invalid
- * sequence turns into a replacement character. And MacOS is different again, APFS only takes file names that are
- * valid UTF-8.
+ * Nothing is validated. On Linux file names are arbitrary byte strings and pass through as they are, so `str` isn't
+ * necessarily valid UTF-8. On Windows it is the caller that keeps the string valid WTF-8, and `native` turns an
+ * invalid sequence into a replacement character. On MacOS, APFS only takes file names that are valid UTF-8.
  */
 class Path {
  public:
     Path() = default;
 
     /**
-     * Implicit constructors from a string, same as `std::filesystem::path`. No charset conversion is performed. On
-     * Windows backslashes become forward slashes.
-     *
-     * A string literal and a `std::string` get overloads of their own, since going through `std::string_view` would
-     * need two user-defined conversions, and that's ill-formed. The `std::string &&` one takes over the buffer
-     * instead of copying it.
+     * Implicit constructors from a string, with no charset conversion. A literal and a `std::string` need overloads
+     * of their own, since converting through `std::string_view` would take two user-defined conversions. The
+     * `std::string &&` one takes over the buffer.
      *
      * @param path                      Path string. WTF-8 on Windows, byte string on POSIX.
      */
@@ -62,10 +54,6 @@ class Path {
     [[nodiscard]] static Path fromNative(std::string_view path);
 #endif
 
-    /**
-     * @return                          This path as a string, always using forward slashes. WTF-8 on Windows,
-     *                                  byte string on POSIX.
-     */
     [[nodiscard]] const std::string &str() const {
         return _path;
     }
@@ -85,14 +73,13 @@ class Path {
 
     /**
      * @return                          This path as a valid UTF-8 string for displaying to the user, with everything
-     *                                  that's not valid UTF-8 replaced with U+FFFD. Unlike the string returned by
-     *                                  `str`, it might not round-trip back into the same path.
+     *                                  that's not valid UTF-8 replaced with U+FFFD.
      */
     [[nodiscard]] std::string displayString() const;
 
     /**
      * @param extension                 New extension, with or without the leading dot. Pass an empty string to drop
-     *                                  the extension. WTF-8 on Windows, byte string on POSIX.
+     *                                  the extension.
      * @return                          Copy of this path with the extension replaced. Only the last extension is
      *                                  replaced, so `"a.tar.gz"` with `".zip"` becomes `"a.tar.zip"`. A dotfile such
      *                                  as `".bashrc"`, or a name like `"..."` whose stem would be all dots, has no
@@ -226,10 +213,6 @@ class Path {
     }
 
  private:
-    /**
-     * @param tail                      Path to append, as a string.
-     * @return                          `*this / tail`, see `operator/`.
-     */
     [[nodiscard]] Path joined(std::string_view tail) const;
 
     std::string _path;

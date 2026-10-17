@@ -50,7 +50,7 @@ class PathView {
 
     /**
      * @param segment                   Segment of this path, as handed out by `split`. It has to point into this
-     *                                  path, so a copy of it in another string won't do.
+     *                                  path.
      * @return                          The rest of this path, starting at `segment`. The root is not part of it.
      */
     [[nodiscard]] PathView tailAt(std::same_as<std::string_view> auto segment) const {
@@ -60,7 +60,7 @@ class PathView {
 
     /**
      * @param segment                   Segment of this path, as handed out by `split`, or an empty view. It has to
-     *                                  point into this path, so a copy of it in another string won't do.
+     *                                  point into this path.
      * @return                          The rest of this path after `segment` and the separators that follow it, or
      *                                  all of it, root included, for an empty `segment`.
      */
