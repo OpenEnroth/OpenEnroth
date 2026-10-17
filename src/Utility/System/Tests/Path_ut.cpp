@@ -1,6 +1,9 @@
+#include <iterator>
+#include <ranges>
 #include <string>
 #include <string_view>
 #include <type_traits>
+#include <utility>
 #include <vector>
 
 #include "Testing/Unit/UnitTest.h"
@@ -12,7 +15,8 @@
 UNIT_TEST(Path, ConversionsAreChecked) {
     static_assert(std::is_convertible_v<const char *, Path>);
     static_assert(std::is_convertible_v<std::string_view, Path>);
-    static_assert(std::is_same_v<decltype(Path().str()), const std::string &>); // No copy on every call.
+    static_assert(std::is_convertible_v<std::string, Path>);
+    static_assert(std::is_convertible_v<const std::string &, Path>);
 }
 
 UNIT_TEST(Path, NativeRoundTrip) {
@@ -64,6 +68,237 @@ UNIT_TEST(Path, WithExtension) {
     testOne("a/..", "", "a/..");
     testOne("a/...", "", "a/...");
     testOne("..a.txt", "", "..a"); // A stem that isn't all dots still splits normally.
+}
+
+UNIT_TEST(Path, Normalized) {
+    auto testOne = [] (std::string_view path, std::string_view result) {
+        Path normal = Path(path).normalized();
+        EXPECT_EQ(normal.str(), result) << "for '" << path << "'";
+        EXPECT_TRUE(normal.isNormalized()) << "for '" << path << "'";
+        EXPECT_EQ(normal.normalized(), normal) << "for '" << path << "'";
+        EXPECT_EQ(Path(path).isNormalized(), path == result) << "for '" << path << "'";
+    };
+
+    testOne("", "");
+    testOne(".", ".");
+    testOne("./", ".");
+    testOne("a/..", ".");
+    testOne("a/b", "a/b");
+    testOne("a/b/", "a/b");
+    testOne("a//b", "a/b");
+    testOne("a/./b/.", "a/b");
+    testOne("./a/b", "a/b");
+    testOne("a/b/..", "a");
+    testOne("a/../b", "b");
+    testOne("a/b/../..", ".");
+    testOne("..", "..");
+    testOne("../..", "../..");
+    testOne("../../", "../..");
+    testOne("a/../../b", "../b");
+    testOne("../a/b", "../a/b");
+    testOne("a/.../b/...", "a/.../b/...");
+
+    // A root directory stays, and nothing is above it.
+    testOne("/", "/");
+    testOne("/a//b/", "/a/b");
+    testOne("/./a", "/a");
+    testOne("/..", "/");
+    testOne("/a/../..", "/");
+    testOne("/../a", "/a");
+    testOne("///a", "/a");
+
+#ifdef _WINDOWS
+    testOne("C:", "C:");
+    testOne("C:/", "C:/");
+    testOne("c:/./a", "c:/a");
+    testOne("C:\\a\\..\\b", "C:/b");
+    testOne("C:/a/../..", "C:/");
+    testOne("C:..", "C:.."); // Drive relative, so the ".." climbs the current directory of drive C.
+    testOne("C:a/../..", "C:..");
+    testOne("//server/share", "//server/share");
+    testOne("//server/share/a/..", "//server/share/");
+    testOne("//server/share/..", "//server/share/");
+    testOne("./C:/a", "C:/a"); // Dropping the "." leaves the drive letter leading.
+    testOne("./C:.", "C:"); // The new drive's "." goes in the same call.
+    testOne("./C:./a", "C:a");
+    testOne("a/../C:/x", "C:/x"); // The drive ends up leading, so the result is absolute.
+    testOne("//a/b", "//a/b"); // A UNC root.
+    testOne("//?/UNC//share/a", "//?/UNC//share/a"); // An empty server, which the root keeps.
+    testOne("//?/UNC//share/..", "//?/UNC//share/");
+    testOne("//server//x/a", "//server/x/a"); // Win32 reads this as share "x" on "server".
+    testOne("//server///x", "//server/x");
+#else
+    testOne("//a/b", "/a/b");
+#endif
+}
+
+UNIT_TEST(Path, IsEscaping) {
+    auto testOne = [] (std::string_view path, bool result) {
+        EXPECT_EQ(Path(path).isEscaping(), result) << "for '" << path << "'";
+    };
+
+    testOne("", false);
+    testOne(".", false);
+    testOne("a", false);
+    testOne("a/..", false);
+    testOne("a/../b", false);
+    testOne("..", true);
+    testOne("../a", true);
+    testOne("a/../..", true);
+    testOne("a//..//..", true); // Doesn't need normal form.
+    testOne("/..", false); // A path with a root never escapes.
+    testOne("/../..", false);
+#ifdef _WINDOWS
+    testOne("C:..", true); // Above the current directory of drive C.
+    testOne("C:a/../..", true);
+    testOne("C:/..", false);
+    testOne("//server/share/..", false);
+#endif
+}
+
+UNIT_TEST(Path, Decomposition) {
+    auto testOne = [] (std::string_view path, std::string_view parent, std::string_view name, std::string_view stem,
+                       std::string_view extension) {
+        Path p(path);
+        EXPECT_EQ(p.parent().str(), parent) << "for '" << path << "'";
+        EXPECT_EQ(p.name(), name) << "for '" << path << "'";
+        EXPECT_EQ(p.stem(), stem) << "for '" << path << "'";
+        EXPECT_EQ(p.extension(), extension) << "for '" << path << "'";
+    };
+
+    testOne("", "", "", "", "");
+    testOne(".", ".", ".", ".", "");
+    testOne("b", ".", "b", "b", "");
+    testOne("b.c", ".", "b.c", "b", ".c");
+    testOne("a/b", "a", "b", "b", "");
+    testOne("a/b.c", "a", "b.c", "b", ".c");
+    testOne("a/", "a", "", "", "");
+    testOne("1/2/3/xyz.txt", "1/2/3", "xyz.txt", "xyz", ".txt");
+    testOne("x.y/z.f/a.b.c.d", "x.y/z.f", "a.b.c.d", "a.b.c", ".d");
+    testOne("x/y/z/some.", "x/y/z", "some.", "some", ".");
+    testOne(".hidden", ".", ".hidden", ".hidden", "");
+    testOne("..", ".", "..", "..", "");
+    testOne("../..", "..", "..", "..", "");
+    testOne("..wat", ".", "..wat", "..wat", ""); // The stem would be ".", all dots, so there's no extension.
+    testOne("a/...", "a", "...", "...", "");
+
+    // The parent keeps the root.
+    testOne("/", "/", "", "", "");
+    testOne("/a", "/", "a", "a", "");
+    testOne("/a/b", "/a", "b", "b", "");
+#ifdef _WINDOWS
+    testOne("C:", "C:", "", "", "");
+    testOne("C:/", "C:/", "", "", "");
+    testOne("C:/a.txt", "C:/", "a.txt", "a", ".txt");
+    testOne("C:a", "C:", "a", "a", "");
+    testOne("//server/share/a", "//server/share/", "a", "a", "");
+    testOne("//?/UNC//share/a", "//?/UNC//share/", "a", "a", "");
+#endif
+}
+
+UNIT_TEST(Path, Root) {
+    auto testOne = [] (std::string_view path, std::string_view root) {
+        EXPECT_EQ(Path(path).root(), root) << "for '" << path << "'";
+    };
+
+    testOne("", "");
+    testOne("a/b", "");
+    testOne("/", "/");
+    testOne("/a", "/");
+#ifdef _WINDOWS
+    testOne("C:", "C:");
+    testOne("C:a", "C:");
+    testOne("C:/a", "C:/");
+    testOne("//server/share/a", "//server/share/");
+    testOne("//?/UNC//share/a", "//?/UNC//share/");
+#endif
+}
+
+UNIT_TEST(Path, Split) {
+    auto segments = [] (std::string_view path) -> std::vector<std::string> {
+        return Path(path).split();
+    };
+
+    EXPECT_TRUE(segments("").empty());
+    EXPECT_TRUE(std::ranges::empty(PathView().split())); // A default view has no string at all, not even an empty one.
+    EXPECT_TRUE(segments("/").empty());
+    EXPECT_TRUE(segments("///").empty());
+    EXPECT_EQ(segments("a//b/"), std::vector<std::string>({"a", "b"}));
+    EXPECT_EQ(segments("/a//b//"), std::vector<std::string>({"a", "b"}));
+    EXPECT_EQ(segments("a"), std::vector<std::string>({"a"}));
+    EXPECT_EQ(segments("../a/b"), std::vector<std::string>({"..", "a", "b"}));
+    EXPECT_EQ(segments("/a/b"), std::vector<std::string>({"a", "b"})); // The root isn't a segment.
+#ifdef _WINDOWS
+    EXPECT_EQ(segments("C:/a"), std::vector<std::string>({"a"}));
+    EXPECT_EQ(segments("C:a"), std::vector<std::string>({"a"}));
+    EXPECT_TRUE(segments("//server/share").empty()); // The share is part of the root.
+#endif
+}
+
+UNIT_TEST(Path, Tails) {
+    using Tails = std::pair<std::string, std::string>;
+    auto tails = [] (const Path &path, std::string_view at) -> Tails {
+        for (std::string_view segment : path.split())
+            if (segment == at)
+                return {std::string(path.tailAt(segment).str()), std::string(path.tailAfter(segment).str())};
+        return {};
+    };
+
+    EXPECT_EQ(tails("a/b/c", "a"), Tails("a/b/c", "b/c"));
+    EXPECT_EQ(tails("a/b/c", "b"), Tails("b/c", "c"));
+    EXPECT_EQ(tails("a/b/c", "c"), Tails("c", ""));
+    EXPECT_EQ(tails("/a/b", "a"), Tails("a/b", "b")); // The root isn't part of a tail.
+    EXPECT_EQ(tails("a//b//", "a"), Tails("a//b//", "b//")); // tailAfter drops the whole run of separators.
+    EXPECT_EQ(tails("a//b//", "b"), Tails("b//", "")); // tailAt keeps what follows, trailing separators included.
+#ifdef _WINDOWS
+    EXPECT_EQ(tails("C:/a/b", "a"), Tails("a/b", "b"));
+#endif
+
+    // An empty segment gives the whole path, root included.
+    Path path("a/b/c");
+    EXPECT_EQ(path.tailAfter(std::string_view()).str(), "a/b/c");
+    Path rooted("/a/b");
+    EXPECT_EQ(rooted.tailAfter(std::string_view()).str(), "/a/b");
+}
+
+UNIT_TEST(Path, Append) {
+    // Appending joins the same way operator/ does, also when the tail points into the path itself.
+    auto testOne = [] (std::string_view head, std::string_view tail, std::string_view result) {
+        Path appended(head);
+        appended /= Path(tail);
+        EXPECT_EQ(appended.str(), result) << "for '" << head << "' and '" << tail << "'";
+        EXPECT_EQ((Path(head) / Path(tail)).str(), result) << "for '" << head << "' and '" << tail << "'";
+    };
+
+    testOne("", "a", "a");
+    testOne("a", "", "a/");
+    testOne("a", "b/c", "a/b/c");
+    testOne("a/", "b", "a/b");
+    testOne("/", "a", "/a");
+    testOne("a", "/b", "/b");
+#ifdef _WINDOWS
+    testOne("C:", "a", "C:/a");
+    testOne("C:/a", "D:b", "D:b");
+    testOne("C:/a", "c:b", "C:/a/b");
+#endif
+
+    std::string longName(40, 'x'); // Longer than the small string buffer, so appending reallocates.
+    Path self(longName);
+    self /= self;
+    EXPECT_EQ(self.str(), longName + "/" + longName);
+
+    std::string otherName(40, 'y');
+    Path tailed(longName + "/" + otherName);
+    tailed /= tailed.tailAt(*std::next(tailed.split().begin()));
+    EXPECT_EQ(tailed.str(), longName + "/" + otherName + "/" + otherName);
+
+    Path literal("a");
+    literal /= "b";
+    EXPECT_EQ(literal.str(), "a/b");
+
+    Path head("a");
+    Path tail("b/c");
+    EXPECT_EQ(PathView(head) / PathView(tail), Path("a/b/c"));
 }
 
 #ifdef _WINDOWS
@@ -123,7 +358,7 @@ UNIT_TEST(Path, WindowsRoots) {
     testJoin("//server///x", "/b", "//server///x/b");
     testJoin("//server//", "/b", "//server/b");
     testJoin("//?/UNC/", "/b", "//?/UNC/b");
-    testJoin("//?/UNC//share/a", "/b", "//?/UNC/b");
+    testJoin("//?/UNC//share/a", "/b", "//?/UNC//share/b"); // An empty component after "//?/" is still a component.
 
     // Extended-length and device paths go to Win32 with backslashes.
     testNative("//?/C:/Games", L"\\\\?\\C:\\Games");
@@ -210,6 +445,8 @@ UNIT_TEST(Path, PosixSyntax) {
 
     // Backslashes and Windows roots are ordinary text on POSIX, where the only separator is a forward slash.
     EXPECT_EQ(Path("a\\b").str(), "a\\b");
+    EXPECT_EQ(Path("C:/a").root(), "");
+    EXPECT_EQ(Path("C:a").parent().str(), ".");
     testExtension("a.b\\c", "", "a"); // One file name, so ".b\c" is its extension.
     testExtension("C:", ".x", "C:.x");
     testExtension("//a.b", "", "//a");

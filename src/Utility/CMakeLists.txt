@@ -15,6 +15,7 @@ set(UTILITY_SOURCES
         String/Transformations.cpp
         System/Fs.cpp
         System/Path.cpp
+        System/PathView.cpp
         UnicodeCrt.cpp
         String/Wrap.cpp)
 
@@ -50,6 +51,7 @@ set(UTILITY_HEADERS
         System/FileStat.h
         System/Fs.h
         System/Path.h
+        System/PathView.h
         String/Ascii.h
         String/Encoding.h
         String/Join.h

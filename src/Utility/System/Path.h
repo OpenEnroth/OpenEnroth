@@ -1,48 +1,53 @@
 #pragma once
 
 #include <compare>
+#include <concepts>
 #include <string>
 #include <string_view>
 
 #include "Utility/String/Format.h"
 
+#include "PathView.h"
+
 /**
- * The repo's vocabulary type for native paths - everything that takes a native path takes a `Path`.
+ * The vocabulary type for native paths.
  *
- * The path is stored as a string, WTF-8 on Windows and a byte string on POSIX, and path manipulation is lexical.
- * Everything that asks the OS lives in `Fs.h`. Separators are normalized to forward slashes on Windows, where
- * both slashes separate path components. On POSIX a backslash is an ordinary character in a file name, so it is left
- * alone.
+ * The path is stored as a string, WTF-8 on Windows and a byte string on POSIX. Backslashes become forward slashes
+ * on Windows, where both separate components, and stay as they are on POSIX, where a backslash is an ordinary
+ * character in a file name.
  *
- * Unlike `std::filesystem::path`, this class does not depend on the C locale. On Windows constructing an
- * `std::filesystem::path` from a narrow string converts it per the C locale, while here all charset conversions are
- * done by our own code, and the OS is only ever handed `wchar_t` strings. `native` / `fromNative` are the conversions
- * to use when talking to the OS.
+ * Path manipulation is lexical, and nothing is validated at `Path` level. Everything that asks the OS lives in
+ * `Fs.h`, and that's where all validation lives too. On Linux file names are arbitrary byte strings and pass
+ * through as they are, so `str` isn't necessarily valid UTF-8. On Windows it is the caller that keeps the string
+ * valid WTF-8, and `native` turns an invalid sequence into a replacement character. On MacOS, APFS only takes file
+ * names that are valid UTF-8.
  *
- * An empty path names nothing. It is what a default-constructed `Path` holds, and joining it is a no-op, so
- * `"" / "a"` is `"a"`. The `fs::` calls treat it as invalid.
+ * Unlike `std::filesystem::path`, nothing here depends on the C locale. `native` and `fromNative` do the charset
+ * conversion, and on Windows the OS is only ever handed `wchar_t` strings.
  *
- * File names on Linux are arbitrary byte strings, and these bytes are passed through as-is, so the string returned
- * by `str` is not necessarily valid UTF-8, and not even necessarily valid WTF-8. Nothing is validated on the way
- * in either, so on Windows it is the caller that keeps the string valid WTF-8, and `native` is where an invalid
- * sequence turns into a replacement character. And MacOS is different again, APFS only takes file names that are
- * valid UTF-8.
+ * An empty path names nothing. A default-constructed `Path` holds one, `"" / "a"` is `"a"`, and the `fs::` calls
+ * treat it as invalid.
+ *
+ * Everything lexical is `PathView`'s and documented there, `Path` only forwards to it. What stays here needs the
+ * owned string: construction, `str`, `native`, and appending in place.
  */
 class Path {
  public:
     Path() = default;
 
     /**
-     * Implicit constructor from a string, same as `std::filesystem::path`. No charset conversion is performed. On
-     * Windows backslashes become forward slashes.
-     *
-     * The `const char *` overload is what lets a string literal convert. Going through `std::string_view` alone
-     * would need two user-defined conversions, and that's ill-formed.
+     * Implicit constructors from a string, with no charset conversion. A literal and a `std::string` need overloads
+     * of their own, since converting through `std::string_view` would take two user-defined conversions. The
+     * `std::string &&` one takes over the buffer.
      *
      * @param path                      Path string. WTF-8 on Windows, byte string on POSIX.
      */
     Path(std::string_view path); // NOLINT: intentionally implicit.
     Path(const char *path) : Path(std::string_view(path)) {} // NOLINT: intentionally implicit.
+    Path(const std::string &path) : Path(std::string_view(path)) {} // NOLINT: intentionally implicit.
+    Path(std::string &&path); // NOLINT: intentionally implicit.
+
+    explicit Path(PathView path) : _path(path.str()) {}
 
     /**
      * @param path                      Path as the OS spells it, a `wchar_t` string on Windows.
@@ -54,10 +59,6 @@ class Path {
     [[nodiscard]] static Path fromNative(std::string_view path);
 #endif
 
-    /**
-     * @return                          This path as a string, always using forward slashes. WTF-8 on Windows,
-     *                                  byte string on POSIX.
-     */
     [[nodiscard]] const std::string &str() const {
         return _path;
     }
@@ -75,35 +76,81 @@ class Path {
     }
 #endif
 
-    /**
-     * @return                          This path as a valid UTF-8 string for displaying to the user, with everything
-     *                                  that's not valid UTF-8 replaced with U+FFFD. Unlike the string returned by
-     *                                  `str`, it might not round-trip back into the same path.
-     */
-    [[nodiscard]] std::string displayString() const;
-
-    /**
-     * @param extension                 New extension, with or without the leading dot. Pass an empty string to drop
-     *                                  the extension. WTF-8 on Windows, byte string on POSIX.
-     * @return                          Copy of this path with the extension replaced. Only the last extension is
-     *                                  replaced, so `"a.tar.gz"` with `".zip"` becomes `"a.tar.zip"`. A dotfile such
-     *                                  as `".bashrc"`, or a name like `"..."` whose stem would be all dots, has no
-     *                                  extension. A path without a file name gets the extension as one.
-     */
-    [[nodiscard]] Path withExtension(std::string_view extension) const;
-
     [[nodiscard]] bool isEmpty() const {
         return _path.empty();
     }
 
+    [[nodiscard]] std::string displayString() const {
+        return PathView(*this).displayString();
+    }
+
+    [[nodiscard]] Path withExtension(std::string_view extension) const {
+        return PathView(*this).withExtension(extension);
+    }
+
+    [[nodiscard]] std::string_view root() const {
+        return PathView(*this).root();
+    }
+
+    [[nodiscard]] Path normalized() const {
+        return PathView(*this).normalized();
+    }
+
+    [[nodiscard]] bool isNormalized() const {
+        return PathView(*this).isNormalized();
+    }
+
+    [[nodiscard]] bool isEscaping() const {
+        return PathView(*this).isEscaping();
+    }
+
+    [[nodiscard]] std::string_view name() const {
+        return PathView(*this).name();
+    }
+
+    [[nodiscard]] std::string_view extension() const {
+        return PathView(*this).extension();
+    }
+
+    [[nodiscard]] std::string_view stem() const {
+        return PathView(*this).stem();
+    }
+
+    [[nodiscard]] PathView parent() const {
+        return PathView(*this).parent();
+    }
+
+    [[nodiscard]] auto split() const {
+        return PathView(*this).split();
+    }
+
+    [[nodiscard]] PathView tailAt(std::same_as<std::string_view> auto segment) const {
+        return PathView(*this).tailAt(segment);
+    }
+
+    [[nodiscard]] PathView tailAfter(std::same_as<std::string_view> auto segment) const {
+        return PathView(*this).tailAfter(segment);
+    }
+
+    [[nodiscard]] Path operator/(PathView tail) const {
+        return PathView(*this) / tail;
+    }
+
+    [[nodiscard]] Path operator/(const Path &tail) const {
+        return PathView(*this) / PathView(tail);
+    }
+
     /**
-     * @param tail                      Path to append.
-     * @return                          The two paths joined with a separator. An absolute `tail`, or one naming
-     *                                  another root, replaces this path. A rooted `tail` keeps only this path's root
-     *                                  name. A bare drive letter takes a separator too, so `"C:" / "x"` is `"C:/x"`
-     *                                  and not the drive-relative `"C:x"`, which has to be spelled out if wanted.
+     * @param tail                      Path to append, joined the same way `operator/` does it.
+     * @return                          This path.
      */
-    [[nodiscard]] Path operator/(const Path &tail) const;
+    Path &operator/=(PathView tail) {
+        return *this = PathView(*this) / tail;
+    }
+
+    Path &operator/=(const Path &tail) {
+        return *this /= PathView(tail);
+    }
 
     friend auto operator<=>(const Path &l, const Path &r) = default;
 
@@ -118,8 +165,16 @@ class Path {
     }
 
  private:
+    friend class PathView; // It builds its results in place.
+
     std::string _path;
 };
+
+inline PathView::PathView(const Path &path) : _path(path.str()) {}
+
+inline Path PathView::operator/(const Path &tail) const {
+    return *this / PathView(tail);
+}
 
 template<>
 struct fmt::formatter<Path> : fmt::formatter<std::string> {
