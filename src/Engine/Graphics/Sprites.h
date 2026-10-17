@@ -12,16 +12,6 @@
 struct DecorationData;
 class GraphicsImage;
 
-class Sprite {
- public:
-    void Release();
-
-    std::string pName;
-    GraphicsImage *texture = nullptr;
-    int uWidth = 0; // Same as texture->width().
-    int uHeight = 0;
-};
-
 // TODO(captainurist) : move to Engine/Data and Engine/Tables
 
 class SpriteFrame {
@@ -29,7 +19,7 @@ class SpriteFrame {
     std::string spriteName; // E.g. "spell11", only used to look up sprites by name. Only set for the 1st
                             // frame in an animated sequence.
     std::string textureName; // Texture name in sprites.lod w/o rotational suffixes.
-    std::array<Sprite *, 8> sprites = {{}};
+    std::array<GraphicsImage *, 8> sprites = {{}};
     float scale = 1.0;
     SpriteFrameFlags flags;
     int glowRadius = 0;
@@ -39,7 +29,11 @@ class SpriteFrame {
 };
 
 struct SpriteFrameTable {
-    void ResetLoadedFlags();
+    /**
+     * Drops the sprites of every frame. Frames load them again when `GetFrame()` or `GetFrameReversed()` next returns
+     * them.
+     */
+    void resetLoadedSprites();
     void InitializeSprite(signed int uSpriteID);
 
     /**

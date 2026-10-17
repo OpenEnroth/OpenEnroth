@@ -3,14 +3,12 @@ cmake_minimum_required(VERSION 3.27 FATAL_ERROR)
 set(ENGINE_RESOURCES_SOURCES
         EngineFileSystem.cpp
         LOD.cpp
-        LodSpriteCache.cpp
         ResourceManager.cpp
         TileGenerator.cpp)
 
 set(ENGINE_RESOURCES_HEADERS
         EngineFileSystem.h
         LOD.h
-        LodSpriteCache.h
         ResourceManager.h
         TileGenerator.h)
 

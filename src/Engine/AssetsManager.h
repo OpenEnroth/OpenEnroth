@@ -26,7 +26,14 @@ class AssetsManager {
     GraphicsImage *getImage_Buff(std::string_view name);
 
     GraphicsImage *getBitmap(std::string_view name, bool generated = false);
+
+    /**
+     * @param name                      Name of a sprite in `sprites.lod`, case-insensitive.
+     * @return                          The sprite, or `nullptr` if there is no such sprite.
+     */
     GraphicsImage *getSprite(std::string_view name);
+
+    void releaseSprites();
 
     std::unique_ptr<GUIFont> pFontBookOnlyShadow;
     std::unique_ptr<GUIFont> pFontBookLloyds;

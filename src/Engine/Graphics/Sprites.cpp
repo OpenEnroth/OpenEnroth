@@ -7,8 +7,6 @@
 
 #include "Engine/AssetsManager.h"
 #include "Engine/Data/DecorationData.h"
-#include "Engine/Graphics/Image.h"
-#include "Engine/Resources/LodSpriteCache.h"
 #include "Engine/Seasons.h"
 
 #include "Library/Logger/Logger.h"
@@ -17,16 +15,12 @@
 
 SpriteFrameTable *pSpriteFrameTable;
 
-void Sprite::Release() {
-    assets->releaseImage(this->texture);
-    this->texture = nullptr;
-    this->pName = "null";
-}
-
 //----- (0044D4F6) --------------------------------------------------------
-void SpriteFrameTable::ResetLoadedFlags() {
-    for (SpriteFrame &spriteFrame : pSpriteSFrames)
+void SpriteFrameTable::resetLoadedSprites() {
+    for (SpriteFrame &spriteFrame : pSpriteSFrames) {
         spriteFrame.flags &= ~SPRITE_FRAME_LOADED;
+        spriteFrame.sprites.fill(nullptr);
+    }
 }
 
 //----- (0044D513) --------------------------------------------------------
@@ -45,7 +39,7 @@ void SpriteFrameTable::InitializeSprite(signed int uSpriteID) {
 
                 while (1) {
                     if (uFlags & SPRITE_FRAME_IMAGE1) {
-                        Sprite *sprite = pSprites_LOD->loadSprite(pSpriteSFrames[iter_uSpriteID].textureName);
+                        GraphicsImage *sprite = assets->getSprite(pSpriteSFrames[iter_uSpriteID].textureName);
                         if (sprite == nullptr)
                             MM_WARNING("Sprite {} not loaded!", pSpriteSFrames[iter_uSpriteID].textureName);
                         for (unsigned i = 0; i < 8; ++i)
@@ -68,8 +62,7 @@ void SpriteFrameTable::InitializeSprite(signed int uSpriteID) {
                                     spriteName = pSpriteSFrames[iter_uSpriteID].textureName + "0";
                                     break;
                             }
-                            Sprite *sprite = pSprites_LOD->loadSprite(spriteName);
-                            // pSpriteSFrames[iter_uSpriteID].pHwSpriteIDs[i]=v12;
+                            GraphicsImage *sprite = assets->getSprite(spriteName);
                             assert(sprite);
                             pSpriteSFrames[iter_uSpriteID].sprites[i] = sprite;
                         }
@@ -100,8 +93,7 @@ void SpriteFrameTable::InitializeSprite(signed int uSpriteID) {
                                     spriteName = pSpriteSFrames[iter_uSpriteID].textureName + "1";
                                     break;
                             }
-                            Sprite *sprite = pSprites_LOD->loadSprite(spriteName);
-                            // pSpriteSFrames[iter_uSpriteID].pHwSpriteIDs[i]=v12;
+                            GraphicsImage *sprite = assets->getSprite(spriteName);
                             assert(sprite);
                             pSpriteSFrames[iter_uSpriteID].sprites[i] = sprite;
                         }
@@ -141,8 +133,7 @@ void SpriteFrameTable::InitializeSprite(signed int uSpriteID) {
                                 }
                             }
 
-                            Sprite *sprite = pSprites_LOD->loadSprite(spriteName);
-                            // pSpriteSFrames[iter_uSpriteID].pHwSpriteIDs[i]=v12;
+                            GraphicsImage *sprite = assets->getSprite(spriteName);
                             assert(sprite);
                             pSpriteSFrames[iter_uSpriteID].sprites[i] = sprite;
                         }
@@ -173,6 +164,7 @@ int SpriteFrameTable::FastFindSprite(std::string_view pSpriteName) {
 
 //----- (0044D8D0) --------------------------------------------------------
 SpriteFrame *SpriteFrameTable::GetFrame(int uSpriteID, Duration uTime) {
+    InitializeSprite(uSpriteID);
     SpriteFrame *v4 = &pSpriteSFrames[uSpriteID];
     if (!(v4->flags & SPRITE_FRAME_HAS_MORE) || !v4->animationLength)
         return v4;
@@ -193,6 +185,7 @@ SpriteFrame *SpriteFrameTable::GetFrame(int uSpriteID, Duration uTime) {
 
 //----- (0044D91F) --------------------------------------------------------
 SpriteFrame *SpriteFrameTable::GetFrameReversed(int uSpriteID, Duration time) {
+    InitializeSprite(uSpriteID);
     SpriteFrame *sprite = &pSpriteSFrames[uSpriteID];
     if (!(sprite->flags & SPRITE_FRAME_HAS_MORE) || !sprite->animationLength)
         return sprite;

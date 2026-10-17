@@ -17,7 +17,6 @@
 class Actor;
 class GraphicsImage;
 class GameConfig;
-class Sprite;
 class SpriteFrame;
 struct DecalBuilder;
 class ParticleEngine;
@@ -73,7 +72,7 @@ class Renderer {
     virtual void DrawBillboards_And_MaybeRenderSpecialEffects_And_EndScene() = 0;
     virtual void BillboardSphereSpellFX(SpellFX_Billboard *a1, Color diffuse) = 0;
     virtual void TransformBillboards() = 0;
-    virtual bool AddBillboardIfVisible(Sprite* spr, int palette, const Vec3f& pos, const Vec2f& scale, BillboardFlags flags, Pid id, int sector = 0) = 0;
+    virtual bool AddBillboardIfVisible(GraphicsImage *sprite, int palette, const Vec3f& pos, const Vec2f& scale, BillboardFlags flags, Pid id, int sector = 0) = 0;
 
     virtual void DrawProjectile(float srcX, float srcY, float a3, float a4,
                                 float dstX, float dstY, float a7, float a8,
@@ -98,8 +97,8 @@ class Renderer {
      *                                  tinting. RGB components scale the texture colors, alpha controls transparency.
      */
     virtual void DrawQuad2D(GraphicsImage *texture, const Recti &srcRect, const Recti &dstRect, Color color = colorTable.White) = 0;
-    virtual void DrawQuad2D(GraphicsImage *texture, const Recti &srcRect, Pointi dstPoint, Color color = colorTable.White);
-    virtual void DrawQuad2D(GraphicsImage *texture, Pointi dstPoint, Color color = colorTable.White);
+    void DrawQuad2D(GraphicsImage *texture, const Recti &srcRect, Pointi dstPoint, Color color = colorTable.White);
+    void DrawQuad2D(GraphicsImage *texture, Pointi dstPoint, Color color = colorTable.White);
 
     void FillRect(const Recti &rect, Color color);
 

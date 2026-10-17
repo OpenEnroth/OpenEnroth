@@ -2220,6 +2220,7 @@ void Actor::UpdateAnimation() {
             break;
 
         case Dead:
+            pSpriteFrameTable->InitializeSprite(spriteIds[ANIM_Dead]);
             if (pSpriteFrameTable->pSpriteSFrames[spriteIds[ANIM_Dead]].sprites[0] == nullptr)
                 aiState = Removed;
             else

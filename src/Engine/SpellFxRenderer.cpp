@@ -465,7 +465,7 @@ void SpellFxRenderer::_4A7948_mind_blast_after_effect(SpriteObject *a1) {
     Dst.x = (float)a1->vPosition.x;
     Dst.y = (float)a1->vPosition.y;
     Dst.z = (float)a1->vPosition.z;
-    Dst.texture = a1->spriteFrame()->sprites[0]->texture;
+    Dst.texture = a1->spriteFrame()->sprites[0];
     Dst.particle_size = 1.0;
     Dst.timeToLive = Duration::randomRealtimeSeconds(vrng, 1, 2);
     for (int i = 0; i < 10; i++) {
@@ -565,7 +565,7 @@ void SpellFxRenderer::_4A7C07_stun_spell_fx(SpriteObject *a2) {
 
         local_0.particle_size = 3.0;
         local_0.timeToLive = Duration::randomRealtimeMilliseconds(vrng, 500, 1000);
-        local_0.texture = a2->spriteFrame()->sprites[0]->texture;
+        local_0.texture = a2->spriteFrame()->sprites[0];
         local_0.paletteID = a2->spriteFrame()->paletteId;
         particle_engine->AddParticle(&local_0);
         local_0.particle_size = 2.0;  // was 4.0 - reduce size of stun ring;
@@ -592,7 +592,7 @@ void SpellFxRenderer::_4A7C07_stun_spell_fx(SpriteObject *a2) {
         local_0.shiftY = 0.0f;
         local_0.shiftZ = 0.0f;
         local_0.timeToLive = Duration::randomRealtimeMilliseconds(vrng, 500, 1000);
-        local_0.texture = a2->spriteFrame()->sprites[0]->texture;
+        local_0.texture = a2->spriteFrame()->sprites[0];
         local_0.paletteID = a2->spriteFrame()->paletteId;
         particle_engine->AddParticle(&local_0);
     }
@@ -1290,7 +1290,7 @@ void SpellFxRenderer::RenderSpecialEffects() {
         prismaticFrame = pSpriteFrameTable->GetFrame(pSpriteFrameTable->FastFindSprite("spell84"), animElapsed);
         uAnimLength -= gameTimer->dt();
 
-        render->DrawSpecialEffectsQuad(prismaticFrame->sprites[0]->texture, prismaticFrame->paletteId);
+        render->DrawSpecialEffectsQuad(prismaticFrame->sprites[0], prismaticFrame->paletteId);
     }
 }
 
@@ -1313,38 +1313,9 @@ void SpellFxRenderer::DrawPlayerBuffAnims() {
 
 //----- (004A90A0) --------------------------------------------------------
 void SpellFxRenderer::LoadAnimations() {
-    effpar01 = assets->getBitmap("effpar01");  // pBitmaps_LOD->LoadTexture("effpar01");
-    effpar02 = assets->getBitmap("effpar02");  // pBitmaps_LOD->LoadTexture("effpar02");
-    effpar03 = assets->getBitmap("effpar03");  // pBitmaps_LOD->LoadTexture("effpar03");
-
-    // spell not implemented in the game
-    // uSpriteID_sp57c = pSprites_LOD->LoadSprite("sp57c", 6);
-
-    pSpriteFrameTable->InitializeSprite(pSpriteFrameTable->FastFindSprite("spell01"));
-    pSpriteFrameTable->InitializeSprite(pSpriteFrameTable->FastFindSprite("spell02"));
-    pSpriteFrameTable->InitializeSprite(pSpriteFrameTable->FastFindSprite("spell03"));
-    pSpriteFrameTable->InitializeSprite(pSpriteFrameTable->FastFindSprite("spell09"));
-    pSpriteFrameTable->InitializeSprite(pSpriteFrameTable->FastFindSprite("spell11"));
-    pSpriteFrameTable->InitializeSprite(pSpriteFrameTable->FastFindSprite("spell18"));
-    pSpriteFrameTable->InitializeSprite(pSpriteFrameTable->FastFindSprite("spell22"));
-    pSpriteFrameTable->InitializeSprite(pSpriteFrameTable->FastFindSprite("spell26"));
-    pSpriteFrameTable->InitializeSprite(pSpriteFrameTable->FastFindSprite("spell29"));
-    pSpriteFrameTable->InitializeSprite(pSpriteFrameTable->FastFindSprite("spell39"));
-    pSpriteFrameTable->InitializeSprite(pSpriteFrameTable->FastFindSprite("spell39c"));
-    pSpriteFrameTable->InitializeSprite(pSpriteFrameTable->FastFindSprite("spell41"));
-    pSpriteFrameTable->InitializeSprite(pSpriteFrameTable->FastFindSprite("spell57c"));
-    pSpriteFrameTable->InitializeSprite(pSpriteFrameTable->FastFindSprite("spell62"));
-    pSpriteFrameTable->InitializeSprite(pSpriteFrameTable->FastFindSprite("spell65"));
-    pSpriteFrameTable->InitializeSprite(pSpriteFrameTable->FastFindSprite("spell66"));
-    pSpriteFrameTable->InitializeSprite(pSpriteFrameTable->FastFindSprite("spell70"));
-    pSpriteFrameTable->InitializeSprite(pSpriteFrameTable->FastFindSprite("spell76"));
-    pSpriteFrameTable->InitializeSprite(pSpriteFrameTable->FastFindSprite("spell84"));
-    pSpriteFrameTable->InitializeSprite(pSpriteFrameTable->FastFindSprite("spell90"));
-    pSpriteFrameTable->InitializeSprite(pSpriteFrameTable->FastFindSprite("spell92"));
-    pSpriteFrameTable->InitializeSprite(pSpriteFrameTable->FastFindSprite("spell93"));
-    pSpriteFrameTable->InitializeSprite(pSpriteFrameTable->FastFindSprite("spell97"));
-    pSpriteFrameTable->InitializeSprite(pSpriteFrameTable->FastFindSprite("spell97c"));
-    pSpriteFrameTable->InitializeSprite(pSpriteFrameTable->FastFindSprite("spell97c"));
+    effpar01 = assets->getBitmap("effpar01");
+    effpar02 = assets->getBitmap("effpar02");
+    effpar03 = assets->getBitmap("effpar03");
 }
 
 //----- (004775ED) --------------------------------------------------------
