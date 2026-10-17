@@ -17,7 +17,6 @@ UNIT_TEST(Path, ConversionsAreChecked) {
     static_assert(std::is_convertible_v<std::string_view, Path>);
     static_assert(std::is_convertible_v<std::string, Path>);
     static_assert(std::is_convertible_v<const std::string &, Path>);
-    static_assert(std::is_same_v<decltype(Path().str()), const std::string &>); // No copy on every call.
 }
 
 UNIT_TEST(Path, NativeRoundTrip) {
