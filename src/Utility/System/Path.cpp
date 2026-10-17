@@ -1,6 +1,7 @@
 #include "Path.h"
 
 #include <algorithm>
+#include <cassert>
 #include <cstddef>
 #include <string>
 #include <string_view>
@@ -281,17 +282,6 @@ Path Path::parent() const {
     return result;
 }
 
-Path &Path::operator/=(PathView tail) {
-    if (!tail.root().empty())
-        return *this = *this / Path(tail);
-
-    size_t size = _path.size();
-    _path += tail.str(); // Appending first is safe even when the tail points into this path.
-    if (size > 0 && _path[size - 1] != separator)
-        _path.insert(size, 1, separator);
-    return *this;
-}
-
 Path Path::withExtension(std::string_view extension) const {
     PathRoot root = parseRoot(_path);
     size_t nameOffset = fileNameOffset(_path, root);
@@ -309,26 +299,30 @@ Path Path::withExtension(std::string_view extension) const {
     return result;
 }
 
-Path Path::operator/(const Path &tail) const {
-    PathRoot root = parseRoot(_path);
-    PathRoot tailRoot = parseRoot(tail._path);
-    std::string_view rootName = std::string_view(_path).substr(0, root.size);
-    std::string_view tailRootName = std::string_view(tail._path).substr(0, tailRoot.size);
-    bool tailNamesAnotherRoot = !tailRootName.empty() && !ascii::noCaseEquals(tailRootName, rootName); // "c:" is "C:".
-
-    if (tailRoot.isAbsolute() || tailNamesAnotherRoot)
-        return tail;
+Path Path::joined(std::string_view tail) const {
+    PathRoot selfRoot = parseRoot(_path);
+    PathRoot tailRoot = parseRoot(tail);
+    std::string_view selfRootName = std::string_view(_path).substr(0, selfRoot.size);
+    std::string_view tailRootName = tail.substr(0, tailRoot.size);
+    bool tailNamesAnotherRoot = !tailRootName.empty() && !ascii::noCaseEquals(tailRootName, selfRootName); // "c:" is "C:".
 
     Path result;
+    if (tailRoot.isAbsolute() || tailNamesAnotherRoot) {
+        result._path = tail;
+        return result;
+    }
+
+    result._path.reserve(_path.size() + 1 + tail.size());
     if (tailRoot.hasRootDirectory) {
-        result._path = _path.substr(0, root.size); // A rooted tail keeps our root name, and drops everything after it.
+        assert(tailRootName.empty()); // A root name with a root directory is absolute.
+        result._path = selfRootName; // Win32 resolves "/b" on the current drive, so it keeps this path's root name.
     } else {
         result._path = _path;
         if (!_path.empty() && _path.back() != separator)
             result._path += separator; // After a bare drive letter too, "C:" / "x" is "C:/x" and not the drive-relative "C:x".
     }
 
-    result._path.append(tail._path, tailRoot.size);
+    result._path += tail.substr(tailRoot.size);
     return result;
 }
 
