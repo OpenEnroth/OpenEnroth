@@ -1,5 +1,7 @@
 #include "NullRenderer.h"
 
+#include <cassert>
+
 #include "Engine/EngineGlobals.h"
 #include "Engine/Engine.h"
 #include "Engine/EngineCallObserver.h"
@@ -56,7 +58,8 @@ void NullRenderer::SetUIClipRect(const Recti &rect) {}
 void NullRenderer::ResetUIClipRect() {}
 
 void NullRenderer::DrawQuad2D(GraphicsImage *texture, const Recti &srcRect, const Recti &dstRect, Color color) {
-    if (texture && engine->callObserver)
+    assert(texture);
+    if (engine->callObserver)
         engine->callObserver->notify(CALL_DRAW_2D_TEXTURE, texture->name());
 }
 

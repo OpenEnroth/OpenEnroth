@@ -37,7 +37,8 @@ void Renderer::DrawQuad2D(GraphicsImage *texture, const Recti &srcRect, Pointi d
 }
 
 void Renderer::DrawQuad2D(GraphicsImage *texture, Pointi dstPoint, Color color) {
-    Sizei size = texture ? texture->size() : Sizei();
+    assert(texture);
+    Sizei size = texture->size();
     DrawQuad2D(texture, Recti(Pointi(), size), Recti(dstPoint, size), color);
 }
 

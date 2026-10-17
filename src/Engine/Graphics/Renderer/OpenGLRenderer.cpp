@@ -2,6 +2,7 @@
 
 #include "OpenGLVertexBuffer.h"
 
+#include <cassert>
 #include <cmath>
 #include <algorithm>
 #include <iterator>
@@ -1973,10 +1974,7 @@ void OpenGLRenderer::BeginScene2D() {
 }
 
 void OpenGLRenderer::DrawQuad2D(GraphicsImage *texture, const Recti &srcRect, const Recti &dstRect, Color color) {
-    if (!texture) {
-        MM_TRACE("Null texture passed to DrawQuad2D");
-        return;
-    }
+    assert(texture);
 
     if (engine->callObserver)
         engine->callObserver->notify(CALL_DRAW_2D_TEXTURE, texture->name());
