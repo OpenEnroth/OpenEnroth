@@ -197,16 +197,20 @@ class Path {
      *                                  name. A bare drive letter takes a separator too, so `"C:" / "x"` is `"C:/x"`
      *                                  and not the drive-relative `"C:x"`, which has to be spelled out if wanted.
      */
-    [[nodiscard]] Path operator/(const Path &tail) const;
+    [[nodiscard]] Path operator/(const Path &tail) const {
+        return joined(tail._path);
+    }
 
     /**
      * @param tail                      Path to append, joined the same way `operator/` does it. It may point into
      *                                  this path.
      * @return                          This path.
      */
-    Path &operator/=(PathView tail);
     Path &operator/=(const Path &tail) {
-        return *this /= PathView(tail);
+        return *this = joined(tail._path);
+    }
+    Path &operator/=(PathView tail) {
+        return *this = joined(tail.str());
     }
 
     friend auto operator<=>(const Path &l, const Path &r) = default;
@@ -222,6 +226,12 @@ class Path {
     }
 
  private:
+    /**
+     * @param tail                      Path to append, as a string.
+     * @return                          `*this / tail`, see `operator/`.
+     */
+    [[nodiscard]] Path joined(std::string_view tail) const;
+
     std::string _path;
 };
 
