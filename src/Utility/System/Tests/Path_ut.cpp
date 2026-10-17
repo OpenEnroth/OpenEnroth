@@ -215,12 +215,8 @@ UNIT_TEST(Path, Root) {
 }
 
 UNIT_TEST(Path, Split) {
-    auto segments = [] (std::string_view path) {
-        std::vector<std::string> result;
-        Path owner(path);
-        for (std::string_view segment : owner.split())
-            result.emplace_back(segment);
-        return result;
+    auto segments = [] (std::string_view path) -> std::vector<std::string> {
+        return Path(path).split();
     };
 
     EXPECT_TRUE(segments("").empty());
