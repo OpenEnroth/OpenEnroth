@@ -42,6 +42,11 @@ class PathView {
     [[nodiscard]] bool isNormalized() const;
 
     /**
+     * @return                          Lexical parent, see `Path::parent`.
+     */
+    [[nodiscard]] PathView parent() const;
+
+    /**
      * @return                          The segments after the root. See `Path::split`.
      */
     [[nodiscard]] auto split() const {
