@@ -133,8 +133,9 @@ class Path {
 
     /**
      * @return                          Whether this path points above its starting point. `".."` and `"a/../.."` do,
-     *                                  `"a/../b"` doesn't. Always `false` for a path with a root. Doesn't require
-     *                                  normal form.
+     *                                  `"a/../b"` doesn't. Always `false` for a path with a root directory, since
+     *                                  nothing is above it, so `"/.."` doesn't escape, while the drive-relative
+     *                                  `"C:.."` does. Doesn't require normal form.
      */
     [[nodiscard]] bool isEscaping() const {
         return PathView(*this).isEscaping();
