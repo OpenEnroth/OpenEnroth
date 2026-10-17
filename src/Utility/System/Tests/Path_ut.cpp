@@ -265,7 +265,7 @@ UNIT_TEST(Path, Append) {
     // Appending joins the same way operator/ does, also when the tail points into the path itself.
     auto testOne = [] (std::string_view head, std::string_view tail, std::string_view result) {
         Path appended(head);
-        appended /= PathView(Path(tail));
+        appended /= Path(tail);
         EXPECT_EQ(appended.str(), result) << "for '" << head << "' and '" << tail << "'";
         EXPECT_EQ((Path(head) / Path(tail)).str(), result) << "for '" << head << "' and '" << tail << "'";
     };
@@ -284,12 +284,12 @@ UNIT_TEST(Path, Append) {
 
     std::string longName(40, 'x'); // Longer than the small string buffer, so appending reallocates.
     Path self(longName);
-    self /= PathView(self);
+    self /= self;
     EXPECT_EQ(self.str(), longName + "/" + longName);
 
     std::string otherName(40, 'y');
     Path tailed(longName + "/" + otherName);
-    tailed /= PathView(tailed).tailAt(*std::next(tailed.split().begin()));
+    tailed /= tailed.tailAt(*std::next(tailed.split().begin()));
     EXPECT_EQ(tailed.str(), longName + "/" + otherName + "/" + otherName);
 
     Path literal("a");
