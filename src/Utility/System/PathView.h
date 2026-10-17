@@ -17,18 +17,6 @@ class PathView {
     PathView() = default;
     inline PathView(const Path &path); // NOLINT: intentionally implicit.
 
-    /**
-     * @param path                      Path string in normal form, e.g. a slice of a normalized `Path`. It has to
-     *                                  outlive the view.
-     * @return                          View over the given string.
-     */
-    [[nodiscard]] static PathView fromNormalized(std::string_view path) {
-        PathView result;
-        result._path = path;
-        assert(result.isNormalized());
-        return result;
-    }
-
     [[nodiscard]] std::string_view str() const {
         return _path;
     }
