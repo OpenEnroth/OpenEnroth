@@ -186,8 +186,7 @@ class Path {
     }
 
     /**
-     * @param tail                      Path to append, joined the same way `operator/` does it. It may point into
-     *                                  this path.
+     * @param tail                      Path to append, joined the same way `operator/` does it.
      * @return                          This path.
      */
     Path &operator/=(const Path &tail) {
