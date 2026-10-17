@@ -1,3 +1,4 @@
+#include <algorithm>
 #include <ranges>
 #include <string>
 #include <vector>
@@ -8,6 +9,7 @@
 #include "Library/FileSystem/Native/NativeFileSystem.h"
 
 #include "Utility/Streams/FileOutputStream.h"
+#include "Utility/String/Encoding.h"
 #include "Utility/System/Fs.h"
 
 UNIT_TEST(NativeFileSystem, LsRoot) {
@@ -135,3 +137,77 @@ UNIT_TEST(NativeFileSystem, EscapingDisplayPath) {
 
     EXPECT_TRUE(fs.displayPath("..").ends_with(".."));
 }
+
+UNIT_TEST(NativeFileSystem, DisplayPathOfMissingFile) {
+    // FileSystemException formats the very path it complains about, so displayPath has to work for a missing file.
+    ScopedTestFolder tmp("tmp_native_dir");
+    NativeFileSystem fs("tmp_native_dir");
+
+    EXPECT_EQ(fs.displayPath("a/doesnt_exist.txt"), (fs::absolute("tmp_native_dir") / Path("a/doesnt_exist.txt")).displayString());
+}
+
+UNIT_TEST(NativeFileSystem, NonAsciiFileNames) {
+    // A non-ASCII name has to come back from ls and stay usable.
+    ScopedTestFolder tmp("tmp_native_dir");
+    ScopedTestFile tmp2("tmp_native_dir/\xD0\xBB\xD0\xBE\xD0\xBB.txt", "lol"); // "лол.txt" in UTF-8.
+
+    NativeFileSystem fs("tmp_native_dir");
+    std::vector<DirectoryEntry> entries = fs.ls("");
+    ASSERT_EQ(entries.size(), 1u);
+
+    std::string name = entries[0].name;
+    EXPECT_EQ(name, "\xD0\xBB\xD0\xBE\xD0\xBB.txt");
+    EXPECT_TRUE(fs.exists(name));
+    EXPECT_EQ(fs.stat(name), FileStat(FILE_REGULAR, 3));
+    EXPECT_EQ(fs.read(name).str(), "lol");
+    EXPECT_EQ(fs.openForReading(name)->readAll(), "lol");
+
+    fs.write(name + ".2", Blob::fromString("kek"));
+    entries = fs.ls("");
+    EXPECT_TRUE(std::ranges::find(entries, name + ".2", &DirectoryEntry::name) != std::ranges::end(entries));
+}
+
+#ifdef _WINDOWS
+UNIT_TEST(NativeFileSystem, WindowsOddFileNames) {
+    // Win32 doesn't validate UTF-16 in file names, so unpaired surrogates and non-characters are all valid.
+    const wchar_t *nativeNames[] = {
+        L"lol\xDC00kek.txt", // Unpaired trail surrogate.
+        L"lol\xD800kek.txt", // Unpaired lead surrogate.
+        L"lol\xD800", // Lead surrogate at the very end.
+        L"lol\xFFFE\xFFFF\xFDD0kek.txt", // Non-characters.
+        L"lol\xD83D\xDE00kek.txt", // A valid pair.
+    };
+
+    for (const wchar_t *nativeName : nativeNames) {
+        ScopedTestFolder tmp("tmp_native_dir");
+        Path nativePath = Path("tmp_native_dir") / Path::fromNative(nativeName);
+        ScopedTestFile file(nativePath, "lol");
+
+        NativeFileSystem fs("tmp_native_dir");
+        std::vector<DirectoryEntry> entries = fs.ls("");
+        ASSERT_EQ(entries.size(), 1u) << txt::wideToWtf8(nativeName);
+        std::string name = entries[0].name;
+
+        EXPECT_EQ(txt::wtf8ToWide(name), nativeName);
+        EXPECT_TRUE(fs.exists(name));
+        EXPECT_EQ(fs.stat(name), FileStat(FILE_REGULAR, 3));
+        EXPECT_EQ(fs.read(name).str(), "lol");
+        EXPECT_EQ(fs.openForReading(name)->readAll(), "lol");
+        EXPECT_EQ(fs.displayPath(name), fs::absolute(nativePath).displayString());
+
+        fs.write(name + ".2", Blob::fromString("kek"));
+        EXPECT_TRUE(fs::exists(Path(nativePath.str() + ".2")));
+    }
+}
+
+UNIT_TEST(NativeFileSystem, WindowsSurrogateBytes) {
+    // An unpaired surrogate is WTF-8 encoded like any other code point, so \xDC00 lists as ED B0 80.
+    ScopedTestFolder tmp("tmp_native_dir");
+    ScopedTestFile file(Path("tmp_native_dir") / Path::fromNative(L"lol\xDC00kek.txt"), "lol");
+
+    NativeFileSystem fs("tmp_native_dir");
+    std::vector<DirectoryEntry> entries = fs.ls("");
+    ASSERT_EQ(entries.size(), 1u);
+    EXPECT_EQ(entries[0].name, "lol\xED\xB0\x80kek.txt");
+}
+#endif

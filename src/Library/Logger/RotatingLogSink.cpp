@@ -10,9 +10,9 @@
 
 #include "Utility/String/Format.h"
 
-RotatingLogSink::RotatingLogSink(std::string_view path, FileSystem *fs, int count): StreamLogSink(openRotatingStream(FileSystemPath(path), fs, count)) {}
+RotatingLogSink::RotatingLogSink(std::string_view path, FileSystem *fs, int count): StreamLogSink(openRotatingStream(NormalPath(path).path(), fs, count)) {}
 
-std::unique_ptr<OutputStream> RotatingLogSink::openRotatingStream(const FileSystemPath &path, FileSystem *fs, int count) {
+std::unique_ptr<OutputStream> RotatingLogSink::openRotatingStream(const Path &path, FileSystem *fs, int count) {
     assert(fs);
 
     // Find existing log files.
