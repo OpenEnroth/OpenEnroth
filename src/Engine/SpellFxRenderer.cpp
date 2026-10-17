@@ -1316,32 +1316,6 @@ void SpellFxRenderer::LoadAnimations() {
     effpar01 = assets->getBitmap("effpar01");
     effpar02 = assets->getBitmap("effpar02");
     effpar03 = assets->getBitmap("effpar03");
-
-    pSpriteFrameTable->InitializeSprite(pSpriteFrameTable->FastFindSprite("spell01"));
-    pSpriteFrameTable->InitializeSprite(pSpriteFrameTable->FastFindSprite("spell02"));
-    pSpriteFrameTable->InitializeSprite(pSpriteFrameTable->FastFindSprite("spell03"));
-    pSpriteFrameTable->InitializeSprite(pSpriteFrameTable->FastFindSprite("spell09"));
-    pSpriteFrameTable->InitializeSprite(pSpriteFrameTable->FastFindSprite("spell11"));
-    pSpriteFrameTable->InitializeSprite(pSpriteFrameTable->FastFindSprite("spell18"));
-    pSpriteFrameTable->InitializeSprite(pSpriteFrameTable->FastFindSprite("spell22"));
-    pSpriteFrameTable->InitializeSprite(pSpriteFrameTable->FastFindSprite("spell26"));
-    pSpriteFrameTable->InitializeSprite(pSpriteFrameTable->FastFindSprite("spell29"));
-    pSpriteFrameTable->InitializeSprite(pSpriteFrameTable->FastFindSprite("spell39"));
-    pSpriteFrameTable->InitializeSprite(pSpriteFrameTable->FastFindSprite("spell39c"));
-    pSpriteFrameTable->InitializeSprite(pSpriteFrameTable->FastFindSprite("spell41"));
-    pSpriteFrameTable->InitializeSprite(pSpriteFrameTable->FastFindSprite("spell57c"));
-    pSpriteFrameTable->InitializeSprite(pSpriteFrameTable->FastFindSprite("spell62"));
-    pSpriteFrameTable->InitializeSprite(pSpriteFrameTable->FastFindSprite("spell65"));
-    pSpriteFrameTable->InitializeSprite(pSpriteFrameTable->FastFindSprite("spell66"));
-    pSpriteFrameTable->InitializeSprite(pSpriteFrameTable->FastFindSprite("spell70"));
-    pSpriteFrameTable->InitializeSprite(pSpriteFrameTable->FastFindSprite("spell76"));
-    pSpriteFrameTable->InitializeSprite(pSpriteFrameTable->FastFindSprite("spell84"));
-    pSpriteFrameTable->InitializeSprite(pSpriteFrameTable->FastFindSprite("spell90"));
-    pSpriteFrameTable->InitializeSprite(pSpriteFrameTable->FastFindSprite("spell92"));
-    pSpriteFrameTable->InitializeSprite(pSpriteFrameTable->FastFindSprite("spell93"));
-    pSpriteFrameTable->InitializeSprite(pSpriteFrameTable->FastFindSprite("spell97"));
-    pSpriteFrameTable->InitializeSprite(pSpriteFrameTable->FastFindSprite("spell97c"));
-    pSpriteFrameTable->InitializeSprite(pSpriteFrameTable->FastFindSprite("spell97c"));
 }
 
 //----- (004775ED) --------------------------------------------------------

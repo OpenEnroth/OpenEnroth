@@ -3,7 +3,6 @@
 #include <string>
 #include <unordered_map>
 #include <memory>
-#include <vector>
 
 #include "GUI/GUIFont.h"
 
@@ -34,15 +33,7 @@ class AssetsManager {
      */
     GraphicsImage *getSprite(std::string_view name);
 
-    /**
-     * Marks every sprite loaded so far as kept by `releaseUnreservedSprites()`.
-     */
-    void reserveLoadedSprites();
-
-    /**
-     * Frees the sprites loaded since the last `reserveLoadedSprites()` call.
-     */
-    void releaseUnreservedSprites();
+    void releaseSprites();
 
     std::unique_ptr<GUIFont> pFontBookOnlyShadow;
     std::unique_ptr<GUIFont> pFontBookLloyds;
@@ -59,10 +50,6 @@ class AssetsManager {
     std::unordered_map<std::string, std::unique_ptr<GraphicsImage>> bitmaps;
     std::unordered_map<std::string, std::unique_ptr<GraphicsImage>> sprites;
     std::unordered_map<std::string, std::unique_ptr<GraphicsImage>> images;
-
- private:
-    std::vector<std::string> _spriteLoadOrder;
-    size_t _reservedSpriteCount = 0;
 };
 
 extern AssetsManager *assets;

@@ -111,19 +111,11 @@ GraphicsImage *AssetsManager::getSprite(std::string_view name) {
         if (!image->size())
             return nullptr;
         i = sprites.emplace(filename, std::move(image)).first;
-        _spriteLoadOrder.push_back(filename);
     }
 
     return i->second.get();
 }
 
-void AssetsManager::reserveLoadedSprites() {
-    _reservedSpriteCount = _spriteLoadOrder.size();
-}
-
-void AssetsManager::releaseUnreservedSprites() {
-    while (_spriteLoadOrder.size() > _reservedSpriteCount) {
-        sprites.erase(_spriteLoadOrder.back());
-        _spriteLoadOrder.pop_back();
-    }
+void AssetsManager::releaseSprites() {
+    sprites.clear();
 }

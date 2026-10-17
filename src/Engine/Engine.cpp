@@ -739,7 +739,6 @@ void DoPrepareWorld(bool bLoading, int _1_fullscreen_loading_2_box) {
 //----- (004647AB) --------------------------------------------------------
 void FinalInitialization() {
     InitializeTurnBasedAnimations(&stru_50C198);
-    assets->reserveLoadedSprites();
 }
 
 void MM7_LoadLods() {
@@ -844,9 +843,6 @@ void Engine::SecondaryInitialization() {
 
     initializeHouses(engine->resources()->eventsData("2dEvents.txt"));
 
-    pObjectTable->InitializeSprites();
-    pOverlayTable->initializeSprites();
-
     // TODO(captainurist): try resurrecting the food / gold animations using resource files from MM6?
     //for (unsigned i = 0; i < 4; ++i) {
     //    static const char *pUIAnimNames[4] = {"glow03", "glow05", "torchA", "wizeyeA"};
@@ -875,8 +871,6 @@ void Engine::SecondaryInitialization() {
     initializeChests();
 
     engine->_globalEventMap = EvtProgram::load(engine->resources()->eventsData("global.evt"));
-
-    assets->reserveLoadedSprites();
 
     Initialize_GamesLOD_NewLOD();
 }
@@ -936,16 +930,16 @@ void Engine::ResetCursor_Palettes_LODs_Level_Audio_SFT_Windows() {
     // Render billboards are used in hit tests, but we're releasing textures, so can't use them anymore.
     render->uNumBillboardsToDraw = 0;
 
-    assets->releaseUnreservedSprites();
-
     if (uCurrentlyLoadedLevelType == LEVEL_INDOOR)
         pIndoor->Release();
     else if (uCurrentlyLoadedLevelType == LEVEL_OUTDOOR)
         pOutdoor->Release();
 
+    pSpriteFrameTable->resetLoadedSprites();
+    assets->releaseSprites(); // After the level release above has cleared the particles that point at sprites.
+
     pAudioPlayer->stopSounds();
     uCurrentlyLoadedLevelType = LEVEL_NULL;
-    pSpriteFrameTable->ResetLoadedFlags();
     pParty->armageddon_timer = 0_ticks;
 
     windowManager.DeleteAllVisibleWindows();

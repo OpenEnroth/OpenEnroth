@@ -29,7 +29,11 @@ class SpriteFrame {
 };
 
 struct SpriteFrameTable {
-    void ResetLoadedFlags();
+    /**
+     * Drops the sprites of every frame. Frames load them again when `GetFrame()` or `GetFrameReversed()` next returns
+     * them.
+     */
+    void resetLoadedSprites();
     void InitializeSprite(signed int uSpriteID);
 
     /**
