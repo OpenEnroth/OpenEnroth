@@ -118,7 +118,14 @@ static std::string normalRootName(std::string_view path, PathRoot root) {
     return "//" + join(split(name.substr(2)).by(separator).skip(""), separator);
 }
 
-static std::string normalizePath(std::string_view path) {
+/**
+ * @param path                      Path to normalize.
+ * @param[out] rootChanged          Whether the result parses with a root other than the one it was built from.
+ *                                  Dropping the leading segments can turn the first remaining one into a drive,
+ *                                  and `"./C:."` becomes `"C:."`, whose `"."` only goes away on another pass.
+ * @return                          `path` after one normalization pass.
+ */
+static std::string normalizePathOnce(std::string_view path, bool *rootChanged) {
     PathRoot root = parseRoot(path);
 
     gch::small_vector<std::string_view, 32> segments;
@@ -144,10 +151,16 @@ static std::string normalizePath(std::string_view path) {
         result += separator;
     result += join(segments, separator);
 
-    // Dropping the leading segments can turn the first remaining one into a drive, and "./C:." becomes "C:.", whose
-    // "." only goes away on a second pass.
-    if (rootEnd(parseRoot(result)) != resultRootEnd)
-        return normalizePath(result);
+    *rootChanged = rootEnd(parseRoot(result)) != resultRootEnd;
+    return result;
+}
+
+static std::string normalizePath(std::string_view path) {
+    bool rootChanged = false;
+    std::string result = normalizePathOnce(path, &rootChanged);
+    while (rootChanged)
+        result = normalizePathOnce(result, &rootChanged);
+
     if (result.empty() && !path.empty())
         return "."; // An empty path names nothing, while this one names the current directory.
     return result;
