@@ -22,9 +22,10 @@
  * An empty path names nothing. A default-constructed `Path` holds one, `"" / "a"` is `"a"`, and the `fs::` calls
  * treat it as invalid.
  *
- * Nothing is validated. On Linux file names are arbitrary byte strings and pass through as they are, so `str` isn't
- * necessarily valid UTF-8. On Windows it is the caller that keeps the string valid WTF-8, and `native` turns an
- * invalid sequence into a replacement character. On MacOS, APFS only takes file names that are valid UTF-8.
+ * Nothing is validated at `Path` level. All validation lives at the `fs::` level, where a path meets the OS. On Linux
+ * file names are arbitrary byte strings and pass through as they are, so `str` isn't necessarily valid UTF-8. On
+ * Windows it is the caller that keeps the string valid WTF-8, and `native` turns an invalid sequence into a
+ * replacement character. On MacOS, APFS only takes file names that are valid UTF-8.
  */
 class Path {
  public:
@@ -100,15 +101,11 @@ class Path {
     }
 
     /**
-     * @return                          Copy of this path in lexical normal form. The root is kept as it is, apart
-     *                                  from doubled separators in a plain UNC root, which collapse the way Win32
-     *                                  reads them, so `"//server//x"` becomes `"//server/x"`. Then come single
-     *                                  separators with no trailing one, no `.` segments, and `..` collapsed. A `..`
-     *                                  survives only as the leading run of a path without a root directory, and
-     *                                  above a root directory it's dropped, so `"/.."` is `"/"`. A path that
-     *                                  collapses to nothing, like `"a/.."`, normalizes to `"."`, and only the empty
-     *                                  path stays empty. On Windows, dropping segments can bring a drive to the
-     *                                  front, so `"a/../C:/x"` normalizes to the absolute `"C:/x"`.
+     * @return                          Copy of this path in lexical normal form: single separators, no trailing one,
+     *                                  no `.` segments, and `..` collapsed where it can be. A leading `..` stays in a
+     *                                  path without a root directory and is dropped above one, so `"/.."` is `"/"`.
+     *                                  A path that collapses to nothing becomes `"."`, and only the empty path stays
+     *                                  empty.
      */
     [[nodiscard]] Path normalized() const;
 
