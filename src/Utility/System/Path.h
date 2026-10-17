@@ -27,6 +27,9 @@
  *
  * An empty path names nothing. A default-constructed `Path` holds one, `"" / "a"` is `"a"`, and the `fs::` calls
  * treat it as invalid.
+ *
+ * Everything lexical is `PathView`'s and documented there, `Path` only forwards to it. What stays here needs the
+ * owned string: construction, `str`, `native`, and appending in place.
  */
 class Path {
  public:
@@ -73,130 +76,80 @@ class Path {
     }
 #endif
 
-    /**
-     * @return                          This path as a valid UTF-8 string for displaying to the user, with everything
-     *                                  that's not valid UTF-8 replaced with U+FFFD.
-     */
-    [[nodiscard]] std::string displayString() const;
-
-    /**
-     * @param extension                 New extension, with or without the leading dot. Pass an empty string to drop
-     *                                  the extension.
-     * @return                          Copy of this path with the extension replaced. Only the last extension is
-     *                                  replaced, so `"a.tar.gz"` with `".zip"` becomes `"a.tar.zip"`. A dotfile such
-     *                                  as `".bashrc"`, or a name like `"..."` whose stem would be all dots, has no
-     *                                  extension. A path without a file name gets the extension as one.
-     */
-    [[nodiscard]] Path withExtension(std::string_view extension) const;
-
     [[nodiscard]] bool isEmpty() const {
         return _path.empty();
     }
 
-    /**
-     * @return                          The root name and root directory this path starts with, empty if there are
-     *                                  none. That's `"/"`, or `"C:"`, `"C:/"` and `"//server/share/"` on Windows.
-     */
+    [[nodiscard]] std::string displayString() const {
+        return PathView(*this).displayString();
+    }
+
+    [[nodiscard]] Path withExtension(std::string_view extension) const {
+        return PathView(*this).withExtension(extension);
+    }
+
     [[nodiscard]] std::string_view root() const {
         return PathView(*this).root();
     }
 
-    /**
-     * @return                          Copy of this path in lexical normal form: single separators, no trailing one,
-     *                                  no `.` segments, and `..` collapsed where it can be. A leading `..` stays in a
-     *                                  path without a root directory and is dropped above one, so `"/.."` is `"/"`.
-     *                                  A path that collapses to nothing becomes `"."`, and only the empty path stays
-     *                                  empty.
-     */
-    [[nodiscard]] Path normalized() const;
+    [[nodiscard]] Path normalized() const {
+        return PathView(*this).normalized();
+    }
 
-    /**
-     * @return                          Whether `normalized` would return this path unchanged. Allocates nothing.
-     */
     [[nodiscard]] bool isNormalized() const {
         return PathView(*this).isNormalized();
     }
 
-    /**
-     * @return                          Whether this path points above its starting point. `".."` and `"a/../.."` do,
-     *                                  `"a/../b"` doesn't. Always `false` for a path with a root directory, since
-     *                                  nothing is above it, so `"/.."` doesn't escape, while the drive-relative
-     *                                  `"C:.."` does. Doesn't require normal form.
-     */
     [[nodiscard]] bool isEscaping() const {
         return PathView(*this).isEscaping();
     }
 
-    /**
-     * @return                          The last segment, empty if there is none. `"a/b.txt"` gives `"b.txt"`.
-     */
-    [[nodiscard]] std::string_view name() const;
+    [[nodiscard]] std::string_view name() const {
+        return PathView(*this).name();
+    }
 
-    /**
-     * @return                          The extension of the file name with its leading dot, empty if there is none,
-     *                                  by the same rules as `withExtension`.
-     */
-    [[nodiscard]] std::string_view extension() const;
+    [[nodiscard]] std::string_view extension() const {
+        return PathView(*this).extension();
+    }
 
-    /**
-     * @return                          The file name without its extension. `"a/b.tar.gz"` gives `"b.tar"`.
-     */
-    [[nodiscard]] std::string_view stem() const;
+    [[nodiscard]] std::string_view stem() const {
+        return PathView(*this).stem();
+    }
 
-    /**
-     * @return                          Lexical parent, which keeps the root. The parent of `"a"` is `"."`, and the
-     *                                  parent of `"/a"` and of `"/"` is `"/"`. Only the empty path has an empty
-     *                                  parent. The lexical parent of `"../.."` is `".."`, which is not its semantic
-     *                                  parent.
-     */
     [[nodiscard]] PathView parent() const {
         return PathView(*this).parent();
     }
 
-    /**
-     * @return                          The segments after the root. Runs of separators count as one, so there are
-     *                                  no empty segments.
-     */
     [[nodiscard]] auto split() const {
         return PathView(*this).split();
     }
 
-    /**
-     * @param segment                   Segment of this path, as handed out by `split`.
-     * @return                          The rest of this path, starting at `segment`. See `PathView::tailAt`.
-     */
     [[nodiscard]] PathView tailAt(std::same_as<std::string_view> auto segment) const {
         return PathView(*this).tailAt(segment);
     }
 
-    /**
-     * @param segment                   Segment of this path, as handed out by `split`, or an empty view.
-     * @return                          The rest of this path after `segment`. See `PathView::tailAfter`.
-     */
     [[nodiscard]] PathView tailAfter(std::same_as<std::string_view> auto segment) const {
         return PathView(*this).tailAfter(segment);
     }
 
-    /**
-     * @param tail                      Path to append.
-     * @return                          The two paths joined with a separator. An absolute `tail`, or one naming
-     *                                  another root, replaces this path. A rooted `tail` keeps only this path's root
-     *                                  name. A bare drive letter takes a separator too, so `"C:" / "x"` is `"C:/x"`
-     *                                  and not the drive-relative `"C:x"`, which has to be spelled out if wanted.
-     */
+    [[nodiscard]] Path operator/(PathView tail) const {
+        return PathView(*this) / tail;
+    }
+
     [[nodiscard]] Path operator/(const Path &tail) const {
-        return joined(tail._path);
+        return PathView(*this) / PathView(tail);
     }
 
     /**
      * @param tail                      Path to append, joined the same way `operator/` does it.
      * @return                          This path.
      */
-    Path &operator/=(const Path &tail) {
-        return *this = joined(tail._path);
-    }
     Path &operator/=(PathView tail) {
-        return *this = joined(tail.str());
+        return *this = PathView(*this) / tail;
+    }
+
+    Path &operator/=(const Path &tail) {
+        return *this /= PathView(tail);
     }
 
     friend auto operator<=>(const Path &l, const Path &r) = default;
@@ -212,15 +165,15 @@ class Path {
     }
 
  private:
-    [[nodiscard]] Path joined(std::string_view tail) const;
+    friend class PathView; // It builds its results in place.
 
     std::string _path;
 };
 
 inline PathView::PathView(const Path &path) : _path(path.str()) {}
 
-[[nodiscard]] inline Path operator/(PathView head, PathView tail) {
-    return Path(head) / Path(tail);
+inline Path PathView::operator/(const Path &tail) const {
+    return *this / PathView(tail);
 }
 
 template<>
