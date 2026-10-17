@@ -12,20 +12,21 @@
 /**
  * The vocabulary type for native paths.
  *
- * The path is stored as a string, WTF-8 on Windows and a byte string on POSIX, and path manipulation is lexical.
- * Everything that asks the OS lives in `Fs.h`. Backslashes become forward slashes on Windows, where both separate
- * components, and stay as they are on POSIX, where a backslash is an ordinary character in a file name.
+ * The path is stored as a string, WTF-8 on Windows and a byte string on POSIX. Backslashes become forward slashes
+ * on Windows, where both separate components, and stay as they are on POSIX, where a backslash is an ordinary
+ * character in a file name.
+ *
+ * Path manipulation is lexical, and nothing is validated at `Path` level. Everything that asks the OS lives in
+ * `Fs.h`, and that's where all validation lives too. On Linux file names are arbitrary byte strings and pass
+ * through as they are, so `str` isn't necessarily valid UTF-8. On Windows it is the caller that keeps the string
+ * valid WTF-8, and `native` turns an invalid sequence into a replacement character. On MacOS, APFS only takes file
+ * names that are valid UTF-8.
  *
  * Unlike `std::filesystem::path`, nothing here depends on the C locale. `native` and `fromNative` do the charset
  * conversion, and on Windows the OS is only ever handed `wchar_t` strings.
  *
  * An empty path names nothing. A default-constructed `Path` holds one, `"" / "a"` is `"a"`, and the `fs::` calls
  * treat it as invalid.
- *
- * Nothing is validated at `Path` level. All validation lives at the `fs::` level, where a path meets the OS. On Linux
- * file names are arbitrary byte strings and pass through as they are, so `str` isn't necessarily valid UTF-8. On
- * Windows it is the caller that keeps the string valid WTF-8, and `native` turns an invalid sequence into a
- * replacement character. On MacOS, APFS only takes file names that are valid UTF-8.
  */
 class Path {
  public:
@@ -148,7 +149,9 @@ class Path {
      *                                  parent. The lexical parent of `"../.."` is `".."`, which is not its semantic
      *                                  parent.
      */
-    [[nodiscard]] Path parent() const;
+    [[nodiscard]] PathView parent() const {
+        return PathView(*this).parent();
+    }
 
     /**
      * @return                          The segments after the root. Runs of separators count as one, so there are

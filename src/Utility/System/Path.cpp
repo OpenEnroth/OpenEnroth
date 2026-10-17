@@ -275,14 +275,6 @@ std::string_view Path::stem() const {
     return name.substr(0, name.size() - extension().size());
 }
 
-Path Path::parent() const {
-    Path result;
-    result._path = _path.substr(0, parentEnd(_path));
-    if (result._path.empty() && !_path.empty())
-        result._path = "."; // An empty path names nothing, while this one names the current directory.
-    return result;
-}
-
 Path Path::withExtension(std::string_view extension) const {
     PathRoot root = parseRoot(_path);
     size_t nameOffset = fileNameOffset(_path, root);
@@ -337,4 +329,11 @@ bool PathView::isEscaping() const {
 
 bool PathView::isNormalized() const {
     return isNormalizedPath(_path);
+}
+
+PathView PathView::parent() const {
+    std::string_view result = _path.substr(0, parentEnd(_path));
+    if (result.empty() && !_path.empty())
+        return PathView(std::string_view(".")); // A literal outlives every path, so the view never dangles.
+    return PathView(result);
 }
