@@ -1,6 +1,7 @@
 #pragma once
 
 #include <compare>
+#include <concepts>
 #include <string>
 #include <string_view>
 
@@ -171,6 +172,22 @@ class Path {
      */
     [[nodiscard]] auto split() const {
         return PathView(*this).split();
+    }
+
+    /**
+     * @param segment                   Segment of this path, as handed out by `split`.
+     * @return                          The rest of this path, starting at `segment`. See `PathView::tailAt`.
+     */
+    [[nodiscard]] PathView tailAt(std::same_as<std::string_view> auto segment) const {
+        return PathView(*this).tailAt(segment);
+    }
+
+    /**
+     * @param segment                   Segment of this path, as handed out by `split`, or an empty view.
+     * @return                          The rest of this path after `segment`. See `PathView::tailAfter`.
+     */
+    [[nodiscard]] PathView tailAfter(std::same_as<std::string_view> auto segment) const {
+        return PathView(*this).tailAfter(segment);
     }
 
     /**

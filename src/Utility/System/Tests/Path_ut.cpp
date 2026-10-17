@@ -236,40 +236,29 @@ UNIT_TEST(Path, Split) {
 }
 
 UNIT_TEST(Path, Tails) {
-    Path path("a/b/c");
-    PathView view = path;
-
-    using Tails = std::pair<std::string_view, std::string_view>;
-    auto tails = [&] (std::string_view at) -> Tails {
-        for (std::string_view segment : view.split())
+    using Tails = std::pair<std::string, std::string>;
+    auto tails = [] (const Path &path, std::string_view at) -> Tails {
+        for (std::string_view segment : path.split())
             if (segment == at)
-                return {view.tailAt(segment).str(), view.tailAfter(segment).str()};
+                return {std::string(path.tailAt(segment).str()), std::string(path.tailAfter(segment).str())};
         return {};
     };
 
-    EXPECT_EQ(tails("a"), Tails("a/b/c", "b/c"));
-    EXPECT_EQ(tails("b"), Tails("b/c", "c"));
-    EXPECT_EQ(tails("c"), Tails("c", ""));
-    EXPECT_EQ(view.tailAfter(std::string_view()).str(), "a/b/c");
-
-    Path rooted("/a/b");
-    PathView rootedView = rooted;
-    EXPECT_EQ(rootedView.tailAfter(std::string_view()).str(), "/a/b"); // The root stays.
-    EXPECT_EQ(rootedView.tailAt(*rootedView.split().begin()).str(), "a/b");
-    EXPECT_EQ(rootedView.tailAfter(*rootedView.split().begin()).str(), "b");
-
-    Path doubled("a//b//");
-    PathView doubledView = doubled;
-    EXPECT_EQ(doubledView.tailAt(*doubledView.split().begin()).str(), "a//b//");
-    EXPECT_EQ(doubledView.tailAt(*std::next(doubledView.split().begin())).str(), "b//"); // The trailing run stays.
-    EXPECT_EQ(doubledView.tailAfter(*doubledView.split().begin()).str(), "b//"); // The whole run of separators goes.
-    EXPECT_EQ(doubledView.tailAfter(*std::next(doubledView.split().begin())).str(), "");
+    EXPECT_EQ(tails("a/b/c", "a"), Tails("a/b/c", "b/c"));
+    EXPECT_EQ(tails("a/b/c", "b"), Tails("b/c", "c"));
+    EXPECT_EQ(tails("a/b/c", "c"), Tails("c", ""));
+    EXPECT_EQ(tails("/a/b", "a"), Tails("a/b", "b")); // The root isn't part of a tail.
+    EXPECT_EQ(tails("a//b//", "a"), Tails("a//b//", "b//")); // tailAfter drops the whole run of separators.
+    EXPECT_EQ(tails("a//b//", "b"), Tails("b//", "")); // tailAt keeps what follows, trailing separators included.
 #ifdef _WINDOWS
-    Path drive("C:/a/b");
-    PathView driveView = drive;
-    EXPECT_EQ(driveView.tailAt(*driveView.split().begin()).str(), "a/b");
-    EXPECT_EQ(driveView.tailAfter(*driveView.split().begin()).str(), "b");
+    EXPECT_EQ(tails("C:/a/b", "a"), Tails("a/b", "b"));
 #endif
+
+    // An empty segment gives the whole path, root included.
+    Path path("a/b/c");
+    EXPECT_EQ(path.tailAfter(std::string_view()).str(), "a/b/c");
+    Path rooted("/a/b");
+    EXPECT_EQ(rooted.tailAfter(std::string_view()).str(), "/a/b");
 }
 
 UNIT_TEST(Path, Append) {
