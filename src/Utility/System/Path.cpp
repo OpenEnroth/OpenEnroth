@@ -104,6 +104,20 @@ static size_t rootEnd(PathRoot root) {
     return root.size + (root.hasRootDirectory ? 1 : 0);
 }
 
+/**
+ * @param path                      Path to take the root name from.
+ * @param root                      Its parsed root.
+ * @return                          The root name in normal form. Win32 collapses doubled separators in a plain UNC
+ *                                  root, so `"//server//x"` gives `"//server/x"`. Every other root name is kept as
+ *                                  it is, `"//?/"` included, since Win32 keeps the separators after it.
+ */
+static std::string normalRootName(std::string_view path, PathRoot root) {
+    std::string_view name = path.substr(0, root.size);
+    if (root.kind != PATH_ROOT_UNC)
+        return std::string(name);
+    return "//" + join(split(name.substr(2)).by(separator).skip(""), separator);
+}
+
 static std::string normalizePath(std::string_view path) {
     PathRoot root = parseRoot(path);
 
@@ -124,14 +138,15 @@ static std::string normalizePath(std::string_view path) {
         segments.push_back(segment);
     }
 
-    std::string result(path.substr(0, root.size));
+    std::string result = normalRootName(path, root);
+    size_t resultRootEnd = result.size() + (root.hasRootDirectory ? 1 : 0);
     if (root.hasRootDirectory)
         result += separator;
     result += join(segments, separator);
 
     // Dropping the leading segments can turn the first remaining one into a drive, and "./C:." becomes "C:.", whose
     // "." only goes away on a second pass.
-    if (rootEnd(parseRoot(result)) != rootEnd(root))
+    if (rootEnd(parseRoot(result)) != resultRootEnd)
         return normalizePath(result);
     if (result.empty() && !path.empty())
         return "."; // An empty path names nothing, while this one names the current directory.
@@ -143,6 +158,9 @@ static bool isNormalizedPath(std::string_view path) {
         return true;
 
     PathRoot root = parseRoot(path);
+    if (root.kind == PATH_ROOT_UNC && path.substr(2, root.size - 2).contains("//"))
+        return false;
+
     std::string_view tail = path.substr(rootEnd(root));
     if (tail.empty())
         return true;

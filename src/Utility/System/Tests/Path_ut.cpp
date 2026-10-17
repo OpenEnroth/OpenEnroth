@@ -125,7 +125,8 @@ UNIT_TEST(Path, Normalized) {
     testOne("//a/b", "//a/b"); // A UNC root.
     testOne("//?/UNC//share/a", "//?/UNC//share/a"); // An empty server, which the root keeps.
     testOne("//?/UNC//share/..", "//?/UNC//share/");
-    testOne("//server//x/a", "//server//x/a"); // Win32 reads this as share "x" on "server", and the root is kept as is.
+    testOne("//server//x/a", "//server/x/a"); // Win32 reads this as share "x" on "server".
+    testOne("//server///x", "//server/x");
 #else
     testOne("//a/b", "/a/b");
 #endif
