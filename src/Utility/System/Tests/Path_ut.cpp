@@ -16,9 +16,11 @@
 
 UNIT_TEST(Path, ConversionsAreChecked) {
     static_assert(std::is_convertible_v<const char *, Path>);
-    static_assert(std::is_convertible_v<std::string_view, Path>);
-    static_assert(std::is_convertible_v<std::string, Path>);
-    static_assert(std::is_convertible_v<const std::string &, Path>);
+    static_assert(std::is_convertible_v<std::string &&, Path>);
+    static_assert(!std::is_convertible_v<std::string_view, Path>); // A copy, so it's spelled out.
+    static_assert(!std::is_convertible_v<const std::string &, Path>);
+    static_assert(std::is_constructible_v<Path, std::string_view>);
+    static_assert(std::is_constructible_v<Path, const std::string &>);
     static_assert(std::is_convertible_v<const char *, PathView>);
     static_assert(std::is_convertible_v<std::string_view, PathView>);
     static_assert(std::is_convertible_v<const std::string &, PathView>);

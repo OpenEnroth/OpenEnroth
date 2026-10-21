@@ -40,17 +40,15 @@ class Path {
     Path() = default;
 
     /**
-     * Implicit constructors from a string, with no charset conversion. A literal and a `std::string` need overloads
-     * of their own, since converting through `std::string_view` would take two user-defined conversions. The
-     * `std::string &&` one takes over the buffer.
+     * Constructors from a string, with no charset conversion. A literal and a `std::string` that's given up convert
+     * implicitly, and the `std::string &&` one takes over the buffer. Copying anything else, a `PathView`, a
+     * `std::string_view` or a `std::string` that's kept, allocates, so it goes through the explicit `PathView` one,
+     * as it does for `std::string`.
      *
      * @param path                      Path string. WTF-8 on Windows, byte string on POSIX.
      */
-    Path(std::string_view path) : _path(path) {} // NOLINT: intentionally implicit.
     Path(const char *path) : _path(path) {} // NOLINT: intentionally implicit.
-    Path(const std::string &path) : _path(path) {} // NOLINT: intentionally implicit.
     Path(std::string &&path) : _path(std::move(path)) {} // NOLINT: intentionally implicit.
-
     explicit Path(PathView path) : _path(path.str()) {}
 
     /**
