@@ -3,15 +3,22 @@
 #include <cassert>
 #include <compare>
 #include <concepts>
+#include <cstddef>
+#include <functional>
 #include <string>
 #include <string_view>
 
-#include "Utility/String/Split.h"
+#include "Utility/String/Format.h"
+#include "Utility/Attributes.h"
+
+#include "PathSplit.h"
 
 class Path;
 
 /**
  * Non-owning view over a `Path`, or over a slice of one, and the home of everything lexical that a path can do.
+ * Whatever it hands out that isn't a new `Path` points into the viewed string, so it is valid only as long as that
+ * string is.
  */
 class PathView {
  public:
@@ -98,8 +105,8 @@ class PathView {
      * @return                          The segments after the root. Runs of separators count as one, so there are
      *                                  no empty segments.
      */
-    [[nodiscard]] auto split() const {
-        return ::split(_path.substr(root().size())).by('/').skip("");
+    [[nodiscard]] PathSplit split() const {
+        return PathSplit(_path.substr(root().size()));
     }
 
     /**
@@ -139,7 +146,10 @@ class PathView {
     [[nodiscard]] Path operator/(PathView tail) const;
     [[nodiscard]] inline Path operator/(const Path &tail) const;
 
+    friend bool operator==(PathView l, PathView r) = default;
     friend auto operator<=>(PathView l, PathView r) = default;
+    friend inline bool operator==(PathView l, const Path &r);
+    friend inline std::strong_ordering operator<=>(PathView l, const Path &r);
 
  private:
     explicit PathView(std::string_view path) : _path(path) {}
@@ -147,3 +157,19 @@ class PathView {
  private:
     std::string_view _path;
 };
+
+template<>
+struct std::hash<PathView> {
+    [[nodiscard]] size_t operator()(PathView path) const {
+        return std::hash<std::string_view>()(path.str());
+    }
+};
+
+template<>
+struct fmt::formatter<PathView> : fmt::formatter<std::string_view> {
+    auto format(PathView path, format_context &ctx) const {
+        return fmt::formatter<std::string_view>::format(path.str(), ctx);
+    }
+};
+
+#include "Path.h" // NOLINT: PathView converts from Path, and the conversion lives there.

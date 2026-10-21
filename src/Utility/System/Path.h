@@ -2,10 +2,13 @@
 
 #include <compare>
 #include <concepts>
+#include <cstddef>
+#include <functional>
 #include <string>
 #include <string_view>
 
 #include "Utility/String/Format.h"
+#include "Utility/Attributes.h"
 
 #include "PathView.h"
 
@@ -28,8 +31,8 @@
  * An empty path names nothing. A default-constructed `Path` holds one, `"" / "a"` is `"a"`, and the `fs::` calls
  * treat it as invalid.
  *
- * Everything lexical is `PathView`'s and documented there, `Path` only forwards to it. What stays here needs the
- * owned string: construction, `str`, `native`, and appending in place.
+ * The lexical operations are `PathView`'s and documented there, and `Path` forwards them. What `Path` adds needs
+ * the owned string: construction, `str`, `native`, and appending in place.
  */
 class Path {
  public:
@@ -59,7 +62,7 @@ class Path {
     [[nodiscard]] static Path fromNative(std::string_view path);
 #endif
 
-    [[nodiscard]] const std::string &str() const {
+    [[nodiscard]] const std::string &str() const MM_LIFETIMEBOUND {
         return _path;
     }
 
@@ -71,7 +74,7 @@ class Path {
 #ifdef _WINDOWS
     [[nodiscard]] std::wstring native() const;
 #else
-    [[nodiscard]] const std::string &native() const {
+    [[nodiscard]] const std::string &native() const MM_LIFETIMEBOUND {
         return _path;
     }
 #endif
@@ -88,7 +91,7 @@ class Path {
         return PathView(*this).withExtension(extension);
     }
 
-    [[nodiscard]] std::string_view root() const {
+    [[nodiscard]] std::string_view root() const MM_LIFETIMEBOUND {
         return PathView(*this).root();
     }
 
@@ -104,31 +107,31 @@ class Path {
         return PathView(*this).isEscaping();
     }
 
-    [[nodiscard]] std::string_view name() const {
+    [[nodiscard]] std::string_view name() const MM_LIFETIMEBOUND {
         return PathView(*this).name();
     }
 
-    [[nodiscard]] std::string_view extension() const {
+    [[nodiscard]] std::string_view extension() const MM_LIFETIMEBOUND {
         return PathView(*this).extension();
     }
 
-    [[nodiscard]] std::string_view stem() const {
+    [[nodiscard]] std::string_view stem() const MM_LIFETIMEBOUND {
         return PathView(*this).stem();
     }
 
-    [[nodiscard]] PathView parent() const {
+    [[nodiscard]] PathView parent() const MM_LIFETIMEBOUND {
         return PathView(*this).parent();
     }
 
-    [[nodiscard]] auto split() const {
+    [[nodiscard]] PathSplit split() const MM_LIFETIMEBOUND {
         return PathView(*this).split();
     }
 
-    [[nodiscard]] PathView tailAt(std::same_as<std::string_view> auto segment) const {
+    [[nodiscard]] PathView tailAt(std::same_as<std::string_view> auto segment) const MM_LIFETIMEBOUND {
         return PathView(*this).tailAt(segment);
     }
 
-    [[nodiscard]] PathView tailAfter(std::same_as<std::string_view> auto segment) const {
+    [[nodiscard]] PathView tailAfter(std::same_as<std::string_view> auto segment) const MM_LIFETIMEBOUND {
         return PathView(*this).tailAfter(segment);
     }
 
@@ -165,8 +168,6 @@ class Path {
     }
 
  private:
-    friend class PathView; // It builds its results in place.
-
     std::string _path;
 };
 
@@ -175,6 +176,21 @@ inline PathView::PathView(const Path &path) : _path(path.str()) {}
 inline Path PathView::operator/(const Path &tail) const {
     return *this / PathView(tail);
 }
+
+inline bool operator==(PathView l, const Path &r) {
+    return l == PathView(r);
+}
+
+inline std::strong_ordering operator<=>(PathView l, const Path &r) {
+    return l <=> PathView(r);
+}
+
+template<>
+struct std::hash<Path> {
+    [[nodiscard]] size_t operator()(const Path &path) const {
+        return std::hash<PathView>()(path);
+    }
+};
 
 template<>
 struct fmt::formatter<Path> : fmt::formatter<std::string> {

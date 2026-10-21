@@ -51,6 +51,7 @@ set(UTILITY_HEADERS
         System/FileStat.h
         System/Fs.h
         System/Path.h
+        System/PathSplit.h
         System/PathView.h
         String/Ascii.h
         String/Encoding.h
