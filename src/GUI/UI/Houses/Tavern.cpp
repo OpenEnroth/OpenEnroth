@@ -95,7 +95,7 @@ void GUIWindow_Tavern::restDialogue() {
         pParty->TakeGold(pPriceRoom);
         playHouseSound(houseId(), HOUSE_SOUND_TAVERN_RENT_ROOM);
         _currentDialogue = DIALOGUE_NULL;
-        houseDialogPressEscape();
+        houseDialogueGoBack();
         playHouseGoodbyeSpeech();
         pMediaPlayer->Unload();
 

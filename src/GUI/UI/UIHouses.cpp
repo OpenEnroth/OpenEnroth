@@ -551,7 +551,7 @@ void selectProprietorDialogueOption(DialogueId option) {
     window_SpeakInHouse->initializeProprietorDialogue();
 }
 
-bool houseDialogPressEscape() {
+bool houseDialogueGoBack() {
     engine->_messageQueue->clear();
     activeLevelDecoration = nullptr;
     current_npc_text.clear();
@@ -598,6 +598,10 @@ bool houseDialogPressEscape() {
     window_SpeakInHouse->initializeProprietorDialogue();
 
     return true;
+}
+
+void houseDialogueGoBackToTop() {
+    while (houseDialogueGoBack()) {}
 }
 
 void createHouseUI(HouseId houseId) {
@@ -671,7 +675,7 @@ void BackToHouseMenu() {
     if (window_SpeakInHouse && window_SpeakInHouse->houseId() == 165 &&
         !pMovie_Track) {
         GameOverNoSound = true;
-        houseDialogPressEscape();
+        houseDialogueGoBack();
         window_SpeakInHouse->Release();
         pParty->uFlags &= 0xFFFFFFFD;
         if (enterHouse(HOUSE_BODY_GUILD_MASTER_ERATHIA)) {

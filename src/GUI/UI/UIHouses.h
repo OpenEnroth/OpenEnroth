@@ -40,7 +40,22 @@ void createHouseUI(HouseId houseId);
  */
 bool enterHouse(HouseId uHouseID);
 
-bool houseDialogPressEscape();
+/**
+ * Backs the house dialogue up one level, the way the player's escape does. The level above a house option comes from
+ * `GUIWindow_House::updateDialogueOnEscape`. At the speaker's menu the speaker is deselected and the dialogue window
+ * is queued to close. Also clears the message queue.
+ *
+ * @return                              Whether there is more to back out of. In a house with one NPC, the call
+ *                                      that deselects it already returns `false`. With several NPCs it returns
+ *                                      `true`, and the next call `false`.
+ */
+bool houseDialogueGoBack();
+
+/**
+ * Backs the house dialogue all the way out, to the house screen with no speaker selected. Doesn't leave the house.
+ * Clears the message queue, so a message that should leave the house goes in after the call.
+ */
+void houseDialogueGoBackToTop();
 
 /**
  * @offset 0x4B1E92
@@ -147,4 +162,5 @@ extern std::array<const HouseAnimDescr, 196> pAnimatedRooms;
 extern const IndexedArray<int, HOUSE_TYPE_WEAPON_SHOP, HOUSE_TYPE_DARK_GUILD> itemAmountInShop;
 
 extern std::vector<HouseNpcDesc> houseNpcs;
+// TODO(captainurist): move into GUIWindow_House. Which NPC the party talks to is the house window's state.
 extern int currentHouseNpc;

@@ -187,7 +187,7 @@ void GUIWindow_Transport::transportDialogue() {
         restAndHeal(Duration::fromDays(getTravelTimeTransportDays(transportRoutes[houseId()][choice_id])));
         pParty->activeCharacter().playReaction(pSpeech);
         pAudioPlayer->soundDrain();
-        while (houseDialogPressEscape()) {}
+        houseDialogueGoBackToTop();
     } else {
         pAudioPlayer->playUISound(SOUND_error);
     }

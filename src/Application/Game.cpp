@@ -583,9 +583,9 @@ void Game::processQueuedMessages() {
                                     continue;
                                 case SCREEN_HOUSE:
                                     if (uGameState == GAME_STATE_CHANGE_LOCATION) {
-                                        while (houseDialogPressEscape()) {}
+                                        houseDialogueGoBackToTop();
                                     } else {
-                                        if (houseDialogPressEscape())
+                                        if (houseDialogueGoBack())
                                             continue;
                                     }
                                     window_SpeakInHouse->playHouseGoodbyeSpeech();
@@ -845,7 +845,7 @@ void Game::processQueuedMessages() {
                                                  PartyPlacement(Vec3f(teleportX[v54], teleportY[v54], teleportZ[v54]), teleportYaw[v54], 0, 0));
                 }
                 engine->_pendingTransition = destination;
-                houseDialogPressEscape();
+                houseDialogueGoBack();
                 engine->_messageQueue->addMessageCurrentFrame(UIMSG_Escape, 1, 0);
                 continue;
             }
