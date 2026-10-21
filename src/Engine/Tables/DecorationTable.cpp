@@ -1,14 +1,8 @@
 #include "Engine/Tables/DecorationTable.h"
 
-#include "Engine/Graphics/Sprites.h"
-
 #include "Utility/String/Ascii.h"
 
 DecorationTable *pDecorationTable;
-
-void DecorationTable::initializeSprite(DecorationId id) {
-    pSpriteFrameTable->InitializeSprite(decorations[std::to_underlying(id)].uSpriteID);
-}
 
 DecorationId DecorationTable::decorationId(std::string_view name) const {
     if (name.empty())

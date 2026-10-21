@@ -8,8 +8,6 @@
 #include "Engine/Data/DecorationEnums.h"
 
 struct DecorationTable {
-    void initializeSprite(DecorationId id);
-
     /**
      * @param name                      Internal name of a decoration, case-insensitive.
      * @return                          Id of the decoration with the given name, or `DECORATION_NULL` if there is

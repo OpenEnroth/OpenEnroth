@@ -2256,7 +2256,6 @@ void Actor::PrepareSprites(char load_sounds_if_bit1_set) {
     for (ActorAnimation i : spriteIds.indices()) {
         // strcpy(pSpriteName, v3->pSpriteNames[i]);
         spriteIds[i] = pSpriteFrameTable->FastFindSprite(v3->spriteNames[i]);
-        pSpriteFrameTable->InitializeSprite(spriteIds[i]);
     }
     height = v3->monsterHeight;
     radius = v3->monsterRadius;

@@ -190,7 +190,7 @@ SpriteFrame *SpriteFrameTable::GetFrameReversed(int uSpriteID, Duration time) {
     if (!(sprite->flags & SPRITE_FRAME_HAS_MORE) || !sprite->animationLength)
         return sprite;
 
-    for (Duration t = sprite->animationLength - time % sprite->animationLength; t >= sprite->frameLength; ++sprite)
+    for (Duration t = sprite->animationLength - time % sprite->animationLength; t >= sprite->frameLength && (sprite->flags & SPRITE_FRAME_HAS_MORE); ++sprite)
         t -= sprite->frameLength;
 
     return sprite;
@@ -198,7 +198,5 @@ SpriteFrame *SpriteFrameTable::GetFrameReversed(int uSpriteID, Duration time) {
 
 SpriteFrame *LevelDecorationChangeSeason(const DecorationData *desc, Duration t, int month) {
     int spriteId = spriteIdForSeason(desc->uSpriteID, month);
-    if (spriteId != desc->uSpriteID)
-        pSpriteFrameTable->InitializeSprite(spriteId);
     return pSpriteFrameTable->GetFrame(spriteId, t);
 }

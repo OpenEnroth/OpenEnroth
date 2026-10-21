@@ -583,7 +583,6 @@ bool OutdoorLocation::PrepareDecorations() {
     for (unsigned i = 0; i < pLevelDecorations.size(); ++i) {
         LevelDecoration *decor = &pLevelDecorations[i];
 
-        pDecorationTable->initializeSprite(decor->uDecorationDescID);
         const DecorationData *decoration = pDecorationTable->decoration(decor->uDecorationDescID);
 
         if (decoration->uSoundID != SOUND_Invalid) {

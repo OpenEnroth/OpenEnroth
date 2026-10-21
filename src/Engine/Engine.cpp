@@ -1073,7 +1073,6 @@ void setDecorationSprite(uint16_t uCog, bool bHide, std::string_view pFileName) 
         if (pLevelDecorations[i].uCog == uCog) {
             if (!pFileName.empty() && pFileName != "0") {
                 pLevelDecorations[i].uDecorationDescID = pDecorationTable->decorationId(pFileName);
-                pDecorationTable->initializeSprite(pLevelDecorations[i].uDecorationDescID);
             }
 
             if (bHide)
