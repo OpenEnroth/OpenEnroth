@@ -14,11 +14,11 @@
 class LodWriter {
  public:
     LodWriter();
-    LodWriter(const Path &path, LodInfo info);
+    LodWriter(PathView path, LodInfo info);
     LodWriter(OutputStream *stream, LodInfo info);
     ~LodWriter();
 
-    void open(const Path &path, LodInfo info);
+    void open(PathView path, LodInfo info);
     void open(OutputStream *stream, LodInfo info);
 
     void close();

@@ -20,8 +20,8 @@ class Config {
     Config(const Config &other) = delete; // non-copyable
     Config(Config &&other) = delete; // non-movable
 
-    void load(const Path &path);
-    void save(const Path &path) const;
+    void load(PathView path);
+    void save(PathView path) const;
     void load(InputStream *stream);
     void save(OutputStream *stream) const;
 

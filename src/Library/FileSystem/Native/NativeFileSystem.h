@@ -23,7 +23,7 @@
  */
 class NativeFileSystem : public FileSystem {
  public:
-    explicit NativeFileSystem(const Path &root);
+    explicit NativeFileSystem(PathView root);
     virtual ~NativeFileSystem();
 
  private:

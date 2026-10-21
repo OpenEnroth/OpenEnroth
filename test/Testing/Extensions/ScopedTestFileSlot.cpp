@@ -2,7 +2,7 @@
 
 #include "Utility/System/Fs.h"
 
-ScopedTestFileSlot::ScopedTestFileSlot(const Path &path) : _path(path) {
+ScopedTestFileSlot::ScopedTestFileSlot(PathView path) : _path(path) {
     fs::remove(_path); // An earlier run could have left the file behind.
 }
 
