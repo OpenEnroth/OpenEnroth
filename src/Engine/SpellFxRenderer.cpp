@@ -1312,7 +1312,7 @@ void SpellFxRenderer::DrawPlayerBuffAnims() {
 }
 
 //----- (004A90A0) --------------------------------------------------------
-void SpellFxRenderer::LoadAnimations() {
+void SpellFxRenderer::loadEffectBitmaps() {
     effpar01 = assets->getBitmap("effpar01");
     effpar02 = assets->getBitmap("effpar02");
     effpar03 = assets->getBitmap("effpar03");

@@ -857,7 +857,7 @@ void Engine::SecondaryInitialization() {
     //    pUIAnims[i]->y = _4E98D0[i][2];
     //}
 
-    spell_fx_renedrer->LoadAnimations();
+    spell_fx_renedrer->loadEffectBitmaps();
 
     pNPCStats = new NPCStats();
     pNPCStats->Initialize(engine->resources());
@@ -935,8 +935,9 @@ void Engine::ResetCursor_Palettes_LODs_Level_Audio_SFT_Windows() {
     else if (uCurrentlyLoadedLevelType == LEVEL_OUTDOOR)
         pOutdoor->Release();
 
+    particle_engine->ResetParticles(); // Particles hold sprite images, so they go before the sprites.
     pSpriteFrameTable->resetLoadedSprites();
-    assets->releaseSprites(); // After the level release above has cleared the particles that point at sprites.
+    assets->releaseSprites();
 
     pAudioPlayer->stopSounds();
     uCurrentlyLoadedLevelType = LEVEL_NULL;
