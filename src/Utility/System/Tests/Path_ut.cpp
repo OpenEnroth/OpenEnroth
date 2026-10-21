@@ -19,6 +19,9 @@ UNIT_TEST(Path, ConversionsAreChecked) {
     static_assert(std::is_convertible_v<std::string_view, Path>);
     static_assert(std::is_convertible_v<std::string, Path>);
     static_assert(std::is_convertible_v<const std::string &, Path>);
+    static_assert(std::is_convertible_v<const char *, PathView>);
+    static_assert(std::is_convertible_v<std::string_view, PathView>);
+    static_assert(std::is_convertible_v<const std::string &, PathView>);
 }
 
 UNIT_TEST(Path, NativeRoundTrip) {
@@ -114,6 +117,10 @@ UNIT_TEST(Path, Normalized) {
     testOne("C:/", "C:/");
     testOne("c:/./a", "c:/a");
     testOne("C:\\a\\..\\b", "C:/b");
+    testOne("a\\b", "a/b"); // Normal form spells every separator as "/".
+    testOne("a/b\\", "a/b");
+    testOne("\\\\server\\share\\a", "//server/share/a");
+    testOne("\\\\?\\C:\\a\\..\\b", "//?/C:/b");
     testOne("C:/a/../..", "C:/");
     testOne("C:..", "C:.."); // Drive relative, so the ".." climbs the current directory of drive C.
     testOne("C:a/../..", "C:..");
@@ -213,6 +220,8 @@ UNIT_TEST(Path, Root) {
     testOne("C:/a", "C:/");
     testOne("//server/share/a", "//server/share/");
     testOne("//?/UNC//share/a", "//?/UNC//share/");
+    testOne("\\\\server\\share\\a", "\\\\server\\share\\");
+    testOne("C:\\a", "C:\\");
 #endif
 }
 
@@ -261,6 +270,7 @@ UNIT_TEST(Path, Tails) {
     EXPECT_EQ(tails("a//b//", "b"), Tails("b//", "")); // tailAt keeps what follows, trailing separators included.
 #ifdef _WINDOWS
     EXPECT_EQ(tails("C:/a/b", "a"), Tails("a/b", "b"));
+    EXPECT_EQ(tails("a\\b/\\c", "b"), Tails("b/\\c", "c"));
 #endif
 
     // An empty segment gives the whole path, root included.
@@ -287,6 +297,8 @@ UNIT_TEST(Path, Append) {
     testOne("a", "/b", "/b");
 #ifdef _WINDOWS
     testOne("C:", "a", "C:/a");
+    testOne("a\\", "b", "a\\b");
+    testOne("C:\\a", "b", "C:\\a/b");
     testOne("C:/a", "D:b", "D:b");
     testOne("C:/a", "c:b", "C:/a/b");
 #endif
@@ -324,9 +336,13 @@ UNIT_TEST(Path, WindowsRoots) {
         EXPECT_EQ(Path(path).native(), result) << "for '" << path << "'";
     };
 
-    EXPECT_EQ(Path("a\\b").str(), "a/b"); // Both slashes separate components on Windows.
+    EXPECT_EQ(Path("a\\b").str(), "a\\b"); // Kept as given, though both slashes separate components on Windows.
+    EXPECT_EQ(Path("a\\b").name(), "b");
+    EXPECT_EQ(Path("a\\b").parent().str(), "a");
+    std::vector<std::string> segments = Path("a\\b/c").split();
+    EXPECT_EQ(segments, std::vector<std::string>({"a", "b", "c"}));
 
-    testExtension("a", ".b\\c", "a.b/c"); // A backslash in the new extension separates components too.
+    testExtension("a", ".b\\c", "a.b\\c");
 
     testJoin("C:/a", "D:/b", "D:/b"); // Another drive replaces everything.
     testJoin("C:/a", "/b", "C:/b"); // A rooted tail keeps our drive.
@@ -375,7 +391,8 @@ UNIT_TEST(Path, WindowsRoots) {
     testNative("//?/C:/Games", L"\\\\?\\C:\\Games");
     testNative("//./UNC/server/share/f", L"\\\\.\\UNC\\server\\share\\f");
     testNative("C:/Games/MM7", L"C:/Games/MM7"); // Everything else keeps them.
-    EXPECT_EQ(Path::fromNative(L"C:\\a\\b").str(), "C:/a/b"); // Separators from the OS get converted too.
+    EXPECT_EQ(Path::fromNative(L"C:\\a\\b").str(), "C:\\a\\b");
+    testNative("\\\\?\\C:/Games", L"\\\\?\\C:\\Games"); // Either spelling of the prefix.
 
     // A root name is never a file name, so a dot inside one doesn't start an extension.
     testExtension("//ser.ver/sh.are", "", "//ser.ver/sh.are");
@@ -419,6 +436,7 @@ UNIT_TEST(Path, Comparison) {
     // Paths compare as their stored strings, so a trailing or doubled separator makes a different path, and "a/b"
     // sorts after "a.b" where std::filesystem::path would put it first.
     EXPECT_NE(Path("a"), Path("a/"));
+    EXPECT_NE(Path("a\\b"), Path("a/b"));
     EXPECT_LT(Path("a"), Path("b"));
     EXPECT_GT(Path("a/b"), Path("a.b"));
 

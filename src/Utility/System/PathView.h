@@ -23,7 +23,17 @@ class Path;
 class PathView {
  public:
     PathView() = default;
-    inline PathView(const Path &path); // NOLINT: intentionally implicit.
+    inline PathView(const Path &path MM_LIFETIMEBOUND); // NOLINT: intentionally implicit.
+
+    /**
+     * Implicit constructors from a string that the view then points into. A literal and a `std::string` need
+     * overloads of their own, since converting through `std::string_view` would take two user-defined conversions.
+     *
+     * @param path                      Path string. WTF-8 on Windows, byte string on POSIX.
+     */
+    PathView(std::string_view path) : _path(path) {} // NOLINT: intentionally implicit.
+    PathView(const char *path) : _path(path) {} // NOLINT: intentionally implicit.
+    PathView(const std::string &path MM_LIFETIMEBOUND) : _path(path) {} // NOLINT: intentionally implicit.
 
     [[nodiscard]] std::string_view str() const {
         return _path;
@@ -130,8 +140,8 @@ class PathView {
             return *this;
 
         assert(segment.data() >= _path.data() && segment.data() + segment.size() <= _path.data() + _path.size());
-        size_t offset = _path.find_first_not_of('/', segment.data() + segment.size() - _path.data());
-        if (offset == std::string_view::npos)
+        size_t offset = detail::skipPathSeparators(_path, segment.data() + segment.size() - _path.data());
+        if (offset == _path.size())
             return {};
         return PathView(_path.substr(offset));
     }
@@ -144,12 +154,8 @@ class PathView {
      *                                  and not the drive-relative `"C:x"`, which has to be spelled out if wanted.
      */
     [[nodiscard]] Path operator/(PathView tail) const;
-    [[nodiscard]] inline Path operator/(const Path &tail) const;
 
     friend auto operator<=>(PathView l, PathView r) = default;
-
- private:
-    explicit PathView(std::string_view path) : _path(path) {}
 
  private:
     std::string_view _path;
