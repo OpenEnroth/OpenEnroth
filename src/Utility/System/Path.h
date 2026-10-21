@@ -168,6 +168,8 @@ class Path {
     }
 
  private:
+    friend class PathView; // It builds results from views, which hold no backslashes to convert.
+
     std::string _path;
 };
 
