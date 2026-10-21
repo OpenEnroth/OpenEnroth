@@ -6,6 +6,7 @@
 #include <functional>
 #include <string>
 #include <string_view>
+#include <utility>
 
 #include "Utility/String/Format.h"
 #include "Utility/Attributes.h"
@@ -15,9 +16,9 @@
 /**
  * The vocabulary type for native paths.
  *
- * The path is stored as a string, WTF-8 on Windows and a byte string on POSIX. Backslashes become forward slashes
- * on Windows, where both separate components, and stay as they are on POSIX, where a backslash is an ordinary
- * character in a file name.
+ * The path is stored as a string, WTF-8 on Windows and a byte string on POSIX. On Windows both slashes separate
+ * components, and a path keeps whichever it was given until `normalized` spells them all as `/`. On POSIX a
+ * backslash is an ordinary character in a file name.
  *
  * Path manipulation is lexical, and nothing is validated at `Path` level. Everything that asks the OS lives in
  * `Fs.h`, and that's where all validation lives too. On Linux file names are arbitrary byte strings and pass
@@ -45,10 +46,10 @@ class Path {
      *
      * @param path                      Path string. WTF-8 on Windows, byte string on POSIX.
      */
-    Path(std::string_view path); // NOLINT: intentionally implicit.
-    Path(const char *path) : Path(std::string_view(path)) {} // NOLINT: intentionally implicit.
-    Path(const std::string &path) : Path(std::string_view(path)) {} // NOLINT: intentionally implicit.
-    Path(std::string &&path); // NOLINT: intentionally implicit.
+    Path(std::string_view path) : _path(path) {} // NOLINT: intentionally implicit.
+    Path(const char *path) : _path(path) {} // NOLINT: intentionally implicit.
+    Path(const std::string &path) : _path(path) {} // NOLINT: intentionally implicit.
+    Path(std::string &&path) : _path(std::move(path)) {} // NOLINT: intentionally implicit.
 
     explicit Path(PathView path) : _path(path.str()) {}
 
@@ -62,14 +63,19 @@ class Path {
     [[nodiscard]] static Path fromNative(std::string_view path);
 #endif
 
+    /**
+     * @return                          This path as it was given, separators included, so on Windows it can hold both
+     *                                  slashes. WTF-8 on Windows, byte string on POSIX.
+     */
     [[nodiscard]] const std::string &str() const MM_LIFETIMEBOUND {
         return _path;
     }
 
     /**
      * @return                          This path as a string in the OS-native encoding, a `wchar_t` string on
-     *                                  Windows. Separators stay forward slashes, which Windows APIs accept, except
-     *                                  in an extended-length or device path, which gets backslashes.
+     *                                  Windows. Separators stay as they are, since Windows APIs take both slashes,
+     *                                  except in an extended-length or device path, where they all become
+     *                                  backslashes.
      */
 #ifdef _WINDOWS
     [[nodiscard]] std::wstring native() const;
@@ -139,20 +145,12 @@ class Path {
         return PathView(*this) / tail;
     }
 
-    [[nodiscard]] Path operator/(const Path &tail) const {
-        return PathView(*this) / PathView(tail);
-    }
-
     /**
      * @param tail                      Path to append, joined the same way `operator/` does it.
      * @return                          This path.
      */
     Path &operator/=(PathView tail) {
         return *this = PathView(*this) / tail;
-    }
-
-    Path &operator/=(const Path &tail) {
-        return *this /= PathView(tail);
     }
 
     friend auto operator<=>(const Path &l, const Path &r) = default;
@@ -168,24 +166,10 @@ class Path {
     }
 
  private:
-    friend class PathView; // It builds results from views, which hold no backslashes to convert.
-
     std::string _path;
 };
 
 inline PathView::PathView(const Path &path) : _path(path.str()) {}
-
-inline Path PathView::operator/(const Path &tail) const {
-    return *this / PathView(tail);
-}
-
-inline bool operator==(PathView l, const Path &r) { // For literals, which convert to a Path but not to a PathView.
-    return l == PathView(r);
-}
-
-inline std::strong_ordering operator<=>(PathView l, const Path &r) { // For literals, same as above.
-    return l <=> PathView(r);
-}
 
 template<>
 struct std::hash<Path> {
