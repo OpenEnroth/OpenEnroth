@@ -326,6 +326,8 @@ UNIT_TEST(Path, WindowsRoots) {
 
     EXPECT_EQ(Path("a\\b").str(), "a/b"); // Both slashes separate components on Windows.
 
+    testExtension("a", ".b\\c", "a.b/c"); // A backslash in the new extension separates components too.
+
     testJoin("C:/a", "D:/b", "D:/b"); // Another drive replaces everything.
     testJoin("C:/a", "/b", "C:/b"); // A rooted tail keeps our drive.
     testJoin("C:/a", "D:b", "D:b"); // Another drive replaces, even a relative one.

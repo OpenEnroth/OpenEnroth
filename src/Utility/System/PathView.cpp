@@ -229,16 +229,21 @@ Path PathView::withExtension(std::string_view extension) const {
     PathRoot root = parseRoot(_path);
     size_t nameOffset = fileNameOffset(_path, root);
 
-    std::string result(_path.substr(0, extensionOffset(_path, nameOffset)));
+    Path result;
+    result._path = _path.substr(0, extensionOffset(_path, nameOffset));
     if (extension.empty())
-        return Path(std::move(result));
+        return result;
 
     if (nameOffset == _path.size() && !_path.empty() && _path.back() != separator)
-        result += separator; // A bare root name like "C:" or "//server/share" has no file name, so this starts one.
+        result._path += separator; // A bare root name like "C:" or "//server/share" has no file name, so this starts one.
     if (extension[0] != '.')
-        result += '.';
-    result += extension;
-    return Path(std::move(result));
+        result._path += '.';
+    size_t extensionStart = result._path.size();
+    result._path += extension;
+#ifdef _WINDOWS
+    std::replace(result._path.begin() + extensionStart, result._path.end(), '\\', separator); // As in the constructor.
+#endif
+    return result;
 }
 
 std::string_view PathView::root() const {
@@ -246,7 +251,9 @@ std::string_view PathView::root() const {
 }
 
 Path PathView::normalized() const {
-    return Path(normalizePath(_path));
+    Path result;
+    result._path = normalizePath(_path);
+    return result;
 }
 
 bool PathView::isNormalized() const {
@@ -288,17 +295,17 @@ Path PathView::operator/(PathView tail) const {
     if (tailRoot.isAbsolute() || tailNamesAnotherRoot)
         return Path(tail);
 
-    std::string result;
-    result.reserve(_path.size() + 1 + tail._path.size());
+    Path result;
+    result._path.reserve(_path.size() + 1 + tail._path.size());
     if (tailRoot.hasRootDirectory) {
         assert(tailRootName.empty()); // A root name with a root directory is absolute.
-        result = selfRootName; // Win32 resolves "/b" on the current drive, so it keeps this path's root name.
+        result._path = selfRootName; // Win32 resolves "/b" on the current drive, so it keeps this path's root name.
     } else {
-        result = _path;
+        result._path = _path;
         if (!_path.empty() && _path.back() != separator)
-            result += separator; // After a bare drive letter too, "C:" / "x" is "C:/x" and not the drive-relative "C:x".
+            result._path += separator; // After a bare drive letter too, "C:" / "x" is "C:/x" and not the drive-relative "C:x".
     }
 
-    result += tail._path.substr(tailRoot.size);
-    return Path(std::move(result));
+    result._path += tail._path.substr(tailRoot.size);
+    return result;
 }
