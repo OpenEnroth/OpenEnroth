@@ -289,7 +289,7 @@ EvtFlow EvtInterpreter::executeInstruction(EvtInstruction ir) {
             _mapExitTriggered = true;
             if (current_screen_type == SCREEN_HOUSE) {
                 if (uGameState == GAME_STATE_CHANGE_LOCATION) {
-                    while (houseDialogPressEscape()) {}
+                    houseDialogueGoBackToTop();
                     pMediaPlayer->Unload();
                     window_SpeakInHouse = nullptr;
                     engine->_messageQueue->clear();
@@ -514,7 +514,7 @@ EvtFlow EvtInterpreter::executeInstruction(EvtInstruction ir) {
             if (ir.data.npc_topic_descr.index == 5) npc->dialogue_6_evt_id = ir.data.npc_topic_descr.event_id;
             if (ir.data.npc_topic_descr.npc_id == 8) {
                 if (ir.data.npc_topic_descr.event_id == 78) {
-                    houseDialogPressEscape();
+                    houseDialogueGoBack();
                     window_SpeakInHouse = nullptr;
                     if (enterHouse(HOUSE_DARK_GUILD_PIT)) {
                         createHouseUI(HOUSE_DARK_GUILD_PIT);
@@ -530,7 +530,7 @@ EvtFlow EvtInterpreter::executeInstruction(EvtInstruction ir) {
 #if 0
             if (window_SpeakInHouse) {
                 if (window_SpeakInHouse->houseId() == HOUSE_BODY_GUILD_MASTER_ERATHIA) {
-                    houseDialogPressEscape();
+                    houseDialogueGoBack();
                     pMediaPlayer->Unload();
                     window_SpeakInHouse->Release();
                     activeLevelDecoration = (LevelDecoration *)1;
