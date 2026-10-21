@@ -255,7 +255,7 @@ void GameStarter::resolveDataPath(Environment *environment, GameStarterOptions *
         options->dataPath = candidates.back();
 }
 
-void GameStarter::failOnInvalidPath(const Path &dataPath, Platform *platform) {
+void GameStarter::failOnInvalidPath(PathView dataPath, Platform *platform) {
     std::string missingFile;
     if (validateMm7Path(dataPath, &missingFile))
         return;

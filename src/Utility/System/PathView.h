@@ -44,6 +44,20 @@ class PathView {
     }
 
     /**
+     * @return                          This path as a string in the OS-native encoding, a `wchar_t` string on
+     *                                  Windows. Separators stay as they are, since Windows APIs take both slashes,
+     *                                  except in an extended-length or device path, where they all become
+     *                                  backslashes.
+     */
+#ifdef _WINDOWS
+    [[nodiscard]] std::wstring native() const;
+#else
+    [[nodiscard]] std::string native() const {
+        return std::string(_path); // A copy, since the OS wants a null-terminated string.
+    }
+#endif
+
+    /**
      * @return                          This path as a valid UTF-8 string for displaying to the user, with everything
      *                                  that's not valid UTF-8 replaced with U+FFFD.
      */

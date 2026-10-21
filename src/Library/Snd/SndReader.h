@@ -20,7 +20,7 @@
 class SndReader {
  public:
     SndReader();
-    explicit SndReader(const Path &path);
+    explicit SndReader(PathView path);
     explicit SndReader(Blob blob);
     ~SndReader();
 
@@ -29,7 +29,7 @@ class SndReader {
      * @throw Exception                 If the SND couldn't be opened - e.g., if the file doesn't exist,
      *                                  or if it's not in SND format.
      */
-    void open(const Path &path);
+    void open(PathView path);
 
     /**
      * @param blob                      SND data.

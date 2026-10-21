@@ -10,7 +10,7 @@
  */
 class ScopedTestFile {
  public:
-    ScopedTestFile(const Path &path, std::string_view contents);
+    ScopedTestFile(PathView path, std::string_view contents);
     ~ScopedTestFile();
 
  private:

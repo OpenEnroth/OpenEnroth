@@ -122,7 +122,7 @@ std::vector<Path> resolveMm8Paths(Environment *environment) {
     return resolvePaths(environment, mm8Config);
 }
 
-bool validateMm7Path(const Path &dataPath, std::string *missingFile) {
+bool validateMm7Path(PathView dataPath, std::string *missingFile) {
     NativeFileSystem dirFs(dataPath);
     LowercaseFileSystem lowerFs(&dirFs);
 

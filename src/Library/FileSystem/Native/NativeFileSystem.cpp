@@ -12,7 +12,7 @@
 #include "Utility/Exception.h"
 #include "Utility/System/Fs.h"
 
-NativeFileSystem::NativeFileSystem(const Path &root) {
+NativeFileSystem::NativeFileSystem(PathView root) {
     _root = fs::absolute(root);
 }
 

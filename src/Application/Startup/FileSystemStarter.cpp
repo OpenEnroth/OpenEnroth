@@ -21,7 +21,7 @@ FileSystemStarter::~FileSystemStarter() {
     dfs = nullptr;
 }
 
-void FileSystemStarter::initUserFs(bool ramFs, const Path &path) {
+void FileSystemStarter::initUserFs(bool ramFs, PathView path) {
     assert(ufs == nullptr);
 
     if (ramFs) {
@@ -33,7 +33,7 @@ void FileSystemStarter::initUserFs(bool ramFs, const Path &path) {
     ufs = _userFs.get();
 }
 
-void FileSystemStarter::initDataFs(const Path &path, bool pathOverridesBuiltIn) {
+void FileSystemStarter::initDataFs(PathView path, bool pathOverridesBuiltIn) {
     assert(dfs == nullptr);
 
     _dataEmbeddedFs = std::make_unique<EmbeddedFileSystem>(cmrc::openenroth::get_filesystem(), "embedded");

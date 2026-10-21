@@ -71,14 +71,10 @@ class Path {
         return _path;
     }
 
-    /**
-     * @return                          This path as a string in the OS-native encoding, a `wchar_t` string on
-     *                                  Windows. Separators stay as they are, since Windows APIs take both slashes,
-     *                                  except in an extended-length or device path, where they all become
-     *                                  backslashes.
-     */
 #ifdef _WINDOWS
-    [[nodiscard]] std::wstring native() const;
+    [[nodiscard]] std::wstring native() const {
+        return PathView(*this).native();
+    }
 #else
     [[nodiscard]] const std::string &native() const MM_LIFETIMEBOUND {
         return _path;
