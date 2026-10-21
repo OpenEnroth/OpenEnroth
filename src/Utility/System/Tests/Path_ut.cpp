@@ -1,3 +1,5 @@
+#include <algorithm>
+#include <functional>
 #include <iterator>
 #include <ranges>
 #include <string>
@@ -233,6 +235,13 @@ UNIT_TEST(Path, Split) {
     EXPECT_EQ(segments("C:a"), std::vector<std::string>({"a"}));
     EXPECT_TRUE(segments("//server/share").empty()); // The share is part of the root.
 #endif
+
+    static_assert(std::ranges::borrowed_range<PathSplit>);
+    Path path("a/b/c");
+    const PathSplit split = path.split();
+    auto pos = std::ranges::find(split, "b"); // Borrowed, so the iterator outlives the call.
+    ASSERT_NE(pos, split.end());
+    EXPECT_EQ(path.tailAt(*pos).str(), "b/c");
 }
 
 UNIT_TEST(Path, Tails) {
@@ -410,6 +419,24 @@ UNIT_TEST(Path, Comparison) {
     EXPECT_NE(Path("a"), Path("a/"));
     EXPECT_LT(Path("a"), Path("b"));
     EXPECT_GT(Path("a/b"), Path("a.b"));
+
+    // Paths, views and strings compare with each other in either order.
+    Path path("a/b");
+    PathView view = path;
+    EXPECT_EQ(path, view);
+    EXPECT_EQ(view, path);
+    EXPECT_EQ(view, "a/b");
+    EXPECT_EQ("a/b", view);
+    EXPECT_EQ(path, "a/b");
+    EXPECT_LT(view, Path("b"));
+    EXPECT_GT(Path("b"), view);
+}
+
+UNIT_TEST(Path, Hash) {
+    // A path and a view of it hash the same, so either can look the other up.
+    Path path("a/b");
+    EXPECT_EQ(std::hash<Path>()(path), std::hash<PathView>()(path));
+    EXPECT_EQ(std::hash<PathView>()(path.parent()), std::hash<Path>()(Path("a")));
 }
 
 UNIT_TEST(Path, IsEmpty) {
@@ -420,6 +447,8 @@ UNIT_TEST(Path, IsEmpty) {
 
 UNIT_TEST(Path, Format) {
     EXPECT_EQ(fmt::format("[{:>6}]", Path("a/b")), "[   a/b]"); // Format specs reach the string formatter.
+    Path path("a/b");
+    EXPECT_EQ(fmt::format("[{:>6}]", path.parent()), "[     a]");
 }
 
 UNIT_TEST(Path, LexicalCast) {
