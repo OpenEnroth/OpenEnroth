@@ -146,10 +146,7 @@ class PathView {
     [[nodiscard]] Path operator/(PathView tail) const;
     [[nodiscard]] inline Path operator/(const Path &tail) const;
 
-    friend bool operator==(PathView l, PathView r) = default;
     friend auto operator<=>(PathView l, PathView r) = default;
-    friend inline bool operator==(PathView l, const Path &r);
-    friend inline std::strong_ordering operator<=>(PathView l, const Path &r);
 
  private:
     explicit PathView(std::string_view path) : _path(path) {}

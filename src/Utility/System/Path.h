@@ -177,11 +177,11 @@ inline Path PathView::operator/(const Path &tail) const {
     return *this / PathView(tail);
 }
 
-inline bool operator==(PathView l, const Path &r) {
+inline bool operator==(PathView l, const Path &r) { // For literals, which convert to a Path but not to a PathView.
     return l == PathView(r);
 }
 
-inline std::strong_ordering operator<=>(PathView l, const Path &r) {
+inline std::strong_ordering operator<=>(PathView l, const Path &r) { // For literals, same as above.
     return l <=> PathView(r);
 }
 
