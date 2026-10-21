@@ -27,7 +27,7 @@ void SpriteFrameTable::resetLoadedSprites() {
 void SpriteFrameTable::InitializeSprite(signed int uSpriteID) {
     std::string spriteName;
 
-    if (uSpriteID <= pSpriteSFrames.size()) {
+    if (uSpriteID < pSpriteSFrames.size()) {
         if (uSpriteID >= 0) {
             unsigned iter_uSpriteID = uSpriteID;
             //if (iter_uSpriteID == 603) assert(false);
@@ -165,20 +165,19 @@ int SpriteFrameTable::FastFindSprite(std::string_view pSpriteName) {
 //----- (0044D8D0) --------------------------------------------------------
 SpriteFrame *SpriteFrameTable::GetFrame(int uSpriteID, Duration uTime) {
     InitializeSprite(uSpriteID);
-    SpriteFrame *v4 = &pSpriteSFrames[uSpriteID];
+    SpriteFrame *first = &pSpriteSFrames[uSpriteID];
+    SpriteFrame *v4 = first;
     if (!(v4->flags & SPRITE_FRAME_HAS_MORE) || !v4->animationLength)
         return v4;
 
     // uAnimLength / uAnimTime = actual number of frames in sprite
-    for (Duration t = uTime % v4->animationLength; t >= v4->frameLength; ++v4)
+    for (Duration t = uTime % v4->animationLength; t >= v4->frameLength && (v4->flags & SPRITE_FRAME_HAS_MORE); ++v4)
         t -= v4->frameLength;
 
     // TODO(pskelton): investigate and fix properly - dragon breath is missing last two frames??
     // quick fix so it doesnt return empty sprite
-    while (v4->sprites[0] == NULL) {
-        //assert(false);
+    while (v4 != first && v4->sprites[0] == nullptr)
         --v4;
-    }
 
     return v4;
 }
