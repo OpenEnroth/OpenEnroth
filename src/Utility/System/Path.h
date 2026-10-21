@@ -163,7 +163,7 @@ class Path {
     std::string _path;
 };
 
-inline PathView::PathView(const Path &path) : _path(path.str()) {}
+inline PathView::PathView(const Path &path MM_LIFETIMEBOUND) : _path(path.str()) {}
 
 template<>
 struct std::hash<Path> {
