@@ -90,7 +90,7 @@ class PathSplitIterator {
     }
 
     friend bool operator==(const PathSplitIterator &l, const PathSplitIterator &r) {
-        return l._start == r._start;
+        return l._path.data() == r._path.data() && l._path.size() == r._path.size() && l._start == r._start;
     }
 
     friend bool operator==(const PathSplitIterator &l, std::default_sentinel_t) {
