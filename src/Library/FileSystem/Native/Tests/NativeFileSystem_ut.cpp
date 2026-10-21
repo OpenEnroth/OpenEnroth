@@ -109,7 +109,8 @@ UNIT_TEST(NativeFileSystem, DisplayPathSymmetry) {
     Blob blob = fs.read("1.txt");
     std::unique_ptr<InputStream> stream = fs.openForReading("1.txt");
 
-    EXPECT_EQ(blob.displayPath(), (fs::cwd() / Path("1.txt")).displayString());
+    // On Windows the OS spells the cwd with backslashes, and joins add "/".
+    EXPECT_EQ(Path(blob.displayPath()).normalized(), (fs::cwd() / Path("1.txt")).normalized());
     EXPECT_EQ(blob.displayPath(), stream->displayPath());
 }
 

@@ -62,7 +62,8 @@ UNIT_TEST(Fs, LsNotADirectory) {
 UNIT_TEST(Fs, Absolute) {
     // A relative path resolves against the cwd, and an absolute path stays as it is.
     Path cwd = fs::cwd();
-    EXPECT_EQ(fs::absolute("a"), cwd / Path("a"));
+    // On Windows the OS spells the cwd with backslashes, and joins add "/".
+    EXPECT_EQ(fs::absolute("a").normalized(), (cwd / Path("a")).normalized());
     EXPECT_EQ(fs::absolute(cwd), cwd);
 }
 
