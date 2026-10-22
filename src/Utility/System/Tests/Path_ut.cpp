@@ -15,6 +15,9 @@
 #include "Utility/System/Fs.h"
 #include "Utility/System/Path.h"
 
+template<class Head, class Tail>
+concept Joinable = requires(const Head &head, const Tail &tail) { head / tail; };
+
 UNIT_TEST(Path, ConversionsAreChecked) {
     static_assert(std::is_convertible_v<const char *, Path>);
     static_assert(std::is_convertible_v<std::string &&, Path>);
@@ -324,6 +327,15 @@ UNIT_TEST(Path, Append) {
     Path literal("a");
     literal /= "b";
     EXPECT_EQ(literal.str(), "a/b");
+
+    // Any string joins with a path on either side, but not with another string.
+    std::string string = "a";
+    std::string_view stringView = string;
+    EXPECT_EQ(("a" / Path("b")).str(), "a/b");
+    EXPECT_EQ((string / Path("b")).str(), "a/b");
+    EXPECT_EQ((stringView / PathView("b")).str(), "a/b");
+    EXPECT_EQ((Path("a") / string / stringView / "b").str(), "a/a/a/b");
+    static_assert(!Joinable<std::string, std::string>);
 
     std::string buffer;
     buffer.reserve(64);

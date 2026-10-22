@@ -11,7 +11,7 @@ class PlatformApplication;
 
 class RetraceTest : public testing::Test {
  public:
-    explicit RetraceTest(Path &&tracePath) : _tracePath(std::move(tracePath)) {}
+    explicit RetraceTest(Path tracePath) : _tracePath(std::move(tracePath)) {}
 
     static void init(EngineController *game, PlatformApplication *application);
 
