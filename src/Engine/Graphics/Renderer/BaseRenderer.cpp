@@ -103,8 +103,8 @@ void BaseRenderer::DrawSpriteObjects() {
             unsigned int angle = TrigLUT.atan2(object->vPosition.x - pCamera3D->vCameraPos.x, object->vPosition.y - pCamera3D->vCameraPos.y);
             int octant = ((TrigLUT.uIntegerPi + (TrigLUT.uIntegerPi >> 3) + object->uFacing - angle) >> 8) & 7;
 
-            if (!frame->sprites[octant]->size()) {
-                MM_TRACE("Trying to draw sprite with empty octant texture");
+            if (!frame->sprites[octant]) {
+                MM_TRACE("Trying to draw sprite with missing octant texture");
                 continue;
             }
 
@@ -261,7 +261,7 @@ Color BlendColors(Color a1, Color a2) {
 
 void BaseRenderer::TransformBillboard(const RenderBillboard *pBillboard, int parent) {
     GraphicsImage *sprite = pBillboard->sprite;
-    assert(sprite->size());
+    assert(sprite);
 
     unsigned int billboard_index = NextBillboardIndex();
     RenderBillboardD3D *billboard = &pBillboardRenderListD3D[billboard_index];
@@ -343,7 +343,6 @@ bool BaseRenderer::AddBillboardIfVisible(GraphicsImage *sprite, int palette, con
     // TODO(pskelton): replace asserts with warning and return false
     assert(::uNumBillboardsToDraw < 500 - 1);
     assert(sprite != nullptr);
-    assert(sprite->size());
 
     Vec3f viewspace;
     if (pCamera3D->ViewClip(pos, &viewspace)) {
