@@ -25,9 +25,9 @@
 /**
  * @def MM_LIFETIMEBOUND
  *
- * Marks a member function whose result points into `*this`, so that the compiler can warn when the result
- * outlives a temporary it was taken from. Clang warns by default, MSVC only with its lifetime checker on, and GCC
- * has no such attribute.
+ * Marks a member function whose result points into `*this`, or a parameter that the result points into, so that the
+ * compiler can warn when the result outlives a temporary it was taken from. Clang warns by default, MSVC only with
+ * its lifetime checker on, and GCC has no such attribute.
  */
 #if defined(__clang__)
 #   define MM_LIFETIMEBOUND [[clang::lifetimebound]]

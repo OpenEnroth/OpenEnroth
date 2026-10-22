@@ -1,6 +1,5 @@
 #include "Path.h"
 
-#include <algorithm>
 #include <string>
 #include <string_view>
 

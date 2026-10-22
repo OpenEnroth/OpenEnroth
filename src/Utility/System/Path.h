@@ -40,16 +40,17 @@ class Path {
     Path() = default;
 
     /**
-     * Constructors from a string, with no charset conversion. A literal and a `std::string` that's given up convert
-     * implicitly, and the `std::string &&` one takes over the buffer. Copying anything else, a `PathView`, a
-     * `std::string_view` or a `std::string` that's kept, allocates, so it goes through the explicit `PathView` one,
-     * as it does for `std::string`.
+     * Constructors from a string, with no charset conversion. A literal converts implicitly, as it does to a
+     * `std::string`, and so does a `std::string` that's given up, whose buffer the path takes over. Any other copy,
+     * from a `PathView`, a `std::string_view` or a `std::string` that's kept, goes through the explicit `PathView`
+     * constructor, so that the allocation shows.
      *
      * @param path                      Path string. WTF-8 on Windows, byte string on POSIX.
      */
     Path(const char *path) : _path(path) {} // NOLINT: intentionally implicit.
     Path(std::string &&path) : _path(std::move(path)) {} // NOLINT: intentionally implicit.
     explicit Path(PathView path) : _path(path.str()) {}
+    Path(std::nullptr_t) = delete; // NOLINT: implicit, or copy-initialization would fall back to const char *.
 
     /**
      * @param path                      Path as the OS spells it, a `wchar_t` string on Windows.
@@ -140,14 +141,19 @@ class Path {
     }
 
     /**
-     * @param tail                      Path to append, joined the same way `operator/` does it.
+     * @param tail                      Path to append, joined the same way `operator/` does it. A tail without a
+     *                                  root is appended in place.
      * @return                          This path.
      */
-    Path &operator/=(PathView tail) {
-        return *this = PathView(*this) / tail;
+    Path &operator/=(PathView tail);
+
+    friend bool operator==(const Path &l, const std::convertible_to<PathView> auto &r) {
+        return PathView(l) == PathView(r);
     }
 
-    friend auto operator<=>(const Path &l, const Path &r) = default;
+    friend std::strong_ordering operator<=>(const Path &l, const std::convertible_to<PathView> auto &r) {
+        return PathView(l) <=> PathView(r);
+    }
 
     /**
      * CLI11 picks this function up through ADL, so that options can bind `Path` fields directly. Note that
@@ -166,11 +172,7 @@ class Path {
 inline PathView::PathView(const Path &path MM_LIFETIMEBOUND) : _path(path.str()) {}
 
 template<>
-struct std::hash<Path> {
-    [[nodiscard]] size_t operator()(const Path &path) const {
-        return std::hash<PathView>()(path);
-    }
-};
+struct std::hash<Path> : std::hash<PathView> {};
 
 template<>
 struct fmt::formatter<Path> : fmt::formatter<std::string> {

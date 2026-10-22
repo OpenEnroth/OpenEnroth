@@ -108,7 +108,7 @@ void GameStarter::initialize() {
     MM_INFO("Using data path '{}'.", _options.dataPath); // Can't use dfs->displayPath("") b/c it'll show "embedded://"...
 
     // Migrate saves if needed. We don't migrate anything else.
-    if (!_options.ramFsUserData && _options.dataPath != _options.userPath)
+    if (!_options.ramFsUserData && _options.dataPath.normalized() != _options.userPath.normalized())
         migrateSaves();
 
     // Create platform.
@@ -245,7 +245,7 @@ void GameStarter::resolveDataPath(Environment *environment, GameStarterOptions *
             MM_INFO("Data path #{} ('{}') is missing file '{}'.", i + 1, candidates[i], missingFile);
         } else {
             MM_INFO("Data path #{} ('{}') is OK!", i + 1, candidates[i]);
-            options->dataPath = candidates[i];
+            options->dataPath = std::move(candidates[i]);
             break;
         }
     }
