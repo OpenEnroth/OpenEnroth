@@ -82,5 +82,5 @@ std::string NativeFileSystem::_displayPath(FileSystemPathView path) const {
 }
 
 Path NativeFileSystem::makeBasePath(FileSystemPathView path) const {
-    return _root / Path(path.string());
+    return _root / path.string();
 }

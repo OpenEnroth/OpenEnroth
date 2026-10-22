@@ -16,7 +16,8 @@
 class Path;
 
 /**
- * Non-owning view over a `Path`, or over a slice of one, and the home of everything lexical that a path can do.
+ * Non-owning view over a path string, from a `Path` or any other string, and the home of everything lexical that a
+ * path can do.
  * Whatever it hands out that isn't a new `Path` points into the viewed string, so it is valid only as long as that
  * string is.
  */
@@ -34,6 +35,7 @@ class PathView {
     PathView(std::string_view path) : _path(path) {} // NOLINT: intentionally implicit.
     PathView(const char *path) : _path(path) {} // NOLINT: intentionally implicit.
     PathView(const std::string &path MM_LIFETIMEBOUND) : _path(path) {} // NOLINT: intentionally implicit.
+    PathView(std::nullptr_t) = delete; // NOLINT: implicit, or copy-initialization would fall back to const char *.
 
     [[nodiscard]] std::string_view str() const {
         return _path;
@@ -80,11 +82,11 @@ class PathView {
     [[nodiscard]] std::string_view root() const;
 
     /**
-     * @return                          This path in lexical normal form: single separators, no trailing one, no `.`
-     *                                  segments, and `..` collapsed where it can be. A leading `..` stays in a path
-     *                                  without a root directory and is dropped above one, so `"/.."` is `"/"`. A
-     *                                  path that collapses to nothing becomes `"."`, and only the empty path stays
-     *                                  empty.
+     * @return                          This path in lexical normal form: single separators spelled `/`, no trailing
+     *                                  one, no `.` segments, and `..` collapsed where it can be. A leading `..` stays
+     *                                  in a path without a root directory and is dropped above one, so `"/.."` is
+     *                                  `"/"`. A path that collapses to nothing becomes `"."`, and only the empty path
+     *                                  stays empty.
      */
     [[nodiscard]] Path normalized() const;
 
@@ -175,8 +177,14 @@ class PathView {
     std::string_view _path;
 };
 
+/**
+ * Hashes a path as its string, so a `Path` and a view of it hash the same. Transparent, so a container keyed on `Path`
+ * with `std::equal_to<>` can look up a view or a string without building a `Path`.
+ */
 template<>
 struct std::hash<PathView> {
+    using is_transparent = void;
+
     [[nodiscard]] size_t operator()(PathView path) const {
         return std::hash<std::string_view>()(path.str());
     }

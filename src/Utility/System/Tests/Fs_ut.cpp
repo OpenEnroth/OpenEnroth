@@ -41,7 +41,7 @@ UNIT_TEST(Fs, LsNonAscii) {
     // Non-ASCII names have to come back from ls unchanged.
     std::string name = "\xD1\x84\xD0\xB0\xD0\xB9\xD0\xBB.txt"; // "файл.txt" in UTF-8.
     ScopedTestFolder dir("tmp_fs_non_ascii");
-    ScopedTestFile tmp(Path("tmp_fs_non_ascii") / Path(name), "");
+    ScopedTestFile tmp(Path("tmp_fs_non_ascii") / name, "");
 
     EXPECT_EQ(fs::ls("tmp_fs_non_ascii"), std::vector<DirectoryEntry>({{name, FILE_REGULAR}}));
 }
@@ -63,7 +63,7 @@ UNIT_TEST(Fs, Absolute) {
     // A relative path resolves against the cwd, and an absolute path stays as it is.
     Path cwd = fs::cwd();
     // On Windows the OS spells the cwd with backslashes, and joins add "/".
-    EXPECT_EQ(fs::absolute("a").normalized(), (cwd / Path("a")).normalized());
+    EXPECT_EQ(fs::absolute("a").normalized(), (cwd / "a").normalized());
     EXPECT_EQ(fs::absolute(cwd), cwd);
 }
 

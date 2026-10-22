@@ -5,6 +5,7 @@
 #include <string>
 #include <string_view>
 #include <type_traits>
+#include <unordered_set>
 #include <utility>
 #include <vector>
 
@@ -24,6 +25,11 @@ UNIT_TEST(Path, ConversionsAreChecked) {
     static_assert(std::is_convertible_v<const char *, PathView>);
     static_assert(std::is_convertible_v<std::string_view, PathView>);
     static_assert(std::is_convertible_v<const std::string &, PathView>);
+    static_assert(std::is_convertible_v<const Path &, PathView>);
+    static_assert(!std::is_convertible_v<PathView, Path>); // A copy, so it's spelled out.
+    static_assert(std::is_constructible_v<Path, PathView>);
+    static_assert(!std::is_constructible_v<Path, std::nullptr_t>);
+    static_assert(!std::is_constructible_v<PathView, std::nullptr_t>);
 }
 
 UNIT_TEST(Path, NativeRoundTrip) {
@@ -319,6 +325,14 @@ UNIT_TEST(Path, Append) {
     literal /= "b";
     EXPECT_EQ(literal.str(), "a/b");
 
+    std::string buffer;
+    buffer.reserve(64);
+    buffer = "a";
+    Path inPlace(std::move(buffer));
+    const char *data = inPlace.str().data();
+    inPlace /= "b";
+    EXPECT_EQ(inPlace.str().data(), data); // A tail without a root goes into the same buffer.
+
     Path head("a");
     Path tail("b/c");
     EXPECT_EQ(PathView(head) / PathView(tail), Path("a/b/c"));
@@ -452,6 +466,14 @@ UNIT_TEST(Path, Comparison) {
     EXPECT_EQ(path, "a/b");
     EXPECT_LT(view, Path("b"));
     EXPECT_GT(Path("b"), view);
+
+    std::string string = "a/b";
+    std::string_view stringView = string;
+    EXPECT_EQ(path, string);
+    EXPECT_EQ(string, path);
+    EXPECT_EQ(path, stringView);
+    EXPECT_EQ(stringView, path);
+    EXPECT_LT(path, std::string("b"));
 }
 
 UNIT_TEST(Path, Hash) {
@@ -459,6 +481,12 @@ UNIT_TEST(Path, Hash) {
     Path path("a/b");
     EXPECT_EQ(std::hash<Path>()(path), std::hash<PathView>()(path));
     EXPECT_EQ(std::hash<PathView>()(path.parent()), std::hash<Path>()(Path("a")));
+
+    std::unordered_set<Path, std::hash<Path>, std::equal_to<>> paths = {Path("a/b")};
+    EXPECT_TRUE(paths.contains(path.parent() / "b"));
+    EXPECT_TRUE(paths.contains(PathView(path)));
+    EXPECT_TRUE(paths.contains("a/b"));
+    EXPECT_TRUE(paths.contains(std::string("a/b")));
 }
 
 UNIT_TEST(Path, IsEmpty) {

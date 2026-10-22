@@ -30,7 +30,7 @@ namespace detail {
  */
 [[nodiscard]] inline size_t findPathSeparator(std::string_view path, size_t from) {
 #ifdef _WINDOWS
-    return std::min(path.find('/', from), path.find('\\', from)); // Two memchr scans, find_first_of checks every char.
+    return std::min(path.find('/', from), path.find('\\', from));
 #else
     return path.find('/', from);
 #endif
@@ -123,7 +123,7 @@ class PathSplitIterator {
             _nextBackslash = _path.find('\\', from);
         return std::min(_nextSlash, _nextBackslash);
 #else
-        return _path.find('/', from);
+        return detail::findPathSeparator(_path, from);
 #endif
     }
 
