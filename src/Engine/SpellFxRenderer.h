@@ -134,7 +134,7 @@ struct SpellFxRenderer {
     void _4A8BFC_prismatic_light();
     void RenderSpecialEffects();
     void DrawPlayerBuffAnims();
-    void LoadAnimations();
+    void loadEffectBitmaps();
 
     int field_0 = 0;  // count of have many stored in array_4
     stru6_stru2 array_4[32];  // stores source position

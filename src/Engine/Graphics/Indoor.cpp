@@ -923,8 +923,6 @@ void loadAndPrepareBLV(MapId mapid, bool bLoading) {
 
     int interactiveDecorationsNum = 0;
     for (unsigned i = 0; i < pLevelDecorations.size(); ++i) {
-        pDecorationTable->initializeSprite(pLevelDecorations[i].uDecorationDescID);
-
         const DecorationData *decoration = pDecorationTable->decoration(pLevelDecorations[i].uDecorationDescID);
 
         if (decoration->uSoundID != SOUND_Invalid) {

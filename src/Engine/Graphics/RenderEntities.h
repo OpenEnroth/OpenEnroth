@@ -10,7 +10,6 @@
 
 #include "SpriteEnums.h"
 
-class Sprite;
 class SpriteFrame;
 class GraphicsImage;
 
@@ -55,7 +54,7 @@ struct RenderVertexD3D3 {
 
 struct RenderBillboard {
     Vec2f screenspace_projection_factor;
-    Sprite* hwsprite = nullptr;
+    GraphicsImage *sprite = nullptr;
     int16_t uPaletteId = 0;
     int uIndoorSectorID = 0;
     BillboardFlags flags;

@@ -103,16 +103,15 @@ void BaseRenderer::DrawSpriteObjects() {
             unsigned int angle = TrigLUT.atan2(object->vPosition.x - pCamera3D->vCameraPos.x, object->vPosition.y - pCamera3D->vCameraPos.y);
             int octant = ((TrigLUT.uIntegerPi + (TrigLUT.uIntegerPi >> 3) + object->uFacing - angle) >> 8) & 7;
 
-            // error catching
-            if (frame->sprites[octant]->texture->height() == 0 || frame->sprites[octant]->texture->width() == 0) {
-                MM_TRACE("Trying to draw sprite with empty octant texture");
+            if (!frame->sprites[octant]) {
+                MM_TRACE("Trying to draw sprite with missing octant texture");
                 continue;
             }
 
             Vec3f posMod = object->vPosition;
             // centre sprite
             if (frame->flags & SPRITE_FRAME_CENTER) {
-                posMod.z -= (frame->scale * frame->sprites[octant]->uHeight) / 2;
+                posMod.z -= (frame->scale * frame->sprites[octant]->height()) / 2;
             }
 
             BillboardFlags setflags = billboardFlagsForSprite(frame->flags, octant);
@@ -244,7 +243,7 @@ void BaseRenderer::TransformBillboards() {
 
     for (unsigned int i = 0; i < ::uNumBillboardsToDraw; ++i) {
         RenderBillboard *p = &pBillboardRenderList[i];
-        if (p->hwsprite) {
+        if (p->sprite) {
             TransformBillboard(p, i);
         } else {
             MM_TRACE("Billboard with no sprite!");
@@ -261,10 +260,8 @@ Color BlendColors(Color a1, Color a2) {
 }
 
 void BaseRenderer::TransformBillboard(const RenderBillboard *pBillboard, int parent) {
-    Sprite *pSprite = pBillboard->hwsprite;
-    // error catching
-    if (pSprite->texture->height() == 0 || pSprite->texture->width() == 0)
-        assert(false);
+    GraphicsImage *sprite = pBillboard->sprite;
+    assert(sprite);
 
     unsigned int billboard_index = NextBillboardIndex();
     RenderBillboardD3D *billboard = &pBillboardRenderListD3D[billboard_index];
@@ -293,8 +290,8 @@ void BaseRenderer::TransformBillboard(const RenderBillboard *pBillboard, int par
     else
         billboard->opacity = RenderBillboardD3D::Transparent;
 
-    float point_x = pSprite->uWidth / 2;
-    float point_y = pSprite->uHeight;
+    float point_x = sprite->width() / 2;
+    float point_y = sprite->height();
     if (pBillboard->flags & BILLBOARD_MIRRORED) point_x *= -1.f;
     billboard->pQuads[0].diffuse = diffuse;
     billboard->pQuads[0].pos.x = pBillboard->screenPos.x - point_x * scr_proj_x;
@@ -303,7 +300,7 @@ void BaseRenderer::TransformBillboard(const RenderBillboard *pBillboard, int par
     billboard->pQuads[0].texcoord.x = 0.f;
     billboard->pQuads[0].texcoord.y = 0.f;
 
-    point_x = pSprite->uWidth / 2;
+    point_x = sprite->width() / 2;
     point_y = 0;
     if (pBillboard->flags & BILLBOARD_MIRRORED) point_x = point_x * -1.f;
     billboard->pQuads[1].diffuse = diffuse;
@@ -313,7 +310,7 @@ void BaseRenderer::TransformBillboard(const RenderBillboard *pBillboard, int par
     billboard->pQuads[1].texcoord.x = 0.f;
     billboard->pQuads[1].texcoord.y = 1.f;
 
-    point_x = pSprite->uWidth / 2;
+    point_x = sprite->width() / 2;
     point_y = 0;
     if (pBillboard->flags & BILLBOARD_MIRRORED) point_x *= -1.f;
     billboard->pQuads[2].diffuse = diffuse;
@@ -323,8 +320,8 @@ void BaseRenderer::TransformBillboard(const RenderBillboard *pBillboard, int par
     billboard->pQuads[2].texcoord.x = 1.f;
     billboard->pQuads[2].texcoord.y = 1.f;
 
-    point_x = pSprite->uWidth / 2;
-    point_y = pSprite->uHeight;
+    point_x = sprite->width() / 2;
+    point_y = sprite->height();
     if (pBillboard->flags & BILLBOARD_MIRRORED) point_x *= -1.f;
     billboard->pQuads[3].diffuse = diffuse;
     billboard->pQuads[3].pos.x = pBillboard->screenPos.x + point_x * scr_proj_x;
@@ -335,31 +332,30 @@ void BaseRenderer::TransformBillboard(const RenderBillboard *pBillboard, int par
 
     billboard->uNumVertices = 4;
 
-    billboard->texture = pSprite->texture;
+    billboard->texture = sprite;
     billboard->view_space_z = pBillboard->view_space_z;
     billboard->view_space_L2 = pBillboard->view_space_L2;
     billboard->sParentBillboardID = parent;
     billboard->paletteId = pBillboard->uPaletteId;
 }
 
-bool BaseRenderer::AddBillboardIfVisible(Sprite* spr, int palette, const Vec3f& pos, const Vec2f& scale, BillboardFlags flags, Pid id, int sector) {
+bool BaseRenderer::AddBillboardIfVisible(GraphicsImage *sprite, int palette, const Vec3f& pos, const Vec2f& scale, BillboardFlags flags, Pid id, int sector) {
     // TODO(pskelton): replace asserts with warning and return false
     assert(::uNumBillboardsToDraw < 500 - 1);
-    assert(spr != nullptr);
-    assert(spr->uWidth != 0 && spr->uHeight != 0);
+    assert(sprite != nullptr);
 
     Vec3f viewspace;
     if (pCamera3D->ViewClip(pos, &viewspace)) {
         Vec2f projected = pCamera3D->Project(viewspace);
         Vec2f billScale = scale * pCamera3D->ViewPlaneDistPixels / viewspace.x;
-        float billboardWidth = billScale.x * spr->uWidth;
-        float billboardHeight = billScale.y * spr->uHeight;
+        float billboardWidth = billScale.x * sprite->width();
+        float billboardHeight = billScale.y * sprite->height();
         Rectf billboardRect(projected.x - billboardWidth / 2, projected.y - billboardHeight, billboardWidth, billboardHeight);
 
         if (pViewport.intersects(billboardRect)) {
             RenderBillboard& bill = pBillboardRenderList[::uNumBillboardsToDraw++];
 
-            bill.hwsprite = spr;
+            bill.sprite = sprite;
             bill.worldPos = pos;
             bill.screenPos = projected;
             bill.view_space_z = viewspace.x;
@@ -494,13 +490,13 @@ void BaseRenderer::BillboardSphereSpellFX(SpellFX_Billboard *a1, Color diffuse) 
 
 void BaseRenderer::DrawMonsterPortrait(const Recti &rc, SpriteFrame *Portrait, int Y_Offset) {
     Recti rct;
-    rct.x = rc.x + 64 - Portrait->sprites[0]->uWidth / 2;
+    rct.x = rc.x + 64 - Portrait->sprites[0]->width() / 2;
     rct.y = rc.y + Y_Offset;
-    rct.w = Portrait->sprites[0]->uWidth;
-    rct.h = Portrait->sprites[0]->uHeight;
+    rct.w = Portrait->sprites[0]->width();
+    rct.h = Portrait->sprites[0]->height();
 
     render->SetUIClipRect(rc);
-    render->DrawImage(Portrait->sprites[0]->texture, rct, Portrait->paletteId);
+    render->DrawImage(Portrait->sprites[0], rct, Portrait->paletteId);
     render->ResetUIClipRect();
 }
 

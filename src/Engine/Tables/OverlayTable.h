@@ -6,8 +6,6 @@
 #include "Engine/Data/OverlayData.h"
 
 struct OverlayTable {
-    void initializeSprites();
-
     std::vector<OverlayData> overlays;
 };
 

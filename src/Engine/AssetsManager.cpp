@@ -8,7 +8,6 @@
 #include "Engine/Engine.h"
 #include "Engine/Graphics/ImageLoader.h"
 #include "Engine/Graphics/Image.h"
-#include "Engine/Resources/LodSpriteCache.h"
 
 #include "GUI/GUIFont.h"
 
@@ -107,8 +106,16 @@ GraphicsImage *AssetsManager::getSprite(std::string_view name) {
     std::string filename = ascii::toLower(name);
 
     auto i = sprites.find(filename);
-    if (i == sprites.end())
-        i = sprites.emplace(filename, GraphicsImage::Create(std::make_unique<Sprites_LOD_Loader>(engine->resources(), filename))).first;
+    if (i == sprites.end()) {
+        std::unique_ptr<GraphicsImage> image = GraphicsImage::Create(std::make_unique<Sprites_LOD_Loader>(engine->resources(), filename));
+        if (!image->size())
+            return nullptr;
+        i = sprites.emplace(filename, std::move(image)).first;
+    }
 
     return i->second.get();
+}
+
+void AssetsManager::releaseSprites() {
+    sprites.clear();
 }

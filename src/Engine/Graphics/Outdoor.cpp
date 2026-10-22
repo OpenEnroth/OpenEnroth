@@ -263,9 +263,6 @@ bool OutdoorLocation::Initialize(std::string_view filename, int days_played,
     if (!filename.empty()) {
         Release();
 
-        // pSprites_LOD->DeleteSomeOtherSprites();
-        // pSpriteFrameTable->ResetLoadedFlags();
-
         Load(filename, days_played, respawn_interval_days, outdoors_was_respawned);
 
         if (isMapUnderwater(engine->_currentLoadedMapId))
@@ -586,7 +583,6 @@ bool OutdoorLocation::PrepareDecorations() {
     for (unsigned i = 0; i < pLevelDecorations.size(); ++i) {
         LevelDecoration *decor = &pLevelDecorations[i];
 
-        pDecorationTable->initializeSprite(decor->uDecorationDescID);
         const DecorationData *decoration = pDecorationTable->decoration(decor->uDecorationDescID);
 
         if (decoration->uSoundID != SOUND_Invalid) {
