@@ -1,6 +1,8 @@
 #pragma once
 
+#include <cstddef>
 #include <cstring>
+#include <array>
 #include <type_traits>
 
 /**
@@ -17,12 +19,29 @@ T readUnaligned(const void *data) {
 }
 
 /**
- * Writing unaligned memory is UB in C++, this is the counterpart of `readUnaligned`.
- *
- * @param data                          Unaligned memory to write to.
- * @param value                         Value to write, converted to `T` first.
+ * A `T` with alignment 1. Use it for fields of packed structs that don't land on an address aligned for `T`. Accessing
+ * those through a `T *` or a `T &` is UB, while this one reads and writes through `memcpy` and is safe anywhere.
  */
 template<class T>
-void writeUnaligned(T *data, const std::type_identity_t<T> &value) {
-    memcpy(data, &value, sizeof(T));
-}
+class Unaligned {
+    static_assert(std::is_trivially_copyable_v<T>);
+
+ public:
+    Unaligned() = default;
+
+    Unaligned(const T &value) { // NOLINT: constructor is intentionally implicit.
+        *this = value;
+    }
+
+    Unaligned &operator=(const T &value) {
+        memcpy(_bytes.data(), &value, sizeof(T));
+        return *this;
+    }
+
+    operator T() const {
+        return readUnaligned<T>(_bytes.data());
+    }
+
+ private:
+    std::array<std::byte, sizeof(T)> _bytes;
+};

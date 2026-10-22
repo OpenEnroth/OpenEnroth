@@ -43,7 +43,6 @@
 #include "Utility/Memory/MemSet.h"
 #include "Utility/String/Ascii.h"
 #include "Utility/MapAccess.h"
-#include "Utility/Unaligned.h"
 
 /**
  * Mapping used for beacon map id serialization.
@@ -133,7 +132,7 @@ static const std::unordered_map<MapId, uint16_t> gamesLodIndexByMapId = {
 static const std::unordered_map<uint16_t, MapId> mapIdByGamesLodIndex = inverted(gamesLodIndexByMapId);
 
 static void snapshot(const Time &src, int64_t *dst) {
-    writeUnaligned(dst, src.ticks());
+    *dst = src.ticks();
 }
 
 static void reconstruct(int64_t src, Time *dst) {
@@ -141,7 +140,7 @@ static void reconstruct(int64_t src, Time *dst) {
 }
 
 static void snapshot(const Duration &src, int32_t *dst) {
-    writeUnaligned(dst, src.ticks());
+    *dst = src.ticks();
 }
 
 static void reconstruct(int32_t src, Duration *dst) {
@@ -149,7 +148,7 @@ static void reconstruct(int32_t src, Duration *dst) {
 }
 
 static void snapshot(const CombinedSkillValue &src, uint16_t *dst) {
-    writeUnaligned(dst, src.joined());
+    *dst = src.joined();
 }
 
 static void reconstruct(const uint16_t &src, CombinedSkillValue *dst) {
@@ -157,7 +156,7 @@ static void reconstruct(const uint16_t &src, CombinedSkillValue *dst) {
 }
 
 static void snapshot(const MonsterId &src, int16_t *dst) {
-    writeUnaligned(dst, std::to_underlying(src));
+    *dst = std::to_underlying(src);
 }
 
 static void reconstruct(int16_t src, MonsterId *dst) {
@@ -165,7 +164,7 @@ static void reconstruct(int16_t src, MonsterId *dst) {
 }
 
 void snapshot(const Pid &src, uint16_t *dst) {
-    writeUnaligned(dst, src.packed());
+    *dst = src.packed();
 }
 
 void reconstruct(uint16_t src, Pid *dst) {
@@ -764,13 +763,11 @@ void reconstruct(const Party_MM7 &src, Party *dst) {
 void snapshot(const CharacterConditions &src, CharacterConditions_MM7 *dst) {
     memzero(dst);
 
-    decltype(dst->times) times;
-    snapshot(src._times, &times);
-    writeUnaligned(&dst->times, times); // A packed struct doesn't make its std::array members unaligned-safe.
+    snapshot(src._times, &dst->times);
 }
 
 void reconstruct(const CharacterConditions_MM7 &src, CharacterConditions *dst) {
-    reconstruct(readUnaligned<decltype(src.times)>(&src.times), &dst->_times);
+    reconstruct(src.times, &dst->_times);
 }
 
 void snapshot(const Character &src, Character_MM7 *dst) {

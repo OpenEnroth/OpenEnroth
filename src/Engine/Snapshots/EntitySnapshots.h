@@ -9,6 +9,8 @@
 #include "Library/Geometry/BBox.h"
 #include "Library/Binary/BinarySerialization.h"
 
+#include "Utility/Unaligned.h"
+
 #include "EnumSnapshots.h"
 
 /**
@@ -252,7 +254,7 @@ struct Item_MM7 {
     uint8_t maxCharges;
     uint8_t lichJarCharacterIndex; // Only for full lich jars. 1-based index of the character whose essence it stored in it.
     uint8_t _pad;
-    int64_t enchantmentExpirationTime;
+    Unaligned<int64_t> enchantmentExpirationTime;
 };
 static_assert(sizeof(Item_MM7) == 0x24);
 MM_DECLARE_MEMCOPY_SERIALIZABLE(Item_MM7)
@@ -262,7 +264,7 @@ void reconstruct(const Item_MM7 &src, Item *dst);
 
 
 struct SpellBuff_MM7 {
-    int64_t expireTime;
+    Unaligned<int64_t> expireTime;
     uint16_t power;
     uint16_t skillMastery;
     uint16_t overlayId;
@@ -277,7 +279,7 @@ void reconstruct(const SpellBuff_MM7 &src, SpellBuff *dst);
 
 
 struct LloydBeacon_MM7 {
-    int64_t beaconTime;
+    Unaligned<int64_t> beaconTime;
     int32_t partyPosX;
     int32_t partyPosY;
     int32_t partyPosZ;
@@ -292,8 +294,8 @@ MM_DECLARE_MEMCOPY_SERIALIZABLE(LloydBeacon_MM7)
 
 
 struct CharacterConditions_MM7 {
-    std::array<int64_t, 19> times;
-    int64_t unused; // Conditions array was originally 20 elements long, but there's only 19 conditions in the game.
+    std::array<Unaligned<int64_t>, 19> times;
+    Unaligned<int64_t> unused; // Conditions array was originally 20 elements long, but there's only 19 conditions in the game.
 };
 static_assert(sizeof(CharacterConditions_MM7) == 0xA0);
 MM_DECLARE_MEMCOPY_SERIALIZABLE(CharacterConditions_MM7)
@@ -304,7 +306,7 @@ void reconstruct(const CharacterConditions_MM7 &src, CharacterConditions *dst);
 
 struct Character_MM7 {
     CharacterConditions_MM7 conditions;
-    uint64_t experience;
+    Unaligned<uint64_t> experience;
     std::array<char, 16> name; // Character name as displayed in-game.
     uint8_t sex;
     uint8_t classType;
@@ -423,16 +425,16 @@ void reconstruct(const Character_MM7 &src, CharacterInventory *dst, ContextTag<i
 
 
 struct PartyTimeStruct_MM7 {
-    std::array<int64_t, 5> bountyHuntingNextGenerationTime;
-    std::array<int64_t, 5> bountyHuntingNextGenerationTimeUnused; // Only first five elements are actually used, these are always zero.
-    int64_t shopsNextGenerationTime0; // Shop generation time for house id 0 which is invalid value.
-    std::array<int64_t, 52> shopsNextGenerationTime;
-    std::array<int64_t, 32> guildsNextGenerationTime;
-    int64_t shopBanTime0;
-    std::array<int64_t, 52> shopBanTimes;
-    std::array<int64_t, 10> counterEventValues;
-    std::array<int64_t, 29> historyEventTimes;
-    std::array<int64_t, 20> someOtherTimes;
+    std::array<Unaligned<int64_t>, 5> bountyHuntingNextGenerationTime;
+    std::array<Unaligned<int64_t>, 5> bountyHuntingNextGenerationTimeUnused; // Only first five elements are actually used, these are always zero.
+    Unaligned<int64_t> shopsNextGenerationTime0; // Shop generation time for house id 0 which is invalid value.
+    std::array<Unaligned<int64_t>, 52> shopsNextGenerationTime;
+    std::array<Unaligned<int64_t>, 32> guildsNextGenerationTime;
+    Unaligned<int64_t> shopBanTime0;
+    std::array<Unaligned<int64_t>, 52> shopBanTimes;
+    std::array<Unaligned<int64_t>, 10> counterEventValues;
+    std::array<Unaligned<int64_t>, 29> historyEventTimes;
+    std::array<Unaligned<int64_t>, 20> someOtherTimes;
 };
 static_assert(sizeof(PartyTimeStruct_MM7) == 0x678);
 MM_DECLARE_MEMCOPY_SERIALIZABLE(PartyTimeStruct_MM7)
@@ -450,8 +452,8 @@ struct Party_MM7 {
     int32_t yawRotationSpeed; // Deg/s.
     int32_t jumpStrength;
     int32_t field_28;
-    int64_t timePlayed;
-    int64_t lastRegenerationTime;
+    Unaligned<int64_t> timePlayed;
+    Unaligned<int64_t> lastRegenerationTime;
     PartyTimeStruct_MM7 partyTimes;
     Vec3i position;
     int32_t viewYaw;
