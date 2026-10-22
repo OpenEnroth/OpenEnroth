@@ -17,9 +17,8 @@ class Path;
 
 /**
  * Non-owning view over a path string, from a `Path` or any other string, and the home of everything lexical that a
- * path can do.
- * Whatever it hands out that isn't a new `Path` points into the viewed string, so it is valid only as long as that
- * string is.
+ * path can do. The views and segments it hands out point into the viewed string, so they are valid only as long as
+ * that string is.
  */
 class PathView {
  public:

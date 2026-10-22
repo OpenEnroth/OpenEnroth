@@ -6,6 +6,7 @@
 #include <functional>
 #include <string>
 #include <string_view>
+#include <type_traits>
 #include <utility>
 
 #include "Utility/String/Format.h"
@@ -136,13 +137,8 @@ class Path {
         return PathView(*this).tailAfter(segment);
     }
 
-    [[nodiscard]] Path operator/(PathView tail) const {
-        return PathView(*this) / tail;
-    }
-
     /**
-     * @param tail                      Path to append, joined the same way `operator/` does it. A tail without a
-     *                                  root is appended in place.
+     * @param tail                      Path to append, joined the same way `operator/` does it.
      * @return                          This path.
      */
     Path &operator/=(PathView tail);
@@ -171,12 +167,28 @@ class Path {
 
 inline PathView::PathView(const Path &path MM_LIFETIMEBOUND) : _path(path.str()) {}
 
+namespace detail {
+template<class T>
+concept PathOrView = std::same_as<std::remove_cvref_t<T>, Path> || std::same_as<std::remove_cvref_t<T>, PathView>;
+} // namespace detail
+
+/**
+ * Joins two paths where either side may be any string, as long as one of them is a `Path` or a `PathView`, see
+ * `PathView::operator/`.
+ *
+ * @param head                          Path to join onto.
+ * @param tail                          Path to append.
+ * @return                              The two paths joined.
+ */
+template<class Head, class Tail>
+    requires (detail::PathOrView<Head> || detail::PathOrView<Tail>) &&
+             std::convertible_to<const Head &, PathView> && std::convertible_to<const Tail &, PathView>
+[[nodiscard]] Path operator/(const Head &head, const Tail &tail) {
+    return PathView(head) / PathView(tail);
+}
+
 template<>
 struct std::hash<Path> : std::hash<PathView> {};
 
 template<>
-struct fmt::formatter<Path> : fmt::formatter<std::string> {
-    auto format(const Path &path, format_context &ctx) const {
-        return fmt::formatter<std::string>::format(path.str(), ctx);
-    }
-};
+struct fmt::formatter<Path> : fmt::formatter<PathView> {};

@@ -33,7 +33,7 @@ int platformMain(int argc, char **argv) {
             PathView traceFile = traceName;
             testing::RegisterTest("Retrace", traceFile.withExtension("").str().c_str(),
                                   nullptr, nullptr, __FILE__, __LINE__,
-                                  [tracePath = opts.testPath / traceFile] { return new RetraceTest(Path(tracePath)); });
+                                  [tracePath = opts.testPath / traceFile] { return new RetraceTest(tracePath); });
         }
 
         testing::InitGoogleTest(&argc, argv);
