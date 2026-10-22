@@ -15,6 +15,6 @@ std::vector<Path> resolveMm6Paths(Environment *environment);
 std::vector<Path> resolveMm7Paths(Environment *environment);
 std::vector<Path> resolveMm8Paths(Environment *environment);
 
-bool validateMm7Path(const Path &dataPath, std::string *missingFile);
+bool validateMm7Path(PathView dataPath, std::string *missingFile);
 
 Path resolveMm7UserPath(Environment *environment);

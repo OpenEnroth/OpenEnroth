@@ -12,7 +12,7 @@
 #include "Utility/Exception.h"
 #include "Utility/System/Fs.h"
 
-NativeFileSystem::NativeFileSystem(const Path &root) {
+NativeFileSystem::NativeFileSystem(PathView root) {
     _root = fs::absolute(root);
 }
 
@@ -82,5 +82,5 @@ std::string NativeFileSystem::_displayPath(FileSystemPathView path) const {
 }
 
 Path NativeFileSystem::makeBasePath(FileSystemPathView path) const {
-    return _root / Path(path.string());
+    return _root / path.string();
 }

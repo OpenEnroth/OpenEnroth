@@ -1,6 +1,7 @@
 #include "PathResolver.h"
 
 #include <string>
+#include <utility>
 #include <vector>
 
 #include "Library/Logger/Logger.h"
@@ -70,7 +71,7 @@ static std::vector<Path> resolvePaths(Environment *environment, const PathResolu
     std::string envPath = environment->getenv(config.overrideEnvKey);
     if (!envPath.empty()) {
         MM_INFO("Path override provided, '{}={}'.", config.overrideEnvKey, envPath);
-        return {Path(envPath)};
+        return {Path(std::move(envPath))};
     }
 
     std::vector<Path> result;
@@ -83,7 +84,7 @@ static std::vector<Path> resolvePaths(Environment *environment, const PathResolu
         if (registryKey) {
             std::string registryPath = environment->queryRegistry(registryKey);
             if (!registryPath.empty())
-                result.push_back(Path(registryPath));
+                result.push_back(Path(std::move(registryPath)));
         }
     }
 
@@ -91,10 +92,10 @@ static std::vector<Path> resolvePaths(Environment *environment, const PathResolu
     // ...Android storage paths on Android,...
     std::string externalPath = environment->path(PATH_ANDROID_STORAGE_EXTERNAL);
     if (!externalPath.empty())
-        result.push_back(Path(externalPath));
+        result.push_back(Path(std::move(externalPath)));
     std::string internalPath = environment->path(PATH_ANDROID_STORAGE_INTERNAL);
     if (!internalPath.empty())
-        result.push_back(Path(internalPath));
+        result.push_back(Path(std::move(internalPath)));
     // TODO(captainurist): need a mechanism to show user-visible errors. Commenting out for now.
     //if (ANDROID && result.empty())
     //    platform->showMessageBox("Device currently unsupported", "Your device doesn't have any storage so it is unsupported!");
@@ -122,7 +123,7 @@ std::vector<Path> resolveMm8Paths(Environment *environment) {
     return resolvePaths(environment, mm8Config);
 }
 
-bool validateMm7Path(const Path &dataPath, std::string *missingFile) {
+bool validateMm7Path(PathView dataPath, std::string *missingFile) {
     NativeFileSystem dirFs(dataPath);
     LowercaseFileSystem lowerFs(&dirFs);
 
@@ -141,10 +142,10 @@ Path resolveMm7UserPath(Environment *environment) {
     std::string savedGames = environment->path(PATH_WINDOWS_SAVED_GAMES);
     if (savedGames.empty())
         return fs::cwd(); // Shouldn't really happen.
-    return Path(fmt::format("{}/OpenEnroth", savedGames));
+    return Path(std::move(savedGames)) / "OpenEnroth";
 #elif __ANDROID__
-    return Path(fmt::format("{}/.openenroth", environment->path(PATH_ANDROID_STORAGE_INTERNAL)));
+    return Path(environment->path(PATH_ANDROID_STORAGE_INTERNAL)) / ".openenroth";
 #else // Mac & linux
-    return Path(fmt::format("{}/.openenroth", environment->path(PATH_HOME)));
+    return Path(environment->path(PATH_HOME)) / ".openenroth";
 #endif
 }

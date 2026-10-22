@@ -136,6 +136,8 @@ UNIT_TEST(StringSplit, SplitToStringVector) {
 
     split("").by(';').to(&v);
     EXPECT_EQ(v, std::vector<std::string>({""}));
+    split(std::string_view()).by(';').to(&v); // A null string splits like an empty one.
+    EXPECT_EQ(v, std::vector<std::string>({""}));
 }
 
 UNIT_TEST(StringSplit, StringSeparator) {

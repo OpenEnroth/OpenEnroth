@@ -151,7 +151,10 @@ class SplitView : public ViewInterface<SplitView<Splitter>> {
         _begin = reinterpret_cast<const char *>(1);
     }
 
-    SplitView(std::string_view s, Splitter splitter) : _splitter(splitter), _begin(s.data()), _end(s.data() + s.size()) {}
+    SplitView(std::string_view s, Splitter splitter) : _splitter(splitter) {
+        _begin = s.data() ? s.data() : ""; // A null string_view would hand memchr a null pointer.
+        _end = _begin + s.size();
+    }
 
     [[nodiscard]] auto begin() {
         return SplitViewIterator<Splitter>(_begin, _end, _splitter);

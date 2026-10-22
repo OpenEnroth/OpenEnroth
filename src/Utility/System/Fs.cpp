@@ -8,16 +8,16 @@
 
 #include "Utility/Exception.h"
 
-[[noreturn]] static void throwError(std::string_view action, const Path &path, std::error_code ec) {
+[[noreturn]] static void throwError(std::string_view action, PathView path, std::error_code ec) {
     throw Exception("Couldn't {} '{}': {}", action, path.displayString(), ec.message());
 }
 
-static void checkNotEmpty(std::string_view action, const Path &path) {
+static void checkNotEmpty(std::string_view action, PathView path) {
     if (path.isEmpty())
         throwError(action, path, std::make_error_code(std::errc::invalid_argument));
 }
 
-static std::filesystem::path toStdPath(const Path &path) {
+static std::filesystem::path toStdPath(PathView path) {
     return std::filesystem::path(path.native()); // A wchar_t string on Windows, so no C locale conversion.
 }
 
@@ -25,7 +25,7 @@ static Path fromStdPath(const std::filesystem::path &path) {
     return Path::fromNative(path.native());
 }
 
-bool fs::exists(const Path &path) {
+bool fs::exists(PathView path) {
     if (path.isEmpty())
         return false;
 
@@ -33,7 +33,7 @@ bool fs::exists(const Path &path) {
     return std::filesystem::exists(toStdPath(path), ec); // Returns false on error.
 }
 
-FileStat fs::stat(const Path &path) {
+FileStat fs::stat(PathView path) {
     if (path.isEmpty())
         return {};
 
@@ -56,13 +56,13 @@ FileStat fs::stat(const Path &path) {
     return FileStat(isRegular ? FILE_REGULAR : FILE_DIRECTORY, size);
 }
 
-std::vector<DirectoryEntry> fs::ls(const Path &path) {
+std::vector<DirectoryEntry> fs::ls(PathView path) {
     std::vector<DirectoryEntry> result;
     ls(path, &result);
     return result;
 }
 
-void fs::ls(const Path &path, std::vector<DirectoryEntry> *entries) {
+void fs::ls(PathView path, std::vector<DirectoryEntry> *entries) {
     checkNotEmpty("list", path);
 
     std::error_code walkEc;
@@ -95,7 +95,7 @@ void fs::ls(const Path &path, std::vector<DirectoryEntry> *entries) {
     }
 }
 
-bool fs::remove(const Path &path) {
+bool fs::remove(PathView path) {
     if (path.isEmpty())
         return false;
 
@@ -106,7 +106,7 @@ bool fs::remove(const Path &path) {
     return removed > 0;
 }
 
-void fs::mkdirs(const Path &path) {
+void fs::mkdirs(PathView path) {
     checkNotEmpty("create", path);
 
     std::error_code ec;
@@ -131,7 +131,7 @@ Path fs::tmp() {
     return fromStdPath(result);
 }
 
-Path fs::absolute(const Path &path) {
+Path fs::absolute(PathView path) {
     checkNotEmpty("resolve", path);
 
     std::error_code ec;

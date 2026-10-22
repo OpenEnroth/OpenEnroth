@@ -14,7 +14,7 @@
 class VidReader {
  public:
     VidReader();
-    explicit VidReader(const Path &path);
+    explicit VidReader(PathView path);
     explicit VidReader(Blob blob);
     ~VidReader();
 
@@ -23,7 +23,7 @@ class VidReader {
      * @throw Exception                 If the VID couldn't be opened - e.g., if the file doesn't exist,
      *                                  or if it's not in VID format.
      */
-    void open(const Path &path);
+    void open(PathView path);
 
     /**
      * @param blob                      VID data.
