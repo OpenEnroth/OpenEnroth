@@ -107,7 +107,7 @@ MM_NOINLINE std::string stackTraceMarkerFunction() {
     return trace.empty() ? std::string() : trace;
 }
 
-MM_NOINLINE int stackTraceCrashingFunction() {
+MM_NOUBSAN MM_NOINLINE int stackTraceCrashingFunction() {
     // Volatile pointer, not pointer to volatile, or the compiler knows it's null and traps instead of
     // faulting. The read feeds the return value because a store on its own is dead code that some compilers
     // drop, and then nothing crashes at all.
@@ -175,7 +175,7 @@ MM_NOINLINE int stackTraceBadTargetCallFunction() {
 }
 
 #if !defined(__aarch64__) && !defined(__arm__) // No trap to test on arm, integer division by zero just yields zero there.
-MM_NOINLINE int stackTraceDivisionFunction() {
+MM_NOUBSAN MM_NOINLINE int stackTraceDivisionFunction() {
     volatile int zero = 0; // Volatile, or the compiler sees the division by zero and emits a trap instead of dividing.
     volatile int result = 64 / zero; // Using the result keeps this out of tail position, which keeps the frame.
     return result + 1;
