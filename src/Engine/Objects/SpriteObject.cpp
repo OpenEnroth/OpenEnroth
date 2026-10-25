@@ -142,6 +142,19 @@ static void createSpriteTrailParticle(Vec3f pos, ObjectDescFlags flags) {
 
 void SpriteObject::updateObjectODM(unsigned int uLayingItemID) {
     ObjectData *object = &pObjectTable->pObjects[pSpriteObjects[uLayingItemID].uObjectDescID];
+
+    // Break early if we're out of bounds.
+    if (std::abs(pSpriteObjects[uLayingItemID].vPosition.x) > 32767 ||
+        std::abs(pSpriteObjects[uLayingItemID].vPosition.y) > 32767 ||
+        std::abs(pSpriteObjects[uLayingItemID].vPosition.z) > 20000) {
+        if (pSpriteObjects[uLayingItemID].containing_item.itemId != ITEM_NULL)
+            MM_ERROR("Deleting item '{}' at ({}, {}, {}) - out of bounds",
+                pSpriteObjects[uLayingItemID].containing_item.GetDisplayName(),
+                pSpriteObjects[uLayingItemID].vPosition.x, pSpriteObjects[uLayingItemID].vPosition.y, pSpriteObjects[uLayingItemID].vPosition.z);
+        SpriteObject::Remove(uLayingItemID);
+        return;
+    }
+
     bool isHighSlope = pOutdoor->pTerrain.isSlopeTooHighByPos(pSpriteObjects[uLayingItemID].vPosition);
     int floorFaceId = -1;
     bool onWater = false;
