@@ -19,7 +19,7 @@ T readUnaligned(const void *data) {
 }
 
 /**
- * Writing unaligned memory is UB in C++, this is the counterpart of `readUnaligned`.
+ * Writing through a misaligned `T *` is UB in C++, so this is the counterpart of `readUnaligned`.
  *
  * @param data                          Unaligned memory to write to.
  * @param value                         Value to write.
