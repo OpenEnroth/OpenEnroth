@@ -295,7 +295,7 @@ MM_DECLARE_MEMCOPY_SERIALIZABLE(LloydBeacon_MM7)
 
 struct CharacterConditions_MM7 {
     std::array<Unaligned<int64_t>, 19> times;
-    Unaligned<int64_t> unused; // Conditions array was originally 20 elements long, but there's only 19 conditions in the game.
+    int64_t unused; // Conditions array was originally 20 elements long, but there's only 19 conditions in the game.
 };
 static_assert(sizeof(CharacterConditions_MM7) == 0xA0);
 MM_DECLARE_MEMCOPY_SERIALIZABLE(CharacterConditions_MM7)
@@ -306,7 +306,7 @@ void reconstruct(const CharacterConditions_MM7 &src, CharacterConditions *dst);
 
 struct Character_MM7 {
     CharacterConditions_MM7 conditions;
-    Unaligned<uint64_t> experience;
+    uint64_t experience;
     std::array<char, 16> name; // Character name as displayed in-game.
     uint8_t sex;
     uint8_t classType;
@@ -426,11 +426,11 @@ void reconstruct(const Character_MM7 &src, CharacterInventory *dst, ContextTag<i
 
 struct PartyTimeStruct_MM7 {
     std::array<Unaligned<int64_t>, 5> bountyHuntingNextGenerationTime;
-    std::array<Unaligned<int64_t>, 5> bountyHuntingNextGenerationTimeUnused; // Only first five elements are actually used, these are always zero.
-    Unaligned<int64_t> shopsNextGenerationTime0; // Shop generation time for house id 0 which is invalid value.
+    std::array<int64_t, 5> bountyHuntingNextGenerationTimeUnused; // Only first five elements are actually used, these are always zero.
+    int64_t shopsNextGenerationTime0; // Shop generation time for house id 0 which is invalid value.
     std::array<Unaligned<int64_t>, 52> shopsNextGenerationTime;
     std::array<Unaligned<int64_t>, 32> guildsNextGenerationTime;
-    Unaligned<int64_t> shopBanTime0;
+    int64_t shopBanTime0;
     std::array<Unaligned<int64_t>, 52> shopBanTimes;
     std::array<Unaligned<int64_t>, 10> counterEventValues;
     std::array<Unaligned<int64_t>, 29> historyEventTimes;
