@@ -28,9 +28,12 @@ ProcessResult runProcess(const Path &path, const std::vector<std::string> &, std
 #else // __ANDROID__
 
 [[noreturn]] static void throwFromSubprocessError(int error, std::string_view displayString) {
-#ifndef _WINDOWS
+#ifdef _WINDOWS
+    if (unsigned long lastError = GetLastError()) // subprocess.h leaves the reason here, its error code is coarser.
+        throw Exception("{}: {}", displayString, std::system_category().message(static_cast<int>(lastError)));
+#else
     if (errno != 0)
-        Exception::throwFromErrno(displayString); // On POSIX subprocess.h leaves the reason in errno, the error code is coarser.
+        Exception::throwFromErrno(displayString); // subprocess.h leaves the reason in errno, its error code is coarser.
 #endif
 
     switch (error) {
@@ -46,6 +49,7 @@ ProcessResult runProcess(const Path &path, const std::vector<std::string> &, std
 }
 
 ProcessResult runProcess(const Path &path, const std::vector<std::string> &args, std::chrono::milliseconds timeout) {
+    assert(!path.isEmpty());
     assert(timeout >= timeout.zero());
 
     Path absolutePath = fs::absolute(path); // Windows searches PATH and more for a relative name, POSIX doesn't.
@@ -64,7 +68,11 @@ ProcessResult runProcess(const Path &path, const std::vector<std::string> &args,
     subprocess_s process;
     int options = subprocess_option_inherit_environment | subprocess_option_no_window | subprocess_option_enable_async |
                   subprocess_option_enable_async_no_wait;
+#ifdef _WINDOWS
+    SetLastError(0);
+#else
     errno = 0;
+#endif
     if (int error = subprocess_create(commandLine.data(), options, &process))
         throwFromSubprocessError(error, displayString);
     MM_AT_SCOPE_EXIT(subprocess_destroy(&process));
