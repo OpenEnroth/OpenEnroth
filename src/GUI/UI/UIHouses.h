@@ -119,11 +119,6 @@ class GUIWindow_House : public GUIWindow {
         _currentDialogue = dialogue;
     }
 
-    /**
-     * @return                          Background of the shop and guild screens. Only valid for shops and guilds.
-     */
-    GraphicsImage *shopBackground() const;
-
     void houseDialogManager();
     void houseNPCDialogue();
     void initializeProprietorDialogue();
@@ -154,6 +149,8 @@ class GUIWindow_House : public GUIWindow {
 
     HouseId _houseId = HOUSE_INVALID;
     DialogueId _currentDialogue = DIALOGUE_NULL;
+    GraphicsImage *_dialogueBackground = nullptr;
+    GraphicsImage *_shopBackground = nullptr; // Only shops and guilds have one.
     int _savedButtonsNum = 0;
     bool _transactionPerformed = false;
 };

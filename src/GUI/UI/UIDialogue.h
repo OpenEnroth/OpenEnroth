@@ -32,6 +32,7 @@ class GUIWindow_Dialogue : public GUIWindow {
 
  protected:
     DialogueId _displayedDialogue = DIALOGUE_MAIN;;
+    GraphicsImage *_dialogueBackground = nullptr;
 };
 
 void initializeNPCDialogue(int npcId, int bPlayerSaysHello, Actor *actor = nullptr);

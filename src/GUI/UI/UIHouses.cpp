@@ -867,16 +867,12 @@ void GUIWindow_House::drawOptions(std::vector<std::string> &optionsText, Color s
     }
 }
 
-GraphicsImage *GUIWindow_House::shopBackground() const {
-    return assets->getIcon(shopBackgroundNames[buildingType()]);
-}
-
 void GUIWindow_House::houseDialogManager() {
     assert(window_SpeakInHouse != nullptr);
 
     Recti pWindow = this->frameRect;
     pWindow.w -= 18;
-    render->DrawQuad2D(dialogueBackground(), {477, 0});
+    render->DrawQuad2D(_dialogueBackground, {477, 0});
     render->DrawQuad2D(game_ui_right_panel_frame, {468, 0});
 
     if (currentHouseNpc == -1 || houseNpcs[currentHouseNpc].type != HOUSE_TRANSITION) {
@@ -1052,6 +1048,10 @@ GUIWindow_House::GUIWindow_House(HouseId houseId) : GUIWindow(WINDOW_HOUSE_INTER
     current_screen_type = SCREEN_HOUSE;
     pBtn_ExitCancel = CreateButton({471, 445}, {169, 35}, BUTTON_TYPE_NORMAL, 0, UIMSG_Escape, 0, INPUT_ACTION_INVALID,
                                    localization->str(LSTR_EXIT_BUILDING), {ui_exit_cancel_button_background});
+
+    _dialogueBackground = dialogueBackground();
+    if (buildingType() <= HOUSE_TYPE_MIRRORED_PATH_GUILD)
+        _shopBackground = assets->getIcon(shopBackgroundNames[buildingType()]);
 
     for (int i = 0; i < houseNpcs.size(); ++i) {
         Pointi pos = {pNPCPortraits_x[houseNpcs.size() - 1][i], pNPCPortraits_y[houseNpcs.size() - 1][i]};

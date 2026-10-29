@@ -152,7 +152,7 @@ void GUIWindow_MagicGuild::buyBooksDialogue() {
     working_window.x = SIDE_TEXT_BOX_POS_X;
     working_window.w = SIDE_TEXT_BOX_WIDTH;
 
-    render->DrawQuad2D(shopBackground(), {8, 8});
+    render->DrawQuad2D(_shopBackground, {8, 8});
     int itemxind = 0;
 
     for (int pX = 32; pX < 452; pX += 70) {  // top row

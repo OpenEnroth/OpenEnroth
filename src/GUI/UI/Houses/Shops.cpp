@@ -372,7 +372,7 @@ void GUIWindow_WeaponShop::shopWaresDialogue(bool isSpecial) {
     dialogwin.x = SIDE_TEXT_BOX_POS_X;
     dialogwin.w = SIDE_TEXT_BOX_WIDTH;
 
-    render->DrawQuad2D(shopBackground(), {8, 8});
+    render->DrawQuad2D(_shopBackground, {8, 8});
     int item_X = 0;
 
     for (int i = 0; i < 6; ++i) {
@@ -439,7 +439,7 @@ void GUIWindow_ArmorShop::shopWaresDialogue(bool isSpecial) {
     dialogwin.x = SIDE_TEXT_BOX_POS_X;
     dialogwin.w = SIDE_TEXT_BOX_WIDTH;
 
-    render->DrawQuad2D(shopBackground(), {8, 8});
+    render->DrawQuad2D(_shopBackground, {8, 8});
     int item_x = 0;
 
     for (int i = 0; i < 8; ++i) {
@@ -526,7 +526,7 @@ void GUIWindow_MagicAlchemyShop::shopWaresDialogue(bool isSpecial) {
     dialogwin.x = SIDE_TEXT_BOX_POS_X;
     dialogwin.w = SIDE_TEXT_BOX_WIDTH;
 
-    render->DrawQuad2D(shopBackground(), {8, 8});
+    render->DrawQuad2D(_shopBackground, {8, 8});
 
     for (int i = 0; i < 12; ++i) {
         bool itemPresent = (isSpecial ? pParty->specialItemsInShops[houseId()][i].itemId : pParty->standartItemsInShops[houseId()][i].itemId) != ITEM_NULL;
