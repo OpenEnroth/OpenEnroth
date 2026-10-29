@@ -19,7 +19,8 @@ struct ProcessResult {
  * killed, not the processes it starts.
  *
  * @param path                          Path to the executable. A relative path is resolved against the current
- *                                      directory, it's never looked up in `PATH`.
+ *                                      directory, it's never looked up in `PATH`. On Windows `.exe` is appended to
+ *                                      a path without an extension.
  * @param args                          Arguments, not including the executable name. UTF-8 on Windows, byte strings
  *                                      on POSIX.
  * @param timeout                       How long the process gets before it's killed, zero means no limit.

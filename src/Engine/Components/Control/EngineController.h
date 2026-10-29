@@ -111,7 +111,7 @@ class EngineController {
     void goToMainMenu();
 
     /**
-     * Exits the game through the main menu, no matter the current game state.
+     * Exits the game through the main menu no matter the current game state.
      */
     void exitGame();
 
