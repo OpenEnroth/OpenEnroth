@@ -39,7 +39,7 @@ void reconstruct(const T &src, T *dst) {
 
 template<class T1, class T2, class... Tags>
 void snapshot(const T1 &src, Unaligned<T2> *dst, const Tags &... tags) {
-    T2 tmp{};
+    T2 tmp = T2();
     snapshot(src, &tmp, tags...);
     *dst = tmp;
 }
