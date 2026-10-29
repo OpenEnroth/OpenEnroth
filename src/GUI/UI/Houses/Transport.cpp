@@ -202,7 +202,6 @@ void GUIWindow_Transport::depart() {
         engineFlags |= ENGINE_SKIP_NEXT_WORLD_UPDATE;
         uGameState = GAME_STATE_CHANGE_LOCATION;
     } else {
-        // travelling to map we are already in
         pCamera3D->_viewYaw = 0;
         pParty->pos = route.arrivalPos;
         pParty->uFallStartZ = pParty->pos.z;

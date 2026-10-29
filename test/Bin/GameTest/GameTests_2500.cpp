@@ -41,10 +41,6 @@ static std::string portraitName(int face) {
     return fmt::format("{}01", pPlayerPortraitsNames[face]);
 }
 
-static bool paidInStables(const std::tuple<ScreenType, int, int64_t, int64_t> &frame) {
-    return std::get<0>(frame) == SCREEN_HOUSE && std::get<1>(frame) == 150;
-}
-
 // 2500
 
 GAME_TEST(Issues, Issue2500a) {
@@ -1076,9 +1072,9 @@ GAME_TEST(Issues, Issue2932) {
         test.prepareForNextTest();
         auto mapTape = tapes.map();
         auto goldTape = tapes.gold();
-        auto frameTape = tapes.custom([] {
-            return std::tuple(current_screen_type, pParty->GetGold(), pParty->GetPlayingTime().toDays(),
-                              platform->tickCount()); // The tick count keeps every frame a separate sample.
+        auto dayTape = tapes.custom([] { return pParty->GetPlayingTime().toDays(); });
+        auto frameTape = tapes.custom([] { // The tick count keeps every frame a separate sample.
+            return std::tuple(current_screen_type, pParty->GetGold(), pParty->GetPlayingTime().toDays(), platform->tickCount());
         });
         game.startNewGame();
         test.startTaping();
@@ -1094,10 +1090,12 @@ GAME_TEST(Issues, Issue2932) {
         }
         game.skipLoadingScreen();
 
+        auto paidInStables = [](const auto &frame) { return std::get<0>(frame) == SCREEN_HOUSE && std::get<1>(frame) == 150; };
         auto paidFrames = frameTape.filter(paidInStables);
         EXPECT_EQ(mapTape, tape(MAP_EMERALD_ISLAND, MAP_HARMONDALE, MAP_ERATHIA));
         EXPECT_EQ(goldTape, tape(200, 150));
-        EXPECT_EQ(paidFrames.size(), 15); // The travel line plays for a second and a half.
-        EXPECT_EQ(paidFrames.filter([](const auto &frame) { return std::get<2>(frame) == 0; }).size(), 14); // The trip's two days pass as the party leaves.
+        EXPECT_EQ(dayTape, tape(0, 2));
+        EXPECT_EQ(paidFrames.size(), 15); // The travel line plays for about a second and a half.
+        EXPECT_EQ(paidFrames.count([](const auto &frame) { return std::get<2>(frame) == 0; }), 14); // The last one is the frame the party leaves on, after the trip's rest.
     }
 }

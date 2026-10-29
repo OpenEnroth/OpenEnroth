@@ -22,8 +22,7 @@ class GUIWindow_Transport : public GUIWindow_House {
     void transportDialogue();
 
     /**
-     * Sends the paid party on its way. Rests it for the length of the trip, then starts the map change, or moves it to
-     * the arrival point when the route stays on this map.
+     * Sends the paid party on its way: rests it for the trip and moves it to the destination.
      */
     void depart();
 
