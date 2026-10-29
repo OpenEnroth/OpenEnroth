@@ -115,8 +115,8 @@ class PathSplitIterator {
 
     size_t nextSeparator(size_t from) {
 #ifdef _WINDOWS
-        // Each slash has its own cursor, searched with memchr only once the scan has passed it, so that both cross the
-        // path once in all.
+        // Each slash has its own cursor, searched again only once the scan has passed it, so that both cross the path
+        // once in all.
         if (_nextSlash < from)
             _nextSlash = _path.find('/', from);
         if (_nextBackslash < from)

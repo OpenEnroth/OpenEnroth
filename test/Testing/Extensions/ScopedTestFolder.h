@@ -8,7 +8,7 @@
  */
 class ScopedTestFolder {
  public:
-    explicit ScopedTestFolder(PathView path);
+    explicit ScopedTestFolder(Path path);
     ~ScopedTestFolder();
 
  private:

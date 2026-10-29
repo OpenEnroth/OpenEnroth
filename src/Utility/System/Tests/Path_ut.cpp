@@ -19,9 +19,10 @@ template<class Head, class Tail>
 concept Joinable = requires(const Head &head, const Tail &tail) { head / tail; };
 
 UNIT_TEST(Path, ConversionsAreChecked) {
+    // Only a literal and a std::string rvalue convert to a Path implicitly, every other copy is spelled out.
     static_assert(std::is_convertible_v<const char *, Path>);
     static_assert(std::is_convertible_v<std::string &&, Path>);
-    static_assert(!std::is_convertible_v<std::string_view, Path>); // A copy, so it's spelled out.
+    static_assert(!std::is_convertible_v<std::string_view, Path>);
     static_assert(!std::is_convertible_v<const std::string &, Path>);
     static_assert(std::is_constructible_v<Path, std::string_view>);
     static_assert(std::is_constructible_v<Path, const std::string &>);
@@ -29,7 +30,7 @@ UNIT_TEST(Path, ConversionsAreChecked) {
     static_assert(std::is_convertible_v<std::string_view, PathView>);
     static_assert(std::is_convertible_v<const std::string &, PathView>);
     static_assert(std::is_convertible_v<const Path &, PathView>);
-    static_assert(!std::is_convertible_v<PathView, Path>); // A copy, so it's spelled out.
+    static_assert(!std::is_convertible_v<PathView, Path>);
     static_assert(std::is_constructible_v<Path, PathView>);
     static_assert(!std::is_constructible_v<Path, std::nullptr_t>);
     static_assert(!std::is_constructible_v<PathView, std::nullptr_t>);
@@ -44,7 +45,7 @@ UNIT_TEST(Path, NativeRoundTrip) {
 
 UNIT_TEST(Path, Composition) {
     auto testOne = [] (std::string_view head, std::string_view tail, std::string_view result) {
-        EXPECT_EQ((Path(head) / Path(tail)).str(), result)
+        EXPECT_EQ((Path(head) / tail).str(), result)
             << "for '" << head << "' / '" << tail << "'";
     };
 
@@ -52,9 +53,11 @@ UNIT_TEST(Path, Composition) {
     testOne("", "a", "a");
     testOne("a", "", "a/");
 
-    // Exactly one separator goes in, whether or not the head already ends with one.
+    // Exactly one separator goes in, whether or not the head already ends with one or more.
     testOne("a", "b", "a/b");
     testOne("a/", "b", "a/b");
+    testOne("a//", "b", "a/b");
+    testOne("//", "x", "/x"); // A root directory stays one, it doesn't become the "//" of a UNC root on Windows.
 
     testOne("a/b", "/c", "/c"); // A rooted tail replaces a head that has no root name.
     testOne("a", "..", "a/.."); // Dot components are ordinary names here, nothing resolves them.
@@ -87,6 +90,7 @@ UNIT_TEST(Path, WithExtension) {
 }
 
 UNIT_TEST(Path, Normalized) {
+    // normalized() resolves separators, "." and ".." lexically, and its result is already normal.
     auto testOne = [] (std::string_view path, std::string_view result) {
         Path normal = Path(path).normalized();
         EXPECT_EQ(normal.str(), result) << "for '" << path << "'";
@@ -139,7 +143,7 @@ UNIT_TEST(Path, Normalized) {
     testOne("//server/share/a/..", "//server/share/");
     testOne("//server/share/..", "//server/share/");
     testOne("./C:/a", "C:/a"); // Dropping the "." leaves the drive letter leading.
-    testOne("./C:.", "C:"); // The new drive's "." goes in the same call.
+    testOne("./C:.", "C:"); // The "." after the new drive goes too.
     testOne("./C:./a", "C:a");
     testOne("a/../C:/x", "C:/x"); // The drive ends up leading, so the result is absolute.
     testOne("//a/b", "//a/b"); // A UNC root.
@@ -153,6 +157,7 @@ UNIT_TEST(Path, Normalized) {
 }
 
 UNIT_TEST(Path, IsEscaping) {
+    // A path escapes when its ".." segments climb above where it starts.
     auto testOne = [] (std::string_view path, bool result) {
         EXPECT_EQ(Path(path).isEscaping(), result) << "for '" << path << "'";
     };
@@ -166,7 +171,7 @@ UNIT_TEST(Path, IsEscaping) {
     testOne("../a", true);
     testOne("a/../..", true);
     testOne("a//..//..", true); // Doesn't need normal form.
-    testOne("/..", false); // A path with a root never escapes.
+    testOne("/..", false); // A path with a root directory never escapes.
     testOne("/../..", false);
 #ifdef _WINDOWS
     testOne("C:..", true); // Above the current directory of drive C.
@@ -177,6 +182,7 @@ UNIT_TEST(Path, IsEscaping) {
 }
 
 UNIT_TEST(Path, Decomposition) {
+    // parent, name, stem and extension split a path lexically.
     auto testOne = [] (std::string_view path, std::string_view parent, std::string_view name, std::string_view stem,
                        std::string_view extension) {
         Path p(path);
@@ -217,6 +223,7 @@ UNIT_TEST(Path, Decomposition) {
 }
 
 UNIT_TEST(Path, Root) {
+    // root() is the root name and root directory a path starts with.
     auto testOne = [] (std::string_view path, std::string_view root) {
         EXPECT_EQ(Path(path).root(), root) << "for '" << path << "'";
     };
@@ -237,6 +244,7 @@ UNIT_TEST(Path, Root) {
 }
 
 UNIT_TEST(Path, Split) {
+    // split() yields the segments after the root, with no empty ones.
     auto segments = [] (std::string_view path) -> std::vector<std::string> {
         return Path(path).split();
     };
@@ -259,12 +267,13 @@ UNIT_TEST(Path, Split) {
     static_assert(std::ranges::borrowed_range<PathSplit>);
     Path path("a/b/c");
     const PathSplit split = path.split();
-    auto pos = std::ranges::find(split, "b"); // Borrowed, so the iterator outlives the call.
+    auto pos = std::ranges::find(split, "b");
     ASSERT_NE(pos, split.end());
     EXPECT_EQ(path.tailAt(*pos).str(), "b/c");
 }
 
 UNIT_TEST(Path, Tails) {
+    // tailAt starts at a segment, tailAfter starts after it and its separators.
     using Tails = std::pair<std::string, std::string>;
     auto tails = [] (const Path &path, std::string_view at) -> Tails {
         for (std::string_view segment : path.split())
@@ -282,6 +291,7 @@ UNIT_TEST(Path, Tails) {
 #ifdef _WINDOWS
     EXPECT_EQ(tails("C:/a/b", "a"), Tails("a/b", "b"));
     EXPECT_EQ(tails("a\\b/\\c", "b"), Tails("b/\\c", "c"));
+    EXPECT_EQ(PathView(tails("a/c:b", "a").second).root(), "c:"); // A segment can be a drive.
 #endif
 
     // An empty segment gives the whole path, root included.
@@ -295,9 +305,9 @@ UNIT_TEST(Path, Append) {
     // Appending joins the same way operator/ does, also when the tail points into the path itself.
     auto testOne = [] (std::string_view head, std::string_view tail, std::string_view result) {
         Path appended(head);
-        appended /= Path(tail);
+        appended /= tail;
         EXPECT_EQ(appended.str(), result) << "for '" << head << "' and '" << tail << "'";
-        EXPECT_EQ((Path(head) / Path(tail)).str(), result) << "for '" << head << "' and '" << tail << "'";
+        EXPECT_EQ((Path(head) / tail).str(), result) << "for '" << head << "' and '" << tail << "'";
     };
 
     testOne("", "a", "a");
@@ -353,7 +363,7 @@ UNIT_TEST(Path, Append) {
 #ifdef _WINDOWS
 UNIT_TEST(Path, WindowsRoots) {
     auto testJoin = [] (std::string_view head, std::string_view tail, std::string_view result) {
-        EXPECT_EQ((Path(head) / Path(tail)).str(), result)
+        EXPECT_EQ((Path(head) / tail).str(), result)
             << "for '" << head << "' / '" << tail << "'";
     };
     auto testExtension = [] (std::string_view path, std::string_view extension, std::string_view result) {
@@ -372,6 +382,8 @@ UNIT_TEST(Path, WindowsRoots) {
 
     testExtension("a", ".b\\c", "a.b\\c");
 
+    testJoin("a/\\", "b", "a/b"); // A run of separators keeps its first one, spelled as given.
+    testJoin("a\\/", "b", "a\\b");
     testJoin("C:/a", "D:/b", "D:/b"); // Another drive replaces everything.
     testJoin("C:/a", "/b", "C:/b"); // A rooted tail keeps our drive.
     testJoin("C:/a", "D:b", "D:b"); // Another drive replaces, even a relative one.
@@ -435,16 +447,16 @@ UNIT_TEST(Path, ExtendedLengthReachesWin32) {
     // gets stripped off the file name.
 
     // A single component is capped at 255 characters, so it takes two to get over MAX_PATH wherever temp is.
-    Path dir = fs::tmp() / Path("oe_" + std::string(150, 'd'));
+    Path dir = fs::tmp() / ("oe_" + std::string(150, 'd'));
     Path prefixed = Path("//?/" + dir.str());
     ScopedTestFolder folder(dir);
 
     for (const std::string &name : {"oe_" + std::string(150, 'x') + ".txt", std::string("oe_trailing_dot.")}) {
-        ASSERT_NO_THROW(FileOutputStream(prefixed / Path(name)).close()) << name;
+        ASSERT_NO_THROW(FileOutputStream(prefixed / name).close()) << name;
 
         // Not exists(), which would look the name up the same way the write did. A listing shows the name on disk.
         EXPECT_EQ(fs::ls(prefixed), std::vector<DirectoryEntry>({{name, FILE_REGULAR}})) << name;
-        EXPECT_TRUE(fs::remove(prefixed / Path(name))) << name;
+        EXPECT_TRUE(fs::remove(prefixed / name)) << name;
     }
 }
 #endif
@@ -461,8 +473,8 @@ UNIT_TEST(Path, DisplayString) {
 }
 
 UNIT_TEST(Path, Comparison) {
-    // Paths compare as their stored strings, so a trailing or doubled separator makes a different path, and "a/b"
-    // sorts after "a.b" where std::filesystem::path would put it first.
+    // Paths compare as their stored strings, so a trailing or doubled separator or a backslash makes a different
+    // path, and "a/b" sorts after "a.b" where std::filesystem::path would put it first.
     EXPECT_NE(Path("a"), Path("a/"));
     EXPECT_NE(Path("a\\b"), Path("a/b"));
     EXPECT_LT(Path("a"), Path("b"));
@@ -510,7 +522,7 @@ UNIT_TEST(Path, IsEmpty) {
 UNIT_TEST(Path, Format) {
     EXPECT_EQ(fmt::format("[{:>6}]", Path("a/b")), "[   a/b]"); // Format specs reach the string formatter.
     Path path("a/b");
-    EXPECT_EQ(fmt::format("[{:>6}]", path.parent()), "[     a]");
+    EXPECT_EQ(fmt::format("[{:>6}]", path.parent()), "[     a]"); // A view formats the same way.
 }
 
 UNIT_TEST(Path, LexicalCast) {
@@ -551,7 +563,7 @@ UNIT_TEST(Path, InvalidUtf8FileNames) {
     Path tmpDir = fs::tmp(); // A build dir can sit on an APFS-backed mount in a dev container.
 
     for (std::string_view name : {"tmp_lol\xD0kek.txt", "tmp_lol\xFFkek.txt", "tmp_trailing\xD0"}) {
-        Path path = tmpDir / Path(name);
+        Path path = tmpDir / name;
 
         ASSERT_NO_THROW(FileOutputStream(path).close()) << name;
         EXPECT_TRUE(fs::exists(path)) << name;

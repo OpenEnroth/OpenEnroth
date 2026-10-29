@@ -17,11 +17,11 @@ Path Path::fromNative(std::string_view path) {
 
 Path &Path::operator/=(PathView tail) {
     if (!tail.root().empty())
-        return *this = PathView(*this) / tail;
+        return *this = detail::joinPaths(*this, tail);
 
-    size_t size = _path.size();
-    _path += tail.str(); // Appending takes a source inside the string's own buffer, so the tail may point into it.
-    if (size > 0 && !detail::isPathSeparator(_path[size - 1]))
-        _path.insert(size, 1, '/'); // After a bare drive letter too, as in operator/.
+    size_t headSize = detail::joinedHeadSize(*this);
+    _path.replace(headSize, std::string::npos, tail.str()); // The tail may point into _path, replace() takes that.
+    if (headSize > 0 && !detail::isPathSeparator(_path[headSize - 1]))
+        _path.insert(headSize, 1, '/'); // After a bare drive letter too, as in operator/.
     return *this;
 }

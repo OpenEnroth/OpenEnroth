@@ -105,7 +105,7 @@ static std::vector<Path> resolvePaths(Environment *environment, const PathResolu
     // ...or Library/Application Support in home on macOS.
     std::string home = environment->path(PATH_HOME);
     if (!home.empty())
-        result.push_back(Path(home + "/Library/Application Support/OpenEnroth"));
+        result.push_back(Path(std::move(home)) / "Library/Application Support/OpenEnroth");
 #endif
 
     return result;

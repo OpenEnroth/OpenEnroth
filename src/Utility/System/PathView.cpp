@@ -32,7 +32,7 @@ using enum PathRootKind;
 struct PathRoot {
     PathRootKind kind = PATH_ROOT_NONE;
     bool hasRootDirectory = false; // Whether a separator follows the root name, as in "C:/" and "/".
-    size_t size = 0;
+    size_t size = 0; // Of the root name alone, rootEnd() adds the root directory.
 
     [[nodiscard]] bool isAbsolute() const {
 #ifdef _WINDOWS
@@ -45,11 +45,9 @@ struct PathRoot {
 
 /**
  * @param path                          Path to parse.
- * @return                              What the path starts with. Win32 roots a UNC path at the share, so
- *                                      `"//server/share"` is a single root name, and a bare `"//server"` is a root name
- *                                      with nothing to open under it. Doubled separators collapse in a plain UNC root,
- *                                      so `"//server//x"` is share `"x"` on `"server"`, but not after `"//?/"`, where
- *                                      `"//?/UNC//share"` has an empty server. POSIX has no root names at all.
+ * @return                              Root name kind and size, and whether a root directory follows. Win32 roots a UNC
+ *                                      path at the share, so `"//server/share"` is one root name. POSIX has no root
+ *                                      names.
  */
 static PathRoot parseRoot(std::string_view path) {
     PathRoot root;
@@ -91,20 +89,17 @@ static size_t fileNameOffset(std::string_view path, PathRoot root) {
 /**
  * @param path                          Path to scan.
  * @param nameOffset                    Offset of the file name inside the path.
- * @return                              Offset of the extension inside the path, or `npos` if there is none. A leading
- *                                      dot doesn't start an extension, so `".bashrc"` has none. Neither does a name
- *                                      whose stem would be all dots, because the stem of `"..."` is `".."`, and
- *                                      dropping the extension of such a name would turn it into a navigation token.
+ * @return                              Offset of the extension's dot inside the path, or `npos` if there is none.
  */
 static size_t extensionOffset(std::string_view path, size_t nameOffset) {
     std::string_view fileName = path.substr(nameOffset);
 
     size_t dotPos = fileName.rfind('.');
     if (dotPos == std::string_view::npos || dotPos == 0)
-        return std::string_view::npos;
+        return std::string_view::npos; // A leading dot doesn't start an extension, as in ".bashrc".
 
     if (fileName.substr(0, dotPos).find_first_not_of('.') == std::string_view::npos)
-        return std::string_view::npos;
+        return std::string_view::npos; // The stem of "..." would be "..", a navigation token.
 
     return nameOffset + dotPos;
 }
@@ -116,10 +111,9 @@ static size_t rootEnd(PathRoot root) {
 /**
  * @param path                          Path to take the root name from.
  * @param root                          Its parsed root.
- * @return                              The root name in normal form, with every separator spelled `/`. Win32
- *                                      collapses doubled separators in a plain UNC root, so `"//server//x"` gives
- *                                      `"//server/x"`. Every other root name keeps as many separators as it has,
- *                                      `"//?/"` included, since Win32 keeps the separators after it.
+ * @return                              The root name with every separator spelled `/`. Win32 collapses doubled
+ *                                      separators in a plain UNC root, so `"//server//x"` gives `"//server/x"`, but
+ *                                      not after `"//?/"`.
  */
 static std::string normalRootName(std::string_view path, PathRoot root) {
     std::string_view name = path.substr(0, root.size);
@@ -183,7 +177,7 @@ static bool isNormalizedPath(std::string_view path) {
 
 #ifdef _WINDOWS
     if (path.contains('\\'))
-        return false; // Normal form spells every separator as "/".
+        return false;
 #endif
 
     PathRoot root = parseRoot(path);
@@ -243,8 +237,8 @@ std::wstring PathView::native() const {
     std::wstring result = txt::wtf8ToWide(_path);
 
     // Win32 only recognizes a literal "\\?\". Spelled with forward slashes the prefix gets parsed like any other path,
-    // which brings back MAX_PATH and strips a trailing dot off a file name. A "//./" path gets parsed whichever slashes
-    // it uses, so converting it too does no harm.
+    // which brings back MAX_PATH and strips a trailing dot off a file name. A "//./" path is parsed the same with
+    // either slash.
     bool isExtended = _path.size() >= 4 && isPathSeparator(_path[0]) && isPathSeparator(_path[1]) &&
                       (_path[2] == '?' || _path[2] == '.') && isPathSeparator(_path[3]);
     if (isExtended)
@@ -311,27 +305,39 @@ PathView PathView::parent() const {
     return PathView(result);
 }
 
-Path PathView::operator/(PathView tail) const {
-    PathRoot selfRoot = parseRoot(_path);
-    PathRoot tailRoot = parseRoot(tail._path);
-    std::string_view selfRootName = _path.substr(0, selfRoot.size);
-    std::string_view tailRootName = tail._path.substr(0, tailRoot.size);
-    bool tailNamesAnotherRoot = !tailRootName.empty() && !ascii::noCaseEquals(tailRootName, selfRootName); // "c:" is "C:".
+size_t detail::joinedHeadSize(PathView head) {
+    std::string_view path = head.str();
+    size_t end = path.size();
+    while (end > rootEnd(parseRoot(path)) && isPathSeparator(path[end - 1]))
+        end--;
+    if (end < path.size() && end > 0 && !isPathSeparator(path[end - 1]))
+        end++; // Keep the first separator of the run, spelled as given.
+    return end;
+}
+
+Path detail::joinPaths(PathView head, PathView tail) {
+    std::string_view headString = head.str();
+    std::string_view tailString = tail.str();
+    PathRoot headRoot = parseRoot(headString);
+    PathRoot tailRoot = parseRoot(tailString);
+    std::string_view headRootName = headString.substr(0, headRoot.size);
+    std::string_view tailRootName = tailString.substr(0, tailRoot.size);
+    bool tailNamesAnotherRoot = !tailRootName.empty() && !ascii::noCaseEquals(tailRootName, headRootName); // "c:" is "C:".
 
     if (tailRoot.isAbsolute() || tailNamesAnotherRoot)
         return Path(tail);
 
     std::string result;
-    result.reserve(_path.size() + 1 + tail._path.size());
+    result.reserve(headString.size() + 1 + tailString.size());
     if (tailRoot.hasRootDirectory) {
-        assert(tailRootName.empty()); // A root name with a root directory is absolute.
-        result = selfRootName; // Win32 resolves "/b" on the current drive, so it keeps this path's root name.
+        assert(tailRootName.empty());
+        result = headRootName; // Win32 resolves "/b" on the current drive, so it keeps the root name of the head.
     } else {
-        result = _path;
-        if (!_path.empty() && !isPathSeparator(_path.back()))
+        result = headString.substr(0, joinedHeadSize(head));
+        if (!result.empty() && !isPathSeparator(result.back()))
             result += separator; // After a bare drive letter too, "C:" / "x" is "C:/x" and not the drive-relative "C:x".
     }
 
-    result += tail._path.substr(tailRoot.size);
+    result += tailString.substr(tailRoot.size);
     return Path(std::move(result));
 }

@@ -1,10 +1,11 @@
 #include "ScopedTestFolder.h"
 
 #include <gtest/gtest.h>
+#include <utility>
 
 #include "Utility/System/Fs.h"
 
-ScopedTestFolder::ScopedTestFolder(PathView path) : _path(path) {
+ScopedTestFolder::ScopedTestFolder(Path path) : _path(std::move(path)) {
     fs::remove(_path); // An earlier run could have left the folder behind.
     fs::mkdirs(_path);
 
