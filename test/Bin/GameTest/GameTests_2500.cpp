@@ -1104,5 +1104,5 @@ GAME_TEST(Issues, Issue2932b) {
 
     EXPECT_EQ(mapTape, tape(MAP_EMERALD_ISLAND, MAP_HARMONDALE, MAP_ERATHIA));
     EXPECT_EQ(goldTape, tape(200, 150));
-    EXPECT_EQ(frameTape.filter(paidInStables).size(), 15);
+    EXPECT_EQ(frameTape.filter(paidInStables).size(), 15); // The travel line plays for a second and a half.
 }
