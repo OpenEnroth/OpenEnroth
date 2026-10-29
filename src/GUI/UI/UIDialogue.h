@@ -2,6 +2,8 @@
 
 #include <string>
 
+#include "Engine/PartyEnums.h"
+
 #include "GUI/GUIWindow.h"
 
 class Actor;
@@ -41,7 +43,4 @@ void selectNPCDialogueOption(DialogueId option);
 
 extern int speakingNpcId;
 
-/**
- * @return                              Right panel background of the dialogue windows for the party's alignment.
- */
-GraphicsImage *dialogueBackground();
+GraphicsImage *dialogueBackground(PartyAlignment alignment);

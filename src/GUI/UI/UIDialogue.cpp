@@ -39,8 +39,8 @@ static const IndexedArray<std::string, PartyAlignment_Good, PartyAlignment_Evil>
     {PartyAlignment_Evil, "evt02-c"}
 };
 
-GraphicsImage *dialogueBackground() {
-    return assets->getIcon(dialogueBackgroundResourceByAlignment[pParty->alignment]);
+GraphicsImage *dialogueBackground(PartyAlignment alignment) {
+    return assets->getIcon(dialogueBackgroundResourceByAlignment[alignment]);
 }
 
 void initializeNPCDialogue(int npcId, int bPlayerSaysHello, Actor *actor) {
@@ -112,7 +112,7 @@ void initializeNPCDialogue(int npcId, int bPlayerSaysHello, Actor *actor) {
 GUIWindow_Dialogue::GUIWindow_Dialogue(DialogWindowType type) : GUIWindow(WINDOW_DIALOGUE, {0, 0}, render->GetRenderDimensions()) {
     prev_screen_type = current_screen_type;
     current_screen_type = SCREEN_NPC_DIALOGUE;
-    _dialogueBackground = dialogueBackground();
+    _dialogueBackground = dialogueBackground(pParty->alignment);
     pBtn_ExitCancel = CreateButton("NpcDialogue_Exit", {0x1D7u, 0x1BDu}, {0xA9u, 0x23u}, BUTTON_TYPE_NORMAL, 0, UIMSG_Escape, 0, INPUT_ACTION_INVALID,
                                    localization->str(LSTR_EXIT_DIALOGUE), {ui_exit_cancel_button_background});
 
