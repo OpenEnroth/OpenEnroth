@@ -1050,46 +1050,6 @@ GAME_TEST(Issues, Issue2908) {
     EXPECT_EQ(pParty->pos, Vec3f(11008, 34, 193)); // In front of the Lady Margaret, where the party boarded.
 }
 
-GAME_TEST(Prs, Pr2917a) {
-    // Paying for a coach ride should leave the stables on screen until the coach sound and the travel line end, and
-    // then send the party on its way.
-    auto mapTape = tapes.map();
-    auto goldTape = tapes.gold();
-    auto frameTape = tapes.custom([] { return std::tuple(current_screen_type, pParty->GetGold(), platform->tickCount()); }); // The tick count keeps every frame a separate sample.
-    game.startNewGame();
-    test.startTaping();
-    game.teleportTo(MAP_HARMONDALE, Vec3f(-5858, 10324, 0), 0); // In front of the J.V.C Corral.
-    game.pressAndReleaseKey(PlatformKey::KEY_SPACE);
-    game.tick(2);
-    game.pressGuiButton("HouseDialogue_Option0"); // Two days to Erathia.
-    game.skipLoadingScreen();
-
-    EXPECT_EQ(mapTape, tape(MAP_EMERALD_ISLAND, MAP_HARMONDALE, MAP_ERATHIA));
-    EXPECT_EQ(goldTape, tape(200, 150));
-    EXPECT_EQ(frameTape.filter(paidInStables).size(), 15); // The coach sound and the travel line play for a second and a half.
-}
-
-GAME_TEST(Prs, Pr2917b) {
-    // Escape while the coach sound and the travel line play should change nothing. The paid party still leaves once they
-    // end.
-    auto mapTape = tapes.map();
-    auto goldTape = tapes.gold();
-    auto frameTape = tapes.custom([] { return std::tuple(current_screen_type, pParty->GetGold(), platform->tickCount()); }); // The tick count keeps every frame a separate sample.
-    game.startNewGame();
-    test.startTaping();
-    game.teleportTo(MAP_HARMONDALE, Vec3f(-5858, 10324, 0), 0); // In front of the J.V.C Corral.
-    game.pressAndReleaseKey(PlatformKey::KEY_SPACE);
-    game.tick(2);
-    game.pressGuiButton("HouseDialogue_Option0"); // Two days to Erathia.
-    game.tick();
-    game.pressAndReleaseKey(PlatformKey::KEY_ESCAPE);
-    game.skipLoadingScreen();
-
-    EXPECT_EQ(mapTape, tape(MAP_EMERALD_ISLAND, MAP_HARMONDALE, MAP_ERATHIA));
-    EXPECT_EQ(goldTape, tape(200, 150));
-    EXPECT_EQ(frameTape.filter(paidInStables).size(), 15);
-}
-
 GAME_TEST(Issues, Issue2923) {
     // The Castle Harmondale throne room drew "0" as its title. Its row in 2dEvents.txt has no name, and the parser
     // turned every empty cell into "0".
@@ -1106,4 +1066,43 @@ GAME_TEST(Issues, Issue2923) {
     EXPECT_EQ(houseTape, tape(HOUSE_INVALID, HOUSE_CASTLE_HARMONDALE_1));
     EXPECT_CONTAINS(textTape.flatten(), "Exit Building"); // The house menu was drawn.
     EXPECT_MISSES(textTape.flatten(), "0");
+}
+
+GAME_TEST(Issues, Issue2932a) {
+    // The game stopped drawing frames while the stables' travel line played. The stables should stay on screen until it
+    // ends, and then the party should leave.
+    auto mapTape = tapes.map();
+    auto goldTape = tapes.gold();
+    auto frameTape = tapes.custom([] { return std::tuple(current_screen_type, pParty->GetGold(), platform->tickCount()); }); // The tick count keeps every frame a separate sample.
+    game.startNewGame();
+    test.startTaping();
+    game.teleportTo(MAP_HARMONDALE, Vec3f(-5858, 10324, 0), 0); // In front of the J.V.C Corral.
+    game.pressAndReleaseKey(PlatformKey::KEY_SPACE);
+    game.tick(2);
+    game.pressGuiButton("HouseDialogue_Option0"); // Two days to Erathia.
+    game.skipLoadingScreen();
+
+    EXPECT_EQ(mapTape, tape(MAP_EMERALD_ISLAND, MAP_HARMONDALE, MAP_ERATHIA));
+    EXPECT_EQ(goldTape, tape(200, 150));
+    EXPECT_EQ(frameTape.filter(paidInStables).size(), 15); // The travel line plays for a second and a half.
+}
+
+GAME_TEST(Issues, Issue2932b) {
+    // Escape while the stables' travel line plays should change nothing. The paid party still leaves once it ends.
+    auto mapTape = tapes.map();
+    auto goldTape = tapes.gold();
+    auto frameTape = tapes.custom([] { return std::tuple(current_screen_type, pParty->GetGold(), platform->tickCount()); }); // The tick count keeps every frame a separate sample.
+    game.startNewGame();
+    test.startTaping();
+    game.teleportTo(MAP_HARMONDALE, Vec3f(-5858, 10324, 0), 0); // In front of the J.V.C Corral.
+    game.pressAndReleaseKey(PlatformKey::KEY_SPACE);
+    game.tick(2);
+    game.pressGuiButton("HouseDialogue_Option0"); // Two days to Erathia.
+    game.tick();
+    game.pressAndReleaseKey(PlatformKey::KEY_ESCAPE);
+    game.skipLoadingScreen();
+
+    EXPECT_EQ(mapTape, tape(MAP_EMERALD_ISLAND, MAP_HARMONDALE, MAP_ERATHIA));
+    EXPECT_EQ(goldTape, tape(200, 150));
+    EXPECT_EQ(frameTape.filter(paidInStables).size(), 15);
 }
