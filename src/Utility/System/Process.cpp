@@ -11,21 +11,11 @@
 #include <thread>
 #include <vector>
 
-#ifndef __ANDROID__
-#   include <subprocess.h>
-#endif
+#include <subprocess.h> // NOLINT: this is not a C system header.
 
 #include "Utility/Exception.h"
 #include "Utility/ScopeGuard.h"
 #include "Utility/System/Fs.h"
-
-#ifdef __ANDROID__
-
-ProcessResult runProcess(const Path &path, const std::vector<std::string> &, std::chrono::milliseconds) {
-    throw Exception("{}: can't start a process on Android", path.displayString()); // posix_spawn needs API level 28.
-}
-
-#else // __ANDROID__
 
 [[noreturn]] static void throwFromSubprocessError(int error, std::string_view displayString) {
 #ifdef _WINDOWS
@@ -106,5 +96,3 @@ ProcessResult runProcess(const Path &path, const std::vector<std::string> &args,
     drain();
     return result;
 }
-
-#endif // __ANDROID__
