@@ -1,9 +1,11 @@
 #include <string>
+#include <tuple>
 #include <utility>
 
 #include "Testing/Game/GameTest.h"
 
 #include "Engine/Engine.h"
+#include "Engine/EngineGlobals.h"
 #include "Engine/MapEnums.h"
 #include "Engine/Party.h"
 #include "Engine/SaveLoad.h"
@@ -24,6 +26,8 @@
 #include "GUI/GUIWindow.h"
 #include "GUI/UI/UIGame.h"
 #include "GUI/UI/UISaveLoad.h"
+
+#include "Library/Platform/Interface/Platform.h"
 
 #include "Media/Audio/SoundList.h"
 
@@ -1058,4 +1062,40 @@ GAME_TEST(Issues, Issue2923) {
     EXPECT_EQ(houseTape, tape(HOUSE_INVALID, HOUSE_CASTLE_HARMONDALE_1));
     EXPECT_CONTAINS(textTape.flatten(), "Exit Building"); // The house menu was drawn.
     EXPECT_MISSES(textTape.flatten(), "0");
+}
+
+GAME_TEST(Issues, Issue2932) {
+    // The game stopped drawing frames while the stables' travel line played. The stables should stay on screen until it
+    // ends, and then the party should leave. Escape while the line plays should change nothing.
+    for (bool pressEscape : {false, true}) {
+        SCOPED_TRACE(fmt::format("pressEscape={}", pressEscape));
+        test.prepareForNextTest();
+        auto mapTape = tapes.map();
+        auto goldTape = tapes.gold();
+        auto dayTape = tapes.custom([] { return pParty->GetPlayingTime().toDays(); });
+        auto frameTape = tapes.custom([] { // The tick count keeps every frame a separate sample.
+            return std::tuple(current_screen_type, pParty->GetGold(), pParty->GetPlayingTime().toDays(), platform->tickCount());
+        });
+        game.startNewGame();
+        test.startTaping();
+        game.teleportTo(MAP_HARMONDALE, Vec3f(-5858, 10324, 0), 0); // In front of the J.V.C Corral.
+        game.pressAndReleaseKey(PlatformKey::KEY_SPACE);
+        game.tick(2);
+        game.pressGuiButton("HouseDialogue_Option0"); // Two days to Erathia.
+        if (pressEscape) {
+            for (int i = 0; i < 5; i++) {
+                game.tick();
+                game.pressAndReleaseKey(PlatformKey::KEY_ESCAPE);
+            }
+        }
+        game.skipLoadingScreen();
+
+        auto paidInStables = [](const auto &frame) { return std::get<0>(frame) == SCREEN_HOUSE && std::get<1>(frame) == 150; };
+        auto paidFrames = frameTape.filter(paidInStables);
+        EXPECT_EQ(mapTape, tape(MAP_EMERALD_ISLAND, MAP_HARMONDALE, MAP_ERATHIA));
+        EXPECT_EQ(goldTape, tape(200, 150));
+        EXPECT_EQ(dayTape, tape(0, 2));
+        EXPECT_EQ(paidFrames.size(), 15); // The travel line plays for about a second and a half.
+        EXPECT_EQ(paidFrames.count([](const auto &frame) { return std::get<2>(frame) == 0; }), 14); // The last one is the frame the party leaves on, after the trip's rest.
+    }
 }

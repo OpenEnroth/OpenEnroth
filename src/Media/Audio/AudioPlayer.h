@@ -43,7 +43,6 @@ class AudioPlayer {
     void stopSounds();
     void stopVoiceSounds();
     void stopWalkingSounds();
-    void soundDrain();
     bool isWalkingSoundPlays();
 
     /**

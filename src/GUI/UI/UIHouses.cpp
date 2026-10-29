@@ -1,5 +1,6 @@
 #include "UIHouses.h"
 
+#include <cmath>
 #include <cstdlib>
 #include <memory>
 #include <vector>
@@ -696,6 +697,13 @@ void playHouseSound(HouseId houseID, HouseSoundType type) {
         int roomSoundId = pAnimatedRooms[houseTable[houseID].uAnimationID].uRoomSoundId;
         pAudioPlayer->playHouseSound(houseSoundId(roomSoundId, type), true);
     }
+}
+
+int64_t houseSoundLengthMs(HouseId houseId, HouseSoundType type) {
+    int roomSoundId = pAnimatedRooms[houseTable[houseId].uAnimationID].uRoomSoundId;
+    if (!roomSoundId)
+        return 0;
+    return static_cast<int64_t>(std::ceil(pAudioPlayer->getSoundLength(houseSoundId(roomSoundId, type)) * 1000));
 }
 
 void GUIWindow_House::houseNPCDialogue() {

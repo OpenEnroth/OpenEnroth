@@ -5,7 +5,6 @@
 #include <map>
 #include <string>
 #include <utility>
-#include <thread>
 #include <memory>
 
 #include "Engine/Graphics/Indoor.h"
@@ -404,17 +403,6 @@ void AudioPlayer::pauseAllSounds() {
 
 void AudioPlayer::pauseLooping() {
     _loopingSoundPool.pause();
-}
-
-void AudioPlayer::soundDrain() {
-    while (_voiceSoundPool.hasPlaying()) {
-        std::this_thread::sleep_for(std::chrono::milliseconds(1));
-        _voiceSoundPool.update();
-    }
-    while (_regularSoundPool.hasPlaying()) {
-        std::this_thread::sleep_for(std::chrono::milliseconds(1));
-        _regularSoundPool.update();
-    }
 }
 
 bool AudioPlayer::isWalkingSoundPlays() {

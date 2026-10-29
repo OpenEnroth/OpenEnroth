@@ -146,6 +146,15 @@ void GUIWindow_Transport::mainDialogue() {
 }
 
 void GUIWindow_Transport::transportDialogue() {
+    if (_departureTime) {
+        if (platform->tickCount() >= *_departureTime) {
+            depart();
+            houseDialogueGoBackToTop();
+            engine->_messageQueue->addMessageCurrentFrame(UIMSG_Escape, 0, 0);
+        }
+        return;
+    }
+
     int pPrice = PriceCalculator::transportCostForPlayer(&pParty->activeCharacter(), houseTable[houseId()]);
 
     if (pParty->GetGold() < pPrice) {
@@ -156,23 +165,12 @@ void GUIWindow_Transport::transportDialogue() {
     }
 
     int choice_id = std::to_underlying(_currentDialogue) - std::to_underlying(DIALOGUE_TRANSPORT_SCHEDULE_1);
-    const TransportInfo *pTravel = &transportSchedule[transportRoutes[houseId()][choice_id]];
+    int routeId = transportRoutes[houseId()][choice_id];
+    const TransportInfo *pTravel = &transportSchedule[routeId];
 
     if (pTravel->pSchedule[pParty->uCurrentDayOfMonth % 7]) {
-        if (engine->_currentLoadedMapId != pTravel->uMapInfoID) {
+        if (engine->_currentLoadedMapId != pTravel->uMapInfoID)
             autoSave();
-            engine->_pendingTransition = MapDestination(pTravel->uMapInfoID, PartyPlacement(pTravel->arrivalPos, pTravel->arrival_view_yaw, 0, 0));
-
-            engineFlags |= ENGINE_SKIP_NEXT_WORLD_UPDATE;
-            uGameState = GAME_STATE_CHANGE_LOCATION;
-        } else {
-            // travelling to map we are already in
-            pCamera3D->_viewYaw = 0;
-            pParty->pos = pTravel->arrivalPos;
-            pParty->uFallStartZ = pParty->pos.z;
-            pParty->_viewPitch = 0;
-            pParty->_viewYaw = pTravel->arrival_view_yaw;
-        }
 
         pParty->TakeGold(pPrice);
         playHouseSound(houseId(), HOUSE_SOUND_TRANSPORT_TRAVEL);
@@ -184,14 +182,32 @@ void GUIWindow_Transport::transportDialogue() {
             pSpeech = SPEECH_TRAVEL_HORSE;
         }
 
-        restAndHeal(Duration::fromDays(getTravelTimeTransportDays(transportRoutes[houseId()][choice_id])));
         pParty->activeCharacter().playReaction(pSpeech);
-        pAudioPlayer->soundDrain();
-        houseDialogueGoBackToTop();
-    } else {
-        pAudioPlayer->playUISound(SOUND_error);
+        _routeId = routeId;
+        _departureTime = platform->tickCount() + houseSoundLengthMs(houseId(), HOUSE_SOUND_TRANSPORT_TRAVEL);
+        return;
     }
+
+    pAudioPlayer->playUISound(SOUND_error);
     engine->_messageQueue->addMessageCurrentFrame(UIMSG_Escape, 0, 0);
+}
+
+void GUIWindow_Transport::depart() {
+    const TransportInfo &route = transportSchedule[_routeId];
+    _departureTime.reset();
+    restAndHeal(Duration::fromDays(getTravelTimeTransportDays(_routeId)));
+
+    if (engine->_currentLoadedMapId != route.uMapInfoID) {
+        engine->_pendingTransition = MapDestination(route.uMapInfoID, PartyPlacement(route.arrivalPos, route.arrival_view_yaw, 0, 0));
+        engineFlags |= ENGINE_SKIP_NEXT_WORLD_UPDATE;
+        uGameState = GAME_STATE_CHANGE_LOCATION;
+    } else {
+        pCamera3D->_viewYaw = 0;
+        pParty->pos = route.arrivalPos;
+        pParty->uFallStartZ = pParty->pos.z;
+        pParty->_viewPitch = 0;
+        pParty->_viewYaw = route.arrival_view_yaw;
+    }
 }
 
 void GUIWindow_Transport::houseSpecificDialogue() {
@@ -210,6 +226,12 @@ void GUIWindow_Transport::houseSpecificDialogue() {
       default:
         break;
     }
+}
+
+void GUIWindow_Transport::updateDialogueOnEscape() {
+    if (_departureTime)
+        return; // The party has paid and can't go back to the menu.
+    GUIWindow_House::updateDialogueOnEscape();
 }
 
 void GUIWindow_Transport::houseDialogueOptionSelected(DialogueId option) {
