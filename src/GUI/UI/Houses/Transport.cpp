@@ -192,7 +192,7 @@ void GUIWindow_Transport::transportDialogue() {
 
         restAndHeal(Duration::fromDays(getTravelTimeTransportDays(transportRoutes[houseId()][choice_id])));
         pParty->activeCharacter().playReaction(pSpeech);
-        _departureTime = pAudioPlayer->soundsEndTime(); // The party sets off once the travel sound and the speech end.
+        _departureTime = platform->tickCount() + houseSoundLength(houseId(), HOUSE_SOUND_TRANSPORT_TRAVEL).realtimeMilliseconds();
         return;
     }
 

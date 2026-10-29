@@ -3,6 +3,8 @@
 #include <string>
 #include <vector>
 
+#include "Core/Time/Duration.h"
+
 #include "Engine/Tables/HouseTable.h"
 #include "Engine/MapEnums.h"
 
@@ -61,6 +63,13 @@ void houseDialogueGoBackToTop();
  * @offset 0x4B1E92
  */
 void playHouseSound(HouseId houseID, HouseSoundType type);
+
+/**
+ * @param houseId                       House whose sound to look up.
+ * @param type                          Which of the house's sounds.
+ * @return                              How long the sound plays. Zero if the house has no sounds.
+ */
+Duration houseSoundLength(HouseId houseId, HouseSoundType type);
 
 void selectHouseNPCDialogueOption(DialogueId topic);
 

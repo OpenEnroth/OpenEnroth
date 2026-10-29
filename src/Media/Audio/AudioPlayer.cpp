@@ -17,7 +17,6 @@
 #include "Engine/Tables/MapTable.h"
 #include "Engine/Resources/EngineFileSystem.h"
 #include "Engine/EngineCallObserver.h"
-#include "Engine/EngineGlobals.h"
 
 #include "GUI/GUIWindow.h"
 
@@ -155,7 +154,6 @@ void AudioPlayer::stopSounds() {
         _currentWalkingSample->Stop();
         _currentWalkingSample = nullptr;
     }
-    _soundsEndTime = 0;
 }
 
 void AudioPlayer::stopVoiceSounds() {
@@ -210,7 +208,6 @@ void AudioPlayer::playSound(SoundId eSoundID, SoundPlaybackMode mode, Pid pid) {
     PAudioSample sample = CreateAudioSample();
 
     SoundPlaybackResult result = SOUND_PLAYBACK_INVALID;
-    bool looping = false;
     sample->SetVolume(uMasterVolume);
 
     if (mode == SOUND_MODE_UI) {
@@ -287,7 +284,6 @@ void AudioPlayer::playSound(SoundId eSoundID, SoundPlaybackMode mode, Pid pid) {
                                     pLevelDecorations[object_id].vPosition.z, MAX_SOUND_DIST);
 
                 result = _loopingSoundPool.playNew(sample, si->dataSource, true);
-                looping = true;
 
                 break;
             }
@@ -316,9 +312,6 @@ void AudioPlayer::playSound(SoundId eSoundID, SoundPlaybackMode mode, Pid pid) {
             }
         }
     }
-
-    if (result == SOUND_PLAYBACK_SUCCEEDED && !looping)
-        _soundsEndTime = std::max(_soundsEndTime, platform->tickCount() + static_cast<int64_t>(std::ceil(si->dataSource->GetDuration() * 1000)));
 
     if (result == SOUND_PLAYBACK_FAILED || result == SOUND_PLAYBACK_SUCCEEDED) {
         // Only log sounds that actually play or tried to play
