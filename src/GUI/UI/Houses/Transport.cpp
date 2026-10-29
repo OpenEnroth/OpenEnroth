@@ -165,20 +165,12 @@ void GUIWindow_Transport::transportDialogue() {
     }
 
     int choice_id = std::to_underlying(_currentDialogue) - std::to_underlying(DIALOGUE_TRANSPORT_SCHEDULE_1);
-    const TransportInfo *pTravel = &transportSchedule[transportRoutes[houseId()][choice_id]];
+    int routeId = transportRoutes[houseId()][choice_id];
+    const TransportInfo *pTravel = &transportSchedule[routeId];
 
     if (pTravel->pSchedule[pParty->uCurrentDayOfMonth % 7]) {
-        if (engine->_currentLoadedMapId != pTravel->uMapInfoID) {
+        if (engine->_currentLoadedMapId != pTravel->uMapInfoID)
             autoSave();
-            engine->_pendingTransition = MapDestination(pTravel->uMapInfoID, PartyPlacement(pTravel->arrivalPos, pTravel->arrival_view_yaw, 0, 0));
-        } else {
-            // travelling to map we are already in
-            pCamera3D->_viewYaw = 0;
-            pParty->pos = pTravel->arrivalPos;
-            pParty->uFallStartZ = pParty->pos.z;
-            pParty->_viewPitch = 0;
-            pParty->_viewYaw = pTravel->arrival_view_yaw;
-        }
 
         pParty->TakeGold(pPrice);
         playHouseSound(houseId(), HOUSE_SOUND_TRANSPORT_TRAVEL);
@@ -190,8 +182,8 @@ void GUIWindow_Transport::transportDialogue() {
             pSpeech = SPEECH_TRAVEL_HORSE;
         }
 
-        restAndHeal(Duration::fromDays(getTravelTimeTransportDays(transportRoutes[houseId()][choice_id])));
         pParty->activeCharacter().playReaction(pSpeech);
+        _routeId = routeId;
         _departureTime = platform->tickCount() + houseSoundLengthMs(houseId(), HOUSE_SOUND_TRANSPORT_TRAVEL);
         return;
     }
@@ -201,10 +193,21 @@ void GUIWindow_Transport::transportDialogue() {
 }
 
 void GUIWindow_Transport::depart() {
+    const TransportInfo &route = transportSchedule[_routeId];
     _departureTime.reset();
-    if (engine->_pendingTransition) {
+    restAndHeal(Duration::fromDays(getTravelTimeTransportDays(_routeId)));
+
+    if (engine->_currentLoadedMapId != route.uMapInfoID) {
+        engine->_pendingTransition = MapDestination(route.uMapInfoID, PartyPlacement(route.arrivalPos, route.arrival_view_yaw, 0, 0));
         engineFlags |= ENGINE_SKIP_NEXT_WORLD_UPDATE;
         uGameState = GAME_STATE_CHANGE_LOCATION;
+    } else {
+        // travelling to map we are already in
+        pCamera3D->_viewYaw = 0;
+        pParty->pos = route.arrivalPos;
+        pParty->uFallStartZ = pParty->pos.z;
+        pParty->_viewPitch = 0;
+        pParty->_viewYaw = route.arrival_view_yaw;
     }
 }
 

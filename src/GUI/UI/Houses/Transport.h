@@ -22,7 +22,8 @@ class GUIWindow_Transport : public GUIWindow_House {
     void transportDialogue();
 
     /**
-     * Ends the wait after the party has paid, and starts the map change if the route leaves the map.
+     * Sends the paid party on its way. Rests it for the length of the trip, then starts the map change, or moves it to
+     * the arrival point when the route stays on this map.
      */
     void depart();
 
@@ -37,6 +38,7 @@ class GUIWindow_Transport : public GUIWindow_House {
     int getTravelTimeTransportDays(int schedule_id);
 
     std::optional<int64_t> _departureTime; // Platform tick count at which the paid party leaves.
+    int _routeId = 0; // Index into the transport schedule of the route the party paid for.
 };
 
 bool isTravelAvailable(HouseId houseId);

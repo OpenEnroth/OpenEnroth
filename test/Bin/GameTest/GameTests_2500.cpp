@@ -41,7 +41,7 @@ static std::string portraitName(int face) {
     return fmt::format("{}01", pPlayerPortraitsNames[face]);
 }
 
-static bool paidInStables(const std::tuple<ScreenType, int, int64_t> &frame) {
+static bool paidInStables(const std::tuple<ScreenType, int, int64_t, int64_t> &frame) {
     return std::get<0>(frame) == SCREEN_HOUSE && std::get<1>(frame) == 150;
 }
 
@@ -1068,41 +1068,36 @@ GAME_TEST(Issues, Issue2923) {
     EXPECT_MISSES(textTape.flatten(), "0");
 }
 
-GAME_TEST(Issues, Issue2932a) {
+GAME_TEST(Issues, Issue2932) {
     // The game stopped drawing frames while the stables' travel line played. The stables should stay on screen until it
-    // ends, and then the party should leave.
-    auto mapTape = tapes.map();
-    auto goldTape = tapes.gold();
-    auto frameTape = tapes.custom([] { return std::tuple(current_screen_type, pParty->GetGold(), platform->tickCount()); }); // The tick count keeps every frame a separate sample.
-    game.startNewGame();
-    test.startTaping();
-    game.teleportTo(MAP_HARMONDALE, Vec3f(-5858, 10324, 0), 0); // In front of the J.V.C Corral.
-    game.pressAndReleaseKey(PlatformKey::KEY_SPACE);
-    game.tick(2);
-    game.pressGuiButton("HouseDialogue_Option0"); // Two days to Erathia.
-    game.skipLoadingScreen();
+    // ends, and then the party should leave. Escape while the line plays should change nothing.
+    for (bool pressEscape : {false, true}) {
+        SCOPED_TRACE(fmt::format("pressEscape={}", pressEscape));
+        test.prepareForNextTest();
+        auto mapTape = tapes.map();
+        auto goldTape = tapes.gold();
+        auto frameTape = tapes.custom([] {
+            return std::tuple(current_screen_type, pParty->GetGold(), pParty->GetPlayingTime().toDays(),
+                              platform->tickCount()); // The tick count keeps every frame a separate sample.
+        });
+        game.startNewGame();
+        test.startTaping();
+        game.teleportTo(MAP_HARMONDALE, Vec3f(-5858, 10324, 0), 0); // In front of the J.V.C Corral.
+        game.pressAndReleaseKey(PlatformKey::KEY_SPACE);
+        game.tick(2);
+        game.pressGuiButton("HouseDialogue_Option0"); // Two days to Erathia.
+        if (pressEscape) {
+            for (int i = 0; i < 5; i++) {
+                game.tick();
+                game.pressAndReleaseKey(PlatformKey::KEY_ESCAPE);
+            }
+        }
+        game.skipLoadingScreen();
 
-    EXPECT_EQ(mapTape, tape(MAP_EMERALD_ISLAND, MAP_HARMONDALE, MAP_ERATHIA));
-    EXPECT_EQ(goldTape, tape(200, 150));
-    EXPECT_EQ(frameTape.filter(paidInStables).size(), 15); // The travel line plays for a second and a half.
-}
-
-GAME_TEST(Issues, Issue2932b) {
-    // Escape while the stables' travel line plays should change nothing. The paid party still leaves once it ends.
-    auto mapTape = tapes.map();
-    auto goldTape = tapes.gold();
-    auto frameTape = tapes.custom([] { return std::tuple(current_screen_type, pParty->GetGold(), platform->tickCount()); }); // The tick count keeps every frame a separate sample.
-    game.startNewGame();
-    test.startTaping();
-    game.teleportTo(MAP_HARMONDALE, Vec3f(-5858, 10324, 0), 0); // In front of the J.V.C Corral.
-    game.pressAndReleaseKey(PlatformKey::KEY_SPACE);
-    game.tick(2);
-    game.pressGuiButton("HouseDialogue_Option0"); // Two days to Erathia.
-    game.tick();
-    game.pressAndReleaseKey(PlatformKey::KEY_ESCAPE);
-    game.skipLoadingScreen();
-
-    EXPECT_EQ(mapTape, tape(MAP_EMERALD_ISLAND, MAP_HARMONDALE, MAP_ERATHIA));
-    EXPECT_EQ(goldTape, tape(200, 150));
-    EXPECT_EQ(frameTape.filter(paidInStables).size(), 15); // The travel line plays for a second and a half.
+        auto paidFrames = frameTape.filter(paidInStables);
+        EXPECT_EQ(mapTape, tape(MAP_EMERALD_ISLAND, MAP_HARMONDALE, MAP_ERATHIA));
+        EXPECT_EQ(goldTape, tape(200, 150));
+        EXPECT_EQ(paidFrames.size(), 15); // The travel line plays for a second and a half.
+        EXPECT_EQ(paidFrames.filter([](const auto &frame) { return std::get<2>(frame) == 0; }).size(), 14); // The trip's two days pass as the party leaves.
+    }
 }
