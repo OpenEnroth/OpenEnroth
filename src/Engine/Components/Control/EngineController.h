@@ -212,6 +212,14 @@ class EngineController {
     void pointMouseAtDecoration(int decorationId);
 
     /**
+     * Finds a screen position at which the mouse points at the provided sprite object & moves the mouse there.
+     *
+     * @param spriteId                  Index of the sprite object in `pSpriteObjects` to point at.
+     * @throws Exception                If pointing at the sprite object is not possible, e.g. it's not on the screen.
+     */
+    void pointMouseAtSprite(int spriteId);
+
+    /**
      * Finds a screen position at which the mouse points at the provided face of the current level & moves the mouse
      * there.
      *

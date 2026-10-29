@@ -776,6 +776,7 @@ void Game::processQueuedMessages() {
                 current_screen_type = SCREEN_GAME;
                 continue;
             case UIMSG_CastSpell_Telekinesis: {
+                engine->_messageQueue->clear();
                 Pid pid = engine->PickMouseForTargeting().pid;
                 ObjectType type = pid.type();
                 int id = pid.id();

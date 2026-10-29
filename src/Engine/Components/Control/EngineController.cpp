@@ -25,7 +25,9 @@
 #include "Engine/Graphics/Outdoor.h"
 #include "Engine/Objects/Actor.h"
 #include "Engine/Objects/Decoration.h"
+#include "Engine/Objects/SpriteObject.h"
 #include "Engine/Tables/DecorationTable.h"
+#include "Engine/Tables/ObjectTable.h"
 #include "Engine/Objects/MonsterEnumFunctions.h"
 #include "Engine/Graphics/Camera.h"
 #include "Engine/Graphics/Vis.h"
@@ -418,6 +420,10 @@ void EngineController::pointMouseAtDecoration(int decorationId) {
     pointMouseAt(Pid::decoration(decorationId));
 }
 
+void EngineController::pointMouseAtSprite(int spriteId) {
+    pointMouseAt(Pid::sprite(spriteId));
+}
+
 void EngineController::pointMouseAtFace(int faceId) {
     pointMouseAt(Pid::face(faceId));
 }
@@ -524,6 +530,10 @@ void EngineController::pointMouseAt(Pid target) {
         const LevelDecoration &decoration = pLevelDecorations[target.id()];
         center = decoration.vPosition + Vec3f(0, 0, pDecorationTable->decoration(decoration.uDecorationDescID)->uDecorationHeight / 2);
         targetName = fmt::format("decoration #{}", target.id());
+    } else if (target.type() == OBJECT_Sprite) {
+        const SpriteObject &sprite = pSpriteObjects[target.id()];
+        center = sprite.vPosition + Vec3f(0, 0, pObjectTable->pObjects[sprite.uObjectDescID].uHeight / 2);
+        targetName = fmt::format("sprite #{}", target.id());
     } else if (target.type() == OBJECT_Face) {
         center = (uCurrentlyLoadedLevelType == LEVEL_INDOOR ? pIndoor->faces[target.id()] : pOutdoor->face(target)).boundingBox.center();
         targetName = fmt::format("face #{}", target.id());
