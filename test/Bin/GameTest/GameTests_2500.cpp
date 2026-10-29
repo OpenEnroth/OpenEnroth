@@ -1064,9 +1064,9 @@ GAME_TEST(Issues, Issue2923) {
     EXPECT_MISSES(textTape.flatten(), "0");
 }
 
-GAME_TEST(Prs, Pr2930) {
-    // The shop background was freed when the party went back from the proprietor to the house's NPC list, and
-    // talking to the proprietor again drew the freed image.
+GAME_TEST(Issues, Issue2931) {
+    // The shop background was released when the party went back from the proprietor to the house's NPC list, and
+    // talking to the proprietor again crashed on the missing image.
     auto houseTape = tapes.house();
     auto dialogueTape = tapes.dialogueType();
     auto texturesTape = tapes.hudTextures();
