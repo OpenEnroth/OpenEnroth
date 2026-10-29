@@ -31,7 +31,7 @@ class GUIWindow_Dialogue : public GUIWindow {
     virtual void Update() override;
 
  protected:
-    DialogueId _displayedDialogue = DIALOGUE_MAIN;;
+    DialogueId _displayedDialogue = DIALOGUE_MAIN;
     GraphicsImage *_dialogueBackground = nullptr;
 };
 
@@ -40,6 +40,7 @@ void initializeNPCDialogue(int npcId, int bPlayerSaysHello, Actor *actor = nullp
 void selectNPCDialogueOption(DialogueId option);
 
 extern int speakingNpcId;
+
 /**
  * @return                              Right panel background of the dialogue windows for the party's alignment.
  */

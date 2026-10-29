@@ -203,7 +203,6 @@ static constexpr IndexedArray<ItemTreasureLevel, HOUSE_FIRST_ALCHEMY_SHOP, HOUSE
     {HOUSE_53,                              ITEM_TREASURE_LEVEL_2}
 }};
 
-
 std::array<GraphicsImage *, 12> shop_ui_items_in_store;
 std::array<int, 6> weaponYPos;
 

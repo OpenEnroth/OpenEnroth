@@ -57,8 +57,8 @@ int getSpecialTransferMessageIndex(std::string_view locationName) {
 
 GUIWindow_Transition::GUIWindow_Transition(WindowType windowType, ScreenType screenType) : GUIWindow(windowType, {0, 0}, render->GetRenderDimensions()) {
     gameTimer->setPaused(true);
-    _dialogueBackground = dialogueBackground();
 
+    _dialogueBackground = dialogueBackground();
     prev_screen_type = current_screen_type;
     current_screen_type = screenType;
 }

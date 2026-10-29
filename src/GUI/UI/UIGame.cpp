@@ -134,7 +134,6 @@ GraphicsImage *game_ui_btn_zoomout = nullptr;
 GraphicsImage *game_ui_btn_quickref = nullptr;
 GraphicsImage *game_ui_btn_settings = nullptr;
 
-
 GraphicsImage *game_ui_menu_options_video_background = nullptr;
 GraphicsImage *game_ui_menu_options_video_bloodsplats = nullptr;
 GraphicsImage *game_ui_menu_options_video_coloredlights = nullptr;

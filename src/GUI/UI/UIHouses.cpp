@@ -1050,7 +1050,7 @@ GUIWindow_House::GUIWindow_House(HouseId houseId) : GUIWindow(WINDOW_HOUSE_INTER
                                    localization->str(LSTR_EXIT_BUILDING), {ui_exit_cancel_button_background});
 
     _dialogueBackground = dialogueBackground();
-    if (buildingType() <= HOUSE_TYPE_MIRRORED_PATH_GUILD)
+    if (buildingType() >= HOUSE_TYPE_WEAPON_SHOP && buildingType() <= HOUSE_TYPE_MIRRORED_PATH_GUILD)
         _shopBackground = assets->getIcon(shopBackgroundNames[buildingType()]);
 
     for (int i = 0; i < houseNpcs.size(); ++i) {

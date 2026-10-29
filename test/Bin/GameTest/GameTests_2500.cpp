@@ -1065,18 +1065,18 @@ GAME_TEST(Issues, Issue2923) {
 }
 
 GAME_TEST(Issues, Issue2931) {
-    // The shop background was released when the party went back from the proprietor to the house's NPC list, and
-    // talking to the proprietor again crashed on the missing image.
+    // Talking to a shop proprietor a second time from the house NPC list crashed on Buy Standard. Going back to the
+    // list had released the shop background.
     auto houseTape = tapes.house();
     auto dialogueTape = tapes.dialogueType();
     auto texturesTape = tapes.hudTextures();
     engine->config->debug.NoMargaret.setValue(true); // Her tour would stop the party at the door.
     game.startNewGame();
-    pNPCStats->pNPCData[2].house = HOUSE_WEAPON_SHOP_EMERALD_ISLAND; // Thomas the Judge, where a modded MoveNPC could put him.
+    pNPCStats->pNPCData[2].house = HOUSE_WEAPON_SHOP_EMERALD_ISLAND; // Thomas the Judge, a second NPC in the shop.
     test.startTaping();
     game.teleportTo(MAP_EMERALD_ISLAND, Vec3f(13510, 4480, 128), 0); // In front of the weapon shop door.
     game.pressAndReleaseKey(PlatformKey::KEY_SPACE);
-    game.tick(2);
+    game.tick();
     game.pressGuiButton("House_Npc0"); // The proprietor.
     game.tick();
     game.pressAndReleaseKey(PlatformKey::KEY_ESCAPE); // Back to the NPC list.
@@ -1085,6 +1085,7 @@ GAME_TEST(Issues, Issue2931) {
     game.tick();
     game.pressGuiButton("HouseDialogue_Option0"); // Buy Standard.
     game.tick();
+
     EXPECT_EQ(houseTape, tape(HOUSE_INVALID, HOUSE_WEAPON_SHOP_EMERALD_ISLAND));
     EXPECT_EQ(dialogueTape, tape(DIALOGUE_NULL, DIALOGUE_MAIN, DIALOGUE_NULL, DIALOGUE_MAIN, DIALOGUE_SHOP_BUY_STANDARD));
     EXPECT_CONTAINS(texturesTape.back(), "wepntabl");
