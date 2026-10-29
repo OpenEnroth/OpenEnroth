@@ -119,6 +119,11 @@ class GUIWindow_House : public GUIWindow {
         _currentDialogue = dialogue;
     }
 
+    /**
+     * @return                          Background of the shop and guild screens. Only valid for shops and guilds.
+     */
+    GraphicsImage *shopBackground() const;
+
     void houseDialogManager();
     void houseNPCDialogue();
     void initializeProprietorDialogue();

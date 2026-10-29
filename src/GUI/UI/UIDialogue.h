@@ -4,8 +4,6 @@
 
 #include "GUI/GUIWindow.h"
 
-#include "Utility/IndexedArray.h"
-
 class Actor;
 
 enum class DialogWindowType {
@@ -41,4 +39,7 @@ void initializeNPCDialogue(int npcId, int bPlayerSaysHello, Actor *actor = nullp
 void selectNPCDialogueOption(DialogueId option);
 
 extern int speakingNpcId;
-extern const IndexedArray<std::string, PartyAlignment_Good, PartyAlignment_Evil> dialogueBackgroundResourceByAlignment;
+/**
+ * @return                              Right panel background of the dialogue windows for the party's alignment.
+ */
+GraphicsImage *dialogueBackground();

@@ -356,7 +356,6 @@ bool enterHouse(HouseId uHouseID) {
     }
 
     currentHouseNpc = -1;
-    game_ui_dialogue_background = assets->getIcon(dialogueBackgroundResourceByAlignment[pParty->alignment]);
 
     prepareHouse(uHouseID);
 
@@ -571,10 +570,6 @@ bool houseDialogueGoBack() {
     if (window_SpeakInHouse->currentDialogue() == DIALOGUE_NULL ||
         window_SpeakInHouse->currentDialogue() == DIALOGUE_MAIN) {
         currentHouseNpc = -1;
-        if (shop_ui_background) {
-            assets->releaseImage(shop_ui_background);
-            shop_ui_background = nullptr;
-        }
         window_SpeakInHouse->updateDialogueOnEscape();
         // we are in the middle of the update windows loop, so we need to delay closing the dialogue window until the end of the frame
         engine->_messageQueue->addMessageCurrentFrame(UIMSG_CloseDialogueWindow, 0, 0);
@@ -872,12 +867,16 @@ void GUIWindow_House::drawOptions(std::vector<std::string> &optionsText, Color s
     }
 }
 
+GraphicsImage *GUIWindow_House::shopBackground() const {
+    return assets->getIcon(shopBackgroundNames[buildingType()]);
+}
+
 void GUIWindow_House::houseDialogManager() {
     assert(window_SpeakInHouse != nullptr);
 
     Recti pWindow = this->frameRect;
     pWindow.w -= 18;
-    render->DrawQuad2D(game_ui_dialogue_background, {477, 0});
+    render->DrawQuad2D(dialogueBackground(), {477, 0});
     render->DrawQuad2D(game_ui_right_panel_frame, {468, 0});
 
     if (currentHouseNpc == -1 || houseNpcs[currentHouseNpc].type != HOUSE_TRANSITION) {
@@ -1054,10 +1053,6 @@ GUIWindow_House::GUIWindow_House(HouseId houseId) : GUIWindow(WINDOW_HOUSE_INTER
     pBtn_ExitCancel = CreateButton({471, 445}, {169, 35}, BUTTON_TYPE_NORMAL, 0, UIMSG_Escape, 0, INPUT_ACTION_INVALID,
                                    localization->str(LSTR_EXIT_BUILDING), {ui_exit_cancel_button_background});
 
-    if (buildingType() <= HOUSE_TYPE_MIRRORED_PATH_GUILD) {
-        shop_ui_background = assets->getIcon(shopBackgroundNames[buildingType()]);
-    }
-
     for (int i = 0; i < houseNpcs.size(); ++i) {
         Pointi pos = {pNPCPortraits_x[houseNpcs.size() - 1][i], pNPCPortraits_y[houseNpcs.size() - 1][i]};
         houseNpcs[i].button = CreateButton(fmt::format("House_Npc{}", i), pos, {63, 73}, BUTTON_TYPE_NORMAL, 0,
@@ -1085,17 +1080,7 @@ void GUIWindow_House::Update() {
 GUIWindow_House::~GUIWindow_House() {
     keyboardInputHandler->EndTextInput(this); // Banks and town halls ask for a gold amount.
 
-    for (HouseNpcDesc &desc : houseNpcs) {
-        if (desc.icon) {
-            assets->releaseImage(desc.icon);
-        }
-    }
     houseNpcs.clear();
-
-    if (game_ui_dialogue_background) {
-        assets->releaseImage(game_ui_dialogue_background);
-        game_ui_dialogue_background = nullptr;
-    }
 
     if (engine->config->settings.FlipOnExit.value()) {
         pParty->_viewYaw = (TrigLUT.uIntegerDoublePi - 1) & (TrigLUT.uIntegerPi + pParty->_viewYaw);

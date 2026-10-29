@@ -88,7 +88,5 @@ class GUIWindow_AlchemyShop : public GUIWindow_MagicAlchemyShop {
     virtual std::vector<DialogueId> listShopLearnableSkills() override;
 };
 
-extern GraphicsImage *shop_ui_background;
-
 extern std::array<GraphicsImage *, 12> shop_ui_items_in_store;
 extern std::array<int, 6> weaponYPos;

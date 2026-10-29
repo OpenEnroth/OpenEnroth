@@ -58,8 +58,6 @@ int getSpecialTransferMessageIndex(std::string_view locationName) {
 GUIWindow_Transition::GUIWindow_Transition(WindowType windowType, ScreenType screenType) : GUIWindow(windowType, {0, 0}, render->GetRenderDimensions()) {
     gameTimer->setPaused(true);
 
-    game_ui_dialogue_background = assets->getIcon(dialogueBackgroundResourceByAlignment[pParty->alignment]);
-
     prev_screen_type = current_screen_type;
     current_screen_type = screenType;
 }
@@ -77,16 +75,6 @@ GUIWindow_Transition::~GUIWindow_Transition() {
     // -----------------------------------------
     // 0041C26A void GUIWindow::Release --- part
     // pVideoPlayer->Unload();
-    if (transition_ui_icon) {
-        assets->releaseImage(transition_ui_icon);
-        transition_ui_icon = nullptr;
-    }
-
-    if (game_ui_dialogue_background) {
-        assets->releaseImage(game_ui_dialogue_background);
-        game_ui_dialogue_background = nullptr;
-    }
-
     current_screen_type = prev_screen_type;
 }
 
@@ -107,7 +95,7 @@ GUIWindow_Travel::GUIWindow_Travel() : GUIWindow_Transition(WINDOW_TRAVEL, SCREE
 void GUIWindow_Travel::Update() {
     MapId destinationMap = pOutdoor->getTravelDestination(pParty->pos.x, pParty->pos.y).map();
 
-    render->DrawQuad2D(game_ui_dialogue_background, {477, 0});
+    render->DrawQuad2D(dialogueBackground(), {477, 0});
     render->DrawQuad2D(game_ui_right_panel_frame, {468, 0});
     render->DrawQuad2D(transition_ui_icon, {pNPCPortraits_x[0][0], pNPCPortraits_y[0][0]});
     render->DrawQuad2D(dialogue_ui_x_x_u, {556, 451});
@@ -179,7 +167,7 @@ GUIWindow_IndoorEntryExit::GUIWindow_IndoorEntryExit(HouseId transitionHouse, un
 }
 
 void GUIWindow_IndoorEntryExit::Update() {
-    render->DrawQuad2D(game_ui_dialogue_background, {477, 0});
+    render->DrawQuad2D(dialogueBackground(), {477, 0});
     render->DrawQuad2D(game_ui_evtnpc, {pNPCPortraits_x[0][0] - 4, pNPCPortraits_y[0][0] - 4});
     render->DrawQuad2D(transition_ui_icon, {pNPCPortraits_x[0][0], pNPCPortraits_y[0][0]});
     render->DrawQuad2D(game_ui_right_panel_frame, {468, 0});

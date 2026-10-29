@@ -84,8 +84,6 @@ extern GraphicsImage *game_ui_btn_zoomout;
 extern GraphicsImage *game_ui_btn_quickref;
 extern GraphicsImage *game_ui_btn_settings;
 
-extern GraphicsImage *game_ui_dialogue_background;
-
 extern std::array<GraphicsImage *, 5> game_ui_options_controls;
 
 extern GraphicsImage *game_ui_evtnpc;  // 50795C
