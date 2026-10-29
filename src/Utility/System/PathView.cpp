@@ -99,7 +99,7 @@ static size_t extensionOffset(std::string_view path, size_t nameOffset) {
         return std::string_view::npos; // A leading dot doesn't start an extension, as in ".bashrc".
 
     if (fileName.substr(0, dotPos).find_first_not_of('.') == std::string_view::npos)
-        return std::string_view::npos; // The stem of "..." would be "..", a navigation token.
+        return std::string_view::npos; // A name like "..." has none, dropping one would leave "..".
 
     return nameOffset + dotPos;
 }
