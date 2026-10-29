@@ -545,8 +545,7 @@ bool GameWindowHandler::closeEvent(const PlatformWindowEvent *event) {
     //                     event loop.
     engineFlags &= ~ENGINE_APP_INACTIVE;
     component<EngineControlComponent>()->runControlRoutine([] (EngineController *game) {
-        game->goToMainMenu();
-        game->pressGuiButton("MainMenu_ExitGame");
+        game->exitGame();
     });
     return false;
 }

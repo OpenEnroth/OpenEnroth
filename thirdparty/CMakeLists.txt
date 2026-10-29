@@ -53,6 +53,11 @@ add_library(tcpp INTERFACE ${CMAKE_CURRENT_SOURCE_DIR}/tcpp/source/tcppLibrary.h
 target_include_directories(tcpp INTERFACE ${CMAKE_CURRENT_SOURCE_DIR}/tcpp/source)
 add_library(tcpp::tcpp ALIAS tcpp)
 
+# subprocess.h
+add_library(subprocess INTERFACE ${CMAKE_CURRENT_SOURCE_DIR}/subprocess/subprocess.h)
+target_include_directories(subprocess INTERFACE ${CMAKE_CURRENT_SOURCE_DIR}/subprocess)
+add_library(subprocess::subprocess ALIAS subprocess)
+
 # small_vector
 add_subdirectory(small_vector EXCLUDE_FROM_ALL)
 

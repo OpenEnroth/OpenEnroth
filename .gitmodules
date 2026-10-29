@@ -69,3 +69,6 @@
 [submodule "thirdparty/cpptrace"]
 	path = thirdparty/cpptrace
 	url = https://github.com/jeremy-rifkin/cpptrace.git
+[submodule "thirdparty/subprocess"]
+	path = thirdparty/subprocess
+	url = https://github.com/sheredom/subprocess.h.git
