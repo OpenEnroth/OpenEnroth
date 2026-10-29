@@ -1,6 +1,5 @@
 #pragma once
 
-#include <cstddef>
 #include <cstring>
 #include <array>
 #include <type_traits>
@@ -13,6 +12,8 @@
  */
 template<class T>
 T readUnaligned(const void *data) {
+    static_assert(std::is_trivially_copyable_v<T>);
+
     T result;
     memcpy(&result, data, sizeof(T));
     return result;
@@ -21,11 +22,13 @@ T readUnaligned(const void *data) {
 /**
  * Writing through a misaligned `T *` is UB in C++, so this is the counterpart of `readUnaligned`.
  *
- * @param data                          Unaligned memory to write to.
  * @param value                         Value to write.
+ * @param[out] data                     Unaligned memory to write to.
  */
 template<class T>
-void writeUnaligned(void *data, const T &value) {
+void writeUnaligned(const T &value, void *data) {
+    static_assert(std::is_trivially_copyable_v<T>);
+
     memcpy(data, &value, sizeof(T));
 }
 
@@ -46,7 +49,7 @@ class Unaligned {
     }
 
     Unaligned &operator=(const T &value) {
-        writeUnaligned(_bytes.data(), value);
+        writeUnaligned(value, _bytes.data());
         return *this;
     }
 
@@ -55,5 +58,5 @@ class Unaligned {
     }
 
  private:
-    std::array<std::byte, sizeof(T)> _bytes;
+    std::array<char, sizeof(T)> _bytes;
 };
