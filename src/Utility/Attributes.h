@@ -21,3 +21,14 @@
 #else
 #   define MM_NOASAN [[gnu::no_sanitize_address]]
 #endif
+
+/**
+ * @def MM_NOUBSAN
+ *
+ * Excludes a function from UndefinedBehaviorSanitizer instrumentation, and is inert in builds that don't enable it.
+ */
+#ifdef _MSC_VER
+#   define MM_NOUBSAN // MSVC has no UBSan.
+#else
+#   define MM_NOUBSAN [[gnu::no_sanitize("undefined")]]
+#endif

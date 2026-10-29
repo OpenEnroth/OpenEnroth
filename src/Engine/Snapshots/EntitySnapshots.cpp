@@ -524,7 +524,6 @@ void snapshot(const Party &src, Party_MM7 *dst) {
     snapshot(src.last_regenerated, &dst->lastRegenerationTime);
 
     snapshot(src.PartyTimes.bountyHuntNextGenTime, &dst->partyTimes.bountyHuntingNextGenerationTime);
-    dst->partyTimes.bountyHuntingNextGenerationTimeUnused.fill(0);
 
     // Initially was one array but was splitted in two to simplify access with first element as zero
     // because it is corresponding to invalid house ID

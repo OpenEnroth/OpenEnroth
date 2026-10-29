@@ -102,7 +102,7 @@ if(OE_USE_SANITIZERS)
         message(FATAL_ERROR "OE_USE_SANITIZERS is not supported for ${CMAKE_CXX_COMPILER_ID}.")
     endif()
     message(STATUS "Using sanitizers: ${OE_USE_SANITIZERS}.")
-    add_compile_options(-fsanitize=${OE_USE_SANITIZERS})
+    add_compile_options(-fsanitize=${OE_USE_SANITIZERS} -fno-sanitize-recover=all) # UBSan only warns by default, and gtest-parallel drops the output of passing tests.
     add_link_options(-fsanitize=${OE_USE_SANITIZERS})
 endif()
 

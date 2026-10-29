@@ -33,6 +33,9 @@ set(LUAJIT_DIR ${CMAKE_CURRENT_LIST_DIR}/luajit)
 include(${CMAKE_CURRENT_LIST_DIR}/luajit-cmake/LuaJIT.cmake)
 target_include_directories(libluajit INTERFACE ${CMAKE_CURRENT_BINARY_DIR})
 set_target_properties(libluajit PROPERTIES COMPILE_FLAGS "${CMAKE_C_FLAGS}" LINK_FLAGS "${CMAKE_MODULE_LINKER_FLAGS}") # Make it compile under x86.
+if(OE_USE_SANITIZERS)
+    target_compile_options(libluajit PRIVATE -fno-sanitize=undefined) # Luajit's runtime trips UBSan on every Lua load.
+endif()
 if(OE_USE_SANITIZERS AND NOT CMAKE_CROSSCOMPILING) # A cross build makes the host tools in a separate project that never sees these flags.
     foreach(TOOL minilua buildvm) # Luajit runs these during the build, and they leak by design.
         target_compile_options(${TOOL} PRIVATE -fno-sanitize=all)

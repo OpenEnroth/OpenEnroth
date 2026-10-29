@@ -13,6 +13,7 @@
 
 #include "Utility/IndexedArray.h"
 #include "Utility/IndexedBitset.h"
+#include "Utility/Unaligned.h"
 
 #include "SnapshotConcepts.h"
 #include "SnapshotTags.h"
@@ -29,6 +30,23 @@ void snapshot(const T &src, T *dst) {
 template<class T>
 void reconstruct(const T &src, T *dst) {
     *dst = src;
+}
+
+
+//
+// Unaligned support.
+//
+
+template<class T1, class T2, class... Tags>
+void snapshot(const T1 &src, Unaligned<T2> *dst, const Tags &... tags) {
+    T2 tmp = T2();
+    snapshot(src, &tmp, tags...);
+    *dst = tmp;
+}
+
+template<class T1, class T2, class... Tags>
+void reconstruct(const Unaligned<T2> &src, T1 *dst, const Tags &... tags) {
+    reconstruct(static_cast<T2>(src), dst, tags...);
 }
 
 

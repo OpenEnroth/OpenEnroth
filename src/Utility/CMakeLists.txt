@@ -77,6 +77,10 @@ target_link_libraries(utility
 # Tweak ztd buffer size, default is 512Kb, but default stack size of non-main threads on MacOS is also 512Kb.
 target_compile_definitions(utility PRIVATE ZTD_INTERMEDIATE_BUFFER_SUGGESTED_BYTE_SIZE=65536)
 
+if(OE_USE_SANITIZERS AND CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
+    set_source_files_properties(String/Encoding.cpp PROPERTIES COMPILE_OPTIONS -fno-sanitize=undefined) # GCC can't constant-evaluate ztd_text's tables with UBSan checks in them.
+endif()
+
 if(OE_BUILD_TESTS)
     set(TEST_UTILITY_SOURCES
             Math/Tests/Float_ut.cpp
