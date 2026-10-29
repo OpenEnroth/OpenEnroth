@@ -1064,6 +1064,32 @@ GAME_TEST(Issues, Issue2923) {
     EXPECT_MISSES(textTape.flatten(), "0");
 }
 
+GAME_TEST(Prs, Pr2930) {
+    // The shop background was freed when the party went back from the proprietor to the house's NPC list, and
+    // talking to the proprietor again drew the freed image.
+    auto houseTape = tapes.house();
+    auto dialogueTape = tapes.dialogueType();
+    auto texturesTape = tapes.hudTextures();
+    engine->config->debug.NoMargaret.setValue(true); // Her tour would stop the party at the door.
+    game.startNewGame();
+    pNPCStats->pNPCData[2].house = HOUSE_WEAPON_SHOP_EMERALD_ISLAND; // Thomas the Judge, where a modded MoveNPC could put him.
+    test.startTaping();
+    game.teleportTo(MAP_EMERALD_ISLAND, Vec3f(13510, 4480, 128), 0); // In front of the weapon shop door.
+    game.pressAndReleaseKey(PlatformKey::KEY_SPACE);
+    game.tick(2);
+    game.pressGuiButton("House_Npc0"); // The proprietor.
+    game.tick();
+    game.pressAndReleaseKey(PlatformKey::KEY_ESCAPE); // Back to the NPC list.
+    game.tick();
+    game.pressGuiButton("House_Npc0"); // The proprietor again.
+    game.tick();
+    game.pressGuiButton("HouseDialogue_Option0"); // Buy Standard.
+    game.tick();
+    EXPECT_EQ(houseTape, tape(HOUSE_INVALID, HOUSE_WEAPON_SHOP_EMERALD_ISLAND));
+    EXPECT_EQ(dialogueTape, tape(DIALOGUE_NULL, DIALOGUE_MAIN, DIALOGUE_NULL, DIALOGUE_MAIN, DIALOGUE_SHOP_BUY_STANDARD));
+    EXPECT_CONTAINS(texturesTape.back(), "wepntabl");
+}
+
 GAME_TEST(Issues, Issue2932) {
     // The game stopped drawing frames while the stables' travel line played. The stables should stay on screen until it
     // ends, and then the party should leave. Escape while the line plays should change nothing.
