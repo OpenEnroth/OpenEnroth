@@ -699,11 +699,11 @@ void playHouseSound(HouseId houseID, HouseSoundType type) {
     }
 }
 
-Duration houseSoundLength(HouseId houseId, HouseSoundType type) {
+int64_t houseSoundLengthMs(HouseId houseId, HouseSoundType type) {
     int roomSoundId = pAnimatedRooms[houseTable[houseId].uAnimationID].uRoomSoundId;
     if (!roomSoundId)
-        return Duration();
-    return Duration::fromRealtimeMilliseconds(static_cast<int64_t>(std::ceil(pAudioPlayer->getSoundLength(houseSoundId(roomSoundId, type)) * 1000)));
+        return 0;
+    return static_cast<int64_t>(std::ceil(pAudioPlayer->getSoundLength(houseSoundId(roomSoundId, type)) * 1000));
 }
 
 void GUIWindow_House::houseNPCDialogue() {

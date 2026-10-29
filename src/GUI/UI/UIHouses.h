@@ -1,9 +1,8 @@
 #pragma once
 
+#include <cstdint>
 #include <string>
 #include <vector>
-
-#include "Core/Time/Duration.h"
 
 #include "Engine/Tables/HouseTable.h"
 #include "Engine/MapEnums.h"
@@ -69,7 +68,7 @@ void playHouseSound(HouseId houseID, HouseSoundType type);
  * @param type                          Which of the house's sounds.
  * @return                              How long the sound plays. Zero if the house has no sounds.
  */
-Duration houseSoundLength(HouseId houseId, HouseSoundType type);
+int64_t houseSoundLengthMs(HouseId houseId, HouseSoundType type);
 
 void selectHouseNPCDialogueOption(DialogueId topic);
 
