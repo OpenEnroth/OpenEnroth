@@ -1,7 +1,5 @@
 #include "Processor.h"
 
-#include <optional>
-#include <utility>
 #include <vector>
 #include <string>
 
@@ -45,8 +43,6 @@ static std::vector<int> decorationsWithEvents;
 // Do not needed in practice but can be considered optimization to avoid checking timers too often.
 static Time timerGuard;
 
-static std::optional<EvtContinuation> eventContinuation;
-
 void initDecorationEvents() {
     DecorationId id = pDecorationTable->decorationId("Event Trigger");
 
@@ -64,14 +60,14 @@ void checkDecorationEvents() {
 
         if (decoration.uFlags & LEVEL_DECORATION_TRIGGERED_BY_TOUCH) {
             if ((decoration.vPosition - pParty->pos).length() < decoration.uTriggerRange) {
-                eventProcessor(decoration.uEventID, Pid(OBJECT_Decoration, decorationId), 1);
+                runEvent({.eventId = decoration.uEventID, .objectPid = Pid(OBJECT_Decoration, decorationId)});
             }
         }
 
         if (decoration.uFlags & LEVEL_DECORATION_TRIGGERED_BY_MONSTER) {
             for (const Actor &actor : pActors) {
                 if ((decoration.vPosition - actor.pos).length() < decoration.uTriggerRange) {
-                    eventProcessor(decoration.uEventID, Pid(), 1);
+                    runEvent({.eventId = decoration.uEventID});
                 }
             }
         }
@@ -79,7 +75,7 @@ void checkDecorationEvents() {
         if (decoration.uFlags & LEVEL_DECORATION_TRIGGERED_BY_OBJECT) {
             for (int i = 0; i < pSpriteObjects.size(); i++) {
                 if ((decoration.vPosition - pSpriteObjects[i].vPosition).length() < decoration.uTriggerRange) {
-                    eventProcessor(decoration.uEventID, Pid(), 1);
+                    runEvent({.eventId = decoration.uEventID});
                 }
             }
         }
@@ -147,7 +143,7 @@ static void registerTimerTriggers(EvtOpcode triggerType, std::vector<MapTimer> *
     }
 }
 
-static void runEvent(const EvtContext &context, int startStep) {
+void runEvent(EvtContext context, int startStep) {
     if (!context.eventId) {
         engine->_statusBar->nothingHere();
         return;
@@ -168,28 +164,6 @@ static void runEvent(const EvtContext &context, int startStep) {
     }
 }
 
-void eventProcessor(int eventId, Pid targetObj, bool canShowMessages, int startStep) {
-    runEvent({.source = EVT_SOURCE_MAP, .eventId = eventId, .objectPid = targetObj, .canShowMessages = canShowMessages}, startStep);
-}
-
-void globalEventProcessor(int eventId, Pid targetObj) {
-    runEvent({.source = EVT_SOURCE_GLOBAL, .eventId = eventId, .objectPid = targetObj, .canShowMessages = true}, 0);
-}
-
-void setEventContinuation(EvtContinuation continuation) {
-    assert(!eventContinuation);
-    eventContinuation = continuation;
-}
-
-void runEventContinuation() {
-    if (std::optional<EvtContinuation> continuation = std::exchange(eventContinuation, std::nullopt))
-        runEvent(continuation->context, continuation->step);
-}
-
-void dropEventContinuation() {
-    eventContinuation.reset();
-}
-
 bool npcDialogueEventProcessor(int eventId, int startStep) {
     if (!eventId) {
         return false;
@@ -198,7 +172,7 @@ bool npcDialogueEventProcessor(int eventId, int startStep) {
     EvtInterpreter interpreter;
 
     MM_TRACE("Executing NPC dialogue event starting from step {}", startStep);
-    interpreter.prepare({.source = EVT_SOURCE_GLOBAL, .eventId = eventId, .objectPid = Pid(), .canShowMessages = false});
+    interpreter.prepare({.source = EVT_SOURCE_GLOBAL, .eventId = eventId, .canShowMessages = false});
     return interpreter.executeNpcDialogue(startStep);
 }
 
@@ -221,23 +195,19 @@ static void registerEventTriggers() {
 }
 
 void onMapLoad() {
-    dropEventContinuation(); // A game load replaces the map without leaving it.
-
     // Register all triggers when map done loading
     registerEventTriggers();
 
     timerGuard = pParty->GetPlayingTime();
 
     for (EventTrigger &triggers : onMapLoadTriggers) {
-        eventProcessor(triggers.eventId, Pid(), false, triggers.eventStep + 1);
+        runEvent({.eventId = triggers.eventId, .canShowMessages = false}, triggers.eventStep + 1);
     }
 }
 
 void onMapLeave() {
-    dropEventContinuation();
-
     for (EventTrigger &triggers : onMapLeaveTriggers) {
-        eventProcessor(triggers.eventId, Pid(), true, triggers.eventStep + 1);
+        runEvent({.eventId = triggers.eventId}, triggers.eventStep + 1);
     }
 
     // Cleanup timers to avoid firing while map transition is in process
@@ -247,7 +217,7 @@ void onMapLeave() {
 
 static void checkTimer(MapTimer &timer) {
     if (pParty->GetPlayingTime() >= timer.alarmTime) {
-        eventProcessor(timer.eventId, Pid(), true, timer.eventStep + 1);
+        runEvent({.eventId = timer.eventId}, timer.eventStep + 1);
         if (timer.altInterval) {
             timer.alarmTime = pParty->GetPlayingTime() + timer.altInterval;
         } else {

@@ -308,7 +308,7 @@ void SpriteObject::updateObjectODM(unsigned int uLayingItemID) {
                 pSpriteObjects[uLayingItemID].vPosition.z = pOutdoor->vertices[face->vertexIds[0]].z + 1;
                 if (pSpriteObjects[uLayingItemID].vVelocity.xy().lengthSqr() >= 400) {
                     if (face->attributes & FACE_TriggerByObject) {
-                        eventProcessor(face->eventId, Pid(), 1);
+                        runEvent({.eventId = face->eventId});
                     }
                 } else {
                     pSpriteObjects[uLayingItemID].vVelocity = Vec3f(0, 0, 0);
@@ -327,7 +327,7 @@ void SpriteObject::updateObjectODM(unsigned int uLayingItemID) {
                 }
                 pSpriteObjects[uLayingItemID].vVelocity.z += newZVel;
                 if (face->attributes & FACE_TriggerByObject) {
-                    eventProcessor(face->eventId, Pid(), 1);
+                    runEvent({.eventId = face->eventId});
                 }
             }
         }
@@ -464,7 +464,7 @@ LABEL_25:
                     }
                     pSpriteObject->vVelocity.z += newZVel;
                     if (pIndoor->faces[pidId].attributes & FACE_TriggerByObject) {
-                        eventProcessor(pIndoor->faces[pidId].eventId, Pid(), 1);
+                        runEvent({.eventId = pIndoor->faces[pidId].eventId});
                     }
                     pSpriteObject->vVelocity *= 0.89263916f; // was 58500 fp
                     continue;
@@ -475,7 +475,7 @@ LABEL_25:
                         pSpriteObject->vVelocity.z = 0;
                     }
                     if (pIndoor->faces[pidId].attributes & FACE_TriggerByObject) {
-                        eventProcessor(pIndoor->faces[pidId].eventId, Pid(), 1);
+                        runEvent({.eventId = pIndoor->faces[pidId].eventId});
                     }
                     pSpriteObject->vVelocity *= 0.89263916f; // was 58500 fp
                     continue;
@@ -483,7 +483,7 @@ LABEL_25:
                 pSpriteObject->vVelocity.z = 0;
                 if (pSpriteObject->vVelocity.xy().lengthSqr() >= 400) {
                     if (pIndoor->faces[pidId].attributes & FACE_TriggerByObject) {
-                        eventProcessor(pIndoor->faces[pidId].eventId, Pid(), 1);
+                        runEvent({.eventId = pIndoor->faces[pidId].eventId});
                     }
                     pSpriteObject->vVelocity *= 0.89263916f; // was 58500 fp
                     continue;

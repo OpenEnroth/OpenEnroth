@@ -211,10 +211,8 @@ int EvtInterpreter::executeOneEvent(int step, bool isNpc) {
     switch (flow.type) {
         case EVT_FLOW_NEXT: return step + 1;
         case EVT_FLOW_JUMP: return flow.target;
-        case EVT_FLOW_STOP: return -1;
-        case EVT_FLOW_YIELD:
-            setEventContinuation({_context, step + 1});
-            return -1;
+        case EVT_FLOW_STOP:
+        case EVT_FLOW_YIELD: return -1; // The dialogue the instruction opened holds the rest of the event.
     }
     assert(false);
     return -1;
@@ -253,7 +251,7 @@ EvtFlow EvtInterpreter::executeInstruction(EvtInstruction ir) {
                     ir.data.move_map_descr.z = 3088;
 
                 pDialogueWindow = std::make_unique<GUIWindow_IndoorEntryExit>(ir.data.move_map_descr.house_id, ir.data.move_map_descr.exit_pic_id,
-                                                                             moveToMapDestination(ir), ir.str);
+                                                                             moveToMapDestination(ir), ir.str, EvtContinuation{_context, ir.step + 1});
                 return {EVT_FLOW_YIELD};
             }
 
@@ -485,7 +483,7 @@ EvtFlow EvtInterpreter::executeInstruction(EvtInstruction ir) {
             pIndoor->toggleLight(ir.data.light_descr.light_id, ir.data.light_descr.is_enable);
             break;
         case EVENT_PressAnyKey:
-            startBranchlessDialogue(EVENT_PressAnyKey);
+            startBranchlessDialogue(EVENT_PressAnyKey, EvtContinuation{_context, ir.step + 1});
             return {EVT_FLOW_YIELD};
         case EVENT_SummonItem:
             SpriteObject::dropItemAt(ir.data.summon_item_descr.sprite, Vec3f(ir.data.summon_item_descr.x, ir.data.summon_item_descr.y, ir.data.summon_item_descr.z),

@@ -590,7 +590,6 @@ void Game::processQueuedMessages() {
                                     onEscape();
                                     continue;
                                 case SCREEN_INPUT_BLV:  // click escape
-                                    dropEventContinuation();
                                     if (uCurrentHouse_Animation == 153) // TODO(Nik-RE-dev): what is this? Btw, 153 == HOUSE_EARTH_GUILD_STONE_CITY.
                                         playHouseSound(HOUSE_EARTH_GUILD_STONE_CITY, HOUSE_SOUND_MAGIC_GUILD_MEMBERS_ONLY);
                                     pMediaPlayer->Unload();
@@ -679,6 +678,7 @@ void Game::processQueuedMessages() {
                 assert(pDialogueWindow && pDialogueWindow->eWindowType == WINDOW_INDOOR_ENTRY_EXIT);
                 GUIWindow_IndoorEntryExit *window = static_cast<GUIWindow_IndoorEntryExit *>(pDialogueWindow.get());
                 MapDestination destination = window->destination();
+                EvtContinuation continuation = window->continuation();
 
                 engine->_messageQueue->clear();
                 playButtonSoundOnEscape = false;
@@ -693,6 +693,7 @@ void Game::processQueuedMessages() {
                     pMediaPlayer->Unload();
                 DialogueEnding();
 
+                bool stayingPut = false;
                 if (destination.map() != MAP_INVALID) {
                     //pGameLoadingUI_ProgressBar->Initialize(GUIProgressBar::TYPE_Box);
                     bool leavingArena = engine->_currentLoadedMapId == MAP_ARENA;
@@ -702,19 +703,20 @@ void Game::processQueuedMessages() {
                         pParty->GetPlayingTime() += Duration::fromDays(4);
                 } else if (std::optional<PartyPlacement> placement = destination.resolvePlacement()) {
                     placeParty(*placement);
-                    dropEventContinuation();
+                } else {
+                    stayingPut = true; // The script didn't move the party, see moveToMapDestination.
                 }
 
                 PlayButtonClickSound();
                 DialogueEnding();
                 back_to_game();
                 onEscape();
-                runEventContinuation(); // Can open another dialogue, so nothing may run after it.
+                if (stayingPut)
+                    runEvent(continuation.context, continuation.step); // Can open another dialogue, so nothing may run after it.
                 continue;
             }
             case UIMSG_CancelIndoorEntryExit:
                 PlayButtonClickSound();
-                dropEventContinuation();
                 pMediaPlayer->Unload();
                 DialogueEnding();
                 back_to_game();

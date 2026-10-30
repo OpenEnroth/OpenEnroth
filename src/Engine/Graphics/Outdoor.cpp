@@ -1395,7 +1395,7 @@ void ODM_ProcessPartyActions() {
 
     // Falling damage
     if (!triggerID ||
-        (eventProcessor(triggerID, Pid(), 1), pParty->pos.x == partyNewPos.x) &&
+        (runEvent({.eventId = triggerID}), pParty->pos.x == partyNewPos.x) &&
         pParty->pos.y == partyNewPos.y && pParty->pos.z == partyNewPos.z) {
         if (((pParty->pos.z <= newGroundLevel || partyHasHitModel) && savedZSpeed < 0)) {
             pParty->velocity.z = 0;
