@@ -18,7 +18,7 @@
  * MemoryFileSystem fs2;
  *
  * MountingFileSystem fs;
- * fs.mount("", &fs1);
+ * fs.mount(".", &fs1);
  * fs.mount("data/images", &fs2); // Now "data/images" is pointing into `fs2`, whatever was there in `fs1` is ignored.
  * ```
  *

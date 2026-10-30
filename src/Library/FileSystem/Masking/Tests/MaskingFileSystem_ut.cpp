@@ -26,12 +26,12 @@ UNIT_TEST(MaskingFileSystem, SimpleMasks) {
     EXPECT_TRUE(fs0.exists("a/b/c/e"));
     EXPECT_EQ(fs1.ls("a/b/c"), std::vector<DirectoryEntry>()); // Masking might result in observable empty dirs.
 
-    fs1.mask("");
-    EXPECT_EQ(fs1.ls(""), std::vector<DirectoryEntry>());
+    fs1.mask(".");
+    EXPECT_EQ(fs1.ls("."), std::vector<DirectoryEntry>());
 
     EXPECT_TRUE(fs1.unmask("a/b/c/e"));
     EXPECT_FALSE(fs1.exists("a/b/c/e")); // Still masked.
-    EXPECT_TRUE(fs1.unmask(""));
+    EXPECT_TRUE(fs1.unmask("."));
     EXPECT_TRUE(fs1.exists("a/b/c/e"));
     EXPECT_FALSE(fs1.exists("a/b/c/d"));
 

@@ -35,7 +35,7 @@ void NativeFileSystem::_ls(NormalPathView path, std::vector<DirectoryEntry> *ent
         fs::ls(basePath, entries);
     } catch (const Exception &) {
         if (path.isEmpty())
-            return; // ls("") always works.
+            return; // ls(".") always works.
 
         if (fs::stat(basePath).type == FILE_REGULAR)
             FileSystemException::raise(this, FS_LS_FAILED_PATH_IS_FILE, path);

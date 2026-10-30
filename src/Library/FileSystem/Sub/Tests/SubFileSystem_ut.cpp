@@ -32,7 +32,7 @@ UNIT_TEST(SubFileSystem, ListDirectory) {
 
     SubFileSystem sub("shaders", &base);
 
-    auto entries = sub.ls("");
+    auto entries = sub.ls(".");
     EXPECT_EQ(entries.size(), 2);
 }
 
@@ -81,13 +81,13 @@ UNIT_TEST(SubFileSystem, RootWhenBasePathDoesntExist) {
     MemoryFileSystem base("memfs");
     SubFileSystem sub("this_dir_doesnt_exist", &base);
 
-    EXPECT_TRUE(sub.exists(""));
-    EXPECT_EQ(sub.stat(""), FileStat(FILE_DIRECTORY, 0));
-    EXPECT_TRUE(sub.ls("").empty());
+    EXPECT_TRUE(sub.exists("."));
+    EXPECT_EQ(sub.stat("."), FileStat(FILE_DIRECTORY, 0));
+    EXPECT_TRUE(sub.ls(".").empty());
 
     // But it's a directory, so we can't read or write it as a file.
-    EXPECT_ANY_THROW((void) sub.read(""));
-    EXPECT_ANY_THROW(sub.write("", Blob()));
+    EXPECT_ANY_THROW((void) sub.read("."));
+    EXPECT_ANY_THROW(sub.write(".", Blob()));
 
     // And ls of a non-root path that doesn't exist still throws.
     EXPECT_ANY_THROW((void) sub.ls("subdir"));
@@ -100,12 +100,12 @@ UNIT_TEST(SubFileSystem, RootWhenBasePathIsFile) {
 
     SubFileSystem sub("1.txt", &base);
 
-    EXPECT_TRUE(sub.exists(""));
-    EXPECT_EQ(sub.stat(""), FileStat(FILE_DIRECTORY, 0));
-    EXPECT_TRUE(sub.ls("").empty());
+    EXPECT_TRUE(sub.exists("."));
+    EXPECT_EQ(sub.stat("."), FileStat(FILE_DIRECTORY, 0));
+    EXPECT_TRUE(sub.ls(".").empty());
 
-    EXPECT_ANY_THROW((void) sub.read(""));
-    EXPECT_ANY_THROW(sub.write("", Blob()));
+    EXPECT_ANY_THROW((void) sub.read("."));
+    EXPECT_ANY_THROW(sub.write(".", Blob()));
 }
 
 UNIT_TEST(SubFileSystem, RootWhenBasePathIsEmpty) {
@@ -113,11 +113,11 @@ UNIT_TEST(SubFileSystem, RootWhenBasePathIsEmpty) {
     MemoryFileSystem base("memfs");
     base.write("1.txt", Blob::fromString("lol"));
 
-    SubFileSystem sub("", &base);
+    SubFileSystem sub(".", &base);
 
-    EXPECT_TRUE(sub.exists(""));
-    EXPECT_EQ(sub.stat(""), FileStat(FILE_DIRECTORY, 0));
-    EXPECT_EQ(sub.ls("").size(), 1);
+    EXPECT_TRUE(sub.exists("."));
+    EXPECT_EQ(sub.stat("."), FileStat(FILE_DIRECTORY, 0));
+    EXPECT_EQ(sub.ls(".").size(), 1);
     EXPECT_EQ(sub.read("1.txt").str(), "lol");
 }
 

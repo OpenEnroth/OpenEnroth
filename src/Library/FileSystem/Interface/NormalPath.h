@@ -68,9 +68,10 @@ class NormalPathView {
 
 /**
  * A path inside a `FileSystem`, in the normal form the file system layer works in. A backslash is a separator on every
- * platform, and `.`, `..` and repeated separators are folded. A path that has a root or escapes stays representable,
- * so that `displayPath` can show it, and `isAccessible` says whether a file system can act on it. Only an accessible
- * one may be passed on as a `NormalPathView`.
+ * platform, and `.`, `..` and repeated separators are folded. Callers name the root `"."`, and inside the layer it is
+ * spelled `""`. A path that is empty, has a root or escapes stays representable, so that `displayPath` can show it,
+ * and `isAccessible` says whether a file system can act on it. Only an accessible one may be passed on as a
+ * `NormalPathView`.
  */
 class NormalPath {
  public:
@@ -86,12 +87,15 @@ class NormalPath {
     }
 
     /**
-     * @return                          Whether a file system can reach this path. It can't if the path has a root,
-     *                                  as `"/a"` does, or escapes the file system's root. On Windows it can't if a
+     * @return                          Whether a file system can reach this path. It can't if the path was built from
+     *                                  an empty string, which names nothing. It can't if the path has a root, as
+     *                                  `"/a"` does, or escapes the file system's root. On Windows it can't if a
      *                                  segment starts with a drive, as in `"a/c:b"`, because a tail that starts at
      *                                  that segment reads as a root.
      */
-    [[nodiscard]] bool isAccessible() const;
+    [[nodiscard]] bool isAccessible() const {
+        return _isAccessible;
+    }
 
     /**
      * @param tail                      Path to append. Joining two accessible paths keeps the result normal.
@@ -102,5 +106,6 @@ class NormalPath {
 
  private:
     Path _path;
+    bool _isAccessible = true;
 };
 
