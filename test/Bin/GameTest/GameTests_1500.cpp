@@ -1157,7 +1157,8 @@ GAME_TEST(Issues, Issue1966) {
     // Should have had a bunch of rocks in the air at some point due to Armageddon.
     EXPECT_GT(spritesTape.map([] (auto &&sprites) { return sprites.count(SPRITE_SPELL_EARTH_ROCK_BLAST); }).max(), 100);
 
-    // The assertion fired when a rock's impact splash reached a monster, because the rocks have no caster.
+    // Rocks turn into impacts when they hit a monster. The impact's splash damage then triggered the assertion, because
+    // the rocks have no caster.
     EXPECT_CONTAINS(spritesTape.flatten(), SPRITE_SPELL_EARTH_ROCK_BLAST_IMPACT);
 }
 
