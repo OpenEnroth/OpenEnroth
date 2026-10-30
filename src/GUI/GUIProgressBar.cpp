@@ -76,16 +76,6 @@ void GUIProgressBar::Release() {
         loading_bg = nullptr;
     }
 
-    if (progressbar_loading != nullptr) {
-        assets->releaseImage(progressbar_loading);
-        progressbar_loading = nullptr;
-    }
-
-    if (progressbar_dungeon != nullptr) {
-        assets->releaseImage(progressbar_dungeon);
-        progressbar_dungeon = nullptr;
-    }
-
     uType = TYPE_None;
 }
 

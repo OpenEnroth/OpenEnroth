@@ -435,28 +435,6 @@ void GUIWindow_GameVideoOptions::Update() {
 
 OptionsMenuSkin options_menu_skin;  // 507C60
 
-void OptionsMenuSkin::Release() {
-#define RELEASE(img)                   \
-    {                                  \
-        if (img) {                     \
-            assets->releaseImage(img); \
-            img = nullptr;             \
-        }                              \
-    }
-
-    RELEASE(uTextureID_Background);
-    for (unsigned i = 0; i < 3; ++i) RELEASE(uTextureID_TurnSpeed[i]);
-    RELEASE(uTextureID_ArrowLeft);
-    RELEASE(uTextureID_ArrowRight);
-    RELEASE(uTextureID_FlipOnExit);
-    for (unsigned i = 0; i < 10; ++i) RELEASE(uTextureID_SoundLevels[i]);
-    RELEASE(uTextureID_AlwaysRun);
-    RELEASE(uTextureID_WalkSound);
-    RELEASE(uTextureID_ShowDamage);
-
-#undef RELEASE
-}
-
 GUIWindow_GameOptions::GUIWindow_GameOptions()
     : GUIWindow(WINDOW_GAME_OPTIONS, {0, 0}, render->GetRenderDimensions()) {
     options_menu_skin.uTextureID_Background = assets->getIcon("ControlBG");

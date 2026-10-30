@@ -255,54 +255,12 @@ void GUIWindow_Spellbook::initializeTextures() {
 }
 
 void GUIWindow_Spellbook::onCloseSpellBook() {
-    if (ui_spellbook_btn_close) {
-        assets->releaseImage(ui_spellbook_btn_close);
-        ui_spellbook_btn_close = nullptr;
-    }
-    if (ui_spellbook_btn_close_click) {
-        assets->releaseImage(ui_spellbook_btn_close_click);
-        ui_spellbook_btn_close_click = nullptr;
-    }
-
-    if (ui_spellbook_btn_quckspell) {
-        assets->releaseImage(ui_spellbook_btn_quckspell);
-        ui_spellbook_btn_quckspell = nullptr;
-    }
-    if (ui_spellbook_btn_quckspell_click) {
-        assets->releaseImage(ui_spellbook_btn_quckspell_click);
-        ui_spellbook_btn_quckspell_click = nullptr;
-    }
-
-    for (MagicSchool page : allMagicSchools()) {
-        if (ui_spellbook_school_backgrounds[page]) {
-            assets->releaseImage(ui_spellbook_school_backgrounds[page]);
-            ui_spellbook_school_backgrounds[page] = nullptr;
-        }
-
-        if (ui_spellbook_school_tabs[page][0]) {
-            assets->releaseImage(ui_spellbook_school_tabs[page][0]);
-            ui_spellbook_school_tabs[page][0] = nullptr;
-        }
-        if (ui_spellbook_school_tabs[page][1]) {
-            assets->releaseImage(ui_spellbook_school_tabs[page][1]);
-            ui_spellbook_school_tabs[page][1] = nullptr;
-        }
-    }
-
     pAudioPlayer->playUISound(SOUND_closebook);
 }
 
 void GUIWindow_Spellbook::onCloseSpellBookPage() {
-    for (unsigned int i = 1; i <= 11; i++) {
-        if (SBPageCSpellsTextureList[i]) {
-            assets->releaseImage(SBPageCSpellsTextureList[i]);
-            SBPageCSpellsTextureList[i] = nullptr;
-        }
-        if (SBPageSSpellsTextureList[i]) {
-            assets->releaseImage(SBPageSSpellsTextureList[i]);
-            SBPageSSpellsTextureList[i] = nullptr;
-        }
-    }
+    SBPageCSpellsTextureList.fill(nullptr);
+    SBPageSSpellsTextureList.fill(nullptr);
 
     if (pGUIWindow_CurrentMenu)
         pGUIWindow_CurrentMenu->DeleteButtons();

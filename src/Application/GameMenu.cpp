@@ -343,7 +343,6 @@ void Menu::EventLoop() {
                     current_screen_type = SCREEN_MENU;
                     pGUIWindow_CurrentMenu = std::make_unique<GUIWindow_GameMenu>();
                 } else if (current_screen_type == SCREEN_OPTIONS) {
-                    options_menu_skin.Release();
                     current_screen_type = SCREEN_MENU;
                     pGUIWindow_CurrentMenu = std::make_unique<GUIWindow_GameMenu>();
                 } else if (current_screen_type == SCREEN_VIDEO_OPTIONS) {
@@ -356,13 +355,6 @@ void Menu::EventLoop() {
                         pAudioPlayer->playUISound(SOUND_error);
                         break; // deny to exit options until all key conflicts are solved
                     } else {
-                        for (int i = 0; i < 5; i++) {
-                            if (game_ui_options_controls[i]) {
-                                assets->releaseImage(game_ui_options_controls[i]);
-                                game_ui_options_controls[i] = nullptr;
-                            }
-                        }
-
                         keyboardActionMapping->applyKeybindings(curr_key_map);
                     }
 
