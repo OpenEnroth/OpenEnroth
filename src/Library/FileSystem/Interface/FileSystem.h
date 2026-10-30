@@ -58,7 +58,7 @@ class FileSystem {
     [[nodiscard]] bool exists(PathView path) const;
 
     /**
-     * @param path                      Path to a file of a folder to get information for.
+     * @param path                      Path to a file or a folder to get information for.
      * @return                          Information for a file or directory at `path`. `FileStat::type` will be set to
      *                                  `FILE_INVALID` if `path` doesn't exist.
      * @throws std::runtime_error       On error, e.g. if the current user doesn't have the necessary permissions.
@@ -119,6 +119,21 @@ class FileSystem {
      *                                  not valid UTF-8 replaced with U+FFFD, so it might not map back to a real path.
      */
     [[nodiscard]] std::string displayPath(PathView path) const;
+
+    /**
+     * An implementation holding a `NormalPathView` passes it to the `*In` forwarders instead. Through the public
+     * methods it would be normalized again, and the layer's root `""` would be refused.
+     */
+    bool exists(NormalPathView path) const = delete;
+    FileStat stat(NormalPathView path) const = delete;
+    std::vector<DirectoryEntry> ls(NormalPathView path) const = delete;
+    void ls(NormalPathView path, std::vector<DirectoryEntry> *entries) const = delete;
+    Blob read(NormalPathView path) const = delete;
+    void write(NormalPathView path, const Blob &data) = delete;
+    std::unique_ptr<InputStream> openForReading(NormalPathView path) const = delete;
+    std::unique_ptr<OutputStream> openForWriting(NormalPathView path) = delete;
+    bool remove(NormalPathView path) = delete;
+    std::string displayPath(NormalPathView path) const = delete;
 
  protected:
     friend class FileSystemException;

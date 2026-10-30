@@ -33,7 +33,17 @@ class MountingFileSystem : public FileSystem {
     explicit MountingFileSystem(std::string_view displayName);
     virtual ~MountingFileSystem();
 
+    /**
+     * @param path                      Mount point, must be accessible, see `NormalPath::isAccessible`. `"."` is the
+     *                                  root.
+     * @param fileSystem                File system to mount.
+     */
     void mount(PathView path, FileSystem *fileSystem);
+
+    /**
+     * @param path                      Mount point to remove.
+     * @return                          Whether a file system was mounted at exactly `path`.
+     */
     bool unmount(PathView path);
 
     void clearMounts();
