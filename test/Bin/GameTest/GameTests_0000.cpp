@@ -33,9 +33,21 @@
 
 GAME_TEST(Issues, Issue123) {
     // Party falls when flying
-    test.playTraceFromTestData("issue_123.mm7", "issue_123.json");
-    // check party is still in the air
-    EXPECT_GT(pParty->pos.z, 512);
+    auto zTape = tapes.custom([] { return pParty->pos.z; });
+    auto flyingTape = tapes.custom([] { return pParty->bFlying; });
+    auto mpTape = charTapes.mp(3);
+    game.startNewGame();
+    pParty->pCharacters[3].setSkillValue(SKILL_AIR, CombinedSkillValue(4, MASTERY_EXPERT));
+    pParty->pCharacters[3].bHaveSpell[SPELL_AIR_FLY] = true;
+    game.castSpell(3, SPELL_AIR_FLY);
+    game.pressKey(PlatformKey::KEY_PAGEUP);
+    game.tick(3);
+    game.releaseKey(PlatformKey::KEY_PAGEUP);
+    test.startTaping();
+    game.tick(100); // Five game minutes, Fly below grandmaster drains mana when they pass.
+    EXPECT_EQ(flyingTape, tape(true));
+    EXPECT_LT(zTape.max() - zTape.min(), 10); // Flight bobs up and down a little.
+    EXPECT_LT(mpTape.delta(), 0);
 }
 
 GAME_TEST(Issues, Issue125) {
