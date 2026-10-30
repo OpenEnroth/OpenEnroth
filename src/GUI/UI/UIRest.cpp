@@ -22,7 +22,6 @@ GraphicsImage *rest_ui_btn_2 = nullptr;
 GraphicsImage *rest_ui_restmain = nullptr;
 
 GraphicsImage *rest_ui_sky_frame_current = nullptr;
-GraphicsImage *rest_ui_hourglass_frame_current = nullptr;
 
 int foodRequiredToRest;
 Duration remainingRestTime;
@@ -106,10 +105,6 @@ void GUIWindow_Rest::Update() {
     if (liveCharacters) {
         render->DrawQuad2D(rest_ui_restmain, {8, 8});
         render->DrawQuad2D(rest_ui_sky_frame_current, {16, 26});
-        if (rest_ui_hourglass_frame_current) {
-            assets->releaseImage(rest_ui_hourglass_frame_current);
-            rest_ui_hourglass_frame_current = nullptr;
-        }
 
         hourglassLoopTimer += gameTimer->dt();
         if (hourglassLoopTimer >= Duration::fromRealtimeSeconds(4)) {
@@ -121,8 +116,7 @@ void GUIWindow_Rest::Update() {
             hourglass_icon_idx = 1;
         }
 
-        rest_ui_hourglass_frame_current = assets->getIcon(fmt::format("hglas{:03}", hourglass_icon_idx));
-        render->DrawQuad2D(rest_ui_hourglass_frame_current, {267, 159});
+        render->DrawQuad2D(assets->getIcon(fmt::format("hglas{:03}", hourglass_icon_idx)), {267, 159});
 
         tmp_button.rect = Recti(24, 154, 171, 37);
         tmp_button.pParent = pButton_RestUI_WaitUntilDawn->pParent;

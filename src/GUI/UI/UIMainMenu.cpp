@@ -33,10 +33,6 @@ GUIWindow_MainMenu::GUIWindow_MainMenu() :
 }
 
 GUIWindow_MainMenu::~GUIWindow_MainMenu() {
-    assets->releaseImage(ui_mainmenu_new);
-    assets->releaseImage(ui_mainmenu_load);
-    assets->releaseImage(ui_mainmenu_credits);
-    assets->releaseImage(ui_mainmenu_exit);
     assets->releaseImage(main_menu_background);
 }
 

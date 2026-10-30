@@ -115,8 +115,6 @@ extern bool bFlashAutonotesBook;
 extern bool bFlashQuestBook;
 
 struct OptionsMenuSkin {
-    void Release();
-
     GraphicsImage *uTextureID_Background = nullptr;       // 507C60
     GraphicsImage *uTextureID_TurnSpeed[3] = {};          // 507C64
     GraphicsImage *uTextureID_ArrowLeft = nullptr;        // 507C70
