@@ -5,40 +5,40 @@
 #include <memory>
 #include <string>
 
-bool ProxyFileSystem::_exists(FileSystemPathView path) const {
-    return nonNullBase()->_exists(path);
+bool ProxyFileSystem::_exists(NormalPathView path) const {
+    return existsIn(nonNullBase(), path);
 }
 
-FileStat ProxyFileSystem::_stat(FileSystemPathView path) const {
-    return nonNullBase()->_stat(path);
+FileStat ProxyFileSystem::_stat(NormalPathView path) const {
+    return statIn(nonNullBase(), path);
 }
 
-void ProxyFileSystem::_ls(FileSystemPathView path, std::vector<DirectoryEntry> *entries) const {
-    nonNullBase()->_ls(path, entries);
+void ProxyFileSystem::_ls(NormalPathView path, std::vector<DirectoryEntry> *entries) const {
+    lsIn(nonNullBase(), path, entries);
 }
 
-Blob ProxyFileSystem::_read(FileSystemPathView path) const {
-    return nonNullBase()->_read(path);
+Blob ProxyFileSystem::_read(NormalPathView path) const {
+    return readIn(nonNullBase(), path);
 }
 
-void ProxyFileSystem::_write(FileSystemPathView path, const Blob &data) {
-    return nonNullBase()->_write(path, data);
+void ProxyFileSystem::_write(NormalPathView path, const Blob &data) {
+    return writeIn(nonNullBase(), path, data);
 }
 
-std::unique_ptr<InputStream> ProxyFileSystem::_openForReading(FileSystemPathView path) const {
-    return nonNullBase()->_openForReading(path);
+std::unique_ptr<InputStream> ProxyFileSystem::_openForReading(NormalPathView path) const {
+    return openForReadingIn(nonNullBase(), path);
 }
 
-std::unique_ptr<OutputStream> ProxyFileSystem::_openForWriting(FileSystemPathView path) {
-    return nonNullBase()->_openForWriting(path);
+std::unique_ptr<OutputStream> ProxyFileSystem::_openForWriting(NormalPathView path) {
+    return openForWritingIn(nonNullBase(), path);
 }
 
-bool ProxyFileSystem::_remove(FileSystemPathView path) {
-    return nonNullBase()->_remove(path);
+bool ProxyFileSystem::_remove(NormalPathView path) {
+    return removeIn(nonNullBase(), path);
 }
 
-std::string ProxyFileSystem::_displayPath(FileSystemPathView path) const {
-    return nonNullBase()->_displayPath(path);
+std::string ProxyFileSystem::_displayPath(NormalPathView path) const {
+    return displayPathIn(nonNullBase(), path);
 }
 
 FileSystem *ProxyFileSystem::nonNullBase() const {

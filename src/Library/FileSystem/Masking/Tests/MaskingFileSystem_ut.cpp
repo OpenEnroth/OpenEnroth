@@ -26,12 +26,12 @@ UNIT_TEST(MaskingFileSystem, SimpleMasks) {
     EXPECT_TRUE(fs0.exists("a/b/c/e"));
     EXPECT_EQ(fs1.ls("a/b/c"), std::vector<DirectoryEntry>()); // Masking might result in observable empty dirs.
 
-    fs1.mask("");
-    EXPECT_EQ(fs1.ls(""), std::vector<DirectoryEntry>());
+    fs1.mask(".");
+    EXPECT_EQ(fs1.ls("."), std::vector<DirectoryEntry>());
 
     EXPECT_TRUE(fs1.unmask("a/b/c/e"));
     EXPECT_FALSE(fs1.exists("a/b/c/e")); // Still masked.
-    EXPECT_TRUE(fs1.unmask(""));
+    EXPECT_TRUE(fs1.unmask("."));
     EXPECT_TRUE(fs1.exists("a/b/c/e"));
     EXPECT_FALSE(fs1.exists("a/b/c/d"));
 
@@ -47,4 +47,33 @@ UNIT_TEST(MaskingFileSystem, PersistentMasking) {
     fs0.write("a", Blob());
     EXPECT_FALSE(fs1.exists("a"));
     EXPECT_TRUE(fs0.exists("a"));
+}
+
+UNIT_TEST(MaskingFileSystem, MaskPathsAreNormalized) {
+    // A mask is keyed by the normal form of its path, so any spelling of it hides the same file.
+    MemoryFileSystem fs0("");
+    fs0.write("a", Blob());
+    fs0.write("b/c", Blob());
+
+    MaskingFileSystem fs(&fs0);
+    fs.mask("./a");
+    fs.mask("b\\c");
+    EXPECT_FALSE(fs.exists("a"));
+    EXPECT_FALSE(fs.exists("b/c"));
+
+    EXPECT_TRUE(fs.unmask("./a/"));
+    EXPECT_TRUE(fs.exists("a"));
+}
+
+UNIT_TEST(MaskingFileSystem, UnmaskInaccessiblePath) {
+    // mask asserts on an inaccessible path, so unmask finds nothing there either.
+    MemoryFileSystem fs0("");
+    fs0.write("a", Blob());
+    MaskingFileSystem fs(&fs0);
+    fs.mask(".");
+
+    EXPECT_FALSE(fs.unmask(""));
+    EXPECT_FALSE(fs.unmask("/a"));
+    EXPECT_FALSE(fs.exists("a"));
+    EXPECT_TRUE(fs.unmask("."));
 }

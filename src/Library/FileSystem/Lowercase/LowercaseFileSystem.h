@@ -14,9 +14,9 @@ struct LowercaseFileData {
     FileType type = FILE_INVALID;
     bool listed = false; // Only for `FILE_DIRECTORY`, means that `ls()` call was cached.
     bool conflicting = false; // Was there a conflict in the underlying FS? `type` should be set to `FILE_REGULAR`.
-    std::string baseName;
+    NormalPath baseName;
 
-    LowercaseFileData(FileType type, std::string baseName) : type(type), baseName(std::move(baseName)) {}
+    LowercaseFileData(FileType type, NormalPath baseName) : type(type), baseName(std::move(baseName)) {}
 };
 } // namespace detail
 
@@ -54,27 +54,27 @@ class LowercaseFileSystem : public FileSystem {
     void refresh();
 
  private:
-    virtual bool _exists(FileSystemPathView path) const override;
-    virtual FileStat _stat(FileSystemPathView path) const override;
-    virtual void _ls(FileSystemPathView path, std::vector<DirectoryEntry> *entries) const override;
-    virtual Blob _read(FileSystemPathView path) const override;
-    virtual void _write(FileSystemPathView path, const Blob &data) override;
-    virtual std::unique_ptr<InputStream> _openForReading(FileSystemPathView path) const override;
-    virtual std::unique_ptr<OutputStream> _openForWriting(FileSystemPathView path) override;
-    virtual bool _remove(FileSystemPathView path) override;
-    virtual std::string _displayPath(FileSystemPathView path) const override;
+    virtual bool _exists(NormalPathView path) const override;
+    virtual FileStat _stat(NormalPathView path) const override;
+    virtual void _ls(NormalPathView path, std::vector<DirectoryEntry> *entries) const override;
+    virtual Blob _read(NormalPathView path) const override;
+    virtual void _write(NormalPathView path, const Blob &data) override;
+    virtual std::unique_ptr<InputStream> _openForReading(NormalPathView path) const override;
+    virtual std::unique_ptr<OutputStream> _openForWriting(NormalPathView path) override;
+    virtual bool _remove(NormalPathView path) override;
+    virtual std::string _displayPath(NormalPathView path) const override;
 
  private:
     using Node = FileSystemTrieNode<detail::LowercaseFileData>;
 
-    std::tuple<FileSystemPath, Node *, FileSystemPathView> walk(FileSystemPathView path) const;
-    void cacheLs(Node *node, FileSystemPathView basePath) const;
+    std::tuple<NormalPath, Node *, NormalPathView> walk(NormalPathView path) const;
+    void cacheLs(Node *node, NormalPathView basePath) const;
     void invalidateLs(Node *node) const;
     void cacheRemove(Node *node) const;
-    void cacheInsert(Node *node, FileSystemPathView tail, FileType type) const;
+    void cacheInsert(Node *node, PathView tail, FileType type) const;
 
-    FileSystemPath locateForReading(FileSystemPathView path) const;
-    std::tuple<FileSystemPath, Node *, FileSystemPathView> locateForWriting(FileSystemPathView path);
+    NormalPath locateForReading(NormalPathView path) const;
+    std::tuple<NormalPath, Node *, NormalPathView> locateForWriting(NormalPathView path);
 
  private:
     FileSystem *_base = nullptr;

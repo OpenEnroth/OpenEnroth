@@ -28,7 +28,7 @@ struct MemoryFileData {
  *   a file is open for reading, all write calls will fail.
  * - Is not thread safe, even if you're only using `const` methods. Use a locking wrapper if you need thread safety.
  *
- * Also, like a proper file system, it allows removing and renaming files while they are open for reading / writing.
+ * Also, like a proper file system, it allows removing files while they are open for reading or writing.
  */
 class MemoryFileSystem : public FileSystem {
  public:
@@ -37,22 +37,22 @@ class MemoryFileSystem : public FileSystem {
     void clear();
 
  private:
-    virtual bool _exists(FileSystemPathView path) const override;
-    virtual FileStat _stat(FileSystemPathView path) const override;
-    virtual void _ls(FileSystemPathView path, std::vector<DirectoryEntry> *entries) const override;
-    virtual Blob _read(FileSystemPathView path) const override;
-    virtual void _write(FileSystemPathView path, const Blob &data) override;
-    virtual std::unique_ptr<InputStream> _openForReading(FileSystemPathView path) const override;
-    virtual std::unique_ptr<OutputStream> _openForWriting(FileSystemPathView path) override;
-    virtual bool _remove(FileSystemPathView path) override;
-    virtual std::string _displayPath(FileSystemPathView path) const override;
+    virtual bool _exists(NormalPathView path) const override;
+    virtual FileStat _stat(NormalPathView path) const override;
+    virtual void _ls(NormalPathView path, std::vector<DirectoryEntry> *entries) const override;
+    virtual Blob _read(NormalPathView path) const override;
+    virtual void _write(NormalPathView path, const Blob &data) override;
+    virtual std::unique_ptr<InputStream> _openForReading(NormalPathView path) const override;
+    virtual std::unique_ptr<OutputStream> _openForWriting(NormalPathView path) override;
+    virtual bool _remove(NormalPathView path) override;
+    virtual std::string _displayPath(NormalPathView path) const override;
 
  private:
     using MemoryFileData = detail::MemoryFileData;
     using Node = FileSystemTrieNode<std::shared_ptr<MemoryFileData>>;
 
-    const Node *nodeForReading(FileSystemPathView path) const;
-    Node *nodeForWriting(FileSystemPathView path);
+    const Node *nodeForReading(NormalPathView path) const;
+    Node *nodeForWriting(NormalPathView path);
 
  private:
     std::string _displayName;

@@ -5,18 +5,20 @@
 #include "Library/FileSystem/Merging/MergingFileSystem.h"
 #include "Library/FileSystem/Memory/MemoryFileSystem.h"
 #include "Library/FileSystem/Dump/FileSystemDump.h"
+#include "Library/FileSystem/Null/NullFileSystem.h"
 
 UNIT_TEST(MergingFileSystem, Empty) {
     MergingFileSystem fs({});
 
-    EXPECT_TRUE(fs.exists(""));
+    EXPECT_TRUE(fs.exists("."));
     EXPECT_FALSE(fs.exists("a"));
-    EXPECT_EQ(fs.ls(""), std::vector<DirectoryEntry>());
+    EXPECT_EQ(fs.ls("."), std::vector<DirectoryEntry>());
 
     EXPECT_EQ(fs.stat("a"), FileStat(FILE_INVALID, 0));
     EXPECT_ANY_THROW((void) fs.read("a"));
     EXPECT_ANY_THROW((void) fs.openForReading("a"));
     EXPECT_ANY_THROW(fs.write("a", Blob::fromString("123")));
+    EXPECT_EQ(fs.displayPath("."), NullFileSystem().displayPath("."));
 }
 
 UNIT_TEST(MergingFileSystem, SimpleMerge) {
@@ -29,7 +31,7 @@ UNIT_TEST(MergingFileSystem, SimpleMerge) {
     MergingFileSystem fs({&fs0, &fs1});
 
     EXPECT_EQ(dumpFileSystem(&fs, FILE_SYSTEM_DUMP_WITH_CONTENTS), std::vector<FileSystemDumpEntry>({
-        {"", FILE_DIRECTORY},
+        {".", FILE_DIRECTORY},
         {"a", FILE_DIRECTORY},
         {"a/b", FILE_REGULAR, "B"},
         {"a/c", FILE_DIRECTORY},
@@ -59,7 +61,7 @@ UNIT_TEST(MergingFileSystem, ShrodingerMaxxxing) {
     EXPECT_EQ(fs.ls("a"), std::vector<DirectoryEntry>({{"b", FILE_REGULAR}, {"b", FILE_DIRECTORY}, {"c", FILE_DIRECTORY}}));
 
     EXPECT_EQ(dumpFileSystem(&fs, FILE_SYSTEM_DUMP_WITH_CONTENTS), std::vector<FileSystemDumpEntry>({
-        {"", FILE_DIRECTORY},
+        {".", FILE_DIRECTORY},
         {"a", FILE_DIRECTORY},
         {"a/b", FILE_REGULAR, "B"},
         {"a/b", FILE_DIRECTORY},
