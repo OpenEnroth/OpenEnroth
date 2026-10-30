@@ -71,10 +71,12 @@ class FileSystemDumper {
 
         if (_target) {
             _target->push_back(FileSystemDumpEntry(path.string(), FILE_REGULAR, std::move(content)));
-        } else if (_flags & FILE_SYSTEM_DUMP_WITH_CONTENTS) {
-            fmt::println(_stream, "{}: \"{}\" ", path.string(), ascii::toPrintable(content.str(), '_'));
         } else {
-            fmt::println(_stream, "{}", path.string());
+            if (_flags & FILE_SYSTEM_DUMP_WITH_CONTENTS) {
+                fmt::println(_stream, "{}: \"{}\" ", path.string(), ascii::toPrintable(content.str(), '_'));
+            } else {
+                fmt::println(_stream, "{}", path.string());
+            }
         }
 
         _entries++;
