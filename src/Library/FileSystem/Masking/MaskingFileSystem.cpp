@@ -23,7 +23,7 @@ void MaskingFileSystem::mask(PathView path) {
 bool MaskingFileSystem::unmask(PathView path) {
     NormalPath normalPath(path);
     if (!normalPath.isAccessible())
-        return false; // mask refuses these, so nothing is masked there.
+        return false; // mask asserts on these, so nothing is masked there.
 
     FileSystemTrieNode<bool> *node = _masks.find(normalPath.path());
     if (!node || !node->hasValue() || !node->value())
@@ -36,7 +36,7 @@ void MaskingFileSystem::clearMasks() {
     _masks.clear();
 }
 
-bool MaskingFileSystem::isMasked(PathView path) const {
+bool MaskingFileSystem::isMasked(NormalPathView path) const {
     const FileSystemTrieNode<bool> *node = _masks.root();
 
     for (std::string_view chunk : path.split()) {

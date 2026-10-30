@@ -1,12 +1,12 @@
 #pragma once
 
 #include <memory>
-#include <string_view>
+
+#include "Utility/System/PathView.h"
 
 #include "StreamLogSink.h"
 
 class FileSystem;
-class Path;
 class OutputStream;
 
 class RotatingLogSink : public StreamLogSink {

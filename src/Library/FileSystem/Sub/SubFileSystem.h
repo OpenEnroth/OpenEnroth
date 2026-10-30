@@ -6,7 +6,6 @@
 #include <vector>
 
 #include "Library/FileSystem/Interface/FileSystem.h"
-#include "Utility/System/Path.h"
 
 /**
  * File system that provides a view into a subdirectory of another file system.

@@ -113,7 +113,7 @@ class FileSystem {
 
     /**
      * @param path                      Path inside this file system. Any path is accepted, a missing or an
-     *                                  inaccessible one included, because exceptions format their paths through here.
+     *                                  inaccessible one included.
      * @return                          A path string that's suitable to be displayed to the user. E.g. an absolute path
      *                                  on the underlying OS file system. Always valid UTF-8, with everything that's
      *                                  not valid UTF-8 replaced with U+FFFD, so it might not map back to a real path.
@@ -121,6 +121,8 @@ class FileSystem {
     [[nodiscard]] std::string displayPath(PathView path) const;
 
  protected:
+    friend class FileSystemException;
+
     template<class T>
     using FileSystemTrieNode = detail::FileSystemTrieNode<T>;
     template<class T>

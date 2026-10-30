@@ -13,5 +13,5 @@ class ReadOnlyFileSystem : public FileSystem {
     virtual std::unique_ptr<OutputStream> _openForWriting(NormalPathView path) override;
     virtual bool _remove(NormalPathView path) override;
 
-    [[noreturn]] void reportWriteError(PathView path) const;
+    [[noreturn]] void reportWriteError(NormalPathView path) const;
 };

@@ -19,6 +19,6 @@ bool ReadOnlyFileSystem::_remove(NormalPathView path) {
     FileSystemException::raise(this, FS_REMOVE_FAILED_PATH_NOT_WRITEABLE, path);
 }
 
-void ReadOnlyFileSystem::reportWriteError(PathView path) const {
+void ReadOnlyFileSystem::reportWriteError(NormalPathView path) const {
     FileSystemException::raise(this, FS_WRITE_FAILED_PATH_NOT_WRITEABLE, path);
 }
