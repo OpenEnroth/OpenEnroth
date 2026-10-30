@@ -54,11 +54,11 @@ Blob MemoryFileSystem::_read(NormalPathView path) const {
     std::shared_ptr<MemoryFileData> data = nodeForReading(path)->value();
     data->readerCount++;
     std::shared_ptr<void> guard(nullptr, [data](void *) { data->readerCount--; });
-    return Blob::custom(data->blob.data(), data->blob.size(), std::move(guard)).withDisplayPath(displayPath(path));
+    return Blob::custom(data->blob.data(), data->blob.size(), std::move(guard)).withDisplayPath(displayPathIn(this, path));
 }
 
 void MemoryFileSystem::_write(NormalPathView path, const Blob &data) {
-    nodeForWriting(path)->value()->blob = Blob::share(data).withDisplayPath(displayPath(path));
+    nodeForWriting(path)->value()->blob = Blob::share(data).withDisplayPath(displayPathIn(this, path));
 }
 
 std::unique_ptr<InputStream> MemoryFileSystem::_openForReading(NormalPathView path) const {
@@ -66,7 +66,7 @@ std::unique_ptr<InputStream> MemoryFileSystem::_openForReading(NormalPathView pa
 }
 
 std::unique_ptr<OutputStream> MemoryFileSystem::_openForWriting(NormalPathView path) {
-    return std::make_unique<detail::MemoryFileSystemOutputStream>(nodeForWriting(path)->value(), displayPath(path));
+    return std::make_unique<detail::MemoryFileSystemOutputStream>(nodeForWriting(path)->value(), displayPathIn(this, path));
 }
 
 bool MemoryFileSystem::_remove(NormalPathView path) {

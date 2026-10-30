@@ -108,8 +108,8 @@ UNIT_TEST(SubFileSystem, RootWhenBasePathIsFile) {
     EXPECT_ANY_THROW(sub.write(".", Blob()));
 }
 
-UNIT_TEST(SubFileSystem, RootWhenBasePathIsEmpty) {
-    // An empty base path just means "the whole base file system".
+UNIT_TEST(SubFileSystem, RootWhenBasePathIsRoot) {
+    // A base path naming the root just means "the whole base file system".
     MemoryFileSystem base("memfs");
     base.write("1.txt", Blob::fromString("lol"));
 
@@ -126,7 +126,7 @@ UNIT_TEST(SubFileSystem, InaccessibleBasePath) {
     MemoryFileSystem base("memfs");
     base.write("file.txt", Blob::fromString("hello"));
 
-    std::vector<std::string_view> basePaths = {"..", "a/../..", "/", "/x", "\\x"};
+    std::vector<std::string_view> basePaths = {"", "..", "a/../..", "/", "/x", "\\x"};
 #ifdef _WINDOWS
     basePaths.push_back("C:");
     basePaths.push_back("C:x");
