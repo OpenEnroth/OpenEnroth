@@ -45,7 +45,7 @@ GAME_TEST(Issues, Issue123) {
     game.tick(3);
     game.releaseKey(PlatformKey::KEY_PAGEUP);
     test.startTaping();
-    game.tick(100); // Five game minutes, Fly below grandmaster drains mana when they pass.
+    game.tick(150); // Crosses one 5-minute regeneration tick, where Fly below grandmaster drains mana, with time left to fall.
     EXPECT_EQ(flyingTape, tape(true));
     EXPECT_LT(zTape.max() - zTape.min(), 10); // Flight bobs up and down a little.
     EXPECT_EQ(mpTape.delta(), -1);
