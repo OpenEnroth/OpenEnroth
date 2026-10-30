@@ -34,10 +34,11 @@ int ActiveOverlayList::_4418B6(int uOverlayID, Pid pid, Duration animLength, int
             }
             this->pOverlays[i].indexToOverlayTable = indexer;
             this->pOverlays[i].spriteFrameTime = 0;
-            if (animLength)
+            if (animLength) {
                 v11 = animLength;
-            else
+            } else {
                 v11 = pSpriteFrameTable->pSpriteSFrames[pOverlayTable->overlays[indexer].uSpriteFramesetID].animationLength;
+            }
             this->pOverlays[i].animLength = v11.ticks();
             this->pOverlays[i].fpDamageMod = fpDamageMod;
             this->pOverlays[i].projSize = projSize;
