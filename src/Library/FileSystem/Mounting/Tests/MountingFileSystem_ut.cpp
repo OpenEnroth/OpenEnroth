@@ -31,7 +31,7 @@ UNIT_TEST(MountingFileSystem, Override) {
     mfs.write("a", Blob());
 
     MountingFileSystem fs("");
-    fs.mount("", &mfs);
+    fs.mount(".", &mfs);
     fs.mount("a", &mfs);
 
     EXPECT_TRUE(fs.exists("a"));
@@ -39,7 +39,7 @@ UNIT_TEST(MountingFileSystem, Override) {
     EXPECT_EQ(fs.stat("a"), FileStat(FILE_DIRECTORY, 0));
     EXPECT_EQ(fs.stat("a/a"), FileStat(FILE_REGULAR, 0));
 
-    EXPECT_EQ(fs.ls(""), std::vector<DirectoryEntry>({{"a", FILE_DIRECTORY}}));
+    EXPECT_EQ(fs.ls("."), std::vector<DirectoryEntry>({{"a", FILE_DIRECTORY}}));
     EXPECT_EQ(fs.ls("a"), std::vector<DirectoryEntry>({{"a", FILE_REGULAR}}));
 }
 
@@ -49,12 +49,12 @@ UNIT_TEST(MountingFileSystem, SchrodingerOverride) {
     MergingFileSystem sfs({&mfs1, &mfs2});
 
     MountingFileSystem fs("");
-    fs.mount("", &sfs);
+    fs.mount(".", &sfs);
 
     mfs1.write("a/a.bin", Blob());
     mfs2.write("a", Blob());
     EXPECT_EQ(dumpFileSystem(&fs), std::vector<FileSystemDumpEntry>({
-        {"", FILE_DIRECTORY},
+        {".", FILE_DIRECTORY},
         {"a", FILE_REGULAR},
         {"a", FILE_DIRECTORY},
         {"a/a.bin", FILE_REGULAR}
@@ -63,7 +63,7 @@ UNIT_TEST(MountingFileSystem, SchrodingerOverride) {
     NullFileSystem nfs;
     fs.mount("a", &nfs);
     EXPECT_EQ(dumpFileSystem(&fs), std::vector<FileSystemDumpEntry>({
-        {"", FILE_DIRECTORY},
+        {".", FILE_DIRECTORY},
         {"a", FILE_DIRECTORY}
     }));
 }
@@ -73,14 +73,14 @@ UNIT_TEST(MountingFileSystem, SimpleMerge) {
     MemoryFileSystem mfs2("");
 
     MountingFileSystem fs("");
-    fs.mount("", &mfs1);
+    fs.mount(".", &mfs1);
     fs.mount("a", &mfs2);
 
     mfs1.write("b", Blob::fromString("b"));
     mfs2.write("a", Blob::fromString("a"));
 
     EXPECT_EQ(dumpFileSystem(&fs, FILE_SYSTEM_DUMP_WITH_CONTENTS), std::vector<FileSystemDumpEntry>({
-        {"", FILE_DIRECTORY},
+        {".", FILE_DIRECTORY},
         {"a", FILE_DIRECTORY},
         {"a/a", FILE_REGULAR, "a"},
         {"b", FILE_REGULAR, "b"}
@@ -149,11 +149,11 @@ UNIT_TEST(MountingFileSystem, LsMergeWithManyVirtualDirs) {
         mounts.push_back(std::make_unique<MemoryFileSystem>(""));
 
     MountingFileSystem fs("");
-    fs.mount("", &base);
+    fs.mount(".", &base);
     for (size_t i = 0; i < mounts.size(); i++)
         fs.mount(std::to_string(i), mounts[i].get());
 
-    std::vector<DirectoryEntry> entries = fs.ls("");
+    std::vector<DirectoryEntry> entries = fs.ls(".");
     EXPECT_EQ(entries.size(), 101);
 
     for (size_t i = 0; i < mounts.size(); i++)

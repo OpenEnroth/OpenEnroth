@@ -128,7 +128,7 @@ void TestController::prepareForNextTestInternal() {
     int frameTimeMs = engine->config->debug.TraceFrameTimeMs.value();
     RandomEngineType rngType = engine->config->debug.TraceRandomEngine.value();
 
-    for (const DirectoryEntry &entry : ufs->ls(""))
+    for (const DirectoryEntry &entry : ufs->ls("."))
         ufs->remove(entry.name);
 
     _callObserver.reset();

@@ -11,9 +11,9 @@ UNIT_TEST(LowercaseFileSystem, Empty) {
     MemoryFileSystem fs0("");
     LowercaseFileSystem fs(&fs0);
 
-    EXPECT_TRUE(fs.ls("").empty());
-    EXPECT_TRUE(fs.exists(""));
-    EXPECT_EQ(fs.stat(""), FileStat(FILE_DIRECTORY, 0));
+    EXPECT_TRUE(fs.ls(".").empty());
+    EXPECT_TRUE(fs.exists("."));
+    EXPECT_EQ(fs.stat("."), FileStat(FILE_DIRECTORY, 0));
 }
 
 UNIT_TEST(LowercaseFileSystem, ExistsStatUppercase) {
@@ -72,7 +72,7 @@ UNIT_TEST(LowercaseFileSystem, Conflict) {
     LowercaseFileSystem fs(&fs0);
     EXPECT_TRUE(fs.exists("a.bin"));
     EXPECT_EQ(fs.stat("a.bin"), FileStat(FILE_REGULAR, 0));
-    EXPECT_EQ(fs.ls(""), std::vector<DirectoryEntry>({{"a.bin", FILE_REGULAR}}));
+    EXPECT_EQ(fs.ls("."), std::vector<DirectoryEntry>({{"a.bin", FILE_REGULAR}}));
 
     EXPECT_ANY_THROW((void) fs.read("a.bin"));
     EXPECT_ANY_THROW(fs.write("a.bin", Blob()));
@@ -94,7 +94,7 @@ UNIT_TEST(LowercaseFileSystem, ConflictFolders) {
     EXPECT_EQ(fs.stat("a"), FileStat(FILE_REGULAR, 0));
     EXPECT_FALSE(fs.exists("a/1"));
     EXPECT_EQ(fs.stat("a/1"), FileStat());
-    EXPECT_EQ(fs.ls(""), std::vector<DirectoryEntry>({{"a", FILE_REGULAR}}));
+    EXPECT_EQ(fs.ls("."), std::vector<DirectoryEntry>({{"a", FILE_REGULAR}}));
 }
 
 UNIT_TEST(LowercaseFileSystem, Lowercase) {
@@ -150,7 +150,7 @@ UNIT_TEST(LowercaseFileSystem, PruneRemove) {
     EXPECT_TRUE(fs.remove("a/a"));
 
     EXPECT_FALSE(fs.exists("a"));
-    EXPECT_TRUE(fs.ls("").empty());
+    EXPECT_TRUE(fs.ls(".").empty());
     EXPECT_FALSE(fs0.exists("a")); // Because memory fs doesn't support empty dirs either.
 }
 
@@ -172,9 +172,9 @@ UNIT_TEST(LowercaseFileSystem, RemoveRepeatedly) {
     EXPECT_FALSE(fs.remove("a"));
 
     EXPECT_FALSE(fs.exists("a"));
-    EXPECT_TRUE(fs.ls("").empty());
+    EXPECT_TRUE(fs.ls(".").empty());
     EXPECT_FALSE(fs0.exists("A"));
-    EXPECT_TRUE(fs0.ls("").empty());
+    EXPECT_TRUE(fs0.ls(".").empty());
 }
 
 UNIT_TEST(LowercaseFileSystem, DisplayPath) {
@@ -196,7 +196,7 @@ UNIT_TEST(LowercaseFileSystem, DisplayPath) {
     output->close();
 
     EXPECT_EQ(fs.displayPath("a/b/c"), "ram://A/b/c");
-    EXPECT_EQ(fs.displayPath(""), "ram://");
+    EXPECT_EQ(fs.displayPath("."), "ram://");
 }
 
 UNIT_TEST(LowercaseFileSystem, RemoveDeep) {
@@ -220,7 +220,7 @@ UNIT_TEST(LowercaseFileSystem, NonExistentNativeFolder) {
     NativeFileSystem fs0("this_dir_doesnt_exist");
     LowercaseFileSystem fs(&fs0);
 
-    EXPECT_TRUE(fs.ls("").empty());
+    EXPECT_TRUE(fs.ls(".").empty());
     EXPECT_FALSE(fs.exists("anims/magic7.vid"));
     EXPECT_EQ(fs.stat("anims/magic7.vid"), FileStat());
 }

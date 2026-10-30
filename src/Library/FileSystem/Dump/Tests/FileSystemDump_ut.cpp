@@ -10,7 +10,7 @@
 
 UNIT_TEST(FileSystemDump, DumpEmpty) {
     NullFileSystem fs;
-    EXPECT_EQ(dumpFileSystem(&fs), std::vector<FileSystemDumpEntry>({{"", FILE_DIRECTORY}}));
+    EXPECT_EQ(dumpFileSystem(&fs), std::vector<FileSystemDumpEntry>({{".", FILE_DIRECTORY}}));
 }
 
 UNIT_TEST(FileSystemDump, DumpLimitAndContents) {
@@ -24,16 +24,16 @@ UNIT_TEST(FileSystemDump, DumpLimitAndContents) {
     EXPECT_EQ(dumpFileSystem(&fs, FILE_SYSTEM_DUMP_WITH_CONTENTS, 0), std::vector<FileSystemDumpEntry>());
 
     EXPECT_EQ(dumpFileSystem(&fs, 0, 2), std::vector<FileSystemDumpEntry>({
-        {"", FILE_DIRECTORY},
+        {".", FILE_DIRECTORY},
         {"0.0", FILE_REGULAR}
     }));
     EXPECT_EQ(dumpFileSystem(&fs, FILE_SYSTEM_DUMP_WITH_CONTENTS, 2), std::vector<FileSystemDumpEntry>({
-        {"", FILE_DIRECTORY},
+        {".", FILE_DIRECTORY},
         {"0.0", FILE_REGULAR, "123"}
     }));
 
     EXPECT_EQ(dumpFileSystem(&fs, 0), std::vector<FileSystemDumpEntry>({
-        {"", FILE_DIRECTORY},
+        {".", FILE_DIRECTORY},
         {"0.0", FILE_REGULAR},
         {"0.1", FILE_REGULAR},
         {"0.2", FILE_REGULAR},
@@ -43,7 +43,7 @@ UNIT_TEST(FileSystemDump, DumpLimitAndContents) {
     }));
 
     EXPECT_EQ(dumpFileSystem(&fs, FILE_SYSTEM_DUMP_WITH_CONTENTS), std::vector<FileSystemDumpEntry>({
-        {"", FILE_DIRECTORY},
+        {".", FILE_DIRECTORY},
         {"0.0", FILE_REGULAR, "123"},
         {"0.1", FILE_REGULAR, "123"},
         {"0.2", FILE_REGULAR, "123"},

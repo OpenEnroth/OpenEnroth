@@ -28,8 +28,7 @@
 /**
  * File system interface.
  *
- * All user-facing methods take paths as UTF-8 encoded `std::string_view`s, and users are expected to just use
- * `std::string`s to store paths.
+ * All user-facing methods take paths as UTF-8 encoded `PathView`s, and users are expected to store paths as `Path`s.
  *
  * Paths are normalized internally, and then processed by the implementation in a derived class. A backslash is a
  * separator on every platform. Both `".."` and `"."` special dirs are supported, but peeking outside the root directory
@@ -39,8 +38,9 @@
  * relative to the root, and a path with a root of its own, like `"/foo/bar"` or `"C:/foo"` on Windows, is refused the
  * same way.
  *
- * Root folder of the file system always exists. Thus, `exists("")` always returns `true`, `stat("")` always returns
- * `FILE_DIRECTORY`, `ls("")` never throws, and `remove("")` always throws.
+ * The root folder is named `"."`, and always exists. Thus, `exists(".")` always returns `true`, `stat(".")` always
+ * returns `FILE_DIRECTORY`, `ls(".")` never throws, and `remove(".")` always throws. An empty path names nothing, and
+ * is refused like a path outside the root.
  *
  * @see ReadOnlyFileSystem
  */

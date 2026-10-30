@@ -28,7 +28,7 @@ bool MountingFileSystem::unmount(PathView path) {
 
     Node *node = _trie.find(normalPath.path());
     if (!node || !node->hasValue())
-        return false; // Should be a real mount point, unmount("") is not equivalent to clearMounts().
+        return false; // Should be a real mount point, unmount(".") is not equivalent to clearMounts().
 
     return _trie.erase(node);
 }

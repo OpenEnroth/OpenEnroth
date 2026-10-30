@@ -12,15 +12,15 @@
 UNIT_TEST(MemoryFileSystem, EmptyRoot) {
     // Make sure accessing root works as expected.
     MemoryFileSystem fs("");
-    EXPECT_TRUE(fs.ls("").empty());
-    EXPECT_TRUE(fs.exists(""));
-    EXPECT_EQ(fs.stat(""), FileStat(FILE_DIRECTORY, 0));
+    EXPECT_TRUE(fs.ls(".").empty());
+    EXPECT_TRUE(fs.exists("."));
+    EXPECT_EQ(fs.stat("."), FileStat(FILE_DIRECTORY, 0));
 
-    EXPECT_ANY_THROW((void) fs.read(""));
-    EXPECT_ANY_THROW(fs.write("", Blob()));
-    EXPECT_ANY_THROW((void) fs.openForReading(""));
-    EXPECT_ANY_THROW((void) fs.openForWriting(""));
-    EXPECT_ANY_THROW(fs.remove(""));
+    EXPECT_ANY_THROW((void) fs.read("."));
+    EXPECT_ANY_THROW(fs.write(".", Blob()));
+    EXPECT_ANY_THROW((void) fs.openForReading("."));
+    EXPECT_ANY_THROW((void) fs.openForWriting("."));
+    EXPECT_ANY_THROW(fs.remove("."));
 
     fs.write("a/b.bin", Blob());
 }
@@ -32,7 +32,7 @@ UNIT_TEST(MemoryFileSystem, Ls) {
     fs.write("a/c/d", Blob());
 
     EXPECT_EQ(dumpFileSystem(&fs), std::vector<FileSystemDumpEntry>({
-        {"", FILE_DIRECTORY},
+        {".", FILE_DIRECTORY},
         {"a", FILE_DIRECTORY},
         {"a/b", FILE_REGULAR},
         {"a/c", FILE_DIRECTORY},
@@ -152,7 +152,7 @@ UNIT_TEST(MemoryFileSystem, Remove) {
     EXPECT_TRUE(fs.remove("b"));
     EXPECT_FALSE(fs.exists("a"));
     EXPECT_FALSE(fs.exists("b"));
-    EXPECT_EQ(fs.ls("").size(), 0);
+    EXPECT_EQ(fs.ls(".").size(), 0);
 
     EXPECT_EQ(input->readAll(), "123"); // Input stream still readable, even though the file was removed.
     input->close();

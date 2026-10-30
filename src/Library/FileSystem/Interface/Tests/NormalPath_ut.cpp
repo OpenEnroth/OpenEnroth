@@ -22,12 +22,13 @@ UNIT_TEST(NormalPath, Normalizes) {
 }
 
 UNIT_TEST(NormalPath, IsAccessible) {
-    // A file system can act on a path that has no root and doesn't escape.
+    // A file system can act on a non-empty path that has no root and doesn't escape.
     auto testOne = [] (std::string_view path, bool result) {
         EXPECT_EQ(NormalPath(path).isAccessible(), result) << "for '" << path << "'";
     };
 
-    testOne("", true);
+    testOne("", false);
+    testOne(".", true);
     testOne("a", true);
     testOne("a/./b", true);
     testOne("a/..", true);
@@ -50,14 +51,14 @@ UNIT_TEST(NormalPath, IsAccessible) {
 }
 
 UNIT_TEST(NormalPath, Join) {
-    // Joining accessible paths keeps them normal, an empty side included.
+    // Joining accessible paths keeps them normal, a root side included.
     auto testOne = [] (std::string_view head, std::string_view tail, std::string_view result) {
         EXPECT_EQ((NormalPath(head) / NormalPath(tail)).path().str(), result) << "for '" << head << "' and '" << tail << "'";
     };
 
-    testOne("", "", "");
-    testOne("", "b", "b");
-    testOne("a", "", "a");
+    testOne(".", ".", "");
+    testOne(".", "b", "b");
+    testOne("a", ".", "a");
     testOne("a", "b", "a/b");
     testOne("a/b", "c/d", "a/b/c/d");
     testOne("a\\b", "./c", "a/b/c");

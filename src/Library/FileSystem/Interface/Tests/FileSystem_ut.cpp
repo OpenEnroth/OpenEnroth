@@ -90,10 +90,29 @@ UNIT_TEST(FileSystem, RootIsNotRemovable) {
     MemoryFileSystem fs("ram");
     fs.write("foo", Blob::fromString("lol"));
 
-    for (std::string_view path : {"", ".", "/", "foo/.."})
+    for (std::string_view path : {".", "/", "foo/.."})
         EXPECT_ANY_THROW((void) fs.remove(path)) << path;
 
     EXPECT_TRUE(fs.exists("foo"));
+}
+
+UNIT_TEST(FileSystem, EmptyPathIsRefused) {
+    // An empty path names nothing, it is not another spelling of the root.
+    MemoryFileSystem fs("ram");
+    fs.write("foo", Blob::fromString("lol"));
+
+    EXPECT_FALSE(fs.exists(""));
+    EXPECT_EQ(fs.stat(""), FileStat());
+    EXPECT_ANY_THROW((void) fs.ls(""));
+    EXPECT_ANY_THROW((void) fs.read(""));
+    EXPECT_ANY_THROW(fs.write("", Blob::fromString("kek")));
+    EXPECT_ANY_THROW((void) fs.openForReading(""));
+    EXPECT_ANY_THROW((void) fs.openForWriting(""));
+    EXPECT_ANY_THROW((void) fs.remove(""));
+    EXPECT_EQ(fs.displayPath(""), "ram://");
+
+    EXPECT_TRUE(fs.exists("."));
+    EXPECT_EQ(fs.read("foo").str(), "lol");
 }
 
 UNIT_TEST(FileSystem, DisplayPathOfInaccessiblePath) {

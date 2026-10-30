@@ -26,7 +26,7 @@ class FileSystemDumper {
         if (_maxEntries == 0)
             return;
 
-        dump({});
+        dump(".");
     }
 
  private:
@@ -39,7 +39,7 @@ class FileSystemDumper {
         std::ranges::sort(entries);
 
         for (const DirectoryEntry &entry : entries) {
-            Path entryPath = path / Path(entry.name);
+            Path entryPath = path == "." ? Path(entry.name) : path / entry.name;
 
             if (entry.type == FILE_REGULAR) {
                 writeOutFile(entryPath);
