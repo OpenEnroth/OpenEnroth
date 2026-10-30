@@ -190,10 +190,12 @@ int _43F55F_get_billboard_light_level(const RenderBillboard *a1, int uBaseLightL
 
     if (uCurrentlyLoadedLevelType == LEVEL_INDOOR) {
         v3 = pIndoor->sectors[a1->uIndoorSectorID].minAmbientLightLevel;
-    } else if (uBaseLightLevel == -1) {
-        v3 = a1->dimming_level;
     } else {
-        v3 = uBaseLightLevel;
+        if (uBaseLightLevel == -1) {
+            v3 = a1->dimming_level;
+        } else {
+            v3 = uBaseLightLevel;
+        }
     }
 
     return GetLightLevelAtPoint(v3, a1->uIndoorSectorID, a1->worldPos.x, a1->worldPos.y, a1->worldPos.z);
