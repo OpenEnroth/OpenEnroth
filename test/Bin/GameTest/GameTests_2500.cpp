@@ -635,9 +635,9 @@ GAME_TEST(Issues, Issue2771) {
     EXPECT_EQ(casterTape.flatten().unique(), tape(Pid::character(1))); // The active character.
 }
 
-GAME_TEST(Prs, Pr2772) {
-    // Space in front of The Knight's Blade on Emerald Island should enter the shop. The pressure plate that calls
-    // Margaret the Docent lies closer, and Space shouldn't stop at a face it can't trigger.
+GAME_TEST(Prs, Pr2772a) {
+    // Space in front of The Knight's Blade on Emerald Island called Margaret the Docent instead of entering the shop,
+    // because her pressure plate lies closer to the party.
     auto screenTape = tapes.screen();
     auto houseTape = tapes.house();
 
@@ -649,6 +649,23 @@ GAME_TEST(Prs, Pr2772) {
     game.tick();
     EXPECT_EQ(screenTape, tape(SCREEN_GAME, SCREEN_HOUSE));
     EXPECT_EQ(houseTape, tape(HOUSE_INVALID, HOUSE_WEAPON_SHOP_EMERALD_ISLAND));
+}
+
+GAME_TEST(Prs, Pr2772b) {
+    // Space in The Walls of Mist said "Nothing here" instead of moving the doors that the face ahead controls, because
+    // a closer face carries the map's reload event.
+    auto statusTape = tapes.statusBar();
+
+    engine->config->debug.NoActors.setValue(true);
+    game.startNewGame();
+    game.teleportTo(MAP_WALLS_OF_MIST, Vec3f(20992, 9152, -672), 90);
+    auto doorTape = tapes.doorStates({18, 19, 24});
+    test.startTaping();
+    game.tick();
+    game.pressAndReleaseKey(PlatformKey::KEY_SPACE);
+    game.tick(13); // The doors move.
+    EXPECT_EQ(doorTape, tape({DOOR_OPEN, DOOR_CLOSED, DOOR_OPEN}, {DOOR_CLOSING, DOOR_OPENING, DOOR_CLOSING}, {DOOR_CLOSED, DOOR_OPENING, DOOR_CLOSING}, {DOOR_CLOSED, DOOR_OPEN, DOOR_CLOSED}));
+    EXPECT_MISSES(statusTape, "Nothing here");
 }
 
 GAME_TEST(Issues, Issue2776) {

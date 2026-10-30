@@ -580,7 +580,7 @@ GAME_TEST(Issues, Issue1290b) {
 
 GAME_TEST(Issues, Issue1290c) {
     // A door in Fort Riverstride can't be opened from behind, clicking its back says "Nothing here".
-    auto doorTape = tapes.doorState(3);
+    auto doorTape = tapes.doorStates({3, 4});
 
     engine->config->debug.NoActors.setValue(true);
     game.startNewGame();
@@ -589,7 +589,7 @@ GAME_TEST(Issues, Issue1290c) {
     game.pointMouseAtFace(618); // The back of the door. The map data makes its other faces clickable.
     game.pressAndReleaseButton(BUTTON_LEFT);
     game.tick(23); // The door swings open.
-    EXPECT_EQ(doorTape, tape(DOOR_CLOSED, DOOR_OPENING, DOOR_OPEN));
+    EXPECT_EQ(doorTape, tape({DOOR_CLOSED, DOOR_CLOSED}, {DOOR_OPENING, DOOR_OPENING}, {DOOR_OPEN, DOOR_OPEN}));
 }
 
 GAME_TEST(Issues, Issue1290d) {

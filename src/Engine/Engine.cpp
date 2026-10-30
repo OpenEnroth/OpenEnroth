@@ -653,8 +653,8 @@ void PrepareWorld(int _0_box_loading_1_fullscreen) {
 
 /**
  * Adds `FACE_CLICKABLE` to faces that the map data left unclickable although their event does something when run.
- * Every face of an event that is already clickable somewhere gets it, and so does every face of an event that
- * nothing can trigger at all. An event that only pressure plates, objects or monsters trigger is left alone.
+ * A face without a trigger bit of its own gets it if its event is already clickable somewhere, or if nothing can
+ * trigger that event. An event that only pressure plates, objects or monsters trigger is left alone.
  *
  * @param faces                         All faces of the location, with the save delta already applied.
  * @param events                        The location's events.
