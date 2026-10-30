@@ -23,7 +23,7 @@ UNIT_TEST(EmbeddedFileSystem, StatExists) {
 UNIT_TEST(EmbeddedFileSystem, Ls) {
     EmbeddedFileSystem fs(cmrc::testrc::get_filesystem(), "testrc");
 
-    EXPECT_EQ(fs.ls(""), std::vector<DirectoryEntry>({{"Tests", FILE_DIRECTORY}}));
+    EXPECT_EQ(fs.ls("."), std::vector<DirectoryEntry>({{"Tests", FILE_DIRECTORY}}));
     EXPECT_EQ(fs.ls("Tests"), std::vector<DirectoryEntry>({{"EmbeddedFileSystem_ut.cpp", FILE_REGULAR}}));
 
     EXPECT_ANY_THROW((void) fs.ls("DoesntExist"));

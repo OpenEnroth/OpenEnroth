@@ -75,7 +75,7 @@ void GameStarter::initialize() {
     // Resolve user path & create user fs.
     resolveUserPath(_environment.get(), &_options);
     _fsStarter.initUserFs(_options.ramFsUserData, _options.userPath);
-    MM_INFO("Using user path '{}'.", ufs->displayPath(""));
+    MM_INFO("Using user path '{}'.", ufs->displayPath("."));
 
     // Init config.
     _config = std::make_shared<GameConfig>();
@@ -105,7 +105,7 @@ void GameStarter::initialize() {
     // TODO(captainurist): actually move datapath to config?
     resolveDataPath(_environment.get(), &_options);
     _fsStarter.initDataFs(_options.dataPath, _config->debug.OverrideBuiltInResources.value());
-    MM_INFO("Using data path '{}'.", _options.dataPath); // Can't use dfs->displayPath("") b/c it'll show "embedded://"...
+    MM_INFO("Using data path '{}'.", _options.dataPath); // Can't use dfs->displayPath(".") b/c it'll show "embedded://"...
 
     // Migrate saves if needed. We don't migrate anything else.
     if (!_options.ramFsUserData && _options.dataPath.normalized() != _options.userPath.normalized())
