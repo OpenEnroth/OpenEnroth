@@ -704,7 +704,7 @@ void Game::processQueuedMessages() {
                 } else if (std::optional<PartyPlacement> placement = destination.resolvePlacement()) {
                     placeParty(*placement);
                 } else {
-                    stayingPut = true; // The script didn't move the party, see moveToMapDestination.
+                    stayingPut = true; // See moveToMapDestination.
                 }
 
                 PlayButtonClickSound();

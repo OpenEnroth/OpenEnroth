@@ -220,8 +220,6 @@ int EvtInterpreter::executeOneEvent(int step, bool isNpc) {
 
 // TODO(captainurist): take a const reference once the MoveToMap data hacks below stop patching `ir`.
 EvtFlow EvtInterpreter::executeInstruction(EvtInstruction ir) {
-    int step = ir.step;
-
     switch (ir.opcode) {
         case EVENT_Exit:
             return {EVT_FLOW_STOP};
@@ -452,7 +450,7 @@ EvtFlow EvtInterpreter::executeInstruction(EvtInstruction ir) {
             assert(false);
 #if 0
             game_ui_status_bar_event_string = (ir.data.text_id < engine->_levelStrings.size()) ? engine->_levelStrings[ir.data.text_id] : "";
-            startBranchlessDialogue(EVENT_InputString);
+            startBranchlessDialogue(EVENT_InputString, EvtContinuation{_context, ir.step + 1});
 #endif
             return {EVT_FLOW_STOP};
         case EVENT_StatusText:

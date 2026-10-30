@@ -2,9 +2,9 @@
 
 #include <string>
 
+#include "Engine/Evt/EvtContext.h"
 #include "Engine/MapEnums.h"
 #include "Engine/PartyPlacement.h"
-#include "Engine/Evt/EvtContext.h"
 
 #include "GUI/GUIWindow.h"
 #include "GUI/UI/UIHouseEnums.h"
@@ -44,7 +44,7 @@ class GUIWindow_IndoorEntryExit : public GUIWindow_Transition {
     /**
      * @return                          Event paused on this dialogue, to resume if the party stays where it is.
      */
-    [[nodiscard]] const EvtContinuation &continuation() const { return _continuation; }
+    [[nodiscard]] EvtContinuation continuation() const { return _continuation; }
 
     std::string _mapName = "";
     int _transitionStringId = 0;
