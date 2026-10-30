@@ -31,7 +31,6 @@ class SubFileSystem : public FileSystem {
      * @throws Exception                If `basePath` has a root or escapes the root of `base`.
      */
     SubFileSystem(PathView basePath, FileSystem *base);
-    SubFileSystem(std::string_view basePath, FileSystem *base);
 
  protected:
     virtual bool _exists(NormalPathView path) const override;

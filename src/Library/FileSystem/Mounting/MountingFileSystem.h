@@ -33,9 +33,7 @@ class MountingFileSystem : public FileSystem {
     explicit MountingFileSystem(std::string_view displayName);
     virtual ~MountingFileSystem();
 
-    void mount(std::string_view path, FileSystem *fileSystem);
     void mount(PathView path, FileSystem *fileSystem);
-    bool unmount(std::string_view path);
     bool unmount(PathView path);
 
     void clearMounts();

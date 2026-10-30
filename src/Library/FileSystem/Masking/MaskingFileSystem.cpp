@@ -14,18 +14,10 @@ MaskingFileSystem::MaskingFileSystem(FileSystem *base) : ProxyFileSystem(base) {
 
 MaskingFileSystem::~MaskingFileSystem() = default;
 
-void MaskingFileSystem::mask(std::string_view path) {
-    mask(Path(path));
-}
-
 void MaskingFileSystem::mask(PathView path) {
     NormalPath normalPath(path);
     assert(normalPath.isAccessible());
     _masks.insertOrAssign(normalPath.path(), true);
-}
-
-bool MaskingFileSystem::unmask(std::string_view path) {
-    return unmask(Path(path));
 }
 
 bool MaskingFileSystem::unmask(PathView path) {

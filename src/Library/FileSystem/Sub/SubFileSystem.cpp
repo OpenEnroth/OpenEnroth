@@ -14,10 +14,6 @@ SubFileSystem::SubFileSystem(PathView basePath, FileSystem *base) : _base(base),
         throw Exception("Base path '{}' of a sub file system is not accessible in '{}'", basePath.str(), _base->displayPath(""));
 }
 
-SubFileSystem::SubFileSystem(std::string_view basePath, FileSystem *base)
-    : SubFileSystem(Path(basePath), base) {
-}
-
 bool SubFileSystem::_exists(NormalPathView path) const {
     return existsIn(_base, basePath(path));
 }
