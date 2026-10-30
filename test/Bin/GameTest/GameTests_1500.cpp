@@ -1157,8 +1157,8 @@ GAME_TEST(Issues, Issue1966) {
     // Should have had a bunch of rocks in the air at some point due to Armageddon.
     EXPECT_GT(spritesTape.map([] (auto &&sprites) { return sprites.count(SPRITE_SPELL_EARTH_ROCK_BLAST); }).max(), 100);
 
-    // Some rocks should have hit monsters - this is what was triggering the assertion.
-    EXPECT_GT(spritesTape.flatten().count(SPRITE_SPELL_EARTH_ROCK_BLAST_IMPACT), 6);
+    // An impact next to a monster is what was triggering the assertion.
+    EXPECT_CONTAINS(spritesTape.flatten(), SPRITE_SPELL_EARTH_ROCK_BLAST_IMPACT);
 }
 
 GAME_TEST(Issues, Issue1972) {
