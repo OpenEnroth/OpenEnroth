@@ -51,7 +51,7 @@ UNIT_TEST(NormalPath, IsAccessible) {
 }
 
 UNIT_TEST(NormalPath, Join) {
-    // Joining accessible paths keeps them normal, a root side included.
+    // Joining accessible paths keeps them normal, a side naming the root included.
     auto testOne = [] (std::string_view head, std::string_view tail, std::string_view result) {
         EXPECT_EQ((NormalPath(head) / NormalPath(tail)).path().str(), result) << "for '" << head << "' and '" << tail << "'";
     };
