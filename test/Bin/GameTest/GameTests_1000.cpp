@@ -478,12 +478,25 @@ GAME_TEST(Issues, Issue1273) {
 
 GAME_TEST(Issues, Issue1274) {
     // Right clicking in guild when not member brings up skill tooltips
-    auto screenTape = tapes.screen();
-    auto messageBoxesTape = tapes.messageBoxes();
-    test.playTraceFromTestData("issue_1274.mm7", "issue_1274.json");
-    EXPECT_EQ(screenTape, tape(SCREEN_GAME, SCREEN_HOUSE)); // Entered a house.
-    EXPECT_EQ(messageBoxesTape.size(), 1);
-    EXPECT_TRUE(messageBoxesTape.front().empty()); // No message boxes.
+    for (bool isMember : {false, true}) {
+        test.prepareForNextTest(100, RANDOM_ENGINE_MERSENNE_TWISTER);
+        auto houseTape = tapes.house();
+        auto messageBoxesTape = tapes.messageBoxes();
+        engine->config->debug.NoMargaret.setValue(true);
+        game.startNewGame();
+        pParty->pCharacters[0]._achievedAwardsBits[AWARD_MEMBERSHIP_FIRE_GUILD] = isMember;
+        game.teleportTo(MAP_EMERALD_ISLAND, Vec3f(2386, 9696, 960), 180); // In front of the fire guild's door.
+        game.pressAndReleaseKey(PlatformKey::KEY_SPACE);
+        game.tick();
+        test.startTaping();
+        game.hoverGuiButton("HouseDialogue_Option2"); // Learning, which Zoltan can learn.
+        game.tick();
+        game.pressButton(BUTTON_RIGHT);
+        game.tick();
+        game.releaseButton(BUTTON_RIGHT);
+        EXPECT_EQ(houseTape, tape(HOUSE_FIRE_GUILD_EMERALD_ISLAND));
+        EXPECT_EQ(messageBoxesTape.flatten().size(), isMember ? 1 : 0);
+    }
 }
 
 GAME_TEST(Issues, Issue1275) {
