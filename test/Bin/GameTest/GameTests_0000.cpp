@@ -47,7 +47,7 @@ GAME_TEST(Issues, Issue123) {
     game.tick(100); // Five game minutes, Fly below grandmaster drains mana when they pass.
     EXPECT_EQ(flyingTape, tape(true));
     EXPECT_LT(zTape.max() - zTape.min(), 10); // Flight bobs up and down a little.
-    EXPECT_LT(mpTape.delta(), 0);
+    EXPECT_EQ(mpTape.delta(), -1);
 }
 
 GAME_TEST(Issues, Issue125) {
