@@ -38,7 +38,7 @@ class StatusBar {
     }
 
     // TODO(captainurist): this only shows in some cases. Clicking the sky, terrain, a far away face or a building wall
-    // is silent, and so is Space with nothing in reach. Check what vanilla does and make it consistent.
+    // is silent, and so is Space with nothing in reach. Make it consistent.
     void nothingHere();
 
  private:
