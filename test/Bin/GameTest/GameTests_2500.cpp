@@ -25,6 +25,7 @@
 
 #include "GUI/GUIWindow.h"
 #include "GUI/UI/UIGame.h"
+#include "GUI/UI/UIHouses.h"
 #include "GUI/UI/UISaveLoad.h"
 
 #include "Library/Platform/Interface/Platform.h"
@@ -1070,6 +1071,7 @@ GAME_TEST(Issues, Issue2931) {
     auto houseTape = tapes.house();
     auto dialogueTape = tapes.dialogueType();
     auto texturesTape = tapes.hudTextures();
+    auto npcCountTape = tapes.custom([] { return static_cast<int>(houseNpcs.size()); });
     engine->config->debug.NoMargaret.setValue(true); // Her tour would stop the party at the door.
     game.startNewGame();
     pNPCStats->pNPCData[2].house = HOUSE_WEAPON_SHOP_EMERALD_ISLAND; // Thomas the Judge, a second NPC in the shop.
@@ -1087,6 +1089,7 @@ GAME_TEST(Issues, Issue2931) {
     game.tick();
 
     EXPECT_EQ(houseTape, tape(HOUSE_INVALID, HOUSE_WEAPON_SHOP_EMERALD_ISLAND));
+    EXPECT_EQ(npcCountTape, tape(0, 2)); // The shopkeeper and Thomas. With one NPC, going back would close the shop.
     EXPECT_EQ(dialogueTape, tape(DIALOGUE_NULL, DIALOGUE_MAIN, DIALOGUE_NULL, DIALOGUE_MAIN, DIALOGUE_SHOP_BUY_STANDARD));
     EXPECT_CONTAINS(texturesTape.back(), "wepntabl"); // The weapon shop background is drawn on the Buy Standard screen.
 }
