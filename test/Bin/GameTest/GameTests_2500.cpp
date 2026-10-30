@@ -1077,8 +1077,8 @@ GAME_TEST(Issues, Issue2932) {
             return std::tuple(current_screen_type, pParty->GetGold(), pParty->GetPlayingTime().toDays(), platform->tickCount());
         });
         game.startNewGame();
-        test.startTaping();
         game.teleportTo(MAP_HARMONDALE, Vec3f(-5858, 10324, 0), 0); // In front of the J.V.C Corral.
+        test.startTaping();
         game.pressAndReleaseKey(PlatformKey::KEY_SPACE);
         game.tick(2);
         game.pressGuiButton("HouseDialogue_Option0"); // Two days to Erathia.
@@ -1092,7 +1092,7 @@ GAME_TEST(Issues, Issue2932) {
 
         auto paidInStables = [](const auto &frame) { return std::get<0>(frame) == SCREEN_HOUSE && std::get<1>(frame) == 150; };
         auto paidFrames = frameTape.filter(paidInStables);
-        EXPECT_EQ(mapTape, tape(MAP_EMERALD_ISLAND, MAP_HARMONDALE, MAP_ERATHIA));
+        EXPECT_EQ(mapTape, tape(MAP_HARMONDALE, MAP_ERATHIA));
         EXPECT_EQ(goldTape, tape(200, 150));
         EXPECT_EQ(dayTape, tape(0, 2));
         EXPECT_EQ(paidFrames.size(), 15); // The travel line plays for about a second and a half.
