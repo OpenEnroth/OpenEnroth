@@ -194,7 +194,7 @@ UNIT_TEST(NativeFileSystem, WindowsOddFileNames) {
         EXPECT_EQ(fs.stat(name), FileStat(FILE_REGULAR, 3));
         EXPECT_EQ(fs.read(name).str(), "lol");
         EXPECT_EQ(fs.openForReading(name)->readAll(), "lol");
-        EXPECT_EQ(fs.displayPath(name), fs::absolute(nativePath).displayString());
+        EXPECT_EQ(fs.displayPath(name), (fs::absolute("tmp_native_dir") / name).displayString());
 
         fs.write(name + ".2", Blob::fromString("kek"));
         EXPECT_TRUE(fs::exists(Path(nativePath.str() + ".2")));
