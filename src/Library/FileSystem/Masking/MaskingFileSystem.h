@@ -20,7 +20,7 @@ class MaskingFileSystem : public ProxyFileSystem {
     void clearMasks();
 
  private:
-    bool isMasked(PathView path) const;
+    bool isMasked(NormalPathView path) const;
 
     virtual bool _exists(NormalPathView path) const override;
     virtual FileStat _stat(NormalPathView path) const override;

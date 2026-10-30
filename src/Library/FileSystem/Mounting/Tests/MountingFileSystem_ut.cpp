@@ -174,7 +174,7 @@ UNIT_TEST(MountingFileSystem, MountPathsAreNormalized) {
 }
 
 UNIT_TEST(MountingFileSystem, UnmountInaccessiblePath) {
-    // mount refuses an empty, rooted or escaping path, so unmount finds nothing there either.
+    // mount asserts on an inaccessible path, so unmount finds nothing there either.
     MemoryFileSystem mfs("");
     MountingFileSystem fs("");
     fs.mount(".", &mfs);

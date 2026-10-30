@@ -24,7 +24,7 @@ void MountingFileSystem::mount(PathView path, FileSystem *fileSystem) {
 bool MountingFileSystem::unmount(PathView path) {
     NormalPath normalPath(path);
     if (!normalPath.isAccessible())
-        return false; // mount refuses these, so nothing is mounted there.
+        return false; // mount asserts on these, so nothing is mounted there.
 
     Node *node = _trie.find(normalPath.path());
     if (!node || !node->hasValue())

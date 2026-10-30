@@ -83,7 +83,7 @@ std::string MemoryFileSystem::_displayPath(NormalPathView path) const {
     return join(_displayName, "://", txt::encodedToUtf8(path.str(), ENCODING_UTF8)); // Replaces invalid UTF8.
 }
 
-const MemoryFileSystem::Node *MemoryFileSystem::nodeForReading(PathView path) const {
+const MemoryFileSystem::Node *MemoryFileSystem::nodeForReading(NormalPathView path) const {
     assert(!path.isEmpty());
     const Node *node = _trie.find(path);
     if (!node)
@@ -95,7 +95,7 @@ const MemoryFileSystem::Node *MemoryFileSystem::nodeForReading(PathView path) co
     return node;
 }
 
-MemoryFileSystem::Node *MemoryFileSystem::nodeForWriting(PathView path) {
+MemoryFileSystem::Node *MemoryFileSystem::nodeForWriting(NormalPathView path) {
     assert(!path.isEmpty());
 
     PathView tail;

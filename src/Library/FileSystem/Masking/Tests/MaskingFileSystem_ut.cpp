@@ -66,7 +66,7 @@ UNIT_TEST(MaskingFileSystem, MaskPathsAreNormalized) {
 }
 
 UNIT_TEST(MaskingFileSystem, UnmaskInaccessiblePath) {
-    // mask refuses an empty, rooted or escaping path, so unmask finds nothing there either.
+    // mask asserts on an inaccessible path, so unmask finds nothing there either.
     MemoryFileSystem fs0("");
     fs0.write("a", Blob());
     MaskingFileSystem fs(&fs0);

@@ -51,8 +51,8 @@ class MemoryFileSystem : public FileSystem {
     using MemoryFileData = detail::MemoryFileData;
     using Node = FileSystemTrieNode<std::shared_ptr<MemoryFileData>>;
 
-    const Node *nodeForReading(PathView path) const;
-    Node *nodeForWriting(PathView path);
+    const Node *nodeForReading(NormalPathView path) const;
+    Node *nodeForWriting(NormalPathView path);
 
  private:
     std::string _displayName;

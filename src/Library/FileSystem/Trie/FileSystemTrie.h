@@ -65,7 +65,7 @@ class FileSystemTrieNode {
 };
 
 /**
- * Trie map from a normalized path to `T`.
+ * Trie map from a path in the file system layer's normal form, see `NormalPath`, to `T`.
  * 
  * Each node can contain a value, even if it's not a leaf node. If the user needs a trie that only contains values in
  * the leaf nodes, then it's up to the user to maintain this invariant.
