@@ -32,7 +32,8 @@
 // 100
 
 GAME_TEST(Issues, Issue123) {
-    // Party falls when flying
+    // Party fell out of flight below grandmaster on the 5-minute regeneration tick. The curse check there compared the
+    // caster's curse time to the spell's power, and that time is zero for a caster who isn't cursed.
     auto zTape = tapes.custom([] { return pParty->pos.z; });
     auto flyingTape = tapes.custom([] { return pParty->bFlying; });
     auto mpTape = charTapes.mp(3);
