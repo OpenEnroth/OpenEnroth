@@ -15,8 +15,6 @@ void initDecorationEvents();
 void checkDecorationEvents();
 
 /**
- * Runs an event.
- *
  * @param context                       Event to run, and what it runs for.
  * @param startStep                     Step to start from.
  */

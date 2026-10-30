@@ -1,3 +1,4 @@
+#include <cassert>
 #include <memory>
 #include <optional>
 
@@ -84,6 +85,7 @@ void startBranchlessDialogue(EvtOpcode type, std::optional<EvtContinuation> cont
 }
 
 void releaseBranchlessDialogue() {
+    assert(pGUIWindow_BranchlessDialogue);
     std::optional<EvtContinuation> continuation = pGUIWindow_BranchlessDialogue->continuation();
     pGUIWindow_BranchlessDialogue.reset();
     DialogueEnding();
