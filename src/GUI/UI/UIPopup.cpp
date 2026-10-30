@@ -406,11 +406,6 @@ void GameUI_DrawItemInfo(Item *inspect_item) {
                                       colorTable.TorchRed, localization->str(LSTR_BROKEN_ITEM), 3, iteminfo_window);
         render->ResetUIClipRect();
 
-        if (inspect_item_image) {
-            assets->releaseImage(inspect_item_image);
-            inspect_item_image = nullptr;
-        }
-
         return;
     }
 
@@ -431,11 +426,6 @@ void GameUI_DrawItemInfo(Item *inspect_item) {
                 assets->pFontArrus->CalcTextHeight(localization->str(LSTR_NOT_IDENTIFIED),
                                            iteminfo_window.w, 0) / 2, colorTable.TorchRed, localization->str(LSTR_NOT_IDENTIFIED), 3, iteminfo_window);
         render->ResetUIClipRect();
-
-        if (inspect_item_image) {
-            assets->releaseImage(inspect_item_image);
-            inspect_item_image = nullptr;
-        }
         return;
     }
 
