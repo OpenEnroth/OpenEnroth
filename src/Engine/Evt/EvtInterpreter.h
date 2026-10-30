@@ -34,10 +34,9 @@ class EvtInterpreter {
      bool executeNpcDialogue(int startStep);
 
      /**
-      * @param eventMap                 Program to take the event from, the one `context.source` names.
       * @param context                  Event to run, and what it runs for.
       */
-     void prepare(const EvtProgram &eventMap, const EvtContext &context);
+     void prepare(EvtContext context);
      bool isValid();
 
  protected:

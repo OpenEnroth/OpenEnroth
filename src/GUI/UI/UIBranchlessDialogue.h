@@ -25,4 +25,8 @@ class GUIWindow_BranchlessDialogue : public GUIWindow {
  * @param type                          Command that opens the dialogue, or `EVENT_Invalid` for an NPC's catchphrase.
  */
 void startBranchlessDialogue(EvtOpcode type);
+
+/**
+ * Closes the dialogue, returns to the game screen and resumes the event paused on the dialogue, if there is one.
+ */
 void releaseBranchlessDialogue();

@@ -712,12 +712,15 @@ bool EvtInterpreter::executeNpcDialogue(int startStep) {
     return !_readyToExit || _canShowOption;
 }
 
-void EvtInterpreter::prepare(const EvtProgram &eventMap, const EvtContext &context) {
+void EvtInterpreter::prepare(EvtContext context) {
     _context = context;
 
+    const EvtProgram &program = context.source == EVT_SOURCE_GLOBAL ? engine->_globalEventMap : engine->_localEventMap;
+    program.dump(context.eventId, context.source);
+
     _events.clear();
-    if (eventMap.hasEvent(context.eventId)) {
-        _events = eventMap.function(context.eventId);
+    if (program.hasEvent(context.eventId)) {
+        _events = program.function(context.eventId);
     }
 }
 
