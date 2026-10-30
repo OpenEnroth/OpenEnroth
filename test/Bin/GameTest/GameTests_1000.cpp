@@ -594,17 +594,29 @@ GAME_TEST(Issues, Issue1290c) {
 
 GAME_TEST(Issues, Issue1290d) {
     // A floor face in The Lincoln shares its event with the pressure plates next to it, but isn't a plate itself.
-    // Clicking it should say "Nothing here", only stepping on the plates fires the event.
+    // Clicking it should say "Nothing here", only stepping on the plates fires the event, which closes these doors.
     auto statusTape = tapes.statusBar();
 
     engine->config->debug.NoActors.setValue(true);
     game.startNewGame();
-    game.teleportTo(MAP_LINCOLN, Vec3f(2500, -4909, 1484), 180, -45);
+    game.teleportTo(MAP_LINCOLN, Vec3f(2100, -960, 219), 180);
+    engine->_persistentVariables.mapVars[2] = 1; // The plates only close the doors with the power restored.
+    auto doorTape = tapes.doorStates({35, 36});
     test.startTaping();
+    game.pointMouseAtFace(668);
+    game.pressAndReleaseButton(BUTTON_LEFT);
+    game.tick(26); // The doors open.
+
+    game.teleportTo(MAP_LINCOLN, Vec3f(2500, -4909, 1484), 180, -45);
     game.pointMouseAtFace(571);
     game.pressAndReleaseButton(BUTTON_LEFT);
     game.tick();
     EXPECT_CONTAINS(statusTape, "Nothing here");
+    EXPECT_EQ(doorTape, tape({DOOR_CLOSED, DOOR_CLOSED}, {DOOR_OPENING, DOOR_OPENING}, {DOOR_OPEN, DOOR_OPEN}));
+
+    game.teleportTo(MAP_LINCOLN, Vec3f(2352, -4928, 1484), 180); // On a plate.
+    game.tick(25); // The doors close.
+    EXPECT_EQ(doorTape, tape({DOOR_CLOSED, DOOR_CLOSED}, {DOOR_OPENING, DOOR_OPENING}, {DOOR_OPEN, DOOR_OPEN}, {DOOR_CLOSING, DOOR_CLOSING}, {DOOR_CLOSED, DOOR_CLOSED}));
 }
 
 GAME_TEST(Issues, Issue1293) {
