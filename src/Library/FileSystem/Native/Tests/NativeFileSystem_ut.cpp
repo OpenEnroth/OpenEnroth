@@ -13,19 +13,19 @@
 #include "Utility/System/Fs.h"
 
 UNIT_TEST(NativeFileSystem, LsRoot) {
-    // Make sure passing empty paths works as intended.
+    // Make sure ls(".") works as intended.
     ScopedTestFile tmp("1.txt", "");
 
     NativeFileSystem fs1(fs::cwd());
-    std::vector<DirectoryEntry> entries = fs1.ls("");
+    std::vector<DirectoryEntry> entries = fs1.ls(".");
     EXPECT_TRUE(std::ranges::find(entries, "1.txt", &DirectoryEntry::name) != std::ranges::end(entries))
         << "size = " << entries.size() << ", [0] = " << (entries.empty() ? "<nothing>" : entries[0].name);
 
     NativeFileSystem fs2("this_dir_doesnt_exist"); // Non-existent dir.
-    EXPECT_TRUE(fs2.ls("").empty());
+    EXPECT_TRUE(fs2.ls(".").empty());
 
     NativeFileSystem fs3("1.txt"); // Not-a-dir.
-    EXPECT_TRUE(fs3.ls("").empty());
+    EXPECT_TRUE(fs3.ls(".").empty());
 }
 
 UNIT_TEST(NativeFileSystem, LsFile) {
@@ -43,29 +43,29 @@ UNIT_TEST(NativeFileSystem, LsNonExistent) {
 }
 
 UNIT_TEST(NativeFileSystem, ExistsRoot) {
-    // Make sure exists("") works as intented.
+    // Make sure exists(".") works as intented.
     NativeFileSystem fs1(fs::cwd());
-    EXPECT_TRUE(fs1.exists(""));
+    EXPECT_TRUE(fs1.exists("."));
 
     NativeFileSystem fs2("this_dir_doesnt_exist");
-    EXPECT_TRUE(fs2.exists(""));
+    EXPECT_TRUE(fs2.exists("."));
 
     ScopedTestFile tmp("1.txt", "");
     NativeFileSystem fs3("1.txt");
-    EXPECT_TRUE(fs3.exists(""));
+    EXPECT_TRUE(fs3.exists("."));
 }
 
 UNIT_TEST(NativeFileSystem, StatRoot) {
-    // Make sure stat("") works as intented.
+    // Make sure stat(".") works as intented.
     NativeFileSystem fs1(fs::cwd());
-    EXPECT_EQ(fs1.stat("").type, FILE_DIRECTORY);
+    EXPECT_EQ(fs1.stat(".").type, FILE_DIRECTORY);
 
     NativeFileSystem fs2("this_dir_doesnt_exist"); // Non-existent dir.
-    EXPECT_EQ(fs2.stat("").type, FILE_DIRECTORY);
+    EXPECT_EQ(fs2.stat(".").type, FILE_DIRECTORY);
 
     ScopedTestFile tmp("1.txt", "");
     NativeFileSystem fs3("1.txt"); // Not-a-dir.
-    EXPECT_EQ(fs3.stat("").type, FILE_DIRECTORY);
+    EXPECT_EQ(fs3.stat(".").type, FILE_DIRECTORY);
 }
 
 UNIT_TEST(NativeFileSystem, ReadRootAsFile) {
@@ -73,13 +73,13 @@ UNIT_TEST(NativeFileSystem, ReadRootAsFile) {
     ScopedTestFile tmp("1.txt", "");
 
     NativeFileSystem fs("1.txt");
-    EXPECT_ANY_THROW((void) fs.read(""));
+    EXPECT_ANY_THROW((void) fs.read("."));
 }
 
 UNIT_TEST(NativeFileSystem, WriteRootAsFile) {
     // Root is always assumed to be a dir, we can't write it as a file if it doesn't exist.
     NativeFileSystem fs("1.txt");
-    EXPECT_ANY_THROW(fs.write("", Blob()));
+    EXPECT_ANY_THROW(fs.write(".", Blob()));
 }
 
 UNIT_TEST(NativeFileSystem, WriteCreatesDirs) {
@@ -100,7 +100,7 @@ UNIT_TEST(NativeFileSystem, LsHidesBackslashNames) {
     ScopedTestFile tmp("tmp_dfs_backslash/a\\b.txt", "");
 
     NativeFileSystem fs("tmp_dfs_backslash");
-    EXPECT_TRUE(fs.ls("").empty());
+    EXPECT_TRUE(fs.ls(".").empty());
 }
 #endif
 
@@ -153,7 +153,7 @@ UNIT_TEST(NativeFileSystem, NonAsciiFileNames) {
     ScopedTestFile tmp2("tmp_native_dir/\xD0\xBB\xD0\xBE\xD0\xBB.txt", "lol"); // "лол.txt" in UTF-8.
 
     NativeFileSystem fs("tmp_native_dir");
-    std::vector<DirectoryEntry> entries = fs.ls("");
+    std::vector<DirectoryEntry> entries = fs.ls(".");
     ASSERT_EQ(entries.size(), 1u);
 
     std::string name = entries[0].name;
@@ -164,7 +164,7 @@ UNIT_TEST(NativeFileSystem, NonAsciiFileNames) {
     EXPECT_EQ(fs.openForReading(name)->readAll(), "lol");
 
     fs.write(name + ".2", Blob::fromString("kek"));
-    entries = fs.ls("");
+    entries = fs.ls(".");
     EXPECT_TRUE(std::ranges::find(entries, name + ".2", &DirectoryEntry::name) != std::ranges::end(entries));
 }
 
@@ -185,7 +185,7 @@ UNIT_TEST(NativeFileSystem, WindowsOddFileNames) {
         ScopedTestFile file(nativePath, "lol");
 
         NativeFileSystem fs("tmp_native_dir");
-        std::vector<DirectoryEntry> entries = fs.ls("");
+        std::vector<DirectoryEntry> entries = fs.ls(".");
         ASSERT_EQ(entries.size(), 1u) << txt::wideToWtf8(nativeName);
         std::string name = entries[0].name;
 
@@ -207,7 +207,7 @@ UNIT_TEST(NativeFileSystem, WindowsSurrogateBytes) {
     ScopedTestFile file(Path("tmp_native_dir") / Path::fromNative(L"lol\xDC00kek.txt"), "lol");
 
     NativeFileSystem fs("tmp_native_dir");
-    std::vector<DirectoryEntry> entries = fs.ls("");
+    std::vector<DirectoryEntry> entries = fs.ls(".");
     ASSERT_EQ(entries.size(), 1u);
     EXPECT_EQ(entries[0].name, "lol\xED\xB0\x80kek.txt");
 }

@@ -7,6 +7,18 @@
 
 #include "Utility/String/Ascii.h"
 
+static bool isAccessibleNormalPath(PathView path) {
+    if (!path.root().empty() || path.isEscaping())
+        return false;
+
+#ifdef _WINDOWS
+    for (std::string_view segment : path.split())
+        if (segment.size() >= 2 && segment[1] == ':' && (ascii::isLower(segment[0]) || ascii::isUpper(segment[0])))
+            return false;
+#endif
+    return true;
+}
+
 NormalPath::NormalPath(PathView path) {
     if (path.str().contains('\\')) {
         std::string copy(path.str());
@@ -18,20 +30,9 @@ NormalPath::NormalPath(PathView path) {
 
     if (!_path.isNormalized())
         _path = _path.normalized();
+    _isAccessible = !path.isEmpty() && isAccessibleNormalPath(_path);
     if (_path.str() == ".")
-        _path = Path(); // The file system's root is spelled "".
-}
-
-bool NormalPath::isAccessible() const {
-    if (!_path.root().empty() || _path.isEscaping())
-        return false;
-
-#ifdef _WINDOWS
-    for (std::string_view segment : _path.split())
-        if (segment.size() >= 2 && segment[1] == ':' && (ascii::isLower(segment[0]) || ascii::isUpper(segment[0])))
-            return false;
-#endif
-    return true;
+        _path = Path();
 }
 
 NormalPath &NormalPath::operator/=(NormalPathView tail) {
