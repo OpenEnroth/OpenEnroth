@@ -1,3 +1,4 @@
+#include <functional>
 #include <string>
 #include <string_view>
 #include <vector>
@@ -8,6 +9,10 @@
 #include "Library/FileSystem/Memory/MemoryFileSystem.h"
 #include "Library/FileSystem/Merging/MergingFileSystem.h"
 #include "Library/FileSystem/Sub/SubFileSystem.h"
+
+static void expectNotAccessible(const std::function<void()> &call, std::string_view path) {
+    EXPECT_THAT(call, testing::ThrowsMessage<FileSystemException>(testing::HasSubstr("not accessible"))) << path;
+}
 
 UNIT_TEST(FileSystem, PublicApiNormalizes) {
     // Every public method normalizes its path, so all of these spellings name the same file.
@@ -41,12 +46,12 @@ UNIT_TEST(FileSystem, EscapingPathsAreRefused) {
     for (std::string_view path : {"..", "../foo", "..\\foo", "foo/../../foo", "a/b/../../../c", "../"}) {
         EXPECT_FALSE(fs.exists(path)) << path;
         EXPECT_EQ(fs.stat(path), FileStat()) << path;
-        EXPECT_ANY_THROW((void) fs.read(path)) << path;
-        EXPECT_ANY_THROW(fs.write(path, Blob())) << path;
-        EXPECT_ANY_THROW((void) fs.ls(path)) << path;
-        EXPECT_ANY_THROW((void) fs.remove(path)) << path;
-        EXPECT_ANY_THROW((void) fs.openForReading(path)) << path;
-        EXPECT_ANY_THROW((void) fs.openForWriting(path)) << path;
+        expectNotAccessible([&] { (void) fs.read(path); }, path);
+        expectNotAccessible([&] { fs.write(path, Blob()); }, path);
+        expectNotAccessible([&] { (void) fs.ls(path); }, path);
+        expectNotAccessible([&] { (void) fs.remove(path); }, path);
+        expectNotAccessible([&] { (void) fs.openForReading(path); }, path);
+        expectNotAccessible([&] { (void) fs.openForWriting(path); }, path);
         EXPECT_NO_THROW((void) fs.displayPath(path)) << path;
     }
 }
@@ -67,10 +72,12 @@ UNIT_TEST(FileSystem, RootedPathsAreRefused) {
     for (std::string_view path : paths) {
         EXPECT_FALSE(fs.exists(path)) << path;
         EXPECT_EQ(fs.stat(path), FileStat()) << path;
-        EXPECT_ANY_THROW((void) fs.read(path)) << path;
-        EXPECT_ANY_THROW(fs.write(path, Blob())) << path;
-        EXPECT_ANY_THROW((void) fs.ls(path)) << path;
-        EXPECT_ANY_THROW((void) fs.remove(path)) << path;
+        expectNotAccessible([&] { (void) fs.read(path); }, path);
+        expectNotAccessible([&] { fs.write(path, Blob()); }, path);
+        expectNotAccessible([&] { (void) fs.ls(path); }, path);
+        expectNotAccessible([&] { (void) fs.remove(path); }, path);
+        expectNotAccessible([&] { (void) fs.openForReading(path); }, path);
+        expectNotAccessible([&] { (void) fs.openForWriting(path); }, path);
         EXPECT_NO_THROW((void) fs.displayPath(path)) << path;
     }
 }

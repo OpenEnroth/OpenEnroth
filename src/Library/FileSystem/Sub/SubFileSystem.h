@@ -10,7 +10,7 @@
 /**
  * File system that provides a view into a subdirectory of another file system.
  *
- * All paths are prefixed with the base path. This provides isolation - files outside the base path cannot be accessed.
+ * All paths are prefixed with the base path. Files outside the base path can't be reached.
  *
  * All methods will work as if the base path exists on the underlying file system, even if it doesn't. So `ls(".")`
  * returns an empty list instead of throwing for a base path that doesn't exist, or that points to a file.

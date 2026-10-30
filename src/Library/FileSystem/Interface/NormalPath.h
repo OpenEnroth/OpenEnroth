@@ -11,8 +11,8 @@ class NormalPath;
 
 /**
  * View over a path that a file system can act on, in the normal form the file system layer works in. It comes from an
- * accessible `NormalPath` or from a tail of another `NormalPathView`, so a function that takes one can rely on both
- * without checking. A default-constructed view names the root.
+ * accessible `NormalPath` or from a tail of another `NormalPathView`, so a function that takes one can rely on it
+ * being normal and accessible. A default-constructed view names the root.
  */
 class NormalPathView {
  public:
@@ -69,8 +69,7 @@ class NormalPathView {
 /**
  * A path inside a `FileSystem`, in the normal form the file system layer works in. A backslash is a separator on every
  * platform, and `.`, `..` and repeated separators are folded. Callers name the root `"."`, and inside the layer it is
- * spelled `""`. A path that is empty, has a root or escapes stays representable, so that `displayPath` can show it,
- * and `isAccessible` says whether a file system can act on it.
+ * spelled `""`. A path that `isAccessible` refuses stays representable, so that `displayPath` can show it.
  */
 class NormalPath {
  public:
@@ -87,11 +86,10 @@ class NormalPath {
     }
 
     /**
-     * @return                          Whether a file system can reach this path. It can't if the path was built from
-     *                                  an empty string, which names nothing. It can't if the path has a root, as
-     *                                  `"/a"` does, or escapes the file system's root. On Windows it can't if a
-     *                                  segment starts with a drive, as in `"a/c:b"`, because a tail that starts at
-     *                                  that segment reads as a root.
+     * @return                          Whether a file system can reach this path. It can't if it was built from an
+     *                                  empty string, has a root as `"/a"` does, or escapes the root. On Windows it
+     *                                  also can't if a segment starts with a drive, as in `"a/c:b"`, because a tail
+     *                                  starting there reads as a root.
      */
     [[nodiscard]] bool isAccessible() const {
         return _isAccessible;
