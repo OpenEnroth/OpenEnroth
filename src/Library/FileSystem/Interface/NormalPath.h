@@ -75,8 +75,7 @@ class NormalPathView {
 class NormalPath {
  public:
     NormalPath() = default;
-    explicit NormalPath(std::string_view path);
-    explicit NormalPath(PathView path) : NormalPath(path.str()) {}
+    explicit NormalPath(PathView path);
 
     operator NormalPathView() const { // NOLINT: intentionally implicit.
         return NormalPathView(_path);

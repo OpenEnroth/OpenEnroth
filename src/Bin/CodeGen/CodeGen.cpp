@@ -39,6 +39,7 @@
 #include "Utility/Exception.h"
 #include "Utility/UnicodeCrt.h"
 #include "Utility/String/Transformations.h"
+#include "Utility/String/Split.h"
 
 #include "CodeGenEnums.h"
 #include "CodeGenMap.h"

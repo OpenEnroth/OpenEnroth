@@ -7,9 +7,9 @@
 
 #include "Utility/String/Ascii.h"
 
-NormalPath::NormalPath(std::string_view path) {
-    if (path.contains('\\')) {
-        std::string copy(path);
+NormalPath::NormalPath(PathView path) {
+    if (path.str().contains('\\')) {
+        std::string copy(path.str());
         std::ranges::replace(copy, '\\', '/');
         _path = Path(std::move(copy));
     } else {
