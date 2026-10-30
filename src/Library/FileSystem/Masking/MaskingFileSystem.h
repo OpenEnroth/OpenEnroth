@@ -15,7 +15,16 @@ class MaskingFileSystem : public ProxyFileSystem {
     explicit MaskingFileSystem(FileSystem *base = nullptr);
     virtual ~MaskingFileSystem();
 
+    /**
+     * @param path                      Path to hide, must be accessible, see `NormalPath::isAccessible`. `"."` is the
+     *                                  root.
+     */
     void mask(PathView path);
+
+    /**
+     * @param path                      Path to show again.
+     * @return                          Whether `path` itself was masked.
+     */
     bool unmask(PathView path);
     void clearMasks();
 
