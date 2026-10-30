@@ -2186,11 +2186,11 @@ void CastSpellInfoHelpers::castSpell() {
                     if (spell_targeted_at.type() == OBJECT_Decoration) {
                         OpenedTelekinesis = true;
                         if (pLevelDecorations[obj_id].uEventID) {
-                            eventProcessor(pLevelDecorations[obj_id].uEventID, spell_targeted_at, 1);
+                            runEvent({.eventId = pLevelDecorations[obj_id].uEventID, .objectPid = spell_targeted_at});
                             pLevelDecorations[obj_id].uFlags |= LEVEL_DECORATION_VISIBLE_ON_MAP;
                         } else if (pLevelDecorations[obj_id].IsInteractive()) {
                             int eventId = engine->_persistentVariables.decorVars[pLevelDecorations[obj_id].eventVarId] + 380; // 380 is the MM7 dispatch base, see EVENT_ChangeEvent.
-                            globalEventProcessor(eventId, spell_targeted_at);
+                            runEvent({.source = EVT_SOURCE_GLOBAL, .eventId = eventId, .objectPid = spell_targeted_at});
                         }
                     }
                     if (spell_targeted_at.type() == OBJECT_Face) {
@@ -2201,7 +2201,7 @@ void CastSpellInfoHelpers::castSpell() {
                         } else {
                             event = pOutdoor->face(spell_targeted_at).eventId;
                         }
-                        eventProcessor(event, spell_targeted_at, 1);
+                        runEvent({.eventId = event, .objectPid = spell_targeted_at});
                     }
                     break;
                 }

@@ -4,6 +4,7 @@
 
 #include "Engine/MapEnums.h"
 #include "Engine/PartyPlacement.h"
+#include "Engine/Evt/EvtContext.h"
 
 #include "GUI/GUIWindow.h"
 #include "GUI/UI/UIHouseEnums.h"
@@ -29,7 +30,8 @@ class GUIWindow_Travel : public GUIWindow_Transition {
 
 class GUIWindow_IndoorEntryExit : public GUIWindow_Transition {
  public:
-    GUIWindow_IndoorEntryExit(HouseId transitionHouse, uint32_t exit_pic_id, const MapDestination &destination, std::string_view locationName);
+    GUIWindow_IndoorEntryExit(HouseId transitionHouse, uint32_t exit_pic_id, const MapDestination &destination, std::string_view locationName,
+                              EvtContinuation continuation);
     virtual ~GUIWindow_IndoorEntryExit() {}
 
     virtual void Update() override;
@@ -39,9 +41,15 @@ class GUIWindow_IndoorEntryExit : public GUIWindow_Transition {
      */
     [[nodiscard]] const MapDestination &destination() const { return _destination; }
 
+    /**
+     * @return                          Event paused on this dialogue, to resume if the party stays where it is.
+     */
+    [[nodiscard]] const EvtContinuation &continuation() const { return _continuation; }
+
     std::string _mapName = "";
     int _transitionStringId = 0;
 
  private:
     MapDestination _destination;
+    EvtContinuation _continuation;
 };

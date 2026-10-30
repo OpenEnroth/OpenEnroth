@@ -60,7 +60,7 @@ void InteractWithActor(int id) {
         if (pNPCStats->pGroups[pActors[id].group]) {
             if (!pNPCStats->pCatchPhrases[pNPCStats->pGroups[pActors[id].group]].empty()) {
                 branchless_dialogue_str = pNPCStats->pCatchPhrases[pNPCStats->pGroups[pActors[id].group]];
-                startBranchlessDialogue(EVENT_Invalid);
+                startBranchlessDialogue(EVENT_Invalid, std::nullopt);
             }
         }
     }
@@ -68,11 +68,12 @@ void InteractWithActor(int id) {
 
 void DecorationInteraction(int id, Pid pid) {
     if (pLevelDecorations[id].uEventID) {
-        eventProcessor(pLevelDecorations[id].uEventID, pid, 1);
+        runEvent({.eventId = pLevelDecorations[id].uEventID, .objectPid = pid});
         pLevelDecorations[id].uFlags |= LEVEL_DECORATION_VISIBLE_ON_MAP;
     } else {
         if (pLevelDecorations[id].IsInteractive()) {
-            globalEventProcessor(engine->_persistentVariables.decorVars[pLevelDecorations[id].eventVarId] + 380, pid); // 380 is the MM7 dispatch base, see EVENT_ChangeEvent.
+            int eventId = engine->_persistentVariables.decorVars[pLevelDecorations[id].eventVarId] + 380; // 380 is the MM7 dispatch base, see EVENT_ChangeEvent.
+            runEvent({.source = EVT_SOURCE_GLOBAL, .eventId = eventId, .objectPid = pid});
         }
     }
 }
@@ -130,7 +131,7 @@ void DoInteractionWithTopmostZObject(Pid pid) {
                 }
 
                 if (pParty->hasActiveCharacter()) {
-                    eventProcessor(face.eventId, pid, 1);
+                    runEvent({.eventId = face.eventId, .objectPid = pid});
                 } else {
                     engine->_statusBar->setEvent(LSTR_NOBODY_IS_IN_CONDITION);
                 }
@@ -144,7 +145,7 @@ void DoInteractionWithTopmostZObject(Pid pid) {
                 }
 
                 if (pParty->hasActiveCharacter()) {
-                    eventProcessor((int16_t)pIndoor->faces[id].eventId, pid, 1);
+                    runEvent({.eventId = (int16_t)pIndoor->faces[id].eventId, .objectPid = pid});
                 } else {
                     engine->_statusBar->setEvent(LSTR_NOBODY_IS_IN_CONDITION);
                 }
