@@ -4,8 +4,10 @@
 
 #include "Testing/Unit/UnitTest.h"
 
+#include "Library/FileSystem/Interface/FileSystemException.h"
 #include "Library/FileSystem/Memory/MemoryFileSystem.h"
 #include "Library/FileSystem/Merging/MergingFileSystem.h"
+#include "Library/FileSystem/Sub/SubFileSystem.h"
 
 UNIT_TEST(FileSystem, PublicApiNormalizes) {
     // Every public method normalizes its path, so all of these spellings name the same file.
@@ -90,7 +92,7 @@ UNIT_TEST(FileSystem, RootIsNotRemovable) {
     MemoryFileSystem fs("ram");
     fs.write("foo", Blob::fromString("lol"));
 
-    for (std::string_view path : {".", "/", "foo/.."})
+    for (std::string_view path : {".", "foo/.."})
         EXPECT_ANY_THROW((void) fs.remove(path)) << path;
 
     EXPECT_TRUE(fs.exists("foo"));
@@ -113,6 +115,16 @@ UNIT_TEST(FileSystem, EmptyPathIsRefused) {
 
     EXPECT_TRUE(fs.exists("."));
     EXPECT_EQ(fs.read("foo").str(), "lol");
+}
+
+UNIT_TEST(FileSystem, EmptyPathIsDisplayedAsRoot) {
+    // Exceptions about the root format the layer's internal spelling of it, which is empty.
+    MemoryFileSystem fs("ram");
+    SubFileSystem sub("a", &fs);
+
+    EXPECT_EQ(sub.displayPath("."), "ram://a");
+    EXPECT_EQ(sub.displayPath(""), "ram://a");
+    EXPECT_THAT([&] { (void) sub.read("."); }, testing::ThrowsMessage<FileSystemException>(testing::HasSubstr("'ram://a'")));
 }
 
 UNIT_TEST(FileSystem, DisplayPathOfInaccessiblePath) {

@@ -5,6 +5,7 @@
 #include "Library/FileSystem/Merging/MergingFileSystem.h"
 #include "Library/FileSystem/Memory/MemoryFileSystem.h"
 #include "Library/FileSystem/Dump/FileSystemDump.h"
+#include "Library/FileSystem/Null/NullFileSystem.h"
 
 UNIT_TEST(MergingFileSystem, Empty) {
     MergingFileSystem fs({});
@@ -17,6 +18,7 @@ UNIT_TEST(MergingFileSystem, Empty) {
     EXPECT_ANY_THROW((void) fs.read("a"));
     EXPECT_ANY_THROW((void) fs.openForReading("a"));
     EXPECT_ANY_THROW(fs.write("a", Blob::fromString("123")));
+    EXPECT_EQ(fs.displayPath("."), NullFileSystem().displayPath("."));
 }
 
 UNIT_TEST(MergingFileSystem, SimpleMerge) {

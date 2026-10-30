@@ -43,7 +43,7 @@ UNIT_TEST(NativeFileSystem, LsNonExistent) {
 }
 
 UNIT_TEST(NativeFileSystem, ExistsRoot) {
-    // Make sure exists(".") works as intented.
+    // Make sure exists(".") works as intended.
     NativeFileSystem fs1(fs::cwd());
     EXPECT_TRUE(fs1.exists("."));
 
@@ -56,7 +56,7 @@ UNIT_TEST(NativeFileSystem, ExistsRoot) {
 }
 
 UNIT_TEST(NativeFileSystem, StatRoot) {
-    // Make sure stat(".") works as intented.
+    // Make sure stat(".") works as intended.
     NativeFileSystem fs1(fs::cwd());
     EXPECT_EQ(fs1.stat(".").type, FILE_DIRECTORY);
 

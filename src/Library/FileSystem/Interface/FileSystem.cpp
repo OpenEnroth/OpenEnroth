@@ -65,13 +65,13 @@ bool FileSystem::remove(PathView path) {
 }
 
 std::string FileSystem::displayPath(PathView path) const {
-    // Never refuses, raising an exception formats the path through here. An inaccessible path is shown next to the
-    // root, so that the implementation never gets to act on it.
     NormalPath normalPath(path);
     if (normalPath.isAccessible())
         return displayPathIn(this, normalPath);
 
-    std::string result = displayPathIn(this, NormalPathView());
+    std::string result = displayPathIn(this, NormalPathView()); // The implementation never sees an inaccessible path.
+    if (normalPath.path().isEmpty())
+        return result; // Exception messages about the root pass the layer's own spelling of it here.
     if (!result.ends_with('/'))
         result += '/';
     result += normalPath.path().displayString();
