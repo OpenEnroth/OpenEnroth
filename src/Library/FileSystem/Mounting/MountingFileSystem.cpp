@@ -15,18 +15,10 @@
 MountingFileSystem::MountingFileSystem(std::string_view displayName) : _displayName(displayName) {}
 MountingFileSystem::~MountingFileSystem() = default;
 
-void MountingFileSystem::mount(std::string_view path, FileSystem *fileSystem) {
-    mount(Path(path), fileSystem);
-}
-
 void MountingFileSystem::mount(PathView path, FileSystem *fileSystem) {
     NormalPath normalPath(path);
     assert(normalPath.isAccessible());
     _trie.insertOrAssign(normalPath.path(), fileSystem);
-}
-
-bool MountingFileSystem::unmount(std::string_view path) {
-    return unmount(Path(path));
 }
 
 bool MountingFileSystem::unmount(PathView path) {

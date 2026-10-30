@@ -11,7 +11,7 @@ class OutputStream;
 
 class RotatingLogSink : public StreamLogSink {
  public:
-    explicit RotatingLogSink(std::string_view path, FileSystem *fs, int count = 16);
+    explicit RotatingLogSink(PathView path, FileSystem *fs, int count = 16);
     virtual ~RotatingLogSink();
 
  private:
