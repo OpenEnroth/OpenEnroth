@@ -1011,10 +1011,18 @@ GAME_TEST(Issues, Issue1447a) {
     // Fire bolt doesn't emit particles in turn based mode
     auto particlesTape = tapes.custom([] { return std::ranges::count_if(engine->particle_engine.get()->pParticles,
                                         [](const Particle &par) { return par.type != ParticleType_Invalid; }); });
-    auto turnBasedTape = tapes.custom([] { return pParty->bTurnBasedModeOn; });
-    test.playTraceFromTestData("issue_1447A.mm7", "issue_1447A.json");
-    EXPECT_EQ(turnBasedTape.back(), true);
-    EXPECT_GT(particlesTape.max(), 10);
+    auto turnBasedTape = tapes.turnBasedMode();
+    auto spritesTape = tapes.sprites();
+    engine->config->debug.AllMagic.setValue(true);
+    game.startNewGame();
+    game.pressAndReleaseKey(PlatformKey::KEY_RETURN);
+    game.tick(5); // Turn based mode opens with a short pause before the party's turn.
+    test.startTaping();
+    game.castQuickSpell(0, SPELL_FIRE_FIRE_BOLT);
+    EXPECT_EQ(turnBasedTape, tape(true));
+    EXPECT_CONTAINS(spritesTape.flatten(), SPRITE_SPELL_FIRE_FIRE_BOLT);
+    EXPECT_MISSES(spritesTape.flatten(), SPRITE_SPELL_FIRE_FIRE_BOLT_IMPACT); // The impact emits particles even with the bug.
+    EXPECT_GT(particlesTape.max(), 0);
 }
 
 GAME_TEST(Issues, Issue1447b) {
