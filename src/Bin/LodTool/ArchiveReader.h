@@ -19,5 +19,5 @@ class ArchiveReader {
     virtual Blob read(std::string_view filename) const = 0;
     virtual std::vector<std::string> ls() const = 0;
 
-    static std::unique_ptr<ArchiveReader> createArchiveReader(const Path &path);
+    static std::unique_ptr<ArchiveReader> createArchiveReader(PathView path);
 };

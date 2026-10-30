@@ -11,8 +11,8 @@ class FileSystemStarter {
     FileSystemStarter();
     ~FileSystemStarter();
 
-    void initUserFs(bool ramFs, const Path &path);
-    void initDataFs(const Path &path, bool pathOverridesBuiltIn);
+    void initUserFs(bool ramFs, PathView path);
+    void initDataFs(PathView path, bool pathOverridesBuiltIn);
 
  private:
     std::unique_ptr<FileSystem> _userFs;

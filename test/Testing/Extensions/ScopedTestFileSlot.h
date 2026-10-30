@@ -10,7 +10,7 @@
  */
 class ScopedTestFileSlot {
  public:
-    explicit ScopedTestFileSlot(const Path &path);
+    explicit ScopedTestFileSlot(Path path);
     ~ScopedTestFileSlot();
 
  private:

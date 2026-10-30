@@ -1,8 +1,10 @@
 #include "ScopedTestFileSlot.h"
 
+#include <utility>
+
 #include "Utility/System/Fs.h"
 
-ScopedTestFileSlot::ScopedTestFileSlot(const Path &path) : _path(path) {
+ScopedTestFileSlot::ScopedTestFileSlot(Path path) : _path(std::move(path)) {
     fs::remove(_path); // An earlier run could have left the file behind.
 }
 

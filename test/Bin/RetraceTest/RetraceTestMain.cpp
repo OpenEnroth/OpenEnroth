@@ -29,11 +29,10 @@ int platformMain(int argc, char **argv) {
                 traceNames.push_back(entry.name);
         std::ranges::sort(traceNames);
 
-        for (const std::string &traceName : traceNames) {
-            Path traceFile(traceName);
-            testing::RegisterTest("Retrace", traceFile.withExtension("").str().c_str(),
+        for (PathView traceName : traceNames) {
+            testing::RegisterTest("Retrace", traceName.withExtension("").str().c_str(),
                                   nullptr, nullptr, __FILE__, __LINE__,
-                                  [tracePath = opts.testPath / traceFile] { return new RetraceTest(tracePath); });
+                                  [tracePath = opts.testPath / traceName] { return new RetraceTest(tracePath); });
         }
 
         testing::InitGoogleTest(&argc, argv);

@@ -73,10 +73,10 @@ class Blob final {
     /**
      * @param path                      Path to a file.
      * @return                          Blob that wraps the memory mapping of the provided file, with display path
-     *                                  set to `path`.
+     *                                  set to the absolute path of the file.
      * @throws std::runtime_error       If file doesn't exist or on some other OS error.
      */
-    [[nodiscard]] static Blob fromFile(const Path &path);
+    [[nodiscard]] static Blob fromFile(PathView path);
 
     /**
      * @param string                    String to create a blob from.

@@ -18,7 +18,7 @@
 
 SndReader::SndReader() = default;
 
-SndReader::SndReader(const Path &path) {
+SndReader::SndReader(PathView path) {
     open(path);
 }
 
@@ -28,7 +28,7 @@ SndReader::SndReader(Blob blob) {
 
 SndReader::~SndReader() = default;
 
-void SndReader::open(const Path &path) {
+void SndReader::open(PathView path) {
     close();
     open(Blob::fromFile(path));
 }

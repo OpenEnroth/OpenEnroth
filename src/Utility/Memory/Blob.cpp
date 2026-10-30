@@ -36,7 +36,7 @@ Blob Blob::fromMalloc(const void *data, size_t size) {
     return result;
 }
 
-Blob Blob::fromFile(const Path &path) {
+Blob Blob::fromFile(PathView path) {
     std::string displayString = fs::absolute(path).displayString(); // Absolute, so that it's still meaningful in logs.
 
     // On Mac mapping an empty file throws, so we need to provide a workaround.
