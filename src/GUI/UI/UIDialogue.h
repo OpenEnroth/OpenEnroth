@@ -2,9 +2,9 @@
 
 #include <string>
 
-#include "GUI/GUIWindow.h"
+#include "Engine/PartyEnums.h"
 
-#include "Utility/IndexedArray.h"
+#include "GUI/GUIWindow.h"
 
 class Actor;
 
@@ -33,7 +33,8 @@ class GUIWindow_Dialogue : public GUIWindow {
     virtual void Update() override;
 
  protected:
-    DialogueId _displayedDialogue = DIALOGUE_MAIN;;
+    DialogueId _displayedDialogue = DIALOGUE_MAIN;
+    GraphicsImage *_dialogueBackground = nullptr;
 };
 
 void initializeNPCDialogue(int npcId, int bPlayerSaysHello, Actor *actor = nullptr);
@@ -41,4 +42,5 @@ void initializeNPCDialogue(int npcId, int bPlayerSaysHello, Actor *actor = nullp
 void selectNPCDialogueOption(DialogueId option);
 
 extern int speakingNpcId;
-extern const IndexedArray<std::string, PartyAlignment_Good, PartyAlignment_Evil> dialogueBackgroundResourceByAlignment;
+
+GraphicsImage *dialogueBackground(PartyAlignment alignment);

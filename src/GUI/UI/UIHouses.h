@@ -149,6 +149,8 @@ class GUIWindow_House : public GUIWindow {
 
     HouseId _houseId = HOUSE_INVALID;
     DialogueId _currentDialogue = DIALOGUE_NULL;
+    GraphicsImage *_dialogueBackground = nullptr;
+    GraphicsImage *_shopBackground = nullptr; // Only shops and guilds have one.
     int _savedButtonsNum = 0;
     bool _transactionPerformed = false;
 };

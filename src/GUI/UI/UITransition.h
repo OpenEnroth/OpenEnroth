@@ -15,6 +15,8 @@ class GUIWindow_Transition : public GUIWindow {
 
  protected:
     void createButtons(const std::string &okHint, const std::string &cancelHint, UIMessageType confirmMsg, UIMessageType cancelMsg);
+
+    GraphicsImage *_dialogueBackground = nullptr;
 };
 
 class GUIWindow_Travel : public GUIWindow_Transition {

@@ -33,11 +33,15 @@
 int speakingNpcId;
 Actor *currentSpeakingActor = nullptr;
 
-const IndexedArray<std::string, PartyAlignment_Good, PartyAlignment_Evil> dialogueBackgroundResourceByAlignment = {
+static const IndexedArray<std::string, PartyAlignment_Good, PartyAlignment_Evil> dialogueBackgroundResourceByAlignment = {
     {PartyAlignment_Good, "evt02-b"},
     {PartyAlignment_Neutral, "evt02"},
     {PartyAlignment_Evil, "evt02-c"}
 };
+
+GraphicsImage *dialogueBackground(PartyAlignment alignment) {
+    return assets->getIcon(dialogueBackgroundResourceByAlignment[alignment]);
+}
 
 void initializeNPCDialogue(int npcId, int bPlayerSaysHello, Actor *actor) {
     pNPCStats->dword_AE336C_LastMispronouncedNameFirstLetter = -1;
@@ -54,8 +58,6 @@ void initializeNPCDialogue(int npcId, int bPlayerSaysHello, Actor *actor) {
             pNPCInfo->flags |= NPC_GREETED_FIRST;
         }
     }
-
-    game_ui_dialogue_background = assets->getIcon(dialogueBackgroundResourceByAlignment[pParty->alignment]);
 
     currentHouseNpc = 0;
 
@@ -110,6 +112,7 @@ void initializeNPCDialogue(int npcId, int bPlayerSaysHello, Actor *actor) {
 GUIWindow_Dialogue::GUIWindow_Dialogue(DialogWindowType type) : GUIWindow(WINDOW_DIALOGUE, {0, 0}, render->GetRenderDimensions()) {
     prev_screen_type = current_screen_type;
     current_screen_type = SCREEN_NPC_DIALOGUE;
+    _dialogueBackground = dialogueBackground(pParty->alignment);
     pBtn_ExitCancel = CreateButton("NpcDialogue_Exit", {0x1D7u, 0x1BDu}, {0xA9u, 0x23u}, BUTTON_TYPE_NORMAL, 0, UIMSG_Escape, 0, INPUT_ACTION_INVALID,
                                    localization->str(LSTR_EXIT_DIALOGUE), {ui_exit_cancel_button_background});
 
@@ -153,15 +156,7 @@ GUIWindow_Dialogue::GUIWindow_Dialogue(DialogWindowType type) : GUIWindow(WINDOW
 }
 
 GUIWindow_Dialogue::~GUIWindow_Dialogue() {
-    if (houseNpcs[0].icon) {
-        assets->releaseImage(houseNpcs[0].icon);
-    }
     houseNpcs.clear();
-
-    if (game_ui_dialogue_background) {
-        assets->releaseImage(game_ui_dialogue_background);
-        game_ui_dialogue_background = nullptr;
-    }
 
     current_screen_type = prev_screen_type;
     currentSpeakingActor = nullptr;
@@ -176,7 +171,7 @@ void GUIWindow_Dialogue::Update() {
     // Window title
     NPCData *pNPC = getNPCData(speakingNpcId);
     NpcType npcType = getNPCType(speakingNpcId);
-    render->DrawQuad2D(game_ui_dialogue_background, {477, 0});
+    render->DrawQuad2D(_dialogueBackground, {477, 0});
     render->DrawQuad2D(game_ui_right_panel_frame, {468, 0});
     render->DrawQuad2D(game_ui_evtnpc, {pNPCPortraits_x[0][0] - 4, pNPCPortraits_y[0][0] - 4});
     render->DrawQuad2D(houseNpcs[0].icon, {pNPCPortraits_x[0][0], pNPCPortraits_y[0][0]});

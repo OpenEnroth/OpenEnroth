@@ -25,6 +25,7 @@
 
 #include "GUI/GUIWindow.h"
 #include "GUI/UI/UIGame.h"
+#include "GUI/UI/UIHouses.h"
 #include "GUI/UI/UISaveLoad.h"
 
 #include "Library/Platform/Interface/Platform.h"
@@ -1062,6 +1063,35 @@ GAME_TEST(Issues, Issue2923) {
     EXPECT_EQ(houseTape, tape(HOUSE_INVALID, HOUSE_CASTLE_HARMONDALE_1));
     EXPECT_CONTAINS(textTape.flatten(), "Exit Building"); // The house menu was drawn.
     EXPECT_MISSES(textTape.flatten(), "0");
+}
+
+GAME_TEST(Issues, Issue2931) {
+    // In a shop with two NPCs, talking to the shopkeeper, going back, talking to the shopkeeper again and clicking
+    // Buy Standard crashed the game.
+    auto houseTape = tapes.house();
+    auto dialogueTape = tapes.dialogueType();
+    auto texturesTape = tapes.hudTextures();
+    auto npcCountTape = tapes.custom([] { return static_cast<int>(houseNpcs.size()); });
+    engine->config->debug.NoMargaret.setValue(true); // Her tour would stop the party at the door.
+    game.startNewGame();
+    pNPCStats->pNPCData[2].house = HOUSE_WEAPON_SHOP_EMERALD_ISLAND; // Thomas the Judge, a second NPC in the shop.
+    test.startTaping();
+    game.teleportTo(MAP_EMERALD_ISLAND, Vec3f(13510, 4480, 128), 0); // In front of the weapon shop door.
+    game.pressAndReleaseKey(PlatformKey::KEY_SPACE);
+    game.tick();
+    game.pressGuiButton("House_Npc0"); // The shopkeeper.
+    game.tick();
+    game.pressAndReleaseKey(PlatformKey::KEY_ESCAPE); // Back to the NPC list.
+    game.tick();
+    game.pressGuiButton("House_Npc0"); // The shopkeeper again.
+    game.tick();
+    game.pressGuiButton("HouseDialogue_Option0"); // Buy Standard.
+    game.tick();
+
+    EXPECT_EQ(houseTape, tape(HOUSE_INVALID, HOUSE_WEAPON_SHOP_EMERALD_ISLAND));
+    EXPECT_EQ(npcCountTape, tape(0, 2)); // The shopkeeper and Thomas. With one NPC, going back would close the shop.
+    EXPECT_EQ(dialogueTape, tape(DIALOGUE_NULL, DIALOGUE_MAIN, DIALOGUE_NULL, DIALOGUE_MAIN, DIALOGUE_SHOP_BUY_STANDARD));
+    EXPECT_CONTAINS(texturesTape.back(), "wepntabl"); // The weapon shop background is drawn on the Buy Standard screen.
 }
 
 GAME_TEST(Issues, Issue2932) {
