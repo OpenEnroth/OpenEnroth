@@ -22,7 +22,8 @@ UNIT_TEST(NormalPath, Normalizes) {
 }
 
 UNIT_TEST(NormalPath, IsAccessible) {
-    // A file system can act on a non-empty path that has no root and doesn't escape.
+    // A file system can act on a non-empty path that has no root, doesn't escape, and on Windows has no segment
+    // starting with a drive.
     auto testOne = [] (std::string_view path, bool result) {
         EXPECT_EQ(NormalPath(path).isAccessible(), result) << "for '" << path << "'";
     };

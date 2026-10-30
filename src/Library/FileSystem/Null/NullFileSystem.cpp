@@ -37,6 +37,6 @@ std::string NullFileSystem::_displayPath(NormalPathView path) const {
     return join("null://", txt::encodedToUtf8(path.str(), ENCODING_UTF8)); // Replaces invalid UTF8.
 }
 
-[[noreturn]] void NullFileSystem::reportReadError(PathView path) const {
+[[noreturn]] void NullFileSystem::reportReadError(NormalPathView path) const {
     FileSystemException::raise(this, FS_READ_FAILED_PATH_DOESNT_EXIST, path);
 }

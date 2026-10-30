@@ -18,5 +18,5 @@ class NullFileSystem : public ReadOnlyFileSystem {
     virtual std::unique_ptr<InputStream> _openForReading(NormalPathView path) const override;
     virtual std::string _displayPath(NormalPathView path) const override;
 
-    [[noreturn]] void reportReadError(PathView path) const;
+    [[noreturn]] void reportReadError(NormalPathView path) const;
 };

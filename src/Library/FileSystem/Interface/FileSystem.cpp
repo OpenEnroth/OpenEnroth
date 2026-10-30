@@ -70,8 +70,6 @@ std::string FileSystem::displayPath(PathView path) const {
         return displayPathIn(this, normalPath);
 
     std::string result = displayPathIn(this, NormalPathView()); // The implementation never sees an inaccessible path.
-    if (normalPath.path().isEmpty())
-        return result; // Exception messages about the root pass the layer's own spelling of it here.
     if (!result.ends_with('/'))
         result += '/';
     result += normalPath.path().displayString();
