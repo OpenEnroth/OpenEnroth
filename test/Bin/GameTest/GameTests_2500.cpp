@@ -1099,3 +1099,21 @@ GAME_TEST(Issues, Issue2932) {
         EXPECT_EQ(paidFrames.count([](const auto &frame) { return std::get<2>(frame) == 0; }), 14); // The last one is the frame the party leaves on, after the trip's rest.
     }
 }
+
+GAME_TEST(Issues, Issue2934) {
+    // Telekinesis and Space on the same gold pile in one frame paid the gold twice.
+    auto goldTape = tapes.gold();
+    auto pileTape = tapes.custom([] { return pSpriteObjects[83].uObjectDescID != 0; });
+    engine->config->debug.NoActors.setValue(true);
+    engine->config->debug.AllMagic.setValue(true);
+    game.startNewGame();
+    game.teleportTo(MAP_TULAREAN_FOREST, Vec3f(-2854, 13472, 1133), 0, -20); // Looking at a pile of 142 gold.
+    test.startTaping();
+    game.castSpell(0, SPELL_EARTH_TELEKINESIS);
+    game.pointMouseAtSprite(83);
+    game.pressAndReleaseButton(BUTTON_LEFT);
+    game.pressAndReleaseKey(PlatformKey::KEY_SPACE);
+    game.tick();
+    EXPECT_EQ(goldTape, tape(200, 342));
+    EXPECT_EQ(pileTape, tape(true, false));
+}
