@@ -68,8 +68,10 @@ std::unique_ptr<InputStream> MergingFileSystem::_openForReading(NormalPathView p
 }
 
 std::string MergingFileSystem::_displayPath(NormalPathView path) const {
-    if (_bases.empty())
-        return NullFileSystem().displayPath(path); // Empty merging FS is basically a NullFileSystem.
+    if (_bases.empty()) {
+        NullFileSystem nullFs; // Empty merging FS is basically a NullFileSystem.
+        return displayPathIn(&nullFs, path);
+    }
 
     // TODO(captainurist): This is not ideal, we might want to know ALL merged paths, e.g. see
     //                     ScriptingSystem::_initPackageTable. But the API that we have here doesn't allow that.

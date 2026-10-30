@@ -32,7 +32,8 @@
  *
  * Paths are normalized internally, and then processed by the implementation in a derived class. A backslash is a
  * separator on every platform. Both `".."` and `"."` special dirs are supported, but peeking outside the root directory
- * is not. Passing such a path will throw, `exists` will return `false`, and `stat` will return `FILE_INVALID`.
+ * is not. Passing such a path will throw, `exists` will return `false`, `stat` will return `FILE_INVALID`, and
+ * `displayPath` will show it next to the root.
  *
  * Unlike a real file system, this interface doesn't have a concept of a "current directory." All methods take paths
  * relative to the root, and a path with a root of its own, like `"/foo/bar"` or `"C:/foo"` on Windows, is refused the
@@ -111,7 +112,8 @@ class FileSystem {
     bool remove(PathView path);
 
     /**
-     * @param path                      Path inside this file system. The passed path is not required to exist.
+     * @param path                      Path inside this file system. Any path is accepted, a missing or an
+     *                                  inaccessible one included, because exceptions format their paths through here.
      * @return                          A path string that's suitable to be displayed to the user. E.g. an absolute path
      *                                  on the underlying OS file system. Always valid UTF-8, with everything that's
      *                                  not valid UTF-8 replaced with U+FFFD, so it might not map back to a real path.

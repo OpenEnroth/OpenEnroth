@@ -28,7 +28,7 @@ class SubFileSystem : public FileSystem {
     /**
      * @param basePath                  Path prefix to apply to all operations.
      * @param base                      The underlying file system.
-     * @throws Exception                If `basePath` has a root or escapes the root of `base`.
+     * @throws Exception                If `basePath` is not accessible, see `NormalPath::isAccessible`.
      */
     SubFileSystem(PathView basePath, FileSystem *base);
 

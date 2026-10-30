@@ -1,5 +1,6 @@
 #pragma once
 
+#include <cassert>
 #include <compare>
 #include <concepts>
 #include <string_view>
@@ -9,9 +10,9 @@
 class NormalPath;
 
 /**
- * View over a path that a file system can act on, in the normal form the file system layer works in. It can only come
- * from a `NormalPath` that the caller checked with `isAccessible`, or be a tail of another `NormalPathView`, so a
- * function that takes one can rely on both without checking.
+ * View over a path that a file system can act on, in the normal form the file system layer works in. It comes from an
+ * accessible `NormalPath` or from a tail of another `NormalPathView`, so a function that takes one can rely on both
+ * without checking. A default-constructed view names the root.
  */
 class NormalPathView {
  public:
@@ -61,8 +62,7 @@ class NormalPathView {
 /**
  * @param head                          Path to join onto.
  * @param tail                          Path to append.
- * @return                              `head` and `tail` joined, built in one allocation. Joining two accessible paths
- *                                      keeps the result normal.
+ * @return                              `head` and `tail` joined, in normal form.
  */
 [[nodiscard]] NormalPath operator/(NormalPathView head, NormalPathView tail);
 
@@ -70,8 +70,7 @@ class NormalPathView {
  * A path inside a `FileSystem`, in the normal form the file system layer works in. A backslash is a separator on every
  * platform, and `.`, `..` and repeated separators are folded. Callers name the root `"."`, and inside the layer it is
  * spelled `""`. A path that is empty, has a root or escapes stays representable, so that `displayPath` can show it,
- * and `isAccessible` says whether a file system can act on it. Only an accessible one may be passed on as a
- * `NormalPathView`.
+ * and `isAccessible` says whether a file system can act on it.
  */
 class NormalPath {
  public:
@@ -79,6 +78,7 @@ class NormalPath {
     explicit NormalPath(PathView path);
 
     operator NormalPathView() const { // NOLINT: intentionally implicit.
+        assert(_isAccessible);
         return NormalPathView(_path);
     }
 
@@ -98,7 +98,8 @@ class NormalPath {
     }
 
     /**
-     * @param tail                      Path to append. Joining two accessible paths keeps the result normal.
+     * @param tail                      Path to append.
+     * @return                          `*this`, still in normal form.
      */
     NormalPath &operator/=(NormalPathView tail);
 
