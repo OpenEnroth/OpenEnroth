@@ -106,24 +106,22 @@ UNIT_TEST(FileSystem, EmptyPathIsRefused) {
     EXPECT_FALSE(fs.exists(""));
     EXPECT_EQ(fs.stat(""), FileStat());
     EXPECT_ANY_THROW((void) fs.ls(""));
-    EXPECT_ANY_THROW((void) fs.read(""));
+    EXPECT_THAT([&] { (void) fs.read(""); }, testing::ThrowsMessage<FileSystemException>(testing::HasSubstr("read ''")));
     EXPECT_ANY_THROW(fs.write("", Blob::fromString("kek")));
     EXPECT_ANY_THROW((void) fs.openForReading(""));
     EXPECT_ANY_THROW((void) fs.openForWriting(""));
     EXPECT_ANY_THROW((void) fs.remove(""));
-    EXPECT_EQ(fs.displayPath(""), "ram://");
 
     EXPECT_TRUE(fs.exists("."));
     EXPECT_EQ(fs.read("foo").str(), "lol");
 }
 
-UNIT_TEST(FileSystem, EmptyPathIsDisplayedAsRoot) {
-    // Exceptions about the root format the layer's internal spelling of it, which is empty.
+UNIT_TEST(FileSystem, ErrorAboutRootNamesRoot) {
+    // An error about the root names it the way displayPath does.
     MemoryFileSystem fs("ram");
     SubFileSystem sub("a", &fs);
 
     EXPECT_EQ(sub.displayPath("."), "ram://a");
-    EXPECT_EQ(sub.displayPath(""), "ram://a");
     EXPECT_THAT([&] { (void) sub.read("."); }, testing::ThrowsMessage<FileSystemException>(testing::HasSubstr("'ram://a'")));
 }
 

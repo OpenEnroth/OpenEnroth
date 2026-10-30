@@ -1,10 +1,10 @@
 #pragma once
 
 #include <cassert>
-#include <compare>
 #include <concepts>
 #include <string_view>
 
+#include "Utility/Attributes.h"
 #include "Utility/System/Path.h"
 
 class NormalPath;
@@ -77,12 +77,12 @@ class NormalPath {
     NormalPath() = default;
     explicit NormalPath(PathView path);
 
-    operator NormalPathView() const { // NOLINT: intentionally implicit.
+    operator NormalPathView() const MM_LIFETIMEBOUND { // NOLINT: intentionally implicit.
         assert(_isAccessible);
         return NormalPathView(_path);
     }
 
-    [[nodiscard]] const Path &path() const {
+    [[nodiscard]] const Path &path() const MM_LIFETIMEBOUND {
         return _path;
     }
 
