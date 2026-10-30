@@ -14,61 +14,6 @@
 #include "Media/Audio/AudioPlayer.h"
 
 GUIWindow_Book::~GUIWindow_Book() {
-    if (ui_book_map_frame) {
-        assets->releaseImage(ui_book_map_frame);
-    }
-    if (ui_book_quest_div_bar) {
-        assets->releaseImage(ui_book_quest_div_bar);
-    }
-    if (ui_book_button8_off) {
-        assets->releaseImage(ui_book_button8_off);
-    }
-    if (ui_book_button8_on) {
-        assets->releaseImage(ui_book_button8_on);
-    }
-    if (ui_book_button7_off) {
-        assets->releaseImage(ui_book_button7_off);
-    }
-    if (ui_book_button7_on) {
-        assets->releaseImage(ui_book_button7_on);
-    }
-    if (ui_book_button6_off) {
-        assets->releaseImage(ui_book_button6_off);
-    }
-    if (ui_book_button6_on) {
-        assets->releaseImage(ui_book_button6_on);
-    }
-    if (ui_book_button5_off) {
-        assets->releaseImage(ui_book_button5_off);
-    }
-    if (ui_book_button5_on) {
-        assets->releaseImage(ui_book_button5_on);
-    }
-    if (ui_book_button4_off) {
-        assets->releaseImage(ui_book_button4_off);
-    }
-    if (ui_book_button4_on) {
-        assets->releaseImage(ui_book_button4_on);
-    }
-    if (ui_book_button3_off) {
-        assets->releaseImage(ui_book_button3_off);
-    }
-    if (ui_book_button3_on) {
-        assets->releaseImage(ui_book_button3_on);
-    }
-    if (ui_book_button2_off) {
-        assets->releaseImage(ui_book_button2_off);
-    }
-    if (ui_book_button2_on) {
-        assets->releaseImage(ui_book_button2_on);
-    }
-    if (ui_book_button1_off) {
-        assets->releaseImage(ui_book_button1_off);
-    }
-    if (ui_book_button1_on) {
-        assets->releaseImage(ui_book_button1_on);
-    }
-
     pAudioPlayer->playUISound(SOUND_closebook);
 
     pChildBooksOverlay = nullptr;

@@ -1147,3 +1147,22 @@ GAME_TEST(Issues, Issue2934) {
     EXPECT_EQ(goldTape, tape(200, 342));
     EXPECT_EQ(pileTape, tape(true, false));
 }
+
+GAME_TEST(Issues, Issue2941) {
+    // Pressing the Quest Book key right after reading a Lloyd's Beacon scroll crashed the game. Opening the Lloyd's
+    // Beacon book closed the Quest Book, and that freed the tab images both books use.
+    auto windowTape = tapes.custom([] { return pGUIWindow_CurrentMenu ? pGUIWindow_CurrentMenu->eWindowType : WINDOW_NULL; });
+    auto texturesTape = tapes.hudTextures();
+    game.startNewGame();
+    test.startTaping();
+    pParty->setHoldingItem(Item(ITEM_SCROLL_LLOYDS_BEACON));
+    game.pressGuiButton("Game_Character4", BUTTON_RIGHT); // Read the scroll. The cast starts on the next frame.
+    game.tick();
+    game.pressAndReleaseKey(PlatformKey::KEY_Q);
+    game.tick(2);
+    game.pressAndReleaseKey(PlatformKey::KEY_ESCAPE);
+    game.tick();
+
+    EXPECT_EQ(windowTape, tape(WINDOW_NULL, WINDOW_QUEST_BOOK, WINDOW_LLOYDS_BEACON, WINDOW_NULL));
+    EXPECT_CONTAINS(texturesTape.flatten(), "tab-an-6a"); // The Lloyd's Beacon book draws its tabs.
+}
