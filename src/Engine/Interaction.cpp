@@ -124,22 +124,17 @@ void DoInteractionWithTopmostZObject(Pid pid) {
             break;
 
         case OBJECT_Face: {
-            const BLVFace *face = nullptr;
-            if (uCurrentlyLoadedLevelType == LEVEL_OUTDOOR) {
-                face = &pOutdoor->faces[id];
-            } else {
-                face = &pIndoor->faces[id];
-            }
+            const BLVFace &face = uCurrentlyLoadedLevelType == LEVEL_OUTDOOR ? pOutdoor->faces[id] : pIndoor->faces[id];
 
-            if (!face->Clickable()) {
+            if (!face.Clickable()) {
                 engine->_statusBar->nothingHere();
                 return;
             }
-            if (face->attributes & FACE_EVENT_IS_HINT || face->eventId == 0)
+            if (face.attributes & FACE_EVENT_IS_HINT || face.eventId == 0)
                 return;
 
             if (pParty->hasActiveCharacter()) {
-                eventProcessor(face->eventId, pid, 1);
+                eventProcessor(face.eventId, pid, 1);
             } else {
                 engine->_statusBar->setEvent(LSTR_NOBODY_IS_IN_CONDITION);
             }

@@ -653,10 +653,10 @@ void PrepareWorld(int _0_box_loading_1_fullscreen) {
 
 /**
  * Adds `FACE_CLICKABLE` to faces that the map data left unclickable although their event does something when run.
- * A face without a trigger bit of its own gets it if its event is already clickable somewhere, or if nothing can
- * trigger that event. An event that only pressure plates, objects or monsters trigger is left alone.
+ * Pressure plates and faces triggered by objects or monsters are left alone. So are all faces of an event that such
+ * a face triggers, unless another face of that event is already clickable.
  *
- * @param faces                         All faces of the location, with the save delta already applied.
+ * @param faces                         All faces of the location, with the map delta already applied.
  * @param events                        The location's events.
  */
 static void repairClickableFaces(std::span<BLVFace> faces, const EvtProgram &events) {
@@ -665,6 +665,8 @@ static void repairClickableFaces(std::span<BLVFace> faces, const EvtProgram &eve
     std::unordered_set<int> clickableEvents;
     std::unordered_set<int> triggeredEvents;
     for (const BLVFace &face : faces) {
+        if (!face.eventId)
+            continue;
         if (face.attributes & FACE_CLICKABLE)
             clickableEvents.insert(face.eventId);
         if (face.attributes & triggers)
@@ -713,7 +715,7 @@ void DoPrepareWorld(bool bLoading, int _1_fullscreen_loading_2_box) {
     else
         loadAndPrepareODM(transitionMapId, bLoading);
 
-    // After the load, because the save delta restores face attributes.
+    // After the load, because the map delta overwrites face attributes.
     repairClickableFaces(isMapIndoor(transitionMapId) ? std::span(pIndoor->faces) : std::span(pOutdoor->faces), engine->_localEventMap);
 
     setNPCNamesOnLoad();

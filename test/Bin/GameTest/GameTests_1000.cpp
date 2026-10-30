@@ -579,22 +579,22 @@ GAME_TEST(Issues, Issue1290b) {
 }
 
 GAME_TEST(Issues, Issue1290c) {
-    // A door in Fort Riverstride can't be opened from behind, clicking its back says "Nothing here".
+    // A double door in Fort Riverstride can't be opened from behind, clicking its back says "Nothing here".
     auto doorTape = tapes.doorStates({3, 4});
 
     engine->config->debug.NoActors.setValue(true);
     game.startNewGame();
     game.teleportTo(MAP_FORT_RIVERSTRIDE, Vec3f(-440, 1660, -453), 270);
     test.startTaping();
-    game.pointMouseAtFace(618); // The back of the door. The map data makes its other faces clickable.
+    game.pointMouseAtFace(618); // The back of one leaf. The map data marks only its front and edge clickable.
     game.pressAndReleaseButton(BUTTON_LEFT);
-    game.tick(23); // The door swings open.
+    game.tick(23); // The doors open.
     EXPECT_EQ(doorTape, tape({DOOR_CLOSED, DOOR_CLOSED}, {DOOR_OPENING, DOOR_OPENING}, {DOOR_OPEN, DOOR_OPEN}));
 }
 
 GAME_TEST(Issues, Issue1290d) {
-    // Clicking the floor next to the pressure plates in The Lincoln should say "Nothing here". Only stepping on the
-    // plates fires their event.
+    // A floor face in The Lincoln shares its event with the pressure plates next to it, but isn't a plate itself.
+    // Clicking it should say "Nothing here", only stepping on the plates fires the event.
     auto statusTape = tapes.statusBar();
 
     engine->config->debug.NoActors.setValue(true);

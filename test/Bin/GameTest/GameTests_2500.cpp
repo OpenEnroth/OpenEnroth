@@ -652,8 +652,8 @@ GAME_TEST(Prs, Pr2772a) {
 }
 
 GAME_TEST(Prs, Pr2772b) {
-    // Space in The Walls of Mist said "Nothing here" instead of moving the doors that the face ahead controls, because
-    // a closer face carries the map's reload event.
+    // Space in The Walls of Mist said "Nothing here" instead of working the block ahead that moves the doors, because
+    // the floor in front of it carries an event that only runs on map load.
     auto statusTape = tapes.statusBar();
 
     engine->config->debug.NoActors.setValue(true);
