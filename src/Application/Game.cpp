@@ -617,9 +617,8 @@ void Game::processQueuedMessages() {
                                 case SCREEN_BRANCHLESS_NPC_DIALOG:  // click escape
                                     engine->_statusBar->clearEvent();
 
-                                    releaseBranchlessDialogue();
                                     DialogueEnding();
-                                    current_screen_type = SCREEN_GAME;
+                                    releaseBranchlessDialogue();
                                     continue;
                                 case SCREEN_CHANGE_LOCATION: // escape
                                     pParty->pos.x = std::clamp(pParty->pos.x, -maxPartyAxisDistance, maxPartyAxisDistance);
