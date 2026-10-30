@@ -481,7 +481,7 @@ GAME_TEST(Issues, Issue1274) {
     for (bool isMember : {false, true}) {
         test.prepareForNextTest(100, RANDOM_ENGINE_MERSENNE_TWISTER);
         auto houseTape = tapes.house();
-        auto messageBoxesTape = tapes.messageBoxes();
+        auto textTape = tapes.allGUIWindowsText();
         engine->config->debug.NoMargaret.setValue(true);
         game.startNewGame();
         pParty->pCharacters[0]._achievedAwardsBits[AWARD_MEMBERSHIP_FIRE_GUILD] = isMember;
@@ -495,7 +495,7 @@ GAME_TEST(Issues, Issue1274) {
         game.tick();
         game.releaseButton(BUTTON_RIGHT);
         EXPECT_EQ(houseTape, tape(HOUSE_FIRE_GUILD_EMERALD_ISLAND));
-        EXPECT_EQ(messageBoxesTape.flatten().size(), isMember ? 1 : 0);
+        EXPECT_EQ(textTape.flatten().contains([](const std::string &text) { return text.starts_with("Learning skill directly increases"); }), isMember);
     }
 }
 
