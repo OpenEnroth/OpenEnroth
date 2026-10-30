@@ -54,7 +54,6 @@ class FileSystem {
      * @return                          Whether the given path exists.
      * @throws std::runtime_error       On error, e.g. if the current user doesn't have the necessary permissions.
      */
-    [[nodiscard]] bool exists(std::string_view path) const;
     [[nodiscard]] bool exists(PathView path) const;
 
     /**
@@ -63,7 +62,6 @@ class FileSystem {
      *                                  `FILE_INVALID` if `path` doesn't exist.
      * @throws std::runtime_error       On error, e.g. if the current user doesn't have the necessary permissions.
      */
-    [[nodiscard]] FileStat stat(std::string_view path) const;
     [[nodiscard]] FileStat stat(PathView path) const;
 
     /**
@@ -71,9 +69,7 @@ class FileSystem {
      * @return                          List of directory entries.
      * @throws std::runtime_error       If `path` doesn't exist, or on any other error.
      */
-    [[nodiscard]] std::vector<DirectoryEntry> ls(std::string_view path) const;
     [[nodiscard]] std::vector<DirectoryEntry> ls(PathView path) const;
-    void ls(std::string_view path, std::vector<DirectoryEntry> *entries) const;
     void ls(PathView path, std::vector<DirectoryEntry> *entries) const;
 
     /**
@@ -81,7 +77,6 @@ class FileSystem {
      * @return                          File contents. Implementations are encouraged to use memory mapping.
      * @throws std::runtime_error       If `path` doesn't exist, or on any other error.
      */
-    [[nodiscard]] Blob read(std::string_view path) const;
     [[nodiscard]] Blob read(PathView path) const;
 
     /**
@@ -90,7 +85,6 @@ class FileSystem {
      * @param data                      File contents to write.
      * @throws std::runtime_error       On error, e.g. if the current user doesn't have the necessary permissions.
      */
-    void write(std::string_view path, const Blob &data);
     void write(PathView path, const Blob &data);
 
     /**
@@ -98,7 +92,6 @@ class FileSystem {
      * @return                          Input stream for reading from a file.
      * @throws std::runtime_error       If `path` doesn't exist, or on any other error.
      */
-    [[nodiscard]] std::unique_ptr<InputStream> openForReading(std::string_view path) const;
     [[nodiscard]] std::unique_ptr<InputStream> openForReading(PathView path) const;
 
     /**
@@ -107,7 +100,6 @@ class FileSystem {
      * @return                          Output stream for writing into a file.
      * @throws std::runtime_error       On error, e.g. if the current user doesn't have the necessary permissions.
      */
-    [[nodiscard]] std::unique_ptr<OutputStream> openForWriting(std::string_view path);
     [[nodiscard]] std::unique_ptr<OutputStream> openForWriting(PathView path);
 
     /**
@@ -116,7 +108,6 @@ class FileSystem {
      * @return                          `true` if the file or folder was deleted, `false` if it did not exist.
      * @throws std::runtime_error       On error, e.g. if the current user doesn't have the necessary permissions.
      */
-    bool remove(std::string_view path);
     bool remove(PathView path);
 
     /**
@@ -125,7 +116,6 @@ class FileSystem {
      *                                  on the underlying OS file system. Always valid UTF-8, with everything that's
      *                                  not valid UTF-8 replaced with U+FFFD, so it might not map back to a real path.
      */
-    [[nodiscard]] std::string displayPath(std::string_view path) const;
     [[nodiscard]] std::string displayPath(PathView path) const;
 
  protected:

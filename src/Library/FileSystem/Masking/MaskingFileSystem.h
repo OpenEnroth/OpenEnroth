@@ -15,9 +15,7 @@ class MaskingFileSystem : public ProxyFileSystem {
     explicit MaskingFileSystem(FileSystem *base = nullptr);
     virtual ~MaskingFileSystem();
 
-    void mask(std::string_view path);
     void mask(PathView path);
-    bool unmask(std::string_view path);
     bool unmask(PathView path);
     void clearMasks();
 
