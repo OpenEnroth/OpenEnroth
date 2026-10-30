@@ -36,7 +36,7 @@ void globalEventProcessor(int eventId, Pid targetObj);
 /**
  * @param continuation                  Event to resume when the dialogue it paused on closes.
  */
-void setEventContinuation(const EvtContinuation &continuation);
+void setEventContinuation(EvtContinuation continuation);
 
 /**
  * Resumes the stored continuation, if there is one, and clears it.

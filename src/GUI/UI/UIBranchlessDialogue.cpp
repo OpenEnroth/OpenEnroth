@@ -82,9 +82,9 @@ void startBranchlessDialogue(EvtOpcode type) {
 }
 
 void releaseBranchlessDialogue() {
-    pGUIWindow_BranchlessDialogue = nullptr;
+    pGUIWindow_BranchlessDialogue.reset();
+    DialogueEnding();
     current_screen_type = SCREEN_GAME;
-    gameTimer->setPaused(false);
     runEventContinuation(); // Can open another dialogue, so nothing may run after it.
 }
 

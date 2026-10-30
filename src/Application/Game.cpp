@@ -617,7 +617,6 @@ void Game::processQueuedMessages() {
                                 case SCREEN_BRANCHLESS_NPC_DIALOG:  // click escape
                                     engine->_statusBar->clearEvent();
 
-                                    DialogueEnding();
                                     releaseBranchlessDialogue();
                                     continue;
                                 case SCREEN_CHANGE_LOCATION: // escape
@@ -704,14 +703,13 @@ void Game::processQueuedMessages() {
                 } else if (std::optional<PartyPlacement> placement = destination.resolvePlacement()) {
                     placeParty(*placement);
                     dropEventContinuation();
-                } else {
-                    runEventContinuation();
                 }
 
                 PlayButtonClickSound();
                 DialogueEnding();
                 back_to_game();
                 onEscape();
+                runEventContinuation(); // Can open another dialogue, so nothing may run after it.
                 continue;
             }
             case UIMSG_CancelIndoorEntryExit:

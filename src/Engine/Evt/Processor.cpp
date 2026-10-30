@@ -153,11 +153,9 @@ static void runEvent(const EvtContext &context, int startStep) {
         return;
     }
 
-    const EvtProgram &program = context.source == EVT_SOURCE_GLOBAL ? engine->_globalEventMap : engine->_localEventMap;
     EvtInterpreter interpreter;
     MM_TRACE("Executing regular event starting from step {}", startStep);
-    program.dump(context.eventId, context.source);
-    interpreter.prepare(program, context);
+    interpreter.prepare(context);
 
     if (!interpreter.isValid()) {
         MM_WARNING("Face has invalid event ID");
@@ -171,14 +169,14 @@ static void runEvent(const EvtContext &context, int startStep) {
 }
 
 void eventProcessor(int eventId, Pid targetObj, bool canShowMessages, int startStep) {
-    runEvent({EVT_SOURCE_MAP, eventId, targetObj, canShowMessages}, startStep);
+    runEvent({.source = EVT_SOURCE_MAP, .eventId = eventId, .objectPid = targetObj, .canShowMessages = canShowMessages}, startStep);
 }
 
 void globalEventProcessor(int eventId, Pid targetObj) {
-    runEvent({EVT_SOURCE_GLOBAL, eventId, targetObj, true}, 0);
+    runEvent({.source = EVT_SOURCE_GLOBAL, .eventId = eventId, .objectPid = targetObj, .canShowMessages = true}, 0);
 }
 
-void setEventContinuation(const EvtContinuation &continuation) {
+void setEventContinuation(EvtContinuation continuation) {
     assert(!eventContinuation);
     eventContinuation = continuation;
 }
@@ -200,8 +198,7 @@ bool npcDialogueEventProcessor(int eventId, int startStep) {
     EvtInterpreter interpreter;
 
     MM_TRACE("Executing NPC dialogue event starting from step {}", startStep);
-    engine->_globalEventMap.dump(eventId, EVT_SOURCE_GLOBAL);
-    interpreter.prepare(engine->_globalEventMap, {EVT_SOURCE_GLOBAL, eventId, Pid(), false});
+    interpreter.prepare({.source = EVT_SOURCE_GLOBAL, .eventId = eventId, .objectPid = Pid(), .canShowMessages = false});
     return interpreter.executeNpcDialogue(startStep);
 }
 
