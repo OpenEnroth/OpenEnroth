@@ -1019,6 +1019,7 @@ GAME_TEST(Issues, Issue1447a) {
     game.tick(5); // Turn based mode opens with a short pause before the party's turn.
     test.startTaping();
     game.castQuickSpell(0, SPELL_FIRE_FIRE_BOLT);
+    game.tick(3); // The bolt is in flight.
     EXPECT_EQ(turnBasedTape, tape(true));
     EXPECT_CONTAINS(spritesTape.flatten(), SPRITE_SPELL_FIRE_FIRE_BOLT);
     EXPECT_MISSES(spritesTape.flatten(), SPRITE_SPELL_FIRE_FIRE_BOLT_IMPACT); // The impact emits particles even with the bug.
