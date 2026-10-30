@@ -28,7 +28,7 @@ struct MemoryFileData {
  *   a file is open for reading, all write calls will fail.
  * - Is not thread safe, even if you're only using `const` methods. Use a locking wrapper if you need thread safety.
  *
- * Also, like a proper file system, it allows removing and renaming files while they are open for reading / writing.
+ * Also, like a proper file system, it allows removing files while they are open for reading or writing.
  */
 class MemoryFileSystem : public FileSystem {
  public:
