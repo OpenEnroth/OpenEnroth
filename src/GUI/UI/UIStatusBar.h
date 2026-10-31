@@ -37,6 +37,8 @@ class StatusBar {
         setEventShort(localization->format(locId, std::forward<Args>(args)...));
     }
 
+    // TODO(captainurist): this only shows in some cases. Clicking the sky, terrain, a far away face or a building wall
+    // is silent, and so is Space with nothing in reach. Make it consistent.
     void nothingHere();
 
  private:

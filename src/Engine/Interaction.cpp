@@ -123,35 +123,23 @@ void DoInteractionWithTopmostZObject(Pid pid) {
             }
             break;
 
-        case OBJECT_Face:
-            if (uCurrentlyLoadedLevelType == LEVEL_OUTDOOR) {
-                BLVFace &face = pOutdoor->faces[id];
+        case OBJECT_Face: {
+            const BLVFace &face = uCurrentlyLoadedLevelType == LEVEL_OUTDOOR ? pOutdoor->faces[id] : pIndoor->faces[id];
 
-                if (face.attributes & FACE_EVENT_IS_HINT || face.eventId == 0) {
-                    return;
-                }
+            if (!face.Clickable()) {
+                engine->_statusBar->nothingHere();
+                return;
+            }
+            if (face.attributes & FACE_EVENT_IS_HINT || face.eventId == 0)
+                return;
 
-                if (pParty->hasActiveCharacter()) {
-                    eventProcessor(face.eventId, pid, 1);
-                } else {
-                    engine->_statusBar->setEvent(LSTR_NOBODY_IS_IN_CONDITION);
-                }
+            if (pParty->hasActiveCharacter()) {
+                eventProcessor(face.eventId, pid, 1);
             } else {
-                if (!(pIndoor->faces[id].attributes & FACE_CLICKABLE)) {
-                    engine->_statusBar->nothingHere();
-                    return;
-                }
-                if (pIndoor->faces[id].attributes & FACE_EVENT_IS_HINT || !pIndoor->faces[id].eventId) {
-                    return;
-                }
-
-                if (pParty->hasActiveCharacter()) {
-                    eventProcessor((int16_t)pIndoor->faces[id].eventId, pid, 1);
-                } else {
-                    engine->_statusBar->setEvent(LSTR_NOBODY_IS_IN_CONDITION);
-                }
+                engine->_statusBar->setEvent(LSTR_NOBODY_IS_IN_CONDITION);
             }
             break;
+        }
 
         default:
             MM_WARNING("Warning: Invalid ID reached!");

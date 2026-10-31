@@ -1148,6 +1148,39 @@ GAME_TEST(Issues, Issue2934) {
     EXPECT_EQ(pileTape, tape(true, false));
 }
 
+GAME_TEST(Issues, Issue2939a) {
+    // Space in front of The Knight's Blade on Emerald Island called Margaret the Docent instead of entering the shop,
+    // because her pressure plate lies closer to the party.
+    auto screenTape = tapes.screen();
+    auto houseTape = tapes.house();
+
+    engine->config->debug.NoActors.setValue(true);
+    game.startNewGame();
+    test.startTaping();
+    game.teleportTo(MAP_EMERALD_ISLAND, Vec3f(13360, 4480, 125), 0); // Facing the shop door, with the plate in between.
+    game.pressAndReleaseKey(PlatformKey::KEY_SPACE);
+    game.tick();
+    EXPECT_EQ(screenTape, tape(SCREEN_GAME, SCREEN_HOUSE));
+    EXPECT_EQ(houseTape, tape(HOUSE_INVALID, HOUSE_WEAPON_SHOP_EMERALD_ISLAND));
+}
+
+GAME_TEST(Issues, Issue2939b) {
+    // Space in The Walls of Mist said "Nothing here" instead of working the block ahead that moves the doors, because
+    // the floor in front of it carries an event that only runs on map load.
+    auto statusTape = tapes.statusBar();
+
+    engine->config->debug.NoActors.setValue(true);
+    game.startNewGame();
+    game.teleportTo(MAP_WALLS_OF_MIST, Vec3f(20992, 9152, -672), 90);
+    auto doorTape = tapes.doorStates({18, 19, 24});
+    test.startTaping();
+    game.tick();
+    game.pressAndReleaseKey(PlatformKey::KEY_SPACE);
+    game.tick(13); // The doors move.
+    EXPECT_EQ(doorTape, tape({DOOR_OPEN, DOOR_CLOSED, DOOR_OPEN}, {DOOR_CLOSING, DOOR_OPENING, DOOR_CLOSING}, {DOOR_CLOSED, DOOR_OPENING, DOOR_CLOSING}, {DOOR_CLOSED, DOOR_OPEN, DOOR_CLOSED}));
+    EXPECT_MISSES(statusTape, "Nothing here");
+}
+
 GAME_TEST(Issues, Issue2941) {
     // Pressing the Quest Book key right after reading a Lloyd's Beacon scroll crashed the game. Opening the Lloyd's
     // Beacon book closed the Quest Book, and that freed the tab images both books use.
