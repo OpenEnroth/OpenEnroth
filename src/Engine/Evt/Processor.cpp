@@ -172,7 +172,7 @@ bool npcDialogueEventProcessor(int eventId, int startStep) {
     EvtInterpreter interpreter;
 
     MM_TRACE("Executing NPC dialogue event starting from step {}", startStep);
-    interpreter.prepare({.source = EVT_SOURCE_GLOBAL, .eventId = eventId, .canShowMessages = false});
+    interpreter.prepare({.source = EVT_SOURCE_GLOBAL, .eventId = eventId});
     return interpreter.executeNpcDialogue(startStep);
 }
 
@@ -201,7 +201,7 @@ void onMapLoad() {
     timerGuard = pParty->GetPlayingTime();
 
     for (EventTrigger &triggers : onMapLoadTriggers) {
-        runEvent({.eventId = triggers.eventId, .canShowMessages = false}, triggers.eventStep + 1);
+        runEvent({.eventId = triggers.eventId, .duringMapLoad = true}, triggers.eventStep + 1);
     }
 }
 
