@@ -59,8 +59,13 @@ class EvtProgram {
      */
     std::string hint(int eventId) const;
 
-    void dumpAll() const;
-    void dump(int eventId) const;
+    /**
+     * Logs one event at trace level.
+     *
+     * @param eventId                   Event to log.
+     * @param source                    Evt file this program was loaded from.
+     */
+    void dump(int eventId, EvtSource source) const;
 
  private:
     std::unordered_map<int, std::vector<EvtInstruction>> _eventsById;

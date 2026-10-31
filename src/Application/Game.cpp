@@ -617,8 +617,6 @@ void Game::processQueuedMessages() {
                                     engine->_statusBar->clearEvent();
 
                                     releaseBranchlessDialogue();
-                                    DialogueEnding();
-                                    current_screen_type = SCREEN_GAME;
                                     continue;
                                 case SCREEN_CHANGE_LOCATION: // escape
                                     pParty->pos.x = std::clamp(pParty->pos.x, -maxPartyAxisDistance, maxPartyAxisDistance);
@@ -680,6 +678,7 @@ void Game::processQueuedMessages() {
                 assert(pDialogueWindow && pDialogueWindow->eWindowType == WINDOW_INDOOR_ENTRY_EXIT);
                 GUIWindow_IndoorEntryExit *window = static_cast<GUIWindow_IndoorEntryExit *>(pDialogueWindow.get());
                 MapDestination destination = window->destination();
+                EvtContinuation continuation = window->continuation();
 
                 engine->_messageQueue->clear();
                 playButtonSoundOnEscape = false;
@@ -694,6 +693,7 @@ void Game::processQueuedMessages() {
                     pMediaPlayer->Unload();
                 DialogueEnding();
 
+                bool stayingPut = false;
                 if (destination.map() != MAP_INVALID) {
                     //pGameLoadingUI_ProgressBar->Initialize(GUIProgressBar::TYPE_Box);
                     bool leavingArena = engine->_currentLoadedMapId == MAP_ARENA;
@@ -704,13 +704,15 @@ void Game::processQueuedMessages() {
                 } else if (std::optional<PartyPlacement> placement = destination.resolvePlacement()) {
                     placeParty(*placement);
                 } else {
-                    eventProcessor(savedEventID, Pid(), 1, savedEventStep);
+                    stayingPut = true;
                 }
 
                 PlayButtonClickSound();
                 DialogueEnding();
                 back_to_game();
                 onEscape();
+                if (stayingPut)
+                    runEvent(continuation.context, continuation.step); // Can open another dialogue, so nothing may run after it.
                 continue;
             }
             case UIMSG_CancelIndoorEntryExit:

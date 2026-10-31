@@ -1,3 +1,4 @@
+#include <algorithm>
 #include <memory>
 #include <optional>
 #include <string>
@@ -155,64 +156,22 @@ static MapDestination moveToMapDestination(const EvtInstruction &ir) {
     return {};
 }
 
-int EvtInterpreter::executeOneEvent(int step, bool isNpc) {
-    EvtInstruction ir;
-    bool stepFound = false;
+const EvtInstruction *EvtInterpreter::instructionAt(int step) const {
+    auto pos = std::ranges::find(_events, step, &EvtInstruction::step);
+    return pos == _events.end() ? nullptr : &*pos;
+}
 
-    for (const EvtInstruction &irTmp : _events) {
-        if (irTmp.step == step) {
-            ir = irTmp;
-            stepFound = true;
-            break;
-        }
-    }
-
-    if (!stepFound) {
+int EvtInterpreter::executeStep(int step) {
+    const EvtInstruction *ir = instructionAt(step);
+    if (!ir)
         return -1;
-    }
 
-    // In NPC mode must process only NPC dialogue related events plus Exit
-    if (isNpc) {
-        switch (ir.opcode) {
-            case EVENT_Exit:
-                return -1;
-            case EVENT_OnCanShowDialogItemCmp:
-                _readyToExit = true;
-                if (!validateVariableValue(ir))
-                    break;
-                for (Character &player : pParty->pCharacters) {
-                    if (compareEvtVariable(player, ir.data.variable_descr.type, ir.data.variable_descr.value)) {
-                        return ir.target_step;
-                    }
-                }
-                break;
-            case EVENT_EndCanShowDialogItem:
-                return -1;
-            case EVENT_SetCanShowDialogItem:
-                _readyToExit = true;
-                _canShowOption = ir.data.can_show_npc_dialogue;
-                break;
-            case EVENT_CanShowTopic_IsActorKilled:
-                // TODO: enconunter and process
-                assert(false);
-#if 0
-                if (Actor::isActorKilled(ir.data.actor_descr.policy, ir.data.actor_descr.param, ir.data.actor_descr.num)) {
-                    return ir.target_step;
-                }
-#endif
-                break;
-            default:
-                break;
-        }
-        return step + 1;
-    }
-
-    EvtFlow flow = executeInstruction(ir);
+    EvtFlow flow = executeInstruction(*ir);
     switch (flow.type) {
         case EVT_FLOW_NEXT: return step + 1;
         case EVT_FLOW_JUMP: return flow.target;
         case EVT_FLOW_STOP:
-        case EVT_FLOW_YIELD: return -1;
+        case EVT_FLOW_YIELD: return -1; // The dialogue the instruction opened holds the rest of the event.
     }
     assert(false);
     return -1;
@@ -220,8 +179,6 @@ int EvtInterpreter::executeOneEvent(int step, bool isNpc) {
 
 // TODO(captainurist): take a const reference once the MoveToMap data hacks below stop patching `ir`.
 EvtFlow EvtInterpreter::executeInstruction(EvtInstruction ir) {
-    int step = ir.step;
-
     switch (ir.opcode) {
         case EVENT_Exit:
             return {EVT_FLOW_STOP};
@@ -247,23 +204,21 @@ EvtFlow EvtInterpreter::executeInstruction(EvtInstruction ir) {
         {
             if (ir.data.move_map_descr.house_id != HOUSE_INVALID || ir.data.move_map_descr.exit_pic_id) {
                 // TODO(pskelton): Fix #1890 this should be a data mod
-                if (engine->_indoor->filename == "d20.blv" && _eventId == 501)
+                if (engine->_indoor->filename == "d20.blv" && _context.eventId == 501)
                     ir.data.move_map_descr.z = 3088;
 
                 pDialogueWindow = std::make_unique<GUIWindow_IndoorEntryExit>(ir.data.move_map_descr.house_id, ir.data.move_map_descr.exit_pic_id,
-                                                                             moveToMapDestination(ir), ir.str);
-                savedEventID = _eventId;
-                savedEventStep = step + 1;
+                                                                             moveToMapDestination(ir), ir.str, EvtContinuation(_context, ir.step + 1));
                 return {EVT_FLOW_YIELD};
             }
 
             // TODO(pskelton): Fix #2117 this should be a data mod
-            if (engine->_indoor->filename == "d25.blv" && _eventId == 451 && ir.step == 1)
+            if (engine->_indoor->filename == "d25.blv" && _context.eventId == 451 && ir.step == 1)
                 ir.str = "out06.odm";
 
             // TODO(pskelton): Fix #2117 this should be a data mod - the RandomGoTo targets fall through into each
             //                 other, only the first one should run.
-            if (engine->_indoor->filename == "d25.blv" && _eventId == 451 && engine->_pendingTransition)
+            if (engine->_indoor->filename == "d25.blv" && _context.eventId == 451 && engine->_pendingTransition)
                 break;
 
             MapDestination destination = moveToMapDestination(ir);
@@ -275,7 +230,7 @@ EvtFlow EvtInterpreter::executeInstruction(EvtInstruction ir) {
                 break;
             }
 
-            pGameLoadingUI_ProgressBar->Initialize((GUIProgressBar::Type)((activeLevelDecoration == NULL) + 1));
+            pGameLoadingUI_ProgressBar->Initialize(_context.source == EVT_SOURCE_GLOBAL ? GUIProgressBar::TYPE_Fullscreen : GUIProgressBar::TYPE_Box);
             startMapTransition(destination);
 
             // TODO(captainurist): this should be a data mod. The Emerald Island ship sails to Harmondale for a week, and
@@ -286,7 +241,7 @@ EvtFlow EvtInterpreter::executeInstruction(EvtInstruction ir) {
                 pParty->days_played_without_rest = 0;
             }
 
-            _mapExitTriggered = true;
+            _transition = EVT_TRANSITION_STARTED;
             if (current_screen_type == SCREEN_HOUSE) {
                 if (uGameState == GAME_STATE_CHANGE_LOCATION) {
                     houseDialogueGoBackToTop();
@@ -301,9 +256,8 @@ EvtFlow EvtInterpreter::executeInstruction(EvtInstruction ir) {
             break;
         }
         case EVENT_OpenChest:
-            if (!Chest::open(ir.data.chest_id, _objectPid)) {
+            if (!Chest::open(ir.data.chest_id, _context.objectPid))
                 return {EVT_FLOW_STOP};
-            }
             break;
         case EVENT_ShowFace:
             for (Character &character : iterateCharacters(ir.who, vrng))
@@ -375,7 +329,7 @@ EvtFlow EvtInterpreter::executeInstruction(EvtInstruction ir) {
             // TODO(captainurist): move this workaround into patched event data, and add the OnMapReload step from
             //                     GrayFace's d27.evt that re-applies the empty cage sprite once the quest bit is set.
             //                     The sprite isn't saved, so after a reload the cage shows Roland until the next click.
-            if (engine->_currentLoadedMapId == MAP_COLONY_ZOD && _eventId == 376 &&
+            if (engine->_currentLoadedMapId == MAP_COLONY_ZOD && _context.eventId == 376 &&
                 ir.data.variable_descr.type == VAR_PlayerItemInHands && pParty->_questBits[QBIT_TALKED_TO_ROLAND])
                 break; // Roland's cage script adds the key on every click, it never checks the quest bit.
             for (Character &character : iterateCharacters(_who, ir.data.variable_descr.type, grng))
@@ -423,13 +377,12 @@ EvtFlow EvtInterpreter::executeInstruction(EvtInstruction ir) {
                          Vec3f(ir.data.spell_descr.tox, ir.data.spell_descr.toy, ir.data.spell_descr.toz));
             break;
         case EVENT_SpeakNPC:
-            if (_canShowMessages) {
+            if (!_context.duringMapLoad) {
                 // TODO(pskeltonm): Fix #2223 stop tutorial message spam - should be data mod
-                if (engine->_currentLoadedMapId == MAP_EMERALD_ISLAND && _eventId >= 200 && _eventId <= 218) {
-                    if (engine->_OE_transientVariables[_eventId - 200]) {
+                if (engine->_currentLoadedMapId == MAP_EMERALD_ISLAND && _context.eventId >= 200 && _context.eventId <= 218) {
+                    if (engine->_OE_transientVariables[_context.eventId - 200])
                         break;
-                    }
-                    engine->_OE_transientVariables[_eventId - 200] = 1;
+                    engine->_OE_transientVariables[_context.eventId - 200] = 1;
                 }
 
                 initializeNPCDialogue(ir.data.npc_descr.npc_id, false);
@@ -454,26 +407,25 @@ EvtFlow EvtInterpreter::executeInstruction(EvtInstruction ir) {
             assert(false);
 #if 0
             game_ui_status_bar_event_string = (ir.data.text_id < engine->_levelStrings.size()) ? engine->_levelStrings[ir.data.text_id] : "";
-            startBranchlessDialogue(_eventId, step + 1, EVENT_InputString);
+            startBranchlessDialogue(EVENT_InputString, EvtContinuation(_context, ir.step + 1));
 #endif
             return {EVT_FLOW_STOP};
         case EVENT_StatusText:
-            if (activeLevelDecoration) {
-                if (activeLevelDecoration == (LevelDecoration *)1) {
+            if (_context.source == EVT_SOURCE_GLOBAL) {
+                if (!_context.objectPid) // An NPC topic.
                     current_npc_text = pNPCTopics[ir.data.text_id - 1].pText;
-                }
-                if (_canShowMessages) {
+                if (!_context.duringMapLoad)
                     engine->_statusBar->setEvent(pNPCTopics[ir.data.text_id - 1].pText);
-                }
             } else {
-                if (_canShowMessages) {
+                // TODO(captainurist): log an error on an out of range string id here, in ShowMessage, in the pNPCTopics
+                //                     lookups of both, which don't check at all, and in EvtProgram::hint.
+                if (!_context.duringMapLoad)
                     engine->_statusBar->setEvent((ir.data.text_id < engine->_levelStrings.size()) ? engine->_levelStrings[ir.data.text_id] : "");
-                }
             }
             break;
         case EVENT_ShowMessage:
             branchless_dialogue_str.clear();
-            if (activeLevelDecoration) {
+            if (_context.source == EVT_SOURCE_GLOBAL) {
                 current_npc_text = pNPCTopics[ir.data.text_id - 1].pText;
             } else if (ir.data.text_id < engine->_levelStrings.size()) {
                 branchless_dialogue_str = engine->_levelStrings[ir.data.text_id];
@@ -486,7 +438,7 @@ EvtFlow EvtInterpreter::executeInstruction(EvtInstruction ir) {
             pIndoor->toggleLight(ir.data.light_descr.light_id, ir.data.light_descr.is_enable);
             break;
         case EVENT_PressAnyKey:
-            startBranchlessDialogue(_eventId, step + 1, EVENT_PressAnyKey);
+            startBranchlessDialogue(EVENT_PressAnyKey, EvtContinuation(_context, ir.step + 1));
             return {EVT_FLOW_YIELD};
         case EVENT_SummonItem:
             SpriteObject::dropItemAt(ir.data.summon_item_descr.sprite, Vec3f(ir.data.summon_item_descr.x, ir.data.summon_item_descr.y, ir.data.summon_item_descr.z),
@@ -533,7 +485,6 @@ EvtFlow EvtInterpreter::executeInstruction(EvtInstruction ir) {
                     houseDialogueGoBack();
                     pMediaPlayer->Unload();
                     window_SpeakInHouse->Release();
-                    activeLevelDecoration = (LevelDecoration *)1;
                     if (enterHouse(HOUSE_BODY_GUILD_MASTER_ERATHIA)) {
                         pAudioPlayer->playUISound(SOUND_Invalid);
                         window_SpeakInHouse = new GUIWindow_House({0, 0}, render->GetRenderDimensions(), HOUSE_BODY_GUILD_MASTER_ERATHIA, "");
@@ -555,6 +506,7 @@ EvtFlow EvtInterpreter::executeInstruction(EvtInstruction ir) {
             break;
         }
         case EVENT_ChangeEvent:
+        {
             // The operand is the absolute id of the global event to run on the next click, and the byte in decorVars
             // stores it relative to the dispatch base of 380. The -124 is -380 folded through the mod-256 store, so
             // the round trip only works for ids in [380, 635], and all shipped MM6 and MM7 records fit - every
@@ -564,13 +516,19 @@ EvtFlow EvtInterpreter::executeInstruction(EvtInstruction ir) {
             // binary at 0xa33e0 and 0xa3418, the PC MM8.exe is presumed to match.
             // TODO(captainurist): make the state<->event mapping per-game before feeding MM8 data through here, and
             //                     spell the MM7 store as -380 while at it.
+            if (_context.objectPid.type() != OBJECT_Decoration) {
+                MM_ERROR("Skipping step {} of evt event {}, ChangeEvent ran without a decoration", ir.step, _context.eventId);
+                break;
+            }
+            LevelDecoration &decoration = pLevelDecorations[_context.objectPid.id()];
             if (ir.data.event_id) {
-                engine->_persistentVariables.decorVars[activeLevelDecoration->eventVarId] = ir.data.event_id - 124;
+                engine->_persistentVariables.decorVars[decoration.eventVarId] = ir.data.event_id - 124;
             } else {
-                engine->_persistentVariables.decorVars[activeLevelDecoration->eventVarId] = 0;
-                activeLevelDecoration->uFlags |= LEVEL_DECORATION_INVISIBLE;
+                engine->_persistentVariables.decorVars[decoration.eventVarId] = 0;
+                decoration.uFlags |= LEVEL_DECORATION_INVISIBLE;
             }
             break;
+        }
         case EVENT_CheckSkill:
             assert(_who != CHOOSE_PARTY); // TODO(Nik-RE-dev): original code for this option is dubious
             for (Character &character : iterateCharacters(_who, grng)) {
@@ -668,57 +626,77 @@ EvtFlow EvtInterpreter::executeInstruction(EvtInstruction ir) {
     return {EVT_FLOW_NEXT};
 }
 
-bool EvtInterpreter::executeRegular(int startStep) {
+void EvtInterpreter::prepare(EvtContext context) {
+    _context = context;
+
+    const EvtProgram &program = context.source == EVT_SOURCE_GLOBAL ? engine->_globalEventMap : engine->_localEventMap;
+    program.dump(context.eventId, context.source);
+
+    _events.clear();
+    if (program.hasEvent(context.eventId))
+        _events = program.function(context.eventId);
+}
+
+EvtTransition EvtInterpreter::execute(int startStep) {
     assert(startStep >= 0);
 
-    if (!_eventId || !_events.size()) {
-        return false;
-    }
+    if (!_context.eventId || !_events.size())
+        return EVT_TRANSITION_NONE;
 
     int step = startStep;
 
     _who = !pParty->hasActiveCharacter() ? CHOOSE_RANDOM : CHOOSE_ACTIVE;
 
     while (step != -1)
-        step = executeOneEvent(step, false);
+        step = executeStep(step);
 
-    return _mapExitTriggered;
+    return _transition;
 }
 
-bool EvtInterpreter::executeNpcDialogue(int startStep) {
-    assert(startStep >= 0);
+int EvtInterpreter::checkTopicStep(int step) {
+    const EvtInstruction *ir = instructionAt(step);
+    if (!ir)
+        return -1;
 
-    if (!_eventId) {
+    switch (ir->opcode) {
+        case EVENT_Exit:
+        case EVENT_EndCanShowDialogItem:
+            return -1;
+        case EVENT_OnCanShowDialogItemCmp:
+            _topicDecided = true;
+            if (!validateVariableValue(*ir))
+                break;
+            for (Character &player : pParty->pCharacters)
+                if (compareEvtVariable(player, ir->data.variable_descr.type, ir->data.variable_descr.value))
+                    return ir->target_step;
+            break;
+        case EVENT_SetCanShowDialogItem:
+            _topicDecided = true;
+            _topicShown = ir->data.can_show_npc_dialogue;
+            break;
+        case EVENT_CanShowTopic_IsActorKilled:
+            // TODO: enconunter and process
+            assert(false);
+#if 0
+            if (Actor::isActorKilled(ir->data.actor_descr.policy, ir->data.actor_descr.param, ir->data.actor_descr.num))
+                return ir->target_step;
+#endif
+            break;
+        default:
+            break;
+    }
+    return step + 1;
+}
+
+bool EvtInterpreter::canShowTopic() {
+    if (!_context.eventId)
         return false;
-    }
 
-    if (!_events.size()) {
-        // No event commands found for current eventId
-        // In this case dialogue elements can be showed
-        return true;
-    }
+    int step = 0;
+    while (step != -1)
+        step = checkTopicStep(step);
 
-    int step = startStep;
-
-    _who = CHOOSE_PARTY;
-
-    while (step != -1) {
-        step = executeOneEvent(step, true);
-    }
-
-    // Originally was: "readyToExit ? (canShowOption != 0) : 2"
-    return !_readyToExit || _canShowOption;
-}
-
-void EvtInterpreter::prepare(const EvtProgram &eventMap, int eventId, Pid objectPid, bool canShowMessages) {
-    _eventId = eventId;
-    _canShowMessages = canShowMessages;
-    _objectPid = objectPid;
-
-    _events.clear();
-    if (eventMap.hasEvent(eventId)) {
-        _events = eventMap.function(eventId);
-    }
+    return !_topicDecided || _topicShown;
 }
 
 bool EvtInterpreter::isValid() {
@@ -730,6 +708,6 @@ bool EvtInterpreter::validateVariableValue(const EvtInstruction &ir) const {
         return true;
 
     MM_ERROR("Skipping step {} of evt event {}, value {} is out of range for evt variable {}",
-             ir.step, _eventId, ir.data.variable_descr.value, std::to_underlying(ir.data.variable_descr.type));
+             ir.step, _context.eventId, ir.data.variable_descr.value, std::to_underlying(ir.data.variable_descr.type));
     return false;
 }

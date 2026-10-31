@@ -12,6 +12,7 @@
 #include "Engine/mm7_data.h"
 #include "Engine/Data/AwardEnums.h"
 #include "Engine/Data/HouseEnums.h"
+#include "Engine/Evt/EvtProgram.h"
 #include "Engine/Evt/EvtVariables.h"
 #include "Engine/Graphics/Image.h"
 #include "Engine/Graphics/Indoor.h"
@@ -931,6 +932,101 @@ GAME_TEST(Issues, Issue2834) {
     EXPECT_EQ(golemHeadTape, tape(0, 1));
     EXPECT_EQ(golemHeadPlacedTape, tape(true, false));
     EXPECT_EQ(abbeyHeadPlacedTape, tape(false, true));
+}
+
+GAME_TEST(Prs, Pr2876a) {
+    // An event going on from a branchless dialogue into a transition dialogue lost the transition dialogue. MM6's
+    // outd3.evt event 43 does this, so the test gives the Hidden Tomb's exit the same shape.
+    auto screenTape = tapes.screen();
+    auto mapTape = tapes.map();
+    game.startNewGame();
+    game.teleportTo(MAP_HIDDEN_TOMB, Vec3f(-300, 64, 1), 0); // In front of the exit.
+    int eventId = 9000;
+    EvtInstruction press;
+    press.opcode = EVENT_PressAnyKey;
+    engine->_localEventMap.add(eventId, press);
+    EvtInstruction moveToMap = EvtInstruction();
+    moveToMap.opcode = EVENT_MoveToMap;
+    moveToMap.step = 1;
+    moveToMap.data.move_map_descr.exit_pic_id = 1; // A picture makes the command ask first.
+    moveToMap.str = "out03.odm"; // Erathia.
+    engine->_localEventMap.add(eventId, moveToMap);
+    pIndoor->faces[85].eventId = eventId;
+    test.startTaping();
+    game.pressAndReleaseKey(PlatformKey::KEY_SPACE);
+    game.tick();
+    game.pressAndReleaseKey(PlatformKey::KEY_ESCAPE);
+    game.tick();
+    game.pressGuiButton("Transition_Yes");
+    game.skipLoadingScreen();
+    EXPECT_EQ(screenTape, tape(SCREEN_BRANCHLESS_NPC_DIALOG, SCREEN_INPUT_BLV, SCREEN_GAME));
+    EXPECT_EQ(mapTape, tape(MAP_HIDDEN_TOMB, MAP_ERATHIA));
+}
+
+GAME_TEST(Prs, Pr2876b) {
+    // An event with two branchless dialogues in a row left the second one open on the game screen, where nothing could
+    // close it. MM6's outd3.evt event 210 does this, so the test gives the Hidden Tomb's exit the same shape.
+    auto screenTape = tapes.screen();
+    auto goldTape = tapes.gold();
+    auto dialogueTape = tapes.custom([] { return pGUIWindow_BranchlessDialogue != nullptr; });
+    auto pausedTape = tapes.custom([] { return gameTimer->isPaused(); });
+    game.startNewGame();
+    game.teleportTo(MAP_HIDDEN_TOMB, Vec3f(-300, 64, 1), 0); // In front of the exit.
+    int eventId = 9000;
+    for (int step : {0, 2}) {
+        EvtInstruction press;
+        press.opcode = EVENT_PressAnyKey;
+        press.step = step;
+        engine->_localEventMap.add(eventId, press);
+        EvtInstruction add;
+        add.opcode = EVENT_Add;
+        add.step = step + 1;
+        add.data.variable_descr.type = VAR_FixedGold;
+        add.data.variable_descr.value = 100;
+        engine->_localEventMap.add(eventId, add);
+    }
+    pIndoor->faces[85].eventId = eventId;
+    test.startTaping();
+    game.pressAndReleaseKey(PlatformKey::KEY_SPACE);
+    game.tick();
+    game.pressAndReleaseKey(PlatformKey::KEY_ESCAPE);
+    game.tick();
+    game.pressAndReleaseKey(PlatformKey::KEY_ESCAPE);
+    game.tick();
+    EXPECT_EQ(screenTape, tape(SCREEN_BRANCHLESS_NPC_DIALOG, SCREEN_GAME));
+    EXPECT_EQ(goldTape, tape(200, 300, 400));
+    EXPECT_EQ(dialogueTape, tape(true, false));
+    EXPECT_EQ(pausedTape, tape(true, false));
+}
+
+GAME_TEST(Prs, Pr2876c) {
+    // An event going on from a transition dialogue into a house closed the house right away. Six MM6 castle doors do
+    // this, like outd1.evt event 34, so the test gives the Hidden Tomb's exit the same shape.
+    auto screenTape = tapes.screen();
+    auto houseTape = tapes.house();
+    auto mapTape = tapes.map();
+    game.startNewGame();
+    game.teleportTo(MAP_HIDDEN_TOMB, Vec3f(-300, 64, 1), 0); // In front of the exit.
+    int eventId = 9000;
+    EvtInstruction moveToMap = EvtInstruction();
+    moveToMap.opcode = EVENT_MoveToMap;
+    moveToMap.data.move_map_descr.exit_pic_id = 1; // A picture makes the command ask first.
+    moveToMap.str = "0"; // Stay on this map.
+    engine->_localEventMap.add(eventId, moveToMap);
+    EvtInstruction speak;
+    speak.opcode = EVENT_SpeakInHouse;
+    speak.step = 1;
+    speak.data.house_id = HOUSE_WEAPON_SHOP_EMERALD_ISLAND;
+    engine->_localEventMap.add(eventId, speak);
+    pIndoor->faces[85].eventId = eventId;
+    test.startTaping();
+    game.pressAndReleaseKey(PlatformKey::KEY_SPACE);
+    game.tick();
+    game.pressGuiButton("Transition_Yes");
+    game.tick();
+    EXPECT_EQ(screenTape, tape(SCREEN_INPUT_BLV, SCREEN_HOUSE));
+    EXPECT_EQ(houseTape, tape(HOUSE_INVALID, HOUSE_WEAPON_SHOP_EMERALD_ISLAND));
+    EXPECT_EQ(mapTape, tape(MAP_HIDDEN_TOMB));
 }
 
 GAME_TEST(Issues, Issue2881a) {

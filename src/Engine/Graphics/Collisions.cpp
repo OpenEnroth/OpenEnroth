@@ -733,7 +733,7 @@ void ProcessActorCollisionsBLV(Actor &actor, bool isAboveGround, bool isFlying) 
             actor.velocity = newDirection * dot(newDirection, actor.velocity);
 
             if (pIndoor->faces[id].attributes & FACE_TriggerByMonster)
-                eventProcessor(pIndoor->faces[id].eventId, Pid(), 1);
+                runEvent(EvtContext(EVT_SOURCE_MAP, pIndoor->faces[id].eventId));
 
             if (pIndoor->faces[id].polygonType == POLYGON_Floor) {
                 float new_floor_z_tmp = pIndoor->vertices[face->vertexIds[0]].z;

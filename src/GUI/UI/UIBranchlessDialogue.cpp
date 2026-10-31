@@ -1,4 +1,6 @@
+#include <cassert>
 #include <memory>
+#include <optional>
 
 #include "UIBranchlessDialogue.h"
 
@@ -6,7 +8,6 @@
 #include "Engine/AssetsManager.h"
 #include "Engine/Evt/Processor.h"
 #include "Engine/Graphics/Renderer/Renderer.h"
-#include "Engine/Objects/Decoration.h"
 #include "Engine/Party.h"
 #include "Engine/mm7_data.h"
 #include "Engine/Graphics/Viewport.h"
@@ -18,7 +19,8 @@
 
 #include "Io/KeyboardInputHandler.h"
 
-GUIWindow_BranchlessDialogue::GUIWindow_BranchlessDialogue(EvtOpcode event) : GUIWindow(WINDOW_GREETING_NPC, {0, 0}, render->GetRenderDimensions()), _event(event) {
+GUIWindow_BranchlessDialogue::GUIWindow_BranchlessDialogue(EvtOpcode event, std::optional<EvtContinuation> continuation)
+    : GUIWindow(WINDOW_GREETING_NPC, {0, 0}, render->GetRenderDimensions()), _event(event), _continuation(continuation) {
     prev_screen_type = current_screen_type;
     keyboardInputHandler->StartTextInput(TEXT_INPUT_TEXT, 15, this);
     current_screen_type = SCREEN_BRANCHLESS_NPC_DIALOG;
@@ -74,26 +76,21 @@ void GUIWindow_BranchlessDialogue::Update() {
     }
 }
 
-void startBranchlessDialogue(int eventid, int entryline, EvtOpcode type) {
+void startBranchlessDialogue(EvtOpcode type, std::optional<EvtContinuation> continuation) {
     if (!pGUIWindow_BranchlessDialogue) {
         animTimer->setPaused(true);
         gameTimer->setPaused(true);
-        savedEventID = eventid;
-        savedEventStep = entryline;
-        savedDecoration = activeLevelDecoration;
-        pGUIWindow_BranchlessDialogue = std::make_unique<GUIWindow_BranchlessDialogue>(type);
+        pGUIWindow_BranchlessDialogue = std::make_unique<GUIWindow_BranchlessDialogue>(type, continuation);
     }
 }
 
 void releaseBranchlessDialogue() {
-    pGUIWindow_BranchlessDialogue = nullptr;
-    if (savedEventID) {
-        // Do not run event engine whith no event, it may happen when you close talk window
-        // with NPC that only say catch phrases
-        activeLevelDecoration = savedDecoration;
-        eventProcessor(savedEventID, Pid(), 1, savedEventStep);
-    }
-    activeLevelDecoration = nullptr;
-    gameTimer->setPaused(false);
+    assert(pGUIWindow_BranchlessDialogue);
+    std::optional<EvtContinuation> continuation = pGUIWindow_BranchlessDialogue->continuation();
+    pGUIWindow_BranchlessDialogue.reset();
+    DialogueEnding();
+    current_screen_type = SCREEN_GAME;
+    if (continuation)
+        runEvent(continuation->context, continuation->step); // Can open another dialogue, so nothing may run after it.
 }
 
