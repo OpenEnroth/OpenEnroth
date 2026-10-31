@@ -881,7 +881,7 @@ void loadAndPrepareBLV(MapId mapid, bool bLoading) {
     bool indoor_was_respawned = true;                      // [sp+40Ch] [bp-8h]@1
     std::string mapFilename;
 
-    pGameLoadingUI_ProgressBar->Reset(0x20u);
+    pGameLoadingUI_ProgressBar->Reset();
     uCurrentlyLoadedLevelType = LEVEL_INDOOR;
     pBLVRenderParams->uPartySectorID = 0;
     pBLVRenderParams->uPartyEyeSectorID = 0;

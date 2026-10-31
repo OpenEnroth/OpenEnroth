@@ -23,6 +23,7 @@
 #include "Engine/Tables/DecorationTable.h"
 #include "Engine/Tables/NPCTable.h"
 
+#include "GUI/GUIProgressBar.h"
 #include "GUI/GUIWindow.h"
 #include "GUI/UI/UIGame.h"
 #include "GUI/UI/UIHouses.h"
@@ -1165,4 +1166,18 @@ GAME_TEST(Issues, Issue2941) {
 
     EXPECT_EQ(windowTape, tape(WINDOW_NULL, WINDOW_QUEST_BOOK, WINDOW_LLOYDS_BEACON, WINDOW_NULL));
     EXPECT_CONTAINS(texturesTape.flatten(), "tab-an-6a"); // The Lloyd's Beacon book draws its tabs.
+}
+
+GAME_TEST(Issues, Issue2945) {
+    // The loading bar stopped at 25-30% when the map finished loading.
+    for (auto [map, pos] : {std::pair(MAP_HARMONDALE, Vec3f(-5692, 11137, 1)), std::pair(MAP_ARENA, Vec3f(3844, 2906, 193))}) {
+        SCOPED_TRACE(fmt::format("map={}", std::to_underlying(map)));
+        test.prepareForNextTest();
+        auto barTape = tapes.custom([] { return pGameLoadingUI_ProgressBar->percent(); });
+        game.startNewGame();
+        test.startTaping();
+        game.teleportTo(map, pos, 0);
+
+        EXPECT_EQ(barTape, tape(0, 12, 25, 37, 50, 62, 75, 87, 100));
+    }
 }

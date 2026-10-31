@@ -45,7 +45,6 @@ bool GUIProgressBar::Initialize(Type type) {
         uY = 151;
         uWidth = 449;
         uHeight = 56;
-        uProgressMax = 26;
 
         progressbar_loading = assets->getIcon("loadprog");
         Draw();
@@ -55,18 +54,16 @@ bool GUIProgressBar::Initialize(Type type) {
     }
 
     uProgressCurrent = 0;
-    uProgressMax = 26;
     Draw();
     return true;
 }
 
-void GUIProgressBar::Reset(uint8_t uMaxProgress) {
+void GUIProgressBar::Reset() {
     uProgressCurrent = 0;
-    uProgressMax = uMaxProgress;
 }
 
 void GUIProgressBar::Progress() {
-    uProgressCurrent = std::min((uint8_t)(uProgressCurrent + 1), uProgressMax);
+    uProgressCurrent = std::min(uProgressCurrent + 1, PROGRESS_STEPS);
     Draw();
 }
 
@@ -90,12 +87,12 @@ void GUIProgressBar::Draw() {
 
         render->DrawQuad2D(progressbar_dungeon, {80, 122});
         render->DrawQuad2D(pIconsFrameTable->animationFrame(turnHourIconId, 0_ticks), {100, 146});
-        render->FillRect(Recti(174, 164, floorf((double)(113 * uProgressCurrent) / (double)uProgressMax + 0.5f), 16), colorTable.Red);
+        render->FillRect(Recti(174, 164, floorf((double)(113 * uProgressCurrent) / (double)PROGRESS_STEPS + 0.5f), 16), colorTable.Red);
     } else {
         if (loading_bg) {
             render->DrawQuad2D(loading_bg, {0, 0});
         }
-        render->SetUIClipRect(Recti(172, 459, (double)(300 * uProgressCurrent) / (double)uProgressMax, 12));
+        render->SetUIClipRect(Recti(172, 459, (double)(300 * uProgressCurrent) / (double)PROGRESS_STEPS, 12));
         render->DrawQuad2D(progressbar_loading, {172, 459});
         render->ResetUIClipRect();
     }

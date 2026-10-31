@@ -1773,7 +1773,7 @@ static void loadAndPrepareODMInternal(MapId mapid) {
 }
 
 void loadAndPrepareODM(MapId mapid, bool bLoading) {
-    pGameLoadingUI_ProgressBar->Reset(27);
+    pGameLoadingUI_ProgressBar->Reset();
     uCurrentlyLoadedLevelType = LEVEL_OUTDOOR;
 
     loadAndPrepareODMInternal(mapid);

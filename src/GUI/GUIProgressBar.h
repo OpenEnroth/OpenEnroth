@@ -14,21 +14,26 @@ class GUIProgressBar {
     using enum Type;
 
     bool Initialize(Type type);
-    void Reset(uint8_t uMaxProgress);
+    void Reset();
     void Progress();
     void Release();
     void Draw();
 
     bool IsActive();
 
+    int percent() const {
+        return 100 * uProgressCurrent / PROGRESS_STEPS;
+    }
+
  protected:
+    static constexpr int PROGRESS_STEPS = 8; // Calls to Progress() in a map load, the bar is full after the last one.
+
     int uX = 0;
     int uY = 0;
     int uWidth = 0;
     int uHeight = 0;
 
-    uint8_t uProgressMax = 0;
-    uint8_t uProgressCurrent = 0;
+    int uProgressCurrent = 0;
     Type uType = TYPE_None;
 
     GraphicsImage *progressbar_dungeon = nullptr;  // struct Texture_MM7 pBardata;
