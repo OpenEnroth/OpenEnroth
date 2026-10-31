@@ -256,9 +256,8 @@ EvtFlow EvtInterpreter::executeInstruction(EvtInstruction ir) {
             break;
         }
         case EVENT_OpenChest:
-            if (!Chest::open(ir.data.chest_id, _context.objectPid)) {
+            if (!Chest::open(ir.data.chest_id, _context.objectPid))
                 return {EVT_FLOW_STOP};
-            }
             break;
         case EVENT_ShowFace:
             for (Character &character : iterateCharacters(ir.who, vrng))
@@ -381,9 +380,8 @@ EvtFlow EvtInterpreter::executeInstruction(EvtInstruction ir) {
             if (!_context.duringMapLoad) {
                 // TODO(pskeltonm): Fix #2223 stop tutorial message spam - should be data mod
                 if (engine->_currentLoadedMapId == MAP_EMERALD_ISLAND && _context.eventId >= 200 && _context.eventId <= 218) {
-                    if (engine->_OE_transientVariables[_context.eventId - 200]) {
+                    if (engine->_OE_transientVariables[_context.eventId - 200])
                         break;
-                    }
                     engine->_OE_transientVariables[_context.eventId - 200] = 1;
                 }
 
@@ -416,15 +414,13 @@ EvtFlow EvtInterpreter::executeInstruction(EvtInstruction ir) {
             if (_context.source == EVT_SOURCE_GLOBAL) {
                 if (!_context.objectPid) // An NPC topic.
                     current_npc_text = pNPCTopics[ir.data.text_id - 1].pText;
-                if (!_context.duringMapLoad) {
+                if (!_context.duringMapLoad)
                     engine->_statusBar->setEvent(pNPCTopics[ir.data.text_id - 1].pText);
-                }
             } else {
-                if (!_context.duringMapLoad) {
-                    // TODO(captainurist): log an error on an out of range string id here, in ShowMessage, in the pNPCTopics
-                    //                     lookups of both, which don't check at all, and in EvtProgram::hint.
+                // TODO(captainurist): log an error on an out of range string id here, in ShowMessage, in the pNPCTopics
+                //                     lookups of both, which don't check at all, and in EvtProgram::hint.
+                if (!_context.duringMapLoad)
                     engine->_statusBar->setEvent((ir.data.text_id < engine->_levelStrings.size()) ? engine->_levelStrings[ir.data.text_id] : "");
-                }
             }
             break;
         case EVENT_ShowMessage:
@@ -633,9 +629,8 @@ EvtFlow EvtInterpreter::executeInstruction(EvtInstruction ir) {
 bool EvtInterpreter::executeRegular(int startStep) {
     assert(startStep >= 0);
 
-    if (!_context.eventId || !_events.size()) {
+    if (!_context.eventId || !_events.size())
         return false;
-    }
 
     int step = startStep;
 
@@ -660,11 +655,9 @@ int EvtInterpreter::checkTopicStep(int step) {
             _topicDecided = true;
             if (!validateVariableValue(*ir))
                 break;
-            for (Character &player : pParty->pCharacters) {
-                if (compareEvtVariable(player, ir->data.variable_descr.type, ir->data.variable_descr.value)) {
+            for (Character &player : pParty->pCharacters)
+                if (compareEvtVariable(player, ir->data.variable_descr.type, ir->data.variable_descr.value))
                     return ir->target_step;
-                }
-            }
             break;
         case EVENT_SetCanShowDialogItem:
             _topicDecided = true;
@@ -674,9 +667,8 @@ int EvtInterpreter::checkTopicStep(int step) {
             // TODO: enconunter and process
             assert(false);
 #if 0
-            if (Actor::isActorKilled(ir->data.actor_descr.policy, ir->data.actor_descr.param, ir->data.actor_descr.num)) {
+            if (Actor::isActorKilled(ir->data.actor_descr.policy, ir->data.actor_descr.param, ir->data.actor_descr.num))
                 return ir->target_step;
-            }
 #endif
             break;
         default:
@@ -703,9 +695,8 @@ void EvtInterpreter::prepare(EvtContext context) {
     program.dump(context.eventId, context.source);
 
     _events.clear();
-    if (program.hasEvent(context.eventId)) {
+    if (program.hasEvent(context.eventId))
         _events = program.function(context.eventId);
-    }
 }
 
 bool EvtInterpreter::isValid() {
