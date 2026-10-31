@@ -161,7 +161,7 @@ const EvtInstruction *EvtInterpreter::instructionAt(int step) const {
     return pos == _events.end() ? nullptr : &*pos;
 }
 
-int EvtInterpreter::executeOneEvent(int step) {
+int EvtInterpreter::executeStep(int step) {
     const EvtInstruction *ir = instructionAt(step);
     if (!ir)
         return -1;
@@ -626,7 +626,18 @@ EvtFlow EvtInterpreter::executeInstruction(EvtInstruction ir) {
     return {EVT_FLOW_NEXT};
 }
 
-bool EvtInterpreter::executeRegular(int startStep) {
+void EvtInterpreter::prepare(EvtContext context) {
+    _context = context;
+
+    const EvtProgram &program = context.source == EVT_SOURCE_GLOBAL ? engine->_globalEventMap : engine->_localEventMap;
+    program.dump(context.eventId, context.source);
+
+    _events.clear();
+    if (program.hasEvent(context.eventId))
+        _events = program.function(context.eventId);
+}
+
+bool EvtInterpreter::execute(int startStep) {
     assert(startStep >= 0);
 
     if (!_context.eventId || !_events.size())
@@ -637,7 +648,7 @@ bool EvtInterpreter::executeRegular(int startStep) {
     _who = !pParty->hasActiveCharacter() ? CHOOSE_RANDOM : CHOOSE_ACTIVE;
 
     while (step != -1)
-        step = executeOneEvent(step);
+        step = executeStep(step);
 
     return _mapExitTriggered;
 }
@@ -686,17 +697,6 @@ bool EvtInterpreter::canShowTopic() {
         step = checkTopicStep(step);
 
     return !_topicDecided || _topicShown;
-}
-
-void EvtInterpreter::prepare(EvtContext context) {
-    _context = context;
-
-    const EvtProgram &program = context.source == EVT_SOURCE_GLOBAL ? engine->_globalEventMap : engine->_localEventMap;
-    program.dump(context.eventId, context.source);
-
-    _events.clear();
-    if (program.hasEvent(context.eventId))
-        _events = program.function(context.eventId);
 }
 
 bool EvtInterpreter::isValid() {

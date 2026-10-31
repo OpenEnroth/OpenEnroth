@@ -159,7 +159,7 @@ void runEvent(EvtContext context, int startStep) {
         return;
     }
 
-    if (interpreter.executeRegular(startStep)) {
+    if (interpreter.execute(startStep)) {
         onMapLeave();
     }
 }

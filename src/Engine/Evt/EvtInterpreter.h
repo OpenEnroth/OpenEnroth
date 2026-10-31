@@ -30,7 +30,16 @@ struct EvtFlow {
 // EvtInterpreter
 class EvtInterpreter {
  public:
-     bool executeRegular(int startStep);
+     /**
+      * @param context                  Event to run, and what it runs for.
+      */
+     void prepare(EvtContext context);
+
+     /**
+      * @param startStep                Step to start from.
+      * @return                         Whether the event sent the party to another map.
+      */
+     bool execute(int startStep);
 
      /**
       * Runs only the commands that decide whether an NPC's scripted topic is listed, `OnCanShowDialogItemCmp`,
@@ -40,14 +49,14 @@ class EvtInterpreter {
       */
      bool canShowTopic();
 
-     /**
-      * @param context                  Event to run, and what it runs for.
-      */
-     void prepare(EvtContext context);
      bool isValid();
 
  protected:
-     int executeOneEvent(int step);
+     /**
+      * @param step                     Step to run.
+      * @return                         Step to run next, or -1 when the event is done.
+      */
+     int executeStep(int step);
 
      /**
       * @param step                     Step to check.
