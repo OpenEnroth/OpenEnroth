@@ -32,10 +32,23 @@
 // 100
 
 GAME_TEST(Issues, Issue123) {
-    // Party falls when flying
-    test.playTraceFromTestData("issue_123.mm7", "issue_123.json");
-    // check party is still in the air
-    EXPECT_GT(pParty->pos.z, 512);
+    // Party fell out of flight below grandmaster on the 5-minute regeneration tick. The curse check there compared the
+    // caster's curse time to the spell's power, and that time is zero for a caster who isn't cursed.
+    auto zTape = tapes.custom([] { return pParty->pos.z; });
+    auto flyingTape = tapes.custom([] { return pParty->bFlying; });
+    auto mpTape = charTapes.mp(3);
+    game.startNewGame();
+    pParty->pCharacters[3].setSkillValue(SKILL_AIR, CombinedSkillValue(4, MASTERY_EXPERT));
+    pParty->pCharacters[3].bHaveSpell[SPELL_AIR_FLY] = true;
+    game.castSpell(3, SPELL_AIR_FLY);
+    game.pressKey(PlatformKey::KEY_PAGEUP);
+    game.tick(3);
+    game.releaseKey(PlatformKey::KEY_PAGEUP);
+    test.startTaping();
+    game.tick(150); // Crosses one 5-minute regeneration tick, where Fly below grandmaster drains mana, with time left to fall.
+    EXPECT_EQ(flyingTape, tape(true));
+    EXPECT_LT(zTape.max() - zTape.min(), 10); // Flight bobs up and down a little.
+    EXPECT_EQ(mpTape.delta(), -1);
 }
 
 GAME_TEST(Issues, Issue125) {
