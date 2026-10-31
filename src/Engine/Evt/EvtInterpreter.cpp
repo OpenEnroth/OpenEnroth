@@ -414,7 +414,7 @@ EvtFlow EvtInterpreter::executeInstruction(EvtInstruction ir) {
             return {EVT_FLOW_STOP};
         case EVENT_StatusText:
             if (_context.source == EVT_SOURCE_GLOBAL) {
-                if (_context.objectPid.type() != OBJECT_Decoration) // An NPC topic.
+                if (!_context.objectPid) // An NPC topic.
                     current_npc_text = pNPCTopics[ir.data.text_id - 1].pText;
                 if (!_context.duringMapLoad) {
                     engine->_statusBar->setEvent(pNPCTopics[ir.data.text_id - 1].pText);
