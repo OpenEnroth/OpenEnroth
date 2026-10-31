@@ -1,4 +1,3 @@
-#include <algorithm>
 #include <string>
 #include <tuple>
 #include <utility>
@@ -947,8 +946,11 @@ GAME_TEST(Prs, Pr2876a) {
     EvtInstruction press;
     press.opcode = EVENT_PressAnyKey;
     engine->_localEventMap.add(eventId, press);
-    EvtInstruction moveToMap = *std::ranges::find(engine->_localEventMap.function(pIndoor->faces[85].eventId), EVENT_MoveToMap, &EvtInstruction::opcode);
+    EvtInstruction moveToMap = EvtInstruction();
+    moveToMap.opcode = EVENT_MoveToMap;
     moveToMap.step = 1;
+    moveToMap.data.move_map_descr.exit_pic_id = 1; // A picture makes the command ask first.
+    moveToMap.str = "out03.odm"; // Erathia.
     engine->_localEventMap.add(eventId, moveToMap);
     pIndoor->faces[85].eventId = eventId;
     test.startTaping();
@@ -1007,13 +1009,14 @@ GAME_TEST(Prs, Pr2876c) {
     game.startNewGame();
     game.teleportTo(MAP_HIDDEN_TOMB, Vec3f(-300, 64, 1), 0); // In front of the exit.
     int eventId = 9000;
-    EvtInstruction moveToMap = *std::ranges::find(engine->_localEventMap.function(pIndoor->faces[85].eventId), EVENT_MoveToMap, &EvtInstruction::opcode);
+    EvtInstruction moveToMap = EvtInstruction();
+    moveToMap.opcode = EVENT_MoveToMap;
+    moveToMap.data.move_map_descr.exit_pic_id = 1; // A picture makes the command ask first.
     moveToMap.str = "0"; // Stay on this map.
-    moveToMap.data.move_map_descr.x = moveToMap.data.move_map_descr.y = moveToMap.data.move_map_descr.z = 0;
     engine->_localEventMap.add(eventId, moveToMap);
     EvtInstruction speak;
     speak.opcode = EVENT_SpeakInHouse;
-    speak.step = moveToMap.step + 1;
+    speak.step = 1;
     speak.data.house_id = HOUSE_WEAPON_SHOP_EMERALD_ISLAND;
     engine->_localEventMap.add(eventId, speak);
     pIndoor->faces[85].eventId = eventId;
