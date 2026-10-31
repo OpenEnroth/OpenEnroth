@@ -9,7 +9,7 @@
 struct EvtContext {
     EvtSource source = EVT_SOURCE_MAP;
     int eventId = 0;
-    Pid objectPid; // Object that triggered the event. A chest trap explodes from it, ChangeEvent changes it, and for a global event an empty pid means an NPC topic.
+    Pid objectPid; // Face or decoration that triggered the event, or empty when a timer, a map trigger or an NPC topic did. A chest trap explodes from it, and ChangeEvent changes the decoration.
     bool duringMapLoad = false; // The loading screen is still up, so status texts are dropped and an NPC dialogue waits for the first frame.
 };
 
