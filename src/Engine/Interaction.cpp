@@ -68,12 +68,12 @@ void InteractWithActor(int id) {
 
 void DecorationInteraction(int id, Pid pid) {
     if (pLevelDecorations[id].uEventID) {
-        runEvent({.eventId = pLevelDecorations[id].uEventID, .objectPid = pid});
+        runEvent(EvtContext(EVT_SOURCE_MAP, pLevelDecorations[id].uEventID, pid));
         pLevelDecorations[id].uFlags |= LEVEL_DECORATION_VISIBLE_ON_MAP;
     } else {
         if (pLevelDecorations[id].IsInteractive()) {
             int eventId = engine->_persistentVariables.decorVars[pLevelDecorations[id].eventVarId] + 380; // 380 is the MM7 dispatch base, see EVENT_ChangeEvent.
-            runEvent({.source = EVT_SOURCE_GLOBAL, .eventId = eventId, .objectPid = pid});
+            runEvent(EvtContext(EVT_SOURCE_GLOBAL, eventId, pid));
         }
     }
 }
@@ -131,7 +131,7 @@ void DoInteractionWithTopmostZObject(Pid pid) {
                 }
 
                 if (pParty->hasActiveCharacter()) {
-                    runEvent({.eventId = face.eventId, .objectPid = pid});
+                    runEvent(EvtContext(EVT_SOURCE_MAP, face.eventId, pid));
                 } else {
                     engine->_statusBar->setEvent(LSTR_NOBODY_IS_IN_CONDITION);
                 }
@@ -145,7 +145,7 @@ void DoInteractionWithTopmostZObject(Pid pid) {
                 }
 
                 if (pParty->hasActiveCharacter()) {
-                    runEvent({.eventId = (int16_t)pIndoor->faces[id].eventId, .objectPid = pid});
+                    runEvent(EvtContext(EVT_SOURCE_MAP, (int16_t)pIndoor->faces[id].eventId, pid));
                 } else {
                     engine->_statusBar->setEvent(LSTR_NOBODY_IS_IN_CONDITION);
                 }

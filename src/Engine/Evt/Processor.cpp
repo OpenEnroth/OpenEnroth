@@ -60,14 +60,14 @@ void checkDecorationEvents() {
 
         if (decoration.uFlags & LEVEL_DECORATION_TRIGGERED_BY_TOUCH) {
             if ((decoration.vPosition - pParty->pos).length() < decoration.uTriggerRange) {
-                runEvent({.eventId = decoration.uEventID, .objectPid = Pid(OBJECT_Decoration, decorationId)});
+                runEvent(EvtContext(EVT_SOURCE_MAP, decoration.uEventID, Pid(OBJECT_Decoration, decorationId)));
             }
         }
 
         if (decoration.uFlags & LEVEL_DECORATION_TRIGGERED_BY_MONSTER) {
             for (const Actor &actor : pActors) {
                 if ((decoration.vPosition - actor.pos).length() < decoration.uTriggerRange) {
-                    runEvent({.eventId = decoration.uEventID});
+                    runEvent(EvtContext(EVT_SOURCE_MAP, decoration.uEventID));
                 }
             }
         }
@@ -75,7 +75,7 @@ void checkDecorationEvents() {
         if (decoration.uFlags & LEVEL_DECORATION_TRIGGERED_BY_OBJECT) {
             for (int i = 0; i < pSpriteObjects.size(); i++) {
                 if ((decoration.vPosition - pSpriteObjects[i].vPosition).length() < decoration.uTriggerRange) {
-                    runEvent({.eventId = decoration.uEventID});
+                    runEvent(EvtContext(EVT_SOURCE_MAP, decoration.uEventID));
                 }
             }
         }
@@ -165,7 +165,7 @@ void runEvent(EvtContext context, int startStep) {
 
 bool canShowTopic(int eventId) {
     EvtInterpreter interpreter;
-    interpreter.prepare({.source = EVT_SOURCE_GLOBAL, .eventId = eventId});
+    interpreter.prepare(EvtContext(EVT_SOURCE_GLOBAL, eventId));
     return interpreter.canShowTopic();
 }
 
@@ -194,13 +194,15 @@ void onMapLoad() {
     timerGuard = pParty->GetPlayingTime();
 
     for (EventTrigger &triggers : onMapLoadTriggers) {
-        runEvent({.eventId = triggers.eventId, .duringMapLoad = true}, triggers.eventStep + 1);
+        EvtContext context(EVT_SOURCE_MAP, triggers.eventId);
+        context.duringMapLoad = true;
+        runEvent(context, triggers.eventStep + 1);
     }
 }
 
 void onMapLeave() {
     for (EventTrigger &triggers : onMapLeaveTriggers) {
-        runEvent({.eventId = triggers.eventId}, triggers.eventStep + 1);
+        runEvent(EvtContext(EVT_SOURCE_MAP, triggers.eventId), triggers.eventStep + 1);
     }
 
     // Cleanup timers to avoid firing while map transition is in process
@@ -210,7 +212,7 @@ void onMapLeave() {
 
 static void checkTimer(MapTimer &timer) {
     if (pParty->GetPlayingTime() >= timer.alarmTime) {
-        runEvent({.eventId = timer.eventId}, timer.eventStep + 1);
+        runEvent(EvtContext(EVT_SOURCE_MAP, timer.eventId), timer.eventStep + 1);
         if (timer.altInterval) {
             timer.alarmTime = pParty->GetPlayingTime() + timer.altInterval;
         } else {

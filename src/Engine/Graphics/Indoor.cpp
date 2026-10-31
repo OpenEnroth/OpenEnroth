@@ -1584,7 +1584,7 @@ void BLV_ProcessPartyActions() {  // could this be combined with odm process act
             pParty->uFlags |= PARTY_FLAG_BURNING;
 
     if (faceEvent)
-        runEvent({.eventId = faceEvent});
+        runEvent(EvtContext(EVT_SOURCE_MAP, faceEvent));
 }
 
 //----- (004088E9) --------------------------------------------------------

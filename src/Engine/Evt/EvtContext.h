@@ -7,6 +7,9 @@
  * Which event runs, and what it runs for.
  */
 struct EvtContext {
+    EvtContext() = default;
+    EvtContext(EvtSource source, int eventId, Pid objectPid = Pid()) : source(source), eventId(eventId), objectPid(objectPid) {}
+
     EvtSource source = EVT_SOURCE_MAP;
     int eventId = 0;
 
