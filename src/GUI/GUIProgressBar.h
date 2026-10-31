@@ -14,7 +14,7 @@ class GUIProgressBar {
     using enum Type;
 
     bool Initialize(Type type);
-    void Reset();
+    void Reset(int maxProgress);
     void Progress();
     void Release();
     void Draw();
@@ -22,17 +22,16 @@ class GUIProgressBar {
     bool IsActive();
 
     int percent() const {
-        return 100 * uProgressCurrent / PROGRESS_STEPS;
+        return 100 * uProgressCurrent / uProgressMax;
     }
 
  protected:
-    static constexpr int PROGRESS_STEPS = 8; // Calls to Progress() in a map load, the bar is full after the last one.
-
     int uX = 0;
     int uY = 0;
     int uWidth = 0;
     int uHeight = 0;
 
+    int uProgressMax = 0;
     int uProgressCurrent = 0;
     Type uType = TYPE_None;
 
