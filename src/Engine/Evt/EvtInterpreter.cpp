@@ -249,7 +249,7 @@ EvtFlow EvtInterpreter::executeInstruction(EvtInstruction ir) {
                     ir.data.move_map_descr.z = 3088;
 
                 pDialogueWindow = std::make_unique<GUIWindow_IndoorEntryExit>(ir.data.move_map_descr.house_id, ir.data.move_map_descr.exit_pic_id,
-                                                                             moveToMapDestination(ir), ir.str, EvtContinuation{_context, ir.step + 1});
+                                                                             moveToMapDestination(ir), ir.str, EvtContinuation(_context, ir.step + 1));
                 return {EVT_FLOW_YIELD};
             }
 
@@ -419,7 +419,7 @@ EvtFlow EvtInterpreter::executeInstruction(EvtInstruction ir) {
                          Vec3f(ir.data.spell_descr.tox, ir.data.spell_descr.toy, ir.data.spell_descr.toz));
             break;
         case EVENT_SpeakNPC:
-            if (_context.canShowMessages) {
+            if (!_context.duringMapLoad) {
                 // TODO(pskeltonm): Fix #2223 stop tutorial message spam - should be data mod
                 if (engine->_currentLoadedMapId == MAP_EMERALD_ISLAND && _context.eventId >= 200 && _context.eventId <= 218) {
                     if (engine->_OE_transientVariables[_context.eventId - 200]) {
@@ -450,18 +450,18 @@ EvtFlow EvtInterpreter::executeInstruction(EvtInstruction ir) {
             assert(false);
 #if 0
             game_ui_status_bar_event_string = (ir.data.text_id < engine->_levelStrings.size()) ? engine->_levelStrings[ir.data.text_id] : "";
-            startBranchlessDialogue(EVENT_InputString, EvtContinuation{_context, ir.step + 1});
+            startBranchlessDialogue(EVENT_InputString, EvtContinuation(_context, ir.step + 1));
 #endif
             return {EVT_FLOW_STOP};
         case EVENT_StatusText:
             if (_context.source == EVT_SOURCE_GLOBAL) {
                 if (_context.objectPid.type() != OBJECT_Decoration) // An NPC topic.
                     current_npc_text = pNPCTopics[ir.data.text_id - 1].pText;
-                if (_context.canShowMessages) {
+                if (!_context.duringMapLoad) {
                     engine->_statusBar->setEvent(pNPCTopics[ir.data.text_id - 1].pText);
                 }
             } else {
-                if (_context.canShowMessages) {
+                if (!_context.duringMapLoad) {
                     engine->_statusBar->setEvent((ir.data.text_id < engine->_levelStrings.size()) ? engine->_levelStrings[ir.data.text_id] : "");
                 }
             }
@@ -481,7 +481,7 @@ EvtFlow EvtInterpreter::executeInstruction(EvtInstruction ir) {
             pIndoor->toggleLight(ir.data.light_descr.light_id, ir.data.light_descr.is_enable);
             break;
         case EVENT_PressAnyKey:
-            startBranchlessDialogue(EVENT_PressAnyKey, EvtContinuation{_context, ir.step + 1});
+            startBranchlessDialogue(EVENT_PressAnyKey, EvtContinuation(_context, ir.step + 1));
             return {EVT_FLOW_YIELD};
         case EVENT_SummonItem:
             SpriteObject::dropItemAt(ir.data.summon_item_descr.sprite, Vec3f(ir.data.summon_item_descr.x, ir.data.summon_item_descr.y, ir.data.summon_item_descr.z),
