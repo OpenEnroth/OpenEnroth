@@ -421,6 +421,8 @@ EvtFlow EvtInterpreter::executeInstruction(EvtInstruction ir) {
                 }
             } else {
                 if (!_context.duringMapLoad) {
+                    // TODO(captainurist): log an error on an out of range string id here, in ShowMessage, in the pNPCTopics
+                    //                     lookups of both, which don't check at all, and in EvtProgram::hint.
                     engine->_statusBar->setEvent((ir.data.text_id < engine->_levelStrings.size()) ? engine->_levelStrings[ir.data.text_id] : "");
                 }
             }
