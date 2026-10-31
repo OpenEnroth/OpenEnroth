@@ -48,7 +48,7 @@ class EvtInterpreter {
       * @param startStep                Step to start from.
       * @return                         Whether the event started a map transition.
       */
-     EvtTransition execute(int startStep);
+     [[nodiscard]] EvtTransition execute(int startStep);
 
      /**
       * Runs only the commands that decide whether an NPC's scripted topic is listed, `OnCanShowDialogItemCmp`,
@@ -56,28 +56,28 @@ class EvtInterpreter {
       *
       * @return                         Whether the topic is listed. A script that never decides lists it.
       */
-     bool canShowTopic();
+     [[nodiscard]] bool canShowTopic();
 
-     bool isValid();
+     [[nodiscard]] bool isValid();
 
  protected:
      /**
       * @param step                     Step to run.
       * @return                         Step to run next, or -1 when the event is done.
       */
-     int executeStep(int step);
+     [[nodiscard]] int executeStep(int step);
 
      /**
       * @param step                     Step to check.
       * @return                         Step to check next, or -1 once the script has decided.
       */
-     int checkTopicStep(int step);
+     [[nodiscard]] int checkTopicStep(int step);
 
      /**
       * @param ir                       Instruction to run.
       * @return                         Where the event goes after this instruction.
       */
-     EvtFlow executeInstruction(EvtInstruction ir);
+     [[nodiscard]] EvtFlow executeInstruction(EvtInstruction ir);
 
  private:
      /**
