@@ -241,7 +241,7 @@ EvtFlow EvtInterpreter::executeInstruction(EvtInstruction ir) {
                 pParty->days_played_without_rest = 0;
             }
 
-            _mapExitTriggered = true;
+            _transition = EVT_TRANSITION_STARTED;
             if (current_screen_type == SCREEN_HOUSE) {
                 if (uGameState == GAME_STATE_CHANGE_LOCATION) {
                     houseDialogueGoBackToTop();
@@ -637,11 +637,11 @@ void EvtInterpreter::prepare(EvtContext context) {
         _events = program.function(context.eventId);
 }
 
-bool EvtInterpreter::execute(int startStep) {
+EvtTransition EvtInterpreter::execute(int startStep) {
     assert(startStep >= 0);
 
     if (!_context.eventId || !_events.size())
-        return false;
+        return EVT_TRANSITION_NONE;
 
     int step = startStep;
 
@@ -650,7 +650,7 @@ bool EvtInterpreter::execute(int startStep) {
     while (step != -1)
         step = executeStep(step);
 
-    return _mapExitTriggered;
+    return _transition;
 }
 
 int EvtInterpreter::checkTopicStep(int step) {
