@@ -8,7 +8,9 @@
  */
 struct EvtContext {
     EvtContext() = default;
-    EvtContext(EvtSource source, int eventId, Pid objectPid = Pid()) : source(source), eventId(eventId), objectPid(objectPid) {}
+    // TODO(captainurist): a bool parameter doesn't read at the call site, see onMapLoad.
+    EvtContext(EvtSource source, int eventId, Pid objectPid = Pid(), bool duringMapLoad = false)
+        : source(source), eventId(eventId), objectPid(objectPid), duringMapLoad(duringMapLoad) {}
 
     EvtSource source = EVT_SOURCE_MAP;
     int eventId = 0;
