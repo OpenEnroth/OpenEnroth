@@ -518,7 +518,10 @@ EvtFlow EvtInterpreter::executeInstruction(EvtInstruction ir) {
             // binary at 0xa33e0 and 0xa3418, the PC MM8.exe is presumed to match.
             // TODO(captainurist): make the state<->event mapping per-game before feeding MM8 data through here, and
             //                     spell the MM7 store as -380 while at it.
-            assert(_context.objectPid.type() == OBJECT_Decoration);
+            if (_context.objectPid.type() != OBJECT_Decoration) {
+                MM_ERROR("Skipping step {} of evt event {}, ChangeEvent ran without a decoration", ir.step, _context.eventId);
+                break;
+            }
             LevelDecoration &decoration = pLevelDecorations[_context.objectPid.id()];
             if (ir.data.event_id) {
                 engine->_persistentVariables.decorVars[decoration.eventVarId] = ir.data.event_id - 124;
