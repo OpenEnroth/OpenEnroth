@@ -45,7 +45,7 @@ bool GUIProgressBar::Initialize(Type type) {
         uY = 151;
         uWidth = 449;
         uHeight = 56;
-        uProgressMax = 26;
+        uProgressMax = 8;
 
         progressbar_loading = assets->getIcon("loadprog");
         Draw();
@@ -55,18 +55,18 @@ bool GUIProgressBar::Initialize(Type type) {
     }
 
     uProgressCurrent = 0;
-    uProgressMax = 26;
+    uProgressMax = 8;
     Draw();
     return true;
 }
 
-void GUIProgressBar::Reset(uint8_t uMaxProgress) {
+void GUIProgressBar::Reset(int maxProgress) {
     uProgressCurrent = 0;
-    uProgressMax = uMaxProgress;
+    uProgressMax = maxProgress;
 }
 
 void GUIProgressBar::Progress() {
-    uProgressCurrent = std::min((uint8_t)(uProgressCurrent + 1), uProgressMax);
+    uProgressCurrent = std::min(uProgressCurrent + 1, uProgressMax);
     Draw();
 }
 

@@ -14,12 +14,16 @@ class GUIProgressBar {
     using enum Type;
 
     bool Initialize(Type type);
-    void Reset(uint8_t uMaxProgress);
+    void Reset(int maxProgress);
     void Progress();
     void Release();
     void Draw();
 
     bool IsActive();
+
+    int percent() const {
+        return 100 * uProgressCurrent / uProgressMax;
+    }
 
  protected:
     int uX = 0;
@@ -27,8 +31,8 @@ class GUIProgressBar {
     int uWidth = 0;
     int uHeight = 0;
 
-    uint8_t uProgressMax = 0;
-    uint8_t uProgressCurrent = 0;
+    int uProgressMax = 0;
+    int uProgressCurrent = 0;
     Type uType = TYPE_None;
 
     GraphicsImage *progressbar_dungeon = nullptr;  // struct Texture_MM7 pBardata;
