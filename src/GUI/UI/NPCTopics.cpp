@@ -599,11 +599,8 @@ std::vector<DialogueId> prepareScriptedNPCDialogueTopics(NPCData *npcData) {
     // TODO(Nik-RE-dev): place NPC events in array
 #define ADD_NPC_SCRIPTED_DIALOGUE(EVENT_ID, MSG_PARAM) \
     if (EVENT_ID) { \
-        if (optionList.size() < 4) { \
-            int res = npcDialogueEventProcessor(EVENT_ID); \
-            if (res == 1 || res == 2) { \
-                optionList.push_back(MSG_PARAM); \
-            } \
+        if (optionList.size() < 4 && canShowTopic(EVENT_ID)) { \
+            optionList.push_back(MSG_PARAM); \
         } \
     }
 

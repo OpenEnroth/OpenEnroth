@@ -1,3 +1,4 @@
+#include <algorithm>
 #include <memory>
 #include <optional>
 #include <string>
@@ -155,59 +156,17 @@ static MapDestination moveToMapDestination(const EvtInstruction &ir) {
     return {};
 }
 
-int EvtInterpreter::executeOneEvent(int step, bool isNpc) {
-    EvtInstruction ir;
-    bool stepFound = false;
+const EvtInstruction *EvtInterpreter::instructionAt(int step) const {
+    auto pos = std::ranges::find(_events, step, &EvtInstruction::step);
+    return pos == _events.end() ? nullptr : &*pos;
+}
 
-    for (const EvtInstruction &irTmp : _events) {
-        if (irTmp.step == step) {
-            ir = irTmp;
-            stepFound = true;
-            break;
-        }
-    }
-
-    if (!stepFound) {
+int EvtInterpreter::executeOneEvent(int step) {
+    const EvtInstruction *ir = instructionAt(step);
+    if (!ir)
         return -1;
-    }
 
-    // In NPC mode must process only NPC dialogue related events plus Exit
-    if (isNpc) {
-        switch (ir.opcode) {
-            case EVENT_Exit:
-                return -1;
-            case EVENT_OnCanShowDialogItemCmp:
-                _readyToExit = true;
-                if (!validateVariableValue(ir))
-                    break;
-                for (Character &player : pParty->pCharacters) {
-                    if (compareEvtVariable(player, ir.data.variable_descr.type, ir.data.variable_descr.value)) {
-                        return ir.target_step;
-                    }
-                }
-                break;
-            case EVENT_EndCanShowDialogItem:
-                return -1;
-            case EVENT_SetCanShowDialogItem:
-                _readyToExit = true;
-                _canShowOption = ir.data.can_show_npc_dialogue;
-                break;
-            case EVENT_CanShowTopic_IsActorKilled:
-                // TODO: enconunter and process
-                assert(false);
-#if 0
-                if (Actor::isActorKilled(ir.data.actor_descr.policy, ir.data.actor_descr.param, ir.data.actor_descr.num)) {
-                    return ir.target_step;
-                }
-#endif
-                break;
-            default:
-                break;
-        }
-        return step + 1;
-    }
-
-    EvtFlow flow = executeInstruction(ir);
+    EvtFlow flow = executeInstruction(*ir);
     switch (flow.type) {
         case EVT_FLOW_NEXT: return step + 1;
         case EVT_FLOW_JUMP: return flow.target;
@@ -678,34 +637,58 @@ bool EvtInterpreter::executeRegular(int startStep) {
     _who = !pParty->hasActiveCharacter() ? CHOOSE_RANDOM : CHOOSE_ACTIVE;
 
     while (step != -1)
-        step = executeOneEvent(step, false);
+        step = executeOneEvent(step);
 
     return _mapExitTriggered;
 }
 
-bool EvtInterpreter::executeNpcDialogue(int startStep) {
-    assert(startStep >= 0);
+int EvtInterpreter::checkTopicStep(int step) {
+    const EvtInstruction *ir = instructionAt(step);
+    if (!ir)
+        return -1;
 
-    if (!_context.eventId) {
+    switch (ir->opcode) {
+        case EVENT_Exit:
+        case EVENT_EndCanShowDialogItem:
+            return -1;
+        case EVENT_OnCanShowDialogItemCmp:
+            _topicDecided = true;
+            if (!validateVariableValue(*ir))
+                break;
+            for (Character &player : pParty->pCharacters) {
+                if (compareEvtVariable(player, ir->data.variable_descr.type, ir->data.variable_descr.value)) {
+                    return ir->target_step;
+                }
+            }
+            break;
+        case EVENT_SetCanShowDialogItem:
+            _topicDecided = true;
+            _topicShown = ir->data.can_show_npc_dialogue;
+            break;
+        case EVENT_CanShowTopic_IsActorKilled:
+            // TODO: enconunter and process
+            assert(false);
+#if 0
+            if (Actor::isActorKilled(ir->data.actor_descr.policy, ir->data.actor_descr.param, ir->data.actor_descr.num)) {
+                return ir->target_step;
+            }
+#endif
+            break;
+        default:
+            break;
+    }
+    return step + 1;
+}
+
+bool EvtInterpreter::canShowTopic() {
+    if (!_context.eventId)
         return false;
-    }
 
-    if (!_events.size()) {
-        // No event commands found for current eventId
-        // In this case dialogue elements can be showed
-        return true;
-    }
+    int step = 0;
+    while (step != -1)
+        step = checkTopicStep(step);
 
-    int step = startStep;
-
-    _who = CHOOSE_PARTY;
-
-    while (step != -1) {
-        step = executeOneEvent(step, true);
-    }
-
-    // Originally was: "readyToExit ? (canShowOption != 0) : 2"
-    return !_readyToExit || _canShowOption;
+    return !_topicDecided || _topicShown;
 }
 
 void EvtInterpreter::prepare(EvtContext context) {
