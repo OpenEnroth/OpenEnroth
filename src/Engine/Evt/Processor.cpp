@@ -164,16 +164,10 @@ void runEvent(EvtContext context, int startStep) {
     }
 }
 
-bool npcDialogueEventProcessor(int eventId, int startStep) {
-    if (!eventId) {
-        return false;
-    }
-
+bool canShowTopic(int eventId) {
     EvtInterpreter interpreter;
-
-    MM_TRACE("Executing NPC dialogue event starting from step {}", startStep);
     interpreter.prepare({.source = EVT_SOURCE_GLOBAL, .eventId = eventId});
-    return interpreter.executeNpcDialogue(startStep);
+    return interpreter.canShowTopic();
 }
 
 bool hasEventHint(int eventId) {

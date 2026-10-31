@@ -31,7 +31,14 @@ struct EvtFlow {
 class EvtInterpreter {
  public:
      bool executeRegular(int startStep);
-     bool executeNpcDialogue(int startStep);
+
+     /**
+      * Runs only the commands that decide whether an NPC's scripted topic is listed, `OnCanShowDialogItemCmp`,
+      * `SetCanShowDialogItem` and `EndCanShowDialogItem`, and skips the rest.
+      *
+      * @return                         Whether the topic is listed. A script that never decides lists it.
+      */
+     bool canShowTopic();
 
      /**
       * @param context                  Event to run, and what it runs for.
@@ -40,10 +47,16 @@ class EvtInterpreter {
      bool isValid();
 
  protected:
-     int executeOneEvent(int step, bool isNpc);
+     int executeOneEvent(int step);
 
      /**
-      * @param ir                       Instruction to run, outside of NPC mode.
+      * @param step                     Step to check.
+      * @return                         Step to check next, or -1 once the script has decided.
+      */
+     int checkTopicStep(int step);
+
+     /**
+      * @param ir                       Instruction to run.
       * @return                         Where the event goes after this instruction.
       */
      EvtFlow executeInstruction(EvtInstruction ir);
@@ -57,11 +70,17 @@ class EvtInterpreter {
       */
      [[nodiscard]] bool validateVariableValue(const EvtInstruction &ir) const;
 
+     /**
+      * @param step                     Step to look up.
+      * @return                         Instruction at that step, or `nullptr` if the event has none.
+      */
+     [[nodiscard]] const EvtInstruction *instructionAt(int step) const;
+
  private:
      EvtContext _context;
      std::vector<EvtInstruction> _events;
-     bool _canShowOption = true;
-     bool _readyToExit = false;
+     bool _topicShown = true;
+     bool _topicDecided = false;
      bool _mapExitTriggered = false;
      EvtTargetCharacter _who = CHOOSE_PARTY;
 };

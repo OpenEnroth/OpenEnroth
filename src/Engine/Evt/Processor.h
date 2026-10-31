@@ -20,7 +20,11 @@ void checkDecorationEvents();
  */
 void runEvent(EvtContext context, int startStep = 0);
 
-bool npcDialogueEventProcessor(int eventId, int startStep = 0);
+/**
+ * @param eventId                       Global event behind an NPC's scripted topic.
+ * @return                              Whether the topic is listed in the NPC's dialogue.
+ */
+bool canShowTopic(int eventId);
 bool hasEventHint(int eventId);
 std::string getEventHintString(int eventId);
 
