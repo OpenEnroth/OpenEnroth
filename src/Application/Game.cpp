@@ -704,7 +704,7 @@ void Game::processQueuedMessages() {
                 } else if (std::optional<PartyPlacement> placement = destination.resolvePlacement()) {
                     placeParty(*placement);
                 } else {
-                    stayingPut = true; // See moveToMapDestination.
+                    stayingPut = true;
                 }
 
                 PlayButtonClickSound();
