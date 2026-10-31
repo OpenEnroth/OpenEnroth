@@ -159,9 +159,8 @@ void runEvent(EvtContext context, int startStep) {
         return;
     }
 
-    if (interpreter.execute(startStep)) {
+    if (interpreter.execute(startStep) == EVT_TRANSITION_STARTED)
         onMapLeave();
-    }
 }
 
 bool canShowTopic(int eventId) {

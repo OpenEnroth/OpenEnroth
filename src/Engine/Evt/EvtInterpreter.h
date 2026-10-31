@@ -27,6 +27,15 @@ struct EvtFlow {
     int target = 0; // Step to go on with, for `EVT_FLOW_JUMP`.
 };
 
+/**
+ * Whether an event started a map transition.
+ */
+enum class EvtTransition {
+    EVT_TRANSITION_NONE,    // The party stays on this map.
+    EVT_TRANSITION_STARTED, // The map's leave events are due once the event ends.
+};
+using enum EvtTransition;
+
 // EvtInterpreter
 class EvtInterpreter {
  public:
@@ -37,9 +46,9 @@ class EvtInterpreter {
 
      /**
       * @param startStep                Step to start from.
-      * @return                         Whether the event sent the party to another map.
+      * @return                         Whether the event started a map transition.
       */
-     bool execute(int startStep);
+     EvtTransition execute(int startStep);
 
      /**
       * Runs only the commands that decide whether an NPC's scripted topic is listed, `OnCanShowDialogItemCmp`,
@@ -90,7 +99,7 @@ class EvtInterpreter {
      std::vector<EvtInstruction> _events;
      bool _topicShown = true;
      bool _topicDecided = false;
-     bool _mapExitTriggered = false;
+     EvtTransition _transition = EVT_TRANSITION_NONE;
      EvtTargetCharacter _who = CHOOSE_PARTY;
 };
 
