@@ -10,7 +10,9 @@ struct EvtContext {
     EvtSource source = EVT_SOURCE_MAP;
     int eventId = 0;
     Pid objectPid; // Face or decoration that triggered the event, or empty when none did.
-    bool duringMapLoad = false; // The loading screen is still up, so status texts are dropped and an NPC dialogue waits for the first frame.
+    /** The loading screen is still up, so status texts are dropped and an NPC dialogue waits for the first frame,
+     * like Archibald's on entering MM7's Land of the Giants, out12.evt event 1. */
+    bool duringMapLoad = false;
 };
 
 /**
