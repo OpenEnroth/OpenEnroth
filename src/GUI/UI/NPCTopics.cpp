@@ -657,7 +657,7 @@ DialogueId handleScriptedNPCTopicSelection(DialogueId topic, NPCData *npcData) {
         return DIALOGUE_MASTERY_TEACHER_OFFER;
     } else {
         current_npc_text.clear();
-        runEvent({.source = EVT_SOURCE_GLOBAL, .eventId = eventId});
+        runEvent(EvtContext(EVT_SOURCE_GLOBAL, eventId));
     }
 
     return DIALOGUE_MAIN;

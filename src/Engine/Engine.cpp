@@ -569,7 +569,7 @@ void Engine::onGameViewportClick() {
         }
 
         if (pParty->hasActiveCharacter()) {
-            runEvent({.eventId = eventId, .objectPid = pid});
+            runEvent(EvtContext(EVT_SOURCE_MAP, eventId, pid));
         } else {
             // Do not interact with faces with no active character
             engine->_statusBar->setEvent(LSTR_NOBODY_IS_IN_CONDITION);
