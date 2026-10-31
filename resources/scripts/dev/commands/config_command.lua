@@ -89,11 +89,11 @@ local function listConfigs(param1, param2)
         return "No matches", false
     elseif count == 1 then
         local entry = matches[1]
-        message = message .. "section: " .. entry.section .. "\n"
-        message = message .. "name: " .. entry.name .. "\n"
-        message = message .. "description: " .. entry.description .. "\n"
-        message = message .. "default: " .. entry.default .. "\n"
-        message = message .. "value: " .. entry.value .. "\n"
+        message = "section: " .. entry.section .. "\n"
+            .. "name: " .. entry.name .. "\n"
+            .. "description: " .. entry.description .. "\n"
+            .. "default: " .. entry.default .. "\n"
+            .. "value: " .. entry.value .. "\n"
     else
         local sectionHeader = nil
         for _, entry in pairs(matches) do
