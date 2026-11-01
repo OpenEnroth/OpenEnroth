@@ -19,8 +19,8 @@
 
 #include "Io/KeyboardInputHandler.h"
 
-GUIWindow_BranchlessDialogue::GUIWindow_BranchlessDialogue(EvtOpcode event, std::optional<EvtContinuation> continuation)
-    : GUIWindow(WINDOW_GREETING_NPC, {0, 0}, render->GetRenderDimensions()), _event(event), _continuation(continuation) {
+GUIWindow_BranchlessDialogue::GUIWindow_BranchlessDialogue(EvtOpcode opcode, std::optional<EvtContinuation> continuation)
+    : GUIWindow(WINDOW_GREETING_NPC, {0, 0}, render->GetRenderDimensions()), _opcode(opcode), _continuation(continuation) {
     prev_screen_type = current_screen_type;
     keyboardInputHandler->StartTextInput(TEXT_INPUT_TEXT, 15, this);
     current_screen_type = SCREEN_BRANCHLESS_NPC_DIALOG;
@@ -54,7 +54,7 @@ void GUIWindow_BranchlessDialogue::Update() {
         return;
     }
 
-    if (pGUIWindow_BranchlessDialogue->event() == EVENT_InputString) {
+    if (pGUIWindow_BranchlessDialogue->opcode() == EVENT_InputString) {
         auto str = fmt::format("{} {}", GameUI_StatusBar_GetInput(), keyboardInputHandler->GetTextInput());
         pGUIWindow_BranchlessDialogue->DrawText(pFontLucida, {13, 357}, colorTable.White, str);
         pGUIWindow_BranchlessDialogue->DrawFlashingInputCursor(pFontLucida->GetLineWidth(str) + 13, 357, pFontLucida);
@@ -76,11 +76,11 @@ void GUIWindow_BranchlessDialogue::Update() {
     }
 }
 
-void startBranchlessDialogue(EvtOpcode type, std::optional<EvtContinuation> continuation) {
+void startBranchlessDialogue(EvtOpcode opcode, std::optional<EvtContinuation> continuation) {
     if (!pGUIWindow_BranchlessDialogue) {
         animTimer->setPaused(true);
         gameTimer->setPaused(true);
-        pGUIWindow_BranchlessDialogue = std::make_unique<GUIWindow_BranchlessDialogue>(type, continuation);
+        pGUIWindow_BranchlessDialogue = std::make_unique<GUIWindow_BranchlessDialogue>(opcode, continuation);
     }
 }
 
