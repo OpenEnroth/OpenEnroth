@@ -40,7 +40,9 @@ modules:
       - -DSDL_EXAMPLES=OFF
     sources:
       - type: archive
-        url: https://libsdl.org/release/SDL3-3.2.22.tar.gz
+        url: https://github.com/libsdl-org/SDL/releases/download/release-3.2.22/SDL3-3.2.22.tar.gz
+        mirror-urls:
+          - https://libsdl.org/release/SDL3-3.2.22.tar.gz
         sha256: f29d00cbcee273c0a54f3f32f86bf5c595e8823a96b1d92a145aac40571ebfcc
 
   - name: openenroth
