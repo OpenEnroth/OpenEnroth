@@ -21,13 +21,3 @@ struct EvtContext {
      * like Archibald's on entering MM7's Land of the Giants, out12.evt event 1. */
     bool duringMapLoad = false;
 };
-
-/**
- * An event paused on a dialogue.
- */
-struct EvtContinuation {
-    EvtContinuation(EvtContext context, int step) : context(context), step(step) {}
-
-    EvtContext context;
-    int step; // Step the event resumes from.
-};

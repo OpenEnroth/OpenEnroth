@@ -3,6 +3,7 @@
 #include <vector>
 
 #include "Engine/Evt/EvtContext.h"
+#include "Engine/Evt/EvtContinuation.h"
 #include "Engine/Evt/EvtInstruction.h"
 #include "Engine/Evt/EvtProgram.h"
 
