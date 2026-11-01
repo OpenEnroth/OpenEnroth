@@ -58,27 +58,19 @@ void checkDecorationEvents() {
     for (int decorationId : decorationsWithEvents) {
         const LevelDecoration &decoration = pLevelDecorations[decorationId];
 
-        if (decoration.uFlags & LEVEL_DECORATION_TRIGGERED_BY_TOUCH) {
-            if ((decoration.vPosition - pParty->pos).length() < decoration.uTriggerRange) {
+        if (decoration.uFlags & LEVEL_DECORATION_TRIGGERED_BY_TOUCH)
+            if ((decoration.vPosition - pParty->pos).length() < decoration.uTriggerRange)
                 runEvent(EvtContext(EVT_SOURCE_MAP, decoration.uEventID, Pid(OBJECT_Decoration, decorationId)));
-            }
-        }
 
-        if (decoration.uFlags & LEVEL_DECORATION_TRIGGERED_BY_MONSTER) {
-            for (const Actor &actor : pActors) {
-                if ((decoration.vPosition - actor.pos).length() < decoration.uTriggerRange) {
+        if (decoration.uFlags & LEVEL_DECORATION_TRIGGERED_BY_MONSTER)
+            for (const Actor &actor : pActors)
+                if ((decoration.vPosition - actor.pos).length() < decoration.uTriggerRange)
                     runEvent(EvtContext(EVT_SOURCE_MAP, decoration.uEventID));
-                }
-            }
-        }
 
-        if (decoration.uFlags & LEVEL_DECORATION_TRIGGERED_BY_OBJECT) {
-            for (int i = 0; i < pSpriteObjects.size(); i++) {
-                if ((decoration.vPosition - pSpriteObjects[i].vPosition).length() < decoration.uTriggerRange) {
+        if (decoration.uFlags & LEVEL_DECORATION_TRIGGERED_BY_OBJECT)
+            for (const SpriteObject &object : pSpriteObjects)
+                if ((decoration.vPosition - object.vPosition).length() < decoration.uTriggerRange)
                     runEvent(EvtContext(EVT_SOURCE_MAP, decoration.uEventID));
-                }
-            }
-        }
     }
 }
 
