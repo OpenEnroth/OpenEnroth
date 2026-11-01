@@ -94,18 +94,18 @@ void Io::KeyboardInputHandler::GenerateActions(bool isPaused) {
         }
 
         if (isTriggered) {
-            if (isPaused)
+            if (isPaused) {
                 ProcessPausedAction(action);
-            else
+            } else {
                 ProcessGameplayAction(action);
+            }
         }
     }
 
     if (resettimer) {
         this->keydelaytimer = gameTimer->dt();
-    } else {
-        if (this->keydelaytimer < DELAY_TOGGLE_TIME_FIRST)
-            this->keydelaytimer += gameTimer->dt();
+    } else if (this->keydelaytimer < DELAY_TOGGLE_TIME_FIRST) {
+        this->keydelaytimer += gameTimer->dt();
     }
 }
 

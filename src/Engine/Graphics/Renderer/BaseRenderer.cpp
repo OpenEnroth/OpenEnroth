@@ -285,10 +285,11 @@ void BaseRenderer::TransformBillboard(const RenderBillboard *pBillboard, int par
             diffuse = Color(diffuse.r / 2, diffuse.g / 2, diffuse.b / 2, 0);
     }
 
-    if (opaquetest)
+    if (opaquetest) {
         billboard->opacity = RenderBillboardD3D::Opaque_3;
-    else
+    } else {
         billboard->opacity = RenderBillboardD3D::Transparent;
+    }
 
     float point_x = sprite->width() / 2;
     float point_y = sprite->height();
@@ -558,10 +559,11 @@ Sizei BaseRenderer::GetPresentDimensions() {
 void BaseRenderer::updateRenderDimensions() {
     outputPresent = window->size();
 
-    if (config->graphics.RenderFilter.value() != 0)
+    if (config->graphics.RenderFilter.value() != 0) {
         outputRender = {config->graphics.RenderWidth.value(), config->graphics.RenderHeight.value()};
-    else
+    } else {
         outputRender = outputPresent;
+    }
 
     // Set viewport from config values (inclusive TL/BR coordinates).
     int tlX = config->graphics.ViewPortX1.value();  // 8 in vanilla

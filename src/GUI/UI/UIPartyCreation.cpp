@@ -104,10 +104,11 @@ void CreateParty_EventLoop() {
         {
             Sex sex = pParty->pCharacters[param].GetSexByVoice();
             do {
-                if (pParty->pCharacters[param].uVoiceID == 0)
+                if (pParty->pCharacters[param].uVoiceID == 0) {
                     pParty->pCharacters[param].uVoiceID = 19;
-                else
+                } else {
                     --pParty->pCharacters[param].uVoiceID;
+                }
             } while (pParty->pCharacters[param].GetSexByVoice() != sex);
             auto pButton = pCreationUI_BtnPressLeft2[param];
 
@@ -133,10 +134,11 @@ void CreateParty_EventLoop() {
         }
         case UIMSG_PlayerCreation_FacePrev:
             // pPlayer = &pParty->pCharacters[pParam];
-            if (!pParty->pCharacters[param].uCurrentFace)
+            if (!pParty->pCharacters[param].uCurrentFace) {
                 pParty->pCharacters[param].uCurrentFace = 19;
-            else
+            } else {
                 pParty->pCharacters[param].uCurrentFace -= 1;
+            }
             pParty->pCharacters[param].uVoiceID =
                 pParty->pCharacters[param].uCurrentFace;
             pParty->pCharacters[param].SetInitialStats();
