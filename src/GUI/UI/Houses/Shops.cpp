@@ -1012,10 +1012,11 @@ void GUIWindow_Shop::houseScreenClick() {
               case HOUSE_TYPE_WEAPON_SHOP:
                 testx = (pt.x - 30) / 70;
                 if (testx >= 0 && testx < 6) {
-                    if (_currentDialogue == DIALOGUE_SHOP_BUY_STANDARD)
+                    if (_currentDialogue == DIALOGUE_SHOP_BUY_STANDARD) {
                         boughtItem = &pParty->standartItemsInShops[houseId()][testx];
-                    else
+                    } else {
                         boughtItem = &pParty->specialItemsInShops[houseId()][testx];
+                    }
 
                     if (boughtItem->itemId != ITEM_NULL) {
                         testpos = ((60 - (shop_ui_items_in_store[testx]->width() / 2)) + testx * 70);
@@ -1035,10 +1036,11 @@ void GUIWindow_Shop::houseScreenClick() {
                         testx += 4;
                     }
 
-                    if (_currentDialogue == DIALOGUE_SHOP_BUY_STANDARD)
+                    if (_currentDialogue == DIALOGUE_SHOP_BUY_STANDARD) {
                         boughtItem = &pParty->standartItemsInShops[houseId()][testx];
-                    else
+                    } else {
                         boughtItem = &pParty->specialItemsInShops[houseId()][testx];
+                    }
 
                     if (boughtItem->itemId != ITEM_NULL) {
                         if (testx >= 4) {
@@ -1065,10 +1067,11 @@ void GUIWindow_Shop::houseScreenClick() {
                         testx += 6;
                     }
 
-                    if (_currentDialogue == DIALOGUE_SHOP_BUY_STANDARD)
+                    if (_currentDialogue == DIALOGUE_SHOP_BUY_STANDARD) {
                         boughtItem = &pParty->standartItemsInShops[houseId()][testx];
-                    else
+                    } else {
                         boughtItem = &pParty->specialItemsInShops[houseId()][testx];
+                    }
 
                     if (boughtItem->itemId != ITEM_NULL) {
                         if (pt.y > 152) {
@@ -1153,10 +1156,11 @@ void GUIWindow_Shop::processStealingResult(int stealingResult, int fineToAdd) { 
                 }
             }
         }
-        if (stealingResult == 1)
+        if (stealingResult == 1) {
             reputationDelta = 2;
-        else
+        } else {
             reputationDelta = 1;
+        }
 
         // only ban when caught
         pParty->PartyTimes.shopBanTimes[houseId()] = pParty->GetPlayingTime() + Duration::fromDays(1);

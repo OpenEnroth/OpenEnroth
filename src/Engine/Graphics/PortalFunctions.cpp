@@ -14,10 +14,11 @@ int _49CE9E_sub0_x(RenderVertexSoft *pVertices, unsigned int uNumVertices,
 
     float temp_val;
     for (unsigned i = 0; i < uNumVertices; ++i) {
-        if (pVertices[i].vWorldPosition.x <= test_val)
+        if (pVertices[i].vWorldPosition.x <= test_val) {
             temp_val = test_val - pVertices[i].vWorldPosition.x;
-        else
+        } else {
             temp_val = pVertices[i].vWorldPosition.x - test_val;
+        }
 
         if (temp_val < max_val) {
             max_val = temp_val;
@@ -34,10 +35,11 @@ int _49CE9E_sub0_y(RenderVertexSoft *pVertices, unsigned int uNumVertices,
 
     float temp_val;
     for (unsigned i = 0; i < uNumVertices; ++i) {
-        if (pVertices[i].vWorldPosition.y <= test_val)
+        if (pVertices[i].vWorldPosition.y <= test_val) {
             temp_val = test_val - pVertices[i].vWorldPosition.y;
-        else
+        } else {
             temp_val = pVertices[i].vWorldPosition.y - test_val;
+        }
 
         if (temp_val < max_val) {
             max_val = temp_val;
@@ -54,10 +56,11 @@ int _49CE9E_sub0_z(RenderVertexSoft *pVertices, unsigned int uNumVertices,
 
     float temp_val;
     for (unsigned i = 0; i < uNumVertices; ++i) {
-        if (pVertices[i].vWorldPosition.z <= test_val)
+        if (pVertices[i].vWorldPosition.z <= test_val) {
             temp_val = test_val - pVertices[i].vWorldPosition.z;
-        else
+        } else {
             temp_val = pVertices[i].vWorldPosition.z - test_val;
+        }
 
         if (temp_val < max_val) {
             max_val = temp_val;
