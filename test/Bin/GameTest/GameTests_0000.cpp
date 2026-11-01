@@ -24,6 +24,8 @@
 #include "Engine/Objects/SpriteObject.h"
 #include "Engine/Spells/CastSpellInfo.h"
 
+#include "Media/MediaPlayer.h"
+
 #include "Utility/ScopeGuard.h"
 
 #include "GameTestCommon.h"
@@ -101,10 +103,37 @@ GAME_TEST(Issues, Issue201) {
     auto healthTape = tapes.totalHp();
     auto mapTape = tapes.map();
     auto daysTape = tapes.custom([] { return pParty->GetPlayingTime().toDays(); });
-    test.playTraceFromTestData("issue_201.mm7", "issue_201.json");
+    auto screenTape = tapes.screen();
+    engine->config->debug.NoMargaret.setValue(true); // Her tour would stop the party at the door.
+    game.startNewGame();
+    engine->config->debug.NoVideo.setValue(false);
+    pParty->_questBits.set(QBIT_EMERALD_ISLAND_SCAVENGER_HUNT_WON); // Lord Markham hands the ship to the winners.
+    pParty->pCharacters[0].health = 1;
+    test.startTaping();
+    game.teleportTo(MAP_EMERALD_ISLAND, Vec3f(16154, 8560, 128), 180); // In front of Markham's Headquarters.
+    game.pressAndReleaseKey(PlatformKey::KEY_SPACE);
+    game.tick();
+    game.pressGuiButton("House_Npc0"); // Lord Markham.
+    game.tick();
+    game.pressGuiButton("HouseNpcDialogue_Option0"); // Congratulations.
+    game.tick();
+    game.pressGuiButton("HouseNpcDialogue_Option0"); // Your ship.
+    game.tick();
+    game.pressAndReleaseKey(PlatformKey::KEY_ESCAPE);
+    game.tick();
+    game.pressAndReleaseKey(PlatformKey::KEY_ESCAPE);
+    game.tick();
+    game.teleportTo(MAP_EMERALD_ISLAND, Vec3f(11008, 34, 193), 90); // In front of the Lady Margaret.
+    game.pressAndReleaseKey(PlatformKey::KEY_SPACE);
+    game.tick();
+    game.pressGuiButton("HouseNpcDialogue_Option0"); // Cast off!
+    game.tick(); // The sailing movie starts.
+    game.pressAndReleaseKey(PlatformKey::KEY_ESCAPE); // Skips the movie.
+    game.tick(2); // The party arrives in Harmondale.
     EXPECT_GT(healthTape.delta(), 0); // Party should heal.
     EXPECT_EQ(mapTape, tape(MAP_EMERALD_ISLAND, MAP_HARMONDALE)); // Emerald isle to Harmondale.
     EXPECT_EQ(daysTape.delta(), 7); // Time should advance by a week.
+    EXPECT_CONTAINS(screenTape, SCREEN_VIDEO); // The sailing movie should play.
 }
 
 GAME_TEST(Issues, Issue202) {
