@@ -225,6 +225,11 @@ void EngineController::goToMainMenu() {
         ticker.tick();
 }
 
+void EngineController::exitGame() {
+    goToMainMenu();
+    pressGuiButton("MainMenu_ExitGame");
+}
+
 void EngineController::startNewGame() {
     goToMainMenu();
     pressGuiButton("MainMenu_NewGame");
