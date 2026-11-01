@@ -191,7 +191,7 @@ bool EvtInterpreter::canShowTopic() {
     while (step != -1)
         step = checkTopicStep(step);
 
-    return _topicShown;
+    return _canShowTopic;
 }
 
 bool EvtInterpreter::isValid() {
@@ -679,7 +679,7 @@ int EvtInterpreter::checkTopicStep(int step) {
                 return ir->target_step;
         break;
     case EVENT_SetCanShowDialogItem:
-        _topicShown = ir->data.can_show_npc_dialogue;
+        _canShowTopic = ir->data.can_show_npc_dialogue;
         break;
     case EVENT_CanShowTopic_IsActorKilled:
         // TODO: enconunter and process
