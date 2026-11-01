@@ -654,13 +654,12 @@ int EvtInterpreter::executeStep(int step) {
 
     EvtFlow flow = executeInstruction(*ir);
     switch (flow.type) {
-        case EVT_FLOW_NEXT: return step + 1;
-        case EVT_FLOW_JUMP: return flow.target;
-        case EVT_FLOW_STOP:
-        case EVT_FLOW_YIELD: return -1; // The dialogue the instruction opened holds the rest of the event.
+    default: assert(false); [[fallthrough]];
+    case EVT_FLOW_STOP:
+    case EVT_FLOW_YIELD: return -1; // The dialogue the instruction opened holds the rest of the event.
+    case EVT_FLOW_NEXT: return step + 1;
+    case EVT_FLOW_JUMP: return flow.target;
     }
-    assert(false);
-    return -1;
 }
 
 int EvtInterpreter::checkTopicStep(int step) {
@@ -669,31 +668,31 @@ int EvtInterpreter::checkTopicStep(int step) {
         return -1;
 
     switch (ir->opcode) {
-        case EVENT_Exit:
-        case EVENT_EndCanShowDialogItem:
-            return -1;
-        case EVENT_OnCanShowDialogItemCmp:
-            _topicDecided = true;
-            if (!validateVariableValue(*ir))
-                break;
-            for (Character &player : pParty->pCharacters)
-                if (compareEvtVariable(player, ir->data.variable_descr.type, ir->data.variable_descr.value))
-                    return ir->target_step;
+    case EVENT_Exit:
+    case EVENT_EndCanShowDialogItem:
+        return -1;
+    case EVENT_OnCanShowDialogItemCmp:
+        _topicDecided = true;
+        if (!validateVariableValue(*ir))
             break;
-        case EVENT_SetCanShowDialogItem:
-            _topicDecided = true;
-            _topicShown = ir->data.can_show_npc_dialogue;
-            break;
-        case EVENT_CanShowTopic_IsActorKilled:
-            // TODO: enconunter and process
-            assert(false);
-#if 0
-            if (Actor::isActorKilled(ir->data.actor_descr.policy, ir->data.actor_descr.param, ir->data.actor_descr.num))
+        for (Character &player : pParty->pCharacters)
+            if (compareEvtVariable(player, ir->data.variable_descr.type, ir->data.variable_descr.value))
                 return ir->target_step;
+        break;
+    case EVENT_SetCanShowDialogItem:
+        _topicDecided = true;
+        _topicShown = ir->data.can_show_npc_dialogue;
+        break;
+    case EVENT_CanShowTopic_IsActorKilled:
+        // TODO: enconunter and process
+        assert(false);
+#if 0
+        if (Actor::isActorKilled(ir->data.actor_descr.policy, ir->data.actor_descr.param, ir->data.actor_descr.num))
+            return ir->target_step;
 #endif
-            break;
-        default:
-            break;
+        break;
+    default:
+        break;
     }
     return step + 1;
 }
