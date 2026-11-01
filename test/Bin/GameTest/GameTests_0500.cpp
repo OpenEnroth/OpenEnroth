@@ -1085,7 +1085,9 @@ GAME_TEST(Issues, Issue840) {
     game.teleportTo(MAP_ERATHIA, Vec3f(-528, 5710, 1440), 90); // In front of the guild's door.
     game.pressAndReleaseKey(PlatformKey::KEY_SPACE);
     game.tick();
-    pMediaPlayer->Unload(); // An install without the movie file has none loaded here.
+    // The crash needed the guild to have no movie loaded, as happens when its video file is missing. Entering the guild
+    // has just loaded the movie, so stop and drop it.
+    pMediaPlayer->Unload();
     test.startTaping();
     game.pressGuiButton("HouseDialogue_Option0"); // Buy Spells.
     game.tick();
