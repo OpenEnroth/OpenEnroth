@@ -186,7 +186,7 @@ void onMapLoad() {
     timerGuard = pParty->GetPlayingTime();
 
     for (EventTrigger &triggers : onMapLoadTriggers)
-        runEvent(EvtContext(EVT_SOURCE_MAP, triggers.eventId, Pid(), true), triggers.eventStep + 1);
+        runEvent(EvtContext(EVT_SOURCE_MAP, triggers.eventId, Pid(), /* duringMapLoad = */ true), triggers.eventStep + 1);
 }
 
 void onMapLeave() {

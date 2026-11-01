@@ -8,7 +8,6 @@
  */
 struct EvtContext {
     EvtContext() = default;
-    // TODO(captainurist): replace the duringMapLoad bool, the bare true in onMapLoad doesn't read.
     EvtContext(EvtSource source, int eventId, Pid objectPid = Pid(), bool duringMapLoad = false)
         : source(source), eventId(eventId), objectPid(objectPid), duringMapLoad(duringMapLoad) {}
 
