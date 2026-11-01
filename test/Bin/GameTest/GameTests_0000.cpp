@@ -128,12 +128,12 @@ GAME_TEST(Issues, Issue201) {
     game.tick();
     game.pressGuiButton("HouseNpcDialogue_Option0"); // Cast off!
     game.tick(); // The sailing movie starts.
-    game.pressAndReleaseKey(PlatformKey::KEY_ESCAPE);
+    game.pressAndReleaseKey(PlatformKey::KEY_ESCAPE); // Skips the movie.
     game.tick(2); // The party arrives in Harmondale.
     EXPECT_GT(healthTape.delta(), 0); // Party should heal.
     EXPECT_EQ(mapTape, tape(MAP_EMERALD_ISLAND, MAP_HARMONDALE)); // Emerald isle to Harmondale.
     EXPECT_EQ(daysTape.delta(), 7); // Time should advance by a week.
-    EXPECT_CONTAINS(screenTape, SCREEN_VIDEO);
+    EXPECT_CONTAINS(screenTape, SCREEN_VIDEO); // The sailing movie should play.
 }
 
 GAME_TEST(Issues, Issue202) {
