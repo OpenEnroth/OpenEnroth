@@ -14,7 +14,6 @@
 #include "Engine/Graphics/Indoor.h"
 #include "Engine/Graphics/Viewport.h"
 #include "Engine/Graphics/Renderer/Renderer.h"
-#include "Engine/Objects/Decoration.h"
 #include "Engine/Localization.h"
 #include "Engine/Objects/Actor.h"
 #include "Engine/Objects/NPC.h"
@@ -600,11 +599,8 @@ std::vector<DialogueId> prepareScriptedNPCDialogueTopics(NPCData *npcData) {
     // TODO(Nik-RE-dev): place NPC events in array
 #define ADD_NPC_SCRIPTED_DIALOGUE(EVENT_ID, MSG_PARAM) \
     if (EVENT_ID) { \
-        if (optionList.size() < 4) { \
-            int res = npcDialogueEventProcessor(EVENT_ID); \
-            if (res == 1 || res == 2) { \
-                optionList.push_back(MSG_PARAM); \
-            } \
+        if (optionList.size() < 4 && canShowTopic(EVENT_ID)) { \
+            optionList.push_back(MSG_PARAM); \
         } \
     }
 
@@ -660,10 +656,8 @@ DialogueId handleScriptedNPCTopicSelection(DialogueId topic, NPCData *npcData) {
         topicEventId = eventId;
         return DIALOGUE_MASTERY_TEACHER_OFFER;
     } else {
-        activeLevelDecoration = (LevelDecoration *)1;
         current_npc_text.clear();
-        eventProcessor(eventId, Pid(), 1);
-        activeLevelDecoration = nullptr;
+        runEvent(EvtContext(EVT_SOURCE_GLOBAL, eventId));
     }
 
     return DIALOGUE_MAIN;

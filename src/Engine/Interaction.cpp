@@ -60,7 +60,7 @@ void InteractWithActor(int id) {
         if (pNPCStats->pGroups[pActors[id].group]) {
             if (!pNPCStats->pCatchPhrases[pNPCStats->pGroups[pActors[id].group]].empty()) {
                 branchless_dialogue_str = pNPCStats->pCatchPhrases[pNPCStats->pGroups[pActors[id].group]];
-                startBranchlessDialogue(0, 0, EVENT_Invalid);
+                startBranchlessDialogue(EVENT_Invalid, std::nullopt);
             }
         }
     }
@@ -68,13 +68,12 @@ void InteractWithActor(int id) {
 
 void DecorationInteraction(int id, Pid pid) {
     if (pLevelDecorations[id].uEventID) {
-        eventProcessor(pLevelDecorations[id].uEventID, pid, 1);
+        runEvent(EvtContext(EVT_SOURCE_MAP, pLevelDecorations[id].uEventID, pid));
         pLevelDecorations[id].uFlags |= LEVEL_DECORATION_VISIBLE_ON_MAP;
     } else {
         if (pLevelDecorations[id].IsInteractive()) {
-            activeLevelDecoration = &pLevelDecorations[id];
-            eventProcessor(engine->_persistentVariables.decorVars[pLevelDecorations[id].eventVarId] + 380, Pid(), 1); // 380 is the MM7 dispatch base, see EVENT_ChangeEvent.
-            activeLevelDecoration = nullptr;
+            int eventId = engine->_persistentVariables.decorVars[pLevelDecorations[id].eventVarId] + 380; // 380 is the MM7 dispatch base, see EVENT_ChangeEvent.
+            runEvent(EvtContext(EVT_SOURCE_GLOBAL, eventId, pid));
         }
     }
 }
@@ -134,7 +133,7 @@ void DoInteractionWithTopmostZObject(Pid pid) {
                 return;
 
             if (pParty->hasActiveCharacter()) {
-                eventProcessor(face.eventId, pid, 1);
+                runEvent(EvtContext(EVT_SOURCE_MAP, face.eventId, pid));
             } else {
                 engine->_statusBar->setEvent(LSTR_NOBODY_IS_IN_CONDITION);
             }

@@ -123,8 +123,9 @@ void GUIWindow_Travel::Update() {
 }
 
 //----- (00444839) --------------------------------------------------------
-GUIWindow_IndoorEntryExit::GUIWindow_IndoorEntryExit(HouseId transitionHouse, unsigned exit_pic_id, const MapDestination &destination, std::string_view locationName)
-    : GUIWindow_Transition(WINDOW_INDOOR_ENTRY_EXIT, SCREEN_INPUT_BLV), _destination(destination) {
+GUIWindow_IndoorEntryExit::GUIWindow_IndoorEntryExit(HouseId transitionHouse, unsigned exit_pic_id, const MapDestination &destination, std::string_view locationName,
+                                                     EvtContinuation continuation)
+    : GUIWindow_Transition(WINDOW_INDOOR_ENTRY_EXIT, SCREEN_INPUT_BLV), _destination(destination), _continuation(continuation) {
     std::string hint;
 
     _transitionStringId = std::to_underlying(transitionHouse); // TODO(Nik-RE-dev): is this correct?

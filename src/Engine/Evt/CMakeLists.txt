@@ -13,6 +13,8 @@ set(ENGINE_EVENTS_HEADERS
         EvtProgram.h
         EvtVariables.h
         EvtInterpreter.h
+        EvtContext.h
+        EvtContinuation.h
         EvtEnums.h
         Processor.h
         EvtEnumFunctions.h)

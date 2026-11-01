@@ -1,6 +1,7 @@
 #include <string>
 #include <tuple>
 #include <utility>
+#include <vector>
 
 #include "Testing/Game/GameTest.h"
 
@@ -12,6 +13,7 @@
 #include "Engine/mm7_data.h"
 #include "Engine/Data/AwardEnums.h"
 #include "Engine/Data/HouseEnums.h"
+#include "Engine/Evt/EvtProgram.h"
 #include "Engine/Evt/EvtVariables.h"
 #include "Engine/Graphics/Image.h"
 #include "Engine/Graphics/Indoor.h"
@@ -21,6 +23,7 @@
 #include "Engine/Objects/SpriteObject.h"
 #include "Engine/Resources/EngineFileSystem.h"
 #include "Engine/Tables/DecorationTable.h"
+#include "Engine/Tables/MapTable.h"
 #include "Engine/Tables/NPCTable.h"
 
 #include "GUI/GUIProgressBar.h"
@@ -34,6 +37,17 @@
 #include "Media/Audio/SoundList.h"
 
 #include "GameTestCommon.h"
+
+static void scriptHiddenTombExit(std::vector<EvtInstruction> script) {
+    // Points the exit at a new event made of the given commands, in order.
+    assert(engine->_localEventMap.instruction(pIndoor->faces[85].eventId, 0).opcode == EVENT_MoveToMap);
+    int eventId = 9000;
+    for (int step = 0; step < script.size(); step++) {
+        script[step].step = step;
+        engine->_localEventMap.add(eventId, script[step]);
+    }
+    pIndoor->faces[85].eventId = eventId; // The exit.
+}
 
 static AccessibleVector<std::string> soundNames(const TestMultiTape<SoundId> &soundsTape) {
     return soundsTape.flatten().map([](SoundId id) { return pSoundList->soundInfo(id)->name; });
@@ -932,6 +946,78 @@ GAME_TEST(Issues, Issue2834) {
     EXPECT_EQ(golemHeadTape, tape(0, 1));
     EXPECT_EQ(golemHeadPlacedTape, tape(true, false));
     EXPECT_EQ(abbeyHeadPlacedTape, tape(false, true));
+}
+
+GAME_TEST(Prs, Pr2876a) {
+    // An event going on from a branchless dialogue into a transition dialogue lost the transition dialogue. MM6's
+    // outd3.evt event 43 does this, so the test gives the Hidden Tomb's exit the same shape.
+    auto screenTape = tapes.screen();
+    auto mapTape = tapes.map();
+    game.startNewGame();
+    game.teleportTo(MAP_HIDDEN_TOMB, Vec3f(-300, 64, 1), 0); // In front of the exit.
+    EvtInstruction moveToMap(EVENT_MoveToMap);
+    moveToMap.data.move_map_descr.exit_pic_id = 1; // Any exit picture makes MoveToMap open the transition dialogue instead of leaving at once.
+    moveToMap.str = pMapTable->pInfos[MAP_ERATHIA].fileName;
+    scriptHiddenTombExit({EvtInstruction(EVENT_PressAnyKey), moveToMap});
+    test.startTaping();
+    game.pressAndReleaseKey(PlatformKey::KEY_SPACE);
+    game.tick();
+    game.pressAndReleaseKey(PlatformKey::KEY_ESCAPE);
+    game.tick();
+    game.pressGuiButton("Transition_Yes");
+    game.skipLoadingScreen();
+    EXPECT_EQ(screenTape, tape(SCREEN_BRANCHLESS_NPC_DIALOG, SCREEN_INPUT_BLV, SCREEN_GAME));
+    EXPECT_EQ(mapTape, tape(MAP_HIDDEN_TOMB, MAP_ERATHIA));
+}
+
+GAME_TEST(Prs, Pr2876b) {
+    // An event with two branchless dialogues in a row left the second one open on the game screen, where nothing could
+    // close it. MM6's outd3.evt event 210 does this, so the test gives the Hidden Tomb's exit the same shape.
+    auto screenTape = tapes.screen();
+    auto goldTape = tapes.gold();
+    auto dialogueTape = tapes.custom([] { return pGUIWindow_BranchlessDialogue != nullptr; });
+    auto pausedTape = tapes.custom([] { return gameTimer->isPaused(); });
+    game.startNewGame();
+    game.teleportTo(MAP_HIDDEN_TOMB, Vec3f(-300, 64, 1), 0); // In front of the exit.
+    EvtInstruction add(EVENT_Add);
+    add.data.variable_descr.type = VAR_FixedGold;
+    add.data.variable_descr.value = 100;
+    scriptHiddenTombExit({EvtInstruction(EVENT_PressAnyKey), add, EvtInstruction(EVENT_PressAnyKey), add});
+    test.startTaping();
+    game.pressAndReleaseKey(PlatformKey::KEY_SPACE);
+    game.tick();
+    game.pressAndReleaseKey(PlatformKey::KEY_ESCAPE);
+    game.tick();
+    game.pressAndReleaseKey(PlatformKey::KEY_ESCAPE);
+    game.tick();
+    EXPECT_EQ(screenTape, tape(SCREEN_BRANCHLESS_NPC_DIALOG, SCREEN_GAME));
+    EXPECT_EQ(goldTape, tape(200, 300, 400));
+    EXPECT_EQ(dialogueTape, tape(true, false));
+    EXPECT_EQ(pausedTape, tape(true, false));
+}
+
+GAME_TEST(Prs, Pr2876c) {
+    // An event going on from a transition dialogue into a house closed the house right away. Six MM6 castle doors do
+    // this, like outd1.evt event 34, so the test gives the Hidden Tomb's exit the same shape.
+    auto screenTape = tapes.screen();
+    auto houseTape = tapes.house();
+    auto mapTape = tapes.map();
+    game.startNewGame();
+    game.teleportTo(MAP_HIDDEN_TOMB, Vec3f(-300, 64, 1), 0); // In front of the exit.
+    EvtInstruction moveToMap(EVENT_MoveToMap);
+    moveToMap.data.move_map_descr.exit_pic_id = 1; // Any exit picture makes MoveToMap open the transition dialogue instead of leaving at once.
+    moveToMap.str = "0"; // Stay on this map.
+    EvtInstruction speak(EVENT_SpeakInHouse);
+    speak.data.house_id = HOUSE_WEAPON_SHOP_EMERALD_ISLAND;
+    scriptHiddenTombExit({moveToMap, speak});
+    test.startTaping();
+    game.pressAndReleaseKey(PlatformKey::KEY_SPACE);
+    game.tick();
+    game.pressGuiButton("Transition_Yes");
+    game.tick();
+    EXPECT_EQ(screenTape, tape(SCREEN_INPUT_BLV, SCREEN_HOUSE));
+    EXPECT_EQ(houseTape, tape(HOUSE_INVALID, HOUSE_WEAPON_SHOP_EMERALD_ISLAND));
+    EXPECT_EQ(mapTape, tape(MAP_HIDDEN_TOMB));
 }
 
 GAME_TEST(Issues, Issue2881a) {

@@ -307,9 +307,8 @@ void SpriteObject::updateObjectODM(unsigned int uLayingItemID) {
             if (face->polygonType == POLYGON_Floor) {
                 pSpriteObjects[uLayingItemID].vPosition.z = pOutdoor->vertices[face->vertexIds[0]].z + 1;
                 if (pSpriteObjects[uLayingItemID].vVelocity.xy().lengthSqr() >= 400) {
-                    if (face->attributes & FACE_TriggerByObject) {
-                        eventProcessor(face->eventId, Pid(), 1);
-                    }
+                    if (face->attributes & FACE_TriggerByObject)
+                        runEvent(EvtContext(EVT_SOURCE_MAP, face->eventId));
                 } else {
                     pSpriteObjects[uLayingItemID].vVelocity = Vec3f(0, 0, 0);
                 }
@@ -326,9 +325,8 @@ void SpriteObject::updateObjectODM(unsigned int uLayingItemID) {
                     newZVel = 0.48828125f * newZVel;
                 }
                 pSpriteObjects[uLayingItemID].vVelocity.z += newZVel;
-                if (face->attributes & FACE_TriggerByObject) {
-                    eventProcessor(face->eventId, Pid(), 1);
-                }
+                if (face->attributes & FACE_TriggerByObject)
+                    runEvent(EvtContext(EVT_SOURCE_MAP, face->eventId));
             }
         }
         pSpriteObjects[uLayingItemID].vVelocity *= 0.89263916f; // was 58500 fp
@@ -463,9 +461,8 @@ LABEL_25:
                         newZVel = 0.48828125f * newZVel;
                     }
                     pSpriteObject->vVelocity.z += newZVel;
-                    if (pIndoor->faces[pidId].attributes & FACE_TriggerByObject) {
-                        eventProcessor(pIndoor->faces[pidId].eventId, Pid(), 1);
-                    }
+                    if (pIndoor->faces[pidId].attributes & FACE_TriggerByObject)
+                        runEvent(EvtContext(EVT_SOURCE_MAP, pIndoor->faces[pidId].eventId));
                     pSpriteObject->vVelocity *= 0.89263916f; // was 58500 fp
                     continue;
                 }
@@ -474,17 +471,15 @@ LABEL_25:
                     if (pSpriteObject->vVelocity.z < 10) {
                         pSpriteObject->vVelocity.z = 0;
                     }
-                    if (pIndoor->faces[pidId].attributes & FACE_TriggerByObject) {
-                        eventProcessor(pIndoor->faces[pidId].eventId, Pid(), 1);
-                    }
+                    if (pIndoor->faces[pidId].attributes & FACE_TriggerByObject)
+                        runEvent(EvtContext(EVT_SOURCE_MAP, pIndoor->faces[pidId].eventId));
                     pSpriteObject->vVelocity *= 0.89263916f; // was 58500 fp
                     continue;
                 }
                 pSpriteObject->vVelocity.z = 0;
                 if (pSpriteObject->vVelocity.xy().lengthSqr() >= 400) {
-                    if (pIndoor->faces[pidId].attributes & FACE_TriggerByObject) {
-                        eventProcessor(pIndoor->faces[pidId].eventId, Pid(), 1);
-                    }
+                    if (pIndoor->faces[pidId].attributes & FACE_TriggerByObject)
+                        runEvent(EvtContext(EVT_SOURCE_MAP, pIndoor->faces[pidId].eventId));
                     pSpriteObject->vVelocity *= 0.89263916f; // was 58500 fp
                     continue;
                 }

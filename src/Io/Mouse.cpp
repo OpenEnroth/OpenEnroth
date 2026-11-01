@@ -211,7 +211,7 @@ void Io::Mouse::UI_OnMouseLeftClick(bool isDoubleClick) {
     if (current_screen_type == SCREEN_VIDEO || isHoldingMouseRightButton())
         return;
 
-    if (pGUIWindow_BranchlessDialogue && pGUIWindow_BranchlessDialogue->event() == EVENT_PressAnyKey) {
+    if (pGUIWindow_BranchlessDialogue && pGUIWindow_BranchlessDialogue->opcode() == EVENT_PressAnyKey) {
         engine->_messageQueue->addMessageCurrentFrame(UIMSG_Escape, 0, 0);
         return;
     }

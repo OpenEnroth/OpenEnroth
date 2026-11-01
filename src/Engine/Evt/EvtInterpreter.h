@@ -2,7 +2,8 @@
 
 #include <vector>
 
-#include "Engine/Pid.h"
+#include "Engine/Evt/EvtContext.h"
+#include "Engine/Evt/EvtContinuation.h"
 #include "Engine/Evt/EvtInstruction.h"
 #include "Engine/Evt/EvtProgram.h"
 
@@ -27,25 +28,64 @@ struct EvtFlow {
     int target = 0; // Step to go on with, for `EVT_FLOW_JUMP`.
 };
 
+/**
+ * Whether an event started a map transition.
+ */
+enum class EvtTransition {
+    EVT_TRANSITION_NONE,    // The party stays on this map.
+    EVT_TRANSITION_STARTED, // The map's leave events are due once the event ends.
+};
+using enum EvtTransition;
+
 // EvtInterpreter
 class EvtInterpreter {
  public:
-     bool executeRegular(int startStep);
-     bool executeNpcDialogue(int startStep);
-
-     void prepare(const EvtProgram &eventMap, int eventId, Pid objectPid, bool canShowMessages);
-     bool isValid();
-
- protected:
-     int executeOneEvent(int step, bool isNpc);
+     /**
+      * @param context                  Event to run, and what it runs for.
+      */
+     void prepare(EvtContext context);
 
      /**
-      * @param ir                       Instruction to run, outside of NPC mode.
+      * @param startStep                Step to start from.
+      * @return                         Whether the event started a map transition.
+      */
+     [[nodiscard]] EvtTransition execute(int startStep);
+
+     /**
+      * Runs only the commands that decide whether an NPC's scripted topic is listed, `OnCanShowDialogItemCmp`,
+      * `SetCanShowDialogItem` and `EndCanShowDialogItem`, and skips the rest.
+      *
+      * @return                         Whether the topic is listed. A script that never decides lists it.
+      */
+     [[nodiscard]] bool canShowTopic();
+
+     [[nodiscard]] bool isValid();
+
+     /**
+      * @param ir                       Instruction to run.
       * @return                         Where the event goes after this instruction.
       */
-     EvtFlow executeInstruction(EvtInstruction ir);
+     [[nodiscard]] EvtFlow executeInstruction(EvtInstruction ir);
 
  private:
+     /**
+      * @param step                     Step to run.
+      * @return                         Step to run next, or -1 when the event is done.
+      */
+     [[nodiscard]] int executeStep(int step);
+
+     /**
+      * @param step                     Step to check.
+      * @return                         Step to check next, or -1 once the script has decided.
+      */
+     [[nodiscard]] int checkTopicStep(int step);
+
+     /**
+      * @param step                     Step to resume from.
+      * @return                         Continuation for the dialogue the current instruction opens.
+      */
+     [[nodiscard]] EvtContinuation continuation(int step) const;
+
      /**
       * Logs an error naming the event and step when the command's value is out of range for its variable.
       *
@@ -54,14 +94,17 @@ class EvtInterpreter {
       */
      [[nodiscard]] bool validateVariableValue(const EvtInstruction &ir) const;
 
+     /**
+      * @param step                     Step to look up.
+      * @return                         Instruction at that step, or `nullptr` if the event has none.
+      */
+     [[nodiscard]] const EvtInstruction *instructionAt(int step) const;
+
  private:
-     int _eventId = 0;
+     EvtContext _context;
      std::vector<EvtInstruction> _events;
-     Pid _objectPid = Pid();
-     bool _canShowMessages = false;
-     bool _canShowOption = true;
-     bool _readyToExit = false;
-     bool _mapExitTriggered = false;
+     bool _canShowTopic = true;
+     EvtTransition _transition = EVT_TRANSITION_NONE;
      EvtTargetCharacter _who = CHOOSE_PARTY;
 };
 
