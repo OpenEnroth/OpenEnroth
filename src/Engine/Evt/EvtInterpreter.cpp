@@ -161,6 +161,12 @@ const EvtInstruction *EvtInterpreter::instructionAt(int step) const {
     return pos == _events.end() ? nullptr : &*pos;
 }
 
+EvtContinuation EvtInterpreter::continuation(int step) const {
+    EvtContext context = _context;
+    context.duringMapLoad = false; // The loading screen is gone by the time the dialogue closes.
+    return EvtContinuation(context, step);
+}
+
 int EvtInterpreter::executeStep(int step) {
     const EvtInstruction *ir = instructionAt(step);
     if (!ir)
@@ -208,7 +214,7 @@ EvtFlow EvtInterpreter::executeInstruction(EvtInstruction ir) {
                     ir.data.move_map_descr.z = 3088;
 
                 pDialogueWindow = std::make_unique<GUIWindow_IndoorEntryExit>(ir.data.move_map_descr.house_id, ir.data.move_map_descr.exit_pic_id,
-                                                                             moveToMapDestination(ir), ir.str, EvtContinuation(_context, ir.step + 1));
+                                                                             moveToMapDestination(ir), ir.str, continuation(ir.step + 1));
                 return {EVT_FLOW_YIELD};
             }
 
@@ -407,7 +413,7 @@ EvtFlow EvtInterpreter::executeInstruction(EvtInstruction ir) {
             assert(false);
 #if 0
             game_ui_status_bar_event_string = (ir.data.text_id < engine->_levelStrings.size()) ? engine->_levelStrings[ir.data.text_id] : "";
-            startBranchlessDialogue(EVENT_InputString, EvtContinuation(_context, ir.step + 1));
+            startBranchlessDialogue(EVENT_InputString, continuation(ir.step + 1));
 #endif
             return {EVT_FLOW_STOP};
         case EVENT_StatusText:
@@ -438,7 +444,7 @@ EvtFlow EvtInterpreter::executeInstruction(EvtInstruction ir) {
             pIndoor->toggleLight(ir.data.light_descr.light_id, ir.data.light_descr.is_enable);
             break;
         case EVENT_PressAnyKey:
-            startBranchlessDialogue(EVENT_PressAnyKey, EvtContinuation(_context, ir.step + 1));
+            startBranchlessDialogue(EVENT_PressAnyKey, continuation(ir.step + 1));
             return {EVT_FLOW_YIELD};
         case EVENT_SummonItem:
             SpriteObject::dropItemAt(ir.data.summon_item_descr.sprite, Vec3f(ir.data.summon_item_descr.x, ir.data.summon_item_descr.y, ir.data.summon_item_descr.z),

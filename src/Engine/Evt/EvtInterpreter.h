@@ -60,7 +60,13 @@ class EvtInterpreter {
 
      [[nodiscard]] bool isValid();
 
- protected:
+     /**
+      * @param ir                       Instruction to run.
+      * @return                         Where the event goes after this instruction.
+      */
+     [[nodiscard]] EvtFlow executeInstruction(EvtInstruction ir);
+
+ private:
      /**
       * @param step                     Step to run.
       * @return                         Step to run next, or -1 when the event is done.
@@ -74,12 +80,11 @@ class EvtInterpreter {
      [[nodiscard]] int checkTopicStep(int step);
 
      /**
-      * @param ir                       Instruction to run.
-      * @return                         Where the event goes after this instruction.
+      * @param step                     Step to resume from.
+      * @return                         Continuation for the dialogue the current instruction opens.
       */
-     [[nodiscard]] EvtFlow executeInstruction(EvtInstruction ir);
+     [[nodiscard]] EvtContinuation continuation(int step) const;
 
- private:
      /**
       * Logs an error naming the event and step when the command's value is out of range for its variable.
       *
