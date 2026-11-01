@@ -1,6 +1,7 @@
 #include <string>
 #include <tuple>
 #include <utility>
+#include <vector>
 
 #include "Testing/Game/GameTest.h"
 
@@ -35,6 +36,22 @@
 #include "Media/Audio/SoundList.h"
 
 #include "GameTestCommon.h"
+
+static EvtInstruction instruction(EvtOpcode opcode) {
+    EvtInstruction result = EvtInstruction();
+    result.opcode = opcode;
+    return result;
+}
+
+static void scriptHiddenTombExit(std::vector<EvtInstruction> script) {
+    // Points the exit at a new event made of the given commands, in order.
+    int eventId = 9000;
+    for (int step = 0; step < script.size(); step++) {
+        script[step].step = step;
+        engine->_localEventMap.add(eventId, script[step]);
+    }
+    pIndoor->faces[85].eventId = eventId; // The exit.
+}
 
 static AccessibleVector<std::string> soundNames(const TestMultiTape<SoundId> &soundsTape) {
     return soundsTape.flatten().map([](SoundId id) { return pSoundList->soundInfo(id)->name; });
@@ -942,17 +959,10 @@ GAME_TEST(Prs, Pr2876a) {
     auto mapTape = tapes.map();
     game.startNewGame();
     game.teleportTo(MAP_HIDDEN_TOMB, Vec3f(-300, 64, 1), 0); // In front of the exit.
-    int eventId = 9000;
-    EvtInstruction press;
-    press.opcode = EVENT_PressAnyKey;
-    engine->_localEventMap.add(eventId, press);
-    EvtInstruction moveToMap = EvtInstruction();
-    moveToMap.opcode = EVENT_MoveToMap;
-    moveToMap.step = 1;
+    EvtInstruction moveToMap = instruction(EVENT_MoveToMap);
     moveToMap.data.move_map_descr.exit_pic_id = 1; // A picture makes the command ask first.
     moveToMap.str = "out03.odm"; // Erathia.
-    engine->_localEventMap.add(eventId, moveToMap);
-    pIndoor->faces[85].eventId = eventId;
+    scriptHiddenTombExit({instruction(EVENT_PressAnyKey), moveToMap});
     test.startTaping();
     game.pressAndReleaseKey(PlatformKey::KEY_SPACE);
     game.tick();
@@ -973,20 +983,10 @@ GAME_TEST(Prs, Pr2876b) {
     auto pausedTape = tapes.custom([] { return gameTimer->isPaused(); });
     game.startNewGame();
     game.teleportTo(MAP_HIDDEN_TOMB, Vec3f(-300, 64, 1), 0); // In front of the exit.
-    int eventId = 9000;
-    for (int step : {0, 2}) {
-        EvtInstruction press;
-        press.opcode = EVENT_PressAnyKey;
-        press.step = step;
-        engine->_localEventMap.add(eventId, press);
-        EvtInstruction add;
-        add.opcode = EVENT_Add;
-        add.step = step + 1;
-        add.data.variable_descr.type = VAR_FixedGold;
-        add.data.variable_descr.value = 100;
-        engine->_localEventMap.add(eventId, add);
-    }
-    pIndoor->faces[85].eventId = eventId;
+    EvtInstruction add = instruction(EVENT_Add);
+    add.data.variable_descr.type = VAR_FixedGold;
+    add.data.variable_descr.value = 100;
+    scriptHiddenTombExit({instruction(EVENT_PressAnyKey), add, instruction(EVENT_PressAnyKey), add});
     test.startTaping();
     game.pressAndReleaseKey(PlatformKey::KEY_SPACE);
     game.tick();
@@ -1008,18 +1008,12 @@ GAME_TEST(Prs, Pr2876c) {
     auto mapTape = tapes.map();
     game.startNewGame();
     game.teleportTo(MAP_HIDDEN_TOMB, Vec3f(-300, 64, 1), 0); // In front of the exit.
-    int eventId = 9000;
-    EvtInstruction moveToMap = EvtInstruction();
-    moveToMap.opcode = EVENT_MoveToMap;
+    EvtInstruction moveToMap = instruction(EVENT_MoveToMap);
     moveToMap.data.move_map_descr.exit_pic_id = 1; // A picture makes the command ask first.
     moveToMap.str = "0"; // Stay on this map.
-    engine->_localEventMap.add(eventId, moveToMap);
-    EvtInstruction speak;
-    speak.opcode = EVENT_SpeakInHouse;
-    speak.step = 1;
+    EvtInstruction speak = instruction(EVENT_SpeakInHouse);
     speak.data.house_id = HOUSE_WEAPON_SHOP_EMERALD_ISLAND;
-    engine->_localEventMap.add(eventId, speak);
-    pIndoor->faces[85].eventId = eventId;
+    scriptHiddenTombExit({moveToMap, speak});
     test.startTaping();
     game.pressAndReleaseKey(PlatformKey::KEY_SPACE);
     game.tick();
