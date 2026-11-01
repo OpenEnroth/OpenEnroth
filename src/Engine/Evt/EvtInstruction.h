@@ -18,6 +18,9 @@ class InputStream;
 
 class EvtInstruction {
  public:
+    EvtInstruction() = default;
+    explicit EvtInstruction(EvtOpcode opcode) : opcode(opcode), data() {}
+
     /**
      * @param source                    Evt file the instruction comes from, which picks the table its texts come from.
      * @return                          The instruction in readable form, for logging.

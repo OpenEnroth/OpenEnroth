@@ -38,12 +38,6 @@
 
 #include "GameTestCommon.h"
 
-static EvtInstruction instruction(EvtOpcode opcode) {
-    EvtInstruction result = EvtInstruction();
-    result.opcode = opcode;
-    return result;
-}
-
 static void scriptHiddenTombExit(std::vector<EvtInstruction> script) {
     // Points the exit at a new event made of the given commands, in order.
     assert(engine->_localEventMap.instruction(pIndoor->faces[85].eventId, 0).opcode == EVENT_MoveToMap);
@@ -961,10 +955,10 @@ GAME_TEST(Prs, Pr2876a) {
     auto mapTape = tapes.map();
     game.startNewGame();
     game.teleportTo(MAP_HIDDEN_TOMB, Vec3f(-300, 64, 1), 0); // In front of the exit.
-    EvtInstruction moveToMap = instruction(EVENT_MoveToMap);
+    EvtInstruction moveToMap(EVENT_MoveToMap);
     moveToMap.data.move_map_descr.exit_pic_id = 1; // Any exit picture makes MoveToMap open the transition dialogue instead of leaving at once.
     moveToMap.str = pMapTable->pInfos[MAP_ERATHIA].fileName;
-    scriptHiddenTombExit({instruction(EVENT_PressAnyKey), moveToMap});
+    scriptHiddenTombExit({EvtInstruction(EVENT_PressAnyKey), moveToMap});
     test.startTaping();
     game.pressAndReleaseKey(PlatformKey::KEY_SPACE);
     game.tick();
@@ -985,10 +979,10 @@ GAME_TEST(Prs, Pr2876b) {
     auto pausedTape = tapes.custom([] { return gameTimer->isPaused(); });
     game.startNewGame();
     game.teleportTo(MAP_HIDDEN_TOMB, Vec3f(-300, 64, 1), 0); // In front of the exit.
-    EvtInstruction add = instruction(EVENT_Add);
+    EvtInstruction add(EVENT_Add);
     add.data.variable_descr.type = VAR_FixedGold;
     add.data.variable_descr.value = 100;
-    scriptHiddenTombExit({instruction(EVENT_PressAnyKey), add, instruction(EVENT_PressAnyKey), add});
+    scriptHiddenTombExit({EvtInstruction(EVENT_PressAnyKey), add, EvtInstruction(EVENT_PressAnyKey), add});
     test.startTaping();
     game.pressAndReleaseKey(PlatformKey::KEY_SPACE);
     game.tick();
@@ -1010,10 +1004,10 @@ GAME_TEST(Prs, Pr2876c) {
     auto mapTape = tapes.map();
     game.startNewGame();
     game.teleportTo(MAP_HIDDEN_TOMB, Vec3f(-300, 64, 1), 0); // In front of the exit.
-    EvtInstruction moveToMap = instruction(EVENT_MoveToMap);
+    EvtInstruction moveToMap(EVENT_MoveToMap);
     moveToMap.data.move_map_descr.exit_pic_id = 1; // Any exit picture makes MoveToMap open the transition dialogue instead of leaving at once.
     moveToMap.str = "0"; // Stay on this map.
-    EvtInstruction speak = instruction(EVENT_SpeakInHouse);
+    EvtInstruction speak(EVENT_SpeakInHouse);
     speak.data.house_id = HOUSE_WEAPON_SHOP_EMERALD_ISLAND;
     scriptHiddenTombExit({moveToMap, speak});
     test.startTaping();
