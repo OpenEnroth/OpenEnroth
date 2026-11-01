@@ -224,10 +224,11 @@ void Chest::PlaceItems(int uChestID) { // only used for setup
 
 void Chest::toggleFlag(int uChestID, ChestFlag uFlag, bool bValue) {
     if (uChestID >= 0 && uChestID <= 19) {
-        if (bValue)
+        if (bValue) {
             vChests[uChestID].flags |= uFlag;
-        else
+        } else {
             vChests[uChestID].flags &= ~uFlag;
+        }
     }
 }
 

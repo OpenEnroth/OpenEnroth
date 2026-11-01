@@ -1102,12 +1102,10 @@ void ProcessPartyCollisionsODM(Vec3f *partyNewPos, Vec3f *partyInputSpeed, int *
                 if (move_in_y) partyNewPos->y = newPosLow.y;
             } else if (move_in_y) {
                 partyNewPos->y = newPosLow.y;
-            } else {
-                if (pOutdoor->pTerrain.isSlopeTooHighByPos(newPosLow) && allnewfloor <= partyNewPos->z) {
-                    // move down the hill is allowed
-                    partyNewPos->x = newPosLow.x;
-                    partyNewPos->y = newPosLow.y;
-                }
+            } else if (pOutdoor->pTerrain.isSlopeTooHighByPos(newPosLow) && allnewfloor <= partyNewPos->z) {
+                // move down the hill is allowed
+                partyNewPos->x = newPosLow.x;
+                partyNewPos->y = newPosLow.y;
             }
         }
 

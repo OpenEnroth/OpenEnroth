@@ -56,12 +56,10 @@ void InteractWithActor(int id) {
     Actor::AI_FaceObject(id, Pid::character(0), 0);
     if (pActors[id].npcId) {
         engine->_messageQueue->addMessageCurrentFrame(UIMSG_StartNPCDialogue, id, 0);
-    } else {
-        if (pNPCStats->pGroups[pActors[id].group]) {
-            if (!pNPCStats->pCatchPhrases[pNPCStats->pGroups[pActors[id].group]].empty()) {
-                branchless_dialogue_str = pNPCStats->pCatchPhrases[pNPCStats->pGroups[pActors[id].group]];
-                startBranchlessDialogue(EVENT_Invalid, std::nullopt);
-            }
+    } else if (pNPCStats->pGroups[pActors[id].group]) {
+        if (!pNPCStats->pCatchPhrases[pNPCStats->pGroups[pActors[id].group]].empty()) {
+            branchless_dialogue_str = pNPCStats->pCatchPhrases[pNPCStats->pGroups[pActors[id].group]];
+            startBranchlessDialogue(EVENT_Invalid, std::nullopt);
         }
     }
 }
@@ -70,11 +68,9 @@ void DecorationInteraction(int id, Pid pid) {
     if (pLevelDecorations[id].uEventID) {
         runEvent(EvtContext(EVT_SOURCE_MAP, pLevelDecorations[id].uEventID, pid));
         pLevelDecorations[id].uFlags |= LEVEL_DECORATION_VISIBLE_ON_MAP;
-    } else {
-        if (pLevelDecorations[id].IsInteractive()) {
-            int eventId = engine->_persistentVariables.decorVars[pLevelDecorations[id].eventVarId] + 380; // 380 is the MM7 dispatch base, see EVENT_ChangeEvent.
-            runEvent(EvtContext(EVT_SOURCE_GLOBAL, eventId, pid));
-        }
+    } else if (pLevelDecorations[id].IsInteractive()) {
+        int eventId = engine->_persistentVariables.decorVars[pLevelDecorations[id].eventVarId] + 380; // 380 is the MM7 dispatch base, see EVENT_ChangeEvent.
+        runEvent(EvtContext(EVT_SOURCE_GLOBAL, eventId, pid));
     }
 }
 
@@ -103,13 +99,11 @@ void DoInteractionWithTopmostZObject(Pid pid) {
                 return;
             if (pActors[id].aiState == Dead) {
                 pActors[id].LootActor();
-            } else {
-                if (CanInteractWithActor(id)) {
-                    if (pParty->hasActiveCharacter()) {
-                        InteractWithActor(id);
-                    } else {
-                        engine->_statusBar->setEvent(LSTR_NOBODY_IS_IN_CONDITION);
-                    }
+            } else if (CanInteractWithActor(id)) {
+                if (pParty->hasActiveCharacter()) {
+                    InteractWithActor(id);
+                } else {
+                    engine->_statusBar->setEvent(LSTR_NOBODY_IS_IN_CONDITION);
                 }
             }
             break;
