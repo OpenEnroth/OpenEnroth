@@ -103,7 +103,6 @@ class EvtInterpreter {
      EvtContext _context;
      std::vector<EvtInstruction> _events;
      bool _topicShown = true;
-     bool _topicDecided = false;
      EvtTransition _transition = EVT_TRANSITION_NONE;
      EvtTargetCharacter _who = CHOOSE_PARTY;
 };

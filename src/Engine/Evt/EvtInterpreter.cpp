@@ -191,7 +191,7 @@ bool EvtInterpreter::canShowTopic() {
     while (step != -1)
         step = checkTopicStep(step);
 
-    return !_topicDecided || _topicShown;
+    return _topicShown;
 }
 
 bool EvtInterpreter::isValid() {
@@ -672,7 +672,6 @@ int EvtInterpreter::checkTopicStep(int step) {
     case EVENT_EndCanShowDialogItem:
         return -1;
     case EVENT_OnCanShowDialogItemCmp:
-        _topicDecided = true;
         if (!validateVariableValue(*ir))
             break;
         for (Character &player : pParty->pCharacters)
@@ -680,7 +679,6 @@ int EvtInterpreter::checkTopicStep(int step) {
                 return ir->target_step;
         break;
     case EVENT_SetCanShowDialogItem:
-        _topicDecided = true;
         _topicShown = ir->data.can_show_npc_dialogue;
         break;
     case EVENT_CanShowTopic_IsActorKilled:
