@@ -263,6 +263,5 @@ void GUIWindow_Spellbook::onCloseSpellBookPage() {
     SBPageCSpellsTextureList.fill(nullptr);
     SBPageSSpellsTextureList.fill(nullptr);
 
-    if (pGUIWindow_CurrentMenu)
-        pGUIWindow_CurrentMenu->DeleteButtons();
+    DeleteButtons();
 }
