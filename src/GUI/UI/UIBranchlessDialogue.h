@@ -19,7 +19,7 @@ class GUIWindow_BranchlessDialogue : public GUIWindow {
         return _event;
     }
 
-    std::optional<EvtContinuation> continuation() const {
+    [[nodiscard]] std::optional<EvtContinuation> continuation() const {
         return _continuation;
     }
 

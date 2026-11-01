@@ -150,7 +150,7 @@ void runEvent(EvtContext context, int startStep) {
     }
 
     EvtInterpreter interpreter;
-    MM_TRACE("Executing regular event starting from step {}", startStep);
+    MM_TRACE("Executing event starting from step {}", startStep);
     interpreter.prepare(context);
 
     if (!interpreter.isValid()) {
@@ -193,15 +193,13 @@ void onMapLoad() {
 
     timerGuard = pParty->GetPlayingTime();
 
-    for (EventTrigger &triggers : onMapLoadTriggers) {
+    for (EventTrigger &triggers : onMapLoadTriggers)
         runEvent(EvtContext(EVT_SOURCE_MAP, triggers.eventId, Pid(), true), triggers.eventStep + 1);
-    }
 }
 
 void onMapLeave() {
-    for (EventTrigger &triggers : onMapLeaveTriggers) {
+    for (EventTrigger &triggers : onMapLeaveTriggers)
         runEvent(EvtContext(EVT_SOURCE_MAP, triggers.eventId), triggers.eventStep + 1);
-    }
 
     // Cleanup timers to avoid firing while map transition is in process
     onLongTimerTriggers.clear();

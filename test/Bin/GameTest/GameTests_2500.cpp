@@ -23,6 +23,7 @@
 #include "Engine/Objects/SpriteObject.h"
 #include "Engine/Resources/EngineFileSystem.h"
 #include "Engine/Tables/DecorationTable.h"
+#include "Engine/Tables/MapTable.h"
 #include "Engine/Tables/NPCTable.h"
 
 #include "GUI/GUIProgressBar.h"
@@ -45,6 +46,7 @@ static EvtInstruction instruction(EvtOpcode opcode) {
 
 static void scriptHiddenTombExit(std::vector<EvtInstruction> script) {
     // Points the exit at a new event made of the given commands, in order.
+    assert(engine->_localEventMap.instruction(pIndoor->faces[85].eventId, 0).opcode == EVENT_MoveToMap);
     int eventId = 9000;
     for (int step = 0; step < script.size(); step++) {
         script[step].step = step;
@@ -960,8 +962,8 @@ GAME_TEST(Prs, Pr2876a) {
     game.startNewGame();
     game.teleportTo(MAP_HIDDEN_TOMB, Vec3f(-300, 64, 1), 0); // In front of the exit.
     EvtInstruction moveToMap = instruction(EVENT_MoveToMap);
-    moveToMap.data.move_map_descr.exit_pic_id = 1; // A picture makes the command ask first.
-    moveToMap.str = "out03.odm"; // Erathia.
+    moveToMap.data.move_map_descr.exit_pic_id = 1; // Any exit picture makes MoveToMap open the transition dialogue instead of leaving at once.
+    moveToMap.str = pMapTable->pInfos[MAP_ERATHIA].fileName;
     scriptHiddenTombExit({instruction(EVENT_PressAnyKey), moveToMap});
     test.startTaping();
     game.pressAndReleaseKey(PlatformKey::KEY_SPACE);
@@ -1009,7 +1011,7 @@ GAME_TEST(Prs, Pr2876c) {
     game.startNewGame();
     game.teleportTo(MAP_HIDDEN_TOMB, Vec3f(-300, 64, 1), 0); // In front of the exit.
     EvtInstruction moveToMap = instruction(EVENT_MoveToMap);
-    moveToMap.data.move_map_descr.exit_pic_id = 1; // A picture makes the command ask first.
+    moveToMap.data.move_map_descr.exit_pic_id = 1; // Any exit picture makes MoveToMap open the transition dialogue instead of leaving at once.
     moveToMap.str = "0"; // Stay on this map.
     EvtInstruction speak = instruction(EVENT_SpeakInHouse);
     speak.data.house_id = HOUSE_WEAPON_SHOP_EMERALD_ISLAND;

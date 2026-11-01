@@ -156,31 +156,46 @@ static MapDestination moveToMapDestination(const EvtInstruction &ir) {
     return {};
 }
 
-const EvtInstruction *EvtInterpreter::instructionAt(int step) const {
-    auto pos = std::ranges::find(_events, step, &EvtInstruction::step);
-    return pos == _events.end() ? nullptr : &*pos;
+void EvtInterpreter::prepare(EvtContext context) {
+    _context = context;
+
+    const EvtProgram &program = context.source == EVT_SOURCE_GLOBAL ? engine->_globalEventMap : engine->_localEventMap;
+    program.dump(context.eventId, context.source);
+
+    _events.clear();
+    if (program.hasEvent(context.eventId))
+        _events = program.function(context.eventId);
 }
 
-EvtContinuation EvtInterpreter::continuation(int step) const {
-    EvtContext context = _context;
-    context.duringMapLoad = false; // The loading screen is gone by the time the dialogue closes.
-    return EvtContinuation(context, step);
+EvtTransition EvtInterpreter::execute(int startStep) {
+    assert(startStep >= 0);
+
+    if (!_context.eventId || !_events.size())
+        return EVT_TRANSITION_NONE;
+
+    int step = startStep;
+
+    _who = !pParty->hasActiveCharacter() ? CHOOSE_RANDOM : CHOOSE_ACTIVE;
+
+    while (step != -1)
+        step = executeStep(step);
+
+    return _transition;
 }
 
-int EvtInterpreter::executeStep(int step) {
-    const EvtInstruction *ir = instructionAt(step);
-    if (!ir)
-        return -1;
+bool EvtInterpreter::canShowTopic() {
+    if (!_context.eventId)
+        return false;
 
-    EvtFlow flow = executeInstruction(*ir);
-    switch (flow.type) {
-        case EVT_FLOW_NEXT: return step + 1;
-        case EVT_FLOW_JUMP: return flow.target;
-        case EVT_FLOW_STOP:
-        case EVT_FLOW_YIELD: return -1; // The dialogue the instruction opened holds the rest of the event.
-    }
-    assert(false);
-    return -1;
+    int step = 0;
+    while (step != -1)
+        step = checkTopicStep(step);
+
+    return !_topicDecided || _topicShown;
+}
+
+bool EvtInterpreter::isValid() {
+    return _events.size() > 0;
 }
 
 // TODO(captainurist): take a const reference once the MoveToMap data hacks below stop patching `ir`.
@@ -632,31 +647,20 @@ EvtFlow EvtInterpreter::executeInstruction(EvtInstruction ir) {
     return {EVT_FLOW_NEXT};
 }
 
-void EvtInterpreter::prepare(EvtContext context) {
-    _context = context;
+int EvtInterpreter::executeStep(int step) {
+    const EvtInstruction *ir = instructionAt(step);
+    if (!ir)
+        return -1;
 
-    const EvtProgram &program = context.source == EVT_SOURCE_GLOBAL ? engine->_globalEventMap : engine->_localEventMap;
-    program.dump(context.eventId, context.source);
-
-    _events.clear();
-    if (program.hasEvent(context.eventId))
-        _events = program.function(context.eventId);
-}
-
-EvtTransition EvtInterpreter::execute(int startStep) {
-    assert(startStep >= 0);
-
-    if (!_context.eventId || !_events.size())
-        return EVT_TRANSITION_NONE;
-
-    int step = startStep;
-
-    _who = !pParty->hasActiveCharacter() ? CHOOSE_RANDOM : CHOOSE_ACTIVE;
-
-    while (step != -1)
-        step = executeStep(step);
-
-    return _transition;
+    EvtFlow flow = executeInstruction(*ir);
+    switch (flow.type) {
+        case EVT_FLOW_NEXT: return step + 1;
+        case EVT_FLOW_JUMP: return flow.target;
+        case EVT_FLOW_STOP:
+        case EVT_FLOW_YIELD: return -1; // The dialogue the instruction opened holds the rest of the event.
+    }
+    assert(false);
+    return -1;
 }
 
 int EvtInterpreter::checkTopicStep(int step) {
@@ -694,19 +698,10 @@ int EvtInterpreter::checkTopicStep(int step) {
     return step + 1;
 }
 
-bool EvtInterpreter::canShowTopic() {
-    if (!_context.eventId)
-        return false;
-
-    int step = 0;
-    while (step != -1)
-        step = checkTopicStep(step);
-
-    return !_topicDecided || _topicShown;
-}
-
-bool EvtInterpreter::isValid() {
-    return _events.size() > 0;
+EvtContinuation EvtInterpreter::continuation(int step) const {
+    EvtContext context = _context;
+    context.duringMapLoad = false; // The loading screen is gone by the time the dialogue closes.
+    return EvtContinuation(context, step);
 }
 
 bool EvtInterpreter::validateVariableValue(const EvtInstruction &ir) const {
@@ -716,4 +711,9 @@ bool EvtInterpreter::validateVariableValue(const EvtInstruction &ir) const {
     MM_ERROR("Skipping step {} of evt event {}, value {} is out of range for evt variable {}",
              ir.step, _context.eventId, ir.data.variable_descr.value, std::to_underlying(ir.data.variable_descr.type));
     return false;
+}
+
+const EvtInstruction *EvtInterpreter::instructionAt(int step) const {
+    auto pos = std::ranges::find(_events, step, &EvtInstruction::step);
+    return pos == _events.end() ? nullptr : &*pos;
 }

@@ -1,14 +1,14 @@
 #pragma once
 
-#include "Engine/Pid.h"
 #include "Engine/Evt/EvtEnums.h"
+#include "Engine/Pid.h"
 
 /**
  * Which event runs, and what it runs for.
  */
 struct EvtContext {
     EvtContext() = default;
-    // TODO(captainurist): a bool parameter doesn't read at the call site, see onMapLoad.
+    // TODO(captainurist): replace the duringMapLoad bool, the bare true in onMapLoad doesn't read.
     EvtContext(EvtSource source, int eventId, Pid objectPid = Pid(), bool duringMapLoad = false)
         : source(source), eventId(eventId), objectPid(objectPid), duringMapLoad(duringMapLoad) {}
 
@@ -30,5 +30,5 @@ struct EvtContinuation {
     EvtContinuation(EvtContext context, int step) : context(context), step(step) {}
 
     EvtContext context;
-    int step = 0; // Step the event resumes from.
+    int step; // Step the event resumes from.
 };
