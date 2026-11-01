@@ -1300,3 +1300,22 @@ GAME_TEST(Issues, Issue2945) {
         EXPECT_EQ(barTape, tape(0, 12, 25, 37, 50, 62, 75, 87, 100));
     }
 }
+
+GAME_TEST(Issues, Issue2950) {
+    // Pressing the spellbook key right after reading a Lloyd's Beacon scroll opened the Lloyd's Beacon book with no
+    // buttons, so the scroll was wasted.
+    auto windowTape = tapes.custom([] { return pGUIWindow_CurrentMenu ? pGUIWindow_CurrentMenu->eWindowType : WINDOW_NULL; });
+    auto beaconTape = charTapes.hasBeacon(3, 0);
+    game.startNewGame();
+    test.startTaping();
+    pParty->setHoldingItem(Item(ITEM_SCROLL_LLOYDS_BEACON));
+    game.pressGuiButton("Game_Character4", BUTTON_RIGHT); // Read the scroll. The cast starts on the next frame.
+    game.tick();
+    game.pressAndReleaseKey(PlatformKey::KEY_C);
+    game.tick(2);
+    game.pressGuiButton("LloydsBook_Slot0"); // Throws if the book came up with no buttons.
+    game.tick();
+
+    EXPECT_EQ(windowTape, tape(WINDOW_NULL, WINDOW_SPELL_BOOK, WINDOW_LLOYDS_BEACON));
+    EXPECT_EQ(beaconTape, tape(false, true));
+}
