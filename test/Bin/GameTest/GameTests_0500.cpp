@@ -23,6 +23,8 @@
 #include "Engine/Engine.h"
 #include "Engine/Resources/EngineFileSystem.h"
 
+#include "Media/MediaPlayer.h"
+
 #include "Utility/ScopeGuard.h"
 
 #include "GameTestCommon.h"
@@ -1075,10 +1077,22 @@ GAME_TEST(Issues, Issue833b) {
 }
 
 GAME_TEST(Issues, Issue840) {
-    // Test that entering Body Guild in erathia does not crash
-    auto screenTape = tapes.screen();
-    test.playTraceFromTestData("issue_840.mm7", "issue_840.json"); // Should not crash
-    EXPECT_EQ(screenTape, tape(SCREEN_GAME, SCREEN_HOUSE));
+    // Leaving the spell list in the Erathia body guild crashed when the guild's movie wasn't there.
+    auto houseTape = tapes.house();
+    auto dialogueTape = tapes.dialogueType();
+    game.startNewGame();
+    pParty->pCharacters[0]._achievedAwardsBits[AWARD_MEMBERSHIP_BODY_GUILD] = true;
+    game.teleportTo(MAP_ERATHIA, Vec3f(-528, 5710, 1440), 90); // In front of the guild's door.
+    game.pressAndReleaseKey(PlatformKey::KEY_SPACE);
+    game.tick();
+    pMediaPlayer->Unload(); // An install without the movie file has none loaded here.
+    test.startTaping();
+    game.pressGuiButton("HouseDialogue_Option0"); // Buy Spells.
+    game.tick();
+    game.pressAndReleaseKey(PlatformKey::KEY_ESCAPE);
+    game.tick();
+    EXPECT_EQ(houseTape, tape(HOUSE_BODY_GUILD_ERATHIA));
+    EXPECT_EQ(dialogueTape, tape(DIALOGUE_GUILD_BUY_BOOKS, DIALOGUE_MAIN));
 }
 
 GAME_TEST(Issues, Issue844) {
