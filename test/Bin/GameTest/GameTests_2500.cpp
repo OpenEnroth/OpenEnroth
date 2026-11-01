@@ -1227,7 +1227,7 @@ GAME_TEST(Issues, Issue2950) {
     game.tick();
     game.pressAndReleaseKey(PlatformKey::KEY_C);
     game.tick(2);
-    game.pressGuiButton("LloydsBook_Slot0");
+    game.pressGuiButton("LloydsBook_Slot0"); // Throws if the book came up with no buttons.
     game.tick();
 
     EXPECT_EQ(windowTape, tape(WINDOW_NULL, WINDOW_SPELL_BOOK, WINDOW_LLOYDS_BEACON));
