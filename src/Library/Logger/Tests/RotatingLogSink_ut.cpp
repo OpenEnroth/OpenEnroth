@@ -18,8 +18,8 @@ UNIT_TEST(RotatingLogSink, NonExistingDir) {
 UNIT_TEST(RotatingLogSink, DriveLikeName) {
     // A log name that looks like a drive stays in its directory, and rotation finds it again.
     MemoryFileSystem fs("memfs");
-    RotatingLogSink("/logs/c:b.log", &fs, 16);
-    RotatingLogSink("/c:b.log", &fs, 16);
+    RotatingLogSink sink0("/logs/c:b.log", &fs, 16);
+    RotatingLogSink sink1("/c:b.log", &fs, 16);
 
     auto list = fs.ls("/logs");
     ASSERT_EQ(list.size(), 1);
