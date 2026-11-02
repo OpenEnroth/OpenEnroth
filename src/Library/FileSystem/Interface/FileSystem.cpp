@@ -7,118 +7,115 @@
 #include "FileSystemException.h"
 
 bool FileSystem::exists(PathView path) const {
-    NormalPath normalPath(path);
-    return normalPath.isAccessible() && existsIn(this, normalPath);
+    return exists(NormalPath(path));
+}
+
+bool FileSystem::exists(NormalPathView path) const {
+    return path.isAccessible() && (path.isRoot() || _exists(path)); // Root always exists.
 }
 
 FileStat FileSystem::stat(PathView path) const {
-    NormalPath normalPath(path);
-    return normalPath.isAccessible() ? statIn(this, normalPath) : FileStat();
+    return stat(NormalPath(path));
+}
+
+FileStat FileSystem::stat(NormalPathView path) const {
+    if (!path.isAccessible())
+        return {};
+    return path.isRoot() ? FileStat(FILE_DIRECTORY, 0) : _stat(path);
 }
 
 std::vector<DirectoryEntry> FileSystem::ls(PathView path) const {
+    return ls(NormalPath(path));
+}
+
+std::vector<DirectoryEntry> FileSystem::ls(NormalPathView path) const {
     std::vector<DirectoryEntry> result;
     ls(path, &result);
     return result;
 }
 
 void FileSystem::ls(PathView path, std::vector<DirectoryEntry> *entries) const {
-    NormalPath normalPath(path);
-    if (!normalPath.isAccessible())
-        FileSystemException::raise(this, FS_LS_FAILED_PATH_NOT_ACCESSIBLE, normalPath.path());
-    lsIn(this, normalPath, entries);
+    ls(NormalPath(path), entries);
+}
+
+void FileSystem::ls(NormalPathView path, std::vector<DirectoryEntry> *entries) const {
+    if (!path.isAccessible())
+        FileSystemException::raise(this, FS_LS_FAILED_PATH_NOT_ACCESSIBLE, path);
+    entries->clear();
+    _ls(path, entries);
 }
 
 Blob FileSystem::read(PathView path) const {
-    NormalPath normalPath(path);
-    if (!normalPath.isAccessible())
-        FileSystemException::raise(this, FS_READ_FAILED_PATH_NOT_ACCESSIBLE, normalPath.path());
-    return readIn(this, normalPath);
+    return read(NormalPath(path));
+}
+
+Blob FileSystem::read(NormalPathView path) const {
+    if (!path.isAccessible())
+        FileSystemException::raise(this, FS_READ_FAILED_PATH_NOT_ACCESSIBLE, path);
+    if (path.isRoot())
+        FileSystemException::raise(this, FS_READ_FAILED_PATH_IS_DIR, path);
+    return _read(path);
 }
 
 void FileSystem::write(PathView path, const Blob &data) {
-    NormalPath normalPath(path);
-    if (!normalPath.isAccessible())
-        FileSystemException::raise(this, FS_WRITE_FAILED_PATH_NOT_ACCESSIBLE, normalPath.path());
-    writeIn(this, normalPath, data);
+    write(NormalPath(path), data);
+}
+
+void FileSystem::write(NormalPathView path, const Blob &data) {
+    if (!path.isAccessible())
+        FileSystemException::raise(this, FS_WRITE_FAILED_PATH_NOT_ACCESSIBLE, path);
+    if (path.isRoot())
+        FileSystemException::raise(this, FS_WRITE_FAILED_PATH_IS_DIR, path);
+    _write(path, data);
 }
 
 std::unique_ptr<InputStream> FileSystem::openForReading(PathView path) const {
-    NormalPath normalPath(path);
-    if (!normalPath.isAccessible())
-        FileSystemException::raise(this, FS_READ_FAILED_PATH_NOT_ACCESSIBLE, normalPath.path());
-    return openForReadingIn(this, normalPath);
+    return openForReading(NormalPath(path));
+}
+
+std::unique_ptr<InputStream> FileSystem::openForReading(NormalPathView path) const {
+    if (!path.isAccessible())
+        FileSystemException::raise(this, FS_READ_FAILED_PATH_NOT_ACCESSIBLE, path);
+    if (path.isRoot())
+        FileSystemException::raise(this, FS_READ_FAILED_PATH_IS_DIR, path);
+    return _openForReading(path);
 }
 
 std::unique_ptr<OutputStream> FileSystem::openForWriting(PathView path) {
-    NormalPath normalPath(path);
-    if (!normalPath.isAccessible())
-        FileSystemException::raise(this, FS_WRITE_FAILED_PATH_NOT_ACCESSIBLE, normalPath.path());
-    return openForWritingIn(this, normalPath);
+    return openForWriting(NormalPath(path));
+}
+
+std::unique_ptr<OutputStream> FileSystem::openForWriting(NormalPathView path) {
+    if (!path.isAccessible())
+        FileSystemException::raise(this, FS_WRITE_FAILED_PATH_NOT_ACCESSIBLE, path);
+    if (path.isRoot())
+        FileSystemException::raise(this, FS_WRITE_FAILED_PATH_IS_DIR, path);
+    return _openForWriting(path);
 }
 
 bool FileSystem::remove(PathView path) {
-    NormalPath normalPath(path);
-    if (!normalPath.isAccessible())
-        FileSystemException::raise(this, FS_REMOVE_FAILED_PATH_NOT_ACCESSIBLE, normalPath.path());
-    return removeIn(this, normalPath);
+    return remove(NormalPath(path));
+}
+
+bool FileSystem::remove(NormalPathView path) {
+    if (!path.isAccessible())
+        FileSystemException::raise(this, FS_REMOVE_FAILED_PATH_NOT_ACCESSIBLE, path);
+    if (path.isRoot())
+        FileSystemException::raise(this, FS_REMOVE_FAILED_PATH_NOT_WRITEABLE, path);
+    return _remove(path);
 }
 
 std::string FileSystem::displayPath(PathView path) const {
-    NormalPath normalPath(path);
-    if (normalPath.isAccessible())
-        return _displayPath(normalPath);
+    return displayPath(NormalPath(path));
+}
+
+std::string FileSystem::displayPath(NormalPathView path) const {
+    if (path.isAccessible())
+        return _displayPath(path);
 
     std::string result = _displayPath(NormalPathView()); // The implementation never sees an inaccessible path.
     if (!result.ends_with('/'))
         result += '/';
-    result += normalPath.path().displayString();
+    result += PathView(path).displayString();
     return result;
-}
-
-bool FileSystem::existsIn(const FileSystem *fs, NormalPathView path) {
-    return path.isRoot() || fs->_exists(path); // Root always exists.
-}
-
-FileStat FileSystem::statIn(const FileSystem *fs, NormalPathView path) {
-    return path.isRoot() ? FileStat(FILE_DIRECTORY, 0) : fs->_stat(path);
-}
-
-void FileSystem::lsIn(const FileSystem *fs, NormalPathView path, std::vector<DirectoryEntry> *entries) {
-    entries->clear();
-    fs->_ls(path, entries);
-}
-
-Blob FileSystem::readIn(const FileSystem *fs, NormalPathView path) {
-    if (path.isRoot())
-        FileSystemException::raise(fs, FS_READ_FAILED_PATH_IS_DIR, path);
-    return fs->_read(path);
-}
-
-void FileSystem::writeIn(FileSystem *fs, NormalPathView path, const Blob &data) {
-    if (path.isRoot())
-        FileSystemException::raise(fs, FS_WRITE_FAILED_PATH_IS_DIR, path);
-    fs->_write(path, data);
-}
-
-std::unique_ptr<InputStream> FileSystem::openForReadingIn(const FileSystem *fs, NormalPathView path) {
-    if (path.isRoot())
-        FileSystemException::raise(fs, FS_READ_FAILED_PATH_IS_DIR, path);
-    return fs->_openForReading(path);
-}
-
-std::unique_ptr<OutputStream> FileSystem::openForWritingIn(FileSystem *fs, NormalPathView path) {
-    if (path.isRoot())
-        FileSystemException::raise(fs, FS_WRITE_FAILED_PATH_IS_DIR, path);
-    return fs->_openForWriting(path);
-}
-
-bool FileSystem::removeIn(FileSystem *fs, NormalPathView path) {
-    if (path.isRoot())
-        FileSystemException::raise(fs, FS_REMOVE_FAILED_PATH_NOT_WRITEABLE, path);
-    return fs->_remove(path);
-}
-
-std::string FileSystem::displayPathIn(const FileSystem *fs, NormalPathView path) {
-    return fs->_displayPath(path);
 }

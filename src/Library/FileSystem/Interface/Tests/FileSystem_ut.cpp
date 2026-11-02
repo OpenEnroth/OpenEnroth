@@ -123,6 +123,22 @@ UNIT_TEST(FileSystem, EmptyPathIsRefused) {
     EXPECT_EQ(fs.read("foo").str(), "lol");
 }
 
+UNIT_TEST(FileSystem, NormalPathOverloads) {
+    // A NormalPath goes through the same checks as a plain path, and its path() names the same thing.
+    MemoryFileSystem fs("ram");
+    fs.write("foo", Blob::fromString("lol"));
+
+    EXPECT_EQ(fs.read(NormalPath("./foo")).str(), "lol");
+    EXPECT_TRUE(fs.exists(NormalPath(".")));
+    EXPECT_TRUE(fs.exists(NormalPath(".").path()));
+    EXPECT_EQ(fs.stat(NormalPath(".")), FileStat(FILE_DIRECTORY, 0));
+
+    EXPECT_FALSE(fs.exists(NormalPath("../foo")));
+    EXPECT_FALSE(fs.exists(NormalPath("")));
+    expectNotAccessible([&] { (void) fs.read(NormalPath("../foo")); }, "../foo");
+    EXPECT_EQ(fs.displayPath(NormalPath("../foo")), fs.displayPath("../foo"));
+}
+
 UNIT_TEST(FileSystem, ErrorAboutRootNamesRoot) {
     // An error about the root names it the way displayPath does.
     MemoryFileSystem fs("ram");
