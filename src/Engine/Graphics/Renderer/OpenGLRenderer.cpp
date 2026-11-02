@@ -2309,15 +2309,17 @@ void OpenGLRenderer::DrawOutdoorBuildings() {
                         if (face.attributes & FACE_INDOOR_SKY)
                             attribflags |= 0x400;
 
-                        if (face.attributes & FACE_FlowDown)
+                        if (face.attributes & FACE_FlowDown) {
                             attribflags |= 0x400;
-                        else if (face.attributes & FACE_FlowUp)
+                        } else if (face.attributes & FACE_FlowUp) {
                             attribflags |= 0x800;
+                        }
 
-                        if (face.attributes & FACE_FlowRight)
+                        if (face.attributes & FACE_FlowRight) {
                             attribflags |= 0x2000;
-                        else if (face.attributes & FACE_FlowLeft)
+                        } else if (face.attributes & FACE_FlowLeft) {
                             attribflags |= 0x1000;
+                        }
 
                         if (face.attributes & FACE_IsLava)
                             attribflags |= 0x4000;
@@ -2508,15 +2510,17 @@ void OpenGLRenderer::DrawOutdoorBuildings() {
                                 if (face.attributes & FACE_INDOOR_SKY)
                                     attribflags |= 0x400;
 
-                                if (face.attributes & FACE_FlowDown)
+                                if (face.attributes & FACE_FlowDown) {
                                     attribflags |= 0x400;
-                                else if (face.attributes & FACE_FlowUp)
+                                } else if (face.attributes & FACE_FlowUp) {
                                     attribflags |= 0x800;
+                                }
 
-                                if (face.attributes & FACE_FlowRight)
+                                if (face.attributes & FACE_FlowRight) {
                                     attribflags |= 0x2000;
-                                else if (face.attributes & FACE_FlowLeft)
+                                } else if (face.attributes & FACE_FlowLeft) {
                                     attribflags |= 0x1000;
+                                }
 
                                 if (face.attributes & FACE_IsLava)
                                     attribflags |= 0x4000;
@@ -2968,15 +2972,17 @@ void OpenGLRenderer::DrawIndoorFaces() {
                 if (face->attributes & FACE_IsFluid)
                     attribflags |= 2;
 
-                if (face->attributes & FACE_FlowDown)
+                if (face->attributes & FACE_FlowDown) {
                     attribflags |= 0x400;
-                else if (face->attributes & FACE_FlowUp)
+                } else if (face->attributes & FACE_FlowUp) {
                     attribflags |= 0x800;
+                }
 
-                if (face->attributes & FACE_FlowRight)
+                if (face->attributes & FACE_FlowRight) {
                     attribflags |= 0x2000;
-                else if (face->attributes & FACE_FlowLeft)
+                } else if (face->attributes & FACE_FlowLeft) {
                     attribflags |= 0x1000;
+                }
 
                 if (face->attributes & FACE_IsLava)
                     attribflags |= 0x4000;
@@ -3323,10 +3329,11 @@ void OpenGLRenderer::Initialize() {
     };
 
     int version;
-    if (OpenGLES)
+    if (OpenGLES) {
         version = gladLoadGLES2UserPtr(gladLoadFunc, openGLContext);
-    else
+    } else {
         version = gladLoadGLUserPtr(gladLoadFunc, openGLContext);
+    }
 
     auto glGetStringSafe = [] (int id) {
         // Need this wrapper b/c glGetString can return nullptr, actually happens under OpenGL 1.1 when called for

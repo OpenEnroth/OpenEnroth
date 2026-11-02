@@ -627,10 +627,11 @@ void UpdateUserInput_and_MapSpecificStuff() {
 
     UpdateObjects();
 
-    if (uCurrentlyLoadedLevelType == LEVEL_INDOOR)
+    if (uCurrentlyLoadedLevelType == LEVEL_INDOOR) {
         BLV_UpdateUserInputAndOther();
-    else if (uCurrentlyLoadedLevelType == LEVEL_OUTDOOR)
+    } else if (uCurrentlyLoadedLevelType == LEVEL_OUTDOOR) {
         ODM_UpdateUserInputAndOther();
+    }
 
     checkDecorationEvents();
     evaluateAoeDamage();
@@ -710,10 +711,11 @@ void DoPrepareWorld(bool bLoading, int _1_fullscreen_loading_2_box) {
 
     engine->_currentLoadedMapId = transitionMapId;
 
-    if (isMapIndoor(transitionMapId))
+    if (isMapIndoor(transitionMapId)) {
         loadAndPrepareBLV(transitionMapId, bLoading);
-    else
+    } else {
         loadAndPrepareODM(transitionMapId, bLoading);
+    }
 
     // After the load, because the map delta overwrites face attributes.
     repairClickableFaces(isMapIndoor(transitionMapId) ? std::span(pIndoor->faces) : std::span(pOutdoor->faces), engine->_localEventMap);
@@ -960,10 +962,11 @@ void Engine::ResetCursor_Palettes_LODs_Level_Audio_SFT_Windows() {
     // Render billboards are used in hit tests, but we're releasing textures, so can't use them anymore.
     render->uNumBillboardsToDraw = 0;
 
-    if (uCurrentlyLoadedLevelType == LEVEL_INDOOR)
+    if (uCurrentlyLoadedLevelType == LEVEL_INDOOR) {
         pIndoor->Release();
-    else if (uCurrentlyLoadedLevelType == LEVEL_OUTDOOR)
+    } else if (uCurrentlyLoadedLevelType == LEVEL_OUTDOOR) {
         pOutdoor->Release();
+    }
 
     particle_engine->ResetParticles(); // Particles hold sprite images, so they go before the sprites.
     pSpriteFrameTable->resetLoadedSprites();
@@ -1078,10 +1081,11 @@ void setFacesBit(int sCogNumber, FaceAttribute bit, int on) {
         if (uCurrentlyLoadedLevelType == LEVEL_INDOOR) {
             for (unsigned i = 0; i < pIndoor->faces.size(); ++i) {
                 if (pIndoor->faces[i].cogNumber == sCogNumber) {
-                    if (on)
+                    if (on) {
                         pIndoor->faces[i].attributes |= bit;
-                    else
+                    } else {
                         pIndoor->faces[i].attributes &= ~bit;
+                    }
                 }
             }
         } else {
@@ -1105,10 +1109,11 @@ void setDecorationSprite(uint16_t uCog, bool bHide, std::string_view pFileName) 
                 pLevelDecorations[i].uDecorationDescID = pDecorationTable->decorationId(pFileName);
             }
 
-            if (bHide)
+            if (bHide) {
                 pLevelDecorations[i].uFlags &= ~LEVEL_DECORATION_INVISIBLE;
-            else
+            } else {
                 pLevelDecorations[i].uFlags |= LEVEL_DECORATION_INVISIBLE;
+            }
         }
     }
 }
@@ -1197,13 +1202,11 @@ void _494035_timed_effects__water_walking_damage__etc(Duration dt) {
                 character.wearsEnchantedItem(ITEM_ENCHANTMENT_OF_WATER_WALKING) ||
                 character.pCharacterBuffs[CHARACTER_BUFF_WATER_WALK].Active()) {
                 character.playEmotion(PORTRAIT_SMILE, 0_ticks);
+            } else if (!character.hasUnderwaterSuitEquipped()) {
+                character.receiveDamage((int64_t)character.GetMaxHealth() * 0.1, DAMAGE_FIRE); // TODO(pskelton): fire damage?
+                engine->_statusBar->setEventShort(LSTR_YOU_ARE_DROWNING);
             } else {
-                if (!character.hasUnderwaterSuitEquipped()) {
-                    character.receiveDamage((int64_t)character.GetMaxHealth() * 0.1, DAMAGE_FIRE); // TODO(pskelton): fire damage?
-                    engine->_statusBar->setEventShort(LSTR_YOU_ARE_DROWNING);
-                } else {
-                    character.playEmotion(PORTRAIT_SMILE, 0_ticks);
-                }
+                character.playEmotion(PORTRAIT_SMILE, 0_ticks);
             }
         }
     }
