@@ -139,6 +139,13 @@ UNIT_TEST(NativeFileSystem, EscapingDisplayPath) {
     EXPECT_TRUE(fs.displayPath("..").ends_with(".."));
 }
 
+UNIT_TEST(NativeFileSystem, DisplayPathOfRoot) {
+    // The root is shown as the directory itself, with no "." or trailing separator.
+    NativeFileSystem fs("tmp_native_dir");
+
+    EXPECT_EQ(fs.displayPath("."), fs::absolute("tmp_native_dir").displayString());
+}
+
 UNIT_TEST(NativeFileSystem, DisplayPathOfMissingFile) {
     // FileSystemException formats the very path it complains about, so displayPath has to work for a missing file.
     ScopedTestFolder tmp("tmp_native_dir");

@@ -33,12 +33,12 @@ void LowercaseFileSystem::refresh() {
 
 bool LowercaseFileSystem::_exists(NormalPathView path) const {
     const auto [basePath, node, tail] = walk(path);
-    return tail.isEmpty();
+    return tail.isRoot();
 }
 
 FileStat LowercaseFileSystem::_stat(NormalPathView path) const {
     const auto [basePath, node, tail] = walk(path);
-    if (!tail.isEmpty())
+    if (!tail.isRoot())
         return FileStat();
     if (node->value().conflicting)
         return FileStat(FILE_REGULAR, 0); // Conflicts are reported as empty files.
@@ -47,7 +47,7 @@ FileStat LowercaseFileSystem::_stat(NormalPathView path) const {
 
 void LowercaseFileSystem::_ls(NormalPathView path, std::vector<DirectoryEntry> *entries) const {
     const auto [basePath, node, tail] = walk(path);
-    if (!tail.isEmpty())
+    if (!tail.isRoot())
         FileSystemException::raise(this, FS_LS_FAILED_PATH_DOESNT_EXIST, path);
     if (node->value().type != FILE_DIRECTORY)
         FileSystemException::raise(this, FS_LS_FAILED_PATH_IS_FILE, path);
@@ -80,10 +80,10 @@ std::unique_ptr<OutputStream> LowercaseFileSystem::_openForWriting(NormalPathVie
 }
 
 bool LowercaseFileSystem::_remove(NormalPathView path) {
-    assert(!path.isEmpty());
+    assert(!path.isRoot());
 
     auto [basePath, node, tail] = walk(path);
-    if (!tail.isEmpty())
+    if (!tail.isRoot())
         return false;
 
     if (node->value().conflicting)
@@ -112,7 +112,7 @@ std::string LowercaseFileSystem::_displayPath(NormalPathView path) const {
 
 std::tuple<NormalPath, LowercaseFileSystem::Node *, NormalPathView> LowercaseFileSystem::walk(NormalPathView path) const {
     Node *node = _trie.root();
-    if (path.isEmpty())
+    if (path.isRoot())
         return {NormalPath(), node, NormalPathView()};
 
     NormalPath basePath;
@@ -187,8 +187,8 @@ void LowercaseFileSystem::cacheRemove(Node *node) const {
     }
 }
 
-void LowercaseFileSystem::cacheInsert(Node *node, PathView tail, FileType type) const {
-    if (tail.isEmpty())
+void LowercaseFileSystem::cacheInsert(Node *node, NormalPathView tail, FileType type) const {
+    if (tail.isRoot())
         return;
 
     assert(node->value().type == FILE_DIRECTORY);
@@ -209,7 +209,7 @@ void LowercaseFileSystem::cacheInsert(Node *node, PathView tail, FileType type) 
 
 NormalPath LowercaseFileSystem::locateForReading(NormalPathView path) const {
     auto [basePath, node, tail] = walk(path);
-    if (!tail.isEmpty())
+    if (!tail.isRoot())
         FileSystemException::raise(this, FS_READ_FAILED_PATH_DOESNT_EXIST, path);
     if (node->value().type == FILE_DIRECTORY)
         FileSystemException::raise(this, FS_READ_FAILED_PATH_IS_DIR, path);
@@ -225,9 +225,9 @@ std::tuple<NormalPath, LowercaseFileSystem::Node *, NormalPathView> LowercaseFil
     auto result = walk(path);
     auto &[basePath, node, tail] = result;
 
-    if (tail.isEmpty() && node->value().type == FILE_DIRECTORY)
+    if (tail.isRoot() && node->value().type == FILE_DIRECTORY)
         FileSystemException::raise(this, FS_WRITE_FAILED_PATH_IS_DIR, path);
-    if (!tail.isEmpty() && node->value().type == FILE_REGULAR)
+    if (!tail.isRoot() && node->value().type == FILE_REGULAR)
         FileSystemException::raise(this, FS_WRITE_FAILED_FILE_IN_PATH, path);
     if (node->value().conflicting)
         FileSystemException::raise(this, FS_WRITE_FAILED_PATH_NOT_WRITEABLE, path);

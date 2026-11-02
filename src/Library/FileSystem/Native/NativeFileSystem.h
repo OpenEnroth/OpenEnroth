@@ -34,7 +34,7 @@ class NativeFileSystem : public FileSystem {
     virtual bool _remove(NormalPathView path) override;
     virtual std::string _displayPath(NormalPathView path) const override;
 
-    Path makeBasePath(PathView path) const;
+    Path makeBasePath(NormalPathView path) const;
 
  private:
     Path _root;

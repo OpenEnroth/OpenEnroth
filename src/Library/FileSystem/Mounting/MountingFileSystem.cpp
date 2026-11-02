@@ -38,14 +38,14 @@ void MountingFileSystem::clearMounts() {
 }
 
 bool MountingFileSystem::_exists(NormalPathView path) const {
-    assert(!path.isEmpty());
+    assert(!path.isRoot());
 
     auto [node, mount, tail] = walk(path);
     return node ? true : mount ? existsIn(mount, tail) : false;
 }
 
 FileStat MountingFileSystem::_stat(NormalPathView path) const {
-    assert(!path.isEmpty());
+    assert(!path.isRoot());
     auto [node, mount, tail] = walk(path);
     return node ? FileStat(FILE_DIRECTORY, 0) : mount ? statIn(mount, tail) : FileStat();
 }
@@ -124,13 +124,13 @@ bool MountingFileSystem::_remove(NormalPathView path) {
 
 std::string MountingFileSystem::_displayPath(NormalPathView path) const {
     // TODO(captainurist): this is not symmetric with that's done in read / openForReading / openForWriting.
-    return join(_displayName, "://", txt::encodedToUtf8(path.str(), ENCODING_UTF8)); // Replaces invalid UTF8.
+    return join(_displayName, "://", txt::encodedToUtf8(path.relativeStr(), ENCODING_UTF8)); // Replaces invalid UTF8.
 }
 
 MountingFileSystem::WalkResult MountingFileSystem::walk(NormalPathView path) {
     Node *node = _trie.root();
     FileSystem *mount = node->hasValue() ? node->value() : nullptr;
-    if (path.isEmpty())
+    if (path.isRoot())
         return {node, mount, {}};
 
     std::string_view mountChunk;

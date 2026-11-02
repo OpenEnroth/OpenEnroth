@@ -19,12 +19,12 @@ NativeFileSystem::NativeFileSystem(PathView root) {
 NativeFileSystem::~NativeFileSystem() = default;
 
 bool NativeFileSystem::_exists(NormalPathView path) const {
-    assert(!path.isEmpty());
+    assert(!path.isRoot());
     return fs::exists(makeBasePath(path));
 }
 
 FileStat NativeFileSystem::_stat(NormalPathView path) const {
-    assert(!path.isEmpty());
+    assert(!path.isRoot());
     return fs::stat(makeBasePath(path));
 }
 
@@ -34,7 +34,7 @@ void NativeFileSystem::_ls(NormalPathView path, std::vector<DirectoryEntry> *ent
     try {
         fs::ls(basePath, entries);
     } catch (const Exception &) {
-        if (path.isEmpty())
+        if (path.isRoot())
             return; // ls(".") always works.
 
         if (fs::stat(basePath).type == FILE_REGULAR)
@@ -47,12 +47,12 @@ void NativeFileSystem::_ls(NormalPathView path, std::vector<DirectoryEntry> *ent
 }
 
 Blob NativeFileSystem::_read(NormalPathView path) const {
-    assert(!path.isEmpty());
+    assert(!path.isRoot());
     return Blob::fromFile(makeBasePath(path));
 }
 
 void NativeFileSystem::_write(NormalPathView path, const Blob &data) {
-    assert(!path.isEmpty());
+    assert(!path.isRoot());
     Path basePath = makeBasePath(path);
     fs::mkdirs(basePath.parent());
     FileOutputStream stream(basePath);
@@ -61,19 +61,19 @@ void NativeFileSystem::_write(NormalPathView path, const Blob &data) {
 }
 
 std::unique_ptr<InputStream> NativeFileSystem::_openForReading(NormalPathView path) const {
-    assert(!path.isEmpty());
+    assert(!path.isRoot());
     return std::make_unique<FileInputStream>(makeBasePath(path));
 }
 
 std::unique_ptr<OutputStream> NativeFileSystem::_openForWriting(NormalPathView path) {
-    assert(!path.isEmpty());
+    assert(!path.isRoot());
     Path basePath = makeBasePath(path);
     fs::mkdirs(basePath.parent());
     return std::make_unique<FileOutputStream>(basePath);
 }
 
 bool NativeFileSystem::_remove(NormalPathView path) {
-    assert(!path.isEmpty());
+    assert(!path.isRoot());
     return fs::remove(makeBasePath(path));
 }
 
@@ -81,6 +81,6 @@ std::string NativeFileSystem::_displayPath(NormalPathView path) const {
     return makeBasePath(path).displayString();
 }
 
-Path NativeFileSystem::makeBasePath(PathView path) const {
-    return _root / path;
+Path NativeFileSystem::makeBasePath(NormalPathView path) const {
+    return path.isRoot() ? _root : _root / path;
 }

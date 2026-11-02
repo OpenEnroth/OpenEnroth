@@ -122,7 +122,7 @@ class FileSystem {
 
     /**
      * An implementation holding a `NormalPathView` passes it to the `*In` forwarders instead. Through the public
-     * methods it would be normalized again, and the layer's root `""` would be refused.
+     * methods it would be normalized again.
      */
     bool exists(NormalPathView path) const = delete;
     FileStat stat(NormalPathView path) const = delete;

@@ -30,7 +30,7 @@ FileStat EmbeddedFileSystem::_stat(NormalPathView path) const {
 }
 
 void EmbeddedFileSystem::_ls(NormalPathView path, std::vector<DirectoryEntry> *entries) const {
-    for (const cmrc::directory_entry &entry : _base.iterate_directory(std::string(path.str())))
+    for (const cmrc::directory_entry &entry : _base.iterate_directory(std::string(path.relativeStr())))
         entries->push_back(DirectoryEntry(entry.filename(), entry.is_file() ? FILE_REGULAR : FILE_DIRECTORY));
 }
 
@@ -45,5 +45,5 @@ std::unique_ptr<InputStream> EmbeddedFileSystem::_openForReading(NormalPathView 
 }
 
 std::string EmbeddedFileSystem::_displayPath(NormalPathView path) const {
-    return join(_displayName, "://", txt::encodedToUtf8(path.str(), ENCODING_UTF8)); // Replaces invalid UTF8.
+    return join(_displayName, "://", txt::encodedToUtf8(path.relativeStr(), ENCODING_UTF8)); // Replaces invalid UTF8.
 }
