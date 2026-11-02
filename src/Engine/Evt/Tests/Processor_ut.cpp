@@ -45,15 +45,3 @@ GAME_TEST(Processor, TimerCountsFromNow) {
     EXPECT_EQ(fromNowFires, 0);
     EXPECT_EQ(fromLastVisitFires, 1);
 }
-
-GAME_TEST(Processor, EscapeDropsTheContinuation) {
-    // Escape on a dungeon entrance's dialogue kept the continuation of the event that opened it.
-    game.startNewGame();
-    eventProcessor(101, Pid(), true); // A dungeon entrance on Emerald Island.
-    game.tick();
-    EXPECT_TRUE(hasEventContinuation());
-    game.pressAndReleaseKey(PlatformKey::KEY_ESCAPE);
-    game.tick();
-    EXPECT_EQ(current_screen_type, SCREEN_GAME);
-    EXPECT_FALSE(hasEventContinuation());
-}

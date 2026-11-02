@@ -279,8 +279,7 @@ static void updateFaceHints() {
     if (uCurrentlyLoadedLevelType == LEVEL_INDOOR) {
         std::ranges::for_each(pIndoor->faces, update);
     } else {
-        for (BSPModel &model : pOutdoor->pBModels)
-            std::ranges::for_each(model.faces, update);
+        std::ranges::for_each(pOutdoor->faces, update);
     }
 }
 
