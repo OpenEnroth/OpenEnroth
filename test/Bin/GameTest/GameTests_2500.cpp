@@ -962,6 +962,33 @@ GAME_TEST(Issues, Issue2815) {
     }
 }
 
+GAME_TEST(Issues, Issue2817) {
+    // Characters smiled at an award added by a script only when they already had it.
+    auto portraitTape = charTapes.portraits();
+    auto awardTape = tapes.custom([] {
+        return std::ranges::count_if(pParty->pCharacters, [](const Character &character) {
+            return character._achievedAwardsBits[AWARD_EMERALD_ISLE_COMPLETED_MAIN_QUEST];
+        });
+    });
+    engine->config->debug.NoMargaret.setValue(true); // Her tour would stop the party at the door.
+    game.startNewGame();
+    pParty->_questBits.set(QBIT_EMERALD_ISLAND_SCAVENGER_HUNT_WON); // Lord Markham hands over Harmondale to the winners.
+    pParty->pCharacters[3]._achievedAwardsBits[AWARD_EMERALD_ISLE_COMPLETED_MAIN_QUEST] = true;
+    test.startTaping();
+    game.teleportTo(MAP_EMERALD_ISLAND, Vec3f(16154, 8560, 128), 180); // In front of Markham's Headquarters.
+    game.pressAndReleaseKey(PlatformKey::KEY_SPACE);
+    game.tick();
+    game.pressGuiButton("House_Npc0"); // Lord Markham.
+    game.tick();
+    game.pressGuiButton("HouseNpcDialogue_Option0"); // Congratulations, which gives the award to the whole party.
+    game.tick();
+
+    EXPECT_EQ(awardTape, tape(1, 4));
+    for (int i = 0; i < 3; i++)
+        EXPECT_CONTAINS(portraitTape.slice(i), PORTRAIT_WIDE_SMILE);
+    EXPECT_MISSES(portraitTape.slice(3), PORTRAIT_WIDE_SMILE);
+}
+
 GAME_TEST(Issues, Issue2834) {
     // Evt commands after ForPlayer(Active) did nothing while no character was active, so the hired golem took the
     // abbey normal head and never gave its own head back.
