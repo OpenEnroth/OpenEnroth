@@ -1,5 +1,7 @@
 #include "GUI/UI/UIMainMenu.h"
 
+#include <utility>
+
 #include "Engine/EngineGlobals.h"
 #include "Engine/Localization.h"
 #include "Engine/Graphics/Renderer/Renderer.h"
@@ -33,11 +35,11 @@ GUIWindow_MainMenu::GUIWindow_MainMenu() :
 }
 
 GUIWindow_MainMenu::~GUIWindow_MainMenu() {
-    assets->releaseImage(main_menu_background);
+    assets->evict(std::move(main_menu_background));
 }
 
 void GUIWindow_MainMenu::Update() {
-    render->DrawQuad2D(main_menu_background, {0, 0});
+    render->DrawQuad2D(main_menu_background.get(), {0, 0});
 
     Pointi pt = mouse->position();
 
@@ -48,19 +50,19 @@ void GUIWindow_MainMenu::Update() {
             int pY = 0;
             switch (pControlParam) {  // backlight for buttons
                 case 0:
-                    pTexture = assets->getIcon("title_new");
+                    pTexture = assets->getIcon("title_new").get();
                     pY = 172;
                     break;
                 case 1:
-                    pTexture = assets->getIcon("title_load");
+                    pTexture = assets->getIcon("title_load").get();
                     pY = 227;
                     break;
                 case 2:
-                    pTexture = assets->getIcon("title_cred");
+                    pTexture = assets->getIcon("title_cred").get();
                     pY = 282;
                     break;
                 case 3:
-                    pTexture = assets->getIcon("title_exit");
+                    pTexture = assets->getIcon("title_exit").get();
                     pY = 337;
                     break;
             }

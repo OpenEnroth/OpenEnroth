@@ -20,5 +20,5 @@ void GUIWindow_Inventory_CastSpell::Update() {
     draw_leather();
     CharacterUI_InventoryTab_Draw(&pParty->activeCharacter(), true);
     CharacterUI_DrawPaperdoll(&pParty->activeCharacter());
-    render->DrawQuad2D(dialogue_ui_x_x_u, pBtn_ExitCancel->rect.topLeft());
+    render->DrawQuad2D(dialogue_ui_x_x_u.get(), pBtn_ExitCancel->rect.topLeft());
 }

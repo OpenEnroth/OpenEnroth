@@ -970,13 +970,16 @@ void Engine::ResetCursor_Palettes_LODs_Level_Audio_SFT_Windows() {
 
     particle_engine->ResetParticles(); // Particles hold sprite images, so they go before the sprites.
     pSpriteFrameTable->resetLoadedSprites();
-    assets->releaseSprites();
+    pTextureFrameTable->resetLoadedTextures();
+    spell_fx_renedrer->resetProjectiles();
 
     pAudioPlayer->stopSounds();
     uCurrentlyLoadedLevelType = LEVEL_NULL;
     pParty->armageddon_timer = 0_ticks;
 
     windowManager.DeleteAllVisibleWindows();
+
+    assets->releaseUnusedImages(); // Windows hold images, so this comes after they close.
 }
 
 //----- (00461103) --------------------------------------------------------

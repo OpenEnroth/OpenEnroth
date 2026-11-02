@@ -38,25 +38,25 @@ class GUIWindow_Book : public GUIWindow {
  protected:
     std::unique_ptr<GUIWindow> pChildBooksOverlay;
 
-    GraphicsImage *ui_book_button8_off{ nullptr };
-    GraphicsImage *ui_book_button8_on{ nullptr };
-    GraphicsImage *ui_book_button7_off{ nullptr };
-    GraphicsImage *ui_book_button7_on{ nullptr };
-    GraphicsImage *ui_book_button6_off{ nullptr };
-    GraphicsImage *ui_book_button6_on{ nullptr };
-    GraphicsImage *ui_book_button5_off{ nullptr };
-    GraphicsImage *ui_book_button5_on{ nullptr };
-    GraphicsImage *ui_book_button4_off{ nullptr };
-    GraphicsImage *ui_book_button4_on{ nullptr };
-    GraphicsImage *ui_book_button3_off{ nullptr };
-    GraphicsImage *ui_book_button3_on{ nullptr };
-    GraphicsImage *ui_book_button2_off{ nullptr };
-    GraphicsImage *ui_book_button2_on{ nullptr };
-    GraphicsImage *ui_book_button1_off{ nullptr };
-    GraphicsImage *ui_book_button1_on{ nullptr };
+    std::shared_ptr<GraphicsImage> ui_book_button8_off;
+    std::shared_ptr<GraphicsImage> ui_book_button8_on;
+    std::shared_ptr<GraphicsImage> ui_book_button7_off;
+    std::shared_ptr<GraphicsImage> ui_book_button7_on;
+    std::shared_ptr<GraphicsImage> ui_book_button6_off;
+    std::shared_ptr<GraphicsImage> ui_book_button6_on;
+    std::shared_ptr<GraphicsImage> ui_book_button5_off;
+    std::shared_ptr<GraphicsImage> ui_book_button5_on;
+    std::shared_ptr<GraphicsImage> ui_book_button4_off;
+    std::shared_ptr<GraphicsImage> ui_book_button4_on;
+    std::shared_ptr<GraphicsImage> ui_book_button3_off;
+    std::shared_ptr<GraphicsImage> ui_book_button3_on;
+    std::shared_ptr<GraphicsImage> ui_book_button2_off;
+    std::shared_ptr<GraphicsImage> ui_book_button2_on;
+    std::shared_ptr<GraphicsImage> ui_book_button1_off;
+    std::shared_ptr<GraphicsImage> ui_book_button1_on;
 
-    GraphicsImage *ui_book_map_frame{ nullptr };
-    GraphicsImage *ui_book_quest_div_bar{ nullptr };
+    std::shared_ptr<GraphicsImage> ui_book_map_frame;
+    std::shared_ptr<GraphicsImage> ui_book_quest_div_bar;
 
     static constexpr int BOOK_BUTTON_PRESSED_FRAMES = 10; // How long a clicked book button stays drawn pressed.
 

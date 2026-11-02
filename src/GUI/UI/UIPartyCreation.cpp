@@ -1,6 +1,7 @@
 #include <cstdlib>
 #include <memory>
 #include <string>
+#include <utility>
 
 #include "Engine/AssetsManager.h"
 #include "Engine/Engine.h"
@@ -30,23 +31,23 @@
 #include "Library/Logger/Logger.h"
 
 
-GraphicsImage *ui_partycreation_top = nullptr;
-GraphicsImage *ui_partycreation_sky_scroller = nullptr;
+std::shared_ptr<GraphicsImage> ui_partycreation_top;
+std::shared_ptr<GraphicsImage> ui_partycreation_sky_scroller;
 
-GraphicsImage *ui_partycreation_left = nullptr;
-GraphicsImage *ui_partycreation_right = nullptr;
-GraphicsImage *ui_partycreation_minus = nullptr;
-GraphicsImage *ui_partycreation_plus = nullptr;
-GraphicsImage *ui_partycreation_buttmake2 = nullptr;
-GraphicsImage *ui_partycreation_buttmake = nullptr;
+std::shared_ptr<GraphicsImage> ui_partycreation_left;
+std::shared_ptr<GraphicsImage> ui_partycreation_right;
+std::shared_ptr<GraphicsImage> ui_partycreation_minus;
+std::shared_ptr<GraphicsImage> ui_partycreation_plus;
+std::shared_ptr<GraphicsImage> ui_partycreation_buttmake2;
+std::shared_ptr<GraphicsImage> ui_partycreation_buttmake;
 
-GraphicsImage *ui_partycreation_character_frame = nullptr;
+std::shared_ptr<GraphicsImage> ui_partycreation_character_frame;
 
-std::array<GraphicsImage *, 9> ui_partycreation_class_icons;
-std::array<GraphicsImage *, 22> ui_partycreation_portraits;
+std::array<std::shared_ptr<GraphicsImage>, 9> ui_partycreation_class_icons;
+std::array<std::shared_ptr<GraphicsImage>, 22> ui_partycreation_portraits;
 
-std::array<GraphicsImage *, 19> ui_partycreation_arrow_r;
-std::array<GraphicsImage *, 19> ui_partycreation_arrow_l;
+std::array<std::shared_ptr<GraphicsImage>, 19> ui_partycreation_arrow_r;
+std::array<std::shared_ptr<GraphicsImage>, 19> ui_partycreation_arrow_l;
 
 
 std::array<GUIButton*, 4> pCreationUI_BtnPressRight2;
@@ -298,11 +299,11 @@ void GUIWindow_PartyCreation::Update() {
 
     // move sky
     render->BeginScene2D();
-    render->DrawQuad2D(main_menu_background, {0, 0});
+    render->DrawQuad2D(main_menu_background.get(), {0, 0});
     int sky_slider_anim_timer = static_cast<int>(std::fmod(animTimer->time().realtimeMillisecondsFloat() * 640.0 / 20, 640.0));
-    render->DrawQuad2D(ui_partycreation_sky_scroller, {sky_slider_anim_timer, 2});
-    render->DrawQuad2D(ui_partycreation_sky_scroller, {sky_slider_anim_timer - 640, 2});
-    render->DrawQuad2D(ui_partycreation_top, {0, 0});
+    render->DrawQuad2D(ui_partycreation_sky_scroller.get(), {sky_slider_anim_timer, 2});
+    render->DrawQuad2D(ui_partycreation_sky_scroller.get(), {sky_slider_anim_timer - 640, 2});
+    render->DrawQuad2D(ui_partycreation_top.get(), {0, 0});
 
     uPlayerCreationUI_SelectedCharacter = (pGUIWindow_CurrentMenu->pCurrentPosActiveItem - pGUIWindow_CurrentMenu->pStartingPosActiveItem) / 7;
     switch (uPlayerCreationUI_SelectedCharacter) {
@@ -329,18 +330,18 @@ void GUIWindow_PartyCreation::Update() {
     DrawText(ui_partycreation_font.get(), {pTextCenter + 1, 0}, colorTable.White,
         localization->str(LSTR_C_R_E_A_T_E_P_A_R_T_Y), pGUIWindow_CurrentMenu->frameRect);
 
-    render->DrawQuad2D(ui_partycreation_portraits[pParty->pCharacters[0].uCurrentFace], {17, 35});
-    render->DrawQuad2D(ui_partycreation_portraits[pParty->pCharacters[1].uCurrentFace], {176, 35});
-    render->DrawQuad2D(ui_partycreation_portraits[pParty->pCharacters[2].uCurrentFace], {335, 35});
-    render->DrawQuad2D(ui_partycreation_portraits[pParty->pCharacters[3].uCurrentFace], {494, 35});
+    render->DrawQuad2D(ui_partycreation_portraits[pParty->pCharacters[0].uCurrentFace].get(), {17, 35});
+    render->DrawQuad2D(ui_partycreation_portraits[pParty->pCharacters[1].uCurrentFace].get(), {176, 35});
+    render->DrawQuad2D(ui_partycreation_portraits[pParty->pCharacters[2].uCurrentFace].get(), {335, 35});
+    render->DrawQuad2D(ui_partycreation_portraits[pParty->pCharacters[3].uCurrentFace].get(), {494, 35});
 
     // arrows
-    render->DrawQuad2D(ui_partycreation_character_frame, {pX, 29});
+    render->DrawQuad2D(ui_partycreation_character_frame.get(), {pX, 29});
     uPosActiveItem = pGUIWindow_CurrentMenu->GetControl(pGUIWindow_CurrentMenu->pCurrentPosActiveItem);
     // cycle arrows backwards
     int arrowAnimTextureNum = ui_partycreation_arrow_l.size() - 1 - (animTimer->time().realtimeMilliseconds() % ARROW_SPIN_PERIOD_MS) / (ARROW_SPIN_PERIOD_MS / ui_partycreation_arrow_l.size());
-    render->DrawQuad2D(ui_partycreation_arrow_l[arrowAnimTextureNum], {uPosActiveItem->rect.x + uPosActiveItem->rect.w - 4, uPosActiveItem->rect.y});
-    render->DrawQuad2D(ui_partycreation_arrow_r[arrowAnimTextureNum], {uPosActiveItem->rect.x - 12, uPosActiveItem->rect.y});
+    render->DrawQuad2D(ui_partycreation_arrow_l[arrowAnimTextureNum].get(), {uPosActiveItem->rect.x + uPosActiveItem->rect.w - 4, uPosActiveItem->rect.y});
+    render->DrawQuad2D(ui_partycreation_arrow_r[arrowAnimTextureNum].get(), {uPosActiveItem->rect.x - 12, uPosActiveItem->rect.y});
 
     pText = localization->str(LSTR_SKILLS);
     for (int i = pText.size() - 1; i >= 0; i--)
@@ -354,7 +355,7 @@ void GUIWindow_PartyCreation::Update() {
     for (int i = 0; i < 4; ++i) {
         DrawText(assets->pFontCreate.get(), {pIntervalX + 73, 100}, colorTable.White,
             localization->expand(localization->className(pParty->pCharacters[i].classType)), pGUIWindow_CurrentMenu->frameRect);
-        render->DrawQuad2D(ui_partycreation_class_icons[std::to_underlying(pParty->pCharacters[i].classType) / 4], {pIntervalX + 77, 50});
+        render->DrawQuad2D(ui_partycreation_class_icons[std::to_underlying(pParty->pCharacters[i].classType) / 4].get(), {pIntervalX + 77, 50});
 
         if (pGUIWindow_CurrentMenu->keyboard_input_status != WINDOW_INPUT_NONE && uPlayerCreationUI_NameEditCharacter == i) {
             switch (pGUIWindow_CurrentMenu->keyboard_input_status) {
@@ -700,8 +701,7 @@ GUIWindow_PartyCreation::GUIWindow_PartyCreation() :
 }
 
 GUIWindow_PartyCreation::~GUIWindow_PartyCreation() {
-    assets->releaseImage(main_menu_background);
-    main_menu_background = nullptr;
+    assets->evict(std::move(main_menu_background));
 }
 
 //----- (00497526) --------------------------------------------------------

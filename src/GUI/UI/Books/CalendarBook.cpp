@@ -15,13 +15,13 @@
 
 #include "GUI/GUIButton.h"
 
-GraphicsImage *ui_book_calendar_background = nullptr;
+std::shared_ptr<GraphicsImage> ui_book_calendar_background;
 
-GraphicsImage *ui_book_calendar_moon_new = nullptr;
-GraphicsImage *ui_book_calendar_moon_4 = nullptr;
-GraphicsImage *ui_book_calendar_moon_2 = nullptr;
-GraphicsImage *ui_book_calendar_moon_2_2 = nullptr;
-GraphicsImage *ui_book_calendar_moon_full = nullptr;
+std::shared_ptr<GraphicsImage> ui_book_calendar_moon_new;
+std::shared_ptr<GraphicsImage> ui_book_calendar_moon_4;
+std::shared_ptr<GraphicsImage> ui_book_calendar_moon_2;
+std::shared_ptr<GraphicsImage> ui_book_calendar_moon_2_2;
+std::shared_ptr<GraphicsImage> ui_book_calendar_moon_full;
 
 // 4E1B18
 static std::array<int, 28> pDayMoonPhase = {
@@ -67,9 +67,9 @@ static std::string getDayPart(int hour) {
 }
 
 void GUIWindow_CalendarBook::Update() {
-    render->DrawQuad2D(ui_exit_cancel_button_background, {471, 445});
+    render->DrawQuad2D(ui_exit_cancel_button_background.get(), {471, 445});
 
-    render->DrawQuad2D(ui_book_calendar_background, pViewport.topLeft());
+    render->DrawQuad2D(ui_book_calendar_background.get(), pViewport.topLeft());
     CivilTime time = pParty->GetPlayingTime().toCivilTime();
 
     DrawTitleText(assets->pFontBookTitle.get(), 0, 22, ui_book_calendar_title_color, localization->str(LSTR_TIME_IN_ERATHIA), 3, pViewport);

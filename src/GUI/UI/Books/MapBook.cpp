@@ -27,7 +27,7 @@
 
 void DrawBook_Map_sub(int tl_x, int tl_y, int br_x, int br_y);
 
-GraphicsImage *ui_book_map_background = nullptr;
+std::shared_ptr<GraphicsImage> ui_book_map_background;
 
 GUIWindow_MapBook::GUIWindow_MapBook() {
     this->eWindowType = WINDOW_MAPS_BOOK;
@@ -65,46 +65,46 @@ GUIWindow_MapBook::GUIWindow_MapBook() {
 }
 
 void GUIWindow_MapBook::Update() {
-    render->DrawQuad2D(ui_exit_cancel_button_background, {471, 445});
-    render->DrawQuad2D(ui_book_map_background, pViewport.topLeft());
+    render->DrawQuad2D(ui_exit_cancel_button_background.get(), {471, 445});
+    render->DrawQuad2D(ui_book_map_background.get(), pViewport.topLeft());
 
     auto [minX, maxX] = viewparams->GetMapViewMinMaxX();
     auto [minY, maxY] = viewparams->GetMapViewMinMaxY();
 
     if ((_bookButtonClicked && _bookButtonAction == BOOK_ZOOM_IN) || viewparams->uMapBookMapZoom / 128 >= 12) {
-        render->DrawQuad2D(ui_book_button1_off, pViewport.topLeft() + Pointi(408, 2));
+        render->DrawQuad2D(ui_book_button1_off.get(), pViewport.topLeft() + Pointi(408, 2));
     } else {
-        render->DrawQuad2D(ui_book_button1_on, pViewport.topLeft() + Pointi(398, 1));
+        render->DrawQuad2D(ui_book_button1_on.get(), pViewport.topLeft() + Pointi(398, 1));
     }
 
     if ((_bookButtonClicked && _bookButtonAction == BOOK_ZOOM_OUT) || viewparams->uMapBookMapZoom / 128 <= 3) {
-        render->DrawQuad2D(ui_book_button2_off, pViewport.topLeft() + Pointi(408, 38));
+        render->DrawQuad2D(ui_book_button2_off.get(), pViewport.topLeft() + Pointi(408, 38));
     } else {
-        render->DrawQuad2D(ui_book_button2_on, pViewport.topLeft() + Pointi(398, 38));
+        render->DrawQuad2D(ui_book_button2_on.get(), pViewport.topLeft() + Pointi(398, 38));
     }
 
     if (_bookButtonClicked && _bookButtonAction == BOOK_SCROLL_UP || viewparams->sViewCenterY >= maxY) {
-        render->DrawQuad2D(ui_book_button3_off, pViewport.topLeft() + Pointi(408, 113));
+        render->DrawQuad2D(ui_book_button3_off.get(), pViewport.topLeft() + Pointi(408, 113));
     } else {
-        render->DrawQuad2D(ui_book_button3_on, pViewport.topLeft() + Pointi(398, 113));
+        render->DrawQuad2D(ui_book_button3_on.get(), pViewport.topLeft() + Pointi(398, 113));
     }
 
     if (_bookButtonClicked && _bookButtonAction == BOOK_SCROLL_DOWN || viewparams->sViewCenterY <= minY) {
-        render->DrawQuad2D(ui_book_button4_off, pViewport.topLeft() + Pointi(408, 150));
+        render->DrawQuad2D(ui_book_button4_off.get(), pViewport.topLeft() + Pointi(408, 150));
     } else {
-        render->DrawQuad2D(ui_book_button4_on, pViewport.topLeft() + Pointi(399, 150));
+        render->DrawQuad2D(ui_book_button4_on.get(), pViewport.topLeft() + Pointi(399, 150));
     }
 
     if (_bookButtonClicked && _bookButtonAction == BOOK_SCROLL_RIGHT || viewparams->sViewCenterX >= maxX) {
-        render->DrawQuad2D(ui_book_button5_off, pViewport.topLeft() + Pointi(408, 188));
+        render->DrawQuad2D(ui_book_button5_off.get(), pViewport.topLeft() + Pointi(408, 188));
     } else {
-        render->DrawQuad2D(ui_book_button5_on, pViewport.topLeft() + Pointi(397, 188));
+        render->DrawQuad2D(ui_book_button5_on.get(), pViewport.topLeft() + Pointi(397, 188));
     }
 
     if (_bookButtonClicked && _bookButtonAction == BOOK_SCROLL_LEFT || viewparams->sViewCenterX <= minX) {
-        render->DrawQuad2D(ui_book_button6_off, pViewport.topLeft() + Pointi(408, 226));
+        render->DrawQuad2D(ui_book_button6_off.get(), pViewport.topLeft() + Pointi(408, 226));
     } else {
-        render->DrawQuad2D(ui_book_button6_on, pViewport.topLeft() + Pointi(397, 226));
+        render->DrawQuad2D(ui_book_button6_on.get(), pViewport.topLeft() + Pointi(397, 226));
     }
 
     if (_bookButtonClicked == BOOK_BUTTON_PRESSED_FRAMES) {
@@ -132,7 +132,7 @@ void GUIWindow_MapBook::Update() {
     if (_bookButtonClicked)
         _bookButtonClicked--;
 
-    render->DrawQuad2D(ui_book_map_frame, {75, 22});
+    render->DrawQuad2D(ui_book_map_frame.get(), {75, 22});
     DrawBook_Map_sub(97, 49, 361, 313);
     render->ResetUIClipRect();
 
@@ -283,7 +283,7 @@ void DrawBook_Map_sub(int tl_x, int tl_y, int br_x, int br_y) {
         if (PartyDirection <= 384) ArrowOctant = 0;
         if (PartyDirection < 128 || PartyDirection > 1920) ArrowOctant = 7;
 
-        render->DrawQuad2D(game_ui_minimap_dirs[ArrowOctant], {ArrowXPos, ArrowYPos}, colorTable.Red);
+        render->DrawQuad2D(game_ui_minimap_dirs[ArrowOctant].get(), {ArrowXPos, ArrowYPos}, colorTable.Red);
     }
 
     if (!pLevelDecorations.empty()) {

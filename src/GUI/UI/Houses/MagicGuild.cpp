@@ -151,14 +151,14 @@ void GUIWindow_MagicGuild::buyBooksDialogue() {
     working_window.x = SIDE_TEXT_BOX_POS_X;
     working_window.w = SIDE_TEXT_BOX_WIDTH;
 
-    render->DrawQuad2D(_shopBackground, {8, 8});
+    render->DrawQuad2D(_shopBackground.get(), {8, 8});
     int itemxind = 0;
 
     for (int pX = 32; pX < 452; pX += 70) {  // top row
         if (pParty->spellBooksInGuilds[houseId()][itemxind].itemId != ITEM_NULL)
-            render->DrawQuad2D(shop_ui_items_in_store[itemxind], {pX, 90});
+            render->DrawQuad2D(shop_ui_items_in_store[itemxind].get(), {pX, 90});
         if (pParty->spellBooksInGuilds[houseId()][itemxind + 6].itemId != ITEM_NULL)
-            render->DrawQuad2D(shop_ui_items_in_store[itemxind + 6], {pX, 250});
+            render->DrawQuad2D(shop_ui_items_in_store[itemxind + 6].get(), {pX, 250});
 
         ++itemxind;
     }

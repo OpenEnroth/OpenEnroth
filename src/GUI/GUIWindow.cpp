@@ -74,24 +74,24 @@ MenuType sCurrentMenuID;
 ScreenType current_screen_type = SCREEN_VIDEO;
 ScreenType prev_screen_type;
 
-GraphicsImage *ui_exit_cancel_button_background = nullptr;
-GraphicsImage *game_ui_right_panel_frame = nullptr;
-GraphicsImage *dialogue_ui_x_ok_u = nullptr;
-GraphicsImage *dialogue_ui_x_x_u = nullptr;
+std::shared_ptr<GraphicsImage> ui_exit_cancel_button_background;
+std::shared_ptr<GraphicsImage> game_ui_right_panel_frame;
+std::shared_ptr<GraphicsImage> dialogue_ui_x_ok_u;
+std::shared_ptr<GraphicsImage> dialogue_ui_x_x_u;
 
-GraphicsImage *ui_buttdesc2 = nullptr;
-GraphicsImage *ui_buttyes2 = nullptr;
+std::shared_ptr<GraphicsImage> ui_buttdesc2;
+std::shared_ptr<GraphicsImage> ui_buttyes2;
 
-GraphicsImage *ui_btn_npc_right = nullptr;
-GraphicsImage *ui_btn_npc_left = nullptr;
+std::shared_ptr<GraphicsImage> ui_btn_npc_right;
+std::shared_ptr<GraphicsImage> ui_btn_npc_left;
 
-GraphicsImage *ui_ar_dn_dn = nullptr;
-GraphicsImage *ui_ar_dn_up = nullptr;
-GraphicsImage *ui_ar_up_dn = nullptr;
-GraphicsImage *ui_ar_up_up = nullptr;
+std::shared_ptr<GraphicsImage> ui_ar_dn_dn;
+std::shared_ptr<GraphicsImage> ui_ar_dn_up;
+std::shared_ptr<GraphicsImage> ui_ar_up_dn;
+std::shared_ptr<GraphicsImage> ui_ar_up_up;
 
-GraphicsImage *ui_leather_mm6 = nullptr;
-GraphicsImage *ui_leather_mm7 = nullptr;
+std::shared_ptr<GraphicsImage> ui_leather_mm6;
+std::shared_ptr<GraphicsImage> ui_leather_mm7;
 
 std::array<int, 28> possibleAddressingAwardBits = {{1,  2,  3,  4,  5,  7,  32, 33, 36, 37,
                                                     38, 40, 41, 42, 43, 45, 46, 47, 48, 49,
@@ -339,8 +339,8 @@ void GUIWindow::DrawDialoguePanel(std::string_view text) {
     }
 
     int leatherWidth = ui_leather_mm7->width();
-    render->DrawQuad2D(ui_leather_mm7, Recti(0, 0, leatherWidth, textHeight), Recti(8, 352 - textHeight, leatherWidth, textHeight));
-    render->DrawQuad2D(_591428_endcap, {8, 347 - textHeight});
+    render->DrawQuad2D(ui_leather_mm7.get(), Recti(0, 0, leatherWidth, textHeight), Recti(8, 352 - textHeight, leatherWidth, textHeight));
+    render->DrawQuad2D(_591428_endcap.get(), {8, 347 - textHeight});
     DrawText(font, {indent, 354 - textHeight}, colorTable.White, font->WrapText(text, frameWidth, indent), frameRect);
 }
 
@@ -363,7 +363,7 @@ GUIButton *GUIWindow::CreateButton(Pointi position, Sizei dimensions,
                                    ButtonType uButtonType, int uData, UIMessageType msg,
                                    unsigned int msg_param, InputAction action,
                                    std::string_view label,
-                                   const std::vector<GraphicsImage *> &textures) {
+                                   std::vector<std::shared_ptr<GraphicsImage>> textures) {
     GUIButton *pButton = new GUIButton();
 
     pButton->pParent = this;
@@ -378,7 +378,7 @@ GUIButton *GUIWindow::CreateButton(Pointi position, Sizei dimensions,
     pButton->msg_param = msg_param;
     pButton->action = action;
     pButton->label = label;
-    pButton->vTextures = textures;
+    pButton->vTextures = std::move(textures);
 
     vButtons.push_back(pButton);
 
@@ -387,8 +387,8 @@ GUIButton *GUIWindow::CreateButton(Pointi position, Sizei dimensions,
 
 GUIButton *GUIWindow::CreateButton(std::string id, Pointi position, Sizei dimensions, ButtonType uButtonType, int uData,
                         UIMessageType msg, unsigned int msg_param, InputAction action, std::string_view label,
-                        const std::vector<GraphicsImage *> &textures) {
-    GUIButton *result = CreateButton(position, dimensions, uButtonType, uData, msg, msg_param, action, label, textures);
+                        std::vector<std::shared_ptr<GraphicsImage>> textures) {
+    GUIButton *result = CreateButton(position, dimensions, uButtonType, uData, msg, msg_param, action, label, std::move(textures));
     result->id = std::move(id);
     return result;
 }
@@ -448,7 +448,7 @@ void OnButtonClick::Update() {
     if (_playSound) {
         pAudioPlayer->playUISound(SOUND_StartMainChoice02);
     }
-    render->DrawQuad2D(_button->vTextures[0], frameRect.topLeft());
+    render->DrawQuad2D(_button->vTextures[0].get(), frameRect.topLeft());
     if (!sHint.empty()) {
         _button->DrawLabel(sHint, assets->pFontCreate.get(), colorTable.White);
     }
@@ -459,7 +459,7 @@ void OnButtonClick::Update() {
 void OnButtonClick3::Update() {
     pAudioPlayer->playUISound(SOUND_StartMainChoice02);
 
-    render->DrawQuad2D(_button->vTextures[1], frameRect.topLeft());
+    render->DrawQuad2D(_button->vTextures[1].get(), frameRect.topLeft());
     if (!sHint.empty()) {
         _button->DrawLabel(sHint, assets->pFontCreate.get(), colorTable.White);
     }
@@ -471,7 +471,7 @@ void OnSaveLoad::Update() {
     if (!sHint.empty()) {
         pAudioPlayer->playUISound(SOUND_StartMainChoice02);
     }
-    render->DrawQuad2D(_button->vTextures[0], frameRect.topLeft());
+    render->DrawQuad2D(_button->vTextures[0].get(), frameRect.topLeft());
     if (!sHint.empty()) {
         _button->DrawLabel(sHint, assets->pFontCreate.get(), colorTable.White);
     }
@@ -489,7 +489,7 @@ void OnCancel::Update() {
     if (sHint.empty()) {
         pAudioPlayer->playUISound(SOUND_StartMainChoice02);
     }
-    render->DrawQuad2D(_button->vTextures[0], frameRect.topLeft());
+    render->DrawQuad2D(_button->vTextures[0].get(), frameRect.topLeft());
     if (!sHint.empty()) {
         _button->DrawLabel(sHint, assets->pFontCreate.get(), colorTable.White);
     }
@@ -503,7 +503,7 @@ void OnCancel2::Update() {
     if (!sHint.empty()) {
         pAudioPlayer->playUISound(SOUND_StartMainChoice02);
     }
-    render->DrawQuad2D(_button->vTextures[1], frameRect.topLeft());
+    render->DrawQuad2D(_button->vTextures[1].get(), frameRect.topLeft());
     if (!sHint.empty()) {
         _button->DrawLabel(sHint, assets->pFontCreate.get(), colorTable.White);
     }
@@ -518,7 +518,7 @@ void OnCancel3::Update() {
         pAudioPlayer->playUISound(SOUND_StartMainChoice02);
     }
 
-    render->DrawQuad2D(_button->vTextures[0], frameRect.topLeft());
+    render->DrawQuad2D(_button->vTextures[0].get(), frameRect.topLeft());
     if (!sHint.empty()) {
         _button->DrawLabel(sHint, assets->pFontCreate.get(), colorTable.White);
     }

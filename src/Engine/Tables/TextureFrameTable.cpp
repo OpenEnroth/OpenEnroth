@@ -47,10 +47,14 @@ GraphicsImage *TextureFrameTable::animationFrame(int animationId, Duration frame
     return loadTexture(i);
 }
 
+void TextureFrameTable::resetLoadedTextures() {
+    _textures.assign(_frames.size(), nullptr);
+}
+
 GraphicsImage *TextureFrameTable::loadTexture(int frameId) {
     assert(_textures.size() == _frames.size());
 
     if (!_textures[frameId])
         _textures[frameId] = assets->getBitmap(_frames[frameId].textureName);
-    return _textures[frameId];
+    return _textures[frameId].get();
 }

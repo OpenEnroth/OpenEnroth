@@ -835,7 +835,7 @@ void OpenGLRenderer::EndDecals() {
 
     glActiveTexture(GL_TEXTURE0);
 
-    GraphicsImage *texture = assets->getBitmap("hwsplat04");
+    GraphicsImage *texture = assets->getBitmap("hwsplat04").get();
     glBindTexture(GL_TEXTURE_2D, texture->renderId().value());
 
     _decalBuffer.bind();
@@ -971,7 +971,6 @@ void OpenGLRenderer::_set_ortho_modelview() {
 
 // ---------------------- terrain -----------------------
 void OpenGLRenderer::DrawOutdoorTerrain() {
-    _initWaterTiles();
     // shader version
     // draws entire terrain in one go at the moment
     // textures must all be square and same size
@@ -997,7 +996,7 @@ void OpenGLRenderer::DrawOutdoorTerrain() {
                 pTerrainVertices[y * 128 + x].vWorldPosition = pOutdoor->pTerrain.vertexByGridUnsafe({x, y}).toFloat();
 
         // reserve first 7 layers for water tiles in unit 0
-        auto wtrtexture = this->hd_water_tile_anim[0];
+        GraphicsImage *wtrtexture = assets->getBitmap("HDWTR000").get();
         terraintexturesizes[0] = wtrtexture->width();
 
         for (int buff = 0; buff < 7; buff++) {
@@ -1028,7 +1027,7 @@ void OpenGLRenderer::DrawOutdoorTerrain() {
                     tilelayer = 0;
                 } else {
                     // else need to add it
-                    auto thistexture = assets->getBitmap(tile.textureName, tile.flags & TILE_GENERATED_TRANSITION);
+                    GraphicsImage *thistexture = assets->getBitmap(tile.textureName, tile.flags & TILE_GENERATED_TRANSITION).get();
                     int width = thistexture->width();
                     // check size to see what unit it needs
                     int i;
@@ -1138,7 +1137,7 @@ void OpenGLRenderer::DrawOutdoorTerrain() {
 
                 if (tunit == unit) {
                     // get texture
-                    auto texture = assets->getBitmap(it->first, it->first.starts_with("generated")); // TODO(captainurist): terrible, terrible hack, redo this.
+                    GraphicsImage *texture = assets->getBitmap(it->first, it->first.starts_with("generated")).get(); // TODO(captainurist): terrible, terrible hack, redo this.
                     // send texture data to gpu
                     glTexSubImage3D(GL_TEXTURE_2D_ARRAY,
                         0,
@@ -1495,7 +1494,7 @@ void OpenGLRenderer::DrawOutdoorSky() {
 
         _set_ortho_projection(1);
         _set_ortho_modelview();
-        DrawOutdoorSkyPolygon(uNumVertices, pOutdoor->sky_texture, dimming_level);
+        DrawOutdoorSkyPolygon(uNumVertices, pOutdoor->sky_texture.get(), dimming_level);
     }
 }
 
@@ -1754,9 +1753,7 @@ void OpenGLRenderer::DoRenderBillboards_D3D() {
             auto texture = billboard->texture;
             gltexid = texture->renderId().value();
         } else {
-            // TODO(captainurist): function-local static caching an asset, make it a member.
-            static GraphicsImage *effpar03 = assets->getBitmap("effpar03");
-            gltexid = static_cast<float>(effpar03->renderId().value());
+            gltexid = static_cast<float>(spell_fx_renderer->effpar03->renderId().value());
         }
 
         //if (gltexid != testtexid) {
@@ -2239,7 +2236,6 @@ void OpenGLRenderer::Present() {
 }
 
 void OpenGLRenderer::DrawOutdoorBuildings() {
-    _initWaterTiles();
     // shader
     // verts are streamed to gpu as required
     // textures can be different sizes
@@ -2258,7 +2254,7 @@ void OpenGLRenderer::DrawOutdoorBuildings() {
         }
 
         // reserve first 7 layers for water tiles in unit 0
-        auto wtrtexture = this->hd_water_tile_anim[0];
+        GraphicsImage *wtrtexture = assets->getBitmap("HDWTR000").get();
         //terraintexmap.insert(std::make_pair("wtrtyl", terraintexmap.size()));
         //numterraintexloaded[0]++;
         outbuildtexturewidths[0] = wtrtexture->width();
@@ -2339,7 +2335,7 @@ void OpenGLRenderer::DrawOutdoorBuildings() {
                                 texlayer = 0;
                             } else {
                                 // else need to add it
-                                auto thistexture = assets->getBitmap(texname);
+                                GraphicsImage *thistexture = assets->getBitmap(texname).get();
                                 int width = thistexture->width();
                                 int height = thistexture->height();
                                 // check size to see what unit it needs
@@ -2428,7 +2424,7 @@ void OpenGLRenderer::DrawOutdoorBuildings() {
 
                 if (tunit == unit) {
                     // get texture
-                    auto texture = assets->getBitmap(it->first);
+                    GraphicsImage *texture = assets->getBitmap(it->first).get();
 
                     glTexSubImage3D(GL_TEXTURE_2D_ARRAY,
                         0,
@@ -2742,7 +2738,6 @@ void OpenGLRenderer::DrawOutdoorBuildings() {
 }
 
 void OpenGLRenderer::DrawIndoorFaces() {
-    _initWaterTiles();
     // void RenderOpenGL::DrawIndoorBSP() {
 
         glEnable(GL_CULL_FACE);
@@ -2779,7 +2774,7 @@ void OpenGLRenderer::DrawIndoorFaces() {
 
 
             // reserve first 7 layers for water tiles in unit 0
-            auto wtrtexture = this->hd_water_tile_anim[0];
+            GraphicsImage *wtrtexture = assets->getBitmap("HDWTR000").get();
             //terraintexmap.insert(std::make_pair("wtrtyl", terraintexmap.size()));
             //numterraintexloaded[0]++;
             bsptexturewidths[0] = wtrtexture->width();
@@ -2832,7 +2827,7 @@ void OpenGLRenderer::DrawIndoorFaces() {
                         texlayer = 0;
                     } else {
                         // else need to add it
-                        auto thistexture = assets->getBitmap(texname);
+                        GraphicsImage *thistexture = assets->getBitmap(texname).get();
                         int width = thistexture->width();
                         int height = thistexture->height();
                         // check size to see what unit it needs
@@ -2909,7 +2904,7 @@ void OpenGLRenderer::DrawIndoorFaces() {
 
                     if (tunit == unit) {
                         // get texture
-                        auto texture = assets->getBitmap(it->first);
+                        GraphicsImage *texture = assets->getBitmap(it->first).get();
 
                         glTexSubImage3D(GL_TEXTURE_2D_ARRAY,
                             0,
@@ -3424,16 +3419,6 @@ void OpenGLRenderer::_shutdownImGui() {
     ImGui_ImplOpenGL3_Shutdown();
     ImGui_ImplSDL3_Shutdown();
     ImGui::DestroyContext();
-}
-
-void OpenGLRenderer::_initWaterTiles() {
-    if (hd_water_tile_anim[0])
-        return;
-
-    for (unsigned i = 0; i < 7; ++i) {
-        std::string container_name = fmt::format("HDWTR{:03}", i);
-        hd_water_tile_anim[i] = assets->getBitmap(container_name);
-    }
 }
 
 bool OpenGLRenderer::Reinitialize(bool firstInit) {

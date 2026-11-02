@@ -1,3 +1,4 @@
+#include <memory>
 #include <string>
 
 #include "Engine/AssetsManager.h"
@@ -15,7 +16,7 @@
 
 #include "Media/Audio/AudioPlayer.h"
 
-GraphicsImage *ui_game_quickref_background = nullptr;
+std::shared_ptr<GraphicsImage> ui_game_quickref_background;
 
 GUIWindow_QuickReference::GUIWindow_QuickReference() : GUIWindow(WINDOW_QUICK_REFERENCE, {0, 0}, render->GetRenderDimensions()) {
     // 004304E7 Game_EventLoop --- part
@@ -44,7 +45,7 @@ void GUIWindow_QuickReference::Update() {
     Color pTextColor;
     int pFontHeight = assets->pFontArrus->GetHeight() + 1;
 
-    render->DrawQuad2D(ui_game_quickref_background, {8, 8});
+    render->DrawQuad2D(ui_game_quickref_background.get(), {8, 8});
 
     pGUIWindow_CurrentMenu->DrawTextInRect(assets->pFontArrus.get(), {22, 18}, colorTable.White, localization->str(LSTR_NAME), 60, 0);
     pGUIWindow_CurrentMenu->DrawTextInRect(assets->pFontArrus.get(), {22, 47}, colorTable.White, localization->str(LSTR_LEVEL), 60, 0);

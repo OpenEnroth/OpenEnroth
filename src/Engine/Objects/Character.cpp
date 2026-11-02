@@ -4186,7 +4186,7 @@ void Character::OnInventoryLeftClick() {
         int itemYOffset = mousePos.y + mouseOffset.y - 17 - (corner.y * 32);
 
         if (entry) {
-            auto tex = assets->getIcon(entry->GetIconName());
+            GraphicsImage *tex = assets->getIcon(entry->GetIconName()).get();
             itemXOffset -= itemOffset(tex->width());
             itemYOffset -= itemOffset(tex->height());
         }

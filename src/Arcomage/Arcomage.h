@@ -1,6 +1,7 @@
 #pragma once
 
 #include <array>
+#include <memory>
 #include <string>
 
 #include "Engine/Graphics/FrameLimiter.h"
@@ -177,8 +178,8 @@ struct ArcomageGame {
     GUIFont *pfntComic = nullptr;  // ptr_48;
     GUIFont *pfntArrus = nullptr;  // ptr_4C;
 
-    GraphicsImage *pGameBackground = nullptr;
-    GraphicsImage *pSprites = nullptr;
+    std::shared_ptr<GraphicsImage> pGameBackground;
+    std::shared_ptr<GraphicsImage> pSprites;
 
     int _gameWinner = 0; // 0 = none, 1 = player, 2 = enemy
     int _victoryType = 0;

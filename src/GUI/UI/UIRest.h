@@ -1,5 +1,7 @@
 #pragma once
 
+#include <memory>
+
 #include "GUI/GUIWindow.h"
 
 #include "Core/Time/Time.h"
@@ -28,7 +30,7 @@ enum class RestType {
 };
 using enum RestType;
 
-extern GraphicsImage *rest_ui_sky_frame_current;
+extern std::shared_ptr<GraphicsImage> rest_ui_sky_frame_current;
 
 extern int foodRequiredToRest;
 extern Duration remainingRestTime;
