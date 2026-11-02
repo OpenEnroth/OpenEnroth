@@ -7,6 +7,7 @@
 
 #include "Library/FileSystem/Interface/FileSystemException.h"
 
+#include "Utility/String/Join.h"
 #include "Utility/Streams/FileInputStream.h"
 #include "Utility/Streams/FileOutputStream.h"
 #include "Utility/Exception.h"
@@ -35,7 +36,7 @@ void NativeFileSystem::_ls(NormalPathView path, std::vector<DirectoryEntry> *ent
         fs::ls(basePath, entries);
     } catch (const Exception &) {
         if (path.isRoot())
-            return; // ls(".") always works.
+            return; // ls("/") always works.
 
         if (fs::stat(basePath).type == FILE_REGULAR)
             FileSystemException::raise(this, FS_LS_FAILED_PATH_IS_FILE, path);
@@ -82,5 +83,11 @@ std::string NativeFileSystem::_displayPath(NormalPathView path) const {
 }
 
 Path NativeFileSystem::makeBasePath(NormalPathView path) const {
-    return path.isRoot() ? _root : _root / path;
+    if (path.isRoot())
+        return _root;
+
+    std::string_view root = _root.str();
+    if (detail::isPathSeparator(root.back()))
+        root.remove_suffix(1);
+    return Path(join(root, path.str())); // Not operator/, on Windows it'd read a tail like "/c:b" as a rooted path.
 }

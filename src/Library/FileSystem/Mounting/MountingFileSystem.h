@@ -18,8 +18,8 @@
  * MemoryFileSystem fs2;
  *
  * MountingFileSystem fs;
- * fs.mount(".", &fs1);
- * fs.mount("data/images", &fs2); // Now "data/images" is pointing into `fs2`, whatever was there in `fs1` is ignored.
+ * fs.mount("/", &fs1);
+ * fs.mount("/data/images", &fs2); // Now "/data/images" is pointing into `fs2`, whatever was there in `fs1` is ignored.
  * ```
  *
  * In the example above, repeated calls to `mount` create a hierarchy of virtual directories. These virtual directories
@@ -36,8 +36,7 @@ class MountingFileSystem : public FileSystem {
     virtual ~MountingFileSystem();
 
     /**
-     * @param path                      Mount point, must be accessible, see `NormalPathView::isAccessible`. `"."` is the
-     *                                  root.
+     * @param path                      Mount point, must be accessible, see `NormalPathView::isAccessible`.
      * @param fileSystem                File system to mount.
      */
     void mount(PathView path, FileSystem *fileSystem);
