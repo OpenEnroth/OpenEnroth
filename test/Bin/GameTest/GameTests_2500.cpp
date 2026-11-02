@@ -1121,6 +1121,26 @@ GAME_TEST(Issues, Issue2868b) {
     }
 }
 
+GAME_TEST(Issues, Issue2869) {
+    // Divine Intervention cured the Zombie condition, which vanilla MM7 doesn't, and left the zombie face on.
+    game.startNewGame();
+    engine->config->debug.AllMagic.setValue(true);
+    Character &zombie = pParty->pCharacters[1];
+    zombie.SetCondition(CONDITION_ZOMBIE, 0);
+    pParty->pCharacters[2].SetCondition(CONDITION_WEAK, 0);
+    int zombieFace = zombie.IsMale() ? 23 : 24;
+
+    auto zombieConditionTape = charTapes.condition(1);
+    auto zombieFaceTape = charTapes.face(1);
+    auto weakConditionTape = charTapes.condition(2);
+    test.startTaping();
+    game.castQuickSpell(0, SPELL_LIGHT_DIVINE_INTERVENTION);
+
+    EXPECT_EQ(weakConditionTape, tape(CONDITION_WEAK, CONDITION_GOOD));
+    EXPECT_EQ(zombieConditionTape, tape(CONDITION_ZOMBIE));
+    EXPECT_EQ(zombieFaceTape, tape(zombieFace));
+}
+
 GAME_TEST(Prs, Pr2876a) {
     // An event going on from a branchless dialogue into a transition dialogue lost the transition dialogue. MM6's
     // outd3.evt event 43 does this, so the test gives the Hidden Tomb's exit the same shape.
