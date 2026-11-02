@@ -103,10 +103,6 @@ class CommonTapeRecorder {
 
     TestMultiTape<SoundId> sounds();
 
-    /**
-     * @return                          Tape of the names passed to `MPlayer::PlayFullscreenMovie`, recorded with
-     *                                  `debug.no_video` on as well. The startup movies in `VideoState` aren't on it.
-     */
     TestMultiTape<std::string> movies();
 
     TestMultiTape<std::string> hudTextures();
