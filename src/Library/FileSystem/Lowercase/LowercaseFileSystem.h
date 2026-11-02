@@ -44,7 +44,7 @@ struct LowercaseFileData {
  *
  * The important point about the implementation is that there is no amplification of the number of calls into the
  * underlying file system. Each of the methods in `LowercaseFileSystem` calls into the underlying file system at most
- * once.
+ * once per path segment that's not cached yet.
  */
 class LowercaseFileSystem : public FileSystem {
  public:

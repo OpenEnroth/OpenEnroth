@@ -6,9 +6,6 @@
 
 #include "Library/FileSystem/Interface/ReadOnlyFileSystem.h"
 
-/**
- * Empty read-only filesystem.
- */
 class NullFileSystem : public ReadOnlyFileSystem {
  private:
     virtual bool _exists(NormalPathView path) const override;

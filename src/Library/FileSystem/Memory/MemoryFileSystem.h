@@ -32,6 +32,9 @@ struct MemoryFileData {
  */
 class MemoryFileSystem : public FileSystem {
  public:
+    /**
+     * @param displayName               Shown by `displayPath` before `://`.
+     */
     explicit MemoryFileSystem(std::string_view displayName);
 
     void clear();

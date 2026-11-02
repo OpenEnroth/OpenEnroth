@@ -8,7 +8,8 @@
 #include "Library/FileSystem/Trie/FileSystemTrie.h"
 
 /**
- * Proxy filesystem that supports masking out certain parts of the underlying filesystem.
+ * Proxy filesystem that supports masking out certain parts of the underlying filesystem. A masked path and everything
+ * under it look missing, and can't be written.
  */
 class MaskingFileSystem : public ProxyFileSystem {
  public:
@@ -16,7 +17,7 @@ class MaskingFileSystem : public ProxyFileSystem {
     virtual ~MaskingFileSystem();
 
     /**
-     * @param path                      Path to hide, must be accessible, see `NormalPath::isAccessible`. `"."` is the
+     * @param path                      Path to hide, must be accessible, see `NormalPathView::isAccessible`. `"."` is the
      *                                  root.
      */
     void mask(PathView path);

@@ -28,7 +28,8 @@
 /**
  * File system interface.
  *
- * All user-facing methods take paths as UTF-8 encoded `PathView`s, and users are expected to store paths as `Path`s.
+ * User-facing methods take a `PathView`, or a `NormalPathView` for a path that's already normal. Users are expected to
+ * store paths as `Path`s.
  *
  * Paths are normalized internally, and then processed by the implementation in a derived class. A backslash is a
  * separator on every platform. Both `".."` and `"."` special dirs are supported, but peeking outside the root directory
@@ -53,7 +54,7 @@ class FileSystem {
     /**
      * @param path                      Path to check.
      * @return                          Whether the given path exists.
-     * @throws std::runtime_error       On error, e.g. if the current user doesn't have the necessary permissions.
+     * @throws std::runtime_error       On an implementation error.
      */
     [[nodiscard]] bool exists(PathView path) const;
 
@@ -61,7 +62,7 @@ class FileSystem {
      * @param path                      Path to a file or a folder to get information for.
      * @return                          Information for a file or directory at `path`. `FileStat::type` will be set to
      *                                  `FILE_INVALID` if `path` doesn't exist.
-     * @throws std::runtime_error       On error, e.g. if the current user doesn't have the necessary permissions.
+     * @throws std::runtime_error       On an implementation error.
      */
     [[nodiscard]] FileStat stat(PathView path) const;
 
@@ -71,6 +72,12 @@ class FileSystem {
      * @throws std::runtime_error       If `path` doesn't exist, or on any other error.
      */
     [[nodiscard]] std::vector<DirectoryEntry> ls(PathView path) const;
+
+    /**
+     * @param path                      Path to an existing directory to list.
+     * @param[out] entries              Cleared, then filled with the directory entries.
+     * @throws std::runtime_error       If `path` doesn't exist, or on any other error.
+     */
     void ls(PathView path, std::vector<DirectoryEntry> *entries) const;
 
     /**
@@ -121,8 +128,8 @@ class FileSystem {
     [[nodiscard]] std::string displayPath(PathView path) const;
 
     /**
-     * The same methods for a path that's already normal, so that a file system that delegates to another one doesn't
-     * normalize it again. Each one refuses an inaccessible path like its `PathView` overload does.
+     * The same methods for a path that's already normal, which skips normalizing it. A file system that delegates to
+     * another one calls these. An inaccessible path behaves as it does in the `PathView` overloads.
      */
     [[nodiscard]] bool exists(NormalPathView path) const;
     [[nodiscard]] FileStat stat(NormalPathView path) const;
@@ -142,6 +149,11 @@ class FileSystem {
     using FileSystemTrie = detail::FileSystemTrie<T>;
 
  protected:
+    /**
+     * What a subclass implements. The public methods pass a normal, accessible path. Only `_ls` and `_displayPath` can
+     * get the root. `_ls` gets an empty `entries`, and must succeed for the root even if the backing storage is
+     * missing.
+     */
     [[nodiscard]] virtual bool _exists(NormalPathView path) const = 0;
     [[nodiscard]] virtual FileStat _stat(NormalPathView path) const = 0;
     virtual void _ls(NormalPathView path, std::vector<DirectoryEntry> *entries) const = 0;

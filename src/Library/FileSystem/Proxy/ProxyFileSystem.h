@@ -6,6 +6,9 @@
 
 #include "Library/FileSystem/Interface/FileSystem.h"
 
+/**
+ * File system that forwards everything to its base, which must be set before the first call.
+ */
 class ProxyFileSystem : public FileSystem {
  public:
     explicit ProxyFileSystem(FileSystem *base = nullptr): _base(base) {}

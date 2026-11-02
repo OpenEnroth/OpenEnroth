@@ -10,8 +10,8 @@ class NormalPath;
 
 /**
  * View over a path in the normal form the file system layer works in. It comes from a `NormalPath` or from a tail of
- * another `NormalPathView`, so a function that takes one can rely on it being normal. A default-constructed view names
- * the root. The public methods of `FileSystem` refuse an inaccessible path, so the implementations never see one.
+ * another `NormalPathView`, so a function that takes one can rely on it being normal. It can be empty or inaccessible,
+ * see `isAccessible`, and the public `FileSystem` methods check that. A default-constructed view names the root.
  */
 class NormalPathView {
  public:
@@ -23,10 +23,6 @@ class NormalPathView {
 
     [[nodiscard]] std::string_view str() const {
         return _path.str();
-    }
-
-    [[nodiscard]] bool isEmpty() const {
-        return _path.isEmpty();
     }
 
     [[nodiscard]] bool isRoot() const {
@@ -81,8 +77,8 @@ class NormalPathView {
 };
 
 /**
- * @param head                          Path to join onto.
- * @param tail                          Path to append.
+ * @param head                          Path to join onto, must be accessible.
+ * @param tail                          Path to append, must be accessible.
  * @return                              `head` and `tail` joined, in normal form.
  */
 [[nodiscard]] NormalPath operator/(NormalPathView head, NormalPathView tail);
@@ -90,7 +86,9 @@ class NormalPathView {
 /**
  * A path inside a `FileSystem`, in the normal form the file system layer works in. A backslash is a separator on every
  * platform, and `.`, `..` and repeated separators are folded, down to `"."` for the root. A path that `isAccessible`
- * refuses stays representable, so that `displayPath` can show it.
+ * refuses stays representable, so that `displayPath` can show it. A default-constructed path is the root, while
+ * `NormalPath("")` stays empty and names nothing. Build one to join paths, or to use a path repeatedly without
+ * normalizing it again.
  */
 class NormalPath {
  public:
@@ -110,6 +108,8 @@ class NormalPath {
     }
 
     /**
+     * Both this path and `tail` must be accessible.
+     *
      * @param tail                      Path to append.
      * @return                          `*this`, still in normal form.
      */

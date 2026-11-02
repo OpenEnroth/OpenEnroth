@@ -3,7 +3,6 @@
 #include <cassert>
 #include <string>
 
-#include "Utility/System/Path.h"
 #include "FileSystem.h"
 
 FileSystemException::FileSystemException(FileSystemError error, std::string_view arg0) :
@@ -47,5 +46,5 @@ std::string FileSystemException::formatMessage(FileSystemError error, std::strin
 }
 
 [[noreturn]] void FileSystemException::raise(const FileSystem *fs, FileSystemError error, NormalPathView path) {
-    throw FileSystemException(error, path.isEmpty() ? std::string() : fs->displayPath(path));
+    throw FileSystemException(error, path.str().empty() ? std::string() : fs->displayPath(path));
 }

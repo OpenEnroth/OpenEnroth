@@ -8,8 +8,15 @@
 
 #include "Library/FileSystem/Interface/ReadOnlyFileSystem.h"
 
+/**
+ * Read-only view over files compiled into the binary with CMakeRC.
+ */
 class EmbeddedFileSystem : public ReadOnlyFileSystem {
  public:
+    /**
+     * @param base                      Embedded files to view.
+     * @param displayName               Shown by `displayPath` before `://`.
+     */
     explicit EmbeddedFileSystem(cmrc::embedded_filesystem base, std::string_view displayName);
     virtual ~EmbeddedFileSystem();
 

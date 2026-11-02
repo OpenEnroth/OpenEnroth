@@ -77,3 +77,14 @@ UNIT_TEST(MaskingFileSystem, UnmaskInaccessiblePath) {
     EXPECT_FALSE(fs.exists("a"));
     EXPECT_TRUE(fs.unmask("."));
 }
+
+UNIT_TEST(MaskingFileSystem, DisplayPath) {
+    // A masked path is shown under its own prefix, the root as the bare prefix.
+    MemoryFileSystem fs0("ram");
+    MaskingFileSystem fs(&fs0);
+
+    EXPECT_EQ(fs.displayPath("."), "ram://");
+    fs.mask(".");
+    EXPECT_EQ(fs.displayPath("."), "masked://");
+    EXPECT_EQ(fs.displayPath("a"), "masked://a");
+}

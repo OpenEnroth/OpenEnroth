@@ -1,6 +1,7 @@
 #include "NormalPath.h"
 
 #include <algorithm>
+#include <cassert>
 #include <string>
 #include <string_view>
 #include <utility>
@@ -8,11 +9,8 @@
 #include "Utility/String/Ascii.h"
 
 bool NormalPathView::isAccessible() const {
-    std::string_view path = str();
-    if (path.empty() || !_path.root().empty())
+    if (_path.isEmpty() || !_path.root().empty() || _path.isEscaping())
         return false;
-    if (path == ".." || path.starts_with("../"))
-        return false; // Normal form keeps every ".." at the start.
 
 #ifdef _WINDOWS
     for (std::string_view segment : split())
@@ -31,11 +29,13 @@ NormalPath::NormalPath(PathView path) {
         _path = Path(path);
     }
 
-    if (!_path.isEmpty() && !_path.isNormalized())
+    if (!_path.isNormalized())
         _path = _path.normalized();
 }
 
 NormalPath &NormalPath::operator/=(NormalPathView tail) {
+    assert(isAccessible() && tail.isAccessible());
+
     if (NormalPathView(_path).isRoot()) {
         _path = Path(PathView(tail));
     } else if (!tail.isRoot()) {
@@ -45,6 +45,8 @@ NormalPath &NormalPath::operator/=(NormalPathView tail) {
 }
 
 NormalPath operator/(NormalPathView head, NormalPathView tail) {
+    assert(head.isAccessible() && tail.isAccessible());
+
     std::string_view headString = head.relativeStr();
     std::string_view tailString = tail.relativeStr();
 

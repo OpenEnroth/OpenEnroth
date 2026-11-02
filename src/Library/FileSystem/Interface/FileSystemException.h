@@ -3,7 +3,6 @@
 #include <string>
 
 #include "Utility/Exception.h"
-#include "Utility/System/PathView.h"
 
 #include "FileSystemFwd.h"
 #include "FileSystemEnums.h"
@@ -11,6 +10,10 @@
 
 class FileSystemException : public Exception {
  public:
+    /**
+     * @param error                     What failed.
+     * @param arg0                      Path to show in the message.
+     */
     FileSystemException(FileSystemError error, std::string_view arg0);
 
     /**

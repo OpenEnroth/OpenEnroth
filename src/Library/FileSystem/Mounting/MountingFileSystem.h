@@ -25,16 +25,18 @@
  * In the example above, repeated calls to `mount` create a hierarchy of virtual directories. These virtual directories
  * override everything with the same name that existed in the underlying file systems.
  *
- * Note that `remove` only works on regular files, and will fail on virtual directories. If you want to tweak the
- * virtual directory tree, use `mount` and `unmount`.
+ * Note that `remove` fails on virtual directories. If you want to tweak them, use `mount` and `unmount`.
  */
 class MountingFileSystem : public FileSystem {
  public:
+    /**
+     * @param displayName               Shown by `displayPath` before `://`.
+     */
     explicit MountingFileSystem(std::string_view displayName);
     virtual ~MountingFileSystem();
 
     /**
-     * @param path                      Mount point, must be accessible, see `NormalPath::isAccessible`. `"."` is the
+     * @param path                      Mount point, must be accessible, see `NormalPathView::isAccessible`. `"."` is the
      *                                  root.
      * @param fileSystem                File system to mount.
      */

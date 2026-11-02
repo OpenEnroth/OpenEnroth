@@ -49,23 +49,20 @@ class FileSystemTrieNode {
     friend class FileSystemTrie<T>;
 
  private:
-    /** Parent of this node. */
     FileSystemTrieNode *_parent = nullptr;
 
     /** Key in the parent node. It's only used for node removal, and is not exposed through getters. */
     std::string _key;
 
-    /** Value, if any. */
     std::optional<T> _value;
 
-    /** Children map. It's possible to jump through hoops here and use `std::unordered_set` of 
-     * `std::unique_ptr<FileSystemTrieNode>` since the key is stored in the `FileSystemTrieNode` anyway. 
-     * But it's just not worth it. */
+    /** Children map. */
     std::unordered_map<TransparentString, std::unique_ptr<FileSystemTrieNode>, TransparentStringHash, TransparentStringEquals> _children;
 };
 
 /**
- * Trie map from a path in the file system layer's normal form, see `NormalPath`, to `T`.
+ * Trie map from a path in the file system layer's normal form, see `NormalPath`, to `T`. `"."` and an empty path name
+ * the node they start at.
  * 
  * Each node can contain a value, even if it's not a leaf node. If the user needs a trie that only contains values in
  * the leaf nodes, then it's up to the user to maintain this invariant.
@@ -123,6 +120,12 @@ class FileSystemTrie {
         return const_cast<FileSystemTrie *>(this)->find(path);
     }
 
+    /**
+     * @param base                      Node to start at.
+     * @param relativePath              Path to follow from `base`.
+     * @param[out] tail                 The part of `relativePath` that's missing, empty if nothing is.
+     * @return                          Deepest existing node on `relativePath`.
+     */
     Node *walk(Node *base, PathView relativePath, PathView *tail = nullptr) {
         assert(base);
 
@@ -153,6 +156,11 @@ class FileSystemTrie {
         return const_cast<FileSystemTrie *>(this)->walk(path, tail);
     }
 
+    /**
+     * @param base                      Node to start at.
+     * @param relativePath              Path of the node to erase, relative to `base`.
+     * @return                          Whether the node existed.
+     */
     bool erase(Node *base, PathView relativePath = {}) {
         assert(base);
 
@@ -170,6 +178,12 @@ class FileSystemTrie {
         return erase(root(), path);
     }
 
+    /**
+     * Drops everything below the node at `relativePath`, keeping its value.
+     *
+     * @param base                      Node to start at.
+     * @param relativePath              Path of the node to chop, relative to `base`.
+     */
     void chop(Node *base, PathView relativePath = {}) {
         assert(base);
 

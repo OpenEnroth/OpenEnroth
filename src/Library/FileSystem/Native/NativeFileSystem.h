@@ -20,6 +20,10 @@
  */
 class NativeFileSystem : public FileSystem {
  public:
+    /**
+     * @param root                      Directory to view. A relative one resolves against the current directory now.
+     * @throws Exception                If `root` is empty.
+     */
     explicit NativeFileSystem(PathView root);
     virtual ~NativeFileSystem();
 
