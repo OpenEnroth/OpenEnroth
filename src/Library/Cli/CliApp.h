@@ -14,11 +14,11 @@ class CliApp : public CLI::App {
     using base_type::base_type;
 
     template<class SubcommandEnum>
-    CliApp *add_subcommand(std::string name, std::string description, SubcommandEnum &target, SubcommandEnum targetValue) {
+    CLI::App *add_subcommand(std::string name, std::string description, SubcommandEnum &target, SubcommandEnum targetValue) {
         auto callback = [target = &target, targetValue] {
             *target = targetValue;
         };
-        return static_cast<CliApp *>(base_type::add_subcommand(std::move(name), std::move(description))->callback(std::move(callback)));
+        return base_type::add_subcommand(std::move(name), std::move(description))->callback(std::move(callback));
     }
 
     void parse(int argc, const char *const *argv, bool &helpPrinted);
