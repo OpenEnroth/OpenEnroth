@@ -130,8 +130,6 @@ std::string MountingFileSystem::_displayPath(NormalPathView path) const {
 MountingFileSystem::WalkResult MountingFileSystem::walk(NormalPathView path) {
     Node *node = _trie.root();
     FileSystem *mount = node->hasValue() ? node->value() : nullptr;
-    if (path.isRoot())
-        return {node, mount, {}};
 
     std::string_view mountChunk;
     for (std::string_view chunk : path.split()) {

@@ -112,8 +112,6 @@ std::string LowercaseFileSystem::_displayPath(NormalPathView path) const {
 
 std::tuple<NormalPath, LowercaseFileSystem::Node *, NormalPathView> LowercaseFileSystem::walk(NormalPathView path) const {
     Node *node = _trie.root();
-    if (path.isRoot())
-        return {NormalPath(), node, NormalPathView()};
 
     NormalPath basePath;
     for (std::string_view chunk : path.split()) {

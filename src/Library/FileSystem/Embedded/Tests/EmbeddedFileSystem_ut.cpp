@@ -29,6 +29,14 @@ UNIT_TEST(EmbeddedFileSystem, Ls) {
     EXPECT_ANY_THROW((void) fs.ls("DoesntExist"));
 }
 
+UNIT_TEST(EmbeddedFileSystem, DisplayPathOfRoot) {
+    // The root is shown as the bare prefix.
+    EmbeddedFileSystem fs(cmrc::testrc::get_filesystem(), "testrc");
+
+    EXPECT_EQ(fs.displayPath("."), "testrc://");
+    EXPECT_EQ(fs.displayPath("Tests"), "testrc://Tests");
+}
+
 UNIT_TEST(EmbeddedFileSystem, Read) {
     EmbeddedFileSystem fs(cmrc::testrc::get_filesystem(), "testrc");
 
