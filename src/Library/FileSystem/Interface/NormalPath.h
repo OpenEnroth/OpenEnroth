@@ -1,5 +1,6 @@
 #pragma once
 
+#include <cassert>
 #include <concepts>
 #include <string_view>
 
@@ -42,20 +43,23 @@ class NormalPathView {
     }
 
     /**
-     * @param segment                   Segment of this path, as handed out by `split`.
+     * @param segment                   Segment of this path, which must be accessible, as handed out by `split`.
      * @return                          The rest of this path as a path of its own, starting at the separator before
      *                                  `segment`.
      */
     [[nodiscard]] NormalPathView tailAt(std::same_as<std::string_view> auto segment) const {
+        assert(isAccessible());
         return NormalPathView(PathView(str().substr(segment.data() - 1 - str().data())));
     }
 
     /**
-     * @param segment                   Segment of this path, as handed out by `split`, or an empty view.
+     * @param segment                   Segment of this path, which must be accessible, as handed out by `split`, or
+     *                                  an empty view.
      * @return                          The rest of this path after `segment` as a path of its own, the root if
      *                                  there's nothing left, or all of it for an empty `segment`.
      */
     [[nodiscard]] NormalPathView tailAfter(std::same_as<std::string_view> auto segment) const {
+        assert(isAccessible());
         if (segment.empty())
             return *this;
         std::string_view tail = str().substr(segment.data() + segment.size() - str().data());

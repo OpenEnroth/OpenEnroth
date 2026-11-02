@@ -114,7 +114,7 @@ std::string FileSystem::displayPath(NormalPathView path) const {
         return _displayPath(path);
 
     std::string result = _displayPath(NormalPathView()); // The implementation never sees an inaccessible path.
-    if (!result.ends_with('/'))
+    if (!detail::isPathSeparator(result.back()))
         result += '/';
     result += PathView(path).displayString();
     return result;

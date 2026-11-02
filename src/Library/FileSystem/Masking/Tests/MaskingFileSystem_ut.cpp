@@ -88,3 +88,15 @@ UNIT_TEST(MaskingFileSystem, DisplayPath) {
     EXPECT_EQ(fs.displayPath("/"), "masked://");
     EXPECT_EQ(fs.displayPath("/a"), "masked://a");
 }
+
+UNIT_TEST(MaskingFileSystem, DriveLikeNames) {
+    // Masking a name that looks like a drive doesn't mask what comes after its colon.
+    MemoryFileSystem fs0("");
+    fs0.write("/c:b", Blob());
+    fs0.write("/b", Blob());
+    MaskingFileSystem fs(&fs0);
+
+    fs.mask("/c:b");
+    EXPECT_FALSE(fs.exists("/c:b"));
+    EXPECT_TRUE(fs.exists("/b"));
+}

@@ -89,5 +89,5 @@ Path NativeFileSystem::makeBasePath(NormalPathView path) const {
     std::string_view root = _root.str();
     if (detail::isPathSeparator(root.back()))
         root.remove_suffix(1);
-    return Path(join(root, path.str())); // Not operator/, on Windows it'd read a tail like "/c:b" as a rooted path.
+    return Path(join(root, path.str())); // Not operator/, it'd read the tail's leading "/" as a root and drop _root.
 }
