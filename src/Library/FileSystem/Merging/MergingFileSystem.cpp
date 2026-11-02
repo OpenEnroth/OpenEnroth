@@ -50,7 +50,7 @@ void MergingFileSystem::_ls(NormalPathView path, std::vector<DirectoryEntry> *en
         std::ranges::move(buffer, std::back_inserter(*entries));
     }
 
-    if (!hasOne && !path.isEmpty())
+    if (!hasOne && !path.isRoot())
         FileSystemException::raise(this, FS_LS_FAILED_PATH_DOESNT_EXIST, path);
 
     // Note that we don't need std::stable_sort here b/c no fs-specific data is exposed by the entries.
