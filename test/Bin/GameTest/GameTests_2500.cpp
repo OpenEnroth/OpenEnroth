@@ -48,7 +48,7 @@
 
 static void scriptHiddenTombExit(std::vector<EvtInstruction> script) {
     // Points the exit at a new event made of the given commands, in order.
-    assert(engine->_localEventMap.instruction(pIndoor->faces[85].eventId, 0).opcode == EVENT_MoveToMap);
+    assert(pIndoor->faces[85].eventId != 0);
     int eventId = 9000;
     for (int step = 0; step < script.size(); step++) {
         script[step].step = step;

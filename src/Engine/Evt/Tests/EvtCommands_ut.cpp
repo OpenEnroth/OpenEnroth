@@ -182,7 +182,7 @@ GAME_TEST(EvtCommands, GameFilesRoundTrip) {
                 for (const EvtFieldInfo &field : command->fields)
                     if (field.get)
                         field.set(&copy, field.get(ir));
-                EXPECT_EQ(copy.toString(), ir.toString()) << name << ".evt, event " << eventId;
+                EXPECT_EQ(copy.toString(EVT_SOURCE_MAP), ir.toString(EVT_SOURCE_MAP)) << name << ".evt, event " << eventId;
                 EXPECT_EQ(copy.str, ir.str) << name << ".evt, event " << eventId;
                 EXPECT_EQ(copy.who, ir.who) << name << ".evt, event " << eventId;
             }

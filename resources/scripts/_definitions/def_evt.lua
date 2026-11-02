@@ -19,7 +19,7 @@
 --- @field countsFromNow boolean Whether the first alarm is counted from now, not from the last visit to the map.
 
 --- @class EvtBindings
---- @field newContext fun(eventId: integer, targetPid: integer, canShowMessages: boolean): EvtScriptContext
+--- @field newContext fun(eventId: integer, isGlobal: boolean, targetPid: integer, canShowMessages: boolean): EvtScriptContext
 --- @field defaultPlayer fun(): integer
 --- @field commands fun(): string[]
 --- @field constants fun(): table<string, table<string, number>>
