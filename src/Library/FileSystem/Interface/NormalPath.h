@@ -30,6 +30,26 @@ class NormalPathView {
         return _path.isEmpty();
     }
 
+    [[nodiscard]] bool isRoot() const {
+        return _path.str() == ".";
+    }
+
+    /**
+     * @return                          This path as a string relative to the root, so empty for the root. For
+     *                                  appending to a prefix, and for APIs that don't know `"."`.
+     */
+    [[nodiscard]] std::string_view relativeStr() const {
+        return isRoot() ? std::string_view() : str();
+    }
+
+    /**
+     * @return                          Whether a file system can reach this path. It can't if it's empty, has a root
+     *                                  as `"/a"` does, or escapes the root. On Windows it also can't if a segment
+     *                                  starts with a drive, as in `"a/c:b"`, because a tail starting there reads as a
+     *                                  root.
+     */
+    [[nodiscard]] bool isAccessible() const;
+
     [[nodiscard]] PathSplit split() const {
         return _path.split();
     }
@@ -44,10 +64,12 @@ class NormalPathView {
 
     /**
      * @param segment                   Segment of this path, as handed out by `split`, or an empty view.
-     * @return                          The rest of this path after `segment`, or all of it for an empty `segment`.
+     * @return                          The rest of this path after `segment`, the root if there's nothing left, or all
+     *                                  of it for an empty `segment`.
      */
     [[nodiscard]] NormalPathView tailAfter(std::same_as<std::string_view> auto segment) const {
-        return NormalPathView(_path.tailAfter(segment));
+        PathView tail = _path.tailAfter(segment);
+        return tail.isEmpty() ? NormalPathView() : NormalPathView(tail);
     }
 
  private:
@@ -56,7 +78,7 @@ class NormalPathView {
     explicit NormalPathView(PathView path) : _path(path) {}
 
  private:
-    PathView _path;
+    PathView _path = ".";
 };
 
 /**
@@ -68,8 +90,8 @@ class NormalPathView {
 
 /**
  * A path inside a `FileSystem`, in the normal form the file system layer works in. A backslash is a separator on every
- * platform, and `.`, `..` and repeated separators are folded. Callers name the root `"."`, and inside the layer it is
- * spelled `""`. A path that `isAccessible` refuses stays representable, so that `displayPath` can show it.
+ * platform, and `.`, `..` and repeated separators are folded, down to `"."` for the root. A path that `isAccessible`
+ * refuses stays representable, so that `displayPath` can show it.
  */
 class NormalPath {
  public:
@@ -77,7 +99,7 @@ class NormalPath {
     explicit NormalPath(PathView path);
 
     operator NormalPathView() const MM_LIFETIMEBOUND { // NOLINT: intentionally implicit.
-        assert(_isAccessible);
+        assert(isAccessible());
         return NormalPathView(_path);
     }
 
@@ -85,14 +107,8 @@ class NormalPath {
         return _path;
     }
 
-    /**
-     * @return                          Whether a file system can reach this path. It can't if it was built from an
-     *                                  empty string, has a root as `"/a"` does, or escapes the root. On Windows it
-     *                                  also can't if a segment starts with a drive, as in `"a/c:b"`, because a tail
-     *                                  starting there reads as a root.
-     */
     [[nodiscard]] bool isAccessible() const {
-        return _isAccessible;
+        return NormalPathView(_path).isAccessible();
     }
 
     /**
@@ -104,7 +120,6 @@ class NormalPath {
     friend NormalPath operator/(NormalPathView head, NormalPathView tail);
 
  private:
-    Path _path;
-    bool _isAccessible = true;
+    Path _path = ".";
 };
 

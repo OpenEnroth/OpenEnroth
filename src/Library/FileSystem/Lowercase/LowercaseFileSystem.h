@@ -71,7 +71,7 @@ class LowercaseFileSystem : public FileSystem {
     void cacheLs(Node *node, NormalPathView basePath) const;
     void invalidateLs(Node *node) const;
     void cacheRemove(Node *node) const;
-    void cacheInsert(Node *node, PathView tail, FileType type) const;
+    void cacheInsert(Node *node, NormalPathView tail, FileType type) const;
 
     NormalPath locateForReading(NormalPathView path) const;
     std::tuple<NormalPath, Node *, NormalPathView> locateForWriting(NormalPathView path);

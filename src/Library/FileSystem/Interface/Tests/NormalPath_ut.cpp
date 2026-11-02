@@ -1,3 +1,4 @@
+#include <iterator>
 #include <string_view>
 
 #include "Testing/Unit/UnitTest.h"
@@ -11,14 +12,31 @@ UNIT_TEST(NormalPath, Normalizes) {
     };
 
     testOne("", "");
-    testOne(".", "");
-    testOne("./", "");
-    testOne("a/..", "");
+    testOne(".", ".");
+    testOne("./", ".");
+    testOne("a/..", ".");
     testOne("a/b", "a/b");
     testOne("a\\b", "a/b");
     testOne("./a//b/", "a/b");
     testOne("a/../..", "..");
     testOne("/a/..", "/");
+}
+
+UNIT_TEST(NormalPath, DefaultIsRoot) {
+    // A default-constructed path names the root, and so does its view.
+    EXPECT_EQ(NormalPath().path().str(), ".");
+    EXPECT_TRUE(NormalPathView(NormalPath()).isRoot());
+    EXPECT_TRUE(NormalPathView().isRoot());
+    EXPECT_TRUE(NormalPathView().relativeStr().empty());
+}
+
+UNIT_TEST(NormalPath, TailOfWholePathIsRoot) {
+    // Nothing left after the last segment is the root, not an empty path.
+    NormalPath path("a/b");
+    NormalPathView view = path;
+    std::string_view last = *std::next(view.split().begin());
+    EXPECT_TRUE(view.tailAfter(last).isRoot());
+    EXPECT_EQ(view.tailAt(last).str(), "b");
 }
 
 UNIT_TEST(NormalPath, IsAccessible) {
@@ -55,9 +73,13 @@ UNIT_TEST(NormalPath, Join) {
     // Joining accessible paths keeps them normal, a side naming the root included.
     auto testOne = [] (std::string_view head, std::string_view tail, std::string_view result) {
         EXPECT_EQ((NormalPath(head) / NormalPath(tail)).path().str(), result) << "for '" << head << "' and '" << tail << "'";
+
+        NormalPath appended(head);
+        appended /= NormalPath(tail);
+        EXPECT_EQ(appended.path().str(), result) << "for '" << head << "' and '" << tail << "'";
     };
 
-    testOne(".", ".", "");
+    testOne(".", ".", ".");
     testOne(".", "b", "b");
     testOne("a", ".", "a");
     testOne("a", "b", "a/b");

@@ -77,11 +77,11 @@ std::string FileSystem::displayPath(PathView path) const {
 }
 
 bool FileSystem::existsIn(const FileSystem *fs, NormalPathView path) {
-    return path.isEmpty() || fs->_exists(path); // Root always exists.
+    return path.isRoot() || fs->_exists(path); // Root always exists.
 }
 
 FileStat FileSystem::statIn(const FileSystem *fs, NormalPathView path) {
-    return path.isEmpty() ? FileStat(FILE_DIRECTORY, 0) : fs->_stat(path);
+    return path.isRoot() ? FileStat(FILE_DIRECTORY, 0) : fs->_stat(path);
 }
 
 void FileSystem::lsIn(const FileSystem *fs, NormalPathView path, std::vector<DirectoryEntry> *entries) {
@@ -90,31 +90,31 @@ void FileSystem::lsIn(const FileSystem *fs, NormalPathView path, std::vector<Dir
 }
 
 Blob FileSystem::readIn(const FileSystem *fs, NormalPathView path) {
-    if (path.isEmpty())
+    if (path.isRoot())
         FileSystemException::raise(fs, FS_READ_FAILED_PATH_IS_DIR, path);
     return fs->_read(path);
 }
 
 void FileSystem::writeIn(FileSystem *fs, NormalPathView path, const Blob &data) {
-    if (path.isEmpty())
+    if (path.isRoot())
         FileSystemException::raise(fs, FS_WRITE_FAILED_PATH_IS_DIR, path);
     fs->_write(path, data);
 }
 
 std::unique_ptr<InputStream> FileSystem::openForReadingIn(const FileSystem *fs, NormalPathView path) {
-    if (path.isEmpty())
+    if (path.isRoot())
         FileSystemException::raise(fs, FS_READ_FAILED_PATH_IS_DIR, path);
     return fs->_openForReading(path);
 }
 
 std::unique_ptr<OutputStream> FileSystem::openForWritingIn(FileSystem *fs, NormalPathView path) {
-    if (path.isEmpty())
+    if (path.isRoot())
         FileSystemException::raise(fs, FS_WRITE_FAILED_PATH_IS_DIR, path);
     return fs->_openForWriting(path);
 }
 
 bool FileSystem::removeIn(FileSystem *fs, NormalPathView path) {
-    if (path.isEmpty())
+    if (path.isRoot())
         FileSystemException::raise(fs, FS_REMOVE_FAILED_PATH_NOT_WRITEABLE, path);
     return fs->_remove(path);
 }

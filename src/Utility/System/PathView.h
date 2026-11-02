@@ -131,10 +131,11 @@ class PathView {
 
     /**
      * @return                          The segments after the root. Runs of separators count as one, so there are
-     *                                  no empty segments.
+     *                                  no empty segments. A path that is exactly `"."` has no segments, it's the
+     *                                  normal form of a path that collapses to nothing.
      */
     [[nodiscard]] PathSplit split() const {
-        return PathSplit(_path.substr(root().size()));
+        return PathSplit(_path == "." ? std::string_view() : _path.substr(root().size()));
     }
 
     /**
