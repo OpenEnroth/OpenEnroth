@@ -970,10 +970,18 @@ GAME_TEST(Issues, Issue490) {
 }
 
 GAME_TEST(Issues, Issue491) {
-    // Check that opening and closing Lloyd book does not cause Segmentation Fault.
+    // Pressing Escape in the Lloyd's Beacon book crashed, because casting the spell opened the book twice.
     auto screenTape = tapes.screen();
-    test.playTraceFromTestData("issue_491.mm7", "issue_491.json");
-    EXPECT_EQ(screenTape, tape(SCREEN_GAME, SCREEN_SPELL_BOOK, SCREEN_GAME, SCREEN_BOOKS, SCREEN_GAME));
+    auto messagesTape = tapes.uiMessages();
+    engine->config->debug.AllMagic.setValue(true);
+    game.startNewGame();
+    test.startTaping();
+    game.castSpell(0, SPELL_WATER_LLOYDS_BEACON);
+    game.tick(2); // The book opens.
+    game.pressAndReleaseKey(PlatformKey::KEY_ESCAPE);
+    game.tick();
+    EXPECT_EQ(screenTape, tape(SCREEN_SPELL_BOOK, SCREEN_GAME, SCREEN_BOOKS, SCREEN_GAME));
+    EXPECT_EQ(messagesTape.flatten().count(UIMSG_OnCastLloydsBeacon), 1);
 }
 
 GAME_TEST(Issues, Issue492) {
