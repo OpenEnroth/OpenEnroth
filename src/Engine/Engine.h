@@ -36,6 +36,7 @@ class GUIMessageQueue;
 class ResourceManager;
 class StatusBar;
 class EngineCallObserver;
+class EvtScripts;
 struct IndoorLocation;
 struct OutdoorLocation;
 struct LightsStack_StationaryLight_;
@@ -145,6 +146,7 @@ class Engine {
     std::shared_ptr<Io::KeyboardActionMapping> keyboardActionMapping;
     EvtProgram _globalEventMap;
     EvtProgram _localEventMap;
+    EvtScripts *_evtScripts = nullptr; // Scripted event handlers to run next to the evt ones, if any.
     std::vector<std::string> _levelStrings;
     PersistentVariables _persistentVariables;
     std::array<unsigned char, 50> _OE_transientVariables; // These are cleared on loading a new map

@@ -21,6 +21,6 @@ struct EvtContext {
      * like Archibald's on entering MM7's Land of the Giants, out12.evt event 1. */
     bool duringMapLoad = false;
 
-    /** A scripted handler runs the event, so a dialogue that pauses it resumes that handler instead of an evt step. */
-    bool scripted = false;
+    /** Scripted handler that runs the event, which a dialogue that pauses it resumes, or 0 for an evt event. */
+    int scriptFrame = 0;
 };

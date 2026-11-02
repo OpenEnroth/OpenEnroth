@@ -1,5 +1,6 @@
 #pragma once
 
+#include <utility>
 #include <vector>
 
 #include "Engine/Evt/EvtContext.h"
@@ -39,9 +40,9 @@ class EvtInterpreter {
      /**
       * Prepares to run the instructions of a scripted handler, one `executeInstruction` call at a time.
       *
-      * @param context                  Event the handler runs as.
+      * @param context                  Event the handler runs as, with `scriptFrame` set.
       */
-     void prepareInstructions(EvtContext context);
+     void prepareHandler(EvtContext context);
 
      /**
       * @param startStep                Step to start from.
@@ -77,8 +78,11 @@ class EvtInterpreter {
          _who = who;
      }
 
-     bool isMapExitTriggered() const {
-         return _transition == EVT_TRANSITION_STARTED;
+     /**
+      * @return                         Whether the instructions run since the last call started a map transition.
+      */
+     [[nodiscard]] EvtTransition takeTransition() {
+         return std::exchange(_transition, EVT_TRANSITION_NONE);
      }
 
  private:
@@ -98,7 +102,7 @@ class EvtInterpreter {
       * @param step                     Step to resume from.
       * @return                         Continuation for the dialogue the current instruction opens.
       */
-     [[nodiscard]] EvtContinuation continuation(int step) const;
+     [[nodiscard]] EvtContinuation continuation(int step);
 
      /**
       * Logs an error naming the event and step when the command's value is out of range for its variable.

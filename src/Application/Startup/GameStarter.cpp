@@ -207,6 +207,7 @@ void GameStarter::initialize() {
     _scriptingSystem->addBindings<EvtBindings>("evt");
     _scriptingSystem->executeEntryPoint();
     _evtScripts = std::make_unique<LuaEvtScripts>(_scriptingSystem->state());
+    _engine->_evtScripts = _evtScripts.get();
 }
 
 GameStarter::~GameStarter() {
