@@ -69,8 +69,7 @@ void main() {
     texcoords.y = (deltas.y + texuv.y) / float(texsize.y);
     fragcol = texture(textureArray0, vec3(texcoords.x,texcoords.y,olayer));
 
-    // Layer 0 is the water tile, flow flags on it disable the animation. World textures have no mipmaps, so this
-    // fetch needs no derivatives.
+    // Layer 0 is the water tile, flow flags on it disable the animation.
     if ((watertiles == 1) && (olayer == 0.0) && (vsAttrib & 0x3C00) == 0)
         fragcol = texture(textureArray0, vec3(texcoords.x,texcoords.y,waterframe));
 

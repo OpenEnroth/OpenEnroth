@@ -32,8 +32,7 @@ void main() {
     // get normal texture at point
     vec4 fragcol = texture(textureArray1, vec3(texuv.x,texuv.y,olayer));
 
-    // replace texture with water if alpha or a water tile (bit 0x1 in attribs). World textures have no mipmaps, so
-    // this fetch needs no derivatives.
+    // replace texture with water if alpha or a water tile (bit 0x1 in attribs)
     if (fragcol.a == 0.0 || (vsAttrib & 0x1) > 0)
         fragcol = texture(textureArray0, vec3(texuv.x,texuv.y,waterframe));
 
