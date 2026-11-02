@@ -7,13 +7,14 @@
 #include <set>
 #include <string>
 #include <utility>
+#include <variant>
 #include <vector>
 
 #include "Engine/Engine.h"
 #include "Engine/Evt/EvtCommands.h"
+#include "Engine/Evt/EvtEnumFunctions.h"
 #include "Engine/Evt/EvtProgram.h"
 #include "Engine/Resources/ResourceManager.h"
-#include "Engine/Tables/HouseTable.h"
 #include "Engine/Tables/ItemTable.h"
 #include "Engine/Tables/NPCTable.h"
 #include "Engine/Tables/QuestTable.h"
@@ -29,18 +30,20 @@ static const std::string_view INDENT = "    ";
 static const std::string_view RETURN = "do return end"; // Lua takes a bare return only as the last statement of a block.
 static const std::array<std::string_view, 4> MASTERY_NAMES = {"const.Novice", "const.Expert", "const.Master", "const.GM"};
 
-enum class EvtFlowKind {
-    EVT_FLOW_NEXT, // Runs and falls through.
-    EVT_FLOW_STOP, // Ends the event.
-    EVT_FLOW_JUMP,
-    EVT_FLOW_BRANCH, // Jumps if its condition holds.
-    EVT_FLOW_RANDOM, // Jumps to one of its targets.
-};
-using enum EvtFlowKind;
+namespace {
 
-struct EvtFlow {
-    EvtFlowKind kind = EVT_FLOW_NEXT;
-    std::string text; // Condition of `EVT_FLOW_BRANCH`, or the statement of another kind, which can be empty.
+enum class EvtStepKind {
+    EVT_STEP_NEXT, // Runs and falls through.
+    EVT_STEP_STOP, // Ends the event.
+    EVT_STEP_JUMP,
+    EVT_STEP_BRANCH, // Jumps if its condition holds.
+    EVT_STEP_RANDOM, // Jumps to one of its targets.
+};
+using enum EvtStepKind;
+
+struct EvtStep {
+    EvtStepKind kind = EVT_STEP_NEXT;
+    std::string text; // Condition of `EVT_STEP_BRANCH`, or the statement of another kind, which can be empty.
     std::vector<int> targets; // Instruction indices, or `END`.
 };
 
@@ -53,6 +56,8 @@ enum class EvtMode {
     EVT_MODE_TOPIC,
 };
 using enum EvtMode;
+
+} // namespace
 
 static std::string luaString(std::string_view text) {
     std::string result = "\"";
@@ -85,12 +90,6 @@ static std::string npcName(int64_t id) {
     return pNPCStats->pNPCData[id].name;
 }
 
-static std::string houseName(int64_t id) {
-    if (!houseTable.indices().contains(static_cast<HouseId>(id)))
-        return {};
-    return houseTable[static_cast<HouseId>(id)].name;
-}
-
 static std::string questName(int64_t bit) {
     if (!pQuestTable.indices().contains(static_cast<QuestBit>(bit)))
         return {};
@@ -99,7 +98,7 @@ static std::string questName(int64_t bit) {
 
 static std::string formatPlayer(int64_t player) {
     if (player >= std::to_underlying(CHOOSE_ACTIVE) && player <= std::to_underlying(CHOOSE_RANDOM))
-        return luaString(evtPlayerName(static_cast<EvtTargetCharacter>(player)));
+        return luaString(toString(static_cast<EvtTargetCharacter>(player)));
     return fmt::format("{}", player);
 }
 
@@ -134,14 +133,14 @@ class EvtEventDecompiler {
 
     int indexOfStep(int64_t step) const;
     int nextIndex(int index) const;
-    EvtFlow flow(int index, EvtMode mode) const;
+    EvtStep flow(int index, EvtMode mode) const;
     std::set<int> reachable(int entry, EvtMode mode) const;
 
     void line(int depth, std::string_view text);
     std::string jump(int target);
     bool canNest(int lo, int hi, int owner) const;
-    void emitStatement(int index, const EvtFlow &flow, int depth);
-    void emitFlowTail(int index, const EvtFlow &flow, int following, int depth);
+    void emitStatement(int index, const EvtStep &flow, int depth);
+    void emitFlowTail(int index, const EvtStep &flow, int following, int depth);
     void emitBlock(int lo, int hi, int depth);
     void emitFlat(int entry);
     std::string function(int entry, EvtMode mode, std::string_view header, std::string_view footer);
@@ -251,7 +250,7 @@ std::string EvtEventDecompiler::formatCall(int index, std::string_view prefix) c
         if (field.get)
             args.emplace_back(field.name, formatValue(field, field.get(ir)));
 
-    bool isVariableCommand = std::ranges::contains(std::array{EVENT_Compare, EVENT_Add, EVENT_Subtract, EVENT_Set}, ir.opcode);
+    bool isVariableCommand = !info->fields.empty() && info->fields[0].type == EVT_FIELD_VARIABLE;
     bool isPositional = args.size() <= 1 || isVariableCommand;
     std::string result = fmt::format("{}{}{}", prefix, info->name, isPositional ? "(" : "{");
     for (size_t i = 0; i < args.size(); i++)
@@ -266,31 +265,32 @@ std::string EvtEventDecompiler::comment(int index) const {
         case EVENT_Add:
         case EVENT_Subtract:
         case EVENT_Set:
-        case EVENT_OnCanShowDialogItemCmp:
             if (ir.data.variable_descr.type == VAR_QBits_QuestsDone)
                 return questName(ir.data.variable_descr.value);
             if (ir.data.variable_descr.type == VAR_PlayerItemInHands)
                 return itemName(ir.data.variable_descr.value);
             return {};
-        case EVENT_SpeakInHouse:
-            return houseName(std::to_underlying(ir.data.house_id));
-        case EVENT_SpeakNPC:
-        case EVENT_SetNPCGreeting:
-            return npcName(ir.data.npc_descr.npc_id);
-        case EVENT_SetNPCTopic:
-            return npcName(ir.data.npc_topic_descr.npc_id);
-        case EVENT_MoveNPC:
-            return npcName(ir.data.npc_move_descr.npc_id);
-        case EVENT_NPCSetItem:
-            return npcName(ir.data.npc_item_descr.id);
         case EVENT_GiveItem:
             return itemName(std::to_underlying(ir.data.give_item_descr.item_id));
         case EVENT_StatusText:
         case EVENT_ShowMessage:
             return _isGlobal ? std::string() : string(ir.data.text_id);
         default:
-            return {};
+            break;
     }
+
+    const EvtCommandInfo *info = evtCommand(ir.opcode);
+    if (!info)
+        return {};
+    for (const EvtFieldInfo &field : info->fields) {
+        if (!field.get)
+            continue;
+        if (field.type == EVT_FIELD_NPC)
+            return npcName(std::get<int64_t>(field.get(ir)));
+        if (field.type == EVT_FIELD_HOUSE)
+            return evtHouseName(std::get<int64_t>(field.get(ir))).value_or(std::string());
+    }
+    return {};
 }
 
 /**
@@ -317,10 +317,11 @@ std::pair<std::string_view, std::string> EvtEventDecompiler::timerCall(int index
     }
 
     std::string start;
-    for (auto [count, unit] : {std::pair(timer.daily_start_hour, "const.Hour"), std::pair(timer.daily_start_minute, "const.Minute"),
-                               std::pair(timer.daily_start_second, "const.Minute/60")})
-        if (count)
-            start += fmt::format("{}{}*{}", start.empty() ? "" : " + ", count, unit);
+    if (period == "const.Day")
+        for (auto [count, unit] : {std::pair(timer.daily_start_hour, "const.Hour"), std::pair(timer.daily_start_minute, "const.Minute"),
+                                   std::pair(timer.daily_start_second, "const.Minute/60")})
+            if (count)
+                start += fmt::format("{}{}*{}", start.empty() ? "" : " + ", count, unit);
 
     if (name == "Timer") // Without a start time `Timer` would count the period from the moment the map loads.
         return {name, fmt::format("{}, {}, false", period, start.empty() ? "0" : start)};
@@ -340,7 +341,7 @@ std::string EvtEventDecompiler::hint() const {
 
     if (source->houseId != HOUSE_INVALID) {
         int64_t houseId = std::to_underlying(source->houseId);
-        return withComment(fmt::format("evt.house[{}] = {}", _eventId, houseId), houseName(houseId)) + "\n";
+        return withComment(fmt::format("evt.house[{}] = {}", _eventId, houseId), evtHouseName(houseId).value_or(std::string())) + "\n";
     }
     if (source->textId < 0 || source->textId >= _strings.size())
         return fmt::format("evt.hint[{}] = \"\"\n", _eventId);
@@ -361,59 +362,58 @@ int EvtEventDecompiler::nextIndex(int index) const {
  * @param mode                          Which commands count.
  * @return                              Where control goes after the instruction, and the Lua text it turns into.
  */
-EvtFlow EvtEventDecompiler::flow(int index, EvtMode mode) const {
+EvtStep EvtEventDecompiler::flow(int index, EvtMode mode) const {
     const EvtInstruction &ir = _code[index];
 
     if (mode == EVT_MODE_TOPIC) {
         switch (ir.opcode) {
             case EVENT_Exit:
             case EVENT_EndCanShowDialogItem:
-                return {EVT_FLOW_STOP};
+                return {EVT_STEP_STOP};
             case EVENT_OnCanShowDialogItemCmp: { // A topic's handler checks the whole party, as the interpreter does here.
                 std::string condition = fmt::format("evt.Cmp({}, {})", formatVariable(ir.data.variable_descr.type), ir.data.variable_descr.value);
-                return {EVT_FLOW_BRANCH, condition, {indexOfStep(ir.target_step)}};
+                return {EVT_STEP_BRANCH, condition, {indexOfStep(ir.target_step)}};
             }
             case EVENT_SetCanShowDialogItem:
-                return {EVT_FLOW_NEXT, fmt::format("visible = {}", ir.data.can_show_npc_dialogue ? "true" : "false")};
+                return {EVT_STEP_NEXT, fmt::format("visible = {}", ir.data.can_show_npc_dialogue ? "true" : "false")};
             default:
-                return {EVT_FLOW_NEXT};
+                return {EVT_STEP_NEXT};
         }
     }
 
+    if (isEvtTrigger(ir.opcode))
+        return {EVT_STEP_STOP};
+
     switch (ir.opcode) {
         case EVENT_Exit:
-        case EVENT_OnTimer:
-        case EVENT_OnLongTimer:
-        case EVENT_OnMapReload:
-        case EVENT_OnMapLeave:
-            return {EVT_FLOW_STOP};
+            return {EVT_STEP_STOP};
         case EVENT_Jmp:
-            return {EVT_FLOW_JUMP, {}, {indexOfStep(ir.target_step)}};
+            return {EVT_STEP_JUMP, {}, {indexOfStep(ir.target_step)}};
         case EVENT_RandomGoTo: {
-            EvtFlow result = {EVT_FLOW_RANDOM};
+            EvtStep result = {EVT_STEP_RANDOM};
             for (int i = 0; i < ir.data.random_goto_descr.random_goto_len; i++)
                 result.targets.push_back(indexOfStep(ir.data.random_goto_descr.random_goto[i]));
             return result;
         }
         case EVENT_InputString: // The interpreter ends the event on it.
-            return {EVT_FLOW_STOP, fmt::format("-- {} isn't supported by OpenEnroth.", ::toString(ir.opcode))};
+            return {EVT_STEP_STOP, fmt::format("-- {} isn't supported by OpenEnroth.", ::toString(ir.opcode))};
         case EVENT_OnCanShowDialogItemCmp:
         case EVENT_EndCanShowDialogItem:
         case EVENT_SetCanShowDialogItem:
         case EVENT_CanShowTopic_IsActorKilled:
-            return {EVT_FLOW_NEXT};
+            return {EVT_STEP_NEXT};
         case EVENT_ForPartyMember:
-            return {EVT_FLOW_NEXT, fmt::format("evt.ForPlayer({})", formatPlayer(std::to_underlying(ir.who)))};
+            return {EVT_STEP_NEXT, fmt::format("evt.ForPlayer({})", formatPlayer(std::to_underlying(ir.who)))};
         default:
             break;
     }
 
     const EvtCommandInfo *info = evtCommand(ir.opcode);
     if (!info)
-        return {EVT_FLOW_NEXT, fmt::format("-- {} isn't supported by OpenEnroth.", ::toString(ir.opcode))};
+        return {EVT_STEP_NEXT, fmt::format("-- {} isn't supported by OpenEnroth.", ::toString(ir.opcode))};
     if (info->kind == EVT_COMMAND_KIND_CONDITION)
-        return {EVT_FLOW_BRANCH, formatCall(index, "evt."), {indexOfStep(ir.target_step)}};
-    return {EVT_FLOW_NEXT, formatCall(index, "evt.")};
+        return {EVT_STEP_BRANCH, formatCall(index, "evt."), {indexOfStep(ir.target_step)}};
+    return {EVT_STEP_NEXT, formatCall(index, "evt.")};
 }
 
 /**
@@ -430,9 +430,9 @@ std::set<int> EvtEventDecompiler::reachable(int entry, EvtMode mode) const {
         if (index == END || !result.insert(index).second)
             continue;
 
-        EvtFlow next = flow(index, mode);
+        EvtStep next = flow(index, mode);
         std::ranges::copy(next.targets, std::back_inserter(queue));
-        if (next.kind == EVT_FLOW_NEXT || next.kind == EVT_FLOW_BRANCH)
+        if (next.kind == EVT_STEP_NEXT || next.kind == EVT_STEP_BRANCH)
             queue.push_back(nextIndex(index));
     }
     return result;
@@ -479,14 +479,14 @@ bool EvtEventDecompiler::canNest(int lo, int hi, int owner) const {
  * @param flow                          Its flow.
  * @param depth                         Indentation depth.
  */
-void EvtEventDecompiler::emitStatement(int index, const EvtFlow &flow, int depth) {
-    assert(flow.kind == EVT_FLOW_NEXT || flow.kind == EVT_FLOW_STOP || flow.kind == EVT_FLOW_RANDOM);
+void EvtEventDecompiler::emitStatement(int index, const EvtStep &flow, int depth) {
+    assert(flow.kind == EVT_STEP_NEXT || flow.kind == EVT_STEP_STOP || flow.kind == EVT_STEP_RANDOM);
 
     if (!flow.text.empty())
         line(depth, withComment(flow.text, _mode == EVT_MODE_EVENT ? comment(index) : std::string()));
-    if (flow.kind == EVT_FLOW_STOP)
+    if (flow.kind == EVT_STEP_STOP)
         line(depth, RETURN);
-    if (flow.kind != EVT_FLOW_RANDOM)
+    if (flow.kind != EVT_STEP_RANDOM)
         return;
 
     _usesRandom = true;
@@ -508,8 +508,8 @@ void EvtEventDecompiler::emitStatement(int index, const EvtFlow &flow, int depth
  * @param following                     Instruction that the listing puts next, or `END`.
  * @param depth                         Indentation depth.
  */
-void EvtEventDecompiler::emitFlowTail(int index, const EvtFlow &flow, int following, int depth) {
-    if (flow.kind != EVT_FLOW_NEXT && flow.kind != EVT_FLOW_BRANCH)
+void EvtEventDecompiler::emitFlowTail(int index, const EvtStep &flow, int following, int depth) {
+    if (flow.kind != EVT_STEP_NEXT && flow.kind != EVT_STEP_BRANCH)
         return;
     int next = nextIndex(index);
     if (next == END) {
@@ -536,12 +536,12 @@ void EvtEventDecompiler::emitBlock(int lo, int hi, int depth) {
         }
 
         _lines.push_back(fmt::format("{}{}", LABEL_MARK, index));
-        EvtFlow current = flow(index, _mode);
+        EvtStep current = flow(index, _mode);
 
-        if (current.kind == EVT_FLOW_JUMP) {
+        if (current.kind == EVT_STEP_JUMP) {
             if (current.targets[0] != index + 1)
                 line(depth, jump(current.targets[0]));
-        } else if (current.kind != EVT_FLOW_BRANCH) {
+        } else if (current.kind != EVT_STEP_BRANCH) {
             emitStatement(index, current, depth);
         } else {
             std::string note = _mode == EVT_MODE_EVENT ? comment(index) : std::string();
@@ -550,8 +550,8 @@ void EvtEventDecompiler::emitBlock(int lo, int hi, int depth) {
                 int last = target - 1;
                 while (last > index && !_reachable.contains(last))
                     last--;
-                EvtFlow tail = last > index ? flow(last, _mode) : EvtFlow();
-                int join = tail.kind == EVT_FLOW_JUMP ? tail.targets[0] : END;
+                EvtStep tail = last > index ? flow(last, _mode) : EvtStep();
+                int join = tail.kind == EVT_STEP_JUMP ? tail.targets[0] : END;
                 if (join != END && join > target && join <= hi && canNest(target, join, index)) {
                     // The body ends in a jump forward over what follows it, which makes what follows an else block.
                     line(depth, withComment(fmt::format("if {} then", current.text), note));
@@ -592,12 +592,12 @@ void EvtEventDecompiler::emitFlat(int entry) {
         int following = std::next(pos) == _reachable.end() ? END : *std::next(pos);
 
         _lines.push_back(fmt::format("{}{}", LABEL_MARK, index));
-        EvtFlow current = flow(index, _mode);
+        EvtStep current = flow(index, _mode);
 
-        if (current.kind == EVT_FLOW_JUMP) {
+        if (current.kind == EVT_STEP_JUMP) {
             if (current.targets[0] != following || following == END)
                 line(1, jump(current.targets[0]));
-        } else if (current.kind != EVT_FLOW_BRANCH) {
+        } else if (current.kind != EVT_STEP_BRANCH) {
             emitStatement(index, current, 1);
         } else {
             line(1, withComment(fmt::format("if {} then", current.text), _mode == EVT_MODE_EVENT ? comment(index) : std::string()));
@@ -696,15 +696,8 @@ EvtLuaScript decompileGameEvt(std::string_view name) {
     bool isGlobal = fileName == "global";
 
     std::vector<std::string> strings;
-    if (!isGlobal) {
-        Blob blob = engine->resources()->eventsData(fileName + ".str");
-        std::string_view data = blob.str(); // Strings with a zero after each.
-        while (!data.empty()) {
-            size_t size = std::min(data.find('\0'), data.size());
-            strings.push_back(trimRemoveQuotes(data.substr(0, size)));
-            data.remove_prefix(std::min(size + 1, data.size()));
-        }
-    }
+    if (!isGlobal)
+        strings = parseLevelStrings(engine->resources()->eventsData(fileName + ".str"));
 
     return decompileEvt(EvtProgram::load(engine->resources()->eventsData(fileName + ".evt")), strings, isGlobal);
 }

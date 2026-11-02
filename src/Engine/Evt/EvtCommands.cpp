@@ -13,11 +13,15 @@
 
 #include "Engine/Data/AwardEnums.h"
 #include "Engine/Data/HouseEnums.h"
+#include "Engine/Graphics/FaceEnums.h"
+#include "Engine/Objects/ActorEnums.h"
 #include "Engine/Objects/Character.h"
 #include "Engine/Objects/CharacterEnums.h"
+#include "Engine/Objects/ChestEnums.h"
 #include "Engine/Objects/ItemEnums.h"
 #include "Engine/Party.h"
 #include "Engine/PartyEnums.h"
+#include "Engine/Tables/HouseTable.h"
 #include "Engine/Tables/NPCTable.h"
 #include "Engine/mm7_data.h"
 
@@ -135,44 +139,6 @@ static EvtFieldInfo excluding(EvtFieldInfo field, std::pair<int64_t, int64_t> ga
 }
 
 /**
- * @param opcode                        `EVENT_Compare`, `EVENT_Add`, `EVENT_Subtract` or `EVENT_Set`.
- * @param variable                      Variable of the command.
- * @return                              Smallest and largest value that the command takes for the variable, if the
- *                                      interpreter uses the value as an index.
- */
-static std::optional<std::pair<int64_t, int64_t>> variableValueRange(EvtOpcode opcode, EvtVariable variable) {
-    switch (variable) {
-        case VAR_QBits_QuestsDone: return range(QBIT_FIRST, QBIT_LAST);
-        case VAR_Award: return range(AWARD_FIRST, AWARD_LAST);
-        case VAR_AutoNotes: return range<int64_t>(1, decltype(Party::_autonoteBits)::SIZE);
-        case VAR_PlayerBits: return range<int64_t>(1, decltype(Character::_characterEventBits)::SIZE);
-        case VAR_NPCs2: return range<int64_t>(0, std::tuple_size_v<decltype(NPCStats::pNPCData)> - 1);
-        case VAR_PlayerItemInHands: // Comparing and taking look for the item, giving makes one. MM7 compares with 999.
-            if (opcode == EVENT_Add || opcode == EVENT_Set)
-                return range(ITEM_FIRST_VALID, ITEM_LAST_VALID);
-            return std::nullopt;
-        default: return std::nullopt;
-    }
-}
-
-/**
- * @param field                         The value field of a `Cmp`, `Add`, `Subtract` or `Set`, which is set after the
- *                                      variable.
- * @return                              The field, rejecting the values that the variable doesn't take.
- */
-static EvtFieldInfo variableValue(EvtFieldInfo field) {
-    field.set = [set = std::move(field.set), name = field.name](EvtInstruction *ir, const EvtFieldValue &value) {
-        set(ir, value);
-        EvtVariable variable = ir->data.variable_descr.type;
-        std::optional<std::pair<int64_t, int64_t>> range = variableValueRange(ir->opcode, variable);
-        if (range && (ir->data.variable_descr.value < range->first || ir->data.variable_descr.value > range->second))
-            throw Exception("field {} of {} takes {} to {}, got {}", name, evtVariableName(variable), range->first, range->second,
-                            ir->data.variable_descr.value);
-    };
-    return field;
-}
-
-/**
  * @param name                          MMExtension's name of a field that OpenEnroth doesn't keep.
  * @return                              The field. Scripts can pass it, and it's dropped.
  */
@@ -187,8 +153,8 @@ static EvtFieldInfo ignoredField(std::string_view name) {
 static std::vector<EvtCommandInfo> makeCommands() {
     const EvtFieldInfo who = field("Player", EVT_FIELD_PLAYER, MM_EVT_ACCESS(who));
     const EvtFieldInfo variable = field("VarNum", EVT_FIELD_VARIABLE, MM_EVT_ACCESS(data.variable_descr.type));
-    const EvtFieldInfo value = variableValue(field("Value", EVT_FIELD_INT, MM_EVT_ACCESS(data.variable_descr.value)));
-    const EvtFieldInfo comparedValue = variableValue(field("Value", EVT_FIELD_INT, MM_EVT_ACCESS(data.variable_descr.value), range(0, INT32_MAX)));
+    const EvtFieldInfo value = field("Value", EVT_FIELD_INT, MM_EVT_ACCESS(data.variable_descr.value));
+    const EvtFieldInfo comparedValue = field("Value", EVT_FIELD_INT, MM_EVT_ACCESS(data.variable_descr.value), range(0, INT32_MAX));
     const std::pair<int64_t, int64_t> itemRange = range(ITEM_NULL, ITEM_LAST_VALID);
     const EvtFieldInfo name = field("Name", EVT_FIELD_STRING, MM_EVT_ACCESS(str));
 
@@ -434,16 +400,48 @@ std::string_view evtConstGroupName(EvtConstGroup group) {
 
 std::span<const std::pair<std::string_view, int64_t>> evtConstants(EvtConstGroup group) {
     static const std::vector<std::pair<std::string_view, int64_t>> facetBits = {
-        {"IsPortal", 0x1}, {"IsSecret", 0x2}, {"ScrollDown", 0x4}, {"AlignTop", 0x8}, {"IsWater", 0x10}, {"ScrollUp", 0x20}, {"ScrollLeft", 0x40},
-        {"ProjectToXY", 0x100}, {"ProjectToXZ", 0x200}, {"ProjectToYZ", 0x400}, {"ScrollRight", 0x800}, {"AlignLeft", 0x1000}, {"Invisible", 0x2000},
-        {"AnimatedTFT", 0x4000}, {"AlignRight", 0x8000}, {"AlignBottom", 0x20000}, {"MoveByDoor", 0x40000}, {"IsEventJustHint", 0x100000},
-        {"AlternativeSound", 0x200000}, {"IsSky", 0x400000}, {"FlipU", 0x800000}, {"FlipV", 0x1000000}, {"TriggerByClick", 0x2000000},
-        {"TriggerByStep", 0x4000000}, {"TriggerByMonster", 0x8000000}, {"TriggerByObject", 0x10000000}, {"Untouchable", 0x20000000},
-        {"IsLava", 0x40000000}, {"HasData", 0x80000000}};
+        {"IsPortal", std::to_underlying(FACE_IsPortal)},
+        {"IsSecret", std::to_underlying(FACE_IsSecret)},
+        {"ScrollDown", std::to_underlying(FACE_FlowDown)},
+        {"AlignTop", std::to_underlying(FACE_TexAlignDown)},
+        {"IsWater", std::to_underlying(FACE_IsFluid)},
+        {"ScrollUp", std::to_underlying(FACE_FlowUp)},
+        {"ScrollLeft", std::to_underlying(FACE_FlowLeft)},
+        {"ProjectToXY", std::to_underlying(FACE_XY_PLANE)},
+        {"ProjectToXZ", std::to_underlying(FACE_XZ_PLANE)},
+        {"ProjectToYZ", std::to_underlying(FACE_YZ_PLANE)},
+        {"ScrollRight", std::to_underlying(FACE_FlowRight)},
+        {"AlignLeft", std::to_underlying(FACE_TexAlignLeft)},
+        {"Invisible", std::to_underlying(FACE_IsInvisible)},
+        {"AnimatedTFT", std::to_underlying(FACE_ANIMATED)},
+        {"AlignRight", std::to_underlying(FACE_TexAlignRight)},
+        {"AlignBottom", std::to_underlying(FACE_TexAlignBottom)},
+        {"MoveByDoor", std::to_underlying(FACE_TexMoveByDoor)},
+        {"IsEventJustHint", std::to_underlying(FACE_EVENT_IS_HINT)},
+        {"AlternativeSound", std::to_underlying(FACE_INDOOR_CARPET)},
+        {"IsSky", std::to_underlying(FACE_INDOOR_SKY)},
+        {"FlipU", std::to_underlying(FACE_FlipNormalU)},
+        {"FlipV", std::to_underlying(FACE_FlipNormalV)},
+        {"TriggerByClick", std::to_underlying(FACE_CLICKABLE)},
+        {"TriggerByStep", std::to_underlying(FACE_PRESSURE_PLATE)},
+        {"TriggerByMonster", std::to_underlying(FACE_TriggerByMonster)},
+        {"TriggerByObject", std::to_underlying(FACE_TriggerByObject)},
+        {"Untouchable", std::to_underlying(FACE_ETHEREAL)},
+        {"IsLava", std::to_underlying(FACE_IsLava)},
+        {"HasData", std::to_underlying(FACE_IsPicked)}};
     static const std::vector<std::pair<std::string_view, int64_t>> monsterBits = {
-        {"Active", 0x400}, {"ShowOnMap", 0x8000}, {"Invisible", 0x10000}, {"NoFlee", 0x20000}, {"Hostile", 0x80000}, {"OnAlertMap", 0x100000},
-        {"TreasureGenerated", 0x800000}, {"ShowAsHostile", 0x1000000}};
-    static const std::vector<std::pair<std::string_view, int64_t>> chestBits = {{"Trapped", 1}, {"ItemsPlaced", 2}, {"Identified", 4}};
+        {"Active", std::to_underlying(ACTOR_FULL_AI_STATE)},
+        {"ShowOnMap", std::to_underlying(ACTOR_NEARBY)},
+        {"Invisible", std::to_underlying(ACTOR_UNKNOW11)},
+        {"NoFlee", std::to_underlying(ACTOR_FLEEING)},
+        {"Hostile", std::to_underlying(ACTOR_AGGRESSOR)},
+        {"OnAlertMap", std::to_underlying(ACTOR_UNKNOW7)},
+        {"TreasureGenerated", std::to_underlying(ACTOR_HAS_ITEM)},
+        {"ShowAsHostile", std::to_underlying(ACTOR_HOSTILE)}};
+    static const std::vector<std::pair<std::string_view, int64_t>> chestBits = {
+        {"Trapped", std::to_underlying(CHEST_TRAPPED)},
+        {"ItemsPlaced", std::to_underlying(CHEST_ITEMS_PLACED)},
+        {"Identified", std::to_underlying(CHEST_OPENED)}};
 
     switch (group) {
         case EVT_CONST_FACET_BITS: return facetBits;
@@ -453,21 +451,8 @@ std::span<const std::pair<std::string_view, int64_t>> evtConstants(EvtConstGroup
     }
 }
 
-std::string_view evtPlayerName(EvtTargetCharacter target) {
-    switch (target) {
-        case CHOOSE_ACTIVE: return "Current";
-        case CHOOSE_PARTY: return "All";
-        case CHOOSE_RANDOM: return "Random";
-        default: return {};
-    }
-}
-
-std::optional<EvtTargetCharacter> evtPlayerByName(std::string_view name) {
-    if (name == "Current" || name == "current")
-        return CHOOSE_ACTIVE;
-    if (name == "All" || name == "all")
-        return CHOOSE_PARTY;
-    if (name == "Random" || name == "random")
-        return CHOOSE_RANDOM;
-    return std::nullopt;
+std::optional<std::string> evtHouseName(int64_t id) {
+    if (!houseTable.indices().contains(static_cast<HouseId>(id)))
+        return std::nullopt;
+    return houseTable[static_cast<HouseId>(id)].name;
 }

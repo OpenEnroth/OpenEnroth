@@ -10,6 +10,7 @@
 #include "Engine/Tables/HouseTable.h"
 #include "Engine/Party.h"
 #include "Engine/Engine.h"
+#include "Engine/Evt/EvtEnumFunctions.h"
 
 #include "Library/Logger/Logger.h"
 
@@ -109,13 +110,12 @@ bool EvtProgram::isInteractive(int eventId) const {
     if (ir == events->end())
         return false;
 
+    if (isEvtTrigger(ir->opcode))
+        return false;
+
     switch (ir->opcode) {
     case EVENT_Exit:
-    case EVENT_OnTimer:
-    case EVENT_OnMapReload:
-    case EVENT_OnLongTimer:
     case EVENT_OnCanShowDialogItemCmp:
-    case EVENT_OnMapLeave:
     case EVENT_OnDateTimer:
         return false;
     default:
@@ -131,7 +131,7 @@ std::optional<EvtHintSource> EvtProgram::hintSource(const std::vector<EvtInstruc
     std::optional<EvtHintSource> result;
     for (const EvtInstruction &ir : instructions) {
         if (ir.opcode == EVENT_MouseOver) {
-            result = EvtHintSource{.textId = ir.data.text_id};
+            result = EvtHintSource(ir.data.text_id);
         } else if (result && ir.opcode == EVENT_SpeakInHouse) {
             if (houseTable.indices().contains(ir.data.house_id)) // A house that doesn't exist keeps the text.
                 result->houseId = ir.data.house_id;

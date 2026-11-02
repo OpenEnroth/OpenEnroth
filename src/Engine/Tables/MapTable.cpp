@@ -104,3 +104,8 @@ MapId MapTable::GetMapInfo(std::string_view fileName) {
     assert(false); // TODO(captainurist): GUIWindow_IndoorEntryExit checks the result against MAP_INVALID, so this assert or that check is wrong.
     return MAP_INVALID;
 }
+
+std::string mapFileStem(MapId map) {
+    const std::string &fileName = pMapTable->pInfos[map].fileName;
+    return fileName.substr(0, fileName.rfind('.'));
+}

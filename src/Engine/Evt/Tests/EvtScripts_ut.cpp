@@ -35,15 +35,9 @@ GAME_TEST(EvtScripts, DecompiledEvents) {
         EXPECT_TRUE(engine->_evtScripts->hasEvent(EVT_SOURCE_GLOBAL, eventId)) << "global.evt, event " << eventId;
 
     for (MapId map : allMaps()) {
-        std::string name = pMapTable->pInfos[map].fileName;
-        name = name.substr(0, name.rfind('.'));
+        std::string name = mapFileStem(map);
 
-        engine->_pendingTransition = MapDestination(map, MAP_START_POINT_PARTY);
-        engineFlags |= ENGINE_SKIP_NEXT_WORLD_UPDATE;
-        uGameState = GAME_STATE_CHANGE_LOCATION;
-        onMapLeave();
-        game.tick();
-        game.skipLoadingScreen();
+        game.travelTo(MapDestination(map, MAP_START_POINT_PARTY));
 
         EvtProgram program = evtFile(name);
         EXPECT_EQ(engine->_localEventMap.eventCount(), 0) << name << ".evt";

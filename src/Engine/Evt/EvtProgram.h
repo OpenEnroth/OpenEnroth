@@ -19,6 +19,8 @@ struct EventTrigger {
  * Where the hint of an event comes from.
  */
 struct EvtHintSource {
+    explicit EvtHintSource(int textId) : textId(textId) {}
+
     int textId = 0; // Index into the map's strings. Can be past their end, and then the hint is empty.
     HouseId houseId = HOUSE_INVALID; // House whose name the hint is instead, if any.
 };

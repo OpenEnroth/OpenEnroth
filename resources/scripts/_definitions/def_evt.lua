@@ -36,10 +36,7 @@
 --- @field removeTimer fun(handle: integer)
 --- @field mapScripts fun(mapName: string): string[]
 --- @field globalScripts fun(): string[]
---- @field loadScript fun(path: string, environment: table): function?, string?
---- @field loadString fun(code: string, chunkName: string, environment: table): function?, string?
+--- @field readScript fun(path: string): string
 --- @field decompile fun(name: string): EvtDecompiledScript
 --- @field isDecompilingEvents fun(): boolean
---- @field questBit fun(bit: integer): boolean
---- @field setQuestBit fun(bit: integer, value: boolean)
 --- @field mouseItem fun(): integer

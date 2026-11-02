@@ -1,5 +1,6 @@
 #pragma once
 
+#include <string>
 #include <string_view>
 
 #include "Engine/Data/MapData.h"
@@ -16,3 +17,9 @@ struct MapTable {
 };
 
 extern MapTable *pMapTable;
+
+/**
+ * @param map                           Map to look up.
+ * @return                              File name of the map without the extension, e.g. "d27".
+ */
+[[nodiscard]] std::string mapFileStem(MapId map);

@@ -116,14 +116,7 @@ std::string_view evtConstGroupName(EvtConstGroup group);
 std::span<const std::pair<std::string_view, int64_t>> evtConstants(EvtConstGroup group);
 
 /**
- * @param target                        Character target.
- * @return                              What scripts pass for it: "Current", "All" or "Random". Empty for a single
- *                                      player, which scripts pass as a number from 0 to 3.
+ * @param id                            House id, which can be out of range.
+ * @return                              The name of the house, or `std::nullopt` if there is no such house.
  */
-std::string_view evtPlayerName(EvtTargetCharacter target);
-
-/**
- * @param name                          "Current", "All" or "Random", in any of MMExtension's spellings.
- * @return                              The character target, or `std::nullopt` if the name is unknown.
- */
-std::optional<EvtTargetCharacter> evtPlayerByName(std::string_view name);
+[[nodiscard]] std::optional<std::string> evtHouseName(int64_t id);
