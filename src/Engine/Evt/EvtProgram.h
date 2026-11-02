@@ -21,7 +21,7 @@ struct EventTrigger {
 struct EvtHintSource {
     explicit EvtHintSource(int textId) : textId(textId) {}
 
-    int textId = 0; // Index into the map's strings. Can be past their end, and then the hint is empty.
+    int textId; // Index into the map's strings. Can be past their end, and then the hint is empty.
     HouseId houseId = HOUSE_INVALID; // House whose name the hint is instead, if any.
 };
 
@@ -65,6 +65,13 @@ class EvtProgram {
     bool hasHint(int eventId) const;
 
     /**
+     * @param eventId                   Event id to check.
+     * @return                          Whether running the event does something. That is, a script exists for it
+     *                                  and its step 0 is neither `Exit` nor a trigger header like `OnTimer`.
+     */
+    bool isInteractive(int eventId) const;
+
+    /**
      * @param instructions              Instructions of an event.
      * @return                          Whether the event only shows a hint, which it does if it opens with a
      *                                  `MouseOver` and an `Exit`.
@@ -76,13 +83,6 @@ class EvtProgram {
      * @return                          Where the event's hint comes from, or `std::nullopt` if it has no hint.
      */
     static std::optional<EvtHintSource> hintSource(const std::vector<EvtInstruction> &instructions);
-
-    /**
-     * @param eventId                   Event id to check.
-     * @return                          Whether running the event does something. That is, a script exists for it
-     *                                  and its step 0 is neither `Exit` nor a trigger header like `OnTimer`.
-     */
-    bool isInteractive(int eventId) const;
 
     /**
      * @param eventId                   Event id to check.
