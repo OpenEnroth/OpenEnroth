@@ -70,10 +70,9 @@ bool PartyCreationUI_LoopInternal();
 bool PlayerCreation_Choose4Skills() {
     for (const auto& character : pParty->pCharacters) {
         int skills_count = 0;
-        for (Skill i : allVisibleSkills()) {
+        for (Skill i : allVisibleSkills())
             if (character.pActiveSkills[i])
                 ++skills_count;
-        }
 
         if (skills_count != 4) return false;
     }
@@ -217,9 +216,8 @@ void CreateParty_EventLoop() {
             int v4;
             v4 = pGUIWindow_CurrentMenu->pCurrentPosActiveItem - pGUIWindow_CurrentMenu->pStartingPosActiveItem;
             pGUIWindow_CurrentMenu->pCurrentPosActiveItem = v4 % 7 + pGUIWindow_CurrentMenu->pStartingPosActiveItem + 7 * param;
-            if (pPlayer[param].GetSkillIdxByOrder(2) != SKILL_INVALID) {
+            if (pPlayer[param].GetSkillIdxByOrder(2) != SKILL_INVALID)
                 pParty->pCharacters[param].pActiveSkills[pPlayer[param].GetSkillIdxByOrder(2)] = CombinedSkillValue::none();
-            }
             break;
         }
         case UIMSG_PlayerCreationRemoveDownSkill:
@@ -368,10 +366,9 @@ void GUIWindow_PartyCreation::Update() {
             case WINDOW_INPUT_CONFIRMED:  // press enter
                 pGUIWindow_CurrentMenu->keyboard_input_status = WINDOW_INPUT_NONE;
                 v126 = 0;
-                for (int j = 0; j < keyboardInputHandler->GetTextInput().size(); ++j) {  // edit name
+                for (int j = 0; j < keyboardInputHandler->GetTextInput().size(); ++j) // edit name
                     if (keyboardInputHandler->GetTextInput()[j] == ' ')
                         ++v126;
-                }
                 if (keyboardInputHandler->GetTextInput().size() > 0 && v126 != keyboardInputHandler->GetTextInput().size())
                     pParty->pCharacters[i].name = keyboardInputHandler->GetTextInput();
                 pGUIWindow_CurrentMenu->DrawTextInRect(assets->pFontCreate.get(), {pIntervalX, 124}, colorTable.White, pParty->pCharacters[i].name, 130, 0);
@@ -595,9 +592,8 @@ GUIWindow_PartyCreation::GUIWindow_PartyCreation() :
 
     ui_partycreation_character_frame = assets->getIcon("aframe1");
 
-    for (int uX = 0; uX < 22; ++uX) {
+    for (int uX = 0; uX < 22; ++uX)
         ui_partycreation_portraits[uX] = assets->getIcon(fmt::format("{}01", pPlayerPortraitsNames[uX]));
-    }
 
     ui_partycreation_minus = assets->getIcon("buttminu");
     ui_partycreation_plus = assets->getIcon("buttplus");

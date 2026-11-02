@@ -139,9 +139,8 @@ void SpriteFrameTable::InitializeSprite(signed int uSpriteID) {
                         }
                     }
 
-                    if (!(pSpriteSFrames[iter_uSpriteID].flags & SPRITE_FRAME_HAS_MORE)) {
+                    if (!(pSpriteSFrames[iter_uSpriteID].flags & SPRITE_FRAME_HAS_MORE))
                         return;
-                    }
                     ++iter_uSpriteID;
                 }
             }

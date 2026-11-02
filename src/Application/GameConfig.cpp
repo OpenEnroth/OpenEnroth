@@ -15,9 +15,8 @@ GameConfig::CheatCommands::CheatCommands(GameConfig *config) : ConfigSection(con
     // resources/scripts/dev/cheat_commands_list.lua so they can be reordered
     // without touching config or renumbering entries.
     static const int maxNumberOfCommands = 40;
-    for (int i = 0; i < maxNumberOfCommands; ++i) {
+    for (int i = 0; i < maxNumberOfCommands; ++i)
         _addCommand(i, "");
-    }
 }
 
 void GameConfig::CheatCommands::_addCommand(int commandIndex, const std::string& defaultValue) {

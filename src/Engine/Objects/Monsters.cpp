@@ -232,10 +232,9 @@ MonsterSpecialAttack ParseSpecialAttack(std::string_view spec_att_str) {
 
 //----- (004563FF) --------------------------------------------------------
 MonsterId MonsterStats::FindMonsterByInternalName(std::string_view internalName) {
-    for (MonsterId i : infos.indices()) {
+    for (MonsterId i : infos.indices())
         if (!infos[i].name.empty() && ascii::noCaseEquals(infos[i].internalName, internalName))
             return i;
-    }
     return MONSTER_INVALID;
 }
 
@@ -397,9 +396,8 @@ void MonsterStats::Initialize(const Blob &monsters) {
         info.specialAbilityType = MONSTER_SPECIAL_ABILITY_NONE;
         info.specialAbilityDamageDiceBonus = 0;
         std::string normalized(unquote(cell));
-        for (char &c : normalized) {
+        for (char &c : normalized)
             if (c == ',' || c == '\t') c = ' ';
-        }
         std::vector<std::string_view> props;
         split(std::string_view(normalized)).by(' ').skip("").to(&props);
         if (props.empty() || props.size() >= 10)
@@ -558,10 +556,9 @@ void MonsterStats::Initialize(const Blob &monsters) {
 
 //----- (0044FA08) --------------------------------------------------------
 MonsterId MonsterList::GetMonsterIDByName(std::string_view pMonsterName) {
-    for (MonsterId i : monsters.indices()) {
+    for (MonsterId i : monsters.indices())
         if (ascii::noCaseEquals(monsters[i].internalMonsterName, pMonsterName))
             return i;
-    }
     MM_ERROR("Monster not found: {}", pMonsterName);
     return MONSTER_INVALID;
 }

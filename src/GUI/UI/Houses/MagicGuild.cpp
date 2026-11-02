@@ -113,9 +113,8 @@ void GUIWindow_MagicGuild::mainDialogue() {
         return;
     }
 
-    if (!checkIfPlayerCanInteract()) {
+    if (!checkIfPlayerCanInteract())
         return;
-    }
 
     std::vector<std::string> optionsText;
 
@@ -156,22 +155,19 @@ void GUIWindow_MagicGuild::buyBooksDialogue() {
     int itemxind = 0;
 
     for (int pX = 32; pX < 452; pX += 70) {  // top row
-        if (pParty->spellBooksInGuilds[houseId()][itemxind].itemId != ITEM_NULL) {
+        if (pParty->spellBooksInGuilds[houseId()][itemxind].itemId != ITEM_NULL)
             render->DrawQuad2D(shop_ui_items_in_store[itemxind], {pX, 90});
-        }
-        if (pParty->spellBooksInGuilds[houseId()][itemxind + 6].itemId != ITEM_NULL) {
+        if (pParty->spellBooksInGuilds[houseId()][itemxind + 6].itemId != ITEM_NULL)
             render->DrawQuad2D(shop_ui_items_in_store[itemxind + 6], {pX, 250});
-        }
 
         ++itemxind;
     }
 
     if (checkIfPlayerCanInteract()) {
         int itemcount = 0;
-        for (int i = 0; i < itemAmountInShop[buildingType()]; ++i) {
+        for (int i = 0; i < itemAmountInShop[buildingType()]; ++i)
             if (pParty->spellBooksInGuilds[houseId()][i].itemId != ITEM_NULL)
                 ++itemcount;
-        }
 
         engine->_statusBar->drawForced(localization->str(LSTR_SELECT_THE_ITEM_TO_BUY), colorTable.White);
 
@@ -184,9 +180,8 @@ void GUIWindow_MagicGuild::buyBooksDialogue() {
         Pointi pt = EngineIocContainer::ResolveMouse()->position();
         int testx = (pt.x - 32) / 70;
         if (testx >= 0 && testx < 6) {
-            if (pt.y >= 250) {
+            if (pt.y >= 250)
                 testx += 6;
-            }
 
             Item *item = &pParty->spellBooksInGuilds[houseId()][testx];
 
@@ -216,10 +211,9 @@ void GUIWindow_MagicGuild::houseDialogueOptionSelected(DialogueId option) {
     _currentDialogue = option;
     if (option == DIALOGUE_GUILD_BUY_BOOKS) {
         if (pParty->PartyTimes.guildNextRefreshTime[houseId()] >= pParty->GetPlayingTime()) {
-            for (int i = 0; i < itemAmountInShop[buildingType()]; ++i) {
+            for (int i = 0; i < itemAmountInShop[buildingType()]; ++i)
                 if (pParty->spellBooksInGuilds[houseId()][i].itemId != ITEM_NULL)
                     shop_ui_items_in_store[i] = assets->getIcon(pParty->spellBooksInGuilds[houseId()][i].GetIconName());
-            }
         } else {
             Time nextGenTime = pParty->GetPlayingTime() + Duration::fromDays(houseTable[houseId()].generation_interval_days);
             generateSpellBooksForGuild();
@@ -269,9 +263,8 @@ void GUIWindow_MagicGuild::houseScreenClick() {
 
     int testx = (pt.x - 32) / 70;
     if (testx >= 0 && testx < 6) {
-        if (pt.y >= 250) {
+        if (pt.y >= 250)
             testx += 6;
-        }
 
         Item &boughtItem = pParty->spellBooksInGuilds[houseId()][testx];
         if (boughtItem.itemId != ITEM_NULL) {
@@ -326,11 +319,9 @@ void GUIWindow_MagicGuild::generateSpellBooksForGuild() {
     for (int i = 0; i < itemAmountInShop[guildType]; ++i) {
         ItemId pItemNum = grng->randomSample(spellbooksForGuild);
 
-        if (pItemNum == ITEM_SPELLBOOK_DIVINE_INTERVENTION) {
-            if (!pParty->_questBits[QBIT_DIVINE_INTERVENTION_RETRIEVED]) {
+        if (pItemNum == ITEM_SPELLBOOK_DIVINE_INTERVENTION)
+            if (!pParty->_questBits[QBIT_DIVINE_INTERVENTION_RETRIEVED])
                 pItemNum = ITEM_SPELLBOOK_SUNRAY;
-            }
-        }
 
         Item *itemSpellbook = &pParty->spellBooksInGuilds[houseId()][i];
         itemSpellbook->Reset();

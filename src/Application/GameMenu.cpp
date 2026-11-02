@@ -311,9 +311,8 @@ void Menu::EventLoop() {
 
                 engine->config->settings.VoiceLevel.setValue(new_level);
                 pAudioPlayer->SetVoiceVolume(engine->config->settings.VoiceLevel.value());
-                if (engine->config->settings.VoiceLevel.value() > 0) {
+                if (engine->config->settings.VoiceLevel.value() > 0)
                     pAudioPlayer->playSound(SOUND_hf445a, SOUND_MODE_SPEECH);
-                }
                 continue;
             }
             case UIMSG_SetTurnSpeed:

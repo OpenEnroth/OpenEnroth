@@ -118,9 +118,8 @@ GAME_TEST(Issues, Issue518) {
     test.playTraceFromTestData("issue_518.mm7", "issue_518.json");
     EXPECT_EQ(armageddonTape, tape(2, 3)); // +1 armageddon cast.
 
-    for (auto &actor : pActors) {
+    for (auto &actor : pActors)
         EXPECT_LT(actor.pos.z, 3500);
-    }
 }
 
 GAME_TEST(Issues, Issue520) {
@@ -204,9 +203,8 @@ GAME_TEST(Issues, Issue578) {
     test.startTaping();
     game.tick(2);
     // set characters hp to 1 to make sure we can see the effect of rest & heal
-    for (auto& character : pParty->pCharacters) {
+    for (auto& character : pParty->pCharacters)
         character.health = 1;
-    }
     game.pressAndReleaseKey(PlatformKey::KEY_R); // enter rest menu
     game.tick(2);
     game.pressGuiButton("Rest_Wait1Hour"); // wait for 1 hour
@@ -423,9 +421,8 @@ GAME_TEST(Issues, Issue651) {
     for (auto &obj : pSpriteObjects) {
         ObjectType castertype = obj.spell_caster_pid.type();
         int casterid = obj.spell_caster_pid.id();
-        if (castertype == OBJECT_Actor) {
+        if (castertype == OBJECT_Actor)
             EXPECT_TRUE(casterid < pActors.size());
-        }
     }
 }
 
@@ -751,9 +748,8 @@ GAME_TEST(Issues, Issue728_746) {
 GAME_TEST(Issues, Issue730) {
     // Thrown items are throwing a party of their own
     test.playTraceFromTestData("issue_730.mm7", "issue_730.json");
-    for (size_t i = 0; i < pSpriteObjects.size(); ++i) {
+    for (size_t i = 0; i < pSpriteObjects.size(); ++i)
         EXPECT_EQ(pSpriteObjects[i].vVelocity.toInt(), Vec3i(0, 0, 0));
-    }
 }
 
 GAME_TEST(Issues, Issue735a) {
@@ -821,10 +817,9 @@ GAME_TEST(Issues, Issue760) {
 GAME_TEST(Issues, Issue774) {
     // Background stunned actors do idle motions
     test.playTraceFromTestData("issue_774.mm7", "issue_774.json");
-    for (auto &act : pActors) {
+    for (auto &act : pActors)
         if (!(act.attributes & ACTOR_FULL_AI_STATE))
             EXPECT_TRUE(act.aiState == InPain || act.aiState == Dead);
-    }
 }
 
 GAME_TEST(Issues, Issue779) {

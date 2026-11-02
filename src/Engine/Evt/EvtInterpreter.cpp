@@ -207,9 +207,8 @@ EvtFlow EvtInterpreter::executeInstruction(EvtInstruction ir) {
             if (enterHouse(ir.data.house_id)) {
                 pAudioPlayer->playHouseSound(SOUND_enter, false);
                 HouseId houseId = HOUSE_JAIL;
-                if (uCurrentHouse_Animation != 167) { // TODO: magic number
+                if (uCurrentHouse_Animation != 167) // TODO: magic number
                     houseId = ir.data.house_id;
-                }
                 createHouseUI(houseId);
             }
             break;
@@ -289,9 +288,8 @@ EvtFlow EvtInterpreter::executeInstruction(EvtInstruction ir) {
                 character.receiveDamage(ir.data.damage_descr.damage, ir.data.damage_descr.damage_type);
             break;
         case EVENT_SetSnow:
-            if (!ir.data.snow_descr.is_nop) {
+            if (!ir.data.snow_descr.is_nop)
                 pWeather->bRenderSnow = ir.data.snow_descr.is_enable;
-            }
             break;
         case EVENT_SetTexture:
             setTexture(ir.data.sprite_texture_descr.cog, ir.str);
@@ -299,12 +297,10 @@ EvtFlow EvtInterpreter::executeInstruction(EvtInstruction ir) {
         case EVENT_ShowMovie:
         {
             std::string movieName = trimRemoveQuotes(ir.str);
-            if (movieName.length() == 0) {
+            if (movieName.length() == 0)
                 break;
-            }
-            if (pMediaPlayer->IsMoviePlaying()) {
+            if (pMediaPlayer->IsMoviePlaying())
                 pMediaPlayer->Unload();
-            }
 
             // Restore the screen type after the movie has played in case we are already in a house
             auto saveScreenType = current_screen_type;
@@ -321,13 +317,11 @@ EvtFlow EvtInterpreter::executeInstruction(EvtInstruction ir) {
 
             // is this block is needed anymore?
             if (!ir.data.movie_unknown_field || current_screen_type == SCREEN_BOOKS) {
-                if (current_screen_type == SCREEN_BOOKS) {
+                if (current_screen_type == SCREEN_BOOKS)
                     pGameLoadingUI_ProgressBar->Initialize(GUIProgressBar::TYPE_Fullscreen);
-                }
 
-                if (current_screen_type == SCREEN_HOUSE) {
+                if (current_screen_type == SCREEN_HOUSE)
                     pMediaPlayer->OpenHouseMovie(pAnimatedRooms[uCurrentHouse_Animation].video_name, 1);
-                }
             }
             break;
         }
@@ -520,9 +514,8 @@ EvtFlow EvtInterpreter::executeInstruction(EvtInstruction ir) {
             Item item;
             item.Reset();
             pItemTable->generateItem(ir.data.give_item_descr.treasure_level, ir.data.give_item_descr.treasure_type, &item);
-            if (ir.data.give_item_descr.item_id != ITEM_NULL) {
+            if (ir.data.give_item_descr.item_id != ITEM_NULL)
                 item.itemId = ir.data.give_item_descr.item_id;
-            }
             pParty->setHoldingItem(item);
             break;
         }
@@ -580,9 +573,8 @@ EvtFlow EvtInterpreter::executeInstruction(EvtInstruction ir) {
             pNPCStats->pNPCData[ir.data.npc_descr.npc_id].greetingIndex = ir.data.npc_descr.greeting;
             break;
         case EVENT_IsActorKilled:
-            if (Actor::isActorKilled(ir.data.actor_descr.policy, ir.data.actor_descr.param, ir.data.actor_descr.num)) {
+            if (Actor::isActorKilled(ir.data.actor_descr.policy, ir.data.actor_descr.param, ir.data.actor_descr.num))
                 return {EVT_FLOW_JUMP, ir.target_step};
-            }
             break;
         case EVENT_OnMapLeave:
             // Trigger, must be skipped but can be encountered in vanilla
@@ -593,10 +585,9 @@ EvtFlow EvtInterpreter::executeInstruction(EvtInstruction ir) {
 #if 0
             v38 = EVT_DWORD(_evt->v5);
             v39 = EVT_DWORD(_evt->v9);
-            for (unsigned actor_id = 0; actor_id < pActors.size(); actor_id++) {
+            for (unsigned actor_id = 0; actor_id < pActors.size(); actor_id++)
                 if (pActors[actor_id].uGroup == v38)
                     pActors[actor_id].uGroup = v39;
-            }
 #endif
             break;
         case EVENT_ChangeGroupAlly:
@@ -605,16 +596,14 @@ EvtFlow EvtInterpreter::executeInstruction(EvtInstruction ir) {
 #if 0
             v42 = EVT_DWORD(_evt->v5);
             v43 = EVT_DWORD(_evt->v9);
-            for (unsigned actor_id = 0; actor_id < pActors.size(); actor_id++) {
+            for (unsigned actor_id = 0; actor_id < pActors.size(); actor_id++)
                 if (pActors[actor_id].uGroup == v42)
                     pActors[actor_id].uAlly = v43;
-            }
 #endif
             break;
         case EVENT_CheckSeason:
-            if (checkSeason(ir.data.season)) {
+            if (checkSeason(ir.data.season))
                 return {EVT_FLOW_JUMP, ir.target_step};
-            }
             break;
         case EVENT_ToggleActorGroupFlag:
             toggleActorGroupFlag(ir.data.actor_flag_descr.id, ir.data.actor_flag_descr.attr, ir.data.actor_flag_descr.is_set);

@@ -27,9 +27,8 @@ FsmAction CreditsState::update() {
         UIMessageType messageType;
         engine->_messageQueue->popMessage(&messageType, nullptr, nullptr);
 
-        if (messageType == UIMSG_Escape || messageType == UIMSG_CreditsFinished) {
+        if (messageType == UIMSG_Escape || messageType == UIMSG_CreditsFinished)
             return FsmAction::transition("back");
-        }
     }
 
     return FsmAction::none();

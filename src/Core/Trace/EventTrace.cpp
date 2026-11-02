@@ -247,9 +247,8 @@ EventTrace EventTrace::fromJsonBlob(const Blob &blob, PlatformWindow *window) {
 
     for (std::unique_ptr<PlatformEvent> &event : result.events) {
         dispatchByEventType(event->type, [&]<class T>(T *) {
-            if constexpr (std::is_base_of_v<PlatformWindowEvent, T>) {
+            if constexpr (std::is_base_of_v<PlatformWindowEvent, T>)
                 static_cast<PlatformWindowEvent *>(event.get())->window = window;
-            }
         });
     }
 
