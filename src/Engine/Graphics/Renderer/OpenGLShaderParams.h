@@ -156,6 +156,7 @@ struct TerrainUniforms {
 
     SunLightUniform sun;
     std::array<PointLightUniform, 20> pointLights;
+    int numPointLights = 0;
 
     void submit(const OpenGLShader &shader) const;
 };
@@ -174,6 +175,7 @@ struct OutBuildUniforms {
 
     SunLightUniform sun;
     std::array<PointLightUniform, 20> pointLights;
+    int numPointLights = 0;
 
     void submit(const OpenGLShader &shader) const;
 };
@@ -190,6 +192,7 @@ struct BSPUniforms {
 
     SunLightUniform sun;
     std::array<PointLightUniform, 40> pointLights;
+    int numPointLights = 0;
 
     void submit(const OpenGLShader &shader) const;
 };

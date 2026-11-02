@@ -22,6 +22,7 @@ uniform float gamma;
 
 #define num_point_lights 20
 uniform PointLight fspointlights[num_point_lights];
+uniform int numPointLights;
 
 uniform sampler2DArray textureArray0;
 uniform FogParam fog;
@@ -68,25 +69,20 @@ void main() {
     texcoords.y = (deltas.y + texuv.y) / float(texsize.y);
     fragcol = texture(textureArray0, vec3(texcoords.x,texcoords.y,olayer));
 
-    vec4 toplayer = texture(textureArray0, vec3(texcoords.x,texcoords.y,0));
-    vec4 watercol = texture(textureArray0, vec3(texcoords.x,texcoords.y,waterframe));
-
-    if ((watertiles == 1) && (olayer == 0.0)){
-        if ((vsAttrib & 0x3C00) != 0){ // water anim disabled
-            fragcol = toplayer;
-        } else {
-            fragcol = watercol;
-        }
-    }
+    // Layer 0 is the water tile, flow flags on it disable the animation. World textures have no mipmaps, so this
+    // fetch needs no derivatives.
+    if ((watertiles == 1) && (olayer == 0.0) && (vsAttrib & 0x3C00) == 0)
+        fragcol = texture(textureArray0, vec3(texcoords.x,texcoords.y,waterframe));
 
     // sunlight
     vec3 result = CalcSunLight(sun, fragnorm, fragviewdir, vec3(1)); //fragcol.rgb);
     result = clamp(result, 0.0, 0.85);
 
-    result += CalcPointLight(fspointlights[0], fragnorm, vsPos, fragviewdir);
+    if (numPointLights > 0)
+        result += CalcPointLight(fspointlights[0], fragnorm, vsPos, fragviewdir);
 
     // stack stationary
-    for(int i = 1; i < num_point_lights; i++) {
+    for(int i = 1; i < numPointLights; i++) {
         if (fspointlights[i].type == 1.0)
             result += CalcPointLight(fspointlights[i], fragnorm, vsPos, fragviewdir);
     }
@@ -95,7 +91,7 @@ void main() {
 
     // stack mobile
 
-    for(int i = 1; i < num_point_lights; i++) {
+    for(int i = 1; i < numPointLights; i++) {
         if (fspointlights[i].type == 2.0)
             result += CalcPointLight(fspointlights[i], fragnorm, vsPos, fragviewdir);
     }
