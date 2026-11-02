@@ -174,7 +174,7 @@ class EvtInstruction {
         } chest_flag_descr;
         struct {
             Skill skill_type;
-            Mastery skill_mastery;
+            Mastery skill_mastery; // MASTERY_NONE matches any mastery.
             int skill_level;
         } check_skill_descr;
     } data;

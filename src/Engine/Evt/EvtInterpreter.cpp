@@ -554,7 +554,8 @@ EvtFlow EvtInterpreter::executeInstruction(EvtInstruction ir) {
             assert(_who != CHOOSE_PARTY); // TODO(Nik-RE-dev): original code for this option is dubious
             for (Character &character : iterateCharacters(_who, grng)) {
                 CombinedSkillValue val = character.getSkillValue(ir.data.check_skill_descr.skill_type);
-                if (val.level() >= ir.data.check_skill_descr.skill_level && val.mastery() == ir.data.check_skill_descr.skill_mastery)
+                Mastery mastery = ir.data.check_skill_descr.skill_mastery;
+                if (val.level() >= ir.data.check_skill_descr.skill_level && (mastery == MASTERY_NONE || val.mastery() == mastery))
                     return {EVT_FLOW_JUMP, ir.target_step};
             }
             break;

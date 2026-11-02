@@ -915,6 +915,34 @@ GAME_TEST(Issues, Issue2792) {
     }
 }
 
+GAME_TEST(Issues, Issue2815) {
+    // Evt skill checks read grandmaster as master, so the trap in Tidewater Caverns that grandmasters of Perception and
+    // Disarm Trap should disarm went off for them, and masters disarmed it.
+    for (Mastery mastery : {MASTERY_MASTER, MASTERY_GRANDMASTER}) {
+        test.prepareForNextTest();
+        auto spritesTape = tapes.sprites();
+        auto statusTape = tapes.statusBar();
+        engine->config->debug.NoActors.setValue(true);
+        game.startNewGame();
+        for (Skill skill : {SKILL_PERCEPTION, SKILL_TRAP_DISARM})
+            pParty->pCharacters[0].setSkillValue(skill, CombinedSkillValue(40, mastery));
+        game.teleportTo(MAP_TIDEWATER_CAVERNS, Vec3f(200, 3936, 123), 0); // In the corridor that leads to the trapped wall.
+        auto armedTape = tapes.custom([] { return engine->_persistentVariables.mapVars[0] == 0; });
+        test.startTaping();
+        game.pressKey(PlatformKey::KEY_UP);
+        game.tick(3); // The party walks onto the plate in front of the wall, which arms the trap.
+        game.releaseKey(PlatformKey::KEY_UP);
+        game.pointMouseAtFace(1250); // The trapped wall.
+        game.pressAndReleaseButton(BUTTON_LEFT);
+        game.tick();
+
+        EXPECT_EQ(armedTape, tape(false, true));
+        bool disarmed = mastery == MASTERY_GRANDMASTER;
+        EXPECT_EQ(statusTape.contains("You Successfully disarm the trap"), disarmed);
+        EXPECT_EQ(spritesTape.flatten().contains(SPRITE_SPELL_WATER_ICE_BLAST_IMPACT), !disarmed);
+    }
+}
+
 GAME_TEST(Issues, Issue2834) {
     // Evt commands after ForPlayer(Active) did nothing while no character was active, so the hired golem took the
     // abbey normal head and never gave its own head back.

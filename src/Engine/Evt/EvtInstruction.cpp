@@ -1007,7 +1007,7 @@ EvtInstruction EvtInstruction::parse(InputStream &stream, size_t size) {
         case EVENT_CastSpell:
             requireSize(32);
             ir.data.spell_descr.spell_id = static_cast<SpellId>(fromStream<uint8_t>(stream));
-            ir.data.spell_descr.spell_mastery = static_cast<Mastery>(fromStream<uint8_t>(stream) + 1);  // TODO(yoctozepto): why add 1? it is not done with Event_CheckSkill
+            ir.data.spell_descr.spell_mastery = static_cast<Mastery>(fromStream<uint8_t>(stream) + 1);  // TODO(yoctozepto): why add 1?
             ir.data.spell_descr.spell_level = fromStream<uint8_t>(stream);
             ir.data.spell_descr.fromx = fromStream<uint32_t>(stream);
             ir.data.spell_descr.fromy = fromStream<uint32_t>(stream);
@@ -1124,13 +1124,15 @@ EvtInstruction EvtInstruction::parse(InputStream &stream, size_t size) {
             requireSize(9);
             ir.data.event_id = fromStream<uint32_t>(stream);
             break;
-        case EVENT_CheckSkill:
+        case EVENT_CheckSkill: {
             requireSize(12);
             ir.data.check_skill_descr.skill_type = static_cast<Skill>(fromStream<uint8_t>(stream));
-            ir.data.check_skill_descr.skill_mastery = static_cast<Mastery>(fromStream<uint8_t>(stream));
+            int mastery = fromStream<uint8_t>(stream); // 0 is any mastery, 1 to 3 are expert to grandmaster.
+            ir.data.check_skill_descr.skill_mastery = mastery == 0 ? MASTERY_NONE : static_cast<Mastery>(mastery + 1);
             ir.data.check_skill_descr.skill_level = fromStream<uint32_t>(stream);
             ir.target_step = fromStream<uint8_t>(stream);
             break;
+        }
         case EVENT_OnCanShowDialogItemCmp:
             requireSize(12);
             ir.data.variable_descr.type = static_cast<EvtVariable>(fromStream<uint16_t>(stream));
