@@ -12,14 +12,14 @@
  *
  * All paths are prefixed with the base path. Files outside the base path can't be reached.
  *
- * `exists`, `stat` and `ls` of `"."` work as if the base path were a directory, even if it's missing or a file. So
- * `ls(".")` returns an empty list for such a base path instead of throwing.
+ * `exists`, `stat` and `ls` of `"/"` work as if the base path were a directory, even if it's missing or a file. So
+ * `ls("/")` returns an empty list for such a base path instead of throwing.
  *
  * Usage:
  * ```
  * FileSystem *root = ...;
- * SubFileSystem shaders("shaders", root);
- * shaders.read("precision.vert");  // reads root/shaders/precision.vert
+ * SubFileSystem shaders("/shaders", root);
+ * shaders.read("/precision.vert");  // reads /shaders/precision.vert in root
  * ```
  */
 class SubFileSystem : public FileSystem {

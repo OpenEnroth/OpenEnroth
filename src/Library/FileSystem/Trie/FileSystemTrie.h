@@ -7,6 +7,7 @@
 #include <unordered_map>
 #include <string>
 
+#include "Utility/String/Split.h"
 #include "Utility/String/TransparentFunctors.h"
 #include "Utility/System/PathView.h"
 
@@ -61,8 +62,8 @@ class FileSystemTrieNode {
 };
 
 /**
- * Trie map from a path in the file system layer's normal form, see `NormalPath`, to `T`. `"."` and an empty path name
- * the node they start at.
+ * Trie map from a path in the file system layer's normal form, see `NormalPath`, to `T`. A segment is whatever is
+ * between two `/`, on every platform. `/` and an empty path name the node they start at.
  * 
  * Each node can contain a value, even if it's not a leaf node. If the user needs a trie that only contains values in
  * the leaf nodes, then it's up to the user to maintain this invariant.
@@ -99,7 +100,7 @@ class FileSystemTrie {
     Node *find(Node *base, PathView relativePath) {
         assert(base);
 
-        for (std::string_view chunk : relativePath.split()) {
+        for (std::string_view chunk : ::split(relativePath.str()).by('/').skip("")) {
             base = base->child(chunk);
             if (!base)
                 return base;
@@ -129,7 +130,7 @@ class FileSystemTrie {
     Node *walk(Node *base, PathView relativePath, PathView *tail = nullptr) {
         assert(base);
 
-        for (std::string_view chunk : relativePath.split()) {
+        for (std::string_view chunk : ::split(relativePath.str()).by('/').skip("")) {
             if (Node *child = base->child(chunk)) {
                 base = child;
             } else {
@@ -233,7 +234,7 @@ class FileSystemTrie {
     Node *_grow(Node *base, const PathView relativePath) {
         assert(base);
 
-        for (std::string_view chunk : relativePath.split()) {
+        for (std::string_view chunk : ::split(relativePath.str()).by('/').skip("")) {
             if (Node *child = base->child(chunk)) {
                 base = child;
                 continue;

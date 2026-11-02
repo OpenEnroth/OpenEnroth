@@ -17,6 +17,8 @@
  * When it comes to permissions, this filesystem tries its best to provide a simple guarantee that `ls` for an existing
  * folder never throws, and is in sync with what `stat` / `exists` return. This means that some files or folders that
  * are observable through `ls` in bash won't be observable through this filesystem.
+ *
+ * On Windows a name with a `:` reaches the OS as is, so `/c:b` is stream `b` of file `/c` on NTFS.
  */
 class NativeFileSystem : public FileSystem {
  public:

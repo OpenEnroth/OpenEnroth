@@ -16,7 +16,7 @@ UNIT_TEST(Preprocessor, NoIncludes) {
 
 UNIT_TEST(Preprocessor, SimpleInclude) {
     MemoryFileSystem fs("memfs");
-    fs.write("common.glsl", Blob::fromString("float PI = 3.14;"));
+    fs.write("/common.glsl", Blob::fromString("float PI = 3.14;"));
     Blob source = Blob::fromString("#include \"common.glsl\"\nint x = 1;").withDisplayPath("test.glsl");
 
     Blob result = pp::preprocess(source, &fs);
@@ -64,8 +64,8 @@ UNIT_TEST(Preprocessor, DirectiveError) {
 
 UNIT_TEST(Preprocessor, NestedInclude) {
     MemoryFileSystem fs("memfs");
-    fs.write("a.glsl", Blob::fromString("#include \"b.glsl\"\nint a = 1;"));
-    fs.write("b.glsl", Blob::fromString("int b = 2;"));
+    fs.write("/a.glsl", Blob::fromString("#include \"b.glsl\"\nint a = 1;"));
+    fs.write("/b.glsl", Blob::fromString("int b = 2;"));
     Blob source = Blob::fromString("#include \"a.glsl\"").withDisplayPath("test.glsl");
 
     Blob result = pp::preprocess(source, &fs);
