@@ -103,6 +103,12 @@ class CommonTapeRecorder {
 
     TestMultiTape<SoundId> sounds();
 
+    /**
+     * @return                          Tape of the names of the fullscreen movies that the game asked to play. It
+     *                                  records them with `debug.no_video` on as well.
+     */
+    TestMultiTape<std::string> movies();
+
     TestMultiTape<std::string> hudTextures();
 
     /**
