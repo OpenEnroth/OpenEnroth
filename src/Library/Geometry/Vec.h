@@ -24,8 +24,11 @@ struct Vec2 {
     }
 
     [[nodiscard]] auto lengthSqr() const {
-        // Note that auto return type is important because this way Vec2s::lengthSqr returns int.
-        return x * x + y * y;
+        if constexpr (std::is_integral_v<T>) {
+            return static_cast<int64_t>(x) * x + static_cast<int64_t>(y) * y; // Squares of outdoor distances overflow an int.
+        } else {
+            return x * x + y * y;
+        }
     }
 
     [[nodiscard]] T length() const {
@@ -129,8 +132,11 @@ struct Vec3 {
     }
 
     [[nodiscard]] auto lengthSqr() const {
-        // Note that auto return type is important because this way Vec3s::lengthSqr returns int.
-        return x * x + y * y + z * z;
+        if constexpr (std::is_integral_v<T>) {
+            return static_cast<int64_t>(x) * x + static_cast<int64_t>(y) * y + static_cast<int64_t>(z) * z; // Squares of outdoor distances overflow an int.
+        } else {
+            return x * x + y * y + z * z;
+        }
     }
 
     [[nodiscard]] T length() const {

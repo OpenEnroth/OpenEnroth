@@ -1,6 +1,6 @@
 {
     "header": {
-        "afterLoadRandomState": 120,
+        "afterLoadRandomState": 116,
         "config": [
             {
                 "key": "all_magic",
