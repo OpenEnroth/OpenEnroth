@@ -10,10 +10,12 @@
 
 #include "Utility/String/Format.h"
 
-RotatingLogSink::RotatingLogSink(PathView path, FileSystem *fs, int count): StreamLogSink(openRotatingStream(NormalPath(path).path(), fs, count)) {}
+RotatingLogSink::RotatingLogSink(PathView path, FileSystem *fs, int count): StreamLogSink(openRotatingStream(NormalPath(path), fs, count)) {}
 
-std::unique_ptr<OutputStream> RotatingLogSink::openRotatingStream(const Path &path, FileSystem *fs, int count) {
+std::unique_ptr<OutputStream> RotatingLogSink::openRotatingStream(const NormalPath &normalPath, FileSystem *fs, int count) {
     assert(fs);
+    assert(normalPath.isAccessible());
+    const Path &path = normalPath.path();
 
     // Find existing log files.
     std::vector<DirectoryEntry> entries;
@@ -33,7 +35,7 @@ std::unique_ptr<OutputStream> RotatingLogSink::openRotatingStream(const Path &pa
     // not keen on bringing it back.
     std::ranges::sort(entries, std::ranges::greater());
     while (!entries.empty() && entries.size() >= count) {
-        fs->remove(path.parent() / entries.back().name);
+        fs->remove(fmt::format("{}/{}", path.parent().str(), entries.back().name));
         entries.pop_back();
     }
 
@@ -43,7 +45,7 @@ std::unique_ptr<OutputStream> RotatingLogSink::openRotatingStream(const Path &pa
                                    path.stem().ends_with('_') ? "" : "_",
                                    std::chrono::floor<std::chrono::seconds>(std::chrono::system_clock::now()),
                                    path.extension());
-    return fs->openForWriting(path.parent() / name);
+    return fs->openForWriting(fmt::format("{}/{}", path.parent().str(), name));
 }
 
 RotatingLogSink::~RotatingLogSink() = default;

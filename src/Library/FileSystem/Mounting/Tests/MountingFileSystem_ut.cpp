@@ -194,3 +194,18 @@ UNIT_TEST(MountingFileSystem, DisplayPath) {
     EXPECT_EQ(fs.displayPath("/"), "mnt://");
     EXPECT_EQ(fs.displayPath("/a"), "mnt://a");
 }
+
+UNIT_TEST(MountingFileSystem, DriveLikeNames) {
+    // A name that looks like a drive is an ordinary name, in a mount point and in the tail after it.
+    MemoryFileSystem mfs("");
+    mfs.write("/x:y", Blob::fromString("lol"));
+    mfs.write("/y", Blob::fromString("kek"));
+
+    MountingFileSystem fs("mnt");
+    fs.mount("/c:", &mfs);
+
+    EXPECT_EQ(fs.read("/c:/x:y").str(), "lol");
+    EXPECT_EQ(fs.read("/c:/y").str(), "kek");
+    EXPECT_TRUE(fs.unmount("/c:"));
+    EXPECT_FALSE(fs.exists("/c:/y"));
+}

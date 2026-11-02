@@ -72,9 +72,9 @@ class FileSystemTrieNode {
  * to a value node. This means, for example, that the following code will leave the trie empty:
  * ```
  * FileSystemTrie<bool> trie;
- * trie.insertOrAssign(Path("a/b/c"), true);
- * trie.erase(Path("a/b"));
- * // trie is now empty, trie.find(Path("a")) will return nullptr.
+ * trie.insertOrAssign(Path("/a/b/c"), true);
+ * trie.erase(Path("/a/b"));
+ * // trie is now empty, trie.find(Path("/a")) will return nullptr.
  * ```
  * 
  * Note that the interface of `FileSystemTrie` is a bit different from what one would expect a map-like class to offer.

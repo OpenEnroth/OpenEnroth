@@ -150,7 +150,6 @@ void LowercaseFileSystem::cacheLs(Node *node, NormalPathView basePath) const {
         }
 
         NormalPath baseName("/" + entry.name);
-        assert(baseName.isAccessible());
         _trie.insertOrAssign(node,
                              lowerEntryName,
                              detail::LowercaseFileData(entry.type, std::move(baseName)));
