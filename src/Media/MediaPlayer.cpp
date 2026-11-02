@@ -743,8 +743,8 @@ class Movie : public IMovie {
 };
 
 void MPlayer::Initialize() {
-    might_list.open(dfs->read("anims/might7.vid"));
-    magic_list.open(dfs->read("anims/magic7.vid"));
+    might_list.open(dfs->read("/anims/might7.vid"));
+    magic_list.open(dfs->read("/anims/magic7.vid"));
 }
 
 void MPlayer::OpenHouseMovie(std::string_view pMovieName, bool bLoop) {

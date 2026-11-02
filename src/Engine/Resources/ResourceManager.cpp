@@ -110,11 +110,11 @@ ResourceManager::~ResourceManager() = default;
 void ResourceManager::open(float saturation, float lightness) {
     _saturation = saturation;
     _lightness = lightness;
-    _eventsLodReader.open(dfs->read("data/events.lod"));
-    _iconsLodReader.open(dfs->read("data/icons.lod"));
-    _bitmapsLodReader.open(dfs->read("data/bitmaps.lod"));
-    _spritesLodReader.open(dfs->read("data/sprites.lod"));
-    from_json(Json::parse(dfs->read("data/resource_mask_table.json").str()), _masks);
+    _eventsLodReader.open(dfs->read("/data/events.lod"));
+    _iconsLodReader.open(dfs->read("/data/icons.lod"));
+    _bitmapsLodReader.open(dfs->read("/data/bitmaps.lod"));
+    _spritesLodReader.open(dfs->read("/data/sprites.lod"));
+    from_json(Json::parse(dfs->read("/data/resource_mask_table.json").str()), _masks);
     // TODO(captainurist):
     //  on exception:
     //      Error(localization->str(LSTR_MIGHT_AND_MAGIC_VII_IS_HAVING_TROUBLE), localization->str(LSTR_REINSTALL_NECESSARY));
@@ -196,7 +196,7 @@ Sizei ResourceManager::bitmapSize(std::string_view filename) {
 
 RgbaImage ResourceManager::generated(std::string_view filename) {
     _tileGenerator->ensureTile(filename);
-    RgbaImage result = png::decode(ufs->read(filename));
+    RgbaImage result = png::decode(ufs->read(fmt::format("/{}", filename)));
     desaturate(result.pixels());
     return result;
 }

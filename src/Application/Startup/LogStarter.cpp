@@ -43,7 +43,7 @@ void LogStarter::initialize(FileSystem *userFs, LogLevel logLevel) {
     // Set up filesystem logging. We skip this on LOG_NONE b/c we don't want any FS changes in this case.
     if (userFs && logLevel != LOG_NONE) {
         try {
-            _userLogSink = std::make_unique<RotatingLogSink>("logs/openenroth.log", userFs);
+            _userLogSink = std::make_unique<RotatingLogSink>("/logs/openenroth.log", userFs);
             _rootLogSink->addLogSink(_userLogSink.get());
         } catch (const std::exception &e) {
             MM_ERROR("Could not open log file for writing: {}", e.what());

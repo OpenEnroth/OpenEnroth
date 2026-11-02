@@ -262,7 +262,7 @@ Blob EngineController::saveGame() {
 
 void EngineController::loadGame(const Blob &savedGame) {
     MemoryFileSystem ramFs("ramfs");
-    ramFs.write("saves/!!!save.mm7", savedGame);
+    ramFs.write("/saves/!!!save.mm7", savedGame);
 
     ScopedRollback<FileSystem *> rollback(&ufs, &ramFs);
 

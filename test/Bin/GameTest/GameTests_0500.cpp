@@ -359,8 +359,8 @@ GAME_TEST(Issues, Issue624) {
 
 GAME_TEST(Issues, Issue626) {
     // Last loaded save is not remembered
-    ufs->remove("saves");
-    EXPECT_FALSE(ufs->exists("saves"));
+    ufs->remove("/saves");
+    EXPECT_FALSE(ufs->exists("/saves"));
 
     game.startNewGame();
 
@@ -638,7 +638,7 @@ GAME_TEST(Issues, Issue679) {
     game.tick(2);
     game.pressGuiButton("HouseDialogue_Option0"); // Two days to Erathia.
     game.skipLoadingScreen();
-    game.loadGame(ufs->read("saves/autosave.mm7"));
+    game.loadGame(ufs->read("/saves/autosave.mm7"));
 
     EXPECT_EQ(mapTape, tape(MAP_HARMONDALE, MAP_ERATHIA, MAP_HARMONDALE));
     EXPECT_EQ(goldTape, tape(200, 150, 200));
@@ -661,8 +661,8 @@ GAME_TEST(Issues, Issue681) {
 
 GAME_TEST(Issues, Issue689) {
     // Testing that clicking on load game scroll is not crashing the game then there's small amount of saves present.
-    ufs->remove("saves");
-    EXPECT_FALSE(ufs->exists("saves"));
+    ufs->remove("/saves");
+    EXPECT_FALSE(ufs->exists("/saves"));
 
     game.startNewGame();
 

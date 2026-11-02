@@ -156,7 +156,7 @@ void GameWindowHandler::UpdateConfigFromWindow(GameConfig *config) {
 void GameWindowHandler::OnScreenshot() {
     if (render) {
         engine->config->settings.ScreenshotNumber.increment();
-        std::string path = fmt::format("screenshots/screenshot_{:05}.png", engine->config->settings.ScreenshotNumber.value());
+        std::string path = fmt::format("/screenshots/screenshot_{:05}.png", engine->config->settings.ScreenshotNumber.value());
 
         ufs->write(path, png::encode(render->MakeFullScreenshot()));
     }
