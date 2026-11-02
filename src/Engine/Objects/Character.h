@@ -119,6 +119,7 @@ class Character {
     int CalculateMeleeDamageTo(bool ignoreSkillBonus, bool ignoreOffhand,
                                MonsterId uTargetActorID);
     int GetRangedAttack();
+    [[nodiscard]] int visibleSkillCount() const;
     int GetRangedDamageMin();
     int GetRangedDamageMax();
     int CalculateRangedDamageTo(MonsterId uMonsterInfoID);
