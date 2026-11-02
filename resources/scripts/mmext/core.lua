@@ -265,11 +265,11 @@ local function newEventHandlers(isGlobal)
 end
 
 ---@param handler EvtHandler
----@param name string
+---@param _ string
 ---@param ... any
 ---@return boolean isWaiting
 ---@return any result
-local events, eventLists = newEvents(function (handler, name, ...)
+local events, eventLists = newEvents(function (handler, _, ...)
     return runHandler(handler, { duringMapLoad = isMapLoading }, ...)
 end)
 
@@ -303,17 +303,16 @@ local function newHintValues(field)
         ---@param value any
         __newindex = function (_, eventId, value)
             local owner = registrationOwner()
-            local entry = hintEntries[eventId]
-            if entry and entry.owner and not owner then
+            ---@type table<string, any>
+            local entry = hintEntries[eventId] or {}
+            if entry.owner and not owner then
                 if value == nil then
                     return -- The engine falls back to the evt event's hint then.
                 end
-                entry = nil
+                entry = {}
             end
-            ---@type table<string, any>
-            local updated = entry or {}
-            updated[field], updated.owner = value, owner
-            hintEntries[eventId] = updated
+            entry[field], entry.owner = value, owner
+            hintEntries[eventId] = entry
         end,
     })
 end
