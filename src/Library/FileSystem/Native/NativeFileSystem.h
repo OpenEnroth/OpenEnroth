@@ -23,7 +23,7 @@
 class NativeFileSystem : public FileSystem {
  public:
     /**
-     * @param root                      Directory to view. A relative one resolves against the current directory now.
+     * @param root                      Directory to view. A relative one resolves against the current directory at construction.
      * @throws Exception                If `root` is empty.
      */
     explicit NativeFileSystem(PathView root);

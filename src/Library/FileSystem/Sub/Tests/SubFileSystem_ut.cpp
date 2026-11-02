@@ -58,7 +58,7 @@ UNIT_TEST(SubFileSystem, DisplayPath) {
     EXPECT_CONTAINS(path, "test.vert");
 }
 
-UNIT_TEST(SubFileSystem, CannotEscapeWithDotDot) {
+UNIT_TEST(SubFileSystem, DotDotStopsAtRoot) {
     MemoryFileSystem base("memfs");
     base.write("/secret.txt", Blob::fromString("secret"));
     base.write("/shaders/test.vert", Blob::fromString("test"));
@@ -145,4 +145,16 @@ UNIT_TEST(SubFileSystem, BasePathIsNormalized) {
         SubFileSystem sub(basePath, &base);
         EXPECT_EQ(sub.read("/file.txt").str(), "hello") << basePath;
     }
+}
+
+UNIT_TEST(SubFileSystem, DriveLikeNames) {
+    // A name that looks like a drive is an ordinary name, in the base path and below it.
+    MemoryFileSystem base("memfs");
+    base.write("/c:/d:e", Blob::fromString("lol"));
+    base.write("/d:e", Blob::fromString("kek"));
+
+    SubFileSystem sub("/c:", &base);
+    EXPECT_EQ(sub.read("/d:e").str(), "lol");
+    EXPECT_EQ(sub.ls("/"), std::vector<DirectoryEntry>({{"d:e", FILE_REGULAR}}));
+    EXPECT_EQ(sub.displayPath("/d:e"), "memfs://c:/d:e");
 }

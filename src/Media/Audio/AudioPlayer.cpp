@@ -57,7 +57,7 @@ void AudioPlayer::MusicPlayTrack(MusicId eTrack) {
 
         std::string file_path = fmt::format("/music/{}.mp3", std::to_underlying(eTrack));
         if (!dfs->exists(file_path)) {
-            MM_WARNING("AudioPlayer: {} not found", file_path);
+            MM_WARNING("AudioPlayer: {} not found", dfs->displayPath(file_path));
             return;
         }
 

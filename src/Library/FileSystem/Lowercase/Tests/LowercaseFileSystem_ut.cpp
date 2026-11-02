@@ -224,3 +224,17 @@ UNIT_TEST(LowercaseFileSystem, NonExistentNativeFolder) {
     EXPECT_FALSE(fs.exists("/anims/magic7.vid"));
     EXPECT_EQ(fs.stat("/anims/magic7.vid"), FileStat());
 }
+
+UNIT_TEST(LowercaseFileSystem, DriveLikeNames) {
+    // A name that looks like a drive is an ordinary name when listed, walked through and written.
+    MemoryFileSystem fs0("");
+    fs0.write("/C:/D:E", Blob::fromString("lol"));
+    LowercaseFileSystem fs(&fs0);
+
+    EXPECT_EQ(fs.read("/c:/d:e").str(), "lol");
+    EXPECT_EQ(fs.ls("/c:"), std::vector<DirectoryEntry>({{"d:e", FILE_REGULAR}}));
+
+    fs.write("/x:y/z:w", Blob::fromString("kek"));
+    EXPECT_EQ(fs0.read("/x:y/z:w").str(), "kek");
+    EXPECT_EQ(fs.read("/x:y/z:w").str(), "kek");
+}

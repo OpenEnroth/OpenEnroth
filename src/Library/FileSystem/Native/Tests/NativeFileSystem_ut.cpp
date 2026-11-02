@@ -116,12 +116,17 @@ UNIT_TEST(NativeFileSystem, DisplayPathSymmetry) {
     EXPECT_EQ(blob.displayPath(), stream->displayPath());
 }
 
-UNIT_TEST(NativeFileSystem, EscapingPaths) {
+UNIT_TEST(NativeFileSystem, DotDotStaysInside) {
+    // ".." stops at the root, and a relative path is refused, so the file next to the root stays out of reach.
     ScopedTestFolder tmp("a");
-    ScopedTestFile tmp2("1.txt", "");
-    ScopedTestFile tmp3("a/1.txt", "");
+    ScopedTestFile tmp2("1.txt", "outer");
+    ScopedTestFile tmp3("a/1.txt", "inner");
 
     NativeFileSystem fs("a");
+
+    EXPECT_EQ(fs.stat("/.."), FileStat(FILE_DIRECTORY, 0));
+    EXPECT_EQ(fs.read("/../1.txt").str(), "inner");
+    EXPECT_EQ(fs.read("/a/../../1.txt").str(), "inner");
 
     EXPECT_FALSE(fs.exists(".."));
     EXPECT_FALSE(fs.stat(".."));
@@ -133,17 +138,26 @@ UNIT_TEST(NativeFileSystem, EscapingPaths) {
     EXPECT_ANY_THROW(fs.remove("../1.txt"));
 }
 
-UNIT_TEST(NativeFileSystem, EscapingDisplayPath) {
+UNIT_TEST(NativeFileSystem, DisplayPathOfInaccessiblePath) {
+    // An inaccessible path is shown next to the root.
     NativeFileSystem fs(fs::cwd());
 
     EXPECT_TRUE(fs.displayPath("..").ends_with(".."));
 }
 
 UNIT_TEST(NativeFileSystem, DisplayPathOfRoot) {
-    // The root is shown as the directory itself, with no "." or trailing separator.
+    // The root is shown as the directory itself, with no trailing separator.
     NativeFileSystem fs("tmp_native_dir");
 
     EXPECT_EQ(fs.displayPath("/"), fs::absolute("tmp_native_dir").displayString());
+}
+
+UNIT_TEST(NativeFileSystem, DisplayPathOfDriveLikeName) {
+    // A name that looks like a drive stays under the root.
+    NativeFileSystem fs("tmp_native_dir");
+
+    EXPECT_EQ(fs.displayPath("/c:b"), fs::absolute("tmp_native_dir").str() + "/c:b");
+    EXPECT_EQ(fs.displayPath("/a/c:/d"), fs::absolute("tmp_native_dir").str() + "/a/c:/d");
 }
 
 UNIT_TEST(NativeFileSystem, DisplayPathOfMissingFile) {
