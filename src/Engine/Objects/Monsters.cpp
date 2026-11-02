@@ -397,7 +397,8 @@ void MonsterStats::Initialize(const Blob &monsters) {
         info.specialAbilityDamageDiceBonus = 0;
         std::string normalized(unquote(cell));
         for (char &c : normalized)
-            if (c == ',' || c == '\t') c = ' ';
+            if (c == ',' || c == '\t')
+                c = ' ';
         std::vector<std::string_view> props;
         split(std::string_view(normalized)).by(' ').skip("").to(&props);
         if (props.empty() || props.size() >= 10)

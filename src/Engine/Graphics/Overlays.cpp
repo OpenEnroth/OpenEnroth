@@ -30,7 +30,8 @@ int ActiveOverlayList::_4418B6(int uOverlayID, Pid pid, Duration animLength, int
             this->pOverlays[i].pid = pid;
             int indexer = 0;
             for (; indexer < (signed int)pOverlayTable->overlays.size(); ++indexer)
-                if (uOverlayID == pOverlayTable->overlays[indexer].uOverlayID) break;
+                if (uOverlayID == pOverlayTable->overlays[indexer].uOverlayID)
+                    break;
             this->pOverlays[i].indexToOverlayTable = indexer;
             this->pOverlays[i].spriteFrameTime = 0;
             if (animLength) {

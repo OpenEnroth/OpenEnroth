@@ -319,9 +319,8 @@ void GUIWindow_MagicGuild::generateSpellBooksForGuild() {
     for (int i = 0; i < itemAmountInShop[guildType]; ++i) {
         ItemId pItemNum = grng->randomSample(spellbooksForGuild);
 
-        if (pItemNum == ITEM_SPELLBOOK_DIVINE_INTERVENTION)
-            if (!pParty->_questBits[QBIT_DIVINE_INTERVENTION_RETRIEVED])
-                pItemNum = ITEM_SPELLBOOK_SUNRAY;
+        if (pItemNum == ITEM_SPELLBOOK_DIVINE_INTERVENTION && !pParty->_questBits[QBIT_DIVINE_INTERVENTION_RETRIEVED])
+            pItemNum = ITEM_SPELLBOOK_SUNRAY;
 
         Item *itemSpellbook = &pParty->spellBooksInGuilds[houseId()][i];
         itemSpellbook->Reset();

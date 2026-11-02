@@ -568,8 +568,7 @@ Vis_ObjectInfo *Vis_SelectionList::SelectionPointers(VisObjectType pVisObjectTyp
     // v3 = this->uSize;
     if (this->uSize > 0) {
         for (unsigned i = 0; i < this->uSize; ++i)
-            if (this->object_pool[i].object_type == pVisObjectType &&
-                this->object_pool[i].object_pid == pid)
+            if (this->object_pool[i].object_type == pVisObjectType && this->object_pool[i].object_pid == pid)
                 return &this->object_pool[i];
     }
     return nullptr;
