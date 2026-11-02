@@ -12,8 +12,8 @@
  *
  * All paths are prefixed with the base path. Files outside the base path can't be reached.
  *
- * All methods will work as if the base path exists on the underlying file system, even if it doesn't. So `ls(".")`
- * returns an empty list instead of throwing for a base path that doesn't exist, or that points to a file.
+ * `exists`, `stat` and `ls` of `"."` work as if the base path were a directory, even if it's missing or a file. So
+ * `ls(".")` returns an empty list for such a base path instead of throwing.
  *
  * Usage:
  * ```
@@ -27,7 +27,7 @@ class SubFileSystem : public FileSystem {
     /**
      * @param basePath                  Path prefix to apply to all operations.
      * @param base                      The underlying file system.
-     * @throws Exception                If `basePath` is not accessible, see `NormalPath::isAccessible`.
+     * @throws Exception                If `basePath` is not accessible, see `NormalPathView::isAccessible`.
      */
     SubFileSystem(PathView basePath, FileSystem *base);
 

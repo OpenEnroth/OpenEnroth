@@ -186,3 +186,11 @@ UNIT_TEST(MountingFileSystem, UnmountInaccessiblePath) {
     EXPECT_TRUE(fs.exists("m"));
     EXPECT_TRUE(fs.unmount("."));
 }
+
+UNIT_TEST(MountingFileSystem, DisplayPath) {
+    // The root is shown as the bare prefix.
+    MountingFileSystem fs("mnt");
+
+    EXPECT_EQ(fs.displayPath("."), "mnt://");
+    EXPECT_EQ(fs.displayPath("a"), "mnt://a");
+}

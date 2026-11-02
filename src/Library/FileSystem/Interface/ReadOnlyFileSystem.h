@@ -4,9 +4,6 @@
 
 #include "FileSystem.h"
 
-/**
- * Base class for read-only file systems.
- */
 class ReadOnlyFileSystem : public FileSystem {
  private:
     virtual void _write(NormalPathView path, const Blob &data) override;
