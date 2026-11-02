@@ -1,6 +1,5 @@
 #pragma once
 
-#include <functional>
 #include <optional>
 #include <string>
 
@@ -8,7 +7,6 @@
 
 #include "Core/Time/Duration.h"
 
-class EvtScripts;
 
 /**
  * @offset 0x4613C4
@@ -23,8 +21,9 @@ void checkDecorationEvents();
 /**
  * @param context                       Event to run, and what it runs for.
  * @param startStep                     Step to start from.
+ * @return                              Whether the event started a map transition. The map's leave events have run then.
  */
-void runEvent(EvtContext context, int startStep = 0);
+EvtTransition runEvent(EvtContext context, int startStep = 0);
 
 /**
  * @param eventId                       Global event behind an NPC's scripted topic.
@@ -45,17 +44,10 @@ void onMapLeave();
 void onTimer();
 
 /**
- * @param value                         Scripted event handlers to run next to the evt ones, or `nullptr` for none.
- */
-void setEvtScripts(EvtScripts *value);
-
-EvtScripts *evtScripts();
-
-/**
  * What a timer counts its first alarm from.
  */
 enum class EvtTimerStart {
-    EVT_TIMER_START_LAST_VISIT, // The last visit to the map, as evt timers do when their map loads. Fires at once on a first visit.
+    EVT_TIMER_START_LAST_VISIT, // The last visit to the map, as evt timers do when their map loads. Fires at once on a first visit. Waits for the next map load.
     EVT_TIMER_START_NOW,
 };
 using enum EvtTimerStart;
@@ -67,7 +59,7 @@ struct EvtTimerSchedule {
     Duration interval; // Counted from when the timer is added. Zero for a timer that follows the calendar.
     Duration period; // Of a timer that follows the calendar: a day, a week, 28 days or a year.
     Duration timeOfDay; // Of a daily timer that follows the calendar.
-    EvtTimerStart start = EVT_TIMER_START_LAST_VISIT; // Of a timer that follows the calendar.
+    EvtTimerStart start = EVT_TIMER_START_LAST_VISIT;
 };
 
 /**
@@ -87,16 +79,17 @@ enum class EvtTimerLifetime {
 using enum EvtTimerLifetime;
 
 /**
+ * Adds a timer of the scripts, `EvtScripts::fireTimer` runs when it fires.
+ *
+ * @param handle                        What the scripts know the timer by, not 0.
  * @param schedule                      When the timer fires.
  * @param kind                          Which timers it's checked with.
  * @param lifetime                      How long it's kept.
- * @param callback                      What to call when it fires.
- * @return                              Handle of the timer, for `removeTimer`.
  */
-int addTimer(const EvtTimerSchedule &schedule, EvtTimerKind kind, EvtTimerLifetime lifetime, std::function<void()> callback);
+void addTimer(int handle, const EvtTimerSchedule &schedule, EvtTimerKind kind, EvtTimerLifetime lifetime);
 
 /**
- * @param handle                        Timer to remove, as `addTimer` returned it. The timer can be the one that is
+ * @param handle                        Timer to remove, as it was passed to `addTimer`. The timer can be the one that is
  *                                      firing.
  */
 void removeTimer(int handle);

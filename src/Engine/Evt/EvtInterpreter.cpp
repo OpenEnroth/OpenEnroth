@@ -167,10 +167,9 @@ void EvtInterpreter::prepare(EvtContext context) {
         _events = program.function(context.eventId);
 }
 
-void EvtInterpreter::prepareInstructions(EvtContext context) {
+void EvtInterpreter::prepareHandler(EvtContext context) {
+    assert(context.scriptFrame != 0);
     _context = context;
-    _context.scripted = true;
-    _events.clear();
 }
 
 EvtTransition EvtInterpreter::execute(int startStep) {
@@ -675,10 +674,9 @@ int EvtInterpreter::checkTopicStep(int step) {
     return step + 1;
 }
 
-EvtContinuation EvtInterpreter::continuation(int step) const {
-    EvtContext context = _context;
-    context.duringMapLoad = false; // The loading screen is gone by the time the dialogue closes.
-    return EvtContinuation(context, step);
+EvtContinuation EvtInterpreter::continuation(int step) {
+    _context.duringMapLoad = false; // The loading screen is gone by the time the dialogue closes.
+    return EvtContinuation(_context, step);
 }
 
 bool EvtInterpreter::validateVariableValue(const EvtInstruction &ir) const {

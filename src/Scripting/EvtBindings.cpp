@@ -24,19 +24,8 @@
 #include "Engine/Tables/HouseTable.h"
 #include "Engine/Tables/NPCTable.h"
 
-#include "Library/Logger/Logger.h"
-
 #include "Utility/Exception.h"
 #include "Utility/String/Ascii.h"
-
-#include "ScriptingSystem.h"
-
-/**
- * What one running handler executes its commands in.
- */
-struct EvtScriptContext {
-    EvtInterpreter interpreter;
-};
 
 static const int MAX_LEVEL_STRINGS = 1000; // Keeps a mistyped `evt.str` index from growing the string table without bound.
 
@@ -151,10 +140,6 @@ static void checkContext(const EvtCommandInfo &command, const EvtInstruction &ir
             if (context.source == EVT_SOURCE_GLOBAL && (ir.data.text_id < 1 || ir.data.text_id > pNPCTopics.size())) // Then it's a topic text, from 1.
                 throw Exception("evt.{}: topic text {} is out of range [1, {}]", command.name, ir.data.text_id, pNPCTopics.size());
             break;
-        case EVENT_ChangeEvent:
-            if (context.objectPid.type() != OBJECT_Decoration)
-                throw Exception("evt.{} works only in the event of a decoration", command.name);
-            break;
         case EVENT_CheckSkill:
             if (who == CHOOSE_PARTY)
                 throw Exception("evt.{} can't check the whole party, it checks one player", command.name);
@@ -165,7 +150,7 @@ static void checkContext(const EvtCommandInfo &command, const EvtInstruction &ir
 }
 
 /**
- * @param context                       Context of the running handler.
+ * @param interpreter                   Interpreter of the running handler.
  * @param state                         Lua state that gets the result.
  * @param name                          Command to run, e.g. "SetSprite".
  * @param args                          Its arguments, by field name, by position, or a mix of the two.
@@ -174,7 +159,7 @@ static void checkContext(const EvtCommandInfo &command, const EvtInstruction &ir
  *                                      "ok", "exit" if the handler has to stop, or "wait" if it has to stop until
  *                                      the engine resumes the event.
  */
-static std::tuple<sol::object, std::string> execute(EvtScriptContext &context, sol::this_state state, std::string_view name,
+static std::tuple<sol::object, std::string> execute(EvtInterpreter &interpreter, sol::this_state state, std::string_view name,
                                                     const sol::table &args, const sol::object &player) {
     const EvtCommandInfo *command = evtCommand(name);
     if (!command)
@@ -182,10 +167,10 @@ static std::tuple<sol::object, std::string> execute(EvtScriptContext &context, s
 
     EvtTargetCharacter who = toPlayer(player, "evt.Player");
     EvtInstruction ir = toInstruction(*command, args, who);
-    checkContext(*command, ir, who, context.interpreter.context());
+    checkContext(*command, ir, who, interpreter.context());
 
-    context.interpreter.setTargetCharacter(who);
-    EvtFlow flow = context.interpreter.executeInstruction(ir);
+    interpreter.setTargetCharacter(who);
+    EvtFlow flow = interpreter.executeInstruction(ir);
 
     sol::object result = sol::make_object(state, sol::lua_nil);
     if (command->kind == EVT_COMMAND_KIND_CONDITION)
@@ -273,14 +258,17 @@ static EvtTimerSchedule timerSchedule(double period, std::optional<double> start
 }
 
 sol::table EvtBindings::createBindingTable(sol::state_view &solState) const {
-    solState.new_usertype<EvtScriptContext>("EvtScriptContext", sol::no_constructor,
+    solState.new_usertype<EvtInterpreter>("EvtInterpreter", sol::no_constructor,
         "execute", &execute,
-        "isMapExitTriggered", [](const EvtScriptContext &context) { return context.interpreter.isMapExitTriggered(); });
+        "isGlobal", [](const EvtInterpreter &interpreter) { return interpreter.context().source == EVT_SOURCE_GLOBAL; },
+        "takeMapExit", [](EvtInterpreter &interpreter) { return interpreter.takeTransition() == EVT_TRANSITION_STARTED; });
 
     return solState.create_table_with(
-        "newContext", sol::as_function([](int eventId, bool isGlobal, int targetPid, bool canShowMessages) {
-            auto result = std::make_unique<EvtScriptContext>();
-            result->interpreter.prepareInstructions(EvtContext(isGlobal ? EVT_SOURCE_GLOBAL : EVT_SOURCE_MAP, eventId, Pid::fromPacked(targetPid), !canShowMessages));
+        "newInterpreter", sol::as_function([](int frame, int eventId, bool isGlobal, int targetPid, bool duringMapLoad) {
+            EvtContext context(isGlobal ? EVT_SOURCE_GLOBAL : EVT_SOURCE_MAP, eventId, Pid::fromPacked(targetPid), duringMapLoad);
+            context.scriptFrame = frame;
+            auto result = std::make_unique<EvtInterpreter>();
+            result->prepareHandler(context);
             return result;
         }),
         "defaultPlayer", sol::as_function([] {
@@ -338,23 +326,12 @@ sol::table EvtBindings::createBindingTable(sol::state_view &solState) const {
             return grng->random(hi);
         }),
         "time", sol::as_function([] { return static_cast<double>(pParty->GetPlayingTime().ticks()); }),
-        "checkTimer", sol::as_function([](double period, std::optional<double> start, bool isRefill) {
-            timerSchedule(period, start, isRefill ? EVT_TIMER_KIND_REFILL : EVT_TIMER_KIND_REGULAR);
-        }),
-        "addTimer", sol::as_function([](const sol::table &options, sol::main_protected_function callback) {
+        "addTimer", sol::as_function([](int handle, const sol::table &options) {
             EvtTimerKind kind = options.get_or("isRefill", false) ? EVT_TIMER_KIND_REFILL : EVT_TIMER_KIND_REGULAR;
             EvtTimerSchedule schedule = timerSchedule(options.get<double>("period"), options.get<std::optional<double>>("start"), kind);
             if (options.get_or("countsFromNow", false))
                 schedule.start = EVT_TIMER_START_NOW;
-            EvtTimerLifetime lifetime = options.get_or("isGlobal", false) ? EVT_TIMER_LIFETIME_GAME : EVT_TIMER_LIFETIME_MAP;
-            return addTimer(schedule, kind, lifetime, [callback] {
-                sol::protected_function_result result = callback();
-                if (!result.valid()) {
-                    MM_ERROR_IN(ScriptingSystem::ScriptingLogCategory, "Timer failed: {}", result.get<sol::error>().what());
-                } else if (result.get<bool>()) {
-                    onMapLeave(); // The handler sent the party to another map.
-                }
-            });
+            addTimer(handle, schedule, kind, options.get_or("isKeptOnMapLeave", false) ? EVT_TIMER_LIFETIME_GAME : EVT_TIMER_LIFETIME_MAP);
         }),
         "removeTimer", sol::as_function([](int handle) { removeTimer(handle); }),
         "mapScripts", sol::as_function([](std::string_view mapName) {

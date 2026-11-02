@@ -1,9 +1,10 @@
 --- @meta
 
 --- What one running event handler executes its commands in.
---- @class EvtScriptContext
---- @field execute fun(self: EvtScriptContext, name: string, args: table, player: integer|string): boolean?, string
---- @field isMapExitTriggered fun(self: EvtScriptContext): boolean
+--- @class EvtInterpreter
+--- @field execute fun(self: EvtInterpreter, name: string, args: table, player: integer|string): boolean?, string
+--- @field isGlobal fun(self: EvtInterpreter): boolean
+--- @field takeMapExit fun(self: EvtInterpreter): boolean Whether the handler started a map transition since the last call.
 
 --- The Lua script of an evt file, in one piece for each event.
 --- @class EvtDecompiledScript
@@ -15,11 +16,11 @@
 --- @field period number In ticks.
 --- @field start number? Time of day in ticks that a daily timer fires at.
 --- @field isRefill boolean
---- @field isGlobal boolean Whether the timer is kept when the party leaves the map.
+--- @field isKeptOnMapLeave boolean
 --- @field countsFromNow boolean Whether the first alarm is counted from now, not from the last visit to the map.
 
 --- @class EvtBindings
---- @field newContext fun(eventId: integer, isGlobal: boolean, targetPid: integer, canShowMessages: boolean): EvtScriptContext
+--- @field newInterpreter fun(frame: integer, eventId: integer, isGlobal: boolean, targetPid: integer, duringMapLoad: boolean): EvtInterpreter
 --- @field defaultPlayer fun(): integer
 --- @field commands fun(): string[]
 --- @field constants fun(): table<string, table<string, number>>
@@ -31,8 +32,7 @@
 --- @field houseName fun(houseId: integer): string?
 --- @field random fun(hi: integer): integer
 --- @field time fun(): number
---- @field checkTimer fun(period: number, start: number?, isRefill: boolean)
---- @field addTimer fun(options: EvtTimerOptions, callback: fun(): boolean): integer
+--- @field addTimer fun(handle: integer, options: EvtTimerOptions)
 --- @field removeTimer fun(handle: integer)
 --- @field mapScripts fun(mapName: string): string[]
 --- @field globalScripts fun(): string[]

@@ -32,7 +32,7 @@ GAME_TEST(EvtScripts, DecompiledEvents) {
     game.startNewGame();
     EXPECT_EQ(engine->_globalEventMap.eventCount(), 0);
     for (int eventId : evtFile("global").eventIds())
-        EXPECT_TRUE(evtScripts()->hasEvent(true, eventId)) << "global.evt, event " << eventId;
+        EXPECT_TRUE(engine->_evtScripts->hasEvent(EVT_SOURCE_GLOBAL, eventId)) << "global.evt, event " << eventId;
 
     for (MapId map : allMaps()) {
         std::string name = pMapTable->pInfos[map].fileName;
@@ -48,7 +48,7 @@ GAME_TEST(EvtScripts, DecompiledEvents) {
         EvtProgram program = evtFile(name);
         EXPECT_EQ(engine->_localEventMap.eventCount(), 0) << name << ".evt";
         for (int eventId : program.eventIds()) {
-            EXPECT_TRUE(evtScripts()->hasEvent(false, eventId) || evtScripts()->eventHint(eventId)) << name << ".evt, event " << eventId;
+            EXPECT_TRUE(engine->_evtScripts->hasEvent(EVT_SOURCE_MAP, eventId) || engine->_evtScripts->eventHint(eventId)) << name << ".evt, event " << eventId;
             EXPECT_EQ(hasEventHint(eventId), program.hasHint(eventId)) << name << ".evt, event " << eventId;
             EXPECT_EQ(getEventHintString(eventId), program.hint(eventId)) << name << ".evt, event " << eventId;
         }

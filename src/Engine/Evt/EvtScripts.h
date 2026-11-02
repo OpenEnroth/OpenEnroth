@@ -4,7 +4,8 @@
 #include <string>
 #include <string_view>
 
-#include "Engine/Pid.h"
+#include "Engine/Evt/EvtContext.h"
+#include "Engine/Evt/EvtEnums.h"
 
 /**
  * Event handlers written in a scripting language, which run next to the events of the evt files. The engine talks to
@@ -30,47 +31,51 @@ class EvtScripts {
     virtual void loadMapScripts(std::string_view mapName) = 0;
 
     /**
-     * @param isGlobal                  Whether to look at the global events.
+     * @param source                    Evt file that the event belongs to.
      * @param eventId                   Event id.
      * @return                          Whether a scripted handler exists for the event.
      */
-    virtual bool hasEvent(bool isGlobal, int eventId) const = 0;
+    [[nodiscard]] virtual bool hasEvent(EvtSource source, int eventId) const = 0;
 
     /**
-     * @param isGlobal                  Whether to run a global event.
-     * @param eventId                   Event id.
-     * @param targetObj                 Object that triggered the event.
-     * @param canShowMessages           Whether the event can show status texts and open dialogues.
-     * @return                          Whether the event sent the party to another map.
+     * @param context                   Event to run the handlers of.
+     * @return                          Whether a handler started a map transition.
      */
-    virtual bool runEvent(bool isGlobal, int eventId, Pid targetObj, bool canShowMessages) = 0;
+    [[nodiscard]] virtual EvtTransition runEvent(const EvtContext &context) = 0;
 
     /**
-     * Continues the handler that stopped last to wait for a dialogue.
+     * Continues a handler that stopped to wait for a dialogue.
      *
-     * @return                          Whether the handler sent the party to another map.
+     * @param frame                     Handler to continue, see `EvtContext::scriptFrame`.
+     * @return                          Whether the handler started a map transition.
      */
-    virtual bool resumeEvent() = 0;
+    [[nodiscard]] virtual EvtTransition resumeEvent(int frame) = 0;
+
+    /**
+     * @param handle                    Timer that is due, as the scripts passed it to `addTimer`.
+     * @return                          Whether its handler started a map transition.
+     */
+    [[nodiscard]] virtual EvtTransition fireTimer(int handle) = 0;
 
     /**
      * @param eventId                   Event id.
      * @return                          Hint that the scripts set for the event, if any.
      */
-    virtual std::optional<std::string> eventHint(int eventId) const = 0;
+    [[nodiscard]] virtual std::optional<std::string> eventHint(int eventId) const = 0;
 
     /**
      * @param eventId                   Id of a global event that stands behind an NPC topic.
      * @return                          Whether to show the topic, if the scripts have a say in it.
      */
-    virtual std::optional<bool> canShowTopic(int eventId) = 0;
+    [[nodiscard]] virtual std::optional<bool> canShowTopic(int eventId) = 0;
 
     /**
      * Called after `loadMapScripts`, once the evt triggers are registered and the evt map load events have run.
      * Runs the scripts' map load handlers, and fires their timers that fire at once.
      *
-     * @return                          Whether a map load handler sent the party to another map.
+     * @return                          Whether a map load handler started a map transition.
      */
-    virtual bool onMapLoad() = 0;
+    [[nodiscard]] virtual EvtTransition onMapLoad() = 0;
 
     virtual void onMapLeave() = 0;
 };
