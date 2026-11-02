@@ -343,7 +343,7 @@ GAME_TEST(Issues, Issue1579a) {
     game.skipLoadingScreen();
     EXPECT_CONTAINS(screenTape, SCREEN_VIDEO);
     EXPECT_EQ(movieTape, tape(false, true, false));
-    EXPECT_EQ(movieNameTape.flatten(), tape<std::string>("Intro Post"));
+    EXPECT_EQ(movieNameTape.flatten(), tape("Intro Post"));
 }
 
 GAME_TEST(Issues, Issue1579b) {
