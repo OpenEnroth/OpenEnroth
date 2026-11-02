@@ -67,9 +67,9 @@ bool FileSystem::remove(PathView path) {
 std::string FileSystem::displayPath(PathView path) const {
     NormalPath normalPath(path);
     if (normalPath.isAccessible())
-        return displayPathIn(this, normalPath);
+        return _displayPath(normalPath);
 
-    std::string result = displayPathIn(this, NormalPathView()); // The implementation never sees an inaccessible path.
+    std::string result = _displayPath(NormalPathView()); // The implementation never sees an inaccessible path.
     if (!result.ends_with('/'))
         result += '/';
     result += normalPath.path().displayString();
