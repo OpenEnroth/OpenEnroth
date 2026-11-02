@@ -28,15 +28,6 @@ struct EvtFlow {
     int target = 0; // Step to go on with, for `EVT_FLOW_JUMP`.
 };
 
-/**
- * Whether an event started a map transition.
- */
-enum class EvtTransition {
-    EVT_TRANSITION_NONE,    // The party stays on this map.
-    EVT_TRANSITION_STARTED, // The map's leave events are due once the event ends.
-};
-using enum EvtTransition;
-
 // EvtInterpreter
 class EvtInterpreter {
  public:

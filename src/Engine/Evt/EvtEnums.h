@@ -284,3 +284,12 @@ enum class EvtSource {
 };
 using enum EvtSource;
 
+/**
+ * Whether an event started a map transition.
+ */
+enum class EvtTransition {
+    EVT_TRANSITION_NONE,    // The party stays on this map.
+    EVT_TRANSITION_STARTED, // The map's leave events are due once the event ends.
+};
+using enum EvtTransition;
+
