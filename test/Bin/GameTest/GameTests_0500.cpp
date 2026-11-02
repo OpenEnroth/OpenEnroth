@@ -1,3 +1,4 @@
+#include <algorithm>
 #include <unordered_set>
 #include <string>
 #include <utility>
@@ -1160,6 +1161,21 @@ GAME_TEST(Issues, Issue929) {
     test.playTraceFromTestData("issue_929.mm7", "issue_929.json");
     EXPECT_EQ(goldTape.delta(), +1);
     EXPECT_EQ(itemsTape.delta(), -1);
+}
+
+GAME_TEST(Issues, Issue939) {
+    // The quick reference's Shoot row ignored the bow skill and its Skills row counted hidden skills.
+    auto textTape = tapes.allGUIWindowsText();
+    game.startNewGame();
+    pParty->pCharacters[0].inventory.equip(ITEM_SLOT_BOW, Item(ITEM_CROSSBOW));
+    test.startTaping();
+    game.pressAndReleaseKey(PlatformKey::KEY_Z); // Open the quick reference.
+    game.tick();
+    auto text = textTape.flatten();
+    auto column = std::ranges::find(text, "Zoltan");
+    ASSERT_NE(column, text.end());
+    EXPECT_EQ(column[8], "+1"); // Shoot, his bow skill.
+    EXPECT_EQ(column[10], "4"); // Skills, without his hidden Club and Misc.
 }
 
 GAME_TEST(Issues, Issue959) {
