@@ -80,7 +80,7 @@ bool MemoryFileSystem::_remove(NormalPathView path) {
 }
 
 std::string MemoryFileSystem::_displayPath(NormalPathView path) const {
-    return join(_displayName, "://", txt::encodedToUtf8(path.relativeStr(), ENCODING_UTF8)); // Replaces invalid UTF8.
+    return join(_displayName, ":/", txt::encodedToUtf8(path.str(), ENCODING_UTF8)); // Replaces invalid UTF8.
 }
 
 const MemoryFileSystem::Node *MemoryFileSystem::nodeForReading(NormalPathView path) const {

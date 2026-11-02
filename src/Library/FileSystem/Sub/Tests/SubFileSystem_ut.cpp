@@ -9,129 +9,128 @@
 
 UNIT_TEST(SubFileSystem, ReadFile) {
     MemoryFileSystem base("memfs");
-    base.write("dir/file.txt", Blob::fromString("hello"));
+    base.write("/dir/file.txt", Blob::fromString("hello"));
 
-    SubFileSystem sub("dir", &base);
+    SubFileSystem sub("/dir", &base);
 
-    EXPECT_TRUE(sub.exists("file.txt"));
-    Blob content = sub.read("file.txt");
+    EXPECT_TRUE(sub.exists("/file.txt"));
+    Blob content = sub.read("/file.txt");
     EXPECT_EQ(content.str(), "hello");
 }
 
 UNIT_TEST(SubFileSystem, FileNotFound) {
     MemoryFileSystem base("memfs");
-    SubFileSystem sub("dir", &base);
+    SubFileSystem sub("/dir", &base);
 
-    EXPECT_FALSE(sub.exists("file.txt"));
+    EXPECT_FALSE(sub.exists("/file.txt"));
 }
 
 UNIT_TEST(SubFileSystem, ListDirectory) {
     MemoryFileSystem base("memfs");
-    base.write("shaders/a.vert", Blob::fromString("a"));
-    base.write("shaders/b.frag", Blob::fromString("b"));
+    base.write("/shaders/a.vert", Blob::fromString("a"));
+    base.write("/shaders/b.frag", Blob::fromString("b"));
 
-    SubFileSystem sub("shaders", &base);
+    SubFileSystem sub("/shaders", &base);
 
-    auto entries = sub.ls(".");
+    auto entries = sub.ls("/");
     EXPECT_EQ(entries.size(), 2);
 }
 
 UNIT_TEST(SubFileSystem, NestedDirectory) {
     MemoryFileSystem base("memfs");
-    base.write("shaders/include/common.vert", Blob::fromString("common"));
+    base.write("/shaders/include/common.vert", Blob::fromString("common"));
 
-    SubFileSystem sub("shaders", &base);
+    SubFileSystem sub("/shaders", &base);
 
-    EXPECT_TRUE(sub.exists("include/common.vert"));
-    Blob content = sub.read("include/common.vert");
+    EXPECT_TRUE(sub.exists("/include/common.vert"));
+    Blob content = sub.read("/include/common.vert");
     EXPECT_EQ(content.str(), "common");
 }
 
 UNIT_TEST(SubFileSystem, DisplayPath) {
     MemoryFileSystem base("memfs");
-    base.write("shaders/test.vert", Blob::fromString("test"));
+    base.write("/shaders/test.vert", Blob::fromString("test"));
 
-    SubFileSystem sub("shaders", &base);
+    SubFileSystem sub("/shaders", &base);
 
-    std::string path = sub.displayPath("test.vert");
+    std::string path = sub.displayPath("/test.vert");
     EXPECT_CONTAINS(path, "shaders");
     EXPECT_CONTAINS(path, "test.vert");
 }
 
 UNIT_TEST(SubFileSystem, CannotEscapeWithDotDot) {
     MemoryFileSystem base("memfs");
-    base.write("secret.txt", Blob::fromString("secret"));
-    base.write("shaders/test.vert", Blob::fromString("test"));
+    base.write("/secret.txt", Blob::fromString("secret"));
+    base.write("/shaders/test.vert", Blob::fromString("test"));
 
-    SubFileSystem sub("shaders", &base);
+    SubFileSystem sub("/shaders", &base);
 
-    // Should not be able to access files outside the sub directory.
+    // ".." stops at the root of the sub file system, so this looks for the file in the sub directory.
+    EXPECT_FALSE(sub.exists("/../secret.txt"));
+    EXPECT_ANY_THROW((void) sub.read("/../secret.txt"));
+    EXPECT_ANY_THROW((void) sub.openForReading("/../secret.txt"));
+    EXPECT_EQ(sub.read("/../test.vert").str(), "test");
+
+    // Same for pathological paths that try harder.
+    EXPECT_FALSE(sub.exists("/a/../../../secret.txt"));
+    EXPECT_ANY_THROW((void) sub.read("/a/../../../secret.txt"));
+
+    // A relative path is refused outright.
     EXPECT_FALSE(sub.exists("../secret.txt"));
-    EXPECT_ANY_THROW((void) sub.read("../secret.txt"));
-    EXPECT_ANY_THROW((void) sub.openForReading("../secret.txt"));
-
-    // Same for pathological tails that try harder.
     EXPECT_FALSE(sub.exists("../../.."));
-    EXPECT_FALSE(sub.exists("a/../../../secret.txt"));
-    EXPECT_ANY_THROW((void) sub.read("a/../../../secret.txt"));
 }
 
 UNIT_TEST(SubFileSystem, RootWhenBasePathDoesntExist) {
     // Root of a FileSystem always exists, even if the base path doesn't exist on the underlying file system.
     MemoryFileSystem base("memfs");
-    SubFileSystem sub("this_dir_doesnt_exist", &base);
+    SubFileSystem sub("/this_dir_doesnt_exist", &base);
 
-    EXPECT_TRUE(sub.exists("."));
-    EXPECT_EQ(sub.stat("."), FileStat(FILE_DIRECTORY, 0));
-    EXPECT_TRUE(sub.ls(".").empty());
+    EXPECT_TRUE(sub.exists("/"));
+    EXPECT_EQ(sub.stat("/"), FileStat(FILE_DIRECTORY, 0));
+    EXPECT_TRUE(sub.ls("/").empty());
 
     // But it's a directory, so we can't read or write it as a file.
-    EXPECT_ANY_THROW((void) sub.read("."));
-    EXPECT_ANY_THROW(sub.write(".", Blob()));
+    EXPECT_ANY_THROW((void) sub.read("/"));
+    EXPECT_ANY_THROW(sub.write("/", Blob()));
 
     // And ls of a non-root path that doesn't exist still throws.
-    EXPECT_ANY_THROW((void) sub.ls("subdir"));
+    EXPECT_ANY_THROW((void) sub.ls("/subdir"));
 }
 
 UNIT_TEST(SubFileSystem, RootWhenBasePathIsFile) {
     // Same deal when the base path points to a file.
     MemoryFileSystem base("memfs");
-    base.write("1.txt", Blob::fromString("lol"));
+    base.write("/1.txt", Blob::fromString("lol"));
 
-    SubFileSystem sub("1.txt", &base);
+    SubFileSystem sub("/1.txt", &base);
 
-    EXPECT_TRUE(sub.exists("."));
-    EXPECT_EQ(sub.stat("."), FileStat(FILE_DIRECTORY, 0));
-    EXPECT_TRUE(sub.ls(".").empty());
+    EXPECT_TRUE(sub.exists("/"));
+    EXPECT_EQ(sub.stat("/"), FileStat(FILE_DIRECTORY, 0));
+    EXPECT_TRUE(sub.ls("/").empty());
 
-    EXPECT_ANY_THROW((void) sub.read("."));
-    EXPECT_ANY_THROW(sub.write(".", Blob()));
+    EXPECT_ANY_THROW((void) sub.read("/"));
+    EXPECT_ANY_THROW(sub.write("/", Blob()));
 }
 
 UNIT_TEST(SubFileSystem, RootWhenBasePathIsRoot) {
     // A base path naming the root just means "the whole base file system".
     MemoryFileSystem base("memfs");
-    base.write("1.txt", Blob::fromString("lol"));
+    base.write("/1.txt", Blob::fromString("lol"));
 
-    SubFileSystem sub(".", &base);
+    SubFileSystem sub("/", &base);
 
-    EXPECT_TRUE(sub.exists("."));
-    EXPECT_EQ(sub.stat("."), FileStat(FILE_DIRECTORY, 0));
-    EXPECT_EQ(sub.ls(".").size(), 1);
-    EXPECT_EQ(sub.read("1.txt").str(), "lol");
+    EXPECT_TRUE(sub.exists("/"));
+    EXPECT_EQ(sub.stat("/"), FileStat(FILE_DIRECTORY, 0));
+    EXPECT_EQ(sub.ls("/").size(), 1);
+    EXPECT_EQ(sub.read("/1.txt").str(), "lol");
 }
 
 UNIT_TEST(SubFileSystem, InaccessibleBasePath) {
     // A base path the base file system can't reach is refused up front.
     MemoryFileSystem base("memfs");
-    base.write("file.txt", Blob::fromString("hello"));
+    base.write("/file.txt", Blob::fromString("hello"));
 
-    std::vector<std::string_view> basePaths = {"", "..", "a/../..", "/", "/x", "\\x"};
-#ifdef _WINDOWS
-    basePaths.push_back("C:");
-    basePaths.push_back("C:x");
-    basePaths.push_back("./C:/x");
-#endif
+    std::vector<std::string_view> basePaths = {"", ".", "x", "x/y", "..", "a/../..", "C:", "C:x", "C:/x"};
 
     for (std::string_view basePath : basePaths)
         EXPECT_ANY_THROW(SubFileSystem(basePath, &base)) << basePath;
@@ -140,10 +139,10 @@ UNIT_TEST(SubFileSystem, InaccessibleBasePath) {
 UNIT_TEST(SubFileSystem, BasePathIsNormalized) {
     // Every spelling of the base path points at the same directory.
     MemoryFileSystem base("memfs");
-    base.write("dir/file.txt", Blob::fromString("hello"));
+    base.write("/dir/file.txt", Blob::fromString("hello"));
 
-    for (std::string_view basePath : {"dir/", "./dir", "dir\\", "x/../dir"}) {
+    for (std::string_view basePath : {"/dir/", "/./dir", "/dir\\", "/x/../dir", "//dir", "/../dir"}) {
         SubFileSystem sub(basePath, &base);
-        EXPECT_EQ(sub.read("file.txt").str(), "hello") << basePath;
+        EXPECT_EQ(sub.read("/file.txt").str(), "hello") << basePath;
     }
 }
