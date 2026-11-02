@@ -207,15 +207,14 @@ void onMapLeave() {
  * Fires the timers of a list that are due, until one of them starts a map transition.
  *
  * @param timers                        Timers to check.
- * @return                              Whether a timer started a map transition.
  */
-static EvtTransition checkTimers(std::vector<MapTimer> *timers) {
+static void checkTimers(std::vector<MapTimer> *timers) {
     for (MapTimer &timer : *timers) {
         if (pParty->GetPlayingTime() < timer.alarmTime)
             continue;
 
         if (runEvent(EvtContext(EVT_SOURCE_MAP, timer.eventId), timer.eventStep + 1) == EVT_TRANSITION_STARTED)
-            return EVT_TRANSITION_STARTED; // Leaving the map cleared the timers.
+            return; // Leaving the map cleared the timers.
 
         if (timer.schedule.interval) {
             timer.alarmTime = pParty->GetPlayingTime() + timer.schedule.interval;
@@ -229,7 +228,6 @@ static EvtTransition checkTimers(std::vector<MapTimer> *timers) {
             }
         }
     }
-    return EVT_TRANSITION_NONE;
 }
 
 void onTimer() {
@@ -243,6 +241,6 @@ void onTimer() {
 
     timerGuard = pParty->GetPlayingTime();
 
-    if (checkTimers(&onTimerTriggers) == EVT_TRANSITION_NONE)
-        checkTimers(&onLongTimerTriggers);
+    checkTimers(&onTimerTriggers);
+    checkTimers(&onLongTimerTriggers);
 }

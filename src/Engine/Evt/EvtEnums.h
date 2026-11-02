@@ -289,7 +289,7 @@ using enum EvtSource;
  */
 enum class EvtTransition {
     EVT_TRANSITION_NONE,    // The party stays on this map.
-    EVT_TRANSITION_STARTED, // The map's leave events are due once the event ends.
+    EVT_TRANSITION_STARTED, // The party is leaving this map.
 };
 using enum EvtTransition;
 
