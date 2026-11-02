@@ -2494,6 +2494,19 @@ int Character::actualSkillLevel(Skill skill) const {
 
     int bonus = 0;
     switch (skill) {
+        case SKILL_STAFF:
+        case SKILL_SWORD:
+        case SKILL_DAGGER:
+        case SKILL_AXE:
+        case SKILL_SPEAR:
+        case SKILL_MACE:
+        case SKILL_BLASTER:
+        case SKILL_LEATHER:
+        case SKILL_CHAIN:
+        case SKILL_PLATE:
+            if (CheckHiredNPCSpeciality(NPC_PROFESSION_SQUIRE)) bonus = 2;
+            break;
+
         case SKILL_MONSTER_ID: {
             if (CheckHiredNPCSpeciality(NPC_PROFESSION_HUNTER)) bonus = 6;
             if (CheckHiredNPCSpeciality(NPC_PROFESSION_SAGE)) bonus += 6;
@@ -2532,9 +2545,11 @@ int Character::actualSkillLevel(Skill skill) const {
         } break;
 
         case SKILL_BOW:
+            if (CheckHiredNPCSpeciality(NPC_PROFESSION_SQUIRE)) bonus = 2;
             bonus += GetItemsBonus(ATTRIBUTE_SKILL_BOW);
             break;
         case SKILL_SHIELD:
+            if (CheckHiredNPCSpeciality(NPC_PROFESSION_SQUIRE)) bonus = 2;
             bonus += GetItemsBonus(ATTRIBUTE_SKILL_SHIELD);
             break;
 
@@ -2614,6 +2629,7 @@ int Character::actualSkillLevel(Skill skill) const {
         } break;
 
         case SKILL_ITEM_ID:
+            if (CheckHiredNPCSpeciality(NPC_PROFESSION_SAGE)) bonus = 6;
             bonus += GetItemsBonus(ATTRIBUTE_SKILL_ITEM_ID);
             break;
         case SKILL_MEDITATION:

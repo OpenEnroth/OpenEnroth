@@ -57,6 +57,17 @@ static std::string portraitName(int face) {
     return fmt::format("{}01", pPlayerPortraitsNames[face]);
 }
 
+static void hireHarmondalePeasant(EngineController &game, NpcProfession profession) {
+    // Hires the Harmondale peasant Gabriel through his dialogue, after giving him the profession and the party his price.
+    game.teleportTo(MAP_HARMONDALE, Vec3f(-5120, 14216, 0), 90); // In front of Gabriel.
+    pNPCStats->pAdditionalNPC[pActors[15].npcId - 5000].profession = profession;
+    pParty->SetGold(pNPCStats->pProfessions[profession].uHirePrice);
+    game.pressAndReleaseKey(PlatformKey::KEY_SPACE);
+    game.tick();
+    game.pressGuiButton("NpcDialogue_Option1"); // Hire.
+    game.tick();
+}
+
 // 2500
 
 GAME_TEST(Issues, Issue2500a) {
@@ -941,6 +952,39 @@ GAME_TEST(Issues, Issue2815) {
         EXPECT_EQ(statusTape.contains("You Successfully disarm the trap"), disarmed);
         EXPECT_EQ(spritesTape.flatten().contains(SPRITE_SPELL_WATER_ICE_BLAST_IMPACT), !disarmed);
     }
+}
+
+GAME_TEST(Issues, Issue2859a) {
+    // A hired Squire didn't raise weapon and armor skills.
+    auto swordTape = charTapes.skillLevel(0, SKILL_SWORD);
+    auto leatherTape = charTapes.skillLevel(0, SKILL_LEATHER);
+    auto armsmasterTape = charTapes.skillLevel(0, SKILL_ARMSMASTER);
+    auto hirelingsTape = tapes.totalHirelings();
+    game.startNewGame();
+    pParty->pCharacters[0].setSkillValue(SKILL_ARMSMASTER, CombinedSkillValue::novice(1));
+    test.startTaping();
+    hireHarmondalePeasant(game, NPC_PROFESSION_SQUIRE);
+
+    EXPECT_EQ(hirelingsTape, tape(1, 2)); // The party starts with one hireling.
+    EXPECT_EQ(swordTape, tape(1, 3));
+    EXPECT_EQ(leatherTape, tape(1, 3));
+    EXPECT_EQ(armsmasterTape, tape(1));
+}
+
+GAME_TEST(Issues, Issue2859b) {
+    // A hired Sage raised Monster ID but not Item ID.
+    auto itemIdTape = charTapes.skillLevel(0, SKILL_ITEM_ID);
+    auto monsterIdTape = charTapes.skillLevel(0, SKILL_MONSTER_ID);
+    auto hirelingsTape = tapes.totalHirelings();
+    game.startNewGame();
+    for (Skill skill : {SKILL_ITEM_ID, SKILL_MONSTER_ID})
+        pParty->pCharacters[0].setSkillValue(skill, CombinedSkillValue::novice(1));
+    test.startTaping();
+    hireHarmondalePeasant(game, NPC_PROFESSION_SAGE);
+
+    EXPECT_EQ(hirelingsTape, tape(1, 2)); // The party starts with one hireling.
+    EXPECT_EQ(itemIdTape, tape(1, 7));
+    EXPECT_EQ(monsterIdTape, tape(1, 7));
 }
 
 GAME_TEST(Issues, Issue2834) {

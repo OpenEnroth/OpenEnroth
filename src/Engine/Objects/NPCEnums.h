@@ -70,7 +70,7 @@ enum class NpcProfession : int32_t {
     NPC_PROFESSION_PIPER = 43,           // Casts Heroism once a day.
     NPC_PROFESSION_EXPLORER = 44,        // Travel by foot: -1 day, Travel by sea: -1 day, Travel by stable: -1 day.
     NPC_PROFESSION_PIRATE = 45,          // Travel by sea: -2 days, Gold finds: +10%, Reputation: +5.
-    NPC_PROFESSION_SQUIRE = 46,          // Has no effect. TODO(captainurist): vanilla MM7 gives +2 to weapon and armor skills, OE doesn't.
+    NPC_PROFESSION_SQUIRE = 46,          // Weapon, Shield and armor skills: +2.
     NPC_PROFESSION_PSYCHIC = 47,         // Perception: +5, Luck: +10.
     NPC_PROFESSION_GYPSY = 48,           // Food for rest: -1, Merchant: +3, Reputation: +5.
     NPC_PROFESSION_DIPLOMAT = 49,        // Never generated in MM7 and has no effect.
@@ -81,7 +81,7 @@ enum class NpcProfession : int32_t {
     NPC_PROFESSION_INITIATE = 54,        // Spirit: +3, Mind: +3, Body: +3.
     NPC_PROFESSION_PRELATE = 55,         // Spirit: +4, Mind: +4, Body: +4.
     NPC_PROFESSION_MONK = 56,            // Unarmed: +2, Dodge: +2.
-    NPC_PROFESSION_SAGE = 57,            // Monster ID: +6. TODO(captainurist): vanilla MM7 also gives Item ID +6, OE doesn't.
+    NPC_PROFESSION_SAGE = 57,            // Item ID: +6, Monster ID: +6.
     NPC_PROFESSION_HUNTER = 58,          // Monster ID: +6.
 
     NPC_PROFESSION_FIRST = NPC_PROFESSION_SMITH,
