@@ -21,8 +21,7 @@ class LuaEvtScripts : public EvtScripts {
     virtual void loadMapScripts(std::string_view mapName) override;
     virtual bool hasEvent(bool isGlobal, int eventId) const override;
     virtual bool runEvent(bool isGlobal, int eventId, Pid targetObj, bool canShowMessages) override;
-    virtual bool resumeEvent(int eventId, bool *mapExitTriggered) override;
-    virtual void cancelEvent() override;
+    virtual bool resumeEvent() override;
     virtual std::optional<std::string> eventHint(int eventId) const override;
     virtual std::optional<bool> canShowTopic(int eventId) override;
     virtual bool onMapLoad() override;

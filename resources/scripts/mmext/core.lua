@@ -782,19 +782,14 @@ function Core.runEvent(isGlobal, eventId, targetPid, canShowMessages)
     return mapExitTriggered
 end
 
----@param eventId integer
----@return boolean? mapExitTriggered Nil if no handler of the event was waiting.
-function Core.resumeEvent(eventId)
+---@return boolean mapExitTriggered
+function Core.resumeEvent()
     local frame = waiting
-    if not frame or frame.eventId ~= eventId then
-        return nil
+    if not frame then
+        return false
     end
     waiting = nil
     return (resume(frame))
-end
-
-function Core.cancelEvent()
-    waiting = nil
 end
 
 

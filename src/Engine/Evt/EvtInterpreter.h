@@ -46,9 +46,9 @@ class EvtInterpreter {
      void prepare(EvtContext context);
 
      /**
-      * Prepares to run instructions that don't come from an evt file, one `executeInstruction` call at a time.
+      * Prepares to run the instructions of a scripted handler, one `executeInstruction` call at a time.
       *
-      * @param context                  Event the instructions run as.
+      * @param context                  Event the handler runs as.
       */
      void prepareInstructions(EvtContext context);
 

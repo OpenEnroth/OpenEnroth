@@ -20,4 +20,7 @@ struct EvtContext {
     /** The loading screen is still up, so status texts are dropped and an NPC dialogue waits for the first frame,
      * like Archibald's on entering MM7's Land of the Giants, out12.evt event 1. */
     bool duringMapLoad = false;
+
+    /** A scripted handler runs the event, so a dialogue that pauses it resumes that handler instead of an evt step. */
+    bool scripted = false;
 };
