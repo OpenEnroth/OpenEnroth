@@ -121,43 +121,25 @@ class FileSystem {
     [[nodiscard]] std::string displayPath(PathView path) const;
 
     /**
-     * An implementation holding a `NormalPathView` passes it to the `*In` forwarders instead. Through the public
-     * methods it would be normalized again.
+     * The same methods for a path that's already normal, so that a file system that delegates to another one doesn't
+     * normalize it again. Each one refuses an inaccessible path like its `PathView` overload does.
      */
-    bool exists(NormalPathView path) const = delete;
-    FileStat stat(NormalPathView path) const = delete;
-    std::vector<DirectoryEntry> ls(NormalPathView path) const = delete;
-    void ls(NormalPathView path, std::vector<DirectoryEntry> *entries) const = delete;
-    Blob read(NormalPathView path) const = delete;
-    void write(NormalPathView path, const Blob &data) = delete;
-    std::unique_ptr<InputStream> openForReading(NormalPathView path) const = delete;
-    std::unique_ptr<OutputStream> openForWriting(NormalPathView path) = delete;
-    bool remove(NormalPathView path) = delete;
-    std::string displayPath(NormalPathView path) const = delete;
+    [[nodiscard]] bool exists(NormalPathView path) const;
+    [[nodiscard]] FileStat stat(NormalPathView path) const;
+    [[nodiscard]] std::vector<DirectoryEntry> ls(NormalPathView path) const;
+    void ls(NormalPathView path, std::vector<DirectoryEntry> *entries) const;
+    [[nodiscard]] Blob read(NormalPathView path) const;
+    void write(NormalPathView path, const Blob &data);
+    [[nodiscard]] std::unique_ptr<InputStream> openForReading(NormalPathView path) const;
+    [[nodiscard]] std::unique_ptr<OutputStream> openForWriting(NormalPathView path);
+    bool remove(NormalPathView path);
+    [[nodiscard]] std::string displayPath(NormalPathView path) const;
 
  protected:
-    friend class FileSystemException;
-
     template<class T>
     using FileSystemTrieNode = detail::FileSystemTrieNode<T>;
     template<class T>
     using FileSystemTrie = detail::FileSystemTrie<T>;
-
-    /**
-     * Calls into another file system, for file systems that delegate to one. These do what the public methods do,
-     * including what they answer for the root, but skip normalizing and validating the path, since a
-     * `NormalPathView` is normal and accessible already. They are static because a derived class can only reach a
-     * protected member through its own type.
-     */
-    static bool existsIn(const FileSystem *fs, NormalPathView path);
-    static FileStat statIn(const FileSystem *fs, NormalPathView path);
-    static void lsIn(const FileSystem *fs, NormalPathView path, std::vector<DirectoryEntry> *entries);
-    static Blob readIn(const FileSystem *fs, NormalPathView path);
-    static void writeIn(FileSystem *fs, NormalPathView path, const Blob &data);
-    static std::unique_ptr<InputStream> openForReadingIn(const FileSystem *fs, NormalPathView path);
-    static std::unique_ptr<OutputStream> openForWritingIn(FileSystem *fs, NormalPathView path);
-    static bool removeIn(FileSystem *fs, NormalPathView path);
-    static std::string displayPathIn(const FileSystem *fs, NormalPathView path);
 
  protected:
     [[nodiscard]] virtual bool _exists(NormalPathView path) const = 0;

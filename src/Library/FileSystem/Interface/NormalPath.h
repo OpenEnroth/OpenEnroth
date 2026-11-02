@@ -1,6 +1,5 @@
 #pragma once
 
-#include <cassert>
 #include <concepts>
 #include <string_view>
 
@@ -10,9 +9,9 @@
 class NormalPath;
 
 /**
- * View over a path that a file system can act on, in the normal form the file system layer works in. It comes from an
- * accessible `NormalPath` or from a tail of another `NormalPathView`, so a function that takes one can rely on it
- * being normal and accessible. A default-constructed view names the root.
+ * View over a path in the normal form the file system layer works in. It comes from a `NormalPath` or from a tail of
+ * another `NormalPathView`, so a function that takes one can rely on it being normal. A default-constructed view names
+ * the root. The public methods of `FileSystem` refuse an inaccessible path, so the implementations never see one.
  */
 class NormalPathView {
  public:
@@ -99,7 +98,6 @@ class NormalPath {
     explicit NormalPath(PathView path);
 
     operator NormalPathView() const MM_LIFETIMEBOUND { // NOLINT: intentionally implicit.
-        assert(isAccessible());
         return NormalPathView(_path);
     }
 

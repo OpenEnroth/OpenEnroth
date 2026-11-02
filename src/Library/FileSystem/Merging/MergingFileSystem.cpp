@@ -18,7 +18,7 @@ MergingFileSystem::~MergingFileSystem() = default;
 
 bool MergingFileSystem::_exists(NormalPathView path) const {
     for (const FileSystem *base : _bases)
-        if (existsIn(base, path))
+        if (base->exists(path))
             return true;
     return false;
 }
@@ -26,7 +26,7 @@ bool MergingFileSystem::_exists(NormalPathView path) const {
 FileStat MergingFileSystem::_stat(NormalPathView path) const {
     bool dirFound = false;
     for (const FileSystem *base : _bases) {
-        FileStat stat = statIn(base, path);
+        FileStat stat = base->stat(path);
         if (stat.type == FILE_REGULAR)
             return stat; // Return the first file found, if any.
         if (stat.type == FILE_DIRECTORY)
@@ -40,13 +40,13 @@ void MergingFileSystem::_ls(NormalPathView path, std::vector<DirectoryEntry> *en
 
     bool hasOne = false;
     for (const FileSystem *base : _bases) {
-        if (statIn(base, path).type != FILE_DIRECTORY)
+        if (base->stat(path).type != FILE_DIRECTORY)
             continue;
 
         // We will throw here if the folder was deleted between stat() and ls() calls. That's probably OK.
         hasOne = true;
 
-        lsIn(base, path, &buffer);
+        base->ls(path, &buffer);
         std::ranges::move(buffer, std::back_inserter(*entries));
     }
 
@@ -60,26 +60,24 @@ void MergingFileSystem::_ls(NormalPathView path, std::vector<DirectoryEntry> *en
 }
 
 Blob MergingFileSystem::_read(NormalPathView path) const {
-    return readIn(locateForReading(path), path);
+    return locateForReading(path)->read(path);
 }
 
 std::unique_ptr<InputStream> MergingFileSystem::_openForReading(NormalPathView path) const {
-    return openForReadingIn(locateForReading(path), path);
+    return locateForReading(path)->openForReading(path);
 }
 
 std::string MergingFileSystem::_displayPath(NormalPathView path) const {
-    if (_bases.empty()) {
-        NullFileSystem nullFs; // Empty merging FS is basically a NullFileSystem.
-        return displayPathIn(&nullFs, path);
-    }
+    if (_bases.empty())
+        return NullFileSystem().displayPath(path); // Empty merging FS is basically a NullFileSystem.
 
     // TODO(captainurist): This is not ideal, we might want to know ALL merged paths, e.g. see
     //                     ScriptingSystem::_initPackageTable. But the API that we have here doesn't allow that.
     for (const FileSystem *base : _bases)
-        if (statIn(base, path).type != FILE_INVALID)
-            return displayPathIn(base, path);
+        if (base->stat(path).type != FILE_INVALID)
+            return base->displayPath(path);
 
-    return displayPathIn(_bases[0], path);
+    return _bases[0]->displayPath(path);
 }
 
 const FileSystem *MergingFileSystem::locateForReading(NormalPathView path) const {
@@ -91,7 +89,7 @@ const FileSystem *MergingFileSystem::locateForReading(NormalPathView path) const
 
 const FileSystem *MergingFileSystem::locateForReadingOrNull(NormalPathView path) const {
     for (const FileSystem *base : _bases)
-        if (statIn(base, path).type == FILE_REGULAR)
+        if (base->stat(path).type == FILE_REGULAR)
             return base;
 
     return nullptr;

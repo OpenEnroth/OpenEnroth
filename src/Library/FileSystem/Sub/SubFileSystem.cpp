@@ -15,43 +15,43 @@ SubFileSystem::SubFileSystem(PathView basePath, FileSystem *base) : _base(base),
 }
 
 bool SubFileSystem::_exists(NormalPathView path) const {
-    return existsIn(_base, basePath(path));
+    return _base->exists(basePath(path));
 }
 
 FileStat SubFileSystem::_stat(NormalPathView path) const {
-    return statIn(_base, basePath(path));
+    return _base->stat(basePath(path));
 }
 
 void SubFileSystem::_ls(NormalPathView path, std::vector<DirectoryEntry> *entries) const {
     // A root always exists, so ls(".") has to work even if the base path doesn't, or isn't a directory.
-    if (path.isRoot() && statIn(_base, _basePath).type != FILE_DIRECTORY)
+    if (path.isRoot() && _base->stat(_basePath).type != FILE_DIRECTORY)
         return;
 
-    lsIn(_base, basePath(path), entries);
+    _base->ls(basePath(path), entries);
 }
 
 Blob SubFileSystem::_read(NormalPathView path) const {
-    return readIn(_base, basePath(path));
+    return _base->read(basePath(path));
 }
 
 void SubFileSystem::_write(NormalPathView path, const Blob &data) {
-    writeIn(_base, basePath(path), data);
+    _base->write(basePath(path), data);
 }
 
 std::unique_ptr<InputStream> SubFileSystem::_openForReading(NormalPathView path) const {
-    return openForReadingIn(_base, basePath(path));
+    return _base->openForReading(basePath(path));
 }
 
 std::unique_ptr<OutputStream> SubFileSystem::_openForWriting(NormalPathView path) {
-    return openForWritingIn(_base, basePath(path));
+    return _base->openForWriting(basePath(path));
 }
 
 bool SubFileSystem::_remove(NormalPathView path) {
-    return removeIn(_base, basePath(path));
+    return _base->remove(basePath(path));
 }
 
 std::string SubFileSystem::_displayPath(NormalPathView path) const {
-    return displayPathIn(_base, basePath(path));
+    return _base->displayPath(basePath(path));
 }
 
 NormalPath SubFileSystem::basePath(NormalPathView path) const {

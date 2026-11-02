@@ -41,13 +41,13 @@ bool MountingFileSystem::_exists(NormalPathView path) const {
     assert(!path.isRoot());
 
     auto [node, mount, tail] = walk(path);
-    return node ? true : mount ? existsIn(mount, tail) : false;
+    return node ? true : mount ? mount->exists(tail) : false;
 }
 
 FileStat MountingFileSystem::_stat(NormalPathView path) const {
     assert(!path.isRoot());
     auto [node, mount, tail] = walk(path);
-    return node ? FileStat(FILE_DIRECTORY, 0) : mount ? statIn(mount, tail) : FileStat();
+    return node ? FileStat(FILE_DIRECTORY, 0) : mount ? mount->stat(tail) : FileStat();
 }
 
 void MountingFileSystem::_ls(NormalPathView path, std::vector<DirectoryEntry> *entries) const {
@@ -57,7 +57,7 @@ void MountingFileSystem::_ls(NormalPathView path, std::vector<DirectoryEntry> *e
         FileSystemException::raise(this, FS_LS_FAILED_PATH_DOESNT_EXIST, path);
 
     if (!node) {
-        lsIn(mount, tail, entries);
+        mount->ls(tail, entries);
         return;
     }
 
@@ -68,7 +68,7 @@ void MountingFileSystem::_ls(NormalPathView path, std::vector<DirectoryEntry> *e
     }
 
     // Need to merge in this case.
-    lsIn(mount, tail, entries);
+    mount->ls(tail, entries);
     std::ranges::sort(*entries);
     size_t originalSize = entries->size();
     bool cleanupNeeded = false;
@@ -95,22 +95,22 @@ void MountingFileSystem::_ls(NormalPathView path, std::vector<DirectoryEntry> *e
 
 Blob MountingFileSystem::_read(NormalPathView path) const {
     auto [mount, tail] = walkForReading(path);
-    return readIn(mount, tail);
+    return mount->read(tail);
 }
 
 void MountingFileSystem::_write(NormalPathView path, const Blob &data) {
     auto [mount, tail] = walkForWriting(path);
-    writeIn(mount, tail, data);
+    mount->write(tail, data);
 }
 
 std::unique_ptr<InputStream> MountingFileSystem::_openForReading(NormalPathView path) const {
     auto [mount, tail] = walkForReading(path);
-    return openForReadingIn(mount, tail);
+    return mount->openForReading(tail);
 }
 
 std::unique_ptr<OutputStream> MountingFileSystem::_openForWriting(NormalPathView path) {
     auto [mount, tail] = walkForWriting(path);
-    return openForWritingIn(mount, tail);
+    return mount->openForWriting(tail);
 }
 
 bool MountingFileSystem::_remove(NormalPathView path) {
@@ -119,7 +119,7 @@ bool MountingFileSystem::_remove(NormalPathView path) {
         FileSystemException::raise(this, FS_REMOVE_FAILED_PATH_NOT_WRITEABLE, path);
     if (!mount)
         return false; // Nothing to remove.
-    return removeIn(mount, tail);
+    return mount->remove(tail);
 }
 
 std::string MountingFileSystem::_displayPath(NormalPathView path) const {
