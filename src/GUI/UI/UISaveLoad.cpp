@@ -49,10 +49,10 @@ static std::shared_ptr<GraphicsImage> scrollstop;
 static std::vector<SavegameSlot> loadMenuSlots() {
     std::vector<SavegameSlot> result;
 
-    if (!ufs->exists("saves"))
+    if (!ufs->exists("/saves"))
         return result;
 
-    for (const auto &entry : ufs->ls("saves")) {
+    for (const auto &entry : ufs->ls("/saves")) {
         if (entry.type != FILE_REGULAR || !entry.name.ends_with(".mm7"))
             continue;
 
@@ -61,7 +61,7 @@ static std::vector<SavegameSlot> loadMenuSlots() {
 
         SaveGameLite save;
         try {
-            deserialize(ufs->read(fmt::format("saves/{}", entry.name)), &save, tags::via<SaveGameLite_MM7>);
+            deserialize(ufs->read(fmt::format("/saves/{}", entry.name)), &save, tags::via<SaveGameLite_MM7>);
         } catch (const std::exception &e) {
             MM_WARNING("Couldn't load savegame '{}': {}", entry.name, e.what()); // Don't list unreadable saves.
             continue;

@@ -300,7 +300,7 @@ void ItemTable::LoadItemSizes() {
     // Item sizes are loaded at startup directly from LOD image headers. This would have been an overkill back in 1999
     // (think about all these random reads from your HDD) but is totally fine today. Another option would've been to
     // precalculate these and place in a json file, but why precalculate what's cheap to recalculate?
-    LodReader reader(dfs->read("data/icons.lod"));
+    LodReader reader(dfs->read("/data/icons.lod"));
 
     for (ItemId itemId : items.indices()) {
         std::string iconName = items[itemId].iconName;

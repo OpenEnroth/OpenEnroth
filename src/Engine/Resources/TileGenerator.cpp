@@ -46,11 +46,12 @@ void TileGenerator::fillTable(TileTable *table) {
 void TileGenerator::ensureTile(std::string_view name) {
     assert(_tilesetVariantByName.contains(name));
 
-    if (ufs->exists(name) && png::decodeSize(ufs->read(name)) == tileSize())
+    std::string path = fmt::format("/{}", name);
+    if (ufs->exists(path) && png::decodeSize(ufs->read(path)) == tileSize())
         return;
 
     auto [tileset, variant] = *valuePtr(_tilesetVariantByName, name);
-    ufs->write(name, png::encode(generateTile(tileset, variant)));
+    ufs->write(path, png::encode(generateTile(tileset, variant)));
 }
 
 Sizei TileGenerator::tileSize() const {

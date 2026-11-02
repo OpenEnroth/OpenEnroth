@@ -114,7 +114,7 @@ GAME_TEST(Issues, Issue1511) {
     game.tick(2);
     game.pressGuiButton("SaveMenu_Save");
     game.tick(10);
-    ASSERT_TRUE(ufs->exists("saves/save000.mm7"));
+    ASSERT_TRUE(ufs->exists("/saves/save000.mm7"));
 
     // Double-click-load it from a different map.
     game.teleportTo(MAP_ERATHIA, Vec3f(14207, -21526, 0), 270);
@@ -586,7 +586,7 @@ GAME_TEST(Issues, Issue1721) {
 
 GAME_TEST(Prs, Pr1694) {
     // Having a dir ending with .mm7 in /saves shouldn't trip the engine.
-    ufs->write("saves/dir.mm7/1.txt", Blob());
+    ufs->write("/saves/dir.mm7/1.txt", Blob());
 
     game.pressGuiButton("MainMenu_LoadGame");
     game.tick(5);
