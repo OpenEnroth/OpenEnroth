@@ -1,5 +1,6 @@
 #pragma once
 
+#include <memory>
 #include <string_view>
 #include <vector>
 
@@ -23,7 +24,7 @@ class IconFrameTable {
 
  private:
     std::vector<IconFrameData> _frames;
-    std::vector<GraphicsImage *> _textures;
+    std::vector<std::shared_ptr<GraphicsImage>> _textures;
 };
 
 extern IconFrameTable *pIconsFrameTable;

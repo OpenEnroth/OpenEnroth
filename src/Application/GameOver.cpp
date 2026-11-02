@@ -38,8 +38,8 @@ void GameOver_Setup() {
 std::unique_ptr<GraphicsImage> CreateWinnerCertificate() {
     render->Present();
     render->BeginScene2D();
-    GraphicsImage *background = assets->getIcon("winbg.pcx");
-    render->DrawQuad2D(background, {0, 0});
+    std::shared_ptr<GraphicsImage> background = assets->getIcon("winbg.pcx");
+    render->DrawQuad2D(background.get(), {0, 0});
 
     std::unique_ptr<GUIWindow> tempwindow_SpeakInHouse = std::make_unique<GUIWindow>(WINDOW_WINNER_CERTIFICATE, Pointi{ 0, 0 }, render->GetRenderDimensions());
     Recti frameRect(75, 60, 469, 338);
@@ -112,8 +112,7 @@ std::unique_ptr<GraphicsImage> CreateWinnerCertificate() {
     ufs->write("MM7_Win.Pcx", pcx::encode(pixels));
     std::unique_ptr<GraphicsImage> result = GraphicsImage::Create(std::move(pixels));
 
-    assets->releaseImage(background);
-    background = nullptr;
+    assets->evict(std::move(background));
 
     return result;
 }

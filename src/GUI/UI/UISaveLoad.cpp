@@ -2,6 +2,7 @@
 
 #include <algorithm>
 #include <cmath>
+#include <memory>
 #include <string>
 #include <string_view>
 #include <utility>
@@ -36,10 +37,10 @@ std::array<int, 2> saveload_dlg_ys = {{60, 0}};
 std::array<int, 2> saveload_dlg_zs = {{460, 640}};
 std::array<int, 2> saveload_dlg_ws = {{344, 480}};
 
-GraphicsImage *saveload_ui_ls_saved = nullptr;
-GraphicsImage *saveload_ui_x_d = nullptr;
+std::shared_ptr<GraphicsImage> saveload_ui_ls_saved;
+std::shared_ptr<GraphicsImage> saveload_ui_x_d;
 
-static GraphicsImage *scrollstop = nullptr;
+static std::shared_ptr<GraphicsImage> scrollstop;
 
 /**
  * @return                          Slots to show in the load menu - all saves from the saves folder, sorted by
@@ -212,7 +213,7 @@ void GUIWindow_SaveLoad::drawSaveLoad() {
             if (_scrollPosition > slotCount - 7)
                 stopPos = 89;
         }
-        render->DrawQuad2D(scrollstop, {216 + frameRect.x, static_cast<int>(217 + frameRect.y + stopPos)});
+        render->DrawQuad2D(scrollstop.get(), {216 + frameRect.x, static_cast<int>(217 + frameRect.y + stopPos)});
 
         int slot_Y = 199;
         for (int i = _scrollPosition; i < slotCount; ++i) {
@@ -268,10 +269,10 @@ GUIWindow_Save::GUIWindow_Save() : GUIWindow_SaveLoad(WINDOW_SAVE, {0, 0}, rende
 
 void GUIWindow_Save::Update() {
     if (GetCurrentMenuID() != MENU_SAVELOAD && GetCurrentMenuID() != MENU_LoadingProcInMainMenu) {
-        render->DrawQuad2D(saveload_ui_loadsave, {8, 8});
-        render->DrawQuad2D(saveload_ui_saveu, {241, 302});
-        render->DrawQuad2D(saveload_ui_save_up, {18, 139});
-        render->DrawQuad2D(saveload_ui_x_u, {351, 302});
+        render->DrawQuad2D(saveload_ui_loadsave.get(), {8, 8});
+        render->DrawQuad2D(saveload_ui_saveu.get(), {241, 302});
+        render->DrawQuad2D(saveload_ui_save_up.get(), {18, 139});
+        render->DrawQuad2D(saveload_ui_x_u.get(), {351, 302});
     }
     drawSaveLoad();
 }
@@ -301,12 +302,12 @@ GUIWindow_Load::GUIWindow_Load(bool ingame) : GUIWindow_SaveLoad(WINDOW_LOAD, {0
     main_menu_background = nullptr;
     if (!ingame) {
         main_menu_background = assets->getIcon("lsave640.pcx");
-        render->DrawQuad2D(main_menu_background, {0, 0});
+        render->DrawQuad2D(main_menu_background.get(), {0, 0});
     } else {
-        render->DrawQuad2D(saveload_ui_loadsave, {8, 8});
-        render->DrawQuad2D(saveload_ui_loadu, {241, 302});
-        render->DrawQuad2D(saveload_ui_load_up, {18, 139});
-        render->DrawQuad2D(saveload_ui_x_u, {351, 302});
+        render->DrawQuad2D(saveload_ui_loadsave.get(), {8, 8});
+        render->DrawQuad2D(saveload_ui_loadu.get(), {241, 302});
+        render->DrawQuad2D(saveload_ui_load_up.get(), {18, 139});
+        render->DrawQuad2D(saveload_ui_x_u.get(), {351, 302});
     }
 
     this->frameRect = Recti(saveload_dlg_xs[ingame ? 1 : 0], saveload_dlg_ys[ingame ? 1 : 0],
@@ -345,12 +346,12 @@ GUIWindow_Load::GUIWindow_Load(bool ingame) : GUIWindow_SaveLoad(WINDOW_LOAD, {0
 
 void GUIWindow_Load::Update() {
     if (main_menu_background != nullptr)
-        render->DrawQuad2D(main_menu_background, {0, 0});
+        render->DrawQuad2D(main_menu_background.get(), {0, 0});
     if (GetCurrentMenuID() != MENU_SAVELOAD && GetCurrentMenuID() != MENU_LoadingProcInMainMenu) {
-        render->DrawQuad2D(saveload_ui_loadsave, {8, 8});
-        render->DrawQuad2D(saveload_ui_loadu, {241, 302});
-        render->DrawQuad2D(saveload_ui_load_up, {18, 139});
-        render->DrawQuad2D(saveload_ui_x_u, {351, 302});
+        render->DrawQuad2D(saveload_ui_loadsave.get(), {8, 8});
+        render->DrawQuad2D(saveload_ui_loadu.get(), {241, 302});
+        render->DrawQuad2D(saveload_ui_load_up.get(), {18, 139});
+        render->DrawQuad2D(saveload_ui_x_u.get(), {351, 302});
     }
     drawSaveLoad();
 }

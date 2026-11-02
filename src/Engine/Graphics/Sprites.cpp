@@ -4,6 +4,7 @@
 #include <cstring>
 #include <algorithm>
 #include <string>
+#include <memory>
 
 #include "Engine/AssetsManager.h"
 #include "Engine/Data/DecorationData.h"
@@ -39,7 +40,7 @@ void SpriteFrameTable::InitializeSprite(signed int uSpriteID) {
 
                 while (1) {
                     if (uFlags & SPRITE_FRAME_IMAGE1) {
-                        GraphicsImage *sprite = assets->getSprite(pSpriteSFrames[iter_uSpriteID].textureName);
+                        std::shared_ptr<GraphicsImage> sprite = assets->getSprite(pSpriteSFrames[iter_uSpriteID].textureName);
                         if (sprite == nullptr)
                             MM_WARNING("Sprite {} not loaded!", pSpriteSFrames[iter_uSpriteID].textureName);
                         for (unsigned i = 0; i < 8; ++i)
@@ -62,7 +63,7 @@ void SpriteFrameTable::InitializeSprite(signed int uSpriteID) {
                                     spriteName = pSpriteSFrames[iter_uSpriteID].textureName + "0";
                                     break;
                             }
-                            GraphicsImage *sprite = assets->getSprite(spriteName);
+                            std::shared_ptr<GraphicsImage> sprite = assets->getSprite(spriteName);
                             assert(sprite);
                             pSpriteSFrames[iter_uSpriteID].sprites[i] = sprite;
                         }
@@ -93,7 +94,7 @@ void SpriteFrameTable::InitializeSprite(signed int uSpriteID) {
                                     spriteName = pSpriteSFrames[iter_uSpriteID].textureName + "1";
                                     break;
                             }
-                            GraphicsImage *sprite = assets->getSprite(spriteName);
+                            std::shared_ptr<GraphicsImage> sprite = assets->getSprite(spriteName);
                             assert(sprite);
                             pSpriteSFrames[iter_uSpriteID].sprites[i] = sprite;
                         }
@@ -133,7 +134,7 @@ void SpriteFrameTable::InitializeSprite(signed int uSpriteID) {
                                 }
                             }
 
-                            GraphicsImage *sprite = assets->getSprite(spriteName);
+                            std::shared_ptr<GraphicsImage> sprite = assets->getSprite(spriteName);
                             assert(sprite);
                             pSpriteSFrames[iter_uSpriteID].sprites[i] = sprite;
                         }

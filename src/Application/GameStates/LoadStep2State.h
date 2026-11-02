@@ -1,6 +1,7 @@
 #pragma once
 
 #include <Library/Fsm/FsmState.h>
+#include <memory>
 
 class GraphicsImage;
 
@@ -12,6 +13,6 @@ class LoadStep2State : public FsmState {
 
  private:
     void _drawMM7CopyrightWindow();
-    GraphicsImage *_fullscreenTexture = nullptr;
+    std::shared_ptr<GraphicsImage> _fullscreenTexture;
     bool _isFirstPass = false;
 };

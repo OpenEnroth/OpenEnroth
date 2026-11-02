@@ -96,11 +96,11 @@ void Actor::DrawHealthBar(Actor *actor, Recti window) {
         bar_length = 200;
 
     // bar colour
-    GraphicsImage *bar_image = game_ui_monster_hp_green;
+    GraphicsImage *bar_image = game_ui_monster_hp_green.get();
     if (actor->hp <= (0.34 * actor->monsterInfo.hp))
-        bar_image = game_ui_monster_hp_red;
+        bar_image = game_ui_monster_hp_red.get();
     else if (actor->hp <= (0.67 * actor->monsterInfo.hp))
-        bar_image = game_ui_monster_hp_yellow;
+        bar_image = game_ui_monster_hp_yellow.get();
 
     // how much of bar is filled
     unsigned int bar_filled_length = bar_length;
@@ -111,15 +111,15 @@ void Actor::DrawHealthBar(Actor *actor, Recti window) {
     unsigned int uX = window.x + (signed int)(window.w - bar_length) / 2;
 
     render->SetUIClipRect(Recti(uX, window.y + 32, bar_length, 20));
-    render->DrawQuad2D(game_ui_monster_hp_background, {static_cast<int>(uX), window.y + 32});
+    render->DrawQuad2D(game_ui_monster_hp_background.get(), {static_cast<int>(uX), window.y + 32});
 
     render->SetUIClipRect(Recti(uX, window.y + 32, bar_filled_length, 20));
     render->DrawQuad2D(bar_image, {static_cast<int>(uX), window.y + 34});
 
     // draw hp bar ends
     render->ResetUIClipRect();
-    render->DrawQuad2D(game_ui_monster_hp_border_left, {static_cast<int>(uX) - 5, window.y + 32});
-    render->DrawQuad2D(game_ui_monster_hp_border_right, {static_cast<int>(uX + bar_length), window.y + 32});
+    render->DrawQuad2D(game_ui_monster_hp_border_left.get(), {static_cast<int>(uX) - 5, window.y + 32});
+    render->DrawQuad2D(game_ui_monster_hp_border_right.get(), {static_cast<int>(uX + bar_length), window.y + 32});
 }
 
 void Actor::toggleFlag(signed int uActorID, ActorAttribute uFlag, bool bValue) {

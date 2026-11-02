@@ -1,5 +1,6 @@
 #pragma once
 
+#include <memory>
 #include <string>
 
 #include "Engine/PartyEnums.h"
@@ -34,7 +35,7 @@ class GUIWindow_Dialogue : public GUIWindow {
 
  protected:
     DialogueId _displayedDialogue = DIALOGUE_MAIN;
-    GraphicsImage *_dialogueBackground = nullptr;
+    std::shared_ptr<GraphicsImage> _dialogueBackground;
 };
 
 void initializeNPCDialogue(int npcId, int bPlayerSaysHello, Actor *actor = nullptr);
@@ -43,4 +44,4 @@ void selectNPCDialogueOption(DialogueId option);
 
 extern int speakingNpcId;
 
-GraphicsImage *dialogueBackground(PartyAlignment alignment);
+const std::shared_ptr<GraphicsImage> &dialogueBackground(PartyAlignment alignment);

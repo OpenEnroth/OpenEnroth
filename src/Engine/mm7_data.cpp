@@ -1,5 +1,6 @@
 #include "Engine/mm7_data.h"
 
+#include <memory>
 #include <string>
 #include <vector>
 
@@ -2269,7 +2270,7 @@ Duration AfterEnchClickEventTimeout;
 unsigned int uNumBlueFacesInBLVMinimap;
 std::array<uint16_t, 50> pBlueFacesInBLVMinimapIDs;
 
-std::array<GraphicsImage *, 14> party_buff_icons;
+std::array<std::shared_ptr<GraphicsImage>, 14> party_buff_icons;
 unsigned int uIconIdx_FlySpell;
 unsigned int uIconIdx_WaterWalk;
 

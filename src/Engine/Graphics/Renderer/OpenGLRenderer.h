@@ -111,7 +111,6 @@ class OpenGLRenderer : public BaseRenderer {
 
     void _initImGui();
     void _shutdownImGui();
-    void _initWaterTiles();
 
     FrameLimiter _frameLimiter;
 
@@ -203,7 +202,6 @@ class OpenGLRenderer : public BaseRenderer {
 
     float gamma = 0;
 
-    std::array<GraphicsImage *, 7> hd_water_tile_anim = {{}}; // Water animation textures.
 
     std::vector<GLuint> _texturesForDeletion;
 };

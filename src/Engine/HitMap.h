@@ -4,6 +4,7 @@
 #include <utility>
 #include <vector>
 #include <algorithm>
+#include <memory>
 
 #include "Library/Geometry/Point.h"
 #include "Library/Geometry/Rect.h"
@@ -26,12 +27,12 @@ class HitMap {
      * @param image                     Pointer to the graphics image.
      * @param value                     Value to associate with this image.
      */
-    void add(Pointi position, GraphicsImage *image, T value) {
+    void add(Pointi position, std::shared_ptr<GraphicsImage> image, T value) {
         assert(image);
 
-        _entries.emplace_back(position, image, std::move(value));
-
         Recti imageRect = Recti(position, image->size());
+        _entries.emplace_back(position, std::move(image), std::move(value));
+
         if (_entries.size() == 1) {
             _bounds = imageRect;
         } else {
@@ -77,10 +78,10 @@ class HitMap {
  private:
     struct Entry {
         Pointi position;
-        GraphicsImage *image = nullptr;
+        std::shared_ptr<GraphicsImage> image;
         T value;
 
-        Entry(Pointi pos, GraphicsImage *img, T val) : position(pos), image(img), value(val) {}
+        Entry(Pointi pos, std::shared_ptr<GraphicsImage> img, T val) : position(pos), image(std::move(img)), value(val) {}
     };
 
     std::vector<Entry> _entries;

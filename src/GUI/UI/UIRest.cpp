@@ -1,3 +1,4 @@
+#include <memory>
 #include <string>
 
 #include "Engine/AssetsManager.h"
@@ -14,14 +15,14 @@
 #include "GUI/GUIButton.h"
 #include "GUI/UI/UIRest.h"
 
-GraphicsImage *rest_ui_btn_4 = nullptr;
-GraphicsImage *rest_ui_btn_exit = nullptr;
-GraphicsImage *rest_ui_btn_3 = nullptr;
-GraphicsImage *rest_ui_btn_1 = nullptr;
-GraphicsImage *rest_ui_btn_2 = nullptr;
-GraphicsImage *rest_ui_restmain = nullptr;
+std::shared_ptr<GraphicsImage> rest_ui_btn_4;
+std::shared_ptr<GraphicsImage> rest_ui_btn_exit;
+std::shared_ptr<GraphicsImage> rest_ui_btn_3;
+std::shared_ptr<GraphicsImage> rest_ui_btn_1;
+std::shared_ptr<GraphicsImage> rest_ui_btn_2;
+std::shared_ptr<GraphicsImage> rest_ui_restmain;
 
-GraphicsImage *rest_ui_sky_frame_current = nullptr;
+std::shared_ptr<GraphicsImage> rest_ui_sky_frame_current;
 
 int foodRequiredToRest;
 Duration remainingRestTime;
@@ -103,8 +104,8 @@ void GUIWindow_Rest::Update() {
     }
 
     if (liveCharacters) {
-        render->DrawQuad2D(rest_ui_restmain, {8, 8});
-        render->DrawQuad2D(rest_ui_sky_frame_current, {16, 26});
+        render->DrawQuad2D(rest_ui_restmain.get(), {8, 8});
+        render->DrawQuad2D(rest_ui_sky_frame_current.get(), {16, 26});
 
         hourglassLoopTimer += gameTimer->dt();
         if (hourglassLoopTimer >= Duration::fromRealtimeSeconds(4)) {
@@ -116,7 +117,7 @@ void GUIWindow_Rest::Update() {
             hourglass_icon_idx = 1;
         }
 
-        render->DrawQuad2D(assets->getIcon(fmt::format("hglas{:03}", hourglass_icon_idx)), {267, 159});
+        render->DrawQuad2D(assets->getIcon(fmt::format("hglas{:03}", hourglass_icon_idx)).get(), {267, 159});
 
         tmp_button.rect = Recti(24, 154, 171, 37);
         tmp_button.pParent = pButton_RestUI_WaitUntilDawn->pParent;

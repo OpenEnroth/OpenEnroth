@@ -16,24 +16,29 @@ class AssetsManager {
     void releaseAllTextures();
 
     /**
-     * Removes an image from the cache and frees it.
+     * Removes an image from the cache if nobody else holds it. An image that's still held stays cached until
+     * `releaseUnusedImages()` finds it unused.
      *
-     * @param image                     Image returned by one of the getters below.
+     * @param image                     Image returned by one of the getters below. Can be null, and can be an image
+     *                                  that's not in the cache, then this function does nothing.
      */
-    void releaseImage(GraphicsImage *image);
+    void evict(std::shared_ptr<GraphicsImage> image);
 
-    GraphicsImage *getIcon(std::string_view name);
-    GraphicsImage *getImage_Buff(std::string_view name);
+    const std::shared_ptr<GraphicsImage> &getIcon(std::string_view name);
+    const std::shared_ptr<GraphicsImage> &getImage_Buff(std::string_view name);
 
-    GraphicsImage *getBitmap(std::string_view name, bool generated = false);
+    const std::shared_ptr<GraphicsImage> &getBitmap(std::string_view name, bool generated = false);
 
     /**
      * @param name                      Name of a sprite in `sprites.lod`, case-insensitive.
      * @return                          The sprite, or `nullptr` if there is no such sprite.
      */
-    GraphicsImage *getSprite(std::string_view name);
+    const std::shared_ptr<GraphicsImage> &getSprite(std::string_view name);
 
-    void releaseSprites();
+    /**
+     * Removes all images that are held by nothing but the cache.
+     */
+    void releaseUnusedImages();
 
     std::unique_ptr<GUIFont> pFontBookOnlyShadow;
     std::unique_ptr<GUIFont> pFontBookLloyds;
@@ -47,9 +52,9 @@ class AssetsManager {
     std::unique_ptr<GUIFont> pFontSmallnum;
 
  protected:
-    std::unordered_map<std::string, std::unique_ptr<GraphicsImage>> bitmaps;
-    std::unordered_map<std::string, std::unique_ptr<GraphicsImage>> sprites;
-    std::unordered_map<std::string, std::unique_ptr<GraphicsImage>> images;
+    std::unordered_map<std::string, std::shared_ptr<GraphicsImage>> bitmaps;
+    std::unordered_map<std::string, std::shared_ptr<GraphicsImage>> sprites;
+    std::unordered_map<std::string, std::shared_ptr<GraphicsImage>> images;
 };
 
 extern AssetsManager *assets;

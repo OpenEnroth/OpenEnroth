@@ -1064,14 +1064,14 @@ GAME_TEST(Prs, Pr1440) {
     frame0.animationLength = 16_ticks;
     frame0.frameLength = 8_ticks;
     frame0.flags = FRAME_HAS_MORE | FRAME_FIRST;
-    GraphicsImage *tex0 = assets->getBitmap(frame0.textureName);
+    GraphicsImage *tex0 = assets->getBitmap(frame0.textureName).get();
 
     TextureFrameData &frame1 = frames.emplace_back();
     frame1.textureName = "dec33d";
     frame1.animationLength = 0_ticks;
     frame1.frameLength = 8_ticks;
     frame1.flags = 0;
-    GraphicsImage *tex1 = assets->getBitmap(frame1.textureName);
+    GraphicsImage *tex1 = assets->getBitmap(frame1.textureName).get();
 
     TextureFrameTable table(std::move(frames));
 

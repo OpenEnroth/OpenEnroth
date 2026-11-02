@@ -3,6 +3,7 @@
 #include <array>
 #include <vector>
 #include <string>
+#include <memory>
 
 #include "Library/Geometry/Rect.h"
 
@@ -39,7 +40,7 @@ class GUIButton {
     int field_28 = 0;
     bool field_2C_is_pushed = false;
     GUIWindow *pParent = nullptr;
-    std::vector<GraphicsImage*> vTextures;
+    std::vector<std::shared_ptr<GraphicsImage>> vTextures;
     InputAction action = INPUT_ACTION_INVALID;
     std::string label = ""; // Shown in the status bar on hover. Dialogue options draw it as the option text.
     std::string field_75 = "";

@@ -1,3 +1,4 @@
+#include <memory>
 #include <string>
 
 #include "Engine/Engine.h"
@@ -30,8 +31,8 @@ std::array<int, 5> lloydsBeaconsPreviewYs = {{84, 84, 228, 228, 155}};
 std::array<int, 5> lloydsBeacons_SomeXs = {{59, 279, 59, 279, 169}};
 std::array<int, 5> lloydsBeacons_SomeYs = {{82, 82, 226, 226, 153}};
 
-GraphicsImage *ui_book_lloyds_border = nullptr;
-std::array<GraphicsImage *, 2> ui_book_lloyds_backgrounds;
+std::shared_ptr<GraphicsImage> ui_book_lloyds_border;
+std::array<std::shared_ptr<GraphicsImage>, 2> ui_book_lloyds_backgrounds;
 
 IndexedArray<int, MASTERY_NONE, MASTERY_LAST> masteryToMaxBeacons = {
         {MASTERY_NONE, 1},
@@ -80,10 +81,10 @@ GUIWindow_LloydsBook::GUIWindow_LloydsBook(Pid casterPid, SpellCastFlags castFla
 }
 
 void GUIWindow_LloydsBook::Update() {
-    render->DrawQuad2D(ui_exit_cancel_button_background, {471, 445});
+    render->DrawQuad2D(ui_exit_cancel_button_background.get(), {471, 445});
 
     Character *pPlayer = &pParty->pCharacters[_casterPid.id()];
-    render->DrawQuad2D(ui_book_lloyds_backgrounds[_recallingBeacon ? 1 : 0], {8, 8});
+    render->DrawQuad2D(ui_book_lloyds_backgrounds[_recallingBeacon ? 1 : 0].get(), {8, 8});
     std::string pText = localization->str(LSTR_RECALL_BEACON);
 
     if (!_recallingBeacon)
@@ -92,11 +93,11 @@ void GUIWindow_LloydsBook::Update() {
     Recti pWindow(pViewport.x, pViewport.y, 428, pViewport.h);
     DrawTitleText(assets->pFontBookTitle.get(), 0, 22, colorTable.White, pText, 3, pWindow);
     if (_recallingBeacon) {
-        render->DrawQuad2D(ui_book_button1_on, pBtn_Book_1->rect.topLeft());
-        render->DrawQuad2D(ui_book_button1_off, pBtn_Book_2->rect.topLeft());
+        render->DrawQuad2D(ui_book_button1_on.get(), pBtn_Book_1->rect.topLeft());
+        render->DrawQuad2D(ui_book_button1_off.get(), pBtn_Book_2->rect.topLeft());
     } else {
-        render->DrawQuad2D(ui_book_button1_off, pBtn_Book_1->rect.topLeft());
-        render->DrawQuad2D(ui_book_button1_on, pBtn_Book_2->rect.topLeft());
+        render->DrawQuad2D(ui_book_button1_off.get(), pBtn_Book_1->rect.topLeft());
+        render->DrawQuad2D(ui_book_button1_on.get(), pBtn_Book_2->rect.topLeft());
     }
 
     for (size_t beaconId = 0; beaconId < _maxBeacons; beaconId++) {
@@ -105,7 +106,7 @@ void GUIWindow_LloydsBook::Update() {
 
         pWindow = Recti(lloydsBeaconsPreviewXs[beaconId], lloydsBeaconsPreviewYs[beaconId], 92, 68);
 
-        render->DrawQuad2D(ui_book_lloyds_border, {lloydsBeacons_SomeXs[beaconId], lloydsBeacons_SomeYs[beaconId]});
+        render->DrawQuad2D(ui_book_lloyds_border.get(), {lloydsBeacons_SomeXs[beaconId], lloydsBeacons_SomeYs[beaconId]});
 
         if (pPlayer->vBeacons[beaconId]) {
             LloydBeacon &beacon = pPlayer->vBeacons[beaconId].value();

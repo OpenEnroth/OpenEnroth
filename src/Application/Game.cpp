@@ -559,10 +559,7 @@ void Game::processQueuedMessages() {
                                             character.conditions.reset(CONDITION_SLEEP);
                                         }
                                     }
-                                    if (rest_ui_sky_frame_current) {
-                                        assets->releaseImage(rest_ui_sky_frame_current);
-                                        rest_ui_sky_frame_current = nullptr;
-                                    }
+                                    assets->evict(std::move(rest_ui_sky_frame_current));
 
                                     if (uCurrentlyLoadedLevelType == LEVEL_OUTDOOR) {
                                         pOutdoor->UpdateSunlightVectors();

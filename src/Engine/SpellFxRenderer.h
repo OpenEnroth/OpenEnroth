@@ -114,6 +114,7 @@ struct SpellFxRenderer {
         SpriteObject *a1, Color uDiffuse, GraphicsImage *texture, float a4);
     void _4A7C07_stun_spell_fx(SpriteObject *a2);
     void AddProjectile(SpriteObject *a2, int a3, GraphicsImage *);
+    void resetProjectiles();
     /**
      * @offset 0x4A7E89
      */
@@ -150,9 +151,9 @@ struct SpellFxRenderer {
     Duration uFadeTime;
     Duration uFadeLength;
     Color uFadeColor;
-    GraphicsImage *effpar01 = nullptr;  // unsigned int effpar01; // trail fire
-    GraphicsImage *effpar02 = nullptr;  // unsigned int effpar02;
-    GraphicsImage *effpar03 = nullptr;  // unsigned int effpar03; // trail particle
+    std::shared_ptr<GraphicsImage> effpar01;            // unsigned int effpar01; // trail fire
+    std::shared_ptr<GraphicsImage> effpar02;            // unsigned int effpar02;
+    std::shared_ptr<GraphicsImage> effpar03;            // unsigned int effpar03; // trail particle
     unsigned int _unused_uSpriteID_sp57c = 0;
     int field_5F4 = 0;
 

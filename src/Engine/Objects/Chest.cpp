@@ -259,7 +259,7 @@ void Chest::OnChestLeftClick() {
             } else {
                 Pointi offset = mousePos + mouse->pickedItemOffset - chestTable[chest->chestTypeId].inventoryOffset - (inventoryPos * 32);
 
-                GraphicsImage *tex = assets->getIcon(item.GetIconName());
+                GraphicsImage *tex = assets->getIcon(item.GetIconName()).get();
                 offset -= Pointi(itemOffset(tex->width()), itemOffset(tex->height()));
 
                 pParty->setHoldingItem(item, -offset);

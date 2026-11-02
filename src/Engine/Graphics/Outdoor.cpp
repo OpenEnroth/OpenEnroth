@@ -5,6 +5,7 @@
 #include <memory>
 #include <optional>
 #include <string>
+#include <utility>
 
 #include "Engine/Engine.h"
 #include "Engine/EngineGlobals.h"
@@ -423,9 +424,8 @@ void OutdoorLocation::Release() {
     // free shader data for outdoor location
     render->ReleaseTerrain();
 
-    if (viewparams->location_minimap)
-        assets->releaseImage(viewparams->location_minimap);
-    viewparams->location_minimap = nullptr;
+    assets->evict(std::move(viewparams->location_minimap));
+    sky_texture.reset();
 }
 
 void OutdoorLocation::Load(std::string_view filename, int days_played, int respawn_interval_days, bool *outdoors_was_respawned) {
@@ -762,7 +762,7 @@ void OutdoorLocation::PrepareActorsDrawList() {
             billScale.y *= spell_fx_renderer->_4A806F_get_mass_distortion_value(&pActors[i]);
         }
 
-        if (render->AddBillboardIfVisible(frame->sprites[Sprite_Octant], frame->paletteId, posMod, billScale, flags, Pid(OBJECT_Actor, i), pActors[i].sectorId)) {
+        if (render->AddBillboardIfVisible(frame->sprites[Sprite_Octant].get(), frame->paletteId, posMod, billScale, flags, Pid(OBJECT_Actor, i), pActors[i].sectorId)) {
             ++uNumSpritesDrawnThisFrame;
             pActors[i].attributes |= ACTOR_VISIBLE;
             // TODO(pskelton): drop tint color anyway?
@@ -869,10 +869,7 @@ void ODM_UpdateUserInputAndOther() {
 }
 //----- (0041F54A) --------------------------------------------------------
 void OutdoorLocation::LoadActualSkyFrame() {
-    if (rest_ui_sky_frame_current) {
-        assets->releaseImage(rest_ui_sky_frame_current);
-        rest_ui_sky_frame_current = nullptr;
-    }
+    assets->evict(std::move(rest_ui_sky_frame_current));
 
     rest_ui_sky_frame_current = assets->getIcon(
         fmt::format("TERRA{:03}", pParty->uCurrentMinute / 6 + 10 * pParty->uCurrentHour));

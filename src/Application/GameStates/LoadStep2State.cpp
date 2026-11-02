@@ -1,5 +1,7 @@
 #include "LoadStep2State.h"
 
+#include <utility>
+
 #include "Engine/AssetsManager.h"
 #include "Engine/Engine.h"
 #include "Engine/EngineGlobals.h"
@@ -24,7 +26,7 @@ FsmAction LoadStep2State::update() {
     // We resolve this state in 2 frames. The first pass is drawing the main bkg texture and the copyrights
     // The second pass perform the loading part.
     if (_isFirstPass) {
-        render->DrawQuad2D(_fullscreenTexture, {0, 0});
+        render->DrawQuad2D(_fullscreenTexture.get(), {0, 0});
         _drawMM7CopyrightWindow();
         _isFirstPass = false;
     } else {
@@ -38,8 +40,7 @@ FsmAction LoadStep2State::update() {
 }
 
 void LoadStep2State::exit() {
-    assets->releaseImage(_fullscreenTexture);
-    _fullscreenTexture = nullptr;
+    assets->evict(std::move(_fullscreenTexture));
     _isFirstPass = false;
 }
 

@@ -1,6 +1,7 @@
 #pragma once
 
 #include <functional>
+#include <memory>
 
 #include "GUI/GUIWindow.h"
 
@@ -19,10 +20,10 @@ class GUIWindow_MainMenu : public GUIWindow {
     GUIButton *pBtnLoad = nullptr;
     GUIButton *pBtnNew = nullptr;
 
-    GraphicsImage *main_menu_background = nullptr;
+    std::shared_ptr<GraphicsImage> main_menu_background;
 
-    GraphicsImage *ui_mainmenu_new = nullptr;
-    GraphicsImage *ui_mainmenu_load = nullptr;
-    GraphicsImage *ui_mainmenu_credits = nullptr;
-    GraphicsImage *ui_mainmenu_exit = nullptr;
+    std::shared_ptr<GraphicsImage> ui_mainmenu_new;
+    std::shared_ptr<GraphicsImage> ui_mainmenu_load;
+    std::shared_ptr<GraphicsImage> ui_mainmenu_credits;
+    std::shared_ptr<GraphicsImage> ui_mainmenu_exit;
 };
