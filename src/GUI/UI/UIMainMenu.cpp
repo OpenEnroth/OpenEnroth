@@ -1,5 +1,6 @@
 #include "GUI/UI/UIMainMenu.h"
 
+#include <memory>
 #include <utility>
 
 #include "Engine/EngineGlobals.h"
@@ -39,30 +40,30 @@ GUIWindow_MainMenu::~GUIWindow_MainMenu() {
 }
 
 void GUIWindow_MainMenu::Update() {
-    render->DrawQuad2D(main_menu_background.get(), {0, 0});
+    render->DrawQuad2D(main_menu_background, {0, 0});
 
     Pointi pt = mouse->position();
 
-    GraphicsImage *pTexture = nullptr;
+    std::shared_ptr<GraphicsImage> pTexture;
     for (GUIButton *pButton : vButtons) {
         if (pButton->Contains(pt.x, pt.y)) {
             auto pControlParam = pButton->msg_param;
             int pY = 0;
             switch (pControlParam) {  // backlight for buttons
                 case 0:
-                    pTexture = assets->getIcon("title_new").get();
+                    pTexture = assets->getIcon("title_new");
                     pY = 172;
                     break;
                 case 1:
-                    pTexture = assets->getIcon("title_load").get();
+                    pTexture = assets->getIcon("title_load");
                     pY = 227;
                     break;
                 case 2:
-                    pTexture = assets->getIcon("title_cred").get();
+                    pTexture = assets->getIcon("title_cred");
                     pY = 282;
                     break;
                 case 3:
-                    pTexture = assets->getIcon("title_exit").get();
+                    pTexture = assets->getIcon("title_exit");
                     pY = 337;
                     break;
             }

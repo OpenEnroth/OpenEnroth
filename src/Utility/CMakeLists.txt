@@ -63,6 +63,7 @@ set(UTILITY_HEADERS
         Unaligned.h
         UnicodeCrt.h
         SmallVector.h
+        Ptr.h
         ScopedRollback.h
         String/Wrap.h)
 
@@ -98,6 +99,7 @@ if(OE_BUILD_TESTS)
             Tests/IndexedArray_ut.cpp
             Tests/IndexedBitset_ut.cpp
             Tests/View_ut.cpp
+            Tests/Ptr_ut.cpp
             Tests/Segment_ut.cpp
             Tests/UnicodeCrt_ut.cpp
             String/Tests/Transformations_ut.cpp

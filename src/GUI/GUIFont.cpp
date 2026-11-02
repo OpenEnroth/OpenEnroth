@@ -174,7 +174,7 @@ Color GUIFont::DrawTextLine(std::string_view text, Color startColor, Color defau
     if (text.empty())
         return startColor;
 
-    render->BeginTextNew(_texture.get());
+    render->BeginTextNew(_texture);
 
     Color color = startColor;
     int x = position.x;
@@ -362,7 +362,7 @@ void GUIFont::DrawText(const Recti &rect, Pointi position, Color defaultColor, s
         return;
     }
 
-    render->BeginTextNew(_texture.get());
+    render->BeginTextNew(_texture);
 
     if (!position.x) {
         position.x = 12;

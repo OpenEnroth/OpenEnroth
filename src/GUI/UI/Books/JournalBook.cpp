@@ -58,19 +58,19 @@ GUIWindow_JournalBook::GUIWindow_JournalBook() {
 }
 
 void GUIWindow_JournalBook::Update() {
-    render->DrawQuad2D(ui_exit_cancel_button_background.get(), {471, 445});
+    render->DrawQuad2D(ui_exit_cancel_button_background, {471, 445});
 
-    render->DrawQuad2D(ui_book_journal_background.get(), pViewport.topLeft());
+    render->DrawQuad2D(ui_book_journal_background, pViewport.topLeft());
     if ((_bookButtonClicked && _bookButtonAction == BOOK_PREV_PAGE) || !_currentIdx) {
-        render->DrawQuad2D(ui_book_button1_off.get(), pViewport.topLeft() + Pointi(407, 2));
+        render->DrawQuad2D(ui_book_button1_off, pViewport.topLeft() + Pointi(407, 2));
     } else {
-        render->DrawQuad2D(ui_book_button1_on.get(), pViewport.topLeft() + Pointi(398, 1));
+        render->DrawQuad2D(ui_book_button1_on, pViewport.topLeft() + Pointi(398, 1));
     }
 
     if ((_bookButtonClicked && _bookButtonAction == BOOK_NEXT_PAGE) || (_currentIdx + 1) >= _journalIdx.size()) {
-        render->DrawQuad2D(ui_book_button2_off.get(), pViewport.topLeft() + Pointi(407, 38));
+        render->DrawQuad2D(ui_book_button2_off, pViewport.topLeft() + Pointi(407, 38));
     } else {
-        render->DrawQuad2D(ui_book_button2_on.get(), pViewport.topLeft() + Pointi(398, 38));
+        render->DrawQuad2D(ui_book_button2_on, pViewport.topLeft() + Pointi(398, 38));
     }
 
     if (_journalIdx.size() && !_journalEntryPage[_currentIdx]) {  // for title

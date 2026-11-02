@@ -128,7 +128,7 @@ void BaseRenderer::DrawSpriteObjects() {
                                              object->uSectorID, lightradius, color, _4E94D3_light_type);
             }
 
-            if (render->AddBillboardIfVisible(frame->sprites[octant].get(), frame->paletteId, posMod, { frame->scale, frame->scale }, setflags, Pid(OBJECT_Sprite, i), object->uSectorID)) {
+            if (render->AddBillboardIfVisible(frame->sprites[octant], frame->paletteId, posMod, { frame->scale, frame->scale }, setflags, Pid(OBJECT_Sprite, i), object->uSectorID)) {
                 ++uNumSpritesDrawnThisFrame;
                 object->uAttributes |= SPRITE_VISIBLE;
             }
@@ -226,7 +226,7 @@ void BaseRenderer::PrepareDecorationsRenderList_ODM() {
                     }
 
 
-                    if (render->AddBillboardIfVisible(frame->sprites[(int64_t)v37].get(), frame->paletteId, pLevelDecorations[i].vPosition, { frame->scale, frame->scale },
+                    if (render->AddBillboardIfVisible(frame->sprites[(int64_t)v37], frame->paletteId, pLevelDecorations[i].vPosition, { frame->scale, frame->scale },
                         v38, Pid(OBJECT_Decoration, i))) {
                         ++uNumDecorationsDrawnThisFrame;
                     }
@@ -260,7 +260,7 @@ Color BlendColors(Color a1, Color a2) {
 }
 
 void BaseRenderer::TransformBillboard(const RenderBillboard *pBillboard, int parent) {
-    GraphicsImage *sprite = pBillboard->sprite;
+    Ptr<GraphicsImage> sprite = pBillboard->sprite;
     assert(sprite);
 
     unsigned int billboard_index = NextBillboardIndex();
@@ -340,7 +340,7 @@ void BaseRenderer::TransformBillboard(const RenderBillboard *pBillboard, int par
     billboard->paletteId = pBillboard->uPaletteId;
 }
 
-bool BaseRenderer::AddBillboardIfVisible(GraphicsImage *sprite, int palette, const Vec3f& pos, const Vec2f& scale, BillboardFlags flags, Pid id, int sector) {
+bool BaseRenderer::AddBillboardIfVisible(Ptr<GraphicsImage> sprite, int palette, const Vec3f& pos, const Vec2f& scale, BillboardFlags flags, Pid id, int sector) {
     // TODO(pskelton): replace asserts with warning and return false
     assert(::uNumBillboardsToDraw < 500 - 1);
     assert(sprite != nullptr);
@@ -497,11 +497,11 @@ void BaseRenderer::DrawMonsterPortrait(const Recti &rc, SpriteFrame *Portrait, i
     rct.h = Portrait->sprites[0]->height();
 
     render->SetUIClipRect(rc);
-    render->DrawImage(Portrait->sprites[0].get(), rct, Portrait->paletteId);
+    render->DrawImage(Portrait->sprites[0], rct, Portrait->paletteId);
     render->ResetUIClipRect();
 }
 
-void BaseRenderer::DrawSpecialEffectsQuad(GraphicsImage *texture, int palette) {
+void BaseRenderer::DrawSpecialEffectsQuad(Ptr<GraphicsImage> texture, int palette) {
     // TODO(captainurist): Old code used BR - TL (one less than actual width/height), preserving that behavior for now.
     Recti targetrect(pViewport.x, pViewport.y, pViewport.w - 1, pViewport.h - 1);
     DrawImage(texture, targetrect, palette, colorTable.MediumGrey);

@@ -8,6 +8,8 @@
 #include "Library/Color/Color.h"
 #include "Library/Geometry/Vec.h"
 
+#include "Utility/Ptr.h"
+
 #include "SpriteEnums.h"
 
 class SpriteFrame;
@@ -54,7 +56,7 @@ struct RenderVertexD3D3 {
 
 struct RenderBillboard {
     Vec2f screenspace_projection_factor;
-    GraphicsImage *sprite = nullptr;
+    Ptr<GraphicsImage> sprite = nullptr;
     int16_t uPaletteId = 0;
     int uIndoorSectorID = 0;
     BillboardFlags flags;
@@ -77,7 +79,7 @@ struct RenderBillboardD3D {
     };
     using enum OpacityType;
 
-    GraphicsImage *texture = nullptr;
+    Ptr<GraphicsImage> texture = nullptr;
     unsigned int uNumVertices = 4;
     std::array<RenderVertexD3D3, 4> pQuads;
     OpacityType opacity = Transparent;

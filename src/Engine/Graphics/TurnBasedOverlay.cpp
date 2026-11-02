@@ -1,5 +1,7 @@
 #include "TurnBasedOverlay.h"
 
+#include <memory>
+
 #include "Engine/Tables/IconFrameTable.h"
 #include "Engine/Graphics/Renderer/Renderer.h"
 #include "Engine/TurnEngine/TurnEngine.h"
@@ -76,11 +78,13 @@ void TurnBasedOverlay::draw() {
     render->DrawQuad2D(currentIcon(), {394, 288});
 }
 
-GraphicsImage *TurnBasedOverlay::currentIcon() const {
+const std::shared_ptr<GraphicsImage> &TurnBasedOverlay::currentIcon() const {
+    static const std::shared_ptr<GraphicsImage> noIcon;
+
     switch (_state) {
     default:
         assert(false); // TURN_BASED_OVERLAY_NONE is expected to be checked up the stack.
-        return nullptr;
+        return noIcon;
     case TURN_BASED_OVERLAY_INITIAL:
         return pIconsFrameTable->animationFrame(_initialIconId, _currentTime);
     case TURN_BASED_OVERLAY_ATTACK:

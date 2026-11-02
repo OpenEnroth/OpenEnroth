@@ -96,7 +96,7 @@ struct BLVFace {
     [[nodiscard]] std::pair<Vec3f, Vec3f> textureUV() const;
 
     void SetTexture(std::string_view filename);
-    GraphicsImage *GetTexture() const;
+    const std::shared_ptr<GraphicsImage> &GetTexture() const;
 
     inline bool Invisible() const {
         return attributes & FACE_IsInvisible;

@@ -134,7 +134,7 @@ static void createSpriteTrailParticle(Vec3f pos, ObjectDescFlags flags) {
         particle.type = ParticleType_Bitmap | ParticleType_Ascending;
         particle.uDiffuse = Color(vrng->random(0x100), vrng->random(0x100), 0, 0); // TODO(captainurist): TBH this makes no sense, investigate
         particle.timeToLive = Duration::randomRealtimeSeconds(vrng, 1, 2); // was either 1 or 2 secs, we made it into [1, 2).
-        particle.texture = spell_fx_renderer->effpar03.get();
+        particle.texture = spell_fx_renderer->effpar03;
         particle.particle_size = 1.0f;
         particle_engine->AddParticle(&particle);
     }

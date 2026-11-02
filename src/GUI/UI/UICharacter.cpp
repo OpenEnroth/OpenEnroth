@@ -627,7 +627,7 @@ void GUIWindow_CharacterRecord::Update() {
             CharacterUI_ReleaseButtons();
             releaseAwardsScrollBar();
             CharacterUI_StatsTab_Draw(player);
-            render->DrawQuad2D(assets->getIcon("ib-cd1-d").get(), pCharacterScreen_StatsBtn->rect.topLeft());
+            render->DrawQuad2D(assets->getIcon("ib-cd1-d"), pCharacterScreen_StatsBtn->rect.topLeft());
             break;
         }
         case WINDOW_CHARACTER_SKILLS: {
@@ -637,21 +637,21 @@ void GUIWindow_CharacterRecord::Update() {
             }
             releaseAwardsScrollBar();
             CharacterUI_SkillsTab_Draw(player);
-            render->DrawQuad2D(assets->getIcon("ib-cd2-d").get(), pCharacterScreen_SkillsBtn->rect.topLeft());
+            render->DrawQuad2D(assets->getIcon("ib-cd2-d"), pCharacterScreen_SkillsBtn->rect.topLeft());
             break;
         }
         case WINDOW_CHARACTER_AWARDS: {
             CharacterUI_ReleaseButtons();
             createAwardsScrollBar();
             CharacterUI_AwardsTab_Draw(player);
-            render->DrawQuad2D(assets->getIcon("ib-cd4-d").get(), pCharacterScreen_AwardsBtn->rect.topLeft());
+            render->DrawQuad2D(assets->getIcon("ib-cd4-d"), pCharacterScreen_AwardsBtn->rect.topLeft());
             break;
         }
         case WINDOW_CHARACTER_INVENTORY: {
             CharacterUI_ReleaseButtons();
             releaseAwardsScrollBar();
             CharacterUI_InventoryTab_Draw(player, false);
-            render->DrawQuad2D(assets->getIcon("ib-cd3-d").get(), pCharacterScreen_InventoryBtn->rect.topLeft());
+            render->DrawQuad2D(assets->getIcon("ib-cd3-d"), pCharacterScreen_InventoryBtn->rect.topLeft());
             break;
         }
         default:
@@ -812,7 +812,7 @@ static int drawSkillTable(Character *player, int x, int y, const std::initialize
 
 //----- (00419719) --------------------------------------------------------
 void GUIWindow_CharacterRecord::CharacterUI_SkillsTab_Draw(Character *player) {
-    render->DrawQuad2D(ui_character_skills_background.get(), {8, 8});
+    render->DrawQuad2D(ui_character_skills_background, {8, 8});
 
     auto str = fmt::format(
         "{} {::}{}\f00000\r177{}: {::}{}\f00000",  // ^Pv[]
@@ -909,7 +909,7 @@ void GUIWindow_CharacterRecord::CharacterUI_AwardsTab_Draw(Character *player) {
     Recti window(12, 48, 424, 290);
     int stopPos = 0;
 
-    render->DrawQuad2D(ui_character_awards_background.get(), {8, 8});
+    render->DrawQuad2D(ui_character_awards_background, {8, 8});
 
     std::string str = fmt::format("{} {::}{}\f00000", localization->str(LSTR_AWARDS_FOR),
                                   ui_character_header_text_color.tag(), NameAndTitle(player->name, player->classType));
@@ -942,7 +942,7 @@ void GUIWindow_CharacterRecord::CharacterUI_AwardsTab_Draw(Character *player) {
             stopPos = 211;
         }
     }
-    render->DrawQuad2D(scrollstop.get(), {439, 65 + stopPos});
+    render->DrawQuad2D(scrollstop, {439, 65 + stopPos});
 }
 
 //----- (0041A2C1) --------------------------------------------------------
@@ -955,7 +955,7 @@ int GetSizeInInventorySlots(int uNumPixels) {
 
 //----- (0041A556) --------------------------------------------------------
 void draw_leather() {
-    render->DrawQuad2D(ui_leather_mm7.get(), {8, 8});
+    render->DrawQuad2D(ui_leather_mm7, {8, 8});
 }
 
 //----- (0043CC7C) --------------------------------------------------------
@@ -971,7 +971,7 @@ void CharacterUI_DrawPaperdoll(Character *player) {
 
     equipmentHitMap.clear();
     render->ResetUIClipRect();
-    render->DrawQuad2D(ui_character_inventory_paperdoll_background.get(), {467, 0});
+    render->DrawQuad2D(ui_character_inventory_paperdoll_background, {467, 0});
 
     InventoryEntry itemMainHand = player->inventory.entry(ITEM_SLOT_MAIN_HAND);
     InventoryEntry itemOffHand = player->inventory.entry(ITEM_SLOT_OFF_HAND);
@@ -980,7 +980,7 @@ void CharacterUI_DrawPaperdoll(Character *player) {
     // Aqua-Lung
     if (player->hasUnderwaterSuitEquipped()) {
         // TODO(captainurist): need to also z-draw arms and wrists.
-        render->DrawQuad2D(paperdoll_dbods[uPlayerID].get(), {pPaperdoll_BodyX, pPaperdoll_BodyY});
+        render->DrawQuad2D(paperdoll_dbods[uPlayerID], {pPaperdoll_BodyX, pPaperdoll_BodyY});
         if (!bRingsShownInCharScreen)
             equipmentHitMap.add({pPaperdoll_BodyX, pPaperdoll_BodyY}, paperdoll_dbods[uPlayerID], player->inventory.entry(ITEM_SLOT_ARMOUR).index());
 
@@ -989,7 +989,7 @@ void CharacterUI_DrawPaperdoll(Character *player) {
             item_X = pPaperdoll_BodyX + pPaperdoll_LeftHand[bodyType][0];
             item_Y = pPaperdoll_BodyY + pPaperdoll_LeftHand[bodyType][1];
 
-            render->DrawQuad2D(paperdoll_dlads[uPlayerID].get(), {item_X, item_Y});
+            render->DrawQuad2D(paperdoll_dlads[uPlayerID], {item_X, item_Y});
         }
 
         // main hand's item
@@ -1025,7 +1025,7 @@ void CharacterUI_DrawPaperdoll(Character *player) {
         }
 
         // paperdoll
-        render->DrawQuad2D(paperdoll_dbods[uPlayerID].get(), {pPaperdoll_BodyX, pPaperdoll_BodyY});
+        render->DrawQuad2D(paperdoll_dbods[uPlayerID], {pPaperdoll_BodyX, pPaperdoll_BodyY});
 
         // armor
         if (InventoryEntry armor = player->inventory.entry(ITEM_SLOT_ARMOUR)) {
@@ -1061,11 +1061,11 @@ void CharacterUI_DrawPaperdoll(Character *player) {
         if (!bTwoHandedGrip) {
             item_X = pPaperdoll_BodyX + pPaperdoll_LeftHand[bodyType][0];
             item_Y = pPaperdoll_BodyY + pPaperdoll_LeftHand[bodyType][1];
-            render->DrawQuad2D(paperdoll_dlads[uPlayerID].get(), {item_X, item_Y});
+            render->DrawQuad2D(paperdoll_dlads[uPlayerID], {item_X, item_Y});
         } else {
             item_X = pPaperdoll_BodyX + pPaperdoll_SecondLeftHand[bodyType][0];
             item_Y = pPaperdoll_BodyY + pPaperdoll_SecondLeftHand[bodyType][1];
-            render->DrawQuad2D(paperdoll_dlaus[uPlayerID].get(), {item_X, item_Y});
+            render->DrawQuad2D(paperdoll_dlaus[uPlayerID], {item_X, item_Y});
         }
 
         // belt
@@ -1127,7 +1127,7 @@ void CharacterUI_DrawPaperdoll(Character *player) {
             item_X = pPaperdoll_BodyX + pPaperdoll_Beards[2 * player->uCurrentFace - 24];
             item_Y = pPaperdoll_BodyY + pPaperdoll_Beards[2 * player->uCurrentFace - 23];
 
-            render->DrawQuad2D(paperdoll_dbrds[player->uCurrentFace].get(), {item_X, item_Y});
+            render->DrawQuad2D(paperdoll_dbrds[player->uCurrentFace], {item_X, item_Y});
         }
 
         // helm
@@ -1200,7 +1200,7 @@ void CharacterUI_DrawPaperdoll(Character *player) {
         item_X = pPaperdoll_BodyX + pPaperdoll_RightHand[bodyType][0];
         item_Y = pPaperdoll_BodyY + pPaperdoll_RightHand[bodyType][1];
 
-        render->DrawQuad2D(paperdoll_drhs[uPlayerID].get(), {item_X, item_Y});
+        render->DrawQuad2D(paperdoll_drhs[uPlayerID], {item_X, item_Y});
     }
 
     // offhand's wrist
@@ -1208,27 +1208,27 @@ void CharacterUI_DrawPaperdoll(Character *player) {
         item_X = pPaperdoll_BodyX + pPaperdoll_SecondLeftHand[bodyType][0];
         item_Y = pPaperdoll_BodyY + pPaperdoll_SecondLeftHand[bodyType][1];
 
-        render->DrawQuad2D(paperdoll_dlhus[uPlayerID].get(), {item_X, item_Y});
+        render->DrawQuad2D(paperdoll_dlhus[uPlayerID], {item_X, item_Y});
     } else if (!itemOffHand || itemOffHand && !itemOffHand->isShield()) {
         item_X = pPaperdoll_BodyX + pPaperdollLeftEmptyHand[bodyType][0];
         item_Y = pPaperdoll_BodyY + pPaperdollLeftEmptyHand[bodyType][1];
-        render->DrawQuad2D(paperdoll_dlhs[uPlayerID].get(), {item_X, item_Y});
+        render->DrawQuad2D(paperdoll_dlhs[uPlayerID], {item_X, item_Y});
     }
 
     // magnifying glass
     if (!bRingsShownInCharScreen)
-        render->DrawQuad2D(ui_character_inventory_magnification_glass.get(), {603, 299});
+        render->DrawQuad2D(ui_character_inventory_magnification_glass, {603, 299});
 
-    render->DrawQuad2D(game_ui_right_panel_frame.get(), {468, 0});
+    render->DrawQuad2D(game_ui_right_panel_frame, {468, 0});
 }
 
 //----- (0041A2D1) --------------------------------------------------------
 void CharacterUI_InventoryTab_Draw(Character *player, bool Cover_Strip) {
-    render->DrawQuad2D(ui_character_inventory_background.get(), {8, 8});
+    render->DrawQuad2D(ui_character_inventory_background, {8, 8});
 
     if (Cover_Strip) {
         ui_character_inventory_background_strip = assets->getIcon("fr_strip");
-        render->DrawQuad2D(ui_character_inventory_background_strip.get(), {8, 305});
+        render->DrawQuad2D(ui_character_inventory_background_strip, {8, 305});
     }
 
     render->SetUIClipRect({ 14, 17, 32 * 14, 32 * 9 });
@@ -1241,7 +1241,7 @@ void CharacterUI_InventoryTab_Draw(Character *player, bool Cover_Strip) {
 
         Pointi cellPos = mapFromInventoryGrid(entry.geometry().topLeft(), Pointi(14, 17));
 
-        GraphicsImage *pTexture = assets->getIcon(entry->GetIconName()).get();
+        std::shared_ptr<GraphicsImage> pTexture = assets->getIcon(entry->GetIconName());
 
         signed int X_offset = itemOffset(pTexture->width());
         signed int Y_offset = itemOffset(pTexture->height());
@@ -1272,15 +1272,15 @@ static void CharacterUI_DrawItem(int x, int y, Item *item, int id, std::shared_p
         item_texture = assets->getIcon(item->GetIconName());
 
     if (item->ItemEnchanted()) { // enchant animation
-        GraphicsImage *enchantment_texture = nullptr;
+        std::shared_ptr<GraphicsImage> enchantment_texture;
         if (item->AuraEffectRed())
-            enchantment_texture = assets->getIcon("sptext01").get();
+            enchantment_texture = assets->getIcon("sptext01");
         else if (item->AuraEffectBlue())
-            enchantment_texture = assets->getIcon("sp28a").get();
+            enchantment_texture = assets->getIcon("sp28a");
         else if (item->AuraEffectGreen())
-            enchantment_texture = assets->getIcon("sp30a").get();
+            enchantment_texture = assets->getIcon("sp30a");
         else if (item->AuraEffectPurple())
-            enchantment_texture = assets->getIcon("sp91a").get();
+            enchantment_texture = assets->getIcon("sp91a");
         else
             assert(false);
 
@@ -1291,13 +1291,13 @@ static void CharacterUI_DrawItem(int x, int y, Item *item, int id, std::shared_p
         }
 
         // TODO(pskelton): #time check tickcount usage here
-        render->BlendTextures(x, y, item_texture.get(), enchantment_texture, platform->tickCount() / 10, 0, 255);
+        render->BlendTextures(x, y, item_texture, enchantment_texture, platform->tickCount() / 10, 0, 255);
     } else if (item->IsBroken()) {
-        render->DrawQuad2D(item_texture.get(), {x, y}, colorTable.Red);
+        render->DrawQuad2D(item_texture, {x, y}, colorTable.Red);
     } else if (!item->IsIdentified() && (engine->config->gameplay.ShowUndentifiedItem.value() || id)) { // TODO(captainurist): after my changes id==0 is a valid item id
-        render->DrawQuad2D(item_texture.get(), {x, y}, colorTable.Green);
+        render->DrawQuad2D(item_texture, {x, y}, colorTable.Green);
     } else {
-        render->DrawQuad2D(item_texture.get(), {x, y});
+        render->DrawQuad2D(item_texture, {x, y});
     }
 
     if (doZDraw)
@@ -1308,9 +1308,9 @@ static void CharacterUI_DrawItem(int x, int y, Item *item, int id, std::shared_p
 void CharacterUI_DrawPaperdollWithRingOverlay(Character *player) {
     CharacterUI_DrawPaperdoll(player);
 
-    render->DrawQuad2D(ui_character_inventory_paperdoll_rings_background.get(), {473, 0});
-    render->DrawQuad2D(game_ui_right_panel_frame.get(), {468, 0});
-    render->DrawQuad2D(ui_exit_cancel_button_background.get(), pCharacterScreen_DetalizBtn->rect.topLeft());
+    render->DrawQuad2D(ui_character_inventory_paperdoll_rings_background, {473, 0});
+    render->DrawQuad2D(game_ui_right_panel_frame, {468, 0});
+    render->DrawQuad2D(ui_exit_cancel_button_background, pCharacterScreen_DetalizBtn->rect.topLeft());
 
     for (unsigned i = 0; i < 6; ++i) {
         InventoryEntry entry = player->inventory.entry(ringSlot(i));
@@ -1458,7 +1458,7 @@ void GUIWindow_CharacterRecord::CharacterUI_SkillsTab_CreateButtons() {
 }
 
 void GUIWindow_CharacterRecord::CharacterUI_StatsTab_Draw(Character *player) {
-    render->DrawQuad2D(ui_character_stats_background.get(), {8, 8});
+    render->DrawQuad2D(ui_character_stats_background, {8, 8});
 
     auto str1 =
         fmt::format("{::}{}\f00000\r180{}: {::}{}\f00000\n\n\n",

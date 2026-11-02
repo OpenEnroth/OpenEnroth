@@ -276,15 +276,15 @@ void DrawPopupWindow(int uX, int uY, int uWidth, int uHeight) {
         int coord_x = uX - parchment_width;
         for (int i = uNumTiles + 1; i; --i) {
             coord_x += parchment_width;
-            render->DrawQuad2D(parchment.get(), {coord_x, coord_y});
+            render->DrawQuad2D(parchment, {coord_x, coord_y});
         }
         coord_y += parchment_height;
     }
 
-    render->DrawQuad2D(messagebox_corner_x.get(), {uX, uY});
-    render->DrawQuad2D(messagebox_corner_y.get(), {uX, uY + uHeight - messagebox_corner_y->height()});
-    render->DrawQuad2D(messagebox_corner_z.get(), {uX + uWidth - messagebox_corner_z->width(), uY});
-    render->DrawQuad2D(messagebox_corner_w.get(), {uX + uWidth - messagebox_corner_z->width(), uY + uHeight - messagebox_corner_y->height()});
+    render->DrawQuad2D(messagebox_corner_x, {uX, uY});
+    render->DrawQuad2D(messagebox_corner_y, {uX, uY + uHeight - messagebox_corner_y->height()});
+    render->DrawQuad2D(messagebox_corner_z, {uX + uWidth - messagebox_corner_z->width(), uY});
+    render->DrawQuad2D(messagebox_corner_w, {uX + uWidth - messagebox_corner_z->width(), uY + uHeight - messagebox_corner_y->height()});
 
     if (uWidth > messagebox_corner_x->width() + messagebox_corner_z->width()) {
         render->SetUIClipRect(Recti(uX + messagebox_corner_x->width(), uY,
@@ -295,8 +295,8 @@ void DrawPopupWindow(int uX, int uY, int uWidth, int uHeight) {
         for (int x = uX + messagebox_corner_x->width();
              x < uX + uWidth - messagebox_corner_x->width();
              x += messagebox_border_top->width()) {
-            render->DrawQuad2D(messagebox_border_top.get(), {x, uY});
-            render->DrawQuad2D(messagebox_border_bottom.get(), {x, uY + uHeight - messagebox_border_bottom->height()});
+            render->DrawQuad2D(messagebox_border_top, {x, uY});
+            render->DrawQuad2D(messagebox_border_bottom, {x, uY + uHeight - messagebox_border_bottom->height()});
         }
     }
 
@@ -309,8 +309,8 @@ void DrawPopupWindow(int uX, int uY, int uWidth, int uHeight) {
         for (int y = uY + messagebox_corner_x->height();
              y < uY + uHeight - messagebox_corner_y->height();
              y += messagebox_border_right->height()) {
-            render->DrawQuad2D(messagebox_border_left.get(), {uX, y});
-            render->DrawQuad2D(messagebox_border_right.get(), {uX + uWidth - messagebox_border_right->width() - 1, y});
+            render->DrawQuad2D(messagebox_border_left, {uX, y});
+            render->DrawQuad2D(messagebox_border_right, {uX + uWidth - messagebox_border_right->width() - 1, y});
         }
     }
     render->ResetUIClipRect();
@@ -325,7 +325,7 @@ void GameUI_DrawItemInfo(Item *inspect_item) {
     if (inspect_item->itemId == ITEM_NULL)
         return;
 
-    GraphicsImage *inspect_item_image = assets->getIcon(inspect_item->GetIconName()).get();
+    std::shared_ptr<GraphicsImage> inspect_item_image = assets->getIcon(inspect_item->GetIconName());
 
     Recti iteminfo_window(0, 40, 384, 180);
 
@@ -1623,7 +1623,7 @@ void ShowPopupShopItem() {
 
 //----- (0041D3B7) --------------------------------------------------------
 void GameUI_CharacterQuickRecord_Draw(Recti window, int characterIndex) {
-    GraphicsImage *v13;              // eax@6
+    std::shared_ptr<GraphicsImage> v13;              // eax@6
     std::string spellName;   // eax@16
     int v36;                 // esi@22
     int uFramesetIDa;        // [sp+20h] [bp-8h]@18
@@ -1638,9 +1638,9 @@ void GameUI_CharacterQuickRecord_Draw(Recti window, int characterIndex) {
     GUIWindow::DrawMessageBox(window, "");
 
     if (player->IsEradicated()) {
-        v13 = game_ui_player_face_eradicated.get();
+        v13 = game_ui_player_face_eradicated;
     } else if (player->IsDead()) {
-        v13 = game_ui_player_face_dead.get();
+        v13 = game_ui_player_face_dead;
     } else {
         int faceTextureIndex = 1;
         if (player->portrait == PORTRAIT_TALK)
@@ -1649,7 +1649,7 @@ void GameUI_CharacterQuickRecord_Draw(Recti window, int characterIndex) {
             faceTextureIndex = pPortraitFrameTable->animationFrameIndex(pPortraitFrameTable->animationId(player->portrait),
                                                                         animTimer->time());
         player->portraitImageIndex = faceTextureIndex - 1;
-        v13 = game_ui_player_faces[characterIndex][faceTextureIndex - 1].get();
+        v13 = game_ui_player_faces[characterIndex][faceTextureIndex - 1];
     }
 
     render->DrawQuad2D(v13, {window.x + 24, window.y + 24});
@@ -1725,7 +1725,7 @@ void GameUI_DrawNPCPopup(int _this) {  // PopupWindowForBenefitAndJoinText
                 popup_window.w = 400;
                 GUIWindow::DrawMessageBox(popup_window, "");
                 auto tex_name = fmt::format("NPC{:03}", pNPC->portraitId);
-                render->DrawQuad2D(assets->getIcon(tex_name).get(),
+                render->DrawQuad2D(assets->getIcon(tex_name),
                                    {popup_window.x + 22, popup_window.y + 36});
 
                 GUIWindow::DrawTitleText(assets->pFontArrus.get(), 0, 12, colorTable.PaleCanary, NameAndTitle(pNPC), 3, popup_window);

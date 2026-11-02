@@ -104,8 +104,8 @@ void GUIWindow_Rest::Update() {
     }
 
     if (liveCharacters) {
-        render->DrawQuad2D(rest_ui_restmain.get(), {8, 8});
-        render->DrawQuad2D(rest_ui_sky_frame_current.get(), {16, 26});
+        render->DrawQuad2D(rest_ui_restmain, {8, 8});
+        render->DrawQuad2D(rest_ui_sky_frame_current, {16, 26});
 
         hourglassLoopTimer += gameTimer->dt();
         if (hourglassLoopTimer >= Duration::fromRealtimeSeconds(4)) {
@@ -117,7 +117,7 @@ void GUIWindow_Rest::Update() {
             hourglass_icon_idx = 1;
         }
 
-        render->DrawQuad2D(assets->getIcon(fmt::format("hglas{:03}", hourglass_icon_idx)).get(), {267, 159});
+        render->DrawQuad2D(assets->getIcon(fmt::format("hglas{:03}", hourglass_icon_idx)), {267, 159});
 
         tmp_button.rect = Recti(24, 154, 171, 37);
         tmp_button.pParent = pButton_RestUI_WaitUntilDawn->pParent;

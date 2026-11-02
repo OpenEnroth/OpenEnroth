@@ -46,21 +46,21 @@ GUIWindow_QuestBook::GUIWindow_QuestBook() {
 }
 
 void GUIWindow_QuestBook::Update() {
-    render->DrawQuad2D(ui_exit_cancel_button_background.get(), {471, 445});
+    render->DrawQuad2D(ui_exit_cancel_button_background, {471, 445});
 
     int pTextHeight;
-    render->DrawQuad2D(ui_book_quests_background.get(), pViewport.topLeft());
+    render->DrawQuad2D(ui_book_quests_background, pViewport.topLeft());
 
     if ((_bookButtonClicked && _bookButtonAction == BOOK_PREV_PAGE) || !_startingQuestIdx) {
-        render->DrawQuad2D(ui_book_button1_off.get(), pViewport.topLeft() + Pointi(407, 2));
+        render->DrawQuad2D(ui_book_button1_off, pViewport.topLeft() + Pointi(407, 2));
     } else {
-        render->DrawQuad2D(ui_book_button1_on.get(), pViewport.topLeft() + Pointi(398, 1));
+        render->DrawQuad2D(ui_book_button1_on, pViewport.topLeft() + Pointi(398, 1));
     }
 
     if ((_bookButtonClicked && _bookButtonAction == BOOK_NEXT_PAGE) || (_startingQuestIdx + _currentPageQuests) >= _activeQuestsIdx.size()) {
-        render->DrawQuad2D(ui_book_button2_off.get(), pViewport.topLeft() + Pointi(407, 38));
+        render->DrawQuad2D(ui_book_button2_off, pViewport.topLeft() + Pointi(407, 38));
     } else {
-        render->DrawQuad2D(ui_book_button2_on.get(), pViewport.topLeft() + Pointi(398, 38));
+        render->DrawQuad2D(ui_book_button2_on, pViewport.topLeft() + Pointi(398, 38));
     }
 
     // for title
@@ -96,7 +96,7 @@ void GUIWindow_QuestBook::Update() {
             break;
         }
 
-        render->DrawQuad2D(ui_book_quest_div_bar.get(), {100, (questbook_window.y + pTextHeight) + 12});
+        render->DrawQuad2D(ui_book_quest_div_bar, {100, (questbook_window.y + pTextHeight) + 12});
         questbook_window.y = (questbook_window.y + pTextHeight) + 24;
     }
 }
