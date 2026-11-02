@@ -1021,6 +1021,23 @@ GAME_TEST(Issues, Issue2859b) {
     EXPECT_EQ(monsterIdTape, tape({1, 0, 0, 0}, {7, 6, 6, 6}));
 }
 
+GAME_TEST(Issues, Issue2864) {
+    // A Lloyd's Beacon scroll opened the book with the reader's own slot count, not the five slots of the scroll's
+    // master skill.
+    auto lastSlotTape = charTapes.hasBeacon(3, 4);
+    engine->config->debug.NoActors.setValue(true);
+    game.startNewGame();
+    test.startTaping();
+    ASSERT_LT(pParty->pCharacters[3].getActualSkillValue(SKILL_WATER).mastery(), MASTERY_MASTER);
+    pParty->setHoldingItem(Item(ITEM_SCROLL_LLOYDS_BEACON));
+    game.pressGuiButton("Game_Character4", BUTTON_RIGHT); // Read the scroll.
+    game.tick(3);
+    game.pressGuiButton("LloydsBook_Slot4");
+    game.tick();
+
+    EXPECT_EQ(lastSlotTape, tape(false, true));
+}
+
 GAME_TEST(Prs, Pr2876a) {
     // An event going on from a branchless dialogue into a transition dialogue lost the transition dialogue. MM6's
     // outd3.evt event 43 does this, so the test gives the Hidden Tomb's exit the same shape.
