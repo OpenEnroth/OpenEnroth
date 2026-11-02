@@ -1065,6 +1065,54 @@ GAME_TEST(Issues, Issue2864b) {
     EXPECT_EQ(slotCountTape, tape(0, 3));
 }
 
+GAME_TEST(Issues, Issue2868a) {
+    // The griffin checks on leaving a map looked one monster too low. Leaving Erathia counted its griffins killed with
+    // the Royal Griffins alive, and leaving the Bracada Desert didn't count them with every griffin dead, because its
+    // Gold Golems were alive.
+    for (auto [map, bit, killRoyalGriffins] : {std::tuple(MAP_ERATHIA, QBIT_ERATHIA_GRIFFINS_KILLED, false),
+                                               std::tuple(MAP_BRACADA_DESERT, QBIT_BRACADA_DESERT_GRIFFINS_KILLED, true)}) {
+        test.prepareForNextTest();
+        auto mapTape = tapes.map();
+        auto questTape = tapes.questBit(bit);
+        game.startNewGame();
+        game.teleportTo(map, Vec3f(0, 0, 0), 0);
+        for (Actor &actor : pActors)
+            if (actor.monsterInfo.id == MONSTER_GRIFFIN_A || actor.monsterInfo.id == MONSTER_GRIFFIN_B || (killRoyalGriffins && actor.monsterInfo.id == MONSTER_GRIFFIN_C))
+                Actor::Die(actor.id);
+        test.startTaping();
+        game.teleportTo(MAP_HARMONDALE, Vec3f(0, 0, 0), 0);
+
+        EXPECT_EQ(mapTape, tape(map, MAP_HARMONDALE));
+        EXPECT_EQ(questTape, tape(killRoyalGriffins)); // The map leave event runs before the first taped frame.
+    }
+}
+
+GAME_TEST(Issues, Issue2868b) {
+    // Spark Burnkindle took the troglodytes under Stone City for killed with the Troglodyte Queens still alive.
+    auto questTape = tapes.questBit(QBIT_STONE_CITY_TROGLODYTES_ACTIVE);
+    auto experienceTape = tapes.totalExperience();
+    auto textTape = tapes.allGUIWindowsText();
+    game.startNewGame();
+    game.teleportTo(MAP_STONE_CITY, Vec3f(3904, -3334, -5), 270); // In front of Spark's house.
+    for (Actor &actor : pActors)
+        if (actor.monsterInfo.id == MONSTER_TROGLODYTE_A || actor.monsterInfo.id == MONSTER_TROGLODYTE_B)
+            Actor::Die(actor.id);
+    test.startTaping();
+    game.pressAndReleaseKey(PlatformKey::KEY_SPACE);
+    game.tick(2);
+    game.pressGuiButton("House_Npc0"); // Spark Burnkindle.
+    game.tick(2);
+    game.pressGuiButton("HouseNpcDialogue_Option0"); // Take the quest.
+    game.tick(2);
+    game.pressGuiButton("HouseNpcDialogue_Option0"); // Report the troglodytes killed.
+    game.tick(2);
+    test.stopTaping();
+
+    EXPECT_EQ(questTape, tape(false, true));
+    EXPECT_EQ(experienceTape.delta(), 0);
+    EXPECT_CONTAINS(textTape.flatten(), "There are still troglodytes roaming the lower mine\nlevels.  Please remove them!");
+}
+
 GAME_TEST(Prs, Pr2876a) {
     // An event going on from a branchless dialogue into a transition dialogue lost the transition dialogue. MM6's
     // outd3.evt event 43 does this, so the test gives the Hidden Tomb's exit the same shape.
