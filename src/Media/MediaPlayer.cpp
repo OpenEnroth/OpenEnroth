@@ -754,9 +754,8 @@ void MPlayer::OpenHouseMovie(std::string_view pMovieName, bool bLoop) {
     gameTimer->setPaused(true);
     pAudioPlayer->pauseLooping();
     pAudioPlayer->MusicPause();
-    if (engine->config->debug.NoVideo.value()) {
+    if (engine->config->debug.NoVideo.value())
         return;
-    }
 
     Blob blob = LoadMovie(pMovieName);
     if (!blob) {
