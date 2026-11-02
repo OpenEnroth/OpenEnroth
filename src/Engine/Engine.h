@@ -222,6 +222,12 @@ Duration timeUntilDawn();
 /**
  * @offset 0x443E31
  */
+/**
+ * @param blob                          A map's .str file.
+ * @return                              Its strings, which end with a zero and can be quoted.
+ */
+[[nodiscard]] std::vector<std::string> parseLevelStrings(const Blob &blob);
+
 void initLevelStrings(const Blob &blob);
 void loadMapEventsAndStrings(MapId mapid);
 bool _44100D_should_alter_right_panel();

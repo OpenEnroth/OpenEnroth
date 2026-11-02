@@ -9,6 +9,7 @@
 #include "Engine/Evt/EvtCommands.h"
 #include "Engine/Evt/EvtDecompiler.h"
 #include "Engine/Evt/EvtProgram.h"
+#include "Engine/Evt/Tests/EvtTestInstruction.h"
 
 using namespace std::string_literals; // NOLINT: for the string values of the commands.
 
@@ -16,21 +17,17 @@ static const int64_t MAP_VAR0 = std::to_underlying(VAR_MapPersistentVariable_0);
 static const int64_t GOLD = std::to_underlying(VAR_FixedGold);
 
 static std::pair<int, EvtInstruction> op(int eventId, int step, EvtOpcode opcode, std::function<void(EvtInstruction &)> fill = {}) {
-    EvtInstruction result = {};
+    EvtInstruction result(opcode);
     result.step = step;
-    result.opcode = opcode;
     if (fill)
         fill(result);
     return {eventId, result};
 }
 
 static std::pair<int, EvtInstruction> call(int eventId, int step, std::string_view name, std::vector<EvtFieldValue> values, int target = 0) {
-    const EvtCommandInfo *command = evtCommand(name);
-    auto [_, result] = op(eventId, step, command->opcode);
+    EvtInstruction result = evtTestInstruction(name, values);
+    result.step = step;
     result.target_step = target;
-    for (size_t i = 0; i < values.size(); i++)
-        if (command->fields[i].set)
-            command->fields[i].set(&result, values[i]);
     return {eventId, result};
 }
 

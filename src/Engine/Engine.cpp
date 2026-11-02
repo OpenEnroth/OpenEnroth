@@ -7,6 +7,7 @@
 #include <optional>
 #include <span>
 #include <unordered_set>
+#include <vector>
 
 #include "Engine/Engine.h"
 
@@ -1566,21 +1567,24 @@ Duration timeUntilDawn() {
     return next5am - now;
 }
 
-void initLevelStrings(const Blob &blob) {
-    engine->_levelStrings.clear();
-
+std::vector<std::string> parseLevelStrings(const Blob &blob) {
+    std::vector<std::string> result;
     int offs = 0;
     while (offs < blob.size()) {
         const char *nextNullTerm = (const char*)memchr(&blob.str()[offs], '\0', blob.size() - offs);
         size_t stringSize = nextNullTerm ? (nextNullTerm - &blob.str()[offs]) : (blob.size() - offs);
-        engine->_levelStrings.push_back(trimRemoveQuotes(std::string(&blob.str()[offs], stringSize)));
+        result.push_back(trimRemoveQuotes(std::string(&blob.str()[offs], stringSize)));
         offs += stringSize + 1;
     }
+    return result;
+}
+
+void initLevelStrings(const Blob &blob) {
+    engine->_levelStrings = parseLevelStrings(blob);
 }
 
 void loadMapEventsAndStrings(MapId mapid) {
-    std::string mapName = pMapTable->pInfos[mapid].fileName;
-    std::string mapNameWithoutExt = mapName.substr(0, mapName.rfind('.'));
+    std::string mapNameWithoutExt = mapFileStem(mapid);
 
     initLevelStrings(engine->resources()->eventsData(fmt::format("{}.str", mapNameWithoutExt)));
 

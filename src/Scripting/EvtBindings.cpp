@@ -18,11 +18,9 @@
 #include "Engine/Evt/EvtInterpreter.h"
 #include "Engine/Evt/EvtScripts.h"
 #include "Engine/Evt/Processor.h"
-#include "Engine/Objects/Decoration.h"
 #include "Engine/Party.h"
 #include "Engine/Random/Random.h"
 #include "Engine/Resources/EngineFileSystem.h"
-#include "Engine/Tables/HouseTable.h"
 #include "Engine/Tables/NPCTable.h"
 
 #include "Utility/Exception.h"
@@ -38,8 +36,9 @@ static int64_t toInteger(double value, std::string_view what) {
 
 static EvtTargetCharacter toPlayer(const sol::object &value, std::string_view what) {
     if (value.is<std::string>()) {
-        if (std::optional<EvtTargetCharacter> result = evtPlayerByName(value.as<std::string>()))
-            return *result;
+        EvtTargetCharacter result;
+        if (tryDeserialize(value.as<std::string>(), &result))
+            return result;
         throw Exception("{}: unknown player '{}'", what, value.as<std::string>());
     }
 
@@ -105,8 +104,7 @@ static EvtInstruction toInstruction(const EvtCommandInfo &command, const sol::ta
         }
     }
 
-    EvtInstruction result = {};
-    result.opcode = command.opcode;
+    EvtInstruction result(command.opcode);
     for (size_t i = 0; i < command.fields.size(); i++) {
         const EvtFieldInfo &field = command.fields[i];
         if (!field.set)
@@ -209,23 +207,6 @@ static std::vector<std::string> scriptsIn(std::string_view folder, std::function
 }
 
 /**
- * @param lua                           Lua state to load into.
- * @param code                          Lua source.
- * @param chunkName                     Name that errors in the code are reported under.
- * @param environment                   Table that the code sees as its globals.
- * @return                              The loaded function and nil, or nil and the reason the code didn't load.
- */
-static std::tuple<sol::object, sol::object> loadChunk(sol::state_view lua, std::string_view code, const std::string &chunkName,
-                                                      const sol::table &environment) {
-    sol::load_result chunk = lua.load(code, chunkName);
-    if (!chunk.valid())
-        return {sol::make_object(lua, sol::lua_nil), sol::make_object(lua, chunk.get<sol::error>().what())};
-    sol::function result = chunk.get<sol::function>();
-    lua["setfenv"](result, environment);
-    return {result, sol::make_object(lua, sol::lua_nil)};
-}
-
-/**
  * @param period                        Timer period in ticks.
  * @param start                         Time of day in ticks that a daily timer fires at. A timer without it counts its
  *                                      period from the moment it's added, unless it's a refill timer with a calendar
@@ -320,11 +301,7 @@ sol::table EvtBindings::createBindingTable(sol::state_view &solState) const {
                 engine->_levelStrings.resize(index + 1);
             engine->_levelStrings[index] = std::move(value);
         }),
-        "houseName", sol::as_function([](int houseId) -> std::optional<std::string> {
-            if (!houseTable.indices().contains(static_cast<HouseId>(houseId)))
-                return std::nullopt;
-            return houseTable[static_cast<HouseId>(houseId)].name;
-        }),
+        "houseName", sol::as_function([](int houseId) { return evtHouseName(houseId); }),
         "random", sol::as_function([](int hi) {
             if (hi < 1)
                 throw Exception("Game.Rand() % {}: the modulus has to be positive", hi);
@@ -347,12 +324,7 @@ sol::table EvtBindings::createBindingTable(sol::state_view &solState) const {
         "globalScripts", sol::as_function([] {
             return sol::as_table(scriptsIn("scripts/global", [](std::string_view name) { return name.ends_with(".lua"); }));
         }),
-        "loadScript", sol::as_function([](sol::this_state state, std::string path, sol::table environment) {
-            return loadChunk(state, dfs->read(path).str(), "@" + path, environment);
-        }),
-        "loadString", sol::as_function([](sol::this_state state, std::string_view code, std::string chunkName, sol::table environment) {
-            return loadChunk(state, code, "=" + chunkName, environment);
-        }),
+        "readScript", sol::as_function([](std::string_view path) { return std::string(dfs->read(path).str()); }),
         "decompile", sol::as_function([](sol::this_state state, std::string_view name) {
             sol::state_view lua(state);
             EvtLuaScript script = decompileGameEvt(name);
@@ -362,8 +334,6 @@ sol::table EvtBindings::createBindingTable(sol::state_view &solState) const {
             return lua.create_table_with("header", script.header, "events", events);
         }),
         "isDecompilingEvents", sol::as_function([] { return engine->config->debug.DecompiledEvents.value(); }),
-        "questBit", sol::as_function([](int bit) { return pParty->_questBits.test(static_cast<QuestBit>(bit)); }),
-        "setQuestBit", sol::as_function([](int bit, bool value) { pParty->_questBits.set(static_cast<QuestBit>(bit), value); }),
         "mouseItem", sol::as_function([] { return std::to_underlying(pParty->pPickedItem.itemId); })
     );
 }

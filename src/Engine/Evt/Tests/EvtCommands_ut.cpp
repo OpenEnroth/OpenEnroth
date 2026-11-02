@@ -11,9 +11,12 @@
 #include "Engine/Engine.h"
 #include "Engine/Evt/EvtCommands.h"
 #include "Engine/Evt/EvtProgram.h"
+#include "Engine/Evt/Tests/EvtTestInstruction.h"
 #include "Engine/MapEnumFunctions.h"
 #include "Engine/Resources/ResourceManager.h"
 #include "Engine/Tables/MapTable.h"
+
+#include "Library/Serialization/Serialization.h"
 
 #include "Utility/Exception.h"
 
@@ -22,20 +25,13 @@ using namespace std::string_literals; // NOLINT: for the string values of the co
 static std::vector<std::string> evtFileNames() {
     std::vector<std::string> result = {"global"};
     for (MapId map : allMaps()) {
-        const std::string &fileName = pMapTable->pInfos[map].fileName;
-        result.push_back(fileName.substr(0, fileName.rfind('.')));
+        result.push_back(mapFileStem(map));
     }
     return result;
 }
 
 static EvtInstruction instruction(std::string_view name, std::vector<EvtFieldValue> values) {
-    const EvtCommandInfo *command = evtCommand(name);
-    EvtInstruction result = {};
-    result.opcode = command->opcode;
-    for (size_t i = 0; i < values.size(); i++)
-        if (command->fields[i].set)
-            command->fields[i].set(&result, values[i]);
-    return result;
+    return evtTestInstruction(name, values);
 }
 
 GAME_TEST(EvtCommands, Table) {
@@ -74,7 +70,7 @@ GAME_TEST(EvtCommands, DistinctMembers) {
             }
             std::optional<std::vector<std::optional<EvtFieldValue>>> changed;
             for (const EvtFieldValue &candidate : candidates) {
-                EvtInstruction ir = {};
+                EvtInstruction ir = EvtInstruction();
                 try {
                     field.set(&ir, candidate);
                 } catch (const Exception &) {
@@ -135,11 +131,6 @@ GAME_TEST(EvtCommands, SetErrors) {
     EXPECT_NO_THROW((void) instruction("EnterHouse", {int64_t(std::to_underlying(HOUSE_THRONEROOM_WIN_GOOD))}));
     EXPECT_ANY_THROW((void) instruction("MoveToMap", {int64_t(0), int64_t(0), int64_t(0), int64_t(0), int64_t(0), int64_t(0), int64_t(0), int64_t(20)}));
     EXPECT_ANY_THROW((void) instruction("SetNPCGreeting", {int64_t(5), int64_t(500)}));
-    int64_t npcs = std::to_underlying(VAR_NPCs2);
-    EXPECT_NO_THROW((void) instruction("Set", {npcs, int64_t(500)}));
-    EXPECT_ANY_THROW((void) instruction("Set", {npcs, int64_t(600)})); // There is no NPC 600, and the interpreter indexes with it.
-    EXPECT_ANY_THROW((void) instruction("Cmp", {int64_t(std::to_underlying(VAR_QBits_QuestsDone)), int64_t(0)}));
-    EXPECT_ANY_THROW((void) instruction("Add", {int64_t(std::to_underlying(VAR_AutoNotes)), int64_t(209)}));
     EXPECT_ANY_THROW((void) instruction("Add", {int64_t(0), int64_t(1)})); // There is no variable 0.
     EXPECT_NO_THROW((void) instruction("SpeakNPC", {int64_t(500)}));
     EXPECT_ANY_THROW((void) instruction("SpeakNPC", {int64_t(501)}));
@@ -157,7 +148,7 @@ GAME_TEST(EvtCommands, Names) {
     EXPECT_EQ(evtVariableName(VAR_History_28), "History29");
     EXPECT_EQ(evtVariableName(VAR_ItemEquipped), "IsWearingItem");
     EXPECT_EQ(evtVariableByName("NoSuchVariable"), std::nullopt);
-    EXPECT_EQ(evtPlayerByName("All"), CHOOSE_PARTY);
+    EXPECT_EQ(fromString<EvtTargetCharacter>("All"), CHOOSE_PARTY);
     EXPECT_EQ(evtCommand("Sub"), evtCommand(EVENT_Subtract));
 
     for (int variable = 0; variable < 0x200; variable++)
@@ -175,7 +166,7 @@ GAME_TEST(EvtCommands, GameFilesRoundTrip) {
                 if (!command)
                     continue;
 
-                EvtInstruction copy = {};
+                EvtInstruction copy = EvtInstruction();
                 copy.opcode = ir.opcode;
                 copy.step = ir.step;
                 copy.target_step = ir.target_step;

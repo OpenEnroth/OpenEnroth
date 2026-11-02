@@ -5,6 +5,15 @@
 
 #include "Core/Time/Duration.h"
 
+/**
+ * @param opcode                        Opcode to check.
+ * @return                              Whether the opcode starts an event that the engine runs by itself, at a certain
+ *                                      time or on a map change.
+ */
+inline bool isEvtTrigger(EvtOpcode opcode) {
+    return opcode == EVENT_OnTimer || opcode == EVENT_OnLongTimer || opcode == EVENT_OnMapReload || opcode == EVENT_OnMapLeave;
+}
+
 inline int historyIndex(EvtVariable variable) {
     assert(variable >= VAR_History_0 && variable <= VAR_History_28);
     return std::to_underlying(variable) - std::to_underlying(VAR_History_0);

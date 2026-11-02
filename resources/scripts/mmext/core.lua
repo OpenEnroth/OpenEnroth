@@ -8,6 +8,7 @@
 ---@diagnostic disable: name-style-check
 
 local Bindings = require "bindings.evt"
+local GameBindings = require "bindings.game"
 local Log = require "bindings.log"
 
 ---@class EvtFrame One running handler.
@@ -47,6 +48,13 @@ local waiting = {}
 local lastFrameId = 0
 ---@type EvtTimer? The timer whose callback runs, which `RemoveTimer()` removes.
 local runningTimer = nil
+
+---@param values table<any, any> Emptied in place, handlers keep references to it.
+local function clear(values)
+    for key in pairs(values) do
+        values[key] = nil
+    end
+end
 
 ---@param list any[]
 ---@return any[]
@@ -209,10 +217,11 @@ local function newEvents(runHandler)
 end
 
 ---@param lists EvtHandlerLists
-local function removeMapHandlers(lists)
+---@param match fun(handler: EvtHandler): boolean
+local function removeHandlers(lists, match)
     for key, list in pairs(lists) do
         for i = #list, 1, -1 do
-            if list[i].scope == "map" then
+            if match(list[i]) then
                 table.remove(list, i)
             end
         end
@@ -228,6 +237,18 @@ local evt = {}
 local mapExitTriggered = false
 local isMapLoading = false -- The loading screen is up while the map's scripts run.
 
+---@param handler EvtHandler
+---@param options EvtRunOptions
+---@param ... any Passed to the handler.
+---@return boolean isWaiting
+---@return any result
+local function runHandler(handler, options, ...)
+    options.scope, options.owner = handler.scope, handler.owner
+    local exit, result, isWaiting = run(handler.callback, options, ...)
+    mapExitTriggered = mapExitTriggered or exit
+    return isWaiting, result
+end
+
 ---@param isGlobal boolean
 ---@return table events
 ---@return EvtHandlerLists lists
@@ -239,11 +260,7 @@ local function newEventHandlers(isGlobal)
     ---@return boolean isWaiting
     ---@return any result
     return newEvents(function (handler, eventId, targetPid, duringMapLoad)
-        local options = { eventId = eventId, isGlobal = isGlobal, targetPid = targetPid, duringMapLoad = duringMapLoad }
-        options.scope, options.owner = handler.scope, handler.owner
-        local exit, result, isWaiting = run(handler.callback, options)
-        mapExitTriggered = mapExitTriggered or exit
-        return isWaiting, result
+        return runHandler(handler, { eventId = eventId, isGlobal = isGlobal, targetPid = targetPid, duringMapLoad = duringMapLoad })
     end)
 end
 
@@ -253,53 +270,58 @@ end
 ---@return boolean isWaiting
 ---@return any result
 local events, eventLists = newEvents(function (handler, name, ...)
-    local options = { duringMapLoad = isMapLoading, scope = handler.scope, owner = handler.owner }
-    local exit, result, isWaiting = run(handler.callback, options, ...)
-    mapExitTriggered = mapExitTriggered or exit
-    return isWaiting, result
+    return runHandler(handler, { duringMapLoad = isMapLoading }, ...)
 end)
 
 ---@type EvtHandlerLists, EvtHandlerLists, EvtHandlerLists
 local mapLists, globalLists, topicLists = {}, {}, {}
 ---@type table<any, any>, table<any, any>, table<any, any>
 local mapEvents, globalEvents, topicEvents = {}, {}, {}
----@type table<integer, string>
-local hints = {}
----@type table<integer, integer>
-local houses = {}
----@type table<integer, string?>, table<integer, string?>
-local hintOwners, houseOwners = {}, {}
+---@class EvtHintEntry What the scripts set for an event's hint. The hint goes before the house's name.
+---@field hint string?
+---@field house integer?
+---@field owner string?
 
---- A table that the scripts set event hints or houses in. A script's hint for an event replaces a decompiled evt
---- event's house and the other way around, as it replaces the hint of the evt event in normal mode.
----@param values table<integer, any>
----@param owners table<integer, string?>
----@param otherValues table<integer, any>
----@param otherOwners table<integer, string?>
+---@type table<integer, EvtHintEntry>
+local hintEntries = {}
+
+--- A table that the scripts set event hints or houses in. A script's value for an event replaces what a decompiled evt
+--- event set, as it replaces the hint of the evt event in normal mode.
+---@param field string
 ---@return table
-local function newEventValues(values, owners, otherValues, otherOwners)
+local function newHintValues(field)
     return setmetatable({}, {
-        __index = values,
+        ---@param _ table
+        ---@param eventId integer
+        ---@return any
+        __index = function (_, eventId)
+            local entry = hintEntries[eventId]
+            return entry and entry[field]
+        end,
         ---@param _ table
         ---@param eventId integer
         ---@param value any
         __newindex = function (_, eventId, value)
             local owner = registrationOwner()
-            if value == nil and not owner and owners[eventId] then
-                return -- The engine falls back to the evt event's hint then.
+            local entry = hintEntries[eventId]
+            if entry and entry.owner and not owner then
+                if value == nil then
+                    return -- The engine falls back to the evt event's hint then.
+                end
+                entry = nil
             end
-            values[eventId], owners[eventId] = value, owner
-            if not owner and otherOwners[eventId] then
-                otherValues[eventId], otherOwners[eventId] = nil, nil
-            end
+            ---@type table<string, any>
+            local updated = entry or {}
+            updated[field], updated.owner = value, owner
+            hintEntries[eventId] = updated
         end,
     })
 end
 
 ---@type table<integer, string>
-local hintValues = newEventValues(hints, hintOwners, houses, houseOwners)
+local hintValues = newHintValues("hint")
 ---@type table<integer, integer>
-local houseValues = newEventValues(houses, houseOwners, hints, hintOwners)
+local houseValues = newHintValues("house")
 evt.hint, evt.Hint, evt.house = hintValues, hintValues, houseValues
 
 local function resetGlobalHandlers()
@@ -321,18 +343,7 @@ end
 local function resetMapHandlers()
     mapEvents, mapLists = newEventHandlers(false)
     evt.map, evt.Map = mapEvents, mapEvents
-    for key in pairs(hints) do
-        hints[key] = nil
-    end
-    for key in pairs(houses) do
-        houses[key] = nil
-    end
-    for key in pairs(hintOwners) do
-        hintOwners[key] = nil
-    end
-    for key in pairs(houseOwners) do
-        houseOwners[key] = nil
-    end
+    clear(hintEntries)
 end
 
 ---@param first any The arguments as a table, or the first of them.
@@ -529,13 +540,13 @@ local Game = setmetatable({
 local Party = {
     QBits = setmetatable({}, {
         ---@param _ table
-        ---@param bit integer
+        ---@param bit QBits
         ---@return boolean
-        __index = function (_, bit) return Bindings.questBit(bit) end,
+        __index = function (_, bit) return GameBindings.party.getQBit(bit) end,
         ---@param _ table
-        ---@param bit integer
+        ---@param bit QBits
         ---@param value any
-        __newindex = function (_, bit, value) Bindings.setQuestBit(bit, value and true or false) end,
+        __newindex = function (_, bit, value) GameBindings.party.setQBit(bit, value and true or false) end,
     }),
 }
 
@@ -578,7 +589,7 @@ const.Day = 24 * const.Hour
 const.Week = 7 * const.Day
 const.Month = 4 * const.Week
 const.Year = 12 * const.Month
-const.Novice, const.Expert, const.Master, const.GM = 1, 2, 3, 4
+const.Novice, const.Expert, const.Master, const.GM = GameBindings.SkillMastery.Novice, GameBindings.SkillMastery.Expert, GameBindings.SkillMastery.Master, GameBindings.SkillMastery.Grandmaster
 strict(const, "const")
 
 ---@class EvtTimer
@@ -691,26 +702,12 @@ function removeOwned(prefix)
     end
 
     for _, lists in ipairs({ mapLists, globalLists, topicLists, eventLists }) do
-        for key, list in pairs(lists) do
-            for i = #list, 1, -1 do
-                if matches(list[i].owner) then
-                    table.remove(list, i)
-                end
-            end
-            if #list == 0 then
-                lists[key] = nil
-            end
-        end
+        removeHandlers(lists, function (handler) return matches(handler.owner) end)
     end
     removeTimers(function (timer) return matches(timer.owner) end)
-    for eventId, owner in pairs(hintOwners) do
-        if matches(owner) then
-            hints[eventId], hintOwners[eventId] = nil, nil
-        end
-    end
-    for eventId, owner in pairs(houseOwners) do
-        if matches(owner) then
-            houses[eventId], houseOwners[eventId] = nil, nil
+    for eventId, entry in pairs(hintEntries) do
+        if matches(entry.owner) then
+            hintEntries[eventId] = nil
         end
     end
 end
@@ -752,11 +749,12 @@ local function resetVariables(name)
     environment[name == "vars" and "Vars" or "MapVars"] = environment[name]
 end
 
----@param chunk function? A loaded script.
----@param message string? Why it didn't load.
+---@param code string Lua source.
+---@param chunkName string Name that errors in the code are reported under.
 ---@param scope string?
 ---@param owner string?
-local function runScript(chunk, message, scope, owner)
+local function runScript(code, chunkName, scope, owner)
+    local chunk, message = load(code, chunkName, "t", environment)
     if not chunk then
         Log.error(tostring(message))
         return
@@ -768,8 +766,7 @@ end
 ---@param scope string?
 local function runScripts(paths, scope)
     for _, path in ipairs(paths) do
-        local chunk, message = Bindings.loadScript(path, environment)
-        runScript(chunk, message, scope)
+        runScript(Bindings.readScript(path), "@" .. path, scope)
     end
 end
 
@@ -783,11 +780,9 @@ local function runDecompiledEvents(name, isGlobal, scope)
         return
     end
     local script = Bindings.decompile(name)
-    local chunk, message = Bindings.loadString(script.header, name .. ".evt", environment)
-    runScript(chunk, message, scope)
+    runScript(script.header, "=" .. name .. ".evt", scope)
     for _, event in ipairs(script.events) do
-        chunk, message = Bindings.loadString(event.code, string.format("%s.evt, event %d", name, event.id), environment)
-        runScript(chunk, message, scope, ownerKey(isGlobal, event.id))
+        runScript(event.code, string.format("=%s.evt, event %d", name, event.id), scope, ownerKey(isGlobal, event.id))
     end
 end
 
@@ -797,9 +792,7 @@ local Core = {}
 
 function Core.loadGlobalScripts()
     waiting, timers, firstFires, isMapRunning, isRunningMapHandlers, wasInGame = {}, {}, {}, false, false, false
-    for key in pairs(eventLists) do
-        eventLists[key] = nil
-    end
+    clear(eventLists)
     resetGlobalHandlers()
     resetMapHandlers()
     resetVariables("vars")
@@ -820,9 +813,9 @@ function Core.loadMapScripts(mapName)
             table.remove(firstFires, i)
         end
     end
-    removeMapHandlers(eventLists)
-    removeMapHandlers(globalLists)
-    removeMapHandlers(topicLists)
+    for _, lists in ipairs({ eventLists, globalLists, topicLists }) do
+        removeHandlers(lists, function (handler) return handler.scope == "map" end)
+    end
     resetMapHandlers()
     resetVariables("mapvars")
     runDecompiledEvents(mapName, false, "map")
@@ -870,8 +863,8 @@ end
 ---@param eventId integer
 ---@return string?
 function Core.eventHint(eventId)
-    local house = houses[eventId]
-    return hints[eventId] or (house and Bindings.houseName(house))
+    local entry = hintEntries[eventId]
+    return entry and (entry.hint or (entry.house and Bindings.houseName(entry.house)))
 end
 
 ---@param eventId integer

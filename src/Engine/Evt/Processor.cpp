@@ -277,8 +277,7 @@ void onMapLoad() {
 
     EvtScripts *scripts = engine->_evtScripts;
     if (scripts) {
-        std::string mapName = pMapTable->pInfos[engine->_currentLoadedMapId].fileName;
-        scripts->loadMapScripts(mapName.substr(0, mapName.rfind('.'))); // Before the triggers, scripts can remove events.
+        scripts->loadMapScripts(mapFileStem(engine->_currentLoadedMapId)); // Before the triggers, scripts can remove events.
         updateFaceHints(); // The level loader set the flags from the evt file alone.
     }
 
