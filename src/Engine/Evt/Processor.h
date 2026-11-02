@@ -28,11 +28,6 @@ void checkDecorationEvents();
 EvtTransition runEvent(EvtContext context, int startStep = 0);
 
 /**
- * Called when a dialogue that an event stopped for closes without letting the event go on.
- */
-void cancelSavedEvent();
-
-/**
  * @param eventId                       Global event behind an NPC's scripted topic.
  * @return                              Whether the topic is listed in the NPC's dialogue.
  */

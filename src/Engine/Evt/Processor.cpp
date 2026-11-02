@@ -162,20 +162,19 @@ static void eraseRemovedTimers() {
 }
 
 EvtTransition runEvent(EvtContext context, int startStep) {
+    if (context.scripted) {
+        if (!scripts || !scripts->resumeEvent())
+            return EVT_TRANSITION_NONE;
+        onMapLeave();
+        return EVT_TRANSITION_STARTED;
+    }
+
     if (!context.eventId) {
         engine->_statusBar->nothingHere();
         return EVT_TRANSITION_NONE;
     }
 
     bool isGlobal = context.source == EVT_SOURCE_GLOBAL;
-
-    bool mapExitTriggered = false;
-    if (scripts && startStep > 0 && scripts->resumeEvent(context.eventId, &mapExitTriggered)) {
-        if (!mapExitTriggered)
-            return EVT_TRANSITION_NONE;
-        onMapLeave();
-        return EVT_TRANSITION_STARTED;
-    }
 
     EvtInterpreter interpreter;
     MM_TRACE("Executing event starting from step {}", startStep);
@@ -196,11 +195,6 @@ EvtTransition runEvent(EvtContext context, int startStep) {
     if (transition == EVT_TRANSITION_STARTED)
         onMapLeave();
     return transition;
-}
-
-void cancelSavedEvent() {
-    if (scripts)
-        scripts->cancelEvent();
 }
 
 bool canShowTopic(int eventId) {

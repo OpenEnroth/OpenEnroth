@@ -169,6 +169,7 @@ void EvtInterpreter::prepare(EvtContext context) {
 
 void EvtInterpreter::prepareInstructions(EvtContext context) {
     _context = context;
+    _context.scripted = true;
     _events.clear();
 }
 
