@@ -12,6 +12,8 @@
 
 #include "Library/Geometry/Vec.h"
 
+#include "Utility/Ptr.h"
+
 class Actor;
 class GraphicsImage;
 class ParticleEngine;
@@ -66,7 +68,7 @@ struct ProjectileAnim {
     float dstX = 0;
     float dstY = 0;
     float dstZ = 0;
-    GraphicsImage *texture = nullptr;  // int uTextureID;
+    Ptr<GraphicsImage> texture = nullptr;  // int uTextureID;
 };
 
 struct stru6_stru2 {
@@ -97,13 +99,13 @@ struct SpellFxRenderer {
     }
 
     void DoAddProjectile(float srcX, float srcY, float srcZ, float dstX,
-                         float dstY, float dstZ, GraphicsImage *);
+                         float dstY, float dstZ, Ptr<GraphicsImage>);
     void DrawProjectiles();
     void _4A73AA_hanging_trace_particles___like_fire_strike_ice_blast_etc(
-        SpriteObject *a2, Color uDiffuse, GraphicsImage *texture);
+        SpriteObject *a2, Color uDiffuse, Ptr<GraphicsImage> texture);
     void _4A75CC_single_spell_collision_particle(SpriteObject *a1,
                                                  Color uDiffuse,
-                                                 GraphicsImage *texture);
+                                                 Ptr<GraphicsImage> texture);
     void _4A7688_fireball_collision_particle(SpriteObject *a2);
     void _4A77FD_implosion_particle_d3d(SpriteObject *a1);
     void _4A7948_mind_blast_after_effect(SpriteObject *a1);
@@ -111,9 +113,9 @@ struct SpellFxRenderer {
                         int uRadius);
     void
     _4A7A66_miltiple_spell_collision_partifles___like_after_sparks_or_lightning(
-        SpriteObject *a1, Color uDiffuse, GraphicsImage *texture, float a4);
+        SpriteObject *a1, Color uDiffuse, Ptr<GraphicsImage> texture, float a4);
     void _4A7C07_stun_spell_fx(SpriteObject *a2);
-    void AddProjectile(SpriteObject *a2, int a3, GraphicsImage *);
+    void AddProjectile(SpriteObject *a2, int a3, Ptr<GraphicsImage>);
     void resetProjectiles();
     /**
      * @offset 0x4A7E89

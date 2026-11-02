@@ -1,5 +1,7 @@
 #include "UIChest.h"
 
+#include <memory>
+
 #include "Engine/Graphics/Renderer/Renderer.h"
 #include "Engine/Graphics/Image.h"
 #include "Engine/Localization.h"
@@ -26,7 +28,7 @@ void GUIWindow_Chest::Update() {
     if (current_screen_type == SCREEN_CHEST_INVENTORY && pParty->hasActiveCharacter()) {
         draw_leather();
         CharacterUI_InventoryTab_Draw(&pParty->activeCharacter(), true);
-        render->DrawQuad2D(ui_exit_cancel_button_background.get(), pBtn_ExitCancel->rect.topLeft());
+        render->DrawQuad2D(ui_exit_cancel_button_background, pBtn_ExitCancel->rect.topLeft());
     } else if (current_screen_type == SCREEN_CHEST) {
         int uChestID = _chestId;
         int chestDescId = vChests[uChestID].chestTypeId;
@@ -35,7 +37,7 @@ void GUIWindow_Chest::Update() {
         int chestWidthCells = chestTable[chestDescId].size.w;
         int chestHeghtCells = chestTable[chestDescId].size.h;
 
-        GraphicsImage *chest_background = assets->getIcon(chestTable[chestDescId].textureName).get();
+        std::shared_ptr<GraphicsImage> chest_background = assets->getIcon(chestTable[chestDescId].textureName);
         render->DrawQuad2D(chest_background, {8, 8});
 
         render->SetUIClipRect({ chest_offs_x, chest_offs_y, 32 * chestWidthCells, 32 * chestHeghtCells });
@@ -46,7 +48,7 @@ void GUIWindow_Chest::Update() {
             if (entry.zone() != INVENTORY_ZONE_GRID)
                 continue;
 
-            GraphicsImage *item_texture = assets->getIcon(entry->GetIconName()).get();
+            std::shared_ptr<GraphicsImage> item_texture = assets->getIcon(entry->GetIconName());
             int X_offset = itemOffset(item_texture->width());
             int Y_offset = itemOffset(item_texture->height());
             int itemPixelPosX = chest_offs_x + 32 * entry.geometry().x + X_offset;
@@ -57,6 +59,6 @@ void GUIWindow_Chest::Update() {
             render->DrawQuad2D(item_texture, {itemPixelPosX, itemPixelPosY});
         }
 
-        render->DrawQuad2D(ui_exit_cancel_button_background.get(), pBtn_ExitCancel->rect.topLeft());
+        render->DrawQuad2D(ui_exit_cancel_button_background, pBtn_ExitCancel->rect.topLeft());
     }
 }

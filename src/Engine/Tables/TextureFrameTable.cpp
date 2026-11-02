@@ -1,6 +1,7 @@
 #include "TextureFrameTable.h"
 
 #include <cassert>
+#include <memory>
 #include <utility>
 #include <vector>
 
@@ -31,7 +32,7 @@ Duration TextureFrameTable::animationFrameLength(int frameId) {
     return _frames[frameId].frameLength;
 }
 
-GraphicsImage *TextureFrameTable::animationFrame(int animationId, Duration frameTime) {
+const std::shared_ptr<GraphicsImage> &TextureFrameTable::animationFrame(int animationId, Duration frameTime) {
     TextureFrameData &data = _frames[animationId];
     assert(data.flags & FRAME_FIRST);
 
@@ -51,10 +52,10 @@ void TextureFrameTable::resetLoadedTextures() {
     _textures.assign(_frames.size(), nullptr);
 }
 
-GraphicsImage *TextureFrameTable::loadTexture(int frameId) {
+const std::shared_ptr<GraphicsImage> &TextureFrameTable::loadTexture(int frameId) {
     assert(_textures.size() == _frames.size());
 
     if (!_textures[frameId])
         _textures[frameId] = assets->getBitmap(_frames[frameId].textureName);
-    return _textures[frameId].get();
+    return _textures[frameId];
 }

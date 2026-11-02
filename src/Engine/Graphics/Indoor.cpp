@@ -3,6 +3,7 @@
 #include <cmath>
 #include <algorithm>
 #include <limits>
+#include <memory>
 #include <optional>
 #include <ranges>
 #include <string>
@@ -202,11 +203,11 @@ void IndoorLocation::Draw() {
 }
 
 //----- (004AE5BA) --------------------------------------------------------
-GraphicsImage *BLVFace::GetTexture() const {
+const std::shared_ptr<GraphicsImage> &BLVFace::GetTexture() const {
     if (this->IsAnimated()) {
         return pTextureFrameTable->animationFrame(this->animationId, animTimer->time());
     } else {
-        return this->texture.get();
+        return this->texture;
     }
 }
 
@@ -1139,7 +1140,7 @@ void IndoorLocation::PrepareDecorationsRenderList_BLV(unsigned int uDecorationID
 
     v30 = billboardFlagsForSprite(v11->flags, v9);
 
-    if (render->AddBillboardIfVisible(v11->sprites[v9].get(), v11->paletteId, pLevelDecorations[uDecorationID].vPosition, {v11->scale, v11->scale}, v30,
+    if (render->AddBillboardIfVisible(v11->sprites[v9], v11->paletteId, pLevelDecorations[uDecorationID].vPosition, {v11->scale, v11->scale}, v30,
                                       Pid(OBJECT_Decoration, uDecorationID), uSectorID))
         ++uNumDecorationsDrawnThisFrame;
 }

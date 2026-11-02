@@ -29,7 +29,7 @@ class TextureFrameTable {
      */
     Duration animationFrameLength(int frameId);
 
-    GraphicsImage *animationFrame(int animationId, Duration frameTime);
+    const std::shared_ptr<GraphicsImage> &animationFrame(int animationId, Duration frameTime);
 
     /**
      * Drops the textures of every frame. Frames load them again when `animationFrame()` next returns them.
@@ -39,7 +39,7 @@ class TextureFrameTable {
     friend void deserialize(const Blob &src, TextureFrameTable *dst); // In TableSerialization.cpp.
 
  private:
-    GraphicsImage *loadTexture(int frameId);
+    const std::shared_ptr<GraphicsImage> &loadTexture(int frameId);
 
  private:
     std::vector<TextureFrameData> _frames;

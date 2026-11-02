@@ -123,20 +123,20 @@ GUIWindow_TownPortalBook::GUIWindow_TownPortalBook(Pid casterPid, SpellCastFlags
 }
 
 void GUIWindow_TownPortalBook::Update() {
-    render->DrawQuad2D(ui_exit_cancel_button_background.get(), {471, 445});
+    render->DrawQuad2D(ui_exit_cancel_button_background, {471, 445});
 
     Pointi cursorPos = mouse->position();
     bool townPortalCheats = engine->config->debug.TownPortal.value();
     int count = townPortalCheats ? TOWN_PORTAL_DESTINATION_COUNT_WITH_CHEATS : TOWN_PORTAL_DESTINATION_COUNT;
 
-    render->DrawQuad2D(ui_book_townportal_background.get(), {8, 8});
-    render->DrawQuad2D(ui_exit_cancel_button_background.get(), {471, 445});
+    render->DrawQuad2D(ui_book_townportal_background, {8, 8});
+    render->DrawQuad2D(ui_exit_cancel_button_background, {471, 445});
 
     if (townPortalCheats) {
         // draw grey icons for cheat locations
         // ordinary locations are in the background image already
         for (int i = TOWN_PORTAL_DESTINATION_COUNT; i < TOWN_PORTAL_DESTINATION_COUNT_WITH_CHEATS; ++i) {
-            render->DrawQuad2D(ui_townportal_cheat_destination_icon.get(), townPortalButtonsPos[i].topLeft());
+            render->DrawQuad2D(ui_townportal_cheat_destination_icon, townPortalButtonsPos[i].topLeft());
         }
     }
 
@@ -144,7 +144,7 @@ void GUIWindow_TownPortalBook::Update() {
     for (int i = 0; i < count; ++i) {
         if (townPortalCheats || pParty->_questBits[townPortalList[i].qBit]) {
             if (townPortalButtonsPos[i].contains(cursorPos)) {
-                render->DrawQuad2D(ui_book_townportal_icons[i].get(), townPortalButtonsPos[i].topLeft());
+                render->DrawQuad2D(ui_book_townportal_icons[i], townPortalButtonsPos[i].topLeft());
             }
         }
     }
@@ -211,7 +211,7 @@ void GUIWindow_TownPortalBook::clickTown(int townId) {
 
 void GUIWindow_TownPortalBook::hintTown(int townId) {
     if (!engine->config->debug.TownPortal.value() && !pParty->_questBits[townPortalList[townId].qBit]) {
-        render->DrawQuad2D(game_ui_statusbar.get(), {0, 352}); // TODO(captainurist): engine->_statusBar->smthSmth()???
+        render->DrawQuad2D(game_ui_statusbar, {0, 352}); // TODO(captainurist): engine->_statusBar->smthSmth()???
         return;
     }
 

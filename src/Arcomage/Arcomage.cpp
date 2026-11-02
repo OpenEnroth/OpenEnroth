@@ -1300,7 +1300,7 @@ char PlayerTurn(int player_num) {
 void DrawGameUI(int animation_stage) {
     render->BeginScene2D();
     // draw background
-    render->DrawQuad2D(pArcomageGame->pGameBackground.get(), {0, 0});
+    render->DrawQuad2D(pArcomageGame->pGameBackground, {0, 0});
 
     // draw gui items
     DrawRectanglesForText();
@@ -1347,11 +1347,11 @@ void DrawRectanglesForText() {
 
     pTargetXY.x = 8;
     pTargetXY.y = 56;
-    render->DrawQuad2D(pArcomageGame->pSprites.get(), pSrcRect, pTargetXY);
+    render->DrawQuad2D(pArcomageGame->pSprites, pSrcRect, pTargetXY);
 
     pTargetXY.x = 555;
     pTargetXY.y = 56;
-    render->DrawQuad2D(pArcomageGame->pSprites.get(), pSrcRect, pTargetXY);
+    render->DrawQuad2D(pArcomageGame->pSprites, pSrcRect, pTargetXY);
 
     // players name rectangle
     pSrcRect.x = 283;
@@ -1360,11 +1360,11 @@ void DrawRectanglesForText() {
     pSrcRect.h = 190 - pSrcRect.y;
     pTargetXY.x = 8;
     pTargetXY.y = 13;
-    render->DrawQuad2D(pArcomageGame->pSprites.get(), pSrcRect, pTargetXY);
+    render->DrawQuad2D(pArcomageGame->pSprites, pSrcRect, pTargetXY);
 
     pTargetXY.x = 555;
     pTargetXY.y = 13;
-    render->DrawQuad2D(pArcomageGame->pSprites.get(), pSrcRect, pTargetXY);
+    render->DrawQuad2D(pArcomageGame->pSprites, pSrcRect, pTargetXY);
 
     // tower height rectangle
     pSrcRect.x = 234;
@@ -1373,11 +1373,11 @@ void DrawRectanglesForText() {
     pSrcRect.h = 190 - pSrcRect.y;
     pTargetXY.x = 100;
     pTargetXY.y = 296;
-    render->DrawQuad2D(pArcomageGame->pSprites.get(), pSrcRect, pTargetXY);
+    render->DrawQuad2D(pArcomageGame->pSprites, pSrcRect, pTargetXY);
 
     pTargetXY.x = 492;
     pTargetXY.y = 296;
-    render->DrawQuad2D(pArcomageGame->pSprites.get(), pSrcRect, pTargetXY);
+    render->DrawQuad2D(pArcomageGame->pSprites, pSrcRect, pTargetXY);
 
     // wall height rectangle
     pSrcRect.x = 192;
@@ -1386,11 +1386,11 @@ void DrawRectanglesForText() {
     pSrcRect.h = 190 - pSrcRect.y;
     pTargetXY.x = 168;
     pTargetXY.y = 296;
-    render->DrawQuad2D(pArcomageGame->pSprites.get(), pSrcRect, pTargetXY);
+    render->DrawQuad2D(pArcomageGame->pSprites, pSrcRect, pTargetXY);
 
     pTargetXY.x = 430;
     pTargetXY.y = 296;
-    render->DrawQuad2D(pArcomageGame->pSprites.get(), pSrcRect, pTargetXY);
+    render->DrawQuad2D(pArcomageGame->pSprites, pSrcRect, pTargetXY);
 }
 
 void DrawPlayersText() {
@@ -1524,7 +1524,7 @@ void DrawPlayerLevels(std::string_view str, Pointi *pXY) {
             pSrcRect.h = 207 - pSrcRect.y;
             // draw digit
             // TODO(captainurist): this was drawn with blendMode = 1 in original binary, did it have special meaning?
-            render->DrawQuad2D(pArcomageGame->pSprites.get(), pSrcRect, pTargetPoint);
+            render->DrawQuad2D(pArcomageGame->pSprites, pSrcRect, pTargetPoint);
             pTargetPoint.x += 22;
         }
     }
@@ -1546,7 +1546,7 @@ void DrawBricksCount(std::string_view str, Pointi *pXY) {
             pSrcRect.w = v7 - 357 - pSrcRect.x;
             pSrcRect.h = 138 - pSrcRect.y;
             // draw digit
-            render->DrawQuad2D(pArcomageGame->pSprites.get(), pSrcRect, pTargetPoint);
+            render->DrawQuad2D(pArcomageGame->pSprites, pSrcRect, pTargetPoint);
             pTargetPoint.x += 13;
         }
     }
@@ -1568,7 +1568,7 @@ void DrawGemsCount(std::string_view str, Pointi *pXY) {
             pSrcRect.w = v7 - 357 - pSrcRect.x;
             pSrcRect.h = 148 - pSrcRect.y;
             // draw digit
-            render->DrawQuad2D(pArcomageGame->pSprites.get(), pSrcRect, pTargetPoint);
+            render->DrawQuad2D(pArcomageGame->pSprites, pSrcRect, pTargetPoint);
             pTargetPoint.x += 13;
         }
     }
@@ -1590,7 +1590,7 @@ void DrawBeastsCount(std::string_view str, Pointi *pXY) {
             pSrcRect.w = x_offset - 357 - pSrcRect.x;
             pSrcRect.h = 158 - pSrcRect.y;
             // draw digit
-            render->DrawQuad2D(pArcomageGame->pSprites.get(), pSrcRect, pTargetPoint);
+            render->DrawQuad2D(pArcomageGame->pSprites, pSrcRect, pTargetPoint);
             pTargetPoint.x += 13;
         }
     }
@@ -1612,7 +1612,7 @@ void DrawPlayersTowers() {
     pSrcXYZW.h = tower_top - pSrcXYZW.y;
     pTargetXY.x = 102;
     pTargetXY.y = 297 - tower_top;
-    if (tower_height > 0) render->DrawQuad2D(pArcomageGame->pSprites.get(), pSrcXYZW, pTargetXY);  // tower body
+    if (tower_height > 0) render->DrawQuad2D(pArcomageGame->pSprites, pSrcXYZW, pTargetXY);  // tower body
 
     // draw player 0 top
     pSrcXYZW.y = 0;
@@ -1621,7 +1621,7 @@ void DrawPlayersTowers() {
     pSrcXYZW.h = 94 - pSrcXYZW.y;
     pTargetXY.y = 203 - tower_top;
     pTargetXY.x = 91;
-    render->DrawQuad2D(pArcomageGame->pSprites.get(), pSrcXYZW, pTargetXY);  // tower top
+    render->DrawQuad2D(pArcomageGame->pSprites, pSrcXYZW, pTargetXY);  // tower top
 
     // draw player 1 tower
     tower_height = am_Players[1].tower_height;
@@ -1635,7 +1635,7 @@ void DrawPlayersTowers() {
     pSrcXYZW.h = tower_top - pSrcXYZW.y;
     pTargetXY.x = 494;
     pTargetXY.y = 297 - tower_top;
-    if (tower_height > 0) render->DrawQuad2D(pArcomageGame->pSprites.get(), pSrcXYZW, pTargetXY);
+    if (tower_height > 0) render->DrawQuad2D(pArcomageGame->pSprites, pSrcXYZW, pTargetXY);
 
     // draw tower 1 top
     pSrcXYZW.x = 384;
@@ -1644,7 +1644,7 @@ void DrawPlayersTowers() {
     pSrcXYZW.h = 188 - pSrcXYZW.y;
     pTargetXY.x = 483;
     pTargetXY.y = 203 - tower_top;
-    render->DrawQuad2D(pArcomageGame->pSprites.get(), pSrcXYZW, pTargetXY);
+    render->DrawQuad2D(pArcomageGame->pSprites, pSrcXYZW, pTargetXY);
 }
 
 void DrawPlayersWall() {
@@ -1666,7 +1666,7 @@ void DrawPlayersWall() {
         pSrcXYZW.h = player_0_pixh - pSrcXYZW.y;
         pTargetXY.x = 177;
         pTargetXY.y = 297 - player_0_pixh;
-        render->DrawQuad2D(pArcomageGame->pSprites.get(), pSrcXYZW, pTargetXY);
+        render->DrawQuad2D(pArcomageGame->pSprites, pSrcXYZW, pTargetXY);
     }
 
     // draw player 1 wall
@@ -1680,7 +1680,7 @@ void DrawPlayersWall() {
         pSrcXYZW.h = player_1_pixh - pSrcXYZW.y;
         pTargetXY.x = 439;
         pTargetXY.y = 297 - player_1_pixh;
-        render->DrawQuad2D(pArcomageGame->pSprites.get(), pSrcXYZW, pTargetXY);
+        render->DrawQuad2D(pArcomageGame->pSprites, pSrcXYZW, pTargetXY);
     }
 }
 
@@ -1712,14 +1712,14 @@ void DrawCards() {
                 pSrcXYZW.y = 0;
                 pSrcXYZW.w = 288 - pSrcXYZW.x;
                 pSrcXYZW.h = 128 - pSrcXYZW.y;
-                render->DrawQuad2D(pArcomageGame->pSprites.get(), pSrcXYZW, pTargetXY);  // backs of the opponent's cards
+                render->DrawQuad2D(pArcomageGame->pSprites, pSrcXYZW, pTargetXY);  // backs of the opponent's cards
             } else {
                 pArcomageGame->GetCardRect(am_Players[current_player_num].cards_at_hand[card_slot], &pSrcXYZW);
                 if (!CanCardBePlayed(current_player_num, card_slot)) {
                     // inactive cards are drawn greyed out
-                    render->DrawQuad2D(pArcomageGame->pSprites.get(), pSrcXYZW, pTargetXY, colorTable.Gray);
+                    render->DrawQuad2D(pArcomageGame->pSprites, pSrcXYZW, pTargetXY, colorTable.Gray);
                 } else {
-                    render->DrawQuad2D(pArcomageGame->pSprites.get(), pSrcXYZW, pTargetXY);  // active cards
+                    render->DrawQuad2D(pArcomageGame->pSprites, pSrcXYZW, pTargetXY);  // active cards
                 }
             }
         }
@@ -1741,7 +1741,7 @@ void DrawCards() {
             if (shown_cards[table_cards].uCardId != -1) {
                 // draw card - greyed out
                 pArcomageGame->GetCardRect(shown_cards[table_cards].uCardId, &pSrcXYZW);
-                render->DrawQuad2D(pArcomageGame->pSprites.get(), pSrcXYZW, shown_cards[table_cards].hide_anim_pos, colorTable.Gray);
+                render->DrawQuad2D(pArcomageGame->pSprites, pSrcXYZW, shown_cards[table_cards].hide_anim_pos, colorTable.Gray);
             }
             if (shown_cards[table_cards].discarded != 0) {
                 // draw discarded text
@@ -1751,7 +1751,7 @@ void DrawCards() {
                 pSrcXYZW.y = 200;
                 pSrcXYZW.w = 916 - pSrcXYZW.x;
                 pSrcXYZW.h = 216 - pSrcXYZW.y;
-                render->DrawQuad2D(pArcomageGame->pSprites.get(), pSrcXYZW, pTargetXY);
+                render->DrawQuad2D(pArcomageGame->pSprites, pSrcXYZW, pTargetXY);
             }
         } else if (hide_card_anim_count <= 0) {
             // animation finished
@@ -1774,7 +1774,7 @@ void DrawCards() {
                 shown_cards[table_cards].hide_anim_pos.x += shown_cards[table_cards].hide_anim_spd.x;
                 shown_cards[table_cards].hide_anim_pos.y += shown_cards[table_cards].hide_anim_spd.y;
                 pArcomageGame->GetCardRect(shown_cards[table_cards].uCardId, &pSrcXYZW);
-                render->DrawQuad2D(pArcomageGame->pSprites.get(), pSrcXYZW, shown_cards[table_cards].hide_anim_pos, colorTable.Gray);
+                render->DrawQuad2D(pArcomageGame->pSprites, pSrcXYZW, shown_cards[table_cards].hide_anim_pos, colorTable.Gray);
             }
         }
     }
@@ -1789,7 +1789,7 @@ void DrawCards() {
     pSrcXYZW.h = 128 - pSrcXYZW.y;
     pTargetXY.x = 120;
     pTargetXY.y = 18;
-    render->DrawQuad2D(pArcomageGame->pSprites.get(), pSrcXYZW, pTargetXY, colorTable.Gray);
+    render->DrawQuad2D(pArcomageGame->pSprites, pSrcXYZW, pTargetXY, colorTable.Gray);
 }
 
 void DrawCardAnimation(int animation_stage) {
@@ -1828,7 +1828,7 @@ void DrawCardAnimation(int animation_stage) {
             pSrcXYZW.y = 0;
             pSrcXYZW.w = 288 - pSrcXYZW.x;
             pSrcXYZW.h = 128 - pSrcXYZW.y;
-            render->DrawQuad2D(pArcomageGame->pSprites.get(), pSrcXYZW, anim_card_pos_drawncard);
+            render->DrawQuad2D(pArcomageGame->pSprites, pSrcXYZW, anim_card_pos_drawncard);
         } else {
             // animation is running - update position and draw
             pSrcXYZW.x = 192;
@@ -1837,7 +1837,7 @@ void DrawCardAnimation(int animation_stage) {
             pSrcXYZW.h = 128 - pSrcXYZW.y;
             anim_card_pos_drawncard.x += anim_card_spd_drawncard.x;
             anim_card_pos_drawncard.y += anim_card_spd_drawncard.y;
-            render->DrawQuad2D(pArcomageGame->pSprites.get(), pSrcXYZW, anim_card_pos_drawncard);
+            render->DrawQuad2D(pArcomageGame->pSprites, pSrcXYZW, anim_card_pos_drawncard);
 
             // reset if animation is finished
             if (!drawn_card_anim_cnt) drawn_card_slot_index = -1;
@@ -1865,7 +1865,7 @@ void DrawCardAnimation(int animation_stage) {
                 pArcomageGame->GetCardRect(discarded_card_id, &pSrcXYZW);
                 pTargetXY.x = shown_cards[card_slot].table_pos.x;
                 pTargetXY.y = shown_cards[card_slot].table_pos.y;
-                render->DrawQuad2D(pArcomageGame->pSprites.get(), pSrcXYZW, pTargetXY, colorTable.Gray);
+                render->DrawQuad2D(pArcomageGame->pSprites, pSrcXYZW, pTargetXY, colorTable.Gray);
 
                 // reset discard anim
                 discarded_card_id = -1;
@@ -1875,7 +1875,7 @@ void DrawCardAnimation(int animation_stage) {
             pArcomageGame->GetCardRect(discarded_card_id, &pSrcXYZW);
             anim_card_pos_playdiscard.x += anim_card_spd_playdiscard.x;
             anim_card_pos_playdiscard.y += anim_card_spd_playdiscard.y;
-            render->DrawQuad2D(pArcomageGame->pSprites.get(), pSrcXYZW, anim_card_pos_playdiscard, colorTable.Gray);
+            render->DrawQuad2D(pArcomageGame->pSprites, pSrcXYZW, anim_card_pos_playdiscard, colorTable.Gray);
         }
     }
     // end discard card anim
@@ -1888,7 +1888,7 @@ void DrawCardAnimation(int animation_stage) {
             pArcomageGame->GetCardRect(played_card_id, &pSrcXYZW);
             anim_card_pos_playdiscard.x += anim_card_spd_playdiscard.x;
             anim_card_pos_playdiscard.y += anim_card_spd_playdiscard.y;
-            render->DrawQuad2D(pArcomageGame->pSprites.get(), pSrcXYZW, anim_card_pos_playdiscard);
+            render->DrawQuad2D(pArcomageGame->pSprites, pSrcXYZW, anim_card_pos_playdiscard);
             return;
         }
 
@@ -1903,7 +1903,7 @@ void DrawCardAnimation(int animation_stage) {
             pArcomageGame->GetCardRect(played_card_id, &pSrcXYZW);
             pTargetXY.x = 272;
             pTargetXY.y = 173;
-            render->DrawQuad2D(pArcomageGame->pSprites.get(), pSrcXYZW, pTargetXY);
+            render->DrawQuad2D(pArcomageGame->pSprites, pSrcXYZW, pTargetXY);
             return;
         }
 
@@ -1923,7 +1923,7 @@ void DrawCardAnimation(int animation_stage) {
             pArcomageGame->GetCardRect(played_card_id, &pSrcXYZW);
             pTargetXY.x = 272;
             pTargetXY.y = 173;
-            render->DrawQuad2D(pArcomageGame->pSprites.get(), pSrcXYZW, pTargetXY);
+            render->DrawQuad2D(pArcomageGame->pSprites, pSrcXYZW, pTargetXY);
             return;
         }
 
@@ -1933,7 +1933,7 @@ void DrawCardAnimation(int animation_stage) {
             pArcomageGame->GetCardRect(played_card_id, &pSrcXYZW);
             anim_card_pos_playdiscard.x += anim_card_spd_playdiscard.x;
             anim_card_pos_playdiscard.y += anim_card_spd_playdiscard.y;
-            render->DrawQuad2D(pArcomageGame->pSprites.get(), pSrcXYZW, anim_card_pos_playdiscard, colorTable.Gray);
+            render->DrawQuad2D(pArcomageGame->pSprites, pSrcXYZW, anim_card_pos_playdiscard, colorTable.Gray);
             return;
         }
 
@@ -1952,7 +1952,7 @@ void DrawCardAnimation(int animation_stage) {
             pArcomageGame->GetCardRect(played_card_id, &pSrcXYZW);
             pTargetXY.x = shown_cards[v19].table_pos.x;
             pTargetXY.y = shown_cards[v19].table_pos.y;
-            render->DrawQuad2D(pArcomageGame->pSprites.get(), pSrcXYZW, pTargetXY, colorTable.Gray);
+            render->DrawQuad2D(pArcomageGame->pSprites, pSrcXYZW, pTargetXY, colorTable.Gray);
 
             // reset anim
             played_card_id = -1;
@@ -2854,7 +2854,7 @@ void ArcomageGame::PrepareArcomage() {
     // load in background pic and render
     render->BeginScene2D();
     pArcomageGame->pGameBackground = assets->getIcon("layout.pcx");
-    render->DrawQuad2D(pArcomageGame->pGameBackground.get(), {0, 0});
+    render->DrawQuad2D(pArcomageGame->pGameBackground, {0, 0});
     render->Present();
 
     // load in layout pic containing all AM sprites and set fonts

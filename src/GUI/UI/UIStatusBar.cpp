@@ -22,7 +22,7 @@ const std::string &StatusBar::get() {
 }
 
 void StatusBar::draw() {
-    render->DrawQuad2D(game_ui_statusbar.get(), {0, 352});
+    render->DrawQuad2D(game_ui_statusbar, {0, 352});
 
     const std::string &status = get();
     if (status.length() > 0)
@@ -30,7 +30,7 @@ void StatusBar::draw() {
 }
 
 void StatusBar::drawForced(std::string_view str, Color color) {
-    render->DrawQuad2D(game_ui_statusbar.get(), {0, 352});
+    render->DrawQuad2D(game_ui_statusbar, {0, 352});
     GUIWindow::DrawText(assets->pFontLucida.get(), { assets->pFontLucida->AlignText_Center(450, str) + 11, 357}, color, str, pPrimaryWindow->frameRect);
 }
 

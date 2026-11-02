@@ -9,6 +9,7 @@
 #include "Library/Color/ColorTable.h"
 #include "Library/Geometry/Rect.h"
 #include "Engine/HitMap.h"
+#include "Utility/Ptr.h"
 
 #include "TextureRenderId.h"
 #include "Engine/Graphics/ParticleEngine.h"
@@ -72,11 +73,11 @@ class Renderer {
     virtual void DrawBillboards_And_MaybeRenderSpecialEffects_And_EndScene() = 0;
     virtual void BillboardSphereSpellFX(SpellFX_Billboard *a1, Color diffuse) = 0;
     virtual void TransformBillboards() = 0;
-    virtual bool AddBillboardIfVisible(GraphicsImage *sprite, int palette, const Vec3f& pos, const Vec2f& scale, BillboardFlags flags, Pid id, int sector = 0) = 0;
+    virtual bool AddBillboardIfVisible(Ptr<GraphicsImage> sprite, int palette, const Vec3f& pos, const Vec2f& scale, BillboardFlags flags, Pid id, int sector = 0) = 0;
 
     virtual void DrawProjectile(float srcX, float srcY, float a3, float a4,
                                 float dstX, float dstY, float a7, float a8,
-                                GraphicsImage *texture) = 0;
+                                Ptr<GraphicsImage> texture) = 0;
 
     virtual TextureRenderId CreateTexture(RgbaImageView image) = 0;
     virtual void DeleteTexture(TextureRenderId id) = 0;
@@ -96,19 +97,19 @@ class Renderer {
      * @param color                     Multiplicative color mask applied to the texture. Use `colorTable.White` for no
      *                                  tinting. RGB components scale the texture colors, alpha controls transparency.
      */
-    virtual void DrawQuad2D(GraphicsImage *texture, const Recti &srcRect, const Recti &dstRect, Color color = colorTable.White) = 0;
-    void DrawQuad2D(GraphicsImage *texture, const Recti &srcRect, Pointi dstPoint, Color color = colorTable.White);
-    void DrawQuad2D(GraphicsImage *texture, Pointi dstPoint, Color color = colorTable.White);
+    virtual void DrawQuad2D(Ptr<GraphicsImage> texture, const Recti &srcRect, const Recti &dstRect, Color color = colorTable.White) = 0;
+    void DrawQuad2D(Ptr<GraphicsImage> texture, const Recti &srcRect, Pointi dstPoint, Color color = colorTable.White);
+    void DrawQuad2D(Ptr<GraphicsImage> texture, Pointi dstPoint, Color color = colorTable.White);
 
     void FillRect(const Recti &rect, Color color);
 
     // TODO(captainurist): DrawImage uses palette, should be refactored to use a separate palette shader.
-    virtual void DrawImage(GraphicsImage *, const Recti &rect, int paletteid = 0, Color colourmask32 = colorTable.White) = 0;
+    virtual void DrawImage(Ptr<GraphicsImage>, const Recti &rect, int paletteid = 0, Color colourmask32 = colorTable.White) = 0;
 
-    virtual void BlendTextures(int a2, int a3, GraphicsImage *a4, GraphicsImage *a5, int t, int start_opacity, int end_opacity) = 0;
+    virtual void BlendTextures(int a2, int a3, Ptr<GraphicsImage> a4, Ptr<GraphicsImage> a5, int t, int start_opacity, int end_opacity) = 0;
     virtual void DrawMonsterPortrait(const Recti &rc, SpriteFrame *Portrait_Sprite, int Y_Offset) = 0;
 
-    virtual void BeginTextNew(GraphicsImage *texture) = 0;
+    virtual void BeginTextNew(Ptr<GraphicsImage> texture) = 0;
     virtual void EndTextNew() = 0;
     virtual void DrawTextNew(const Recti &srcRect, const Recti &dstRect, const TextColors &colors) = 0;
 
@@ -139,7 +140,7 @@ class Renderer {
     virtual void EndDecals() = 0;
     virtual void DrawDecal(Decal *pDecal, float z_bias) = 0;
 
-    virtual void DrawSpecialEffectsQuad(GraphicsImage *texture, int palette) = 0;
+    virtual void DrawSpecialEffectsQuad(Ptr<GraphicsImage> texture, int palette) = 0;
 
     virtual void DrawIndoorFaces() = 0;
 
@@ -177,7 +178,7 @@ class Renderer {
     /**
      * @returns                         1x1 white texture for solid color fills. Initialized lazily on first use.
      */
-    GraphicsImage *solidFillTexture();
+    const std::unique_ptr<GraphicsImage> &solidFillTexture();
 
  protected:
     void releaseSolidFillTexture();

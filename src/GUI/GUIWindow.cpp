@@ -339,8 +339,8 @@ void GUIWindow::DrawDialoguePanel(std::string_view text) {
     }
 
     int leatherWidth = ui_leather_mm7->width();
-    render->DrawQuad2D(ui_leather_mm7.get(), Recti(0, 0, leatherWidth, textHeight), Recti(8, 352 - textHeight, leatherWidth, textHeight));
-    render->DrawQuad2D(_591428_endcap.get(), {8, 347 - textHeight});
+    render->DrawQuad2D(ui_leather_mm7, Recti(0, 0, leatherWidth, textHeight), Recti(8, 352 - textHeight, leatherWidth, textHeight));
+    render->DrawQuad2D(_591428_endcap, {8, 347 - textHeight});
     DrawText(font, {indent, 354 - textHeight}, colorTable.White, font->WrapText(text, frameWidth, indent), frameRect);
 }
 
@@ -448,7 +448,7 @@ void OnButtonClick::Update() {
     if (_playSound) {
         pAudioPlayer->playUISound(SOUND_StartMainChoice02);
     }
-    render->DrawQuad2D(_button->vTextures[0].get(), frameRect.topLeft());
+    render->DrawQuad2D(_button->vTextures[0], frameRect.topLeft());
     if (!sHint.empty()) {
         _button->DrawLabel(sHint, assets->pFontCreate.get(), colorTable.White);
     }
@@ -459,7 +459,7 @@ void OnButtonClick::Update() {
 void OnButtonClick3::Update() {
     pAudioPlayer->playUISound(SOUND_StartMainChoice02);
 
-    render->DrawQuad2D(_button->vTextures[1].get(), frameRect.topLeft());
+    render->DrawQuad2D(_button->vTextures[1], frameRect.topLeft());
     if (!sHint.empty()) {
         _button->DrawLabel(sHint, assets->pFontCreate.get(), colorTable.White);
     }
@@ -471,7 +471,7 @@ void OnSaveLoad::Update() {
     if (!sHint.empty()) {
         pAudioPlayer->playUISound(SOUND_StartMainChoice02);
     }
-    render->DrawQuad2D(_button->vTextures[0].get(), frameRect.topLeft());
+    render->DrawQuad2D(_button->vTextures[0], frameRect.topLeft());
     if (!sHint.empty()) {
         _button->DrawLabel(sHint, assets->pFontCreate.get(), colorTable.White);
     }
@@ -489,7 +489,7 @@ void OnCancel::Update() {
     if (sHint.empty()) {
         pAudioPlayer->playUISound(SOUND_StartMainChoice02);
     }
-    render->DrawQuad2D(_button->vTextures[0].get(), frameRect.topLeft());
+    render->DrawQuad2D(_button->vTextures[0], frameRect.topLeft());
     if (!sHint.empty()) {
         _button->DrawLabel(sHint, assets->pFontCreate.get(), colorTable.White);
     }
@@ -503,7 +503,7 @@ void OnCancel2::Update() {
     if (!sHint.empty()) {
         pAudioPlayer->playUISound(SOUND_StartMainChoice02);
     }
-    render->DrawQuad2D(_button->vTextures[1].get(), frameRect.topLeft());
+    render->DrawQuad2D(_button->vTextures[1], frameRect.topLeft());
     if (!sHint.empty()) {
         _button->DrawLabel(sHint, assets->pFontCreate.get(), colorTable.White);
     }
@@ -518,7 +518,7 @@ void OnCancel3::Update() {
         pAudioPlayer->playUISound(SOUND_StartMainChoice02);
     }
 
-    render->DrawQuad2D(_button->vTextures[0].get(), frameRect.topLeft());
+    render->DrawQuad2D(_button->vTextures[0], frameRect.topLeft());
     if (!sHint.empty()) {
         _button->DrawLabel(sHint, assets->pFontCreate.get(), colorTable.White);
     }

@@ -1,5 +1,6 @@
 #include "GUI/UI/UISpellbook.h"
 
+#include <memory>
 #include <string>
 
 #include "Engine/AssetsManager.h"
@@ -159,13 +160,13 @@ void GUIWindow_Spellbook::Update() {
         Skill skill = skillForMagicSchool(page);
 
         if (player.pActiveSkills[skill] || engine->config->debug.AllMagic.value()) {
-            GraphicsImage *pPageTexture = ui_spellbook_school_tabs[page][0].get();
+            std::shared_ptr<GraphicsImage> pPageTexture = ui_spellbook_school_tabs[page][0];
             if (player.lastOpenedSpellbookPage == page) {
-                pPageTexture = ui_spellbook_school_tabs[page][1].get();
+                pPageTexture = ui_spellbook_school_tabs[page][1];
                 pX_coord = texture_tab_coord1[page][0];
                 pY_coord = texture_tab_coord1[page][1];
             } else {
-                pPageTexture = ui_spellbook_school_tabs[page][0].get();
+                pPageTexture = ui_spellbook_school_tabs[page][0];
                 pX_coord = texture_tab_coord0[page][0];
                 pY_coord = texture_tab_coord0[page][1];
             }
@@ -178,7 +179,7 @@ void GUIWindow_Spellbook::Update() {
                 if (player.bHaveSpell[spell] || engine->config->debug.AllMagic.value()) {
                     // this should check if player knows spell
                     if (SBPageSSpellsTextureList[index + 1]) {
-                        GraphicsImage *pTexture = ((spellbookSelectedSpell == spell) ? SBPageCSpellsTextureList[index + 1] : SBPageSSpellsTextureList[index + 1]).get();
+                        std::shared_ptr<GraphicsImage> pTexture = spellbookSelectedSpell == spell ? SBPageCSpellsTextureList[index + 1] : SBPageSSpellsTextureList[index + 1];
                         if (pTexture) {
                             SpellBookIconPos &iconPos = pIconPos[player.lastOpenedSpellbookPage][pSpellbookSpellIndices[player.lastOpenedSpellbookPage][index + 1]];
 
@@ -188,7 +189,7 @@ void GUIWindow_Spellbook::Update() {
                             Recti iconRect = Recti(pX_coord, pY_coord, pTexture->width(), pTexture->height());
                             if (iconRect.contains(mousePos)) { // mouseover highlight
                                 if (SBPageCSpellsTextureList[index + 1])
-                                    render->DrawQuad2D(SBPageCSpellsTextureList[index + 1].get(), {pX_coord, pY_coord});
+                                    render->DrawQuad2D(SBPageCSpellsTextureList[index + 1], {pX_coord, pY_coord});
                             } else {
                                 render->DrawQuad2D(pTexture, {pX_coord, pY_coord});
                             }
@@ -231,10 +232,10 @@ void GUIWindow_Spellbook::drawCurrentSchoolBackground() {
     MagicSchool page = MAGIC_SCHOOL_FIRE;
     if (pParty->hasActiveCharacter())
         page = pParty->activeCharacter().lastOpenedSpellbookPage;
-    render->DrawQuad2D(ui_spellbook_school_backgrounds[page].get(), {8, 8});
+    render->DrawQuad2D(ui_spellbook_school_backgrounds[page], {8, 8});
 
-    render->DrawQuad2D(ui_spellbook_btn_quckspell.get(), {476, 450});
-    render->DrawQuad2D(ui_spellbook_btn_close.get(), {561, 450});
+    render->DrawQuad2D(ui_spellbook_btn_quckspell, {476, 450});
+    render->DrawQuad2D(ui_spellbook_btn_close, {561, 450});
 }
 
 void GUIWindow_Spellbook::initializeTextures() {

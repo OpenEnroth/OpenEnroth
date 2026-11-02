@@ -67,9 +67,9 @@ static std::string getDayPart(int hour) {
 }
 
 void GUIWindow_CalendarBook::Update() {
-    render->DrawQuad2D(ui_exit_cancel_button_background.get(), {471, 445});
+    render->DrawQuad2D(ui_exit_cancel_button_background, {471, 445});
 
-    render->DrawQuad2D(ui_book_calendar_background.get(), pViewport.topLeft());
+    render->DrawQuad2D(ui_book_calendar_background, pViewport.topLeft());
     CivilTime time = pParty->GetPlayingTime().toCivilTime();
 
     DrawTitleText(assets->pFontBookTitle.get(), 0, 22, ui_book_calendar_title_color, localization->str(LSTR_TIME_IN_ERATHIA), 3, pViewport);

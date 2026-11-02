@@ -167,10 +167,10 @@ void GUIWindow_Dialogue::Update() {
     // Window title
     NPCData *pNPC = getNPCData(speakingNpcId);
     NpcType npcType = getNPCType(speakingNpcId);
-    render->DrawQuad2D(_dialogueBackground.get(), {477, 0});
-    render->DrawQuad2D(game_ui_right_panel_frame.get(), {468, 0});
-    render->DrawQuad2D(game_ui_evtnpc.get(), {pNPCPortraits_x[0][0] - 4, pNPCPortraits_y[0][0] - 4});
-    render->DrawQuad2D(houseNpcs[0].icon.get(), {pNPCPortraits_x[0][0], pNPCPortraits_y[0][0]});
+    render->DrawQuad2D(_dialogueBackground, {477, 0});
+    render->DrawQuad2D(game_ui_right_panel_frame, {468, 0});
+    render->DrawQuad2D(game_ui_evtnpc, {pNPCPortraits_x[0][0] - 4, pNPCPortraits_y[0][0] - 4});
+    render->DrawQuad2D(houseNpcs[0].icon, {pNPCPortraits_x[0][0], pNPCPortraits_y[0][0]});
 
     Recti titleWindow = pDialogueWindow->frameRect;
     titleWindow.w -= 10;
@@ -300,7 +300,7 @@ void GUIWindow_Dialogue::Update() {
             DrawTitleText(assets->pFontArrus.get(), 0, pButton->rect.y, pTextColor, pButton->label, 3, window);
         }
     }
-    render->DrawQuad2D(ui_exit_cancel_button_background.get(), {471, 445});
+    render->DrawQuad2D(ui_exit_cancel_button_background, {471, 445});
 }
 
 void BuildHireableNpcDialogue() {
