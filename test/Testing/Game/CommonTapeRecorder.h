@@ -104,8 +104,8 @@ class CommonTapeRecorder {
     TestMultiTape<SoundId> sounds();
 
     /**
-     * @return                          Tape of the names of the fullscreen movies that the game asked to play. It
-     *                                  records them with `debug.no_video` on as well.
+     * @return                          Tape of the names passed to `MPlayer::PlayFullscreenMovie`, recorded with
+     *                                  `debug.no_video` on as well. The startup movies in `VideoState` aren't on it.
      */
     TestMultiTape<std::string> movies();
 

@@ -1020,6 +1020,17 @@ GAME_TEST(Prs, Pr2876c) {
     EXPECT_EQ(mapTape, tape(MAP_HIDDEN_TOMB));
 }
 
+GAME_TEST(Prs, Pr2965) {
+    // With video off, which is how tests run, a test had no way to tell that a fullscreen movie was asked for.
+    auto movieTape = tapes.movies();
+    test.startTaping();
+    game.pressGuiButton("MainMenu_NewGame");
+    game.tick(2);
+    game.pressGuiButton("PartyCreation_OK");
+    game.skipLoadingScreen();
+    EXPECT_EQ(movieTape.flatten(), tape<std::string>("Intro Post"));
+}
+
 GAME_TEST(Issues, Issue2881a) {
     // Holding the jump key let the party bounce across water without taking damage.
     auto hpTape = tapes.totalHp();
