@@ -425,13 +425,9 @@ bool ClippingFunctions::ClipVertsToFace(RenderVertexSoft *a1, unsigned int uNumV
             if (*pOutNumVertices == 0) return true;
 
             for (unsigned j = 0; j < *pOutNumVertices; ++j) {
-                if (j) {
-                    if (DoDecalVertsNeedClipping(&pOutVertices[j - 1], &pOutVertices[j], &a1[i],
-                                &static_sub_4980B9_stru_AE4BEC) &&
-                        AdjustVertToClipEdge(&pOutVertices[j - 1], &pOutVertices[j], &a1[i],
-                                &static_sub_4980B9_stru_AE4BEC, &stru_AE4BFC))
-                        AddVertex(&static_sub_4980B9_stru_AE3FE8, &stru_AE4BFC);
-                }
+                if (j && DoDecalVertsNeedClipping(&pOutVertices[j - 1], &pOutVertices[j], &a1[i], &static_sub_4980B9_stru_AE4BEC) &&
+                    AdjustVertToClipEdge(&pOutVertices[j - 1], &pOutVertices[j], &a1[i], &static_sub_4980B9_stru_AE4BEC, &stru_AE4BFC))
+                    AddVertex(&static_sub_4980B9_stru_AE3FE8, &stru_AE4BFC);
 
                 if (AreVectorsCollinear(&pOutVertices[j], &a1[i],
                                         &static_sub_4980B9_stru_AE4BEC))

@@ -22,9 +22,8 @@ FsmAction VideoState::enter() {
     }
 
     _movie = pMediaPlayer->loadFullScreenMovie(_videoFileName.c_str());
-    if (!_movie) {
+    if (!_movie)
         return FsmAction::transition("videoEnd");
-    }
 
     // Stop the game timer and audio before playing a video
     gameTimer->setPaused(true);

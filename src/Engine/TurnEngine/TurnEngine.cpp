@@ -86,18 +86,15 @@ void stru262_TurnBased::SortTurnQueue() {
         pParty->setActiveCharacterIndex(-1);
         flags &= ~TE_PLAYER_TURN;
     }
-    for (i = 0; i < this->pQueue.size(); ++i) {
-        if (pQueue[i].uPackedID.type() ==
-            OBJECT_Character)  // set recovery times
+    for (i = 0; i < this->pQueue.size(); ++i)
+        if (pQueue[i].uPackedID.type() == OBJECT_Character)  // set recovery times
             pParty->pCharacters[pQueue[i].uPackedID.id()].timeToRecovery =
                 Duration::fromTicks((double)pQueue[i].actor_initiative / flt_debugrecmod3); // Was * 0.46875, 0.46875 = 1 / 2.133333333333333.
-    }
 }
 //----- (0040471C) --------------------------------------------------------
 void stru262_TurnBased::ApplyPlayerAction() {
-    if (pParty->bTurnBasedModeOn) {
-        if (pTurnEngine->turn_stage == TE_ATTACK) _406457(0);
-    }
+    if (pParty->bTurnBasedModeOn && pTurnEngine->turn_stage == TE_ATTACK)
+        _406457(0);
 }
 
 //----- (004059DB) --------------------------------------------------------
@@ -205,15 +202,13 @@ void stru262_TurnBased::End(bool bPlaySound) {
     int i;
 
     this->turn_stage = TE_NONE;
-    for (i = 0; i < this->pQueue.size(); ++i) {
+    for (i = 0; i < this->pQueue.size(); ++i)
         if (pQueue[i].uPackedID.type() == OBJECT_Actor)
             pActors[pQueue[i].uPackedID.id()].ResetQueue();
-    }
 
-    for (unsigned i = 0; i < pSpriteObjects.size(); ++i) {
+    for (unsigned i = 0; i < pSpriteObjects.size(); ++i)
         if (pSpriteObjects[i].uAttributes & SPRITE_HALT_TURN_BASED)
             pSpriteObjects[i].uAttributes &= ~SPRITE_HALT_TURN_BASED;
-    }
 
     for (i = 0; i < this->pQueue.size(); ++i) {
         objType = (ObjectType)pQueue[i].uPackedID.type();
@@ -318,12 +313,9 @@ void stru262_TurnBased::StartTurn() {
     pending_actions = 0;
     // add player to queue if he can act
     for (player_num = 0; player_num < 4; ++player_num) {
-        for (j = 0; j < this->pQueue.size(); ++j) {
-            if (pQueue[j].uPackedID.type() == OBJECT_Character) {
-                if (pParty->pCharacters[pQueue[j].uPackedID.id()].CanAct() && (player_num == pQueue[j].uPackedID.id()))
-                    break;
-            }
-        }
+        for (j = 0; j < this->pQueue.size(); ++j)
+            if (pQueue[j].uPackedID.type() == OBJECT_Character && pParty->pCharacters[pQueue[j].uPackedID.id()].CanAct() && player_num == pQueue[j].uPackedID.id())
+                break;
         if (j == this->pQueue.size()) {
             TurnBased_QueueElem &element = this->pQueue.emplace_back();
             element.uPackedID = Pid(OBJECT_Character, player_num);
@@ -334,11 +326,9 @@ void stru262_TurnBased::StartTurn() {
     }
     // add new arrived actors
     for (actor_num = 0; actor_num < ai_arrays_size; ++actor_num) {
-        for (j = 0; j < this->pQueue.size(); ++j) {
-            if ((pQueue[j].uPackedID.type() == OBJECT_Actor) &&
-                ai_near_actors_ids[actor_num] == pQueue[j].uPackedID.id())
+        for (j = 0; j < this->pQueue.size(); ++j)
+            if (pQueue[j].uPackedID.type() == OBJECT_Actor && ai_near_actors_ids[actor_num] == pQueue[j].uPackedID.id())
                 break;
-        }
         if (j == this->pQueue.size()) {
             TurnBased_QueueElem &element = this->pQueue.emplace_back();
             element.uPackedID = Pid(OBJECT_Actor, ai_near_actors_ids[actor_num]);
@@ -349,9 +339,9 @@ void stru262_TurnBased::StartTurn() {
     }
     ++turns_count;
     turn_initiative = 100;
-    for (i = 0; i < this->pQueue.size(); ++i) {
-        if (pQueue[i].actor_initiative == 0) pQueue[i].actor_initiative = 100;
-    }
+    for (i = 0; i < this->pQueue.size(); ++i)
+        if (pQueue[i].actor_initiative == 0)
+            pQueue[i].actor_initiative = 100;
     StepTurnQueue();
     for (i = 0; i < this->pQueue.size(); ++i) {
         if ((pQueue[i].uPackedID.type() == OBJECT_Character) ||

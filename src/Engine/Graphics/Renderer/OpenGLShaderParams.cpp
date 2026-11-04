@@ -8,9 +8,8 @@
 
 void FogUniforms::submit(const OpenGLShader &shader, bool decal) const {
     // Fog color is optimised out in decal shader
-    if (!decal) {
+    if (!decal)
         glUniform3f(shader.uniformLocation("fog.color"), color.r, color.g, color.b);
-    }
     glUniform1f(shader.uniformLocation("fog.weakDensity"), weakDensity);
     glUniform1f(shader.uniformLocation("fog.strongDensity"), strongDensity);
     glUniform1f(shader.uniformLocation("fog.weakDistance"), weakDistance);

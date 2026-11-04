@@ -16,8 +16,7 @@ void HostilityTable::Initialize(const Blob &factions) {
     for (auto &line : relations)
         line.fill(HOSTILITY_FRIENDLY);
 
-    for (auto [line, row] : split(factions.str()).by("\r\n").drop(1).skip("").zip(Segment(0, 88))) {
+    for (auto [line, row] : split(factions.str()).by("\r\n").drop(1).skip("").zip(Segment(0, 88)))
         for (auto [cell, col] : split(line).by('\t').drop(1).zip(Segment(0, 88)))
             relations[static_cast<MonsterType>(col)][static_cast<MonsterType>(row)] = static_cast<MonsterHostility>(fromString<int>(cell));
-    }
 }

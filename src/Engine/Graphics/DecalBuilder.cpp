@@ -52,9 +52,8 @@ void DecalBuilder::AddBloodsplat(const Vec3f &pos, Color color, float radius) {
 
 //----- (0049B525) --------------------------------------------------------
 void DecalBuilder::Reset(bool bPreserveBloodsplats) {
-    if (!bPreserveBloodsplats) {
+    if (!bPreserveBloodsplats)
         bloodsplat_container->uNumBloodsplats = 0;
-    }
     DecalsCount = 0;
 }
 

@@ -208,11 +208,8 @@ bool ClipProjectileToViewPlane(RenderVertexSoft *p) { // maybe near clipping on 
     // If the first endpoint is behind or the second is not in front/on the plane
     if (pBehind || !(pInFront | pOnPlane)) {
         // If both endpoints are behind, reject the projectile
-        if (pBehind) {
-            if (!(pInFront | pOnPlane)) {
-                return false;
-            }
-        }
+        if (pBehind && !(pInFront | pOnPlane))
+            return false;
         // If the second endpoint is in front/on the plane, clip the second endpoint to the view plane
         if (pInFront | pOnPlane) {
             float invDeltaX =
@@ -259,9 +256,8 @@ void SpellFX_Billboard::_47829F_sphere_particle(Vec3f center, float scale, Color
         field_14[2].diffuse = diffuse;
 
         uNumVertices = 3;
-        if (SpellFXViewTransform() && SpellFXViewClip()) {
-            if (SpellFXProject()) render->BillboardSphereSpellFX(this, diffuse);
-        }
+        if (SpellFXViewTransform() && SpellFXViewClip() && SpellFXProject())
+            render->BillboardSphereSpellFX(this, diffuse);
     }
 }
 
@@ -1242,9 +1238,8 @@ void SpellFxRenderer::SetPlayerBuffAnim(SpellId uSpellID,
 }
 
 void SpellFxRenderer::SetPartyBuffAnim(SpellId uSpellID) {
-    for (int i = 0; i < pParty->pCharacters.size(); i++) {
+    for (int i = 0; i < pParty->pCharacters.size(); i++)
         SetPlayerBuffAnim(uSpellID, i);
-    }
 }
 
 //----- (004A8BDF) --------------------------------------------------------

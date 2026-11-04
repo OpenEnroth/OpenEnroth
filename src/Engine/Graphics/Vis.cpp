@@ -253,9 +253,8 @@ bool Vis::IsPointInsideD3DBillboard(RenderBillboardD3D *billboard, float x, floa
     if (y < drY && y < billboard->pQuads[1].pos.y) return false;
 
     // for small items dont bother with the per pixel checks
-    if (std::abs(drH) < 5 || std::abs(drW) < 5) {
+    if (std::abs(drH) < 5 || std::abs(drW) < 5)
         return true;
-    }
 
     RgbaImageView rgba = billboard->texture->rgba();
 
@@ -275,9 +274,8 @@ void Vis::PickIndoorFaces_Mouse(float fDepth, const Vec3f &rayOrigin, const Vec3
     RenderVertexSoft a1;
 
     // clear the debug attribute
-    for (auto &face : pIndoor->faces) {
+    for (auto &face : pIndoor->faces)
         face.attributes &= ~FACE_OUTLINED;
-    }
 
     for (int i = 0; i < pBspRenderer->num_faces; ++i) {
         int faceId = pBspRenderer->faces[i].uFaceID;
@@ -323,9 +321,8 @@ bool IsSphereInFrustum(Vec3f center, float radius, Planef *frustum) {
             planedist = pCamera3D->FrustumPlanes[i].w;
         }
 
-        if ((dot(center, planenormal) - planedist) < -radius) {
+        if ((dot(center, planenormal) - planedist) < -radius)
             return false;
-        }
     }
 
     return true;
@@ -336,9 +333,8 @@ bool IsCylinderInFrustum(Vec3f center, float radius) {
     for (int i = 0; i < 2; i++) {
         Vec3f planenormal{ pCamera3D->FrustumPlanes[i].x, pCamera3D->FrustumPlanes[i].y, pCamera3D->FrustumPlanes[i].z };
         float planedist = pCamera3D->FrustumPlanes[i].w;
-        if ((dot(center, planenormal) - planedist) < -radius) {
+        if ((dot(center, planenormal) - planedist) < -radius)
             return false;
-        }
     }
     return true;
 }
@@ -351,12 +347,10 @@ void Vis::PickOutdoorFaces_Mouse(float fDepth, const Vec3f &rayOrigin, const Vec
 
     for (BSPModel &model : pOutdoor->pBModels) {
         bool reachable;
-        if (!IsBModelVisible(&model, fDepth, &reachable)) {
+        if (!IsBModelVisible(&model, fDepth, &reachable))
             continue;
-        }
-        if (!reachable && only_reachable) {
+        if (!reachable && only_reachable)
             continue;
-        }
 
         for (int faceId : model.faces) {
             BLVFace &face = pOutdoor->faces[faceId];
@@ -573,11 +567,9 @@ Vis_ObjectInfo *Vis_SelectionList::SelectionPointers(VisObjectType pVisObjectTyp
 
     // v3 = this->uSize;
     if (this->uSize > 0) {
-        for (unsigned i = 0; i < this->uSize; ++i) {
-            if (this->object_pool[i].object_type == pVisObjectType &&
-                this->object_pool[i].object_pid == pid)
+        for (unsigned i = 0; i < this->uSize; ++i)
+            if (this->object_pool[i].object_type == pVisObjectType && this->object_pool[i].object_pid == pid)
                 return &this->object_pool[i];
-        }
     }
     return nullptr;
 }
@@ -740,9 +732,8 @@ bool Vis::isBillboardPartOfSelection(int billboardId, Vis_SelectionFilter *filte
     // v5 = filter->select_flags;
     int object_idx = pBillboardRenderList[parentBillboardId].object_pid.id();
     ObjectType object_type = pBillboardRenderList[parentBillboardId].object_pid.type();
-    if (filter->select_flags & ExcludeType) {
+    if (filter->select_flags & ExcludeType)
         return object_type != filter->object_type;
-    }
     if (filter->select_flags & ExclusionIfNoEvent) {
         if (object_type != filter->object_type) return true;
         if (filter->object_type != OBJECT_Decoration) {
@@ -860,12 +851,10 @@ bool Vis::DoesRayMissLevelGeom(float test_x, float test_y, float fDepth, float f
     Vis_static_stru_F91E10.create_object_pointers();
     Vis_static_stru_F91E10.sort_object_pointers();
 
-    if (!Vis_static_stru_F91E10.uSize) {
+    if (!Vis_static_stru_F91E10.uSize)
         return true;
-    }
-    if (Vis_static_stru_F91E10.object_pointers[0]->depth > fTestDepth) {
+    if (Vis_static_stru_F91E10.object_pointers[0]->depth > fTestDepth)
         return true;
-    }
 
     return false;
 }

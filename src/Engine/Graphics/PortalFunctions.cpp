@@ -248,9 +248,8 @@ bool CalcFaceBounding(const BLVFace *pFace, RenderVertexSoft *pFaceLimits,
         a3 = face_center_y - pFaceLimits[0].vWorldPosition.y;
         var_8 = face_center_z - pFaceLimits[1].vWorldPosition.z;
         // [0.5]
-        if (pFace->polygonType == POLYGON_VerticalWall) {
-            if (a1.x != 1.0f) a3 /= a1.y;
-        }
+        if (pFace->polygonType == POLYGON_VerticalWall && a1.x != 1.0f)
+            a3 /= a1.y;
     }
 
     // _EBX = arg0;
@@ -352,9 +351,8 @@ bool CalcPortalShapePoly(const BLVFace *pFace, RenderVertexSoft *pVertices,
 
     RenderVertexSoft bounding[4];
 
-    if (!CalcFaceBounding(pFace, pLimits, 4, bounding)) {
+    if (!CalcFaceBounding(pFace, pLimits, 4, bounding))
         return false;
-    }
 
     pCamera3D->ViewTransform(bounding, 4);
     pCamera3D->Project(bounding, 4);
