@@ -3870,8 +3870,7 @@ void Actor::MakeActorAIList_ODM() {
         int delta_y = pParty->pos.y - actor.pos.y;
         int delta_z = pParty->pos.z - actor.pos.z;
 
-        // TODO(captainurist): use length() here, four traces need re-recording and not just a retrace
-        int distance = Vec3i(delta_x, delta_y, delta_z).octagonalLength() - actor.radius;
+        int distance = Vec3i(delta_x, delta_y, delta_z).length() - actor.radius;
         if (distance < 0)
             distance = 0;
 

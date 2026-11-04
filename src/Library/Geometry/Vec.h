@@ -4,7 +4,6 @@
 #include <cstdint>
 #include <algorithm>
 #include <type_traits>
-#include <utility>
 
 #include "Utility/Math/TrigLut.h"
 
@@ -25,8 +24,11 @@ struct Vec2 {
     }
 
     [[nodiscard]] auto lengthSqr() const {
-        // Note that auto return type is important because this way Vec2s::lengthSqr returns int.
-        return x * x + y * y;
+        if constexpr (std::is_integral_v<T>) {
+            return static_cast<int64_t>(x) * x + static_cast<int64_t>(y) * y; // Squares of outdoor distances overflow an int.
+        } else {
+            return x * x + y * y;
+        }
     }
 
     [[nodiscard]] T length() const {
@@ -130,8 +132,11 @@ struct Vec3 {
     }
 
     [[nodiscard]] auto lengthSqr() const {
-        // Note that auto return type is important because this way Vec3s::lengthSqr returns int.
-        return x * x + y * y + z * z;
+        if constexpr (std::is_integral_v<T>) {
+            return static_cast<int64_t>(x) * x + static_cast<int64_t>(y) * y + static_cast<int64_t>(z) * z; // Squares of outdoor distances overflow an int.
+        } else {
+            return x * x + y * y + z * z;
+        }
     }
 
     [[nodiscard]] T length() const {
@@ -140,24 +145,6 @@ struct Vec3 {
 
     [[nodiscard]] T chebyshevLength() const { // L-inf norm.
         return std::max({std::abs(x), std::abs(y), std::abs(z)});
-    }
-
-    // TODO(captainurist): drop octagonalLength, gameplay should not depend on a distance approximation
-    /**
-     * Octagonal approximation of the Euclidean length, as computed by the original engine.
-     * Gameplay depends on the approximation error, so a true length is not a drop-in replacement.
-     *
-     * @return                          Approximated length of this vector, always non-negative.
-     */
-    [[nodiscard]] T octagonalLength() const requires std::is_integral_v<T> {
-        T a = std::abs(x), b = std::abs(y), c = std::abs(z);
-        if (a < b)
-            std::swap(a, b);
-        if (a < c)
-            std::swap(a, c);
-        if (b < c)
-            std::swap(b, c);
-        return a + (11 * b >> 5) + (c >> 2);
     }
 
     friend bool operator==(const Vec3 &l, const Vec3 &r) = default;

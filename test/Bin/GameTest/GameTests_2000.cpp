@@ -512,12 +512,12 @@ GAME_TEST(Issues, Issue2124_1283) {
 GAME_TEST(Issues, Issue2142) {
     // Monsters can't cause poisoned / deseased status
     const std::vector<std::tuple<MonsterId, MonsterSpecialAttack, Condition>> monsterConditions = {
-        {MONSTER_BAT_A, SPECIAL_ATTACK_DISEASE_WEAK, CONDITION_DISEASE_WEAK },
-        {MONSTER_BAT_C, SPECIAL_ATTACK_DISEASE_MEDIUM, CONDITION_DISEASE_MEDIUM },
-        {MONSTER_DEVIL_B, SPECIAL_ATTACK_DISEASE_SEVERE, CONDITION_DISEASE_SEVERE },
-        {MONSTER_SPIDER_A, SPECIAL_ATTACK_POISON_WEAK, CONDITION_POISON_WEAK },
-        {MONSTER_SPIDER_B, SPECIAL_ATTACK_POISON_MEDIUM, CONDITION_POISON_MEDIUM },
-        {MONSTER_SPIDER_C, SPECIAL_ATTACK_POISON_SEVERE, CONDITION_POISON_SEVERE },
+        {MONSTER_BAT_A, SPECIAL_ATTACK_DISEASE_WEAK, CONDITION_DISEASE_WEAK},
+        {MONSTER_BAT_C, SPECIAL_ATTACK_DISEASE_MEDIUM, CONDITION_DISEASE_MEDIUM},
+        {MONSTER_DEVIL_B, SPECIAL_ATTACK_DISEASE_SEVERE, CONDITION_DISEASE_SEVERE},
+        {MONSTER_SPIDER_A, SPECIAL_ATTACK_POISON_WEAK, CONDITION_POISON_WEAK},
+        {MONSTER_SPIDER_B, SPECIAL_ATTACK_POISON_MEDIUM, CONDITION_POISON_MEDIUM},
+        {MONSTER_SPIDER_C, SPECIAL_ATTACK_POISON_SEVERE, CONDITION_POISON_SEVERE},
     };
 
     for (const auto &[monsterId, attack, condition] : monsterConditions) {
@@ -533,7 +533,8 @@ GAME_TEST(Issues, Issue2142) {
         engine->config->debug.NoActors.setValue(false);
         for (int i = 0; i < 10; i++)
             game.spawnMonster(pParty->pos + Vec3f(0, 700, 0), monsterId);
-        game.tick(250);
+        for (int i = 0; i < 2000 && !pParty->pCharacters[0].conditions.has(condition); i++) // Special attacks land only some of the time.
+            game.tick();
 
         EXPECT_CONTAINS(specialAttack.flatten(), attack); // Check that the special attack was used.
         EXPECT_TRUE(pParty->pCharacters[0].conditions.has(condition)); // Check that the condition was applied.
