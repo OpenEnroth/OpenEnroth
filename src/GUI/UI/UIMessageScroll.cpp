@@ -12,9 +12,8 @@
 #include "GUI/GUIFont.h"
 
 void CreateMsgScrollWindow(ItemId mscroll_id) {
-    if (!pGUIWindow_ScrollWindow && isMessageScroll(mscroll_id)) {
+    if (!pGUIWindow_ScrollWindow && isMessageScroll(mscroll_id))
         pGUIWindow_ScrollWindow = std::make_unique<GUIWindow_MessageScroll>(Pointi(0, 0), render->GetRenderDimensions(), mscroll_id, "");
-    }
 }
 
 void GUIWindow_MessageScroll::Update() {

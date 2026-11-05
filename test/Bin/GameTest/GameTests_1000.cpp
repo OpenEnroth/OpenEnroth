@@ -1358,9 +1358,8 @@ GAME_TEST(Issues, Issue1489) {
     auto amuletTape = tapes.custom([=] { return equipmentId(ITEM_SLOT_AMULET); });
     test.playTraceFromTestData("issue_1489.mm7", "issue_1489.json");
 
-    for (const auto& character : pParty->pCharacters) {
+    for (const auto& character : pParty->pCharacters)
         EXPECT_TRUE(character.HasSkill(SKILL_MISC));
-    }
     // Check items were removed and re-equipped
     EXPECT_EQ(bootTape.front(), bootTape.back());
     EXPECT_CONTAINS(bootTape, ITEM_NULL);

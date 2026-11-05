@@ -44,9 +44,8 @@ void OverlaySystem::drawOverlays() {
     _renderer.beginOverlays();
     if (_isEnabled) {
         platform->setCursorShown(true);
-        for (auto &&[name, overlay] : _overlays) {
+        for (auto &&[name, overlay] : _overlays)
             overlay->update();
-        }
     }
     _renderer.endOverlays();
 }

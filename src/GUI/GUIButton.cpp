@@ -79,9 +79,8 @@ GUIButton *pBtnLoadSlot;
 void GUIButton::Release() {
     std::vector<GUIButton *>::iterator it =
         std::find(pParent->vButtons.begin(), pParent->vButtons.end(), this);
-    if (it != pParent->vButtons.end()) {
+    if (it != pParent->vButtons.end())
         pParent->vButtons.erase(it);
-    }
     delete this;
 }
 

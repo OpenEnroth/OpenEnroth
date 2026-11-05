@@ -50,9 +50,8 @@ Blob preprocess(const Blob &source, const FileSystem *pwd, std::string_view prea
             std::string result = "#";
             result += directiveStr;
             tcpp::TToken token;
-            while ((token = lex.GetNextToken()).mType != tcpp::E_TOKEN_TYPE::NEWLINE) {
+            while ((token = lex.GetNextToken()).mType != tcpp::E_TOKEN_TYPE::NEWLINE)
                 result += token.mRawView;
-            }
             result += "\n";
             return {tcpp::E_TOKEN_TYPE::BLOB, result, lex.GetCurrLineIndex(), 0};
         });

@@ -96,9 +96,8 @@ void ConfigBindings::toggle(AnyConfigEntry *entry) {
 }
 
 std::string ConfigBindings::getType(AnyConfigEntry *entry) {
-    if (!entry) {
+    if (!entry)
         throw Exception("Can't get type of a null config entry.");
-    }
 
     if (entry->type() == typeid(bool)) {
         return "boolean";

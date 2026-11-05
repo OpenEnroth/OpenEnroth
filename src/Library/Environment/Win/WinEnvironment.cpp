@@ -50,9 +50,8 @@ static std::wstring OS_GetAppStringRecursive(HKEY parent_key, const wchar_t *pat
             }
         }
 
-        if (!wcscmp(current_key, L"WOW6432Node")) {
+        if (!wcscmp(current_key, L"WOW6432Node"))
             return OS_GetAppStringRecursive(parent_key, path_tail, KEY_WOW64_32KEY);
-        }
 
         HKEY key;
         if (!RegOpenKeyExW(parent_key, current_key, 0, KEY_READ | flags, &key)) {

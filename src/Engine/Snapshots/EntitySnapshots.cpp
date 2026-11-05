@@ -869,9 +869,8 @@ void snapshot(const Character &src, Character_MM7 *dst) {
     dst->talkFrameSet = 0;
 
     for (unsigned int i = 0; i < 5; ++i) {
-        if (!src.vBeacons[i]) {
+        if (!src.vBeacons[i])
             continue;
-        }
         snapshot(src.vBeacons[i]->uBeaconTime, &dst->installedBeacons[i].beaconTime);
         dst->installedBeacons[i].partyPosX = src.vBeacons[i]->_partyPos.x;
         dst->installedBeacons[i].partyPosY = src.vBeacons[i]->_partyPos.y;

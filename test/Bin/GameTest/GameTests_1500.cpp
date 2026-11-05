@@ -1193,9 +1193,8 @@ GAME_TEST(Issues, Issue1974) {
     test.playTraceFromTestData("issue_1974.mm7", "issue_1974.json");
     // Make sure all the monsters have stayed below
     constexpr std::array<int, 12> monsterIds = { 0, 31, 32, 33, 48, 49, 50, 51, 52, 53, 54, 55 };
-    for (auto ids : monsterIds) {
+    for (auto ids : monsterIds)
         EXPECT_LT(pActors[ids].pos.z, -1375);
-    }
 }
 
 GAME_TEST(Issues, Issue1977) {

@@ -599,9 +599,8 @@ void Item::GetItemBonusSpecialEnchantment(const Character *owner,
         if (currBonus.statBonus == 0) {
             *halfSkillBonus = owner->pActiveSkills[currBonus.skillType].level() / 2;
         } else {
-            if (*additiveBonus < currBonus.statBonus) {
+            if (*additiveBonus < currBonus.statBonus)
                 *additiveBonus = currBonus.statBonus;
-            }
         }
     } else {
         *additiveBonus += currBonus.statBonus;

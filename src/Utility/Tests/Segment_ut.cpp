@@ -49,9 +49,8 @@ UNIT_TEST(Segment, Empty) {
 
     EXPECT_MISSES(emptySegment, 0);
     EXPECT_MISSES(emptySegment, 1);
-    for (int i : emptySegment) {
+    for (int i : emptySegment)
         EXPECT_FALSE(true);
-    }
     EXPECT_EQ(emptySegment.size(), 0);
 }
 

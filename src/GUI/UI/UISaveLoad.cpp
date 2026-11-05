@@ -344,9 +344,8 @@ GUIWindow_Load::GUIWindow_Load(bool ingame) : GUIWindow_SaveLoad(WINDOW_LOAD, {0
 }
 
 void GUIWindow_Load::Update() {
-    if (main_menu_background != nullptr) {
+    if (main_menu_background != nullptr)
         render->DrawQuad2D(main_menu_background, {0, 0});
-    }
     if (GetCurrentMenuID() != MENU_SAVELOAD && GetCurrentMenuID() != MENU_LoadingProcInMainMenu) {
         render->DrawQuad2D(saveload_ui_loadsave, {8, 8});
         render->DrawQuad2D(saveload_ui_loadu, {241, 302});
