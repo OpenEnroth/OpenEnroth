@@ -589,7 +589,7 @@ GAME_TEST(Issues, Issue405) {
     EXPECT_EQ(firstRemainingRecovery, secondRemainingRecovery);
 }
 
-GAME_TEST(Issues, Issue408_939_970_996) {
+GAME_TEST(Issues, Issue408_970_996) {
     // Testing that the gameover loop works.
     // Trace enters throne room - resurecta - final task and exits gameover loop.
     auto screenTape = tapes.screen();
@@ -611,7 +611,6 @@ GAME_TEST(Issues, Issue408_939_970_996) {
     EXPECT_TRUE(flatMessageBoxes.front().starts_with("Congratulations Adventurer"));
 
     // #970: Armor Class is wrong.
-    // #939: Quick reference doesnt match vanilla.
     // #996: Wrong attack damage when dual wielding blaster and offhand weapon.
     // hp
     EXPECT_EQ(pParty->pCharacters[0].GetHealth(), 1240);
