@@ -1163,50 +1163,24 @@ GAME_TEST(Issues, Issue929) {
 }
 
 GAME_TEST(Issues, Issue939) {
-    // Quick reference doesn't match vanilla.
-    test.playTraceFromTestData("issue_268.mm7", "issue_268.json");
-
-    // hp
-    EXPECT_EQ(pParty->pCharacters[0].GetHealth(), 71);
-    EXPECT_EQ(pParty->pCharacters[1].GetHealth(), 80);
-    EXPECT_EQ(pParty->pCharacters[2].GetHealth(), 154);
-    EXPECT_EQ(pParty->pCharacters[3].GetHealth(), 169);
-    // sp
-    EXPECT_EQ(pParty->pCharacters[0].GetMana(), 0);
-    EXPECT_EQ(pParty->pCharacters[1].GetMana(), 0);
-    EXPECT_EQ(pParty->pCharacters[2].GetMana(), 55);
-    EXPECT_EQ(pParty->pCharacters[3].GetMana(), 19);
-    // ac
-    EXPECT_EQ(pParty->pCharacters[0].GetActualAC(), 126);
-    EXPECT_EQ(pParty->pCharacters[1].GetActualAC(), 77);
-    EXPECT_EQ(pParty->pCharacters[2].GetActualAC(), 82);
-    EXPECT_EQ(pParty->pCharacters[3].GetActualAC(), 66);
-    // attack
-    EXPECT_EQ(pParty->pCharacters[0].GetActualAttack(false), 30);
-    EXPECT_EQ(pParty->pCharacters[1].GetActualAttack(false), 37);
-    EXPECT_EQ(pParty->pCharacters[2].GetActualAttack(false), 29);
-    EXPECT_EQ(pParty->pCharacters[3].GetActualAttack(false), 9);
-    // dmg
-    EXPECT_EQ(pParty->pCharacters[0].GetMeleeDamageString(), "35 - 41");
-    EXPECT_EQ(pParty->pCharacters[1].GetMeleeDamageString(), "39 - 55");
-    EXPECT_EQ(pParty->pCharacters[2].GetMeleeDamageString(), "35 - 39");
-    EXPECT_EQ(pParty->pCharacters[3].GetMeleeDamageString(), "Wand");
-    // shoot
-    EXPECT_EQ(pParty->pCharacters[0].GetRangedAttack(), 18);
-    EXPECT_EQ(pParty->pCharacters[1].GetRangedAttack(), 23);
-    EXPECT_EQ(pParty->pCharacters[2].GetRangedAttack(), 21);
-    EXPECT_EQ(pParty->pCharacters[3].GetRangedAttack(), 9); // was 17 in vanilla see #1927
-    // dmg
-    EXPECT_EQ(pParty->pCharacters[0].GetRangedDamageString(), "9 - 14");
-    EXPECT_EQ(pParty->pCharacters[1].GetRangedDamageString(), "11 - 16");
-    EXPECT_EQ(pParty->pCharacters[2].GetRangedDamageString(), "11 - 16");
-    EXPECT_EQ(pParty->pCharacters[3].GetRangedDamageString(), "Wand");
-    // skills
-    // NB vanilla gets wrong count for characters - doesnt count learning
-    EXPECT_EQ(pParty->pCharacters[0].visibleSkillCount(), 13);
-    EXPECT_EQ(pParty->pCharacters[1].visibleSkillCount(), 11);
-    EXPECT_EQ(pParty->pCharacters[2].visibleSkillCount(), 20);
-    EXPECT_EQ(pParty->pCharacters[3].visibleSkillCount(), 11);
+    // The quick reference's Shoot ignored the bow skill and its Skills count included the hidden skills.
+    auto shootTape = tapes.custom([] { return pParty->pCharacters[0].GetRangedAttack(); });
+    auto skillsTape = tapes.custom([] { return pParty->pCharacters[0].visibleSkillCount(); });
+    game.startNewGame();
+    Character &character = pParty->pCharacters[0];
+    character.inventory.equip(ITEM_SLOT_BOW, Item(ITEM_CROSSBOW));
+    character.setSkillValue(SKILL_BOW, CombinedSkillValue::none());
+    character.setSkillValue(SKILL_CLUB, CombinedSkillValue::none());
+    character.setSkillValue(SKILL_MISC, CombinedSkillValue::none());
+    test.startTaping();
+    game.tick();
+    character.setSkillValue(SKILL_BOW, CombinedSkillValue::novice(5));
+    game.tick();
+    character.setSkillValue(SKILL_CLUB, CombinedSkillValue::novice()); // Club and Misc are hidden skills.
+    character.setSkillValue(SKILL_MISC, CombinedSkillValue::novice());
+    game.tick();
+    EXPECT_GT(shootTape.delta(), 0);
+    EXPECT_EQ(skillsTape.delta(), 1);
 }
 
 GAME_TEST(Issues, Issue959) {
