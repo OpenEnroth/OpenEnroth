@@ -722,7 +722,7 @@ int Character::learningPercent() const {
 
         return hirelingBonus + multiplier * skill + 9;
     } else {
-        return hirelingBonus;
+        return hirelingBonus;  // Vanilla MM7 adds the hirelings to the Learning level, so a Teacher alone gives 19% there. MM6 gives the 10% the profession description promises.
     }
 }
 
