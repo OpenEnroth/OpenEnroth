@@ -23,12 +23,12 @@
 #include "Library/Logger/Logger.h"
 
 /**
- * When a timer fires.
+ * When a timer fires. Exactly one of `interval` and `period` is non-zero.
  */
 struct EvtTimerSchedule {
-    Duration interval; // Counted from the last time it fired. Zero for a timer that follows the calendar.
-    Duration period; // Of a timer that follows the calendar: a day, a week, 28 days or a year.
-    Duration timeOfDay; // Of a daily timer.
+    Duration interval; // Time between alarms, counted from when the timer last fired.
+    Duration period; // Time between alarms, counted from the previous alarm: a day, a week, 28 days or a year.
+    Duration timeOfDay; // Time of day that the alarms of a daily `period` fall on. Zero for the other timers.
 };
 
 struct MapTimer {
