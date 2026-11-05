@@ -57,6 +57,14 @@ static std::string portraitName(int face) {
     return fmt::format("{}01", pPlayerPortraitsNames[face]);
 }
 
+static void hireGolem(NpcProfession profession) {
+    // Hires the golem the way global.evt does, with the profession under test.
+    NPCData &golem = pNPCStats->pNPCData[56];
+    golem.profession = profession;
+    golem.flags |= NPC_HIRED;
+    pParty->CountHirelings();
+}
+
 // 2500
 
 GAME_TEST(Issues, Issue2500a) {
@@ -974,6 +982,43 @@ GAME_TEST(Issues, Issue2834) {
     EXPECT_EQ(golemHeadTape, tape(0, 1));
     EXPECT_EQ(golemHeadPlacedTape, tape(true, false));
     EXPECT_EQ(abbeyHeadPlacedTape, tape(false, true));
+}
+
+GAME_TEST(Issues, Issue2859a) {
+    // A hired Squire didn't raise weapon and armor skills.
+    auto swordTape = charTapes.skillLevels(SKILL_SWORD);
+    auto bowTape = charTapes.skillLevels(SKILL_BOW);
+    auto shieldTape = charTapes.skillLevels(SKILL_SHIELD);
+    auto leatherTape = charTapes.skillLevels(SKILL_LEATHER);
+    auto armsmasterTape = charTapes.skillLevels(SKILL_ARMSMASTER);
+    game.startNewGame();
+    pParty->pCharacters[0].setSkillValue(SKILL_ARMSMASTER, CombinedSkillValue::novice(1));
+    test.startTaping();
+    game.tick();
+    hireGolem(NPC_PROFESSION_SQUIRE);
+    game.tick();
+
+    EXPECT_EQ(swordTape, tape({1, 0, 0, 0}, {3, 2, 2, 2}));
+    EXPECT_EQ(bowTape, tape({1, 0, 0, 0}, {3, 2, 2, 2}));
+    EXPECT_EQ(shieldTape, tape({0, 0, 0, 0}, {2, 2, 2, 2})); // Vanilla raises skills the character doesn't have too.
+    EXPECT_EQ(leatherTape, tape({1, 1, 1, 1}, {3, 3, 3, 3}));
+    EXPECT_EQ(armsmasterTape, tape({1, 0, 0, 0})); // Armsmaster is not affected.
+}
+
+GAME_TEST(Issues, Issue2859b) {
+    // A hired Sage raised Monster ID but not Item ID.
+    auto itemIdTape = charTapes.skillLevels(SKILL_ITEM_ID);
+    auto monsterIdTape = charTapes.skillLevels(SKILL_MONSTER_ID);
+    game.startNewGame();
+    for (Skill skill : {SKILL_ITEM_ID, SKILL_MONSTER_ID})
+        pParty->pCharacters[0].setSkillValue(skill, CombinedSkillValue::novice(1));
+    test.startTaping();
+    game.tick();
+    hireGolem(NPC_PROFESSION_SAGE);
+    game.tick();
+
+    EXPECT_EQ(itemIdTape, tape({1, 0, 0, 0}, {7, 6, 6, 6}));
+    EXPECT_EQ(monsterIdTape, tape({1, 0, 0, 0}, {7, 6, 6, 6}));
 }
 
 GAME_TEST(Prs, Pr2876a) {
