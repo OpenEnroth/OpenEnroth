@@ -103,6 +103,8 @@ class CommonTapeRecorder {
 
     TestMultiTape<SoundId> sounds();
 
+    TestMultiTape<std::string> movies();
+
     TestMultiTape<std::string> hudTextures();
 
     /**

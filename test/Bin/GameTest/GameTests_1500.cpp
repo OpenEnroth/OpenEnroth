@@ -332,6 +332,7 @@ GAME_TEST(Issues, Issue1579a) {
     // Playing a fullscreen movie leaked memory. The ASan build's leak check catches it, this test only has to play one.
     auto screenTape = tapes.screen();
     auto movieTape = tapes.custom([] { return pMediaPlayer->IsMoviePlaying(); });
+    auto movieNameTape = tapes.movies();
     engine->config->debug.NoVideo.setValue(false);
     test.startTaping();
     game.pressGuiButton("MainMenu_NewGame");
@@ -342,6 +343,7 @@ GAME_TEST(Issues, Issue1579a) {
     game.skipLoadingScreen();
     EXPECT_CONTAINS(screenTape, SCREEN_VIDEO);
     EXPECT_EQ(movieTape, tape(false, true, false));
+    EXPECT_EQ(movieNameTape.flatten(), tape("Intro Post"));
 }
 
 GAME_TEST(Issues, Issue1579b) {
