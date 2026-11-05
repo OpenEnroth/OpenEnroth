@@ -3,6 +3,8 @@
 #include "Library/FileSystem/Memory/MemoryFileSystem.h"
 #include "Library/Preprocessor/Preprocessor.h"
 
+#include "Utility/Exception.h"
+
 UNIT_TEST(Preprocessor, NoIncludes) {
     MemoryFileSystem fs("memfs");
     Blob source = Blob::fromString("int x = 1;").withDisplayPath("test.glsl");
@@ -43,10 +45,21 @@ UNIT_TEST(Preprocessor, IfdefNotDefined) {
 }
 
 UNIT_TEST(Preprocessor, IncludeNotFound) {
+    // The error named the including file where the missing one should be, and didn't name the missing one at all.
     MemoryFileSystem fs("memfs");
     Blob source = Blob::fromString("#include \"missing.glsl\"").withDisplayPath("test.glsl");
 
-    EXPECT_THROW(pp::preprocess(source, &fs), std::runtime_error);
+    EXPECT_THAT([&] { (void) pp::preprocess(source, &fs); },
+                testing::ThrowsMessage<Exception>(testing::StrEq("test.glsl: include file 'missing.glsl' not found")));
+}
+
+UNIT_TEST(Preprocessor, DirectiveError) {
+    // The error put the file name where the line number should be, and dropped what the error was.
+    MemoryFileSystem fs("memfs");
+    Blob source = Blob::fromString("int x = 1;\n#endif\n").withDisplayPath("test.glsl");
+
+    EXPECT_THAT([&] { (void) pp::preprocess(source, &fs); },
+                testing::ThrowsMessage<Exception>(testing::StrEq("test.glsl:2: Unbalanced endif")));
 }
 
 UNIT_TEST(Preprocessor, NestedInclude) {
