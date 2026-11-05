@@ -205,25 +205,6 @@ static bool isNormalizedPath(std::string_view path) {
     return true;
 }
 
-static bool isEscapingPath(std::string_view path) {
-    PathRoot root = parseRoot(path);
-    if (root.hasRootDirectory)
-        return false; // Nothing is above a root directory.
-
-    int depth = 0;
-    for (std::string_view segment : PathSplit(path.substr(root.size))) {
-        if (segment == ".")
-            continue;
-
-        if (segment != "..") {
-            depth++;
-        } else if (--depth < 0) {
-            return true;
-        }
-    }
-    return false;
-}
-
 static size_t parentEnd(std::string_view path) {
     PathRoot root = parseRoot(path);
     size_t end = fileNameOffset(path, root);
@@ -278,10 +259,6 @@ Path PathView::normalized() const {
 
 bool PathView::isNormalized() const {
     return isNormalizedPath(_path);
-}
-
-bool PathView::isEscaping() const {
-    return isEscapingPath(_path);
 }
 
 std::string_view PathView::name() const {
