@@ -29,13 +29,13 @@ Blob preprocess(const Blob &source, const FileSystem *pwd, std::string_view prea
 
     tcpp::Preprocessor::TPreprocessorConfigInfo config;
     config.mOnErrorCallback = [&](const tcpp::TErrorInfo &errorInfo) {
-        errorMessage = fmt::format("Line {}: {}", source.displayPath(), errorInfo.mLine,
+        errorMessage = fmt::format("{}: line {}: {}", source.displayPath(), errorInfo.mLine,
                                    tcpp::ErrorTypeToString(errorInfo.mType));
     };
 
     config.mOnIncludeCallback = [&](const std::string &path, bool /*isSystemInclude*/) -> tcpp::TInputStreamUniquePtr {
         if (!pwd->exists(path)) {
-            errorMessage = fmt::format("Include file '{}' not found", source.displayPath(), path);
+            errorMessage = fmt::format("{}: include file '{}' not found", source.displayPath(), path);
             return std::make_unique<tcpp::StringInputStream>(""); // Return empty stream, tcpp asserts on nullptr.
         }
         return std::make_unique<tcpp::StringInputStream>(std::string(pwd->read(path).str()));
