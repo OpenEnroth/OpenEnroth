@@ -67,8 +67,8 @@ GUIWindow_LloydsBook::GUIWindow_LloydsBook(Pid casterPid, SpellCastFlags castFla
         _spellLevel = 10;
     } else {
         CombinedSkillValue skill = pParty->pCharacters[casterId].getActualSkillValue(SKILL_WATER);
-        _maxBeacons = masteryToMaxBeacons[skill.mastery()];
         if (castFlags & ON_CAST_CastViaScroll) skill = SCROLL_OR_NPC_SPELL_SKILL_VALUE;
+        _maxBeacons = masteryToMaxBeacons[skill.mastery()]; // Vanilla MM7 gives a scroll reader their own slot count.
         _waterMastery = skill.mastery();
         _spellLevel = skill.level();
     }

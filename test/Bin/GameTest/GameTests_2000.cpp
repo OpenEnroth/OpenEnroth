@@ -142,20 +142,17 @@ GAME_TEST(Issues, Issue2018b) {
 GAME_TEST(Issues, Issue2021) {
     // Lloyd's Beacon put a new beacon in the first free slot instead of the one the player picked.
     auto firstSlotTape = charTapes.hasBeacon(3, 0);
-    auto lastSlotTape = charTapes.hasBeacon(3, 2);
+    auto pickedSlotTape = charTapes.hasBeacon(3, 2);
     engine->config->debug.NoActors.setValue(true);
     game.startNewGame();
     test.startTaping();
-
-    // TODO(captainurist): #2864 the slot count should come from the scroll, not from the reader's own water mastery.
-    pParty->pCharacters[3].setSkillValue(SKILL_WATER, CombinedSkillValue(4, MASTERY_EXPERT)); // Three beacon slots.
     readScroll(game, 3, ITEM_SCROLL_LLOYDS_BEACON);
     game.tick(3);
     game.pressGuiButton("LloydsBook_Slot2");
     game.tick();
 
     EXPECT_EQ(firstSlotTape, tape(false));
-    EXPECT_EQ(lastSlotTape, tape(false, true));
+    EXPECT_EQ(pickedSlotTape, tape(false, true));
 }
 
 GAME_TEST(Issues, Issue2022) {
