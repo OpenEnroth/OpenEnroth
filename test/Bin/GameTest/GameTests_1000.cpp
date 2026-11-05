@@ -951,10 +951,19 @@ GAME_TEST(Issues, Issue1370) {
 }
 
 GAME_TEST(Issues, Issue1371) {
-    // Collisions - Party struggles to climb stairs to quarter deck
-    auto zTape = tapes.custom([] { return pParty->pos.z; });
-    test.playTraceFromTestData("issue_1371.mm7", "issue_1371.json");
-    EXPECT_GT(zTape.max(), 448);
+    // Party got stuck on the last step of the stairs to the ship's quarter deck, depending on the angle of approach.
+    for (auto [x, yaw] : {std::pair(11300, 90), std::pair(11340, 90), std::pair(11260, 60)}) {
+        test.prepareForNextTest(100, RANDOM_ENGINE_MERSENNE_TWISTER);
+        auto zTape = tapes.custom([] { return pParty->pos.z; });
+        engine->config->debug.NoActors.setValue(true);
+        game.startNewGame();
+        game.teleportTo(MAP_EMERALD_ISLAND, Vec3f(x, -162, 202), yaw); // At the foot of the stairs.
+        test.startTaping();
+        game.pressKey(PlatformKey::KEY_UP);
+        game.tick(25); // The party walks up the stairs.
+        game.releaseKey(PlatformKey::KEY_UP);
+        EXPECT_GT(zTape.max(), 448);
+    }
 }
 
 GAME_TEST(Issues, Issue1383) {
