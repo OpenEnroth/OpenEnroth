@@ -93,10 +93,6 @@ class Path {
         return PathView(*this).isNormalized();
     }
 
-    [[nodiscard]] bool isEscaping() const {
-        return PathView(*this).isEscaping();
-    }
-
     [[nodiscard]] std::string_view name() const MM_LIFETIMEBOUND {
         return PathView(*this).name();
     }
