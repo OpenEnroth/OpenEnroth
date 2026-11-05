@@ -59,9 +59,7 @@ UNIT_TEST(Preprocessor, DirectiveError) {
     Blob source = Blob::fromString("int x = 1;\n#endif\n").withDisplayPath("test.glsl");
 
     EXPECT_THAT([&] { (void) pp::preprocess(source, &fs); },
-                testing::ThrowsMessage<Exception>(testing::StartsWith("test.glsl: line ")));
-    EXPECT_THAT([&] { (void) pp::preprocess(source, &fs); },
-                testing::ThrowsMessage<Exception>(testing::EndsWith(": Unbalanced endif")));
+                testing::ThrowsMessage<Exception>(testing::StrEq("test.glsl:2: Unbalanced endif")));
 }
 
 UNIT_TEST(Preprocessor, NestedInclude) {

@@ -29,7 +29,7 @@ Blob preprocess(const Blob &source, const FileSystem *pwd, std::string_view prea
 
     tcpp::Preprocessor::TPreprocessorConfigInfo config;
     config.mOnErrorCallback = [&](const tcpp::TErrorInfo &errorInfo) {
-        errorMessage = fmt::format("{}: line {}: {}", source.displayPath(), errorInfo.mLine,
+        errorMessage = fmt::format("{}:{}: {}", source.displayPath(), errorInfo.mLine,
                                    tcpp::ErrorTypeToString(errorInfo.mType));
     };
 
