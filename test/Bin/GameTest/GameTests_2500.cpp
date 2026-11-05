@@ -1051,7 +1051,8 @@ GAME_TEST(Issues, Issue2864a) {
 }
 
 GAME_TEST(Issues, Issue2864b) {
-    // Lloyd's Beacon cast from the spellbook opens the book with the caster's own slot count, three at expert water.
+    // Lloyd's Beacon cast from the spellbook should open the book with the caster's own slot count, three at expert
+    // water.
     auto slotCountTape = tapes.custom(&lloydsBookSlotCount);
     engine->config->debug.NoActors.setValue(true);
     game.startNewGame();
