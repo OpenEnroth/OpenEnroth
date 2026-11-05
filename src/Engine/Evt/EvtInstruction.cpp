@@ -1007,7 +1007,7 @@ EvtInstruction EvtInstruction::parse(InputStream &stream, size_t size) {
         case EVENT_CastSpell:
             requireSize(32);
             ir.data.spell_descr.spell_id = static_cast<SpellId>(fromStream<uint8_t>(stream));
-            ir.data.spell_descr.spell_mastery = static_cast<Mastery>(fromStream<uint8_t>(stream) + 1);  // TODO(yoctozepto): why add 1?
+            ir.data.spell_descr.spell_mastery = static_cast<Mastery>(fromStream<uint8_t>(stream) + 1);  // 0 to 3 are novice to grandmaster.
             ir.data.spell_descr.spell_level = fromStream<uint8_t>(stream);
             ir.data.spell_descr.fromx = fromStream<uint32_t>(stream);
             ir.data.spell_descr.fromy = fromStream<uint32_t>(stream);
