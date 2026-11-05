@@ -2504,7 +2504,7 @@ int Character::actualSkillLevel(Skill skill) const {
         case SKILL_LEATHER:
         case SKILL_CHAIN:
         case SKILL_PLATE:
-            if (CheckHiredNPCSpeciality(NPC_PROFESSION_SQUIRE)) bonus = 2;
+            if (CheckHiredNPCSpeciality(NPC_PROFESSION_SQUIRE)) bonus += 2;
             break;
 
         case SKILL_MONSTER_ID: {
@@ -2545,11 +2545,11 @@ int Character::actualSkillLevel(Skill skill) const {
         } break;
 
         case SKILL_BOW:
-            if (CheckHiredNPCSpeciality(NPC_PROFESSION_SQUIRE)) bonus = 2;
+            if (CheckHiredNPCSpeciality(NPC_PROFESSION_SQUIRE)) bonus += 2;
             bonus += GetItemsBonus(ATTRIBUTE_SKILL_BOW);
             break;
         case SKILL_SHIELD:
-            if (CheckHiredNPCSpeciality(NPC_PROFESSION_SQUIRE)) bonus = 2;
+            if (CheckHiredNPCSpeciality(NPC_PROFESSION_SQUIRE)) bonus += 2;
             bonus += GetItemsBonus(ATTRIBUTE_SKILL_SHIELD);
             break;
 
@@ -2629,7 +2629,7 @@ int Character::actualSkillLevel(Skill skill) const {
         } break;
 
         case SKILL_ITEM_ID:
-            if (CheckHiredNPCSpeciality(NPC_PROFESSION_SAGE)) bonus = 6;
+            if (CheckHiredNPCSpeciality(NPC_PROFESSION_SAGE)) bonus += 6;
             bonus += GetItemsBonus(ATTRIBUTE_SKILL_ITEM_ID);
             break;
         case SKILL_MEDITATION:
