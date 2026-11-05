@@ -274,6 +274,7 @@ enum class EvtTargetCharacter {
     CHOOSE_RANDOM = 6
 };
 using enum EvtTargetCharacter;
+MM_DECLARE_SERIALIZATION_FUNCTIONS(EvtTargetCharacter) // MMExtension's spellings, single players are numbers there.
 
 /**
  * Which evt file an event comes from.
@@ -283,4 +284,13 @@ enum class EvtSource {
     EVT_SOURCE_GLOBAL, // global.evt, with texts from the NPC topic table.
 };
 using enum EvtSource;
+
+/**
+ * Whether an event started a map transition.
+ */
+enum class EvtTransition {
+    EVT_TRANSITION_NONE,    // The party stays on this map.
+    EVT_TRANSITION_STARTED, // The map's leave events are due once the event ends.
+};
+using enum EvtTransition;
 

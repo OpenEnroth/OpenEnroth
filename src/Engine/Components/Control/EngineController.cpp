@@ -351,14 +351,18 @@ Actor *EngineController::spawnMonster(Vec3f position, MonsterId id, SpawnFlags f
     return actor;
 }
 
+void EngineController::travelTo(const MapDestination &destination) {
+    engine->_pendingTransition = destination;
+    engineFlags |= ENGINE_SKIP_NEXT_WORLD_UPDATE;
+    uGameState = GAME_STATE_CHANGE_LOCATION;
+    onMapLeave();
+    tick();
+    skipLoadingScreen();
+}
+
 void EngineController::teleportTo(MapId map, Vec3f position, int viewYaw, int viewPitch) {
     if (engine->_currentLoadedMapId != map) {
-        engine->_pendingTransition = MapDestination(map, PartyPlacement(position, viewYaw * 512 / 90, viewPitch * 512 / 90, 0));
-        engineFlags |= ENGINE_SKIP_NEXT_WORLD_UPDATE;
-        uGameState = GAME_STATE_CHANGE_LOCATION;
-        onMapLeave();
-        tick();
-        skipLoadingScreen();
+        travelTo(MapDestination(map, PartyPlacement(position, viewYaw * 512 / 90, viewPitch * 512 / 90, 0)));
     } else {
         pParty->pos = position;
         pParty->uFallStartZ = position.z;

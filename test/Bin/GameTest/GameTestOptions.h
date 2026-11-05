@@ -9,6 +9,7 @@
 struct GameTestOptions : GameStarterOptions {
     Path testPath;
     float speed = FLT_MAX; // Test playback speed.
+    bool decompiledEvents = false;
     bool helpPrinted = false;
     bool listRequested = false;
 

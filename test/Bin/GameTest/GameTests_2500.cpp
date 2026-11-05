@@ -40,7 +40,7 @@
 
 static void scriptHiddenTombExit(std::vector<EvtInstruction> script) {
     // Points the exit at a new event made of the given commands, in order.
-    assert(engine->_localEventMap.instruction(pIndoor->faces[85].eventId, 0).opcode == EVENT_MoveToMap);
+    assert(pIndoor->faces[85].eventId != 0);
     int eventId = 9000;
     for (int step = 0; step < script.size(); step++) {
         script[step].step = step;
@@ -1346,4 +1346,21 @@ GAME_TEST(Issues, Issue2950) {
 
     EXPECT_EQ(windowTape, tape(WINDOW_NULL, WINDOW_SPELL_BOOK, WINDOW_LLOYDS_BEACON));
     EXPECT_EQ(beaconTape, tape(false, true));
+}
+
+GAME_TEST(Issues, Issue2778) {
+    // Colony Zod showed the ending movie on every exit from the map once Xenofex was dead.
+    auto movieTape = tapes.movies();
+    game.startNewGame();
+    Vec3f emeraldIsland = pParty->pos;
+    game.teleportTo(MAP_COLONY_ZOD, Vec3f(-10986, 8576, 1728), 180);
+    test.startTaping();
+    Actor::Die(0); // Xenofex.
+    game.tick(60); // The death animation has to finish.
+    for (int visit = 0; visit < 2; visit++) {
+        autoSave(); // A real exit saves the map, a teleport doesn't, and Xenofex would be back alive.
+        game.teleportTo(MAP_EMERALD_ISLAND, emeraldIsland, 0);
+        game.teleportTo(MAP_COLONY_ZOD, Vec3f(-10986, 8576, 1728), 180);
+    }
+    EXPECT_EQ(movieTape.flatten(), tape<std::string>("family reunion"));
 }

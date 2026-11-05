@@ -1,5 +1,6 @@
 #pragma once
 
+#include <utility>
 #include <vector>
 
 #include "Engine/Evt/EvtContext.h"
@@ -28,15 +29,6 @@ struct EvtFlow {
     int target = 0; // Step to go on with, for `EVT_FLOW_JUMP`.
 };
 
-/**
- * Whether an event started a map transition.
- */
-enum class EvtTransition {
-    EVT_TRANSITION_NONE,    // The party stays on this map.
-    EVT_TRANSITION_STARTED, // The map's leave events are due once the event ends.
-};
-using enum EvtTransition;
-
 // EvtInterpreter
 class EvtInterpreter {
  public:
@@ -44,6 +36,13 @@ class EvtInterpreter {
       * @param context                  Event to run, and what it runs for.
       */
      void prepare(EvtContext context);
+
+     /**
+      * Prepares to run the instructions of a scripted handler, one `executeInstruction` call at a time.
+      *
+      * @param context                  Event the handler runs as, with `scriptFrame` set.
+      */
+     void prepareHandler(EvtContext context);
 
      /**
       * @param startStep                Step to start from.
@@ -67,6 +66,24 @@ class EvtInterpreter {
       */
      [[nodiscard]] EvtFlow executeInstruction(EvtInstruction ir);
 
+     [[nodiscard]] const EvtContext &context() const {
+         return _context;
+     }
+
+     /**
+      * @param who                      Characters that the instructions that follow apply to, as `ForPartyMember` sets.
+      */
+     void setTargetCharacter(EvtTargetCharacter who) {
+         _who = who;
+     }
+
+     /**
+      * @return                         Whether the instructions run since the last call started a map transition.
+      */
+     [[nodiscard]] EvtTransition takeTransition() {
+         return std::exchange(_transition, EVT_TRANSITION_NONE);
+     }
+
  private:
      /**
       * @param step                     Step to run.
@@ -84,7 +101,7 @@ class EvtInterpreter {
       * @param step                     Step to resume from.
       * @return                         Continuation for the dialogue the current instruction opens.
       */
-     [[nodiscard]] EvtContinuation continuation(int step) const;
+     [[nodiscard]] EvtContinuation continuation(int step);
 
      /**
       * Logs an error naming the event and step when the command's value is out of range for its variable.

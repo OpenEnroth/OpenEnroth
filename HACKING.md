@@ -203,6 +203,13 @@ Little note: If `LuaLS` is not found, everything still build but no checks will 
 To go through a better experience while working with scripts it is strongly recommended to use [VS Code](https://code.visualstudio.com/) and [install the LuaLS extension](https://luals.github.io/#vscode-install).
 Just be sure to open the root repository folder in `VS Code`. By doing so `LuaLS` reads the correct configuration file used by the project
 
+#### Event scripts
+Map events can be written in Lua against the `evt` API of [MMExtension](https://github.com/GrayFace/MMExtension), and a script written for MMExtension runs unchanged as far as the API is covered. `resources/scripts/maps/<map>.lua` is loaded with its map, and the scripts in `resources/scripts/global/` are loaded when a game is started or loaded. This is where fixes for bugs in the shipped evt files go, see `resources/scripts/maps/d27.lua`. The API itself is in `resources/scripts/mmext/core.lua`.
+
+`CodeGen evt d27` prints an evt file as such a script. With `debug.decompiled_events` set, or with `--decompiled-events` passed to `OpenEnroth_GameTest`, the game replaces every evt file with its decompiled script. Running the game tests this way checks the decompiler and the Lua events against the evt interpreter, `Run_GameTest_Headless_Parallel_DecompiledEvents` does that.
+
+The list of embedded resources is made when cmake configures the build, so re-run cmake after adding a script.
+
 #### Modding ?
 Scripting is currently used only for debugging purposes. Modding support is not planned for the near future. You can check the [milestones](https://github.com/OpenEnroth/OpenEnroth/milestones) to get a better idea.
 
