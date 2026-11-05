@@ -2548,6 +2548,7 @@ int Character::actualSkillLevel(Skill skill) const {
             if (CheckHiredNPCSpeciality(NPC_PROFESSION_SQUIRE)) bonus += 2;
             bonus += GetItemsBonus(ATTRIBUTE_SKILL_BOW);
             break;
+
         case SKILL_SHIELD:
             if (CheckHiredNPCSpeciality(NPC_PROFESSION_SQUIRE)) bonus += 2;
             bonus += GetItemsBonus(ATTRIBUTE_SKILL_SHIELD);
