@@ -1031,7 +1031,7 @@ GAME_TEST(Issues, Issue2859b) {
     EXPECT_EQ(monsterIdTape, tape({1, 0, 0, 0}, {7, 6, 6, 6}));
 }
 
-GAME_TEST(Issues, Issue2864) {
+GAME_TEST(Issues, Issue2864a) {
     // A Lloyd's Beacon scroll opened the book with the reader's own slot count, not the five slots of the scroll's
     // master skill.
     auto slotCountTape = tapes.custom(&lloydsBookSlotCount);
@@ -1048,6 +1048,21 @@ GAME_TEST(Issues, Issue2864) {
 
     EXPECT_EQ(slotCountTape, tape(0, 5));
     EXPECT_EQ(lastSlotTape, tape(false, true));
+}
+
+GAME_TEST(Issues, Issue2864b) {
+    // Lloyd's Beacon cast from the spellbook should open the book with the caster's own slot count, three at expert
+    // water.
+    auto slotCountTape = tapes.custom(&lloydsBookSlotCount);
+    engine->config->debug.NoActors.setValue(true);
+    game.startNewGame();
+    test.startTaping();
+    pParty->pCharacters[3].setSkillValue(SKILL_WATER, CombinedSkillValue(4, MASTERY_EXPERT));
+    pParty->pCharacters[3].bHaveSpell[SPELL_WATER_LLOYDS_BEACON] = true; // MM6 lets any water mage learn it, MM7 needs grandmaster.
+    game.castSpell(3, SPELL_WATER_LLOYDS_BEACON);
+    game.tick(2);
+
+    EXPECT_EQ(slotCountTape, tape(0, 3));
 }
 
 GAME_TEST(Prs, Pr2876a) {
