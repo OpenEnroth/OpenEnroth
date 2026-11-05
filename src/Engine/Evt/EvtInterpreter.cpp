@@ -543,14 +543,18 @@ EvtFlow EvtInterpreter::executeInstruction(EvtInstruction ir) {
             }
             break;
         }
-        case EVENT_CheckSkill:
+        case EVENT_CheckSkill: {
             assert(_who != CHOOSE_PARTY); // TODO(Nik-RE-dev): original code for this option is dubious
+            const auto &check = ir.data.check_skill_descr;
             for (Character &character : iterateCharacters(_who, grng)) {
-                CombinedSkillValue val = character.getSkillValue(ir.data.check_skill_descr.skill_type);
-                if (val.level() >= ir.data.check_skill_descr.skill_level && val.mastery() == ir.data.check_skill_descr.skill_mastery)
+                CombinedSkillValue val = character.getSkillValue(check.skill_type);
+                // TODO(captainurist): == for mastery is wrong, a grandmaster should pass a check for master. Vanilla
+                //                     compares masteries exactly too, and shipped scripts only ever check for grandmaster.
+                if (val.level() >= check.skill_level && (check.skill_mastery == MASTERY_NONE || val.mastery() == check.skill_mastery))
                     return {EVT_FLOW_JUMP, ir.target_step};
             }
             break;
+        }
         case EVENT_SetNPCGroupNews:
             pNPCStats->pGroups[ir.data.npc_groups_descr.groups_id] = ir.data.npc_groups_descr.group;
             break;
