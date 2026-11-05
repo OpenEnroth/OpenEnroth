@@ -555,6 +555,8 @@ EvtFlow EvtInterpreter::executeInstruction(EvtInstruction ir) {
             const auto &check = ir.data.check_skill_descr;
             for (Character &character : iterateCharacters(_who, grng)) {
                 CombinedSkillValue val = character.getSkillValue(check.skill_type);
+                // TODO(captainurist): == is wrong, a grandmaster should pass a check for master. Vanilla compares masteries
+                //                     exactly too, and shipped scripts only ever check for grandmaster, where == and >= agree.
                 if (val.level() >= check.skill_level && (check.skill_mastery == MASTERY_NONE || val.mastery() == check.skill_mastery))
                     return {EVT_FLOW_JUMP, ir.target_step};
             }
