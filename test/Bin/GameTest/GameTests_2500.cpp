@@ -930,7 +930,7 @@ GAME_TEST(Issues, Issue2815) {
         auto armedTape = tapes.custom([] { return engine->_persistentVariables.mapVars[0] == 0; });
         test.startTaping();
         game.pressKey(PlatformKey::KEY_UP);
-        game.tick(3); // The party walks onto the plate in front of the wall, which arms the trap.
+        game.tick(2); // The party walks onto the plate in front of the wall, which arms the trap.
         game.releaseKey(PlatformKey::KEY_UP);
         game.pointMouseAtFace(1250); // The trapped wall.
         game.pressAndReleaseButton(BUTTON_LEFT);
