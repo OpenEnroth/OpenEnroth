@@ -1,4 +1,6 @@
+#include <algorithm>
 #include <string>
+#include <string_view>
 #include <tuple>
 #include <utility>
 #include <vector>
@@ -26,6 +28,7 @@
 #include "Engine/Tables/MapTable.h"
 #include "Engine/Tables/NPCTable.h"
 
+#include "GUI/GUIButton.h"
 #include "GUI/GUIProgressBar.h"
 #include "GUI/GUIWindow.h"
 #include "GUI/UI/UIGame.h"
@@ -63,6 +66,13 @@ static void hireGolem(NpcProfession profession) {
     golem.profession = profession;
     golem.flags |= NPC_HIRED;
     pParty->CountHirelings();
+}
+
+static int lloydsBookSlotCount() {
+    // Zero when the Lloyd's Beacon book isn't open.
+    if (!pGUIWindow_CurrentMenu || pGUIWindow_CurrentMenu->eWindowType != WINDOW_LLOYDS_BEACON)
+        return 0;
+    return std::ranges::count_if(pGUIWindow_CurrentMenu->vButtons, [](std::string_view id) { return id.starts_with("LloydsBook_Slot"); }, &GUIButton::id);
 }
 
 // 2500
@@ -1021,9 +1031,10 @@ GAME_TEST(Issues, Issue2859b) {
     EXPECT_EQ(monsterIdTape, tape({1, 0, 0, 0}, {7, 6, 6, 6}));
 }
 
-GAME_TEST(Issues, Issue2864) {
+GAME_TEST(Issues, Issue2864a) {
     // A Lloyd's Beacon scroll opened the book with the reader's own slot count, not the five slots of the scroll's
     // master skill.
+    auto slotCountTape = tapes.custom(&lloydsBookSlotCount);
     auto lastSlotTape = charTapes.hasBeacon(3, 4);
     engine->config->debug.NoActors.setValue(true);
     game.startNewGame();
@@ -1035,7 +1046,22 @@ GAME_TEST(Issues, Issue2864) {
     game.pressGuiButton("LloydsBook_Slot4");
     game.tick();
 
+    EXPECT_EQ(slotCountTape, tape(0, 5));
     EXPECT_EQ(lastSlotTape, tape(false, true));
+}
+
+GAME_TEST(Issues, Issue2864b) {
+    // Lloyd's Beacon cast from the spellbook opens the book with the caster's own slot count, three at expert water.
+    auto slotCountTape = tapes.custom(&lloydsBookSlotCount);
+    engine->config->debug.NoActors.setValue(true);
+    game.startNewGame();
+    test.startTaping();
+    pParty->pCharacters[3].setSkillValue(SKILL_WATER, CombinedSkillValue(4, MASTERY_EXPERT));
+    pParty->pCharacters[3].bHaveSpell[SPELL_WATER_LLOYDS_BEACON] = true;
+    game.castSpell(3, SPELL_WATER_LLOYDS_BEACON);
+    game.tick(2);
+
+    EXPECT_EQ(slotCountTape, tape(0, 3));
 }
 
 GAME_TEST(Prs, Pr2876a) {

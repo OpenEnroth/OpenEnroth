@@ -142,7 +142,7 @@ GAME_TEST(Issues, Issue2018b) {
 GAME_TEST(Issues, Issue2021) {
     // Lloyd's Beacon put a new beacon in the first free slot instead of the one the player picked.
     auto firstSlotTape = charTapes.hasBeacon(3, 0);
-    auto lastSlotTape = charTapes.hasBeacon(3, 2);
+    auto pickedSlotTape = charTapes.hasBeacon(3, 2);
     engine->config->debug.NoActors.setValue(true);
     game.startNewGame();
     test.startTaping();
@@ -152,7 +152,7 @@ GAME_TEST(Issues, Issue2021) {
     game.tick();
 
     EXPECT_EQ(firstSlotTape, tape(false));
-    EXPECT_EQ(lastSlotTape, tape(false, true));
+    EXPECT_EQ(pickedSlotTape, tape(false, true));
 }
 
 GAME_TEST(Issues, Issue2022) {
