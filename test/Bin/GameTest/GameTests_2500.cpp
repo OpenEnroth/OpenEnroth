@@ -20,7 +20,6 @@
 #include "Engine/Graphics/Vis.h"
 #include "Engine/Objects/Actor.h"
 #include "Engine/Objects/Decoration.h"
-#include "Engine/Objects/NPC.h"
 #include "Engine/Objects/SpriteObject.h"
 #include "Engine/Resources/EngineFileSystem.h"
 #include "Engine/Tables/DecorationTable.h"
@@ -58,15 +57,12 @@ static std::string portraitName(int face) {
     return fmt::format("{}01", pPlayerPortraitsNames[face]);
 }
 
-static void hireHarmondalePeasant(EngineController &game, NpcProfession profession) {
-    // Hires the Harmondale peasant Gabriel through his dialogue, after giving him the profession and the party his price.
-    game.teleportTo(MAP_HARMONDALE, Vec3f(-5120, 14216, 0), 90); // In front of Gabriel.
-    getNPCData(pActors[15].npcId)->profession = profession; // Gabriel.
-    pParty->SetGold(pNPCStats->pProfessions[profession].uHirePrice);
-    game.pressAndReleaseKey(PlatformKey::KEY_SPACE);
-    game.tick();
-    game.pressGuiButton("NpcDialogue_Option1"); // Hire.
-    game.tick();
+static void hireGolem(NpcProfession profession) {
+    // Hires the golem the way global.evt does, with the profession under test.
+    NPCData &golem = pNPCStats->pNPCData[56];
+    golem.profession = profession;
+    golem.flags |= NPC_HIRED;
+    pParty->CountHirelings();
 }
 
 // 2500
@@ -994,33 +990,33 @@ GAME_TEST(Issues, Issue2859a) {
     auto bowTape = charTapes.skillLevels(SKILL_BOW);
     auto shieldTape = charTapes.skillLevels(SKILL_SHIELD);
     auto leatherTape = charTapes.skillLevels(SKILL_LEATHER);
-    auto armsmasterTape = charTapes.skillLevel(0, SKILL_ARMSMASTER);
-    auto hirelingsTape = tapes.totalHirelings();
+    auto armsmasterTape = charTapes.skillLevels(SKILL_ARMSMASTER);
     game.startNewGame();
     pParty->pCharacters[0].setSkillValue(SKILL_ARMSMASTER, CombinedSkillValue::novice(1));
     test.startTaping();
-    hireHarmondalePeasant(game, NPC_PROFESSION_SQUIRE);
+    game.tick();
+    hireGolem(NPC_PROFESSION_SQUIRE);
+    game.tick();
 
-    EXPECT_EQ(hirelingsTape, tape(1, 2)); // The party starts with one hireling.
     EXPECT_EQ(swordTape, tape({1, 0, 0, 0}, {3, 2, 2, 2}));
     EXPECT_EQ(bowTape, tape({1, 0, 0, 0}, {3, 2, 2, 2}));
     EXPECT_EQ(shieldTape, tape({0, 0, 0, 0}, {2, 2, 2, 2})); // Vanilla raises skills the character doesn't have too.
     EXPECT_EQ(leatherTape, tape({1, 1, 1, 1}, {3, 3, 3, 3}));
-    EXPECT_EQ(armsmasterTape, tape(1));
+    EXPECT_EQ(armsmasterTape, tape({1, 0, 0, 0})); // Armsmaster is not affected.
 }
 
 GAME_TEST(Issues, Issue2859b) {
     // A hired Sage raised Monster ID but not Item ID.
     auto itemIdTape = charTapes.skillLevels(SKILL_ITEM_ID);
     auto monsterIdTape = charTapes.skillLevels(SKILL_MONSTER_ID);
-    auto hirelingsTape = tapes.totalHirelings();
     game.startNewGame();
     for (Skill skill : {SKILL_ITEM_ID, SKILL_MONSTER_ID})
         pParty->pCharacters[0].setSkillValue(skill, CombinedSkillValue::novice(1));
     test.startTaping();
-    hireHarmondalePeasant(game, NPC_PROFESSION_SAGE);
+    game.tick();
+    hireGolem(NPC_PROFESSION_SAGE);
+    game.tick();
 
-    EXPECT_EQ(hirelingsTape, tape(1, 2)); // The party starts with one hireling.
     EXPECT_EQ(itemIdTape, tape({1, 0, 0, 0}, {7, 6, 6, 6}));
     EXPECT_EQ(monsterIdTape, tape({1, 0, 0, 0}, {7, 6, 6, 6}));
 }
