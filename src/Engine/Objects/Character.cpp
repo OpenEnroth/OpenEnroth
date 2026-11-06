@@ -713,8 +713,8 @@ int Character::learningPercent() const {
     // The in-game descriptions of Scholar, Teacher and Instructor promise a flat 5%, 10% and 15% experience bonus.
     // Vanilla MM7 adds them to the Learning level instead, so a character without Learning also gets the starting 9%,
     // and a Teacher alone gives 19%. Vanilla MM6 adds Teacher and Instructor to the percent directly and gives the 9%
-    // only with the skill, so a Teacher alone gives 10%. MM6 never applies the Scholar's bonus.
-    // OE gives the flat bonuses the descriptions promise.
+    // only with the skill, so a Teacher alone gives 10%. Vanilla MM6 also has a bug where it never applies the
+    // Scholar's bonus. OE gives the flat bonuses the descriptions promise.
     int bonus = 0;
     if (CheckHiredNPCSpeciality(NPC_PROFESSION_TEACHER)) bonus += 10;
     if (CheckHiredNPCSpeciality(NPC_PROFESSION_INSTRUCTOR)) bonus += 15;
