@@ -95,6 +95,14 @@ TestMultiTape<Condition> CharacterTapeRecorder::conditions() {
     return custom(std::bind(&Character::GetMajorConditionIdx, _1));
 }
 
+TestTape<bool> CharacterTapeRecorder::hasCondition(int characterIndex, Condition condition) {
+    return custom(characterIndex, [=](const Character &character) { return character.conditions.has(condition); });
+}
+
+TestMultiTape<bool> CharacterTapeRecorder::haveConditions(Condition condition) {
+    return custom([=](const Character &character) { return character.conditions.has(condition); });
+}
+
 TestTape<int> CharacterTapeRecorder::resistance(int characterIndex, Attribute resistance) {
     return custom(characterIndex, std::bind(&Character::GetActualResistance, _1, resistance));
 }
