@@ -105,8 +105,6 @@ const std::shared_ptr<GraphicsImage> &AssetsManager::getBitmap(std::string_view 
 }
 
 const std::shared_ptr<GraphicsImage> &AssetsManager::getSprite(std::string_view name) {
-    static const std::shared_ptr<GraphicsImage> noSprite;
-
     std::string filename = ascii::toLower(name);
 
     auto i = sprites.find(filename);
