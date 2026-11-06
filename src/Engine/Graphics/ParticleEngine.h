@@ -9,7 +9,6 @@
 #include "Library/Color/Color.h"
 
 #include "Utility/Flags.h"
-#include "Utility/Ptr.h"
 
 class GraphicsImage;
 
@@ -38,7 +37,7 @@ struct Particle_sw {
     float shiftZ = 0;
     Color uDiffuse{};
     Duration timeToLive{};
-    Ptr<GraphicsImage> texture = nullptr;
+    GraphicsImage *texture = nullptr;
     int paletteID = 0;
     float particle_size = 0;
 };
@@ -53,7 +52,7 @@ struct Particle {
     float shift_z = 0;
     Color uParticleColor;
     Duration timeToLive;
-    Ptr<GraphicsImage> texture = nullptr;  // unsigned int resource_id;// bitmap IDirect3DTexture
+    GraphicsImage *texture = nullptr;  // unsigned int resource_id;// bitmap IDirect3DTexture
                        // idx or sprite idx depending on type
     int paletteID = 0;
     float particle_size = 0;  // field_28
