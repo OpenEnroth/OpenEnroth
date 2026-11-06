@@ -122,9 +122,8 @@ void loadGame(std::string_view fileName) {
 
     SetUserInterface(pParty->alignment);
 
-    if (!pGames_LOD->exists(state.header.locationName)) {
+    if (!pGames_LOD->exists(state.header.locationName))
         MM_ERROR("Unable to find: {}!", state.header.locationName);
-    }
 
     // TODO(captainurist): the start point is a placeholder, the save carries the party's position and the loaders
     //                     skip placement when loading. MapDestination has no way to say that.
@@ -206,9 +205,8 @@ SaveGameHeader saveGame(bool isAutoSave, bool resetWorld, std::string_view path,
     assert(isAutoSave || !title.empty());
     assert(engine->_currentLoadedMapId != MAP_ARENA || isAutoSave); // No manual saves in Arena.
 
-    if (engine->_currentLoadedMapId == MAP_ARENA) {
+    if (engine->_currentLoadedMapId == MAP_ARENA)
         return {};
-    }
 
     auto [header, blob] = createSaveData(resetWorld, title);
 

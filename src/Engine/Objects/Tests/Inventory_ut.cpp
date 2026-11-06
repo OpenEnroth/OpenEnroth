@@ -51,11 +51,9 @@ GAME_TEST(Inventory, CrazyBigItem) {
     helm.itemId = ITEM_FULL_HELM; // Size = 2x2, fills whole inventory.
     inventory.add(Pointi(0, 0), helm);
 
-    for (int x = 0; x < 2; x++) {
-        for (int y = 0; y < 2; y++) {
+    for (int x = 0; x < 2; x++)
+        for (int y = 0; y < 2; y++)
             EXPECT_EQ(inventory.canAdd(Pointi(x, y), Sizei(1, 1)), false);
-        }
-    }
 }
 
 GAME_TEST(Inventory, StorageFull) {
