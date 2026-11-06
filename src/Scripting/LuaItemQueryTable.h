@@ -30,15 +30,12 @@ class LuaItemQueryTable {
     sol::object createTable(const ItemType &item, const QueryTable &queryTable) {
         sol::table table = _luaState.create_table();
         if (queryTable.empty()) {
-            for (auto &&[key, query] : _mapping) {
+            for (auto &&[key, query] : _mapping)
                 table[key] = query(item);
-            }
         } else {
-            for (auto &&key : queryTable) {
-                if (auto itr = _mapping.find(key); itr != _mapping.end()) {
+            for (auto &&key : queryTable)
+                if (auto itr = _mapping.find(key); itr != _mapping.end())
                     table[key] = itr->second(item);
-                }
-            }
         }
         return table;
     }

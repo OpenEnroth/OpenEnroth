@@ -24,9 +24,8 @@ static constexpr IndexedArray<const char *, PartyAlignment_Good, PartyAlignment_
 GUIProgressBar *pGameLoadingUI_ProgressBar = new GUIProgressBar();
 
 bool GUIProgressBar::Initialize(Type type) {
-    if (loading_bg) {
+    if (loading_bg)
         return false;
-    }
 
     Release();
 
@@ -92,9 +91,8 @@ void GUIProgressBar::Draw() {
         render->DrawQuad2D(pIconsFrameTable->animationFrame(turnHourIconId, 0_ticks), {100, 146});
         render->FillRect(Recti(174, 164, floorf((double)(113 * uProgressCurrent) / (double)uProgressMax + 0.5f), 16), colorTable.Red);
     } else {
-        if (loading_bg) {
+        if (loading_bg)
             render->DrawQuad2D(loading_bg, {0, 0});
-        }
         render->SetUIClipRect(Recti(172, 459, (double)(300 * uProgressCurrent) / (double)uProgressMax, 12));
         render->DrawQuad2D(progressbar_loading, {172, 459});
         render->ResetUIClipRect();

@@ -46,24 +46,21 @@ void Weather::Initialize() {
 }
 
 void Weather::Draw() {
-    if (bRenderSnow && engine->config->graphics.Snow.value()) {
+    if (bRenderSnow && engine->config->graphics.Snow.value())
         DrawSnow();
-    }
 }
 
 bool Weather::OnPlayerTurn(int dangle) {
-    if (!bRenderSnow) {
+    if (!bRenderSnow)
         return false;
-    }
 
     unsigned int screen_width = pViewport.w - 1;
 
     for (Pointi &point : Screen_Coord) {
         point.x += dangle;
         if (point.x < pViewport.x + pViewport.w - 1) {
-            if (point.x >= pViewport.x) {
+            if (point.x >= pViewport.x)
                 continue;
-            }
             point.x += screen_width;
         } else {
             point.x -= screen_width;

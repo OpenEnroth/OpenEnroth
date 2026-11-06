@@ -33,9 +33,8 @@ void GUIWindow_TownHall::mainDialogue() {
     std::vector<std::string> optionsText = {localization->str(LSTR_BOUNTY_HUNT)};
     std::string fine_str = fmt::format("{}: {}", localization->str(LSTR_CURRENT_FINE), pParty->uFine);
     DrawTitleText(assets->pFontArrus.get(), 0, 260, colorTable.PaleCanary, fine_str, 3, townHall_window);
-    if (pParty->uFine > 0) {
+    if (pParty->uFine > 0)
         optionsText.push_back(localization->str(LSTR_PAY_FINE));
-    }
 
     drawOptions(optionsText, colorTable.PaleCanary, 170, true);
 }
@@ -162,9 +161,8 @@ void GUIWindow_TownHall::bountyHuntingDialogueOptionClicked() {
             int bounty = 100 * pMonsterStats->infos[pParty->monster_id_for_hunting[house]].level;
 
             pParty->partyFindsGold(bounty, GOLD_RECEIVE_SHARE);
-            for (Character &player : pParty->pCharacters) {
+            for (Character &player : pParty->pCharacters)
                 player.giveAward(AWARD_BOUNTIES_COLLECTED);
-            }
             pParty->uNumBountiesCollected += bounty;
             pParty->monster_id_for_hunting[house] = MONSTER_INVALID;
             pParty->monster_for_hunting_killed[house] = false;

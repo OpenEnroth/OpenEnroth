@@ -13,13 +13,11 @@ bool InputScriptEventHandler::keyPressEvent(const PlatformKeyEvent *event) {
     if (function.valid()) {
         try {
             sol::function errorHandler = _solState["_globalErrorHandler"];
-            if (errorHandler.valid()) {
+            if (errorHandler.valid())
                 function.set_error_handler(errorHandler);
-            }
             auto result = function(event->key);
-            if (result.valid()) {
+            if (result.valid())
                 return result;
-            }
         } catch (const sol::error &e) {
             MM_ERROR_IN(ScriptingSystem::ScriptingLogCategory, "An unexpected error has occurred: {}", e.what());
         }

@@ -58,9 +58,8 @@ void GUIWindow_Bank::putGoldDialogue() {
             pParty->TakeGold(sum);
             pParty->AddBankGold(sum);
             _transactionPerformed = true;
-            if (pParty->hasActiveCharacter()) {
+            if (pParty->hasActiveCharacter())
                 pParty->activeCharacter().playReaction(SPEECH_BANK_DEPOSIT);
-            }
         }
     }
     keyboard_input_status = WINDOW_INPUT_NONE;
@@ -106,9 +105,8 @@ void GUIWindow_Bank::getGoldDialogue() {
 
 void GUIWindow_Bank::houseDialogueOptionSelected(DialogueId option) {
     _currentDialogue = option;
-    if (option == DIALOGUE_BANK_PUT_GOLD || option == DIALOGUE_BANK_GET_GOLD) {
+    if (option == DIALOGUE_BANK_PUT_GOLD || option == DIALOGUE_BANK_GET_GOLD)
         keyboardInputHandler->StartTextInput(TEXT_INPUT_NUMBER, 10, this);
-    }
 }
 
 void GUIWindow_Bank::houseSpecificDialogue() {
@@ -137,7 +135,6 @@ std::vector<DialogueId> GUIWindow_Bank::listDialogueOptions() {
 }
 
 void GUIWindow_Bank::playHouseGoodbyeSpeech() {
-    if (_transactionPerformed) {
+    if (_transactionPerformed)
         playHouseSound(houseId(), HOUSE_SOUND_BANK_GOODBYE);
-    }
 }

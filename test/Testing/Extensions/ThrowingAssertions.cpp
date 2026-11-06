@@ -8,9 +8,8 @@ class ThrowListener : public testing::EmptyTestEventListener {
         if (!globalThrowListenerEnabled)
             return;
 
-        if (result.type() == testing::TestPartResult::kFatalFailure) {
+        if (result.type() == testing::TestPartResult::kFatalFailure)
             throw testing::AssertionException(result);
-        }
     }
 };
 
