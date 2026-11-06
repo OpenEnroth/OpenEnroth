@@ -15,10 +15,10 @@ UNIT_TEST(FileSystemDump, DumpEmpty) {
 
 UNIT_TEST(FileSystemDump, DumpLimitAndContents) {
     MemoryFileSystem fs("");
-    fs.write("/1/2/3", Blob::fromString("123"));
-    fs.write("/0.0", Blob::fromString("123"));
-    fs.write("/0.1", Blob::fromString("123"));
-    fs.write("/0.2", Blob::fromString("123"));
+    fs.write("1/2/3", Blob::fromString("123"));
+    fs.write("0.0", Blob::fromString("123"));
+    fs.write("0.1", Blob::fromString("123"));
+    fs.write("0.2", Blob::fromString("123"));
 
     EXPECT_EQ(dumpFileSystem(&fs, 0, 0), std::vector<FileSystemDumpEntry>());
     EXPECT_EQ(dumpFileSystem(&fs, FILE_SYSTEM_DUMP_WITH_CONTENTS, 0), std::vector<FileSystemDumpEntry>());

@@ -12,24 +12,24 @@
 UNIT_TEST(MemoryFileSystem, EmptyRoot) {
     // Make sure accessing root works as expected.
     MemoryFileSystem fs("");
-    EXPECT_TRUE(fs.ls("/").empty());
-    EXPECT_TRUE(fs.exists("/"));
-    EXPECT_EQ(fs.stat("/"), FileStat(FILE_DIRECTORY, 0));
+    EXPECT_TRUE(fs.ls("").empty());
+    EXPECT_TRUE(fs.exists(""));
+    EXPECT_EQ(fs.stat(""), FileStat(FILE_DIRECTORY, 0));
 
-    EXPECT_ANY_THROW((void) fs.read("/"));
-    EXPECT_ANY_THROW(fs.write("/", Blob()));
-    EXPECT_ANY_THROW((void) fs.openForReading("/"));
-    EXPECT_ANY_THROW((void) fs.openForWriting("/"));
-    EXPECT_ANY_THROW(fs.remove("/"));
+    EXPECT_ANY_THROW((void) fs.read(""));
+    EXPECT_ANY_THROW(fs.write("", Blob()));
+    EXPECT_ANY_THROW((void) fs.openForReading(""));
+    EXPECT_ANY_THROW((void) fs.openForWriting(""));
+    EXPECT_ANY_THROW(fs.remove(""));
 
-    fs.write("/a/b.bin", Blob());
+    fs.write("a/b.bin", Blob());
 }
 
 UNIT_TEST(MemoryFileSystem, Ls) {
     MemoryFileSystem fs("");
 
-    fs.write("/a/b", Blob());
-    fs.write("/a/c/d", Blob());
+    fs.write("a/b", Blob());
+    fs.write("a/c/d", Blob());
 
     EXPECT_EQ(dumpFileSystem(&fs), std::vector<FileSystemDumpEntry>({
         {"/", FILE_DIRECTORY},
@@ -39,120 +39,120 @@ UNIT_TEST(MemoryFileSystem, Ls) {
         {"/a/c/d", FILE_REGULAR}
     }));
 
-    EXPECT_ANY_THROW((void) fs.ls("/a/b"));
-    EXPECT_ANY_THROW((void) fs.ls("/a/c/d"));
+    EXPECT_ANY_THROW((void) fs.ls("a/b"));
+    EXPECT_ANY_THROW((void) fs.ls("a/c/d"));
 }
 
 UNIT_TEST(MemoryFileSystem, ReadWrite) {
     MemoryFileSystem fs("");
 
-    fs.write("/a", Blob());
-    EXPECT_EQ(fs.read("/a").size(), 0);
+    fs.write("a", Blob());
+    EXPECT_EQ(fs.read("a").size(), 0);
 
-    EXPECT_ANY_THROW(fs.write("/a/b", Blob()));
+    EXPECT_ANY_THROW(fs.write("a/b", Blob()));
 
-    fs.write("/b", Blob::fromString("123"));
-    EXPECT_EQ(fs.read("/b").str(), "123");
+    fs.write("b", Blob::fromString("123"));
+    EXPECT_EQ(fs.read("b").str(), "123");
 }
 
 UNIT_TEST(MemoryFileSystem, ReadDir) {
     MemoryFileSystem fs("");
 
-    fs.write("/a/b/c", Blob());
-    EXPECT_ANY_THROW((void) fs.read("/a"));
-    EXPECT_ANY_THROW((void) fs.read("/a/b"));
+    fs.write("a/b/c", Blob());
+    EXPECT_ANY_THROW((void) fs.read("a"));
+    EXPECT_ANY_THROW((void) fs.read("a/b"));
 }
 
 UNIT_TEST(MemoryFileSystem, ExistsStat) {
     MemoryFileSystem fs("");
 
-    fs.write("/a/b/c", Blob::fromString("123"));
-    EXPECT_TRUE(fs.exists("/a"));
-    EXPECT_TRUE(fs.exists("/a/b"));
-    EXPECT_TRUE(fs.exists("/a/b/c"));
-    EXPECT_EQ(fs.stat("/a"), FileStat(FILE_DIRECTORY, 0));
-    EXPECT_EQ(fs.stat("/a/b"), FileStat(FILE_DIRECTORY, 0));
-    EXPECT_EQ(fs.stat("/a/b/c"), FileStat(FILE_REGULAR, 3));
+    fs.write("a/b/c", Blob::fromString("123"));
+    EXPECT_TRUE(fs.exists("a"));
+    EXPECT_TRUE(fs.exists("a/b"));
+    EXPECT_TRUE(fs.exists("a/b/c"));
+    EXPECT_EQ(fs.stat("a"), FileStat(FILE_DIRECTORY, 0));
+    EXPECT_EQ(fs.stat("a/b"), FileStat(FILE_DIRECTORY, 0));
+    EXPECT_EQ(fs.stat("a/b/c"), FileStat(FILE_REGULAR, 3));
 }
 
 UNIT_TEST(MemoryFileSystem, Streaming) {
     MemoryFileSystem fs("");
 
-    EXPECT_ANY_THROW((void) fs.openForReading("/a"));
+    EXPECT_ANY_THROW((void) fs.openForReading("a"));
 
-    std::unique_ptr<OutputStream> output0 = fs.openForWriting("/a");
-    EXPECT_TRUE(fs.exists("/a"));
-    EXPECT_EQ(fs.stat("/a"), FileStat(FILE_REGULAR, 0));
-    EXPECT_ANY_THROW((void) fs.read("/a"));
-    EXPECT_ANY_THROW(fs.write("/a", Blob()));
-    EXPECT_ANY_THROW((void) fs.openForReading("/a"));
-    EXPECT_ANY_THROW((void) fs.openForWriting("/a"));
+    std::unique_ptr<OutputStream> output0 = fs.openForWriting("a");
+    EXPECT_TRUE(fs.exists("a"));
+    EXPECT_EQ(fs.stat("a"), FileStat(FILE_REGULAR, 0));
+    EXPECT_ANY_THROW((void) fs.read("a"));
+    EXPECT_ANY_THROW(fs.write("a", Blob()));
+    EXPECT_ANY_THROW((void) fs.openForReading("a"));
+    EXPECT_ANY_THROW((void) fs.openForWriting("a"));
 
     output0->write("123");
     output0->close();
-    EXPECT_TRUE(fs.exists("/a"));
-    EXPECT_EQ(fs.stat("/a"), FileStat(FILE_REGULAR, 3));
-    EXPECT_EQ(fs.read("/a").str(), "123");
+    EXPECT_TRUE(fs.exists("a"));
+    EXPECT_EQ(fs.stat("a"), FileStat(FILE_REGULAR, 3));
+    EXPECT_EQ(fs.read("a").str(), "123");
 
-    std::unique_ptr<InputStream> input0 = fs.openForReading("/a");
-    std::unique_ptr<InputStream> input1 = fs.openForReading("/a");
-    EXPECT_ANY_THROW((void) fs.openForWriting("/a"));
-    EXPECT_ANY_THROW(fs.write("/a", Blob()));
-    EXPECT_EQ(fs.read("/a").str(), "123"); // read() works even when readers are active.
+    std::unique_ptr<InputStream> input0 = fs.openForReading("a");
+    std::unique_ptr<InputStream> input1 = fs.openForReading("a");
+    EXPECT_ANY_THROW((void) fs.openForWriting("a"));
+    EXPECT_ANY_THROW(fs.write("a", Blob()));
+    EXPECT_EQ(fs.read("a").str(), "123"); // read() works even when readers are active.
 
     EXPECT_EQ(input0->readAll(), "123");
     EXPECT_EQ(input1->readAll(), "123");
-    EXPECT_ANY_THROW((void) fs.openForWriting("/a")); // Still can't open for writing even when all read streams are at end.
-    EXPECT_ANY_THROW(fs.write("/a", Blob()));
+    EXPECT_ANY_THROW((void) fs.openForWriting("a")); // Still can't open for writing even when all read streams are at end.
+    EXPECT_ANY_THROW(fs.write("a", Blob()));
 
     input0->close();
-    EXPECT_ANY_THROW((void) fs.openForWriting("/a")); // One reader still active, can't write.
-    EXPECT_ANY_THROW(fs.write("/a", Blob()));
+    EXPECT_ANY_THROW((void) fs.openForWriting("a")); // One reader still active, can't write.
+    EXPECT_ANY_THROW(fs.write("a", Blob()));
 
     input1->close();
-    fs.write("/a", Blob());
-    EXPECT_EQ(fs.stat("/a"), FileStat(FILE_REGULAR, 0));
+    fs.write("a", Blob());
+    EXPECT_EQ(fs.stat("a"), FileStat(FILE_REGULAR, 0));
 }
 
 UNIT_TEST(MemoryFileSystem, ReadBlobBlocksWriting) {
     // A Blob returned by read() shares the underlying memory with the file, so we treat it like an active reader -
     // any attempt to write to the same path must fail until the Blob is destroyed.
     MemoryFileSystem fs("");
-    fs.write("/a", Blob::fromString("123"));
+    fs.write("a", Blob::fromString("123"));
 
-    Blob blob0 = fs.read("/a");
+    Blob blob0 = fs.read("a");
     EXPECT_EQ(blob0.str(), "123");
-    EXPECT_ANY_THROW(fs.write("/a", Blob::fromString("456")));
-    EXPECT_ANY_THROW((void) fs.openForWriting("/a"));
+    EXPECT_ANY_THROW(fs.write("a", Blob::fromString("456")));
+    EXPECT_ANY_THROW((void) fs.openForWriting("a"));
 
     // Sharing / sub-blobbing extends the lifetime, so writes must still fail.
     Blob blob1 = Blob::share(blob0);
     Blob blob2 = blob0.subBlob(0, 1);
     blob0 = {};
-    EXPECT_ANY_THROW(fs.write("/a", Blob::fromString("456")));
+    EXPECT_ANY_THROW(fs.write("a", Blob::fromString("456")));
 
     blob1 = {};
-    EXPECT_ANY_THROW(fs.write("/a", Blob::fromString("456")));
+    EXPECT_ANY_THROW(fs.write("a", Blob::fromString("456")));
 
     // Once the last shared copy is gone, writing works again.
     blob2 = {};
-    fs.write("/a", Blob::fromString("456"));
-    EXPECT_EQ(fs.read("/a").str(), "456");
+    fs.write("a", Blob::fromString("456"));
+    EXPECT_EQ(fs.read("a").str(), "456");
 }
 
 UNIT_TEST(MemoryFileSystem, Remove) {
     MemoryFileSystem fs("");
 
-    fs.write("/a", Blob::fromString("123"));
-    fs.write("/b", Blob::fromString("456"));
-    std::unique_ptr<InputStream> input = fs.openForReading("/a");
-    Blob blob = fs.read("/b");
+    fs.write("a", Blob::fromString("123"));
+    fs.write("b", Blob::fromString("456"));
+    std::unique_ptr<InputStream> input = fs.openForReading("a");
+    Blob blob = fs.read("b");
 
-    EXPECT_TRUE(fs.remove("/a"));
-    EXPECT_TRUE(fs.remove("/b"));
-    EXPECT_FALSE(fs.exists("/a"));
-    EXPECT_FALSE(fs.exists("/b"));
-    EXPECT_EQ(fs.ls("/").size(), 0);
+    EXPECT_TRUE(fs.remove("a"));
+    EXPECT_TRUE(fs.remove("b"));
+    EXPECT_FALSE(fs.exists("a"));
+    EXPECT_FALSE(fs.exists("b"));
+    EXPECT_EQ(fs.ls("").size(), 0);
 
     EXPECT_EQ(input->readAll(), "123"); // Input stream still readable, even though the file was removed.
     input->close();
@@ -162,10 +162,10 @@ UNIT_TEST(MemoryFileSystem, Remove) {
 UNIT_TEST(MemoryFileSystem, Lifetime) {
     std::unique_ptr<MemoryFileSystem> fs = std::make_unique<MemoryFileSystem>("");
 
-    fs->write("/a", Blob::fromString("123"));
-    std::unique_ptr<InputStream> input = fs->openForReading("/a");
-    std::unique_ptr<OutputStream> output = fs->openForWriting("/b");
-    std::unique_ptr<OutputStream> output2 = fs->openForWriting("/c");
+    fs->write("a", Blob::fromString("123"));
+    std::unique_ptr<InputStream> input = fs->openForReading("a");
+    std::unique_ptr<OutputStream> output = fs->openForWriting("b");
+    std::unique_ptr<OutputStream> output2 = fs->openForWriting("c");
 
     fs.reset();
     EXPECT_EQ(input->readAll(), "123"); // Input stream still readable, even though the FS was destroyed.
@@ -183,23 +183,23 @@ UNIT_TEST(MemoryFileSystem, DestructorFlushesData) {
     MemoryFileSystem fs("");
 
     {
-        std::unique_ptr<OutputStream> output = fs.openForWriting("/a");
+        std::unique_ptr<OutputStream> output = fs.openForWriting("a");
         output->write("123");
         // No explicit close() — destructor should flush the data.
     }
 
-    EXPECT_EQ(fs.read("/a").str(), "123");
+    EXPECT_EQ(fs.read("a").str(), "123");
 }
 
 UNIT_TEST(MemoryFileSystem, Overwrite) {
     MemoryFileSystem fs("");
-    fs.write("/a", Blob::fromString("a"));
+    fs.write("a", Blob::fromString("a"));
 
-    std::unique_ptr<OutputStream> output = fs.openForWriting("/a");
+    std::unique_ptr<OutputStream> output = fs.openForWriting("a");
     output->write("A");
     output->close();
 
-    EXPECT_EQ(fs.read("/a").str(), "A");
+    EXPECT_EQ(fs.read("a").str(), "A");
 }
 
 UNIT_TEST(MemoryFileSystem, DisplayPathInvalidUtf8) {
@@ -207,7 +207,7 @@ UNIT_TEST(MemoryFileSystem, DisplayPathInvalidUtf8) {
     // an ls of a NativeFileSystem on POSIX.
     MemoryFileSystem fs("mem");
 
-    std::string display = fs.displayPath("/lol\xD0kek"); // "\xD0" starts an incomplete UTF-8 sequence.
+    std::string display = fs.displayPath("lol\xD0kek"); // "\xD0" starts an incomplete UTF-8 sequence.
     EXPECT_TRUE(display.starts_with("mem://lol"));
     EXPECT_TRUE(display.ends_with("kek"));
     EXPECT_NE(display.find("\xEF\xBF\xBD"), std::string::npos); // U+FFFD.
@@ -216,30 +216,29 @@ UNIT_TEST(MemoryFileSystem, DisplayPathInvalidUtf8) {
 
 UNIT_TEST(MemoryFileSystem, DisplayPath) {
     MemoryFileSystem fs("mem");
-    fs.write("/a", Blob::fromString("a"));
+    fs.write("a", Blob::fromString("a"));
 
-    EXPECT_EQ(fs.read("/a").displayPath(), "mem://a");
+    EXPECT_EQ(fs.read("a").displayPath(), "mem://a");
 
-    std::unique_ptr<InputStream> input = fs.openForReading("/a");
+    std::unique_ptr<InputStream> input = fs.openForReading("a");
     EXPECT_EQ(input->displayPath(), "mem://a");
     input->close();
 
-    std::unique_ptr<OutputStream> output = fs.openForWriting("/b");
+    std::unique_ptr<OutputStream> output = fs.openForWriting("b");
     EXPECT_EQ(output->displayPath(), "mem://b");
     output->close();
 
     // Also check that writing through a streaming interfaces preserves display path.
-    EXPECT_EQ(fs.read("/b").displayPath(), "mem://b");
+    EXPECT_EQ(fs.read("b").displayPath(), "mem://b");
 }
 
 UNIT_TEST(MemoryFileSystem, ExceptionMessage) {
     MemoryFileSystem fs("mem");
 
-    EXPECT_THROW_MESSAGE((void) fs.read("/a"), "mem://a");
-    EXPECT_THROW_MESSAGE((void) fs.openForReading("/a"), "mem://a");
-    EXPECT_THROW_MESSAGE((void) fs.ls("/a"), "mem://a");
+    EXPECT_THROW_MESSAGE((void) fs.read("a"), "mem://a");
+    EXPECT_THROW_MESSAGE((void) fs.openForReading("a"), "mem://a");
+    EXPECT_THROW_MESSAGE((void) fs.ls("a"), "mem://a");
 }
-
 
 UNIT_TEST(MemoryFileSystem, RelativePathsStartAtRoot) {
     // The current directory of a file system is always the root, so a relative path names the same file as an
