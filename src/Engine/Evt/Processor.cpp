@@ -1,5 +1,6 @@
 #include "Processor.h"
 
+#include <optional>
 #include <vector>
 #include <string>
 
@@ -28,7 +29,7 @@
 struct EvtTimerSchedule {
     Duration interval; // Time between alarms, counted from when the timer last fired.
     Duration period; // Time between alarms, counted from the previous alarm: a day, a week, 28 days or a year.
-    Duration timeOfDay; // Time of day that the alarms of a daily `period` fall on. Zero for the other timers.
+    std::optional<Duration> timeOfDay; // Time of day that the alarms fall on, set for a daily `period` only.
 };
 
 struct MapTimer {
@@ -93,9 +94,8 @@ static EvtTimerSchedule timerSchedule(const EvtInstruction &ir) {
         result.period = Duration::fromDays(7);
     } else {
         result.period = Duration::fromDays(1);
-        result.timeOfDay = Duration::fromHours(ir.data.timer_descr.daily_start_hour);
-        result.timeOfDay += Duration::fromMinutes(ir.data.timer_descr.daily_start_minute);
-        result.timeOfDay += Duration::fromSeconds(ir.data.timer_descr.daily_start_second);
+        result.timeOfDay = Duration::fromHours(ir.data.timer_descr.daily_start_hour) + Duration::fromMinutes(ir.data.timer_descr.daily_start_minute) +
+                           Duration::fromSeconds(ir.data.timer_descr.daily_start_second);
     }
     return result;
 }
@@ -110,12 +110,13 @@ static Time firstAlarm(const EvtTimerSchedule &schedule, Time levelLastVisit) {
         return pParty->GetPlayingTime() + schedule.interval;
 
     assert(schedule.period > 0_ticks);
-    if (schedule.period == Duration::fromDays(1)) {
+    if (schedule.timeOfDay) {
+        assert(schedule.period == Duration::fromDays(1));
         if (!levelLastVisit)
             return Time(); // Fires at the first check, and the zero alarm makes checkTimers put the next one on the time of day.
 
         // Calculate alarm time inside last visit day
-        Time result = Time::fromDays(levelLastVisit.toDays()) + schedule.timeOfDay;
+        Time result = Time::fromDays(levelLastVisit.toDays()) + *schedule.timeOfDay;
         return result < levelLastVisit ? result + Duration::fromDays(1) : result; // Last visit time already passed alarm time inside that day so move alarm to next day.
     }
 
@@ -219,9 +220,9 @@ static void checkTimers(std::vector<MapTimer> *timers) {
         if (timer.schedule.interval) {
             timer.alarmTime = pParty->GetPlayingTime() + timer.schedule.interval;
         } else {
-            if (!timer.alarmTime.isValid() && timer.schedule.period == Duration::fromDays(1)) {
+            if (!timer.alarmTime.isValid() && timer.schedule.timeOfDay) {
                 // Initial firing of daily timers, next alarm must be configured to fire on exact time of day
-                timer.alarmTime = Time() + timer.schedule.timeOfDay;
+                timer.alarmTime = Time() + *timer.schedule.timeOfDay;
             }
             while (pParty->GetPlayingTime() >= timer.alarmTime) {
                 timer.alarmTime += timer.schedule.period;
