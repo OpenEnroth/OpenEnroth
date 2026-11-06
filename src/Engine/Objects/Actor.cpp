@@ -2823,7 +2823,7 @@ bool Actor::isActorKilled(ActorKillCheckPolicy policy, int param, int count) {
         deadActors = Actor::searchDeadActorsByGroup(&totalActors, param);
         break;
       case KILL_CHECK_MONSTERID:
-        deadActors = Actor::searchDeadActorsByMonsterID(&totalActors, static_cast<MonsterId>(param + 1)); // Evt scripts count monster ids from 0.
+        deadActors = Actor::searchDeadActorsByMonsterID(&totalActors, static_cast<MonsterId>(param));
         break;
       case KILL_CHECK_ACTORID:
         deadActors = Actor::searchDeadActorsByID(&totalActors, param);
