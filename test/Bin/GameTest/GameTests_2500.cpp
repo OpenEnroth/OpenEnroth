@@ -9,9 +9,11 @@
 
 #include "Engine/Engine.h"
 #include "Engine/EngineGlobals.h"
+#include "Engine/EngineIocContainer.h"
 #include "Engine/MapEnums.h"
 #include "Engine/Party.h"
 #include "Engine/SaveLoad.h"
+#include "Engine/SpellFxRenderer.h"
 #include "Engine/mm7_data.h"
 #include "Engine/Data/AwardEnums.h"
 #include "Engine/Data/HouseEnums.h"
@@ -26,6 +28,7 @@
 #include "Engine/Objects/SpriteObject.h"
 #include "Engine/Resources/EngineFileSystem.h"
 #include "Engine/Tables/DecorationTable.h"
+#include "Engine/Tables/IconFrameTable.h"
 #include "Engine/Tables/MapTable.h"
 #include "Engine/Tables/NPCTable.h"
 
@@ -960,6 +963,41 @@ GAME_TEST(Issues, Issue2815) {
         EXPECT_EQ(statusTape.contains("You Successfully disarm the trap"), disarmed);
         EXPECT_EQ(spritesTape.flatten().contains(SPRITE_SPELL_WATER_ICE_BLAST_IMPACT), !disarmed);
     }
+}
+
+GAME_TEST(Issues, Issue2817) {
+    // Characters smiled at an award added by a script only when they already had it.
+    auto portraitTape = charTapes.portraits();
+    auto awardTape = tapes.custom([] {
+        return std::ranges::count_if(pParty->pCharacters, [](const Character &character) {
+            return character._achievedAwardsBits[AWARD_EMERALD_ISLE_COMPLETED_MAIN_QUEST];
+        });
+    });
+    auto buffAnimTape = tapes.custom([] {
+        AccessibleVector<int> result;
+        for (const PlayerBuffAnim &anim : EngineIocContainer::ResolveSpellFxRenderer()->pCharacterBuffs)
+            result.push_back(anim.uSpellIconID);
+        return result;
+    });
+    engine->config->debug.NoMargaret.setValue(true); // Her tour would stop the party at the door.
+    game.startNewGame();
+    pParty->_questBits.set(QBIT_EMERALD_ISLAND_SCAVENGER_HUNT_WON); // Unlocks Lord Markham's Congratulations topic.
+    pParty->pCharacters[3]._achievedAwardsBits[AWARD_EMERALD_ISLE_COMPLETED_MAIN_QUEST] = true;
+    test.startTaping();
+    game.teleportTo(MAP_EMERALD_ISLAND, Vec3f(16154, 8560, 128), 180); // In front of Markham's Headquarters.
+    game.pressAndReleaseKey(PlatformKey::KEY_SPACE);
+    game.tick();
+    game.pressGuiButton("House_Npc0"); // Lord Markham.
+    game.tick();
+    game.pressGuiButton("HouseNpcDialogue_Option0"); // Congratulations, which gives the award to the whole party.
+    game.tick();
+
+    EXPECT_EQ(awardTape, tape(1, 4));
+    for (int i = 0; i < 3; i++)
+        EXPECT_CONTAINS(portraitTape.slice(i), PORTRAIT_WIDE_SMILE);
+    EXPECT_MISSES(portraitTape.slice(3), PORTRAIT_WIDE_SMILE); // Already had the award.
+    int expAnim = pIconsFrameTable->animationId("spboost2"); // Add Experience runs right before the award, on everyone.
+    EXPECT_EQ(buffAnimTape, tape({0, 0, 0, 0}, {expAnim, expAnim, expAnim, expAnim}));
 }
 
 GAME_TEST(Issues, Issue2834) {

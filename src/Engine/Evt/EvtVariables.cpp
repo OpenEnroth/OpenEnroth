@@ -1157,7 +1157,7 @@ void addEvtVariable(Character &character, EvtVariable var_type, signed int val) 
             character.sAgeModifier += val;
             return;
         case VAR_Award:
-            if (character._achievedAwardsBits[static_cast<AwardId>(val)] && !pAwards[static_cast<AwardId>(val)].pText.empty()) {
+            if (!character._achievedAwardsBits[static_cast<AwardId>(val)] && !pAwards[static_cast<AwardId>(val)].pText.empty()) {
                 character.PlayAwardSound_Anim97_Face(SPEECH_AWARD_GOT);
             }
             character._achievedAwardsBits.set(static_cast<AwardId>(val));
