@@ -21,7 +21,8 @@ void checkDecorationEvents();
 /**
  * @param context                       Event to run, and what it runs for.
  * @param startStep                     Step to start from.
- * @return                              Whether the event started a map transition. The map's leave events have run then.
+ * @return                              Whether the event started a map transition. If it did, the map's leave
+ *                                      events have already run.
  */
 EvtTransition runEvent(EvtContext context, int startStep = 0);
 
