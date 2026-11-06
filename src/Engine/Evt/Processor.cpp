@@ -123,7 +123,7 @@ static Time firstAlarm(const EvtTimerSchedule &schedule) {
     //                   To support fair timers they need to be saved directly.
     Time levelLastVisit = uCurrentlyLoadedLevelType == LEVEL_INDOOR ? pIndoor->lastVisitTime : pOutdoor->lastVisitTime;
     if (!levelLastVisit)
-        return isDaily ? Time() : now; // Without last visit all timers must fire immediately.
+        return isDaily ? Time() : now; // Fires at the first check. A zero alarm makes checkTimers put the next one on the time of day.
     if (!isDaily)
         return levelLastVisit + schedule.period;
 
