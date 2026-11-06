@@ -1179,8 +1179,8 @@ GAME_TEST(Issues, Issue939) {
     character.setSkillValue(SKILL_CLUB, CombinedSkillValue::novice()); // Club and Misc are hidden skills.
     character.setSkillValue(SKILL_MISC, CombinedSkillValue::novice());
     game.tick();
-    EXPECT_GT(shootTape.delta(), 0);
-    EXPECT_EQ(skillsTape.delta(), 1);
+    EXPECT_EQ(shootTape.delta(), 5); // Bow skill adds one point of Shoot per level, at every mastery.
+    EXPECT_EQ(skillsTape.delta(), 1); // Only Bow counts, Club and Misc are hidden.
 }
 
 GAME_TEST(Issues, Issue959) {
