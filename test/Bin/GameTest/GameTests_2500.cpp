@@ -22,6 +22,7 @@
 #include "Engine/Graphics/Vis.h"
 #include "Engine/Objects/Actor.h"
 #include "Engine/Objects/Decoration.h"
+#include "Engine/Objects/MonsterEnumFunctions.h"
 #include "Engine/Objects/SpriteObject.h"
 #include "Engine/Resources/EngineFileSystem.h"
 #include "Engine/Tables/DecorationTable.h"
@@ -1063,6 +1064,61 @@ GAME_TEST(Issues, Issue2864b) {
     game.tick(2);
 
     EXPECT_EQ(slotCountTape, tape(0, 3));
+}
+
+GAME_TEST(Issues, Issue2868a) {
+    // "Killed all Erathian Griffins" was set with the Royal Griffins still alive.
+    // "Killed all Bracada Desert Griffins" wasn't set with every griffin dead, because the Gold Golems were alive.
+    for (auto [map, bit, survivor] : {std::tuple(MAP_ERATHIA, QBIT_ERATHIA_GRIFFINS_KILLED, MONSTER_GRIFFIN_C),
+                                      std::tuple(MAP_BRACADA_DESERT, QBIT_BRACADA_DESERT_GRIFFINS_KILLED, MONSTER_INVALID),
+                                      std::tuple(MAP_BRACADA_DESERT, QBIT_BRACADA_DESERT_GRIFFINS_KILLED, MONSTER_GRIFFIN_A)}) {
+        test.prepareForNextTest();
+        auto mapTape = tapes.map();
+        auto questTape = tapes.questBit(bit);
+        game.startNewGame();
+        test.startTaping();
+        game.teleportTo(map, Vec3f(0, 0, 0), 0);
+        for (Actor &actor : pActors)
+            if (monsterTypeForMonsterId(actor.monsterInfo.id) == MONSTER_TYPE_GRIFFIN && actor.monsterInfo.id != survivor)
+                Actor::Die(actor.id);
+        game.teleportTo(MAP_HARMONDALE, Vec3f(0, 0, 0), 0);
+
+        EXPECT_EQ(mapTape, tape(MAP_EMERALD_ISLAND, map, MAP_HARMONDALE));
+        EXPECT_EQ(questTape, survivor == MONSTER_INVALID ? tape(false, true) : tape(false));
+    }
+}
+
+GAME_TEST(Issues, Issue2868b) {
+    // Spark Burnkindle took the troglodytes under Stone City for killed with the Troglodyte Queens still alive.
+    for (bool killQueens : {false, true}) {
+        test.prepareForNextTest();
+        auto questTape = tapes.questBit(QBIT_STONE_CITY_TROGLODYTES_ACTIVE);
+        auto experienceTape = tapes.totalExperience();
+        auto textTape = tapes.allGUIWindowsText();
+        game.startNewGame();
+        game.teleportTo(MAP_STONE_CITY, Vec3f(3904, -3334, -5), 270); // In front of Spark's house.
+        for (Actor &actor : pActors)
+            if (monsterTypeForMonsterId(actor.monsterInfo.id) == MONSTER_TYPE_TROGLODYTE && (killQueens || actor.monsterInfo.id != MONSTER_TROGLODYTE_C))
+                Actor::Die(actor.id);
+        test.startTaping();
+        game.pressAndReleaseKey(PlatformKey::KEY_SPACE);
+        game.tick();
+        game.pressGuiButton("House_Npc0"); // Spark Burnkindle.
+        game.tick();
+        game.pressGuiButton("HouseNpcDialogue_Option0"); // Take the quest.
+        game.tick();
+        game.pressGuiButton("HouseNpcDialogue_Option0"); // Report the troglodytes killed.
+        game.tick();
+
+        EXPECT_EQ(questTape, killQueens ? tape(false, true, false) : tape(false, true));
+        EXPECT_EQ(experienceTape.delta(), killQueens ? 4 * 5000 : 0);
+        if (killQueens) {
+            EXPECT_CONTAINS(textTape.flatten(), "They're gone?  Routed back into the connecting\ntunnels to Nighon!  Excellent!  We can get back to\n"
+                                                "mining immediately!  Thank you so much for your\nhelp; take this as a reward for your services.");
+        } else {
+            EXPECT_CONTAINS(textTape.flatten(), "There are still troglodytes roaming the lower mine\nlevels.  Please remove them!");
+        }
+    }
 }
 
 GAME_TEST(Prs, Pr2876a) {

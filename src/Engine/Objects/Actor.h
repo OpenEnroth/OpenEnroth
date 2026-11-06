@@ -188,9 +188,10 @@ class Actor {
     static void InitializeActors();
 
     /**
-     * @param policy    Determines type for actors check.
-     * @param param     Parameter determined by check policy.
-     * @param count     Killed count or 0 if all must be killed
+     * @param policy                    What `param` identifies.
+     * @param param                     Group id, monster id or actor id, depending on `policy`.
+     * @param count                     Number of dead actors required, or 0 if all must be dead.
+     * @return                          Whether enough of the matching actors are dead.
      * @offset 0x44665D
      */
     static bool isActorKilled(ActorKillCheckPolicy policy, int param, int count);

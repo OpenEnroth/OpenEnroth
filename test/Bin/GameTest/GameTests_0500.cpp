@@ -553,13 +553,9 @@ GAME_TEST(Issues, Issue673d) {
     pParty->_questBits.set(QBIT_DARK_PATH); // Seth offers the quest only on the dark path.
     for (MapId map : {MAP_ERATHIA, MAP_BRACADA_DESERT}) {
         game.teleportTo(map, Vec3f(0, 0, 0), 0);
-        for (Actor &actor : pActors) {
+        for (Actor &actor : pActors)
             if (monsterTypeForMonsterId(actor.monsterInfo.id) == MONSTER_TYPE_GRIFFIN)
                 Actor::Die(actor.id);
-            // TODO(captainurist): #2868 makes the griffin check want Bracada's Gold Golems dead, drop this once it's fixed.
-            if (actor.monsterInfo.id == MONSTER_GOLEM_C)
-                Actor::Die(actor.id);
-        }
     }
     game.teleportTo(MAP_DEYJA, Vec3f(-19150, 14456, 0), 180); // In front of Slicer's house.
     test.startTaping();
