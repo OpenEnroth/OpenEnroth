@@ -2594,8 +2594,9 @@ void CastSpellInfoHelpers::castSpell() {
                         continue;
                     }
                     for (Character &character : pParty->pCharacters) {
-                        for (Condition condition : Segment(CONDITION_CURSED, CONDITION_ERADICATED))
-                            character.conditions.reset(condition); // Vanilla MM7 cures every condition except Zombie.
+                        for (Condition condition : allConditions())
+                            if (condition != CONDITION_ZOMBIE) // Vanilla MM7 doesn't cure zombies here.
+                                character.conditions.reset(condition);
                         character.health = character.GetMaxHealth();
                         character.mana = character.GetMaxMana();
                     }
