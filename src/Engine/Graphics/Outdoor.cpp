@@ -879,8 +879,6 @@ OutdoorLocation::OutdoorLocation() {
     this->decal_builder = EngineIocContainer::ResolveDecalBuilder();
     this->spell_fx_renderer = EngineIocContainer::ResolveSpellFxRenderer();
 
-    this->sky_texture = nullptr;
-
     uLastSunlightUpdateMinute = 0;
 
     engine->config->graphics.SeasonsChange.addListener(this, [this](bool seasonsChange) {

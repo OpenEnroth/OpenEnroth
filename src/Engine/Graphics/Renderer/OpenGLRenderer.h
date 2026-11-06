@@ -204,7 +204,6 @@ class OpenGLRenderer : public BaseRenderer {
 
     float gamma = 0;
 
-
     std::vector<GLuint> _texturesForDeletion;
 };
 

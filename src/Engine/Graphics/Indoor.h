@@ -162,7 +162,7 @@ struct BLVFace {
     /** V (vertical) texture coordinates for each vertex, in texture pixels. */
     std::vector<int16_t> textureVs;
 
-    std::shared_ptr<GraphicsImage> texture; // Face texture, or nullptr if this face is animated.
+    std::shared_ptr<GraphicsImage> texture; // Face texture, or empty if this face is animated.
     int animationId = 0; // Index into pTextureFrameTable for animated faces.
     int texunit = -1;
     int texlayer = -1;
