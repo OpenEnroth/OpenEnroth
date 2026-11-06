@@ -74,6 +74,7 @@
 
 #include "GUI/GUIProgressBar.h"
 #include "GUI/GUIWindow.h"
+#include "GUI/UI/UICharacter.h"
 #include "GUI/UI/UIStatusBar.h"
 #include "GUI/UI/UIPopup.h"
 #include "GUI/UI/UIMessageScroll.h"
@@ -968,7 +969,7 @@ void Engine::ResetCursor_Palettes_LODs_Level_Audio_SFT_Windows() {
         pOutdoor->Release();
     }
 
-    particle_engine->ResetParticles(); // Particles hold sprite images, so they go before the sprites.
+    particle_engine->ResetParticles();
     pSpriteFrameTable->resetLoadedSprites();
     pTextureFrameTable->resetLoadedTextures();
     spell_fx_renedrer->resetProjectiles();
@@ -978,8 +979,9 @@ void Engine::ResetCursor_Palettes_LODs_Level_Audio_SFT_Windows() {
     pParty->armageddon_timer = 0_ticks;
 
     windowManager.DeleteAllVisibleWindows();
+    equipmentHitMap.clear();
 
-    assets->releaseUnusedImages(); // Windows hold images, so this comes after they close.
+    assets->releaseUnusedImages(); // Particles, projectiles, the hit map and windows hold images, so this comes last.
 }
 
 //----- (00461103) --------------------------------------------------------
