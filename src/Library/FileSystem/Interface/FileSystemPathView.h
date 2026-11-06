@@ -58,23 +58,20 @@ struct std::hash<FileSystemPathView> : std::hash<std::string_view> {
 };
 
 [[nodiscard]] inline FileSystemPathView FileSystemPathSplit::tailAt(std::same_as<std::string_view> auto chunk) const {
-    std::string_view segments = str();
-    assert(chunk.data() >= segments.data() && chunk.data() + chunk.size() <= segments.data() + segments.size());
-    const char *start = chunk.data() - 1; // The separator before the chunk, normal form has exactly one.
-    return FileSystemPathView(std::string_view(start, segments.data() + segments.size() - start));
+    assert(chunk.data() > _path.data() && chunk.data() + chunk.size() <= _path.data() + _path.size());
+    size_t offset = chunk.data() - 1 - _path.data(); // The separator before the chunk, normal form has exactly one.
+    return FileSystemPathView(_path.substr(offset));
 }
 
 [[nodiscard]] inline FileSystemPathView FileSystemPathSplit::tailAfter(std::same_as<std::string_view> auto chunk) const {
-    std::string_view segments = str(); // NOLINT: not std::string.
-    if (segments.empty())
-        return {};
+    if (chunk.empty())
+        return _path.empty() ? FileSystemPathView() : FileSystemPathView(_path);
 
-    const char *start = chunk.empty() ? segments.data() - 1 : chunk.data() + chunk.size();
-    assert(start >= segments.data() - 1 && start <= segments.data() + segments.size());
-    const char *end = segments.data() + segments.size();
-    if (start == end)
+    assert(chunk.data() > _path.data() && chunk.data() + chunk.size() <= _path.data() + _path.size());
+    size_t offset = chunk.data() + chunk.size() - _path.data();
+    if (offset == _path.size())
         return {};
-    return FileSystemPathView(std::string_view(start, end - start)); // A suffix of a normal path is normal.
+    return FileSystemPathView(_path.substr(offset)); // A suffix of a normal path is normal.
 }
 
 #include "FileSystemPath.h"

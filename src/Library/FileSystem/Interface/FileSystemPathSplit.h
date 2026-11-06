@@ -21,7 +21,12 @@ class FileSystemPathSplit : public detail::SplitView<detail::CharSplitter> {
 
  private:
     friend class FileSystemPathView;
-    explicit FileSystemPathSplit(std::string_view s) : base_type(s.size() <= 1 ? base_type() : base_type(s.substr(1), detail::CharSplitter('/'))) {} // Splits what follows the root.
+    explicit FileSystemPathSplit(std::string_view path) :
+        base_type(path.size() <= 1 ? base_type() : base_type(path.substr(1), detail::CharSplitter('/'))), // What follows the root.
+        _path(path) {}
+
+ private:
+    std::string_view _path; // The whole path, `str()` of an empty `SplitView` is not a valid range.
 };
 
 #ifndef __DOXYGEN__ // Doxygen chokes here...
