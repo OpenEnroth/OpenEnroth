@@ -196,7 +196,7 @@ Sizei ResourceManager::bitmapSize(std::string_view filename) {
 
 RgbaImage ResourceManager::generated(std::string_view filename) {
     _tileGenerator->ensureTile(filename);
-    RgbaImage result = png::decode(ufs->read(fmt::format("/{}", filename)));
+    RgbaImage result = png::decode(ufs->read(filename));
     desaturate(result.pixels());
     return result;
 }

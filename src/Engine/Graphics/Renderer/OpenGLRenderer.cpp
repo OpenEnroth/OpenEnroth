@@ -1138,7 +1138,7 @@ void OpenGLRenderer::DrawOutdoorTerrain() {
 
                 if (tunit == unit) {
                     // get texture
-                    auto texture = assets->getBitmap(it->first, it->first.starts_with("generated")); // TODO(captainurist): terrible, terrible hack, redo this.
+                    auto texture = assets->getBitmap(it->first, it->first.starts_with("/generated")); // TODO(captainurist): terrible, terrible hack, redo this.
                     // send texture data to gpu
                     glTexSubImage3D(GL_TEXTURE_2D_ARRAY,
                         0,
