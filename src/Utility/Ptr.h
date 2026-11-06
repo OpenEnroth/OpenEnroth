@@ -4,6 +4,8 @@
 #include <cstddef>
 #include <memory>
 
+#include "Utility/Attributes.h"
+
 /**
  * Non-owning pointer that converts implicitly from a raw pointer or a smart pointer, so that the caller doesn't have
  * to spell `.get()`.
@@ -19,10 +21,10 @@ class Ptr {
     constexpr Ptr(T *ptr) noexcept : _ptr(ptr) {} // NOLINT: implicit conversion is intended.
 
     template<class U> requires std::convertible_to<U *, T *>
-    Ptr(const std::shared_ptr<U> &ptr) noexcept : _ptr(ptr.get()) {} // NOLINT: implicit conversion is intended.
+    Ptr(const std::shared_ptr<U> &ptr MM_LIFETIMEBOUND) noexcept : _ptr(ptr.get()) {} // NOLINT: implicit conversion is intended.
 
     template<class U, class D> requires std::convertible_to<U *, T *>
-    Ptr(const std::unique_ptr<U, D> &ptr) noexcept : _ptr(ptr.get()) {} // NOLINT: implicit conversion is intended.
+    Ptr(const std::unique_ptr<U, D> &ptr MM_LIFETIMEBOUND) noexcept : _ptr(ptr.get()) {} // NOLINT: implicit conversion is intended.
 
     constexpr T *get() const noexcept {
         return _ptr;
