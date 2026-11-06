@@ -213,10 +213,10 @@ GAME_TEST(Issues, Issue2551a) {
     game.tick(2);
 
     // Fill the saves folder well past the old cap.
-    ufs->remove("/saves/autosave.mm7");
+    ufs->remove("saves/autosave.mm7");
     Blob save = game.saveGame();
     for (int i = 0; i < 50; i++)
-        ufs->write(fmt::format("/saves/save{:03}.mm7", i), save);
+        ufs->write(fmt::format("saves/save{:03}.mm7", i), save);
 
     game.pressAndReleaseKey(PlatformKey::KEY_ESCAPE);
     game.tick(2);
@@ -229,13 +229,13 @@ GAME_TEST(Issues, Issue2551a) {
     // Pressing the save button right away shouldn't save, we want a save name typed in first.
     game.pressGuiButton("SaveMenu_Save");
     game.tick(2);
-    EXPECT_EQ(ufs->ls("/saves").size(), 50);
+    EXPECT_EQ(ufs->ls("saves").size(), 50);
     game.pressAndReleaseKey(PlatformKey::KEY_A);
     game.tick(2);
     game.pressAndReleaseKey(PlatformKey::KEY_RETURN); // Confirm the name with Enter.
     game.tick(10);
-    EXPECT_EQ(ufs->ls("/saves").size(), 51); // New save went into a new file.
-    EXPECT_TRUE(ufs->exists("/saves/save050.mm7"));
+    EXPECT_EQ(ufs->ls("saves").size(), 51); // New save went into a new file.
+    EXPECT_TRUE(ufs->exists("saves/save050.mm7"));
 
     // The new save shows up in the load menu, sorted by display name - the other saves have blank titles & fall
     // back to "saveNNN" display names, so "a" sorts first.
@@ -260,7 +260,7 @@ GAME_TEST(Issues, Issue2551b) {
     game.tick(2);
     game.pressAndReleaseKey(PlatformKey::KEY_F9); // Try to quickload, there is no quicksave so this should fail.
     game.tick(3);
-    ASSERT_EQ(ufs->ls("/saves").size(), 1); // Just the autosave...
+    ASSERT_EQ(ufs->ls("saves").size(), 1); // Just the autosave...
     GUIWindow_SaveLoad *saveMenu = saveLoadMenu();
     ASSERT_EQ(saveMenu->slots().size(), 1); // ...which is not shown in the save menu, so it's just the new save slot.
 
@@ -271,7 +271,7 @@ GAME_TEST(Issues, Issue2551b) {
     game.tick(2);
     game.pressGuiButton("SaveMenu_Save");
     game.tick(10);
-    EXPECT_TRUE(ufs->exists("/saves/save000.mm7"));
+    EXPECT_TRUE(ufs->exists("saves/save000.mm7"));
 
     // Quicksaves are also hidden from the save menu.
     game.pressAndReleaseKey(PlatformKey::KEY_F5); // Quicksave.
@@ -280,7 +280,7 @@ GAME_TEST(Issues, Issue2551b) {
     game.tick(2);
     game.pressGuiButton("GameMenu_SaveGame");
     game.tick(2);
-    ASSERT_EQ(ufs->ls("/saves").size(), 3); // Autosave, quicksave & our save...
+    ASSERT_EQ(ufs->ls("saves").size(), 3); // Autosave, quicksave & our save...
     GUIWindow_SaveLoad *saveMenu2 = saveLoadMenu();
     ASSERT_EQ(saveMenu2->slots().size(), 2); // ...but only the new save slot & our save are shown.
 }
@@ -487,7 +487,7 @@ GAME_TEST(Issues, Pr2635) {
     game.tick(2);
     game.pressGuiButton("SaveMenu_Save");
     game.tick(10);
-    ASSERT_TRUE(ufs->exists("/saves/save000.mm7"));
+    ASSERT_TRUE(ufs->exists("saves/save000.mm7"));
 
     // Open the load menu and check a row really is selected before anything is clicked.
     game.pressAndReleaseKey(PlatformKey::KEY_ESCAPE);
@@ -1299,7 +1299,7 @@ GAME_TEST(Issues, Issue2908) {
     game.pressGuiButton("HouseNpcDialogue_Option0"); // Cast off!
     game.tick();
     game.skipLoadingScreen();
-    game.loadGame(ufs->read("/saves/autosave.mm7"));
+    game.loadGame(ufs->read("saves/autosave.mm7"));
 
     EXPECT_EQ(mapTape, tape(MAP_EMERALD_ISLAND, MAP_HARMONDALE, MAP_EMERALD_ISLAND));
     EXPECT_EQ(daysTape, tape(0, 7, 0));

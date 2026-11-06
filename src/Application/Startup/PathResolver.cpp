@@ -12,16 +12,16 @@
 #include "Utility/System/Fs.h"
 
 static const std::vector<std::string_view> globalValidateList = {
-    {"/anims/magic7.vid"},
-    {"/anims/might7.vid"},
-    {"/data/bitmaps.lod"},
-//    {"/data/d3dbitmap.hwl"}, // We're not using HWL textures, so these are not required.
-//    {"/data/d3dsprite.hwl"},
-    {"/data/events.lod"},
-    {"/data/games.lod"},
-    {"/data/icons.lod"},
-    {"/data/sprites.lod"},
-    {"/sounds/audio.snd"}
+    {"anims/magic7.vid"},
+    {"anims/might7.vid"},
+    {"data/bitmaps.lod"},
+//    {"data/d3dbitmap.hwl"}, // We're not using HWL textures, so these are not required.
+//    {"data/d3dsprite.hwl"},
+    {"data/events.lod"},
+    {"data/games.lod"},
+    {"data/icons.lod"},
+    {"data/sprites.lod"},
+    {"sounds/audio.snd"}
 };
 
 struct PathResolutionConfig {

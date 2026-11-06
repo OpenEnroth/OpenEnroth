@@ -187,7 +187,7 @@ int runBeaconsCodeGen(const CodeGenOptions &options, ResourceManager *resourceMa
     MapTable mapTable;
     mapTable.Initialize(resourceManager->eventsData("MapStats.txt"));
 
-    LodReader gamesLod(dfs->read("/data/games.lod"));
+    LodReader gamesLod(dfs->read("data/games.lod"));
     std::vector<std::string> fileNames = gamesLod.ls();
 
     for (size_t i = 0; i < fileNames.size(); i++) {
@@ -209,7 +209,7 @@ int runHouseIdCodeGen(const CodeGenOptions &options, ResourceManager *resourceMa
 
     std::unordered_map<HouseId, std::set<std::string>> mapNamesByHouseId; // Only arbiter exists on two maps.
 
-    LodReader gamesLod(dfs->read("/data/games.lod"));
+    LodReader gamesLod(dfs->read("data/games.lod"));
     for (const std::string &fileName : gamesLod.ls()) {
         if (!fileName.ends_with(".odm") && !fileName.ends_with(".blv"))
             continue; // Not a level file.

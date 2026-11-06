@@ -109,7 +109,7 @@ std::unique_ptr<GraphicsImage> CreateWinnerCertificate() {
     render->EndTextNew();
 
     RgbaImage pixels = render->MakeFullScreenshot();
-    ufs->write("/MM7_Win.Pcx", pcx::encode(pixels));
+    ufs->write("MM7_Win.Pcx", pcx::encode(pixels));
     std::unique_ptr<GraphicsImage> result = GraphicsImage::Create(std::move(pixels));
 
     assets->releaseImage(background);

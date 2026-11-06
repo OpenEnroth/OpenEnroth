@@ -33,7 +33,7 @@ void TileGenerator::fillTable(TileTable *table) {
 
         for (TileVariant variant : allGeneratedTileVariants()) {
             TileData tileData;
-            tileData.textureName = fmt::format("/generated/tiles/{}_{}.png", toString(tileset), toString(variant));
+            tileData.textureName = fmt::format("generated/tiles/{}_{}.png", toString(tileset), toString(variant));
             tileData.tileset = tileset;
             tileData.variant = variant;
             tileData.flags = TILE_TRANSITION | TILE_GENERATED_TRANSITION;

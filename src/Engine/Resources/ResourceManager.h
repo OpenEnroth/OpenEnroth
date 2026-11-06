@@ -64,8 +64,7 @@ class ResourceManager {
 
     /**
      * @param filename                  Name of a generated transition tile, as `addGeneratedTiles()` put it into the
-     *                                  tile table, which is also its path in the user file system. The tile is
-     *                                  generated on first use.
+     *                                  tile table. The tile is generated on first use.
      * @return                          The desaturated tile.
      */
     RgbaImage generated(std::string_view filename);

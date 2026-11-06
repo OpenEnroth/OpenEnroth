@@ -55,9 +55,9 @@ void AudioPlayer::MusicPlayTrack(MusicId eTrack) {
         }
         currentMusicTrack = MUSIC_INVALID;
 
-        std::string file_path = fmt::format("/music/{}.mp3", std::to_underlying(eTrack));
+        std::string file_path = fmt::format("music/{}.mp3", std::to_underlying(eTrack));
         if (!dfs->exists(file_path)) {
-            MM_WARNING("AudioPlayer: {} not found", dfs->displayPath(file_path));
+            MM_WARNING("AudioPlayer: {} not found", file_path);
             return;
         }
 
@@ -437,7 +437,7 @@ void AudioPlayer::Initialize() {
     uMasterVolume = 127;
 
     UpdateVolumeFromConfig();
-    _sndReader.open(dfs->read("/sounds/audio.snd"));
+    _sndReader.open(dfs->read("sounds/audio.snd"));
 
     bPlayerReady = true;
 }

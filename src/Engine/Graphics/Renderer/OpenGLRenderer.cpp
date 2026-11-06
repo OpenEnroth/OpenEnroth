@@ -1138,7 +1138,7 @@ void OpenGLRenderer::DrawOutdoorTerrain() {
 
                 if (tunit == unit) {
                     // get texture
-                    auto texture = assets->getBitmap(it->first, it->first.starts_with("/generated")); // TODO(captainurist): terrible, terrible hack, redo this.
+                    auto texture = assets->getBitmap(it->first, it->first.starts_with("generated")); // TODO(captainurist): terrible, terrible hack, redo this.
                     // send texture data to gpu
                     glTexSubImage3D(GL_TEXTURE_2D_ARRAY,
                         0,
@@ -3554,11 +3554,11 @@ bool OpenGLRenderer::ReloadShaders() {
         {&forcepershader,   "glforcepershader", "Forced perspective"}
     };
 
-    SubFileSystem shadersFs("/shaders", dfs);
+    SubFileSystem shadersFs("shaders", dfs);
 
     for (const auto &[shader, fileName, readableName] : shaders) {
-        if (!shader->load(shadersFs.read(fmt::format("/{}.vert", fileName)),
-                          shadersFs.read(fmt::format("/{}.frag", fileName)), OpenGLES, &shadersFs)) {
+        if (!shader->load(shadersFs.read(fmt::format("{}.vert", fileName)),
+                          shadersFs.read(fmt::format("{}.frag", fileName)), OpenGLES, &shadersFs)) {
             platform->showMessageBox("CRITICAL ERROR: shader compilation failure",
                                      fmt::format("{} shader failed to compile!\nPlease consult the log and consider issuing a bug report!", readableName));
             return false;
