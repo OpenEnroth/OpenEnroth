@@ -35,6 +35,7 @@
 #include "GUI/GUIButton.h"
 #include "GUI/GUIProgressBar.h"
 #include "GUI/GUIWindow.h"
+#include "GUI/UI/ItemGrid.h"
 #include "GUI/UI/UIGame.h"
 #include "GUI/UI/UIHouses.h"
 #include "GUI/UI/UISaveLoad.h"
@@ -77,6 +78,44 @@ static int lloydsBookSlotCount() {
     if (!pGUIWindow_CurrentMenu || pGUIWindow_CurrentMenu->eWindowType != WINDOW_LLOYDS_BEACON)
         return 0;
     return std::ranges::count_if(pGUIWindow_CurrentMenu->vButtons, [](std::string_view id) { return id.starts_with("LloydsBook_Slot"); }, &GUIButton::id);
+}
+
+static void clickInventoryItem(EngineController &game, ItemId item) {
+    // Clicks the item in the active character's backpack.
+    InventoryEntry entry = pParty->activeCharacter().inventory.find(item);
+    game.pressAndReleaseButton(BUTTON_LEFT, mapFromInventoryGrid(entry.geometry().topLeft(), Pointi(14, 17)) + Pointi(16, 16));
+    game.tick();
+}
+
+static void useMapExit(EngineController &game, MapId map, Vec3f pos, int yaw) {
+    // Presses Space in front of the exit and confirms the transition.
+    game.teleportTo(map, pos, yaw);
+    game.pressAndReleaseKey(PlatformKey::KEY_SPACE);
+    game.tick();
+    game.pressGuiButton("Transition_Yes");
+    game.skipLoadingScreen();
+}
+
+static void walkOffMapEdge(EngineController &game, MapId map, Vec3f pos, int yaw) {
+    // Walks forward from a spot next to the map edge and confirms the travel.
+    game.teleportTo(map, pos, yaw);
+    game.pressKey(PlatformKey::KEY_UP);
+    game.tick();
+    game.releaseKey(PlatformKey::KEY_UP);
+    game.pressGuiButton("Transition_Yes");
+    game.skipLoadingScreen();
+}
+
+static void talkToResurectra(EngineController &game) {
+    // Enters Castle Lambent from Celeste and opens the throne room's Final Task topic.
+    useMapExit(game, MAP_CELESTE, Vec3f(-1216, 19530, 225), 90);
+    game.teleportTo(MAP_CASTLE_LAMBENT, Vec3f(-3456, 12620, 1115), 90); // In front of the throne room door.
+    game.pressAndReleaseKey(PlatformKey::KEY_SPACE);
+    game.tick();
+    game.pressGuiButton("House_Npc1"); // Resurectra, Gavin Magnus is House_Npc0.
+    game.tick();
+    game.pressGuiButton("HouseNpcDialogue_Option0"); // Final Task.
+    game.tick();
 }
 
 // 2500
@@ -1550,4 +1589,95 @@ GAME_TEST(Issues, Issue2950) {
 
     EXPECT_EQ(windowTape, tape(WINDOW_NULL, WINDOW_SPELL_BOOK, WINDOW_LLOYDS_BEACON));
     EXPECT_EQ(beaconTape, tape(false, true));
+}
+
+GAME_TEST(Prs, Pr2979) {
+    // The game can be finished on the Light path. Resurectra sends the party to the Lincoln for the Oscillation
+    // Overthruster, and handing it to her plays the ending and shows the winner's certificate.
+    auto mapTape = tapes.map();
+    auto taskTape = tapes.questBit(QBIT_OSCILLATION_OVERTHRUSTER_LIGHT_ACTIVE);
+    auto takenTape = tapes.questBit(QBIT_OSCILLATION_OVERTHRUSTER_TAKEN);
+    auto overthrusterTape = tapes.hasItem(ITEM_QUEST_OSCILLATION_OVERTHRUSTER);
+    auto wetsuitsTape = tapes.custom([] { return static_cast<int>(std::ranges::count_if(pParty->pCharacters, &Character::hasUnderwaterSuitEquipped)); });
+    auto moviesTape = tapes.movies();
+    auto screenTape = tapes.screen();
+    auto messageBoxesTape = tapes.messageBoxes();
+    game.startNewGame();
+    test.startTaping();
+
+    // Killing Xenofex leaves a Light party with Resurectra in the throne room, offering the final task.
+    pParty->_questBits.set(QBIT_LIGHT_PATH);
+    pNPCStats->pNPCData[80].house = HOUSE_CASTLE_LAMBENT_THRONE_ROOM; // Resurectra.
+    pNPCStats->pNPCData[80].dialogue_2_evt_id = 169; // Final Task.
+    talkToResurectra(game);
+    game.pressAndReleaseKey(PlatformKey::KEY_ESCAPE);
+    game.tick();
+    game.pressAndReleaseKey(PlatformKey::KEY_ESCAPE);
+    game.tick();
+
+    // The wetsuits wait in the two chests in front of the throne room. The door hides the chests' fronts from Space,
+    // so the party opens them from the sides.
+    for (auto [pos, yaw] : {std::pair(Vec3f(-2930, 12704, 1115), 180), std::pair(Vec3f(-3980, 12704, 1115), 0)}) {
+        game.teleportTo(MAP_CASTLE_LAMBENT, pos, yaw);
+        game.pressAndReleaseKey(PlatformKey::KEY_SPACE);
+        game.tick();
+        for (int i = 0; i < 2; i++) {
+            game.pressAndReleaseKey(PlatformKey::KEY_SPACE); // Takes one wetsuit.
+            game.tick();
+        }
+        game.pressAndReleaseKey(PlatformKey::KEY_ESCAPE);
+        game.tick();
+    }
+
+    // The first character got all four. Digit keys hand three of them out, then everyone puts one on.
+    static constexpr std::array<PlatformKey, 4> digits = {PlatformKey::KEY_DIGIT_1, PlatformKey::KEY_DIGIT_2, PlatformKey::KEY_DIGIT_3, PlatformKey::KEY_DIGIT_4};
+    game.goToInventory(0);
+    for (int i = 1; i < 4; i++) {
+        clickInventoryItem(game, ITEM_QUEST_WETSUIT);
+        game.pressAndReleaseKey(digits[i]);
+        game.tick();
+    }
+    for (int i = 0; i < 4; i++) {
+        game.pressAndReleaseKey(digits[i]);
+        game.tick();
+        clickInventoryItem(game, ITEM_QUEST_WETSUIT);
+        game.pressAndReleaseButton(BUTTON_LEFT, 560, 170); // The paperdoll.
+        game.tick();
+    }
+    game.pressAndReleaseKey(PlatformKey::KEY_ESCAPE);
+    game.tick();
+
+    // The Shoals are past Avlee's west edge, and only a party in wetsuits can walk there.
+    walkOffMapEdge(game, MAP_AVLEE, Vec3f(-22500, 0, 0), 180);
+    useMapExit(game, MAP_SHOALS, Vec3f(-6850, 7920, 288), 180); // The Lincoln's hatch.
+
+    // The Overthruster's pedestal does nothing until the power is back on.
+    game.teleportTo(MAP_LINCOLN, Vec3f(3650, -1152, 1036), 0); // In front of the power console.
+    game.pressAndReleaseKey(PlatformKey::KEY_SPACE);
+    game.tick();
+    game.teleportTo(MAP_LINCOLN, Vec3f(4356, -9600, 1548), 90, -20); // In front of the pedestal.
+    game.pressAndReleaseKey(PlatformKey::KEY_SPACE); // The Overthruster goes to the cursor.
+    game.tick();
+    game.pressAndReleaseKey(PlatformKey::KEY_DIGIT_1); // Into the first character's backpack.
+    game.tick();
+    useMapExit(game, MAP_LINCOLN, Vec3f(560, 1300, 225), 90);
+    walkOffMapEdge(game, MAP_SHOALS, Vec3f(22500, -16448, 2405), 0);
+
+    talkToResurectra(game);
+    game.tick(); // The ending's script queues the certificate window for the next frame.
+    game.pressAndReleaseKey(PlatformKey::KEY_ESCAPE); // Shows the closing message over the certificate.
+    game.tick();
+    game.pressAndReleaseKey(PlatformKey::KEY_ESCAPE); // Closes the certificate, the game goes on in Harmondale.
+    game.tick();
+    game.skipLoadingScreen();
+
+    EXPECT_EQ(mapTape, tape(MAP_EMERALD_ISLAND, MAP_CELESTE, MAP_CASTLE_LAMBENT, MAP_AVLEE, MAP_SHOALS, MAP_LINCOLN, MAP_SHOALS,
+                            MAP_AVLEE, MAP_CELESTE, MAP_CASTLE_LAMBENT, MAP_HARMONDALE));
+    EXPECT_EQ(taskTape, tape(false, true));
+    EXPECT_EQ(wetsuitsTape, tape(0, 1, 2, 3, 4));
+    EXPECT_EQ(takenTape, tape(false, true));
+    EXPECT_EQ(overthrusterTape, tape(false, true, false));
+    EXPECT_EQ(moviesTape.flatten(), tape("Endgame 1 Good"));
+    EXPECT_CONTAINS(screenTape, SCREEN_GAMEOVER_WINDOW);
+    EXPECT_TRUE(std::ranges::any_of(messageBoxesTape.flatten(), [](std::string_view text) { return text.starts_with(localization->str(LSTR_CONGRATULATIONS_ADVENTURER)); }));
 }
