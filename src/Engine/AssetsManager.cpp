@@ -52,14 +52,15 @@ void AssetsManager::releaseAllTextures() {
     ReloadFonts();
 }
 
-void AssetsManager::evict(std::shared_ptr<GraphicsImage> image) {
-    if (!image)
+void AssetsManager::evict(std::shared_ptr<GraphicsImage> &&image) {
+    std::shared_ptr<GraphicsImage> local = std::move(image);
+    if (!local)
         return;
 
     for (auto *cache : {&images, &bitmaps, &sprites}) {
-        auto pos = cache->find(image->name());
-        if (pos != cache->end() && pos->second == image) {
-            if (image.use_count() == 2) // The cache and this parameter.
+        auto pos = cache->find(local->name());
+        if (pos != cache->end() && pos->second == local) {
+            if (local.use_count() == 2) // The cache and `local`.
                 cache->erase(pos);
             return;
         }

@@ -19,10 +19,11 @@ class AssetsManager {
      * Removes an image from the cache if nobody else holds it. An image that's still held stays cached until
      * `releaseUnusedImages()` finds it unused.
      *
-     * @param image                     Image returned by one of the getters below. Can be null, and can be an image
-     *                                  that's not in the cache, then this function does nothing.
+     * @param image                     Image returned by one of the getters below, moved in and left empty. Can be
+     *                                  null, and can be an image that's not in the cache, then this function does
+     *                                  nothing.
      */
-    void evict(std::shared_ptr<GraphicsImage> image);
+    void evict(std::shared_ptr<GraphicsImage> &&image);
 
     const std::shared_ptr<GraphicsImage> &getIcon(std::string_view name);
     const std::shared_ptr<GraphicsImage> &getImage_Buff(std::string_view name);
