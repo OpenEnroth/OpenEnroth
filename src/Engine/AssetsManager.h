@@ -56,6 +56,7 @@ class AssetsManager {
     std::unordered_map<std::string, std::shared_ptr<GraphicsImage>> bitmaps;
     std::unordered_map<std::string, std::shared_ptr<GraphicsImage>> sprites;
     std::unordered_map<std::string, std::shared_ptr<GraphicsImage>> images;
+    std::shared_ptr<GraphicsImage> noSprite; // Empty, returned for a sprite that doesn't exist.
 };
 
 extern AssetsManager *assets;
