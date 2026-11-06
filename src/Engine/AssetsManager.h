@@ -32,7 +32,7 @@ class AssetsManager {
 
     /**
      * @param name                      Name of a sprite in `sprites.lod`, case-insensitive.
-     * @return                          The sprite, or `nullptr` if there is no such sprite.
+     * @return                          The sprite, or an empty pointer if there is no such sprite.
      */
     const std::shared_ptr<GraphicsImage> &getSprite(std::string_view name);
 

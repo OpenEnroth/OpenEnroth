@@ -1140,8 +1140,7 @@ void IndoorLocation::PrepareDecorationsRenderList_BLV(unsigned int uDecorationID
 
     v30 = billboardFlagsForSprite(v11->flags, v9);
 
-    if (render->AddBillboardIfVisible(v11->sprites[v9], v11->paletteId, pLevelDecorations[uDecorationID].vPosition, {v11->scale, v11->scale}, v30,
-                                      Pid(OBJECT_Decoration, uDecorationID), uSectorID))
+    if (render->AddBillboardIfVisible(v11->sprites[v9], v11->paletteId, pLevelDecorations[uDecorationID].vPosition, {v11->scale, v11->scale}, v30, Pid(OBJECT_Decoration, uDecorationID), uSectorID))
         ++uNumDecorationsDrawnThisFrame;
 }
 
