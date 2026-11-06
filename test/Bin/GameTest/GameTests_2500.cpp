@@ -996,8 +996,8 @@ GAME_TEST(Issues, Issue2817) {
     for (int i = 0; i < 3; i++)
         EXPECT_CONTAINS(portraitTape.slice(i), PORTRAIT_WIDE_SMILE);
     EXPECT_MISSES(portraitTape.slice(3), PORTRAIT_WIDE_SMILE);
-    int questAnim = pIconsFrameTable->animationId("spboost2"); // Add Awards and Add Experience, Set Awards plays spboost1.
-    EXPECT_EQ(buffAnimTape, tape({0, 0, 0, 0}, {questAnim, questAnim, questAnim, questAnim}));
+    int questAnim = pIconsFrameTable->animationId("spboost2"); // Add Experience runs right before and plays it for everyone.
+    EXPECT_EQ(buffAnimTape, tape({0, 0, 0, 0}, {questAnim, questAnim, questAnim, questAnim})); // Add Awards plays it too, Set Awards plays spboost1.
 }
 
 GAME_TEST(Issues, Issue2834) {
