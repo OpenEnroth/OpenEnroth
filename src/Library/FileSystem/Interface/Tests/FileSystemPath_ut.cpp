@@ -178,3 +178,24 @@ UNIT_TEST(FileSystemPath, Decomposition) {
     testOne("x.y/z.f/a.b.c.d", "x.y/z.f", "a.b.c.d", "a.b.c", ".d");
     testOne("1/2/3/xyz.txt", "1/2/3", "xyz.txt", "xyz", ".txt");
 }
+
+UNIT_TEST(FileSystemPath, FromRooted) {
+    // A path the public API takes starts with a separator, and ".." stops at the root.
+    EXPECT_TRUE(FileSystemPath::isRooted("/"));
+    EXPECT_TRUE(FileSystemPath::isRooted("/a"));
+    EXPECT_TRUE(FileSystemPath::isRooted("\\a"));
+    EXPECT_FALSE(FileSystemPath::isRooted(""));
+    EXPECT_FALSE(FileSystemPath::isRooted("a"));
+    EXPECT_FALSE(FileSystemPath::isRooted("./a"));
+    EXPECT_FALSE(FileSystemPath::isRooted("../a"));
+
+    EXPECT_EQ(FileSystemPath::fromRooted("/").string(), "");
+    EXPECT_EQ(FileSystemPath::fromRooted("/a/b").string(), "a/b");
+    EXPECT_EQ(FileSystemPath::fromRooted("\\a\\b").string(), "a/b");
+    EXPECT_EQ(FileSystemPath::fromRooted("//a").string(), "a");
+    EXPECT_EQ(FileSystemPath::fromRooted("/..").string(), "");
+    EXPECT_EQ(FileSystemPath::fromRooted("/../a").string(), "a");
+    EXPECT_EQ(FileSystemPath::fromRooted("/../../a/b").string(), "a/b");
+    EXPECT_EQ(FileSystemPath::fromRooted("/a/../../b").string(), "b");
+    EXPECT_EQ(FileSystemPath::fromRooted("/a/b/../..").string(), "");
+}

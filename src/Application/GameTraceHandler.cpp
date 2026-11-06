@@ -35,13 +35,13 @@ bool GameTraceHandler::keyPressEvent(const PlatformKeyEvent *event) {
                 // Pick the number one past the highest existing traceNNNNN file, so that the fresh trace always
                 // sorts last.
                 int maxIndex = 0;
-                for (const DirectoryEntry &entry : ufs->ls("")) {
+                for (const DirectoryEntry &entry : ufs->ls("/")) {
                     int index = 0;
                     if (entry.name.starts_with("trace") && tryDeserialize(std::string_view(entry.name).substr(5, 5), &index))
                         maxIndex = std::max(maxIndex, index);
                 }
-                std::string tracePath = fmt::format("trace{:05}.json", maxIndex + 1);
-                std::string savePath = fmt::format("trace{:05}.mm7", maxIndex + 1);
+                std::string tracePath = fmt::format("/trace{:05}.json", maxIndex + 1);
+                std::string savePath = fmt::format("/trace{:05}.mm7", maxIndex + 1);
 
                 ufs->write(tracePath, recording.trace);
                 ufs->write(savePath, recording.save);

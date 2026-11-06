@@ -27,6 +27,22 @@ class FileSystemPath {
 
     explicit FileSystemPath(FileSystemPathView path) : _path(path.string()) {}
 
+    /**
+     * @param path                      Path as the public `FileSystem` API takes it.
+     * @return                          Whether `path` starts with a separator, which every path in a file system
+     *                                  must.
+     */
+    [[nodiscard]] static bool isRooted(std::string_view path) {
+        return path.starts_with('/') || path.starts_with('\\');
+    }
+
+    /**
+     * @param path                      Path that starts with a separator, see `isRooted`.
+     * @return                          `path` in normal form, with any `..` above the root dropped, so `"/../a"`
+     *                                  gives `"a"`.
+     */
+    [[nodiscard]] static FileSystemPath fromRooted(std::string_view path);
+
     static FileSystemPath fromNormalized(std::string path) {
         assert(FileSystemPath(path).string() == path);
 

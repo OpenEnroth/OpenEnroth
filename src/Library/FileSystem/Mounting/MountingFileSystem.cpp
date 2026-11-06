@@ -1,5 +1,7 @@
 #include "MountingFileSystem.h"
 
+#include <cassert>
+
 #include <vector>
 #include <memory>
 #include <ranges>
@@ -15,7 +17,8 @@ MountingFileSystem::MountingFileSystem(std::string_view displayName) : _displayN
 MountingFileSystem::~MountingFileSystem() = default;
 
 void MountingFileSystem::mount(std::string_view path, FileSystem *fileSystem) {
-    mount(FileSystemPath(path), fileSystem);
+    assert(FileSystemPath::isRooted(path));
+    mount(FileSystemPath::fromRooted(path), fileSystem);
 }
 
 void MountingFileSystem::mount(FileSystemPathView path, FileSystem *fileSystem) {
@@ -23,13 +26,15 @@ void MountingFileSystem::mount(FileSystemPathView path, FileSystem *fileSystem) 
 }
 
 bool MountingFileSystem::unmount(std::string_view path) {
-    return unmount(FileSystemPath(path));
+    if (!FileSystemPath::isRooted(path))
+        return false; // mount asserts on these, so nothing is mounted there.
+    return unmount(FileSystemPath::fromRooted(path));
 }
 
 bool MountingFileSystem::unmount(FileSystemPathView path) {
     Node *node = _trie.find(path);
     if (!node || !node->hasValue())
-        return false; // Should be a real mount point, unmount("") is not equivalent to clearMounts().
+        return false; // Should be a real mount point, unmount("/") is not equivalent to clearMounts().
 
     return _trie.erase(node);
 }

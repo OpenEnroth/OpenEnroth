@@ -1,5 +1,7 @@
 #include "MaskingFileSystem.h"
 
+#include <cassert>
+
 #include <vector>
 #include <memory>
 #include <string>
@@ -14,7 +16,8 @@ MaskingFileSystem::MaskingFileSystem(FileSystem *base) : ProxyFileSystem(base) {
 MaskingFileSystem::~MaskingFileSystem() = default;
 
 void MaskingFileSystem::mask(std::string_view path) {
-    mask(FileSystemPath(path));
+    assert(FileSystemPath::isRooted(path));
+    mask(FileSystemPath::fromRooted(path));
 }
 
 void MaskingFileSystem::mask(FileSystemPathView path) {
@@ -22,7 +25,9 @@ void MaskingFileSystem::mask(FileSystemPathView path) {
 }
 
 bool MaskingFileSystem::unmask(std::string_view path) {
-    return unmask(FileSystemPath(path));
+    if (!FileSystemPath::isRooted(path))
+        return false; // mask asserts on these, so nothing is masked there.
+    return unmask(FileSystemPath::fromRooted(path));
 }
 
 bool MaskingFileSystem::unmask(FileSystemPathView path) {

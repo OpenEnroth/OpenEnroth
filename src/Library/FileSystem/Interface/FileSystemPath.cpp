@@ -1,5 +1,6 @@
 #include "FileSystemPath.h"
 
+#include <cassert>
 #include <string>
 #include <string_view>
 
@@ -55,6 +56,15 @@ inline bool popOneChunk(String &path) {
 
 FileSystemPath::FileSystemPath(std::string_view path) {
     operator/=(path);
+}
+
+FileSystemPath FileSystemPath::fromRooted(std::string_view path) {
+    assert(isRooted(path));
+
+    FileSystemPath result(path);
+    while (result._path == ".." || result._path.starts_with("../"))
+        result._path.erase(0, result._path.size() > 2 ? 3 : 2); // Normal form keeps every ".." at the start.
+    return result;
 }
 
 std::string_view FileSystemPath::name() const {

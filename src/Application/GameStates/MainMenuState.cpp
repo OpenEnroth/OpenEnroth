@@ -59,7 +59,7 @@ FsmAction MainMenuState::update() {
             break;
         case UIMSG_QuickLoad: {
             std::string fileName = getCurrentQuickSave();
-            if (ufs->exists(fmt::format("saves/{}", fileName))) {
+            if (ufs->exists(fmt::format("/saves/{}", fileName))) {
                 pAudioPlayer->playUISound(SOUND_StartMainChoice02);
                 engine->_pendingLoadFileName = fileName;
                 SetCurrentMenuID(MENU_LoadingProcInMainMenu);

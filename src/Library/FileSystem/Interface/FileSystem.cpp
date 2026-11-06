@@ -8,8 +8,19 @@
 
 #include "FileSystemException.h"
 
+/**
+ * @param path                          Path as a caller passed it.
+ * @param error                         Error to raise if `path` doesn't start with a separator.
+ * @return                              `path` in normal form.
+ */
+static FileSystemPath rootedPath(std::string_view path, FileSystemError error) {
+    if (!FileSystemPath::isRooted(path))
+        throw FileSystemException(error, path);
+    return FileSystemPath::fromRooted(path);
+}
+
 bool FileSystem::exists(std::string_view path) const {
-    return exists(FileSystemPath(path));
+    return FileSystemPath::isRooted(path) && exists(FileSystemPath::fromRooted(path));
 }
 
 bool FileSystem::exists(FileSystemPathView path) const {
@@ -21,7 +32,7 @@ bool FileSystem::exists(FileSystemPathView path) const {
 }
 
 FileStat FileSystem::stat(std::string_view path) const {
-    return stat(FileSystemPath(path));
+    return FileSystemPath::isRooted(path) ? stat(FileSystemPath::fromRooted(path)) : FileStat();
 }
 
 FileStat FileSystem::stat(FileSystemPathView path) const {
@@ -33,7 +44,7 @@ FileStat FileSystem::stat(FileSystemPathView path) const {
 }
 
 std::vector<DirectoryEntry> FileSystem::ls(std::string_view path) const {
-    return ls(FileSystemPath(path));
+    return ls(rootedPath(path, FS_LS_FAILED_PATH_NOT_ACCESSIBLE));
 }
 
 std::vector<DirectoryEntry> FileSystem::ls(FileSystemPathView path) const {
@@ -45,7 +56,7 @@ std::vector<DirectoryEntry> FileSystem::ls(FileSystemPathView path) const {
 }
 
 void FileSystem::ls(std::string_view path, std::vector<DirectoryEntry> *entries) const {
-    ls(FileSystemPath(path), entries);
+    ls(rootedPath(path, FS_LS_FAILED_PATH_NOT_ACCESSIBLE), entries);
 }
 
 void FileSystem::ls(FileSystemPathView path, std::vector<DirectoryEntry> *entries) const {
@@ -56,7 +67,7 @@ void FileSystem::ls(FileSystemPathView path, std::vector<DirectoryEntry> *entrie
 }
 
 Blob FileSystem::read(std::string_view path) const {
-    return read(FileSystemPath(path));
+    return read(rootedPath(path, FS_READ_FAILED_PATH_NOT_ACCESSIBLE));
 }
 
 Blob FileSystem::read(FileSystemPathView path) const {
@@ -68,7 +79,7 @@ Blob FileSystem::read(FileSystemPathView path) const {
 }
 
 void FileSystem::write(std::string_view path, const Blob &data) {
-    return write(FileSystemPath(path), data);
+    return write(rootedPath(path, FS_WRITE_FAILED_PATH_NOT_ACCESSIBLE), data);
 }
 
 void FileSystem::write(FileSystemPathView path, const Blob &data) {
@@ -80,7 +91,7 @@ void FileSystem::write(FileSystemPathView path, const Blob &data) {
 }
 
 std::unique_ptr<InputStream> FileSystem::openForReading(std::string_view path) const {
-    return openForReading(FileSystemPath(path));
+    return openForReading(rootedPath(path, FS_READ_FAILED_PATH_NOT_ACCESSIBLE));
 }
 
 std::unique_ptr<InputStream> FileSystem::openForReading(FileSystemPathView path) const {
@@ -92,7 +103,7 @@ std::unique_ptr<InputStream> FileSystem::openForReading(FileSystemPathView path)
 }
 
 std::unique_ptr<OutputStream> FileSystem::openForWriting(std::string_view path) {
-    return openForWriting(FileSystemPath(path));
+    return openForWriting(rootedPath(path, FS_WRITE_FAILED_PATH_NOT_ACCESSIBLE));
 }
 
 std::unique_ptr<OutputStream> FileSystem::openForWriting(FileSystemPathView path) {
@@ -104,7 +115,7 @@ std::unique_ptr<OutputStream> FileSystem::openForWriting(FileSystemPathView path
 }
 
 bool FileSystem::remove(std::string_view path) {
-    return remove(FileSystemPath(path));
+    return remove(rootedPath(path, FS_REMOVE_FAILED_PATH_NOT_ACCESSIBLE));
 }
 
 bool FileSystem::remove(FileSystemPathView path) {
@@ -116,7 +127,7 @@ bool FileSystem::remove(FileSystemPathView path) {
 }
 
 std::string FileSystem::displayPath(std::string_view path) const {
-    return displayPath(FileSystemPath(path));
+    return displayPath(FileSystemPath::isRooted(path) ? FileSystemPath::fromRooted(path) : FileSystemPath(path));
 }
 
 std::string FileSystem::displayPath(FileSystemPathView path) const {

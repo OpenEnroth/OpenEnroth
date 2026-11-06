@@ -10,37 +10,37 @@
 
 UNIT_TEST(MountingFileSystem, StatExists) {
     MemoryFileSystem mfs("");
-    mfs.write("c/d", Blob());
+    mfs.write("/c/d", Blob());
 
     MountingFileSystem fs("");
-    fs.mount("a/b", &mfs);
+    fs.mount("/a/b", &mfs);
 
-    EXPECT_TRUE(fs.exists("a"));
-    EXPECT_TRUE(fs.exists("a/b"));
-    EXPECT_TRUE(fs.exists("a/b/c"));
-    EXPECT_TRUE(fs.exists("a/b/c/d"));
+    EXPECT_TRUE(fs.exists("/a"));
+    EXPECT_TRUE(fs.exists("/a/b"));
+    EXPECT_TRUE(fs.exists("/a/b/c"));
+    EXPECT_TRUE(fs.exists("/a/b/c/d"));
 
-    EXPECT_EQ(fs.stat("a"), FileStat(FILE_DIRECTORY, 0));
-    EXPECT_EQ(fs.stat("a/b"), FileStat(FILE_DIRECTORY, 0));
-    EXPECT_EQ(fs.stat("a/b/c"), FileStat(FILE_DIRECTORY, 0));
-    EXPECT_EQ(fs.stat("a/b/c/d"), FileStat(FILE_REGULAR, 0));
+    EXPECT_EQ(fs.stat("/a"), FileStat(FILE_DIRECTORY, 0));
+    EXPECT_EQ(fs.stat("/a/b"), FileStat(FILE_DIRECTORY, 0));
+    EXPECT_EQ(fs.stat("/a/b/c"), FileStat(FILE_DIRECTORY, 0));
+    EXPECT_EQ(fs.stat("/a/b/c/d"), FileStat(FILE_REGULAR, 0));
 }
 
 UNIT_TEST(MountingFileSystem, Override) {
     MemoryFileSystem mfs("");
-    mfs.write("a", Blob());
+    mfs.write("/a", Blob());
 
     MountingFileSystem fs("");
-    fs.mount("", &mfs);
-    fs.mount("a", &mfs);
+    fs.mount("/", &mfs);
+    fs.mount("/a", &mfs);
 
-    EXPECT_TRUE(fs.exists("a"));
-    EXPECT_TRUE(fs.exists("a/a"));
-    EXPECT_EQ(fs.stat("a"), FileStat(FILE_DIRECTORY, 0));
-    EXPECT_EQ(fs.stat("a/a"), FileStat(FILE_REGULAR, 0));
+    EXPECT_TRUE(fs.exists("/a"));
+    EXPECT_TRUE(fs.exists("/a/a"));
+    EXPECT_EQ(fs.stat("/a"), FileStat(FILE_DIRECTORY, 0));
+    EXPECT_EQ(fs.stat("/a/a"), FileStat(FILE_REGULAR, 0));
 
-    EXPECT_EQ(fs.ls(""), std::vector<DirectoryEntry>({{"a", FILE_DIRECTORY}}));
-    EXPECT_EQ(fs.ls("a"), std::vector<DirectoryEntry>({{"a", FILE_REGULAR}}));
+    EXPECT_EQ(fs.ls("/"), std::vector<DirectoryEntry>({{"a", FILE_DIRECTORY}}));
+    EXPECT_EQ(fs.ls("/a"), std::vector<DirectoryEntry>({{"a", FILE_REGULAR}}));
 }
 
 UNIT_TEST(MountingFileSystem, SchrodingerOverride) {
@@ -49,22 +49,22 @@ UNIT_TEST(MountingFileSystem, SchrodingerOverride) {
     MergingFileSystem sfs({&mfs1, &mfs2});
 
     MountingFileSystem fs("");
-    fs.mount("", &sfs);
+    fs.mount("/", &sfs);
 
-    mfs1.write("a/a.bin", Blob());
-    mfs2.write("a", Blob());
+    mfs1.write("/a/a.bin", Blob());
+    mfs2.write("/a", Blob());
     EXPECT_EQ(dumpFileSystem(&fs), std::vector<FileSystemDumpEntry>({
-        {"", FILE_DIRECTORY},
-        {"a", FILE_REGULAR},
-        {"a", FILE_DIRECTORY},
-        {"a/a.bin", FILE_REGULAR}
+        {"/", FILE_DIRECTORY},
+        {"/a", FILE_REGULAR},
+        {"/a", FILE_DIRECTORY},
+        {"/a/a.bin", FILE_REGULAR}
     }));
 
     NullFileSystem nfs;
-    fs.mount("a", &nfs);
+    fs.mount("/a", &nfs);
     EXPECT_EQ(dumpFileSystem(&fs), std::vector<FileSystemDumpEntry>({
-        {"", FILE_DIRECTORY},
-        {"a", FILE_DIRECTORY}
+        {"/", FILE_DIRECTORY},
+        {"/a", FILE_DIRECTORY}
     }));
 }
 
@@ -73,17 +73,17 @@ UNIT_TEST(MountingFileSystem, SimpleMerge) {
     MemoryFileSystem mfs2("");
 
     MountingFileSystem fs("");
-    fs.mount("", &mfs1);
-    fs.mount("a", &mfs2);
+    fs.mount("/", &mfs1);
+    fs.mount("/a", &mfs2);
 
-    mfs1.write("b", Blob::fromString("b"));
-    mfs2.write("a", Blob::fromString("a"));
+    mfs1.write("/b", Blob::fromString("b"));
+    mfs2.write("/a", Blob::fromString("a"));
 
     EXPECT_EQ(dumpFileSystem(&fs, FILE_SYSTEM_DUMP_WITH_CONTENTS), std::vector<FileSystemDumpEntry>({
-        {"", FILE_DIRECTORY},
-        {"a", FILE_DIRECTORY},
-        {"a/a", FILE_REGULAR, "a"},
-        {"b", FILE_REGULAR, "b"}
+        {"/", FILE_DIRECTORY},
+        {"/a", FILE_DIRECTORY},
+        {"/a/a", FILE_REGULAR, "a"},
+        {"/b", FILE_REGULAR, "b"}
     }));
 }
 
@@ -91,56 +91,56 @@ UNIT_TEST(MountingFileSystem, WriteIntoVfs) {
     MemoryFileSystem mfs("");
 
     MountingFileSystem fs("");
-    fs.mount("a/b/c/d", &mfs);
-    fs.mount("a/b/g/e", &mfs);
+    fs.mount("/a/b/c/d", &mfs);
+    fs.mount("/a/b/g/e", &mfs);
 
-    EXPECT_ANY_THROW(fs.write("a/b/1.bin", Blob()));
-    EXPECT_ANY_THROW((void) fs.openForWriting("a/b/g/1.bin"));
+    EXPECT_ANY_THROW(fs.write("/a/b/1.bin", Blob()));
+    EXPECT_ANY_THROW((void) fs.openForWriting("/a/b/g/1.bin"));
 }
 
 UNIT_TEST(MountingFileSystem, ReadWriteThrough) {
     MemoryFileSystem mfs("");
 
     MountingFileSystem fs("");
-    fs.mount("a", &mfs);
-    fs.mount("a/b", &mfs);
-    fs.mount("x", &mfs);
+    fs.mount("/a", &mfs);
+    fs.mount("/a/b", &mfs);
+    fs.mount("/x", &mfs);
 
-    fs.write("a/b/b", Blob::fromString("123"));
+    fs.write("/a/b/b", Blob::fromString("123"));
 
-    EXPECT_EQ(mfs.stat("b"), FileStat(FILE_REGULAR, 3));
-    EXPECT_EQ(fs.stat("a/b"), FileStat(FILE_DIRECTORY, 0));
-    EXPECT_EQ(fs.read("x/b").str(), "123");
-    EXPECT_EQ(fs.read("a/b/b").str(), "123");
+    EXPECT_EQ(mfs.stat("/b"), FileStat(FILE_REGULAR, 3));
+    EXPECT_EQ(fs.stat("/a/b"), FileStat(FILE_DIRECTORY, 0));
+    EXPECT_EQ(fs.read("/x/b").str(), "123");
+    EXPECT_EQ(fs.read("/a/b/b").str(), "123");
 }
 
 UNIT_TEST(MountingFileSystem, Remove) {
     MemoryFileSystem mfs("");
 
     MountingFileSystem fs("");
-    fs.mount("a", &mfs);
+    fs.mount("/a", &mfs);
 
-    mfs.write("a", Blob());
+    mfs.write("/a", Blob());
 
-    EXPECT_ANY_THROW(fs.remove("a"));
-    EXPECT_TRUE(fs.remove("a/a"));
-    EXPECT_FALSE(fs.remove("a/a"));
+    EXPECT_ANY_THROW(fs.remove("/a"));
+    EXPECT_TRUE(fs.remove("/a/a"));
+    EXPECT_FALSE(fs.remove("/a/a"));
 }
 
 UNIT_TEST(MountingFileSystem, Binary) {
     MountingFileSystem fs("");
-    fs.mount("0", &fs);
-    fs.mount("1", &fs);
+    fs.mount("/0", &fs);
+    fs.mount("/1", &fs);
 
-    EXPECT_TRUE(fs.exists("1/1/1/1/1/1/1/1/1/1/1/1/1/1/1/1/1/1/1/1/1/1/1/1/1/1/1/1/1/1/1/1/1/1/1/1/1/1/1/1/1/1/1/1"));
-    EXPECT_TRUE(fs.exists("0/0/0/0/0/0/0/0/0/0/0/0/0/0/0/0/0/0/0/0/0/0/0/0/0/0/0/0/0/0/0/0/0/0/0/0/0/0/0/0/0/0/0/0"));
+    EXPECT_TRUE(fs.exists("/1/1/1/1/1/1/1/1/1/1/1/1/1/1/1/1/1/1/1/1/1/1/1/1/1/1/1/1/1/1/1/1/1/1/1/1/1/1/1/1/1/1/1/1"));
+    EXPECT_TRUE(fs.exists("/0/0/0/0/0/0/0/0/0/0/0/0/0/0/0/0/0/0/0/0/0/0/0/0/0/0/0/0/0/0/0/0/0/0/0/0/0/0/0/0/0/0/0/0"));
 }
 
 UNIT_TEST(MountingFileSystem, LsMergeWithManyVirtualDirs) {
     // MountingFileSystem::_ls used to capture a std::span from the entries vector, then push_back-ing new
     // entries for virtual directories could cause vector reallocation, making the span dangling.
     MemoryFileSystem base("");
-    base.write("x", Blob());
+    base.write("/x", Blob());
 
     // Create many separate mount points so the trie has many children at root level.
     // These virtual dirs don't exist in the base FS, forcing push_back for each one.
@@ -149,11 +149,11 @@ UNIT_TEST(MountingFileSystem, LsMergeWithManyVirtualDirs) {
         mounts.push_back(std::make_unique<MemoryFileSystem>(""));
 
     MountingFileSystem fs("");
-    fs.mount("", &base);
+    fs.mount("/", &base);
     for (size_t i = 0; i < mounts.size(); i++)
-        fs.mount(std::to_string(i), mounts[i].get());
+        fs.mount("/" + std::to_string(i), mounts[i].get());
 
-    std::vector<DirectoryEntry> entries = fs.ls("");
+    std::vector<DirectoryEntry> entries = fs.ls("/");
     EXPECT_EQ(entries.size(), 101);
 
     for (size_t i = 0; i < mounts.size(); i++)
@@ -161,3 +161,15 @@ UNIT_TEST(MountingFileSystem, LsMergeWithManyVirtualDirs) {
     EXPECT_TRUE(std::ranges::contains(entries, DirectoryEntry("x", FILE_REGULAR)));
 }
 
+
+UNIT_TEST(MountingFileSystem, UnmountRelativePath) {
+    // mount asserts on a relative path, so unmount finds nothing there either.
+    MemoryFileSystem mfs("");
+    MountingFileSystem fs("");
+    fs.mount("/m", &mfs);
+
+    EXPECT_FALSE(fs.unmount("m"));
+    EXPECT_FALSE(fs.unmount(""));
+    EXPECT_TRUE(fs.exists("/m"));
+    EXPECT_TRUE(fs.unmount("/m"));
+}

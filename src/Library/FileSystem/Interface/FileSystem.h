@@ -31,14 +31,14 @@
  * `std::string`s to store paths.
  *
  * Paths are normalized internally, and then processed by the implementation in a derived class. Both `".."` and `"."`
- * special dirs are supported, but peeking outside the root directory is not - passing paths that try to do this will
- * throw, `exists` will return `false`, and `stat` will return `FILE_INVALID`.
+ * special dirs are supported.
  *
- * Unlike a real file system, this interface doesn't have a concept of a "current directory." All methods take
- * root-relative paths, so `"foo/bar"` and `"/foo/bar"` are equivalent.
+ * There's no "current directory", so every path must start with `/`, which is the root of this file system and not of
+ * the OS. `..` stops at the root, so `/../a` is `/a`. Passing a path that doesn't start with `/`, an empty one
+ * included, will throw, `exists` will return `false`, and `stat` will return `FILE_INVALID`.
  *
- * Root folder of the file system always exists. Thus, `exists("")` always returns `true`, `stat("")` always returns
- * `FILE_DIRECTORY`, `ls("")` never throws, and `remove("")` always throws.
+ * The root folder always exists. Thus, `exists("/")` always returns `true`, `stat("/")` always returns
+ * `FILE_DIRECTORY`, `ls("/")` never throws, and `remove("/")` always throws.
  *
  * @see ReadOnlyFileSystem
  */
