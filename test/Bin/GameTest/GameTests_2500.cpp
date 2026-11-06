@@ -9,9 +9,11 @@
 
 #include "Engine/Engine.h"
 #include "Engine/EngineGlobals.h"
+#include "Engine/EngineIocContainer.h"
 #include "Engine/MapEnums.h"
 #include "Engine/Party.h"
 #include "Engine/SaveLoad.h"
+#include "Engine/SpellFxRenderer.h"
 #include "Engine/mm7_data.h"
 #include "Engine/Data/AwardEnums.h"
 #include "Engine/Data/HouseEnums.h"
@@ -26,6 +28,7 @@
 #include "Engine/Objects/SpriteObject.h"
 #include "Engine/Resources/EngineFileSystem.h"
 #include "Engine/Tables/DecorationTable.h"
+#include "Engine/Tables/IconFrameTable.h"
 #include "Engine/Tables/MapTable.h"
 #include "Engine/Tables/NPCTable.h"
 
@@ -970,9 +973,15 @@ GAME_TEST(Issues, Issue2817) {
             return character._achievedAwardsBits[AWARD_EMERALD_ISLE_COMPLETED_MAIN_QUEST];
         });
     });
+    auto buffAnimTape = tapes.custom([] {
+        AccessibleVector<int> result;
+        for (const PlayerBuffAnim &anim : EngineIocContainer::ResolveSpellFxRenderer()->pCharacterBuffs)
+            result.push_back(anim.uSpellIconID);
+        return result;
+    });
     engine->config->debug.NoMargaret.setValue(true); // Her tour would stop the party at the door.
     game.startNewGame();
-    pParty->_questBits.set(QBIT_EMERALD_ISLAND_SCAVENGER_HUNT_WON); // Lord Markham hands over Harmondale to the winners.
+    pParty->_questBits.set(QBIT_EMERALD_ISLAND_SCAVENGER_HUNT_WON); // Unlocks Lord Markham's Congratulations topic.
     pParty->pCharacters[3]._achievedAwardsBits[AWARD_EMERALD_ISLE_COMPLETED_MAIN_QUEST] = true;
     test.startTaping();
     game.teleportTo(MAP_EMERALD_ISLAND, Vec3f(16154, 8560, 128), 180); // In front of Markham's Headquarters.
@@ -987,6 +996,8 @@ GAME_TEST(Issues, Issue2817) {
     for (int i = 0; i < 3; i++)
         EXPECT_CONTAINS(portraitTape.slice(i), PORTRAIT_WIDE_SMILE);
     EXPECT_MISSES(portraitTape.slice(3), PORTRAIT_WIDE_SMILE);
+    int questAnim = pIconsFrameTable->animationId("spboost2"); // Add Awards and Add Experience, Set Awards plays spboost1.
+    EXPECT_EQ(buffAnimTape, tape({0, 0, 0, 0}, {questAnim, questAnim, questAnim, questAnim}));
 }
 
 GAME_TEST(Issues, Issue2834) {
