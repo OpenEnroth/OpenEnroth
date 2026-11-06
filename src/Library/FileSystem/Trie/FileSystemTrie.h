@@ -198,6 +198,22 @@ class FileSystemTrie {
         return insertOrAssign(root(), path, std::move(value));
     }
 
+    /**
+     * @param base                      Node to insert under.
+     * @param name                      Name of a single child of `base`, without separators.
+     * @param value                     Value to store.
+     * @return                          The child node.
+     */
+    Node *insertOrAssignChild(Node *base, std::string_view name, T value) {
+        assert(base && !name.empty() && !name.contains('/'));
+
+        Node *child = base->child(name);
+        if (!child)
+            child = base->_children.emplace(name, std::make_unique<Node>(base, name)).first->second.get();
+        child->_value = std::move(value);
+        return child;
+    }
+
     void clear() {
         erase(root());
     }

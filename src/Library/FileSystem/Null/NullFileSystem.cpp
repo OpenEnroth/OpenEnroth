@@ -18,7 +18,7 @@ FileStat NullFileSystem::_stat(FileSystemPathView path) const {
 }
 
 void NullFileSystem::_ls(FileSystemPathView path, std::vector<DirectoryEntry> *entries) const {
-    if (path.isEmpty()) {
+    if (path.isRoot()) {
         entries->clear();
         return;
     }
@@ -34,7 +34,7 @@ std::unique_ptr<InputStream> NullFileSystem::_openForReading(FileSystemPathView 
 }
 
 std::string NullFileSystem::_displayPath(FileSystemPathView path) const {
-    return join("null://", txt::encodedToUtf8(path.string(), ENCODING_UTF8)); // Replaces invalid UTF8.
+    return join("null:/", txt::encodedToUtf8(path.string(), ENCODING_UTF8)); // Replaces invalid UTF8.
 }
 
 [[noreturn]] void NullFileSystem::reportReadError(FileSystemPathView path) const {

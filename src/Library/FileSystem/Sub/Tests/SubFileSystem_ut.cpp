@@ -73,9 +73,9 @@ UNIT_TEST(SubFileSystem, DotDotStopsAtRoot) {
     EXPECT_FALSE(sub.exists("/a/../../../secret.txt"));
     EXPECT_ANY_THROW((void) sub.read("/a/../../../secret.txt"));
 
-    // A relative path is refused outright.
+    // A relative path starts at the same root.
     EXPECT_FALSE(sub.exists("../secret.txt"));
-    EXPECT_FALSE(sub.exists("../../.."));
+    EXPECT_EQ(sub.read("../test.vert").str(), "test");
 }
 
 UNIT_TEST(SubFileSystem, RootWhenBasePathDoesntExist) {
@@ -121,12 +121,4 @@ UNIT_TEST(SubFileSystem, RootWhenBasePathIsRoot) {
     EXPECT_EQ(sub.stat("/"), FileStat(FILE_DIRECTORY, 0));
     EXPECT_EQ(sub.ls("/").size(), 1);
     EXPECT_EQ(sub.read("/1.txt").str(), "lol");
-}
-
-UNIT_TEST(SubFileSystem, RelativeBasePathIsRefused) {
-    // A base path has to start with a separator, like every other path in a file system.
-    MemoryFileSystem base("memfs");
-
-    for (std::string_view basePath : {"", ".", "x", "../x"})
-        EXPECT_ANY_THROW(SubFileSystem(basePath, &base)) << basePath;
 }

@@ -160,16 +160,3 @@ UNIT_TEST(MountingFileSystem, LsMergeWithManyVirtualDirs) {
         EXPECT_TRUE(std::ranges::contains(entries, DirectoryEntry(std::to_string(i), FILE_DIRECTORY)));
     EXPECT_TRUE(std::ranges::contains(entries, DirectoryEntry("x", FILE_REGULAR)));
 }
-
-
-UNIT_TEST(MountingFileSystem, UnmountRelativePath) {
-    // mount asserts on a relative path, so unmount finds nothing there either.
-    MemoryFileSystem mfs("");
-    MountingFileSystem fs("");
-    fs.mount("/m", &mfs);
-
-    EXPECT_FALSE(fs.unmount("m"));
-    EXPECT_FALSE(fs.unmount(""));
-    EXPECT_TRUE(fs.exists("/m"));
-    EXPECT_TRUE(fs.unmount("/m"));
-}

@@ -6,7 +6,6 @@
 
 #include "Testing/Unit/UnitTest.h"
 
-#include "Library/FileSystem/Interface/FileSystemException.h"
 #include "Library/FileSystem/Memory/MemoryFileSystem.h"
 #include "Library/FileSystem/Dump/FileSystemDump.h"
 
@@ -242,29 +241,23 @@ UNIT_TEST(MemoryFileSystem, ExceptionMessage) {
 }
 
 
-UNIT_TEST(MemoryFileSystem, RelativePathsAreRefused) {
-    // A path that doesn't start with a separator names nothing in a file system, whichever way it's spelled.
+UNIT_TEST(MemoryFileSystem, RelativePathsStartAtRoot) {
+    // The current directory of a file system is always the root, so a relative path names the same file as an
+    // absolute one.
     MemoryFileSystem fs("ram");
-    fs.write("/foo", Blob::fromString("lol"));
+    fs.write("foo", Blob::fromString("lol"));
 
-    auto expectNotAccessible = [] (auto call, std::string_view path) {
-        EXPECT_THAT(call, testing::ThrowsMessage<FileSystemException>(testing::HasSubstr("not accessible"))) << path;
-    };
-
-    for (std::string_view path : {"", "foo", "foo/bar", "foo\\bar", ".", "./foo", "..", "../foo", "C:/foo", "C:foo"}) {
-        EXPECT_FALSE(fs.exists(path)) << path;
-        EXPECT_EQ(fs.stat(path), FileStat()) << path;
-        expectNotAccessible([&] { (void) fs.read(path); }, path);
-        expectNotAccessible([&] { fs.write(path, Blob()); }, path);
-        expectNotAccessible([&] { (void) fs.ls(path); }, path);
-        expectNotAccessible([&] { (void) fs.remove(path); }, path);
-        expectNotAccessible([&] { (void) fs.openForReading(path); }, path);
-        expectNotAccessible([&] { (void) fs.openForWriting(path); }, path);
-        EXPECT_NO_THROW((void) fs.displayPath(path)) << path;
+    for (std::string_view path : {"foo", "/foo", "./foo", "../foo", "bar/../foo", "\\foo"}) {
+        EXPECT_TRUE(fs.exists(path)) << path;
+        EXPECT_EQ(fs.read(path).str(), "lol") << path;
+        EXPECT_EQ(fs.displayPath(path), "ram://foo") << path;
     }
 
-    EXPECT_THAT([&] { (void) fs.read("foo"); }, testing::ThrowsMessage<FileSystemException>(testing::HasSubstr("'foo'")));
-    EXPECT_EQ(fs.read("/foo").str(), "lol");
+    for (std::string_view path : {"", ".", "..", "/"}) {
+        EXPECT_EQ(fs.stat(path), FileStat(FILE_DIRECTORY, 0)) << path;
+        EXPECT_EQ(fs.ls(path), std::vector<DirectoryEntry>({{"foo", FILE_REGULAR}})) << path;
+        EXPECT_EQ(fs.displayPath(path), "ram://") << path;
+    }
 }
 
 UNIT_TEST(MemoryFileSystem, ParentOfRootIsRoot) {

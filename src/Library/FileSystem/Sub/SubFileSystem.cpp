@@ -5,21 +5,13 @@
 #include <string>
 #include <vector>
 
-#include "Utility/Exception.h"
-
-static FileSystemPath rootedBasePath(std::string_view basePath) {
-    if (!FileSystemPath::isRooted(basePath))
-        throw Exception("Base path '{}' of a sub file system doesn't start with a separator", basePath);
-    return FileSystemPath::fromRooted(basePath);
-}
-
 SubFileSystem::SubFileSystem(FileSystemPathView basePath, FileSystem *base)
     : _base(base), _basePath(basePath) {
     assert(_base);
 }
 
 SubFileSystem::SubFileSystem(std::string_view basePath, FileSystem *base)
-    : SubFileSystem(FileSystemPathView(rootedBasePath(basePath)), base) {
+    : SubFileSystem(FileSystemPathView(FileSystemPath(basePath)), base) {
 }
 
 bool SubFileSystem::_exists(FileSystemPathView path) const {
@@ -32,7 +24,7 @@ FileStat SubFileSystem::_stat(FileSystemPathView path) const {
 
 void SubFileSystem::_ls(FileSystemPathView path, std::vector<DirectoryEntry> *entries) const {
     // A root always exists, so ls("/") has to work even if the base path doesn't, or isn't a directory.
-    if (path.isEmpty() && _base->stat(_basePath).type != FILE_DIRECTORY)
+    if (path.isRoot() && _base->stat(_basePath).type != FILE_DIRECTORY)
         return;
 
     _base->ls(_basePath / path, entries);

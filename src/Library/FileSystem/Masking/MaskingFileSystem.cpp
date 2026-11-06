@@ -1,7 +1,5 @@
 #include "MaskingFileSystem.h"
 
-#include <cassert>
-
 #include <vector>
 #include <memory>
 #include <string>
@@ -16,8 +14,7 @@ MaskingFileSystem::MaskingFileSystem(FileSystem *base) : ProxyFileSystem(base) {
 MaskingFileSystem::~MaskingFileSystem() = default;
 
 void MaskingFileSystem::mask(std::string_view path) {
-    assert(FileSystemPath::isRooted(path));
-    mask(FileSystemPath::fromRooted(path));
+    mask(FileSystemPath(path));
 }
 
 void MaskingFileSystem::mask(FileSystemPathView path) {
@@ -25,9 +22,7 @@ void MaskingFileSystem::mask(FileSystemPathView path) {
 }
 
 bool MaskingFileSystem::unmask(std::string_view path) {
-    if (!FileSystemPath::isRooted(path))
-        return false; // mask asserts on these, so nothing is masked there.
-    return unmask(FileSystemPath::fromRooted(path));
+    return unmask(FileSystemPath(path));
 }
 
 bool MaskingFileSystem::unmask(FileSystemPathView path) {
@@ -71,7 +66,7 @@ FileStat MaskingFileSystem::_stat(FileSystemPathView path) const {
 
 void MaskingFileSystem::_ls(FileSystemPathView path, std::vector<DirectoryEntry> *entries) const {
     if (isMasked(path)) {
-        if (path.isEmpty()) {
+        if (path.isRoot()) {
             return; // Pretend root exists even if it was masked.
         } else {
             FileSystemException::raise(this, FS_LS_FAILED_PATH_DOESNT_EXIST, path);
@@ -123,6 +118,6 @@ bool MaskingFileSystem::_remove(FileSystemPathView path) {
 
 std::string MaskingFileSystem::_displayPath(FileSystemPathView path) const {
     if (isMasked(path))
-        return join("masked://", txt::encodedToUtf8(path.string(), ENCODING_UTF8)); // Replaces invalid UTF8.
+        return join("masked:/", txt::encodedToUtf8(path.string(), ENCODING_UTF8)); // Replaces invalid UTF8.
     return ProxyFileSystem::_displayPath(path);
 }

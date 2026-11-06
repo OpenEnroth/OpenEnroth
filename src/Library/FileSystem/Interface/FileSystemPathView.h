@@ -1,5 +1,6 @@
 #pragma once
 
+#include <cassert>
 #include <string_view>
 
 #include "Utility/String/Split.h"
@@ -12,8 +13,9 @@ class FileSystemPathView {
  public:
     inline FileSystemPathView(const FileSystemPath &path); // NOLINT: intentionally implicit.
 
-    static inline FileSystemPathView fromNormalized(std::string_view path);
-
+    /**
+     * Constructs a view of the root path.
+     */
     FileSystemPathView() = default;
 
     FileSystemPathView(const FileSystemPathView &) = default;
@@ -23,12 +25,8 @@ class FileSystemPathView {
 
     friend auto operator<=>(FileSystemPathView l, FileSystemPathView r) = default;
 
-    [[nodiscard]] bool isEmpty() const {
-        return _path.empty();
-    }
-
-    [[nodiscard]] bool isEscaping() const {
-        return _path == ".." || _path.starts_with("../");
+    [[nodiscard]] bool isRoot() const {
+        return _path == "/";
     }
 
     [[nodiscard]] std::string_view string() const {
@@ -40,7 +38,14 @@ class FileSystemPathView {
     }
 
  private:
-    std::string_view _path;
+    friend class FileSystemPathSplit;
+
+    explicit FileSystemPathView(std::string_view path) : _path(path) {
+        assert(_path.starts_with('/'));
+    }
+
+ private:
+    std::string_view _path = "/";
 };
 
 template<>
@@ -53,26 +58,23 @@ struct std::hash<FileSystemPathView> : std::hash<std::string_view> {
 };
 
 [[nodiscard]] inline FileSystemPathView FileSystemPathSplit::tailAt(std::same_as<std::string_view> auto chunk) const {
-    std::string_view path = str();
-    assert(chunk.data() >= path.data() && chunk.data() + chunk.size() <= path.data() + path.size());
-    size_t offset = chunk.data() - path.data();
-    return FileSystemPathView::fromNormalized(path.substr(offset));
+    std::string_view segments = str();
+    assert(chunk.data() >= segments.data() && chunk.data() + chunk.size() <= segments.data() + segments.size());
+    const char *start = chunk.data() - 1; // The separator before the chunk, normal form has exactly one.
+    return FileSystemPathView(std::string_view(start, segments.data() + segments.size() - start));
 }
 
 [[nodiscard]] inline FileSystemPathView FileSystemPathSplit::tailAfter(std::same_as<std::string_view> auto chunk) const {
-    std::string_view path = str(); // NOLINT: not std::string.
-
-    if (chunk.empty())
-        return FileSystemPathView::fromNormalized(path);
-
-    assert(chunk.data() >= path.data() && chunk.data() + chunk.size() <= path.data() + path.size());
-
-    if (chunk.data() + chunk.size() == path.data() + path.size()) {
+    std::string_view segments = str(); // NOLINT: not std::string.
+    if (segments.empty())
         return {};
-    } else {
-        size_t offset = chunk.data() + chunk.size() - path.data() + 1;
-        return FileSystemPathView::fromNormalized(path.substr(offset));
-    }
+
+    const char *start = chunk.empty() ? segments.data() - 1 : chunk.data() + chunk.size();
+    assert(start >= segments.data() - 1 && start <= segments.data() + segments.size());
+    const char *end = segments.data() + segments.size();
+    if (start == end)
+        return {};
+    return FileSystemPathView(std::string_view(start, end - start)); // A suffix of a normal path is normal.
 }
 
 #include "FileSystemPath.h"

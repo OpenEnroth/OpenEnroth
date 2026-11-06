@@ -10,46 +10,25 @@
 
 /**
  * `FileSystemPath` does path normalization for `FileSystem`, transforming passed paths into a normal form of
- * `"foo/bar/baz"`:
+ * `"/foo/bar/baz"`:
+ * - The path is absolute, starting with `/`, which is the root of the file system. A relative path is taken
+ *   relative to the root. The root itself is `"/"`.
  * - Windows-style path separators are replaced with unix-style ones.
- * - Repeated path separators are replaced with a single one.
- * - Leading & trailing path separators are removed.
- * - `"."` and `".."` are collapsed.
- * - Root path is stored as an empty string.
+ * - Repeated path separators are replaced with a single one, and a trailing one is removed.
+ * - `"."` and `".."` are collapsed, and `".."` stops at the root, so `"/../a"` is `"/a"`.
  *
  * Note that this means that `FileSystemPath` is different from `std::filesystem::path` in that there is no difference
- * between a file and a directory at the path level. `"foo/bar/."` is normalized into `"foo/bar"`, and can then be used
- * to open a file for reading.
+ * between a file and a directory at the path level. `"/foo/bar/."` is normalized into `"/foo/bar"`, and can then be
+ * used to open a file for reading.
  */
 class FileSystemPath {
  public:
+    /**
+     * @param path                      Path to normalize. A relative one is taken relative to the root.
+     */
     explicit FileSystemPath(std::string_view path);
 
     explicit FileSystemPath(FileSystemPathView path) : _path(path.string()) {}
-
-    /**
-     * @param path                      Path as the public `FileSystem` API takes it.
-     * @return                          Whether `path` starts with a separator, which every path in a file system
-     *                                  must.
-     */
-    [[nodiscard]] static bool isRooted(std::string_view path) {
-        return path.starts_with('/') || path.starts_with('\\');
-    }
-
-    /**
-     * @param path                      Path that starts with a separator, see `isRooted`.
-     * @return                          `path` in normal form, with any `..` above the root dropped, so `"/../a"`
-     *                                  gives `"a"`.
-     */
-    [[nodiscard]] static FileSystemPath fromRooted(std::string_view path);
-
-    static FileSystemPath fromNormalized(std::string path) {
-        assert(FileSystemPath(path).string() == path);
-
-        FileSystemPath result;
-        result._path = std::move(path);
-        return result;
-    }
 
     /**
      * Constructs a root path.
@@ -63,12 +42,8 @@ class FileSystemPath {
 
     friend auto operator<=>(const FileSystemPath &l, const FileSystemPath &r) = default;
 
-    [[nodiscard]] bool isEmpty() const {
-        return _path.empty();
-    }
-
-    [[nodiscard]] bool isEscaping() const {
-        return FileSystemPathView(*this).isEscaping();
+    [[nodiscard]] bool isRoot() const {
+        return _path == "/";
     }
 
     [[nodiscard]] const std::string &string() const {
@@ -80,7 +55,7 @@ class FileSystemPath {
     }
 
     /**
-     * @return                          The last component, empty if there is none. `"a/b.txt"` gives `"b.txt"`.
+     * @return                          The last component, empty for the root. `"/a/b.txt"` gives `"b.txt"`.
      *                                  The returned view points into this path, so it dies with it.
      */
     [[nodiscard]] std::string_view name() const;
@@ -95,23 +70,25 @@ class FileSystemPath {
     [[nodiscard]] std::string_view extension() const;
 
     /**
-     * @return                          The file name without its extension. `"a/b.tar.gz"` gives `"b.tar"`.
+     * @return                          The file name without its extension. `"/a/b.tar.gz"` gives `"b.tar"`.
      *                                  The returned view points into this path, so it dies with it.
      */
     [[nodiscard]] std::string_view stem() const;
 
     /**
-     * @return                          Parent path, or an empty path if this path has no parent. Note that this is
-     *                                  the lexical parent - the lexical parent of `"../.."` is `".."`, which is not
-     *                                  its semantic parent.
+     * @return                          Parent path, or the root for the root.
      */
     [[nodiscard]] FileSystemPath parent() const;
 
+    /**
+     * @param tail                      Path to append, taken relative to this path whether or not it starts with a
+     *                                  separator.
+     */
     FileSystemPath &operator/=(std::string_view tail);
     FileSystemPath &operator/=(FileSystemPathView tail);
 
  private:
-    std::string _path;
+    std::string _path = "/";
 };
 
 template<>
@@ -124,14 +101,6 @@ struct std::hash<FileSystemPath> : std::hash<std::string> {
 };
 
 inline FileSystemPathView::FileSystemPathView(const FileSystemPath &path) : _path(path.string()) {}
-
-inline FileSystemPathView FileSystemPathView::fromNormalized(std::string_view path) {
-    assert(FileSystemPath(path).string() == path); // Should be normalized.
-
-    FileSystemPathView result;
-    result._path = path;
-    return result;
-}
 
 inline FileSystemPath operator/(FileSystemPathView l, FileSystemPathView r) {
     FileSystemPath result(l);

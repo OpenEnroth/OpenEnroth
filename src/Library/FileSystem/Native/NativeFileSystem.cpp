@@ -20,12 +20,12 @@ NativeFileSystem::NativeFileSystem(PathView root) {
 NativeFileSystem::~NativeFileSystem() = default;
 
 bool NativeFileSystem::_exists(FileSystemPathView path) const {
-    assert(!path.isEmpty());
+    assert(!path.isRoot());
     return fs::exists(makeBasePath(path));
 }
 
 FileStat NativeFileSystem::_stat(FileSystemPathView path) const {
-    assert(!path.isEmpty());
+    assert(!path.isRoot());
     return fs::stat(makeBasePath(path));
 }
 
@@ -35,7 +35,7 @@ void NativeFileSystem::_ls(FileSystemPathView path, std::vector<DirectoryEntry> 
     try {
         fs::ls(basePath, entries);
     } catch (const Exception &) {
-        if (path.isEmpty())
+        if (path.isRoot())
             return; // ls("/") always works.
 
         if (fs::stat(basePath).type == FILE_REGULAR)
@@ -48,12 +48,12 @@ void NativeFileSystem::_ls(FileSystemPathView path, std::vector<DirectoryEntry> 
 }
 
 Blob NativeFileSystem::_read(FileSystemPathView path) const {
-    assert(!path.isEmpty());
+    assert(!path.isRoot());
     return Blob::fromFile(makeBasePath(path));
 }
 
 void NativeFileSystem::_write(FileSystemPathView path, const Blob &data) {
-    assert(!path.isEmpty());
+    assert(!path.isRoot());
     Path basePath = makeBasePath(path);
     fs::mkdirs(makeBasePath(FileSystemPath(path).parent()));
     FileOutputStream stream(basePath);
@@ -62,19 +62,19 @@ void NativeFileSystem::_write(FileSystemPathView path, const Blob &data) {
 }
 
 std::unique_ptr<InputStream> NativeFileSystem::_openForReading(FileSystemPathView path) const {
-    assert(!path.isEmpty());
+    assert(!path.isRoot());
     return std::make_unique<FileInputStream>(makeBasePath(path));
 }
 
 std::unique_ptr<OutputStream> NativeFileSystem::_openForWriting(FileSystemPathView path) {
-    assert(!path.isEmpty());
+    assert(!path.isRoot());
     Path basePath = makeBasePath(path);
     fs::mkdirs(makeBasePath(FileSystemPath(path).parent()));
     return std::make_unique<FileOutputStream>(basePath);
 }
 
 bool NativeFileSystem::_remove(FileSystemPathView path) {
-    assert(!path.isEmpty());
+    assert(!path.isRoot());
     return fs::remove(makeBasePath(path));
 }
 
@@ -83,11 +83,11 @@ std::string NativeFileSystem::_displayPath(FileSystemPathView path) const {
 }
 
 Path NativeFileSystem::makeBasePath(FileSystemPathView path) const {
-    if (path.isEmpty())
+    if (path.isRoot())
         return _root;
 
     std::string_view root = _root.str();
     if (root.ends_with('/') || root.ends_with('\\'))
         root.remove_suffix(1);
-    return Path(join(root, "/", path.string())); // Not operator/, on Windows a path like "c:b" would read as a drive.
+    return Path(join(root, path.string())); // Not operator/, it'd read the path's leading "/" as a root and drop _root.
 }

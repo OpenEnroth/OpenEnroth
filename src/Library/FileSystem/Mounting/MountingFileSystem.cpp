@@ -1,7 +1,5 @@
 #include "MountingFileSystem.h"
 
-#include <cassert>
-
 #include <vector>
 #include <memory>
 #include <ranges>
@@ -17,8 +15,7 @@ MountingFileSystem::MountingFileSystem(std::string_view displayName) : _displayN
 MountingFileSystem::~MountingFileSystem() = default;
 
 void MountingFileSystem::mount(std::string_view path, FileSystem *fileSystem) {
-    assert(FileSystemPath::isRooted(path));
-    mount(FileSystemPath::fromRooted(path), fileSystem);
+    mount(FileSystemPath(path), fileSystem);
 }
 
 void MountingFileSystem::mount(FileSystemPathView path, FileSystem *fileSystem) {
@@ -26,9 +23,7 @@ void MountingFileSystem::mount(FileSystemPathView path, FileSystem *fileSystem) 
 }
 
 bool MountingFileSystem::unmount(std::string_view path) {
-    if (!FileSystemPath::isRooted(path))
-        return false; // mount asserts on these, so nothing is mounted there.
-    return unmount(FileSystemPath::fromRooted(path));
+    return unmount(FileSystemPath(path));
 }
 
 bool MountingFileSystem::unmount(FileSystemPathView path) {
@@ -44,14 +39,14 @@ void MountingFileSystem::clearMounts() {
 }
 
 bool MountingFileSystem::_exists(FileSystemPathView path) const {
-    assert(!path.isEmpty());
+    assert(!path.isRoot());
 
     auto [node, mount, tail] = walk(path);
     return node ? true : mount ? mount->exists(tail) : false;
 }
 
 FileStat MountingFileSystem::_stat(FileSystemPathView path) const {
-    assert(!path.isEmpty());
+    assert(!path.isRoot());
     auto [node, mount, tail] = walk(path);
     return node ? FileStat(FILE_DIRECTORY, 0) : mount ? mount->stat(tail) : FileStat();
 }
@@ -130,13 +125,13 @@ bool MountingFileSystem::_remove(FileSystemPathView path) {
 
 std::string MountingFileSystem::_displayPath(FileSystemPathView path) const {
     // TODO(captainurist): this is not symmetric with that's done in read / openForReading / openForWriting.
-    return join(_displayName, "://", txt::encodedToUtf8(path.string(), ENCODING_UTF8)); // Replaces invalid UTF8.
+    return join(_displayName, ":/", txt::encodedToUtf8(path.string(), ENCODING_UTF8)); // Replaces invalid UTF8.
 }
 
 MountingFileSystem::WalkResult MountingFileSystem::walk(FileSystemPathView path) {
     Node *node = _trie.root();
     FileSystem *mount = node->hasValue() ? node->value() : nullptr;
-    if (path.isEmpty())
+    if (path.isRoot())
         return {node, mount, {}};
 
     std::string_view mountChunk;

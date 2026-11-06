@@ -1,30 +1,24 @@
 #include "FileSystemPath.h"
 
-#include <cassert>
 #include <string>
 #include <string_view>
 
 #include "Utility/String/Split.h"
-#include "Utility/String/Join.h"
 #include "Utility/String/Transformations.h"
-#include "Utility/SmallVector.h"
 
 static size_t fileNameOffset(std::string_view path) {
-    size_t separatorPos = path.rfind('/');
-    return separatorPos == std::string_view::npos ? 0 : separatorPos + 1;
+    return path.rfind('/') + 1; // Normal form always starts with a separator.
 }
 
 /**
- * @param path                      Path in normal form, so a name is never spelled `"."`.
+ * @param path                      Path in normal form, so a name is never spelled `"."` or `".."`.
  * @return                          Offset of the extension inside the path, or `npos` if there is none. Mirrors
  *                                  `std::filesystem`, so a leading dot doesn't start an extension and `".bashrc"`
- *                                  has none, and `".."` has none either.
+ *                                  has none.
  */
 static size_t extensionOffset(std::string_view path) {
     size_t nameOffset = fileNameOffset(path);
     std::string_view fileName = path.substr(nameOffset);
-    if (fileName == "..")
-        return std::string_view::npos;
 
     size_t dotPos = fileName.rfind('.');
     if (dotPos == std::string_view::npos || dotPos == 0)
@@ -33,38 +27,16 @@ static size_t extensionOffset(std::string_view path) {
     return nameOffset + dotPos;
 }
 
-template<class String>
-inline bool popOneChunk(String &path) {
-    if (path.empty())
-        return false;
-
-    size_t splitPos = path.find_last_of('/');
-    size_t chunkPos;
-    if (splitPos == std::string_view::npos) {
-        splitPos = 0;
-        chunkPos = 0;
-    } else {
-        chunkPos = splitPos + 1;
-    }
-
-    if (std::string_view(path).substr(chunkPos) == "..")
-        return false;
-
-    path.resize(splitPos);
-    return true;
+/**
+ * @param[in,out] path              Path in normal form, loses its last segment. The root stays the root.
+ */
+static void popOneChunk(std::string &path) {
+    size_t separatorPos = path.rfind('/');
+    path.resize(separatorPos == 0 ? 1 : separatorPos);
 }
 
 FileSystemPath::FileSystemPath(std::string_view path) {
     operator/=(path);
-}
-
-FileSystemPath FileSystemPath::fromRooted(std::string_view path) {
-    assert(isRooted(path));
-
-    FileSystemPath result(path);
-    while (result._path == ".." || result._path.starts_with("../"))
-        result._path.erase(0, result._path.size() > 2 ? 3 : 2); // Normal form keeps every ".." at the start.
-    return result;
 }
 
 std::string_view FileSystemPath::name() const {
@@ -83,11 +55,9 @@ std::string_view FileSystemPath::stem() const {
 }
 
 FileSystemPath FileSystemPath::parent() const {
-    size_t end = fileNameOffset(_path);
-    if (end > 0)
-        end--; // Normal form has single separators, so this drops the one between the parent and the file name.
-
-    return fromNormalized(_path.substr(0, end));
+    FileSystemPath result = *this;
+    popOneChunk(result._path);
+    return result;
 }
 
 FileSystemPath &FileSystemPath::operator/=(std::string_view tail) {
@@ -98,57 +68,28 @@ FileSystemPath &FileSystemPath::operator/=(std::string_view tail) {
         tail = tmp;
     }
 
-    gch::small_vector<std::string_view, 32> stack;
     for (std::string_view chunk : ::split(tail).by('/')) {
-        if (chunk.empty())
-            continue;
-
-        if (chunk == ".")
+        if (chunk.empty() || chunk == ".")
             continue;
 
         if (chunk == "..") {
-            if (!stack.empty()) {
-                if (stack.back() != "..") {
-                    stack.pop_back();
-                    continue;
-                }
-            } else if (popOneChunk(_path)) {
-                continue;
-            }
+            popOneChunk(_path); // Stops at the root.
+            continue;
         }
 
-        stack.push_back(chunk);
-    }
-
-    if (_path.empty()) {
-        _path = join(stack, '/');
-    } else {
-        for (std::string_view chunk : stack) {
+        if (!isRoot())
             _path += '/';
-            _path += chunk;
-        }
+        _path += chunk;
     }
 
     return *this;
 }
 
 FileSystemPath &FileSystemPath::operator/=(FileSystemPathView tail) {
-    std::string_view tailsTail = tail.string();
-
-    if (tail.isEscaping()) {
-        while (true) {
-            if (!popOneChunk(_path))
-                break;
-
-            tailsTail = tailsTail.substr(tailsTail.size() > 2 ? 3 : 2); // Skip "../" that we've just processed.
-            if (tailsTail != ".." && !tailsTail.starts_with("../"))
-                break;
-        }
+    if (isRoot()) {
+        _path = tail.string();
+    } else if (!tail.isRoot()) {
+        _path += tail.string();
     }
-
-    if (!_path.empty() && !tailsTail.empty())
-        _path += '/';
-    _path += tailsTail;
-
     return *this;
 }
