@@ -1067,8 +1067,8 @@ GAME_TEST(Issues, Issue2864b) {
 }
 
 GAME_TEST(Issues, Issue2868a) {
-    // Leaving Erathia counted its griffins killed with the Royal Griffins alive, and leaving the Bracada Desert didn't
-    // count them with every griffin dead, because its Gold Golems were alive.
+    // "Killed all Erathian Griffins" was set with the Royal Griffins still alive.
+    // "Killed all Bracada Desert Griffins" wasn't set with every griffin dead, because the Gold Golems were alive.
     for (auto [map, bit, survivor] : {std::tuple(MAP_ERATHIA, QBIT_ERATHIA_GRIFFINS_KILLED, MONSTER_GRIFFIN_C),
                                       std::tuple(MAP_BRACADA_DESERT, QBIT_BRACADA_DESERT_GRIFFINS_KILLED, MONSTER_INVALID),
                                       std::tuple(MAP_BRACADA_DESERT, QBIT_BRACADA_DESERT_GRIFFINS_KILLED, MONSTER_GRIFFIN_A)}) {
