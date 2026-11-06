@@ -260,7 +260,7 @@ Color BlendColors(Color a1, Color a2) {
 }
 
 void BaseRenderer::TransformBillboard(const RenderBillboard *pBillboard, int parent) {
-    Ptr<GraphicsImage> sprite = pBillboard->sprite;
+    GraphicsImage *sprite = pBillboard->sprite;
     assert(sprite);
 
     unsigned int billboard_index = NextBillboardIndex();

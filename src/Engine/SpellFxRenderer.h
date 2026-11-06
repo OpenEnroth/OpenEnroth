@@ -68,7 +68,7 @@ struct ProjectileAnim {
     float dstX = 0;
     float dstY = 0;
     float dstZ = 0;
-    Ptr<GraphicsImage> texture = nullptr;  // int uTextureID;
+    GraphicsImage *texture = nullptr;  // int uTextureID;
 };
 
 struct stru6_stru2 {

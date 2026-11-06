@@ -9,7 +9,7 @@
  * to spell `.get()`.
  *
  * It doesn't own anything, doesn't extend the lifetime of what it points to, and doesn't touch the reference count.
- * Use it for function parameters and for frame-scoped draw lists, and don't store it anywhere that outlives the frame.
+ * It is meant for function parameters only, and should not be stored.
  */
 template<class T>
 class Ptr {

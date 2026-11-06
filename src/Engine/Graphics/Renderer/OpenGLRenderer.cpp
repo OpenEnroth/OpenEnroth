@@ -2281,7 +2281,7 @@ void OpenGLRenderer::DrawOutdoorBuildings() {
 
                         // TODO(yoctozepto, pskelton): we should probably try to handle these faces as they are otherwise marked as visible (see also BSPRenderer)
                         if (!face.GetTexture()) continue;
-                        Ptr<GraphicsImage> tex = face.GetTexture();
+                        std::shared_ptr<GraphicsImage> tex = face.GetTexture();
 
                         std::string texname = tex->name();
 
@@ -2797,7 +2797,7 @@ void OpenGLRenderer::DrawIndoorFaces() {
                     continue;
 
                 // TODO(pskelton): Same as outdoors. When ODM and BLV face is combined - seperate out function
-                Ptr<GraphicsImage> tex = face->GetTexture();
+                std::shared_ptr<GraphicsImage> tex = face->GetTexture();
                 std::string texname = tex->name();
 
                 Duration animLength;

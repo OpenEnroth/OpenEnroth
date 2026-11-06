@@ -426,7 +426,7 @@ void SpellFxRenderer::_4A7688_fireball_collision_particle(SpriteObject *a2) {
     local_0.y = (float)a2->vPosition.y;
     local_0.z = (float)a2->vPosition.z;
     local_0.timeToLive = Duration::randomRealtimeSeconds(vrng, 1, 2);
-    local_0.texture = this->effpar01;
+    local_0.texture = this->effpar01.get();
     local_0.particle_size = 1.0;
 
     // 10 fireball sparks
@@ -463,7 +463,7 @@ void SpellFxRenderer::_4A7948_mind_blast_after_effect(SpriteObject *a1) {
     Dst.x = (float)a1->vPosition.x;
     Dst.y = (float)a1->vPosition.y;
     Dst.z = (float)a1->vPosition.z;
-    Dst.texture = a1->spriteFrame()->sprites[0];
+    Dst.texture = a1->spriteFrame()->sprites[0].get();
     Dst.particle_size = 1.0;
     Dst.timeToLive = Duration::randomRealtimeSeconds(vrng, 1, 2);
     for (int i = 0; i < 10; i++) {
@@ -563,7 +563,7 @@ void SpellFxRenderer::_4A7C07_stun_spell_fx(SpriteObject *a2) {
 
         local_0.particle_size = 3.0;
         local_0.timeToLive = Duration::randomRealtimeMilliseconds(vrng, 500, 1000);
-        local_0.texture = a2->spriteFrame()->sprites[0];
+        local_0.texture = a2->spriteFrame()->sprites[0].get();
         local_0.paletteID = a2->spriteFrame()->paletteId;
         particle_engine->AddParticle(&local_0);
         local_0.particle_size = 2.0;  // was 4.0 - reduce size of stun ring;
@@ -590,7 +590,7 @@ void SpellFxRenderer::_4A7C07_stun_spell_fx(SpriteObject *a2) {
         local_0.shiftY = 0.0f;
         local_0.shiftZ = 0.0f;
         local_0.timeToLive = Duration::randomRealtimeMilliseconds(vrng, 500, 1000);
-        local_0.texture = a2->spriteFrame()->sprites[0];
+        local_0.texture = a2->spriteFrame()->sprites[0].get();
         local_0.paletteID = a2->spriteFrame()->paletteId;
         particle_engine->AddParticle(&local_0);
     }
@@ -621,7 +621,7 @@ void SpellFxRenderer::sparklesOnActorAfterItCastsBuff(Actor *pActor, Color uDiff
 
     particle.type = ParticleType_Bitmap | ParticleType_Rotating | ParticleType_Ascending;
     particle.timeToLive = Duration::randomRealtimeSeconds(vrng, 1, 2);
-    particle.texture = this->effpar02;
+    particle.texture = this->effpar02.get();
     particle.particle_size = 1.0;
 
     for (int i = 0; i < 50; i++) {
@@ -647,7 +647,7 @@ void SpellFxRenderer::addFireParticle(Vec3f pos) {
     particle.z = pos.z;
     particle.particle_size = 1.0f;
     particle.timeToLive = Duration::randomRealtimeSeconds(vrng, 1, 2); // was either 1 or 2 secs, we made it into [1, 2).
-    particle.texture = effpar01;
+    particle.texture = effpar01.get();
     particle_engine->AddParticle(&particle);
 }
 
@@ -666,7 +666,7 @@ void SpellFxRenderer::_4A7F74(int x, int y, int z) {
     local_0.timeToLive = Duration::randomRealtimeSeconds(vrng, 1, 2);
 
     v12 = (float)x;
-    local_0.texture = this->effpar01;
+    local_0.texture = this->effpar01.get();
     v11 = (float)y;
     do {
         local_0.x = vrng->randomFloat() * 40.0f - 20.0f + v12;
