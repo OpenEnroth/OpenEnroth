@@ -112,7 +112,7 @@ static Time firstAlarm(const EvtTimerSchedule &schedule, Time levelLastVisit) {
     assert(schedule.period > 0_ticks);
     if (schedule.period == Duration::fromDays(1)) {
         if (!levelLastVisit)
-            return Time(); // Set alarm time to zero because it must always fire.
+            return Time(); // Fires at the first check, and the zero alarm makes checkTimers put the next one on the time of day.
 
         // Calculate alarm time inside last visit day
         Time result = Time::fromDays(levelLastVisit.toDays()) + schedule.timeOfDay;
