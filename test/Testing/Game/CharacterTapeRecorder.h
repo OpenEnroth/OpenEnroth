@@ -69,6 +69,9 @@ class CharacterTapeRecorder {
     TestTape<Condition> condition(int characterIndex);
     TestMultiTape<Condition> conditions();
 
+    TestTape<bool> hasCondition(int characterIndex, Condition condition);
+    TestMultiTape<bool> haveConditions(Condition condition);
+
     TestTape<int> resistance(int characterIndex, Attribute resistance);
     TestMultiTape<int> resistances(Attribute resistance);
 
