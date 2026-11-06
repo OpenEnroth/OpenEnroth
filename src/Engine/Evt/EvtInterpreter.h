@@ -38,8 +38,8 @@ class EvtInterpreter {
 
      /**
       * @param startStep                Step to start from.
-      * @return                         Whether the event started a map transition. The map's leave events are due
-      *                                 then.
+      * @return                         Whether the event started a map transition. If it did, the caller has to
+      *                                 run the map's leave events.
       */
      [[nodiscard]] EvtTransition execute(int startStep);
 
