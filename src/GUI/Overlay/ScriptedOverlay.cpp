@@ -18,16 +18,14 @@ ScriptedOverlay::ScriptedOverlay(std::string_view name, sol::state_view &solStat
 
 ScriptedOverlay::~ScriptedOverlay() {
     auto closeFunction = _prepareFunction(_closeFunctionReference);
-    if (closeFunction.valid()) {
+    if (closeFunction.valid())
         closeFunction();
-    }
 }
 
 void ScriptedOverlay::update() {
     auto updateFunction = _prepareFunction(_updateFunctionReference);
-    if (updateFunction.valid()) {
+    if (updateFunction.valid())
         updateFunction();
-    }
 }
 
 void ScriptedOverlay::_addFunctionToRegistry(sol::table &table, sol::reference &ref, std::string_view functionName) {
@@ -47,9 +45,8 @@ sol::protected_function ScriptedOverlay::_prepareFunction(sol::reference &functi
 
 void ScriptedOverlay::_setErrorHandler(sol::protected_function &function) {
     sol::function errorHandler = _solState["_globalErrorHandler"];
-    if (errorHandler.valid()) {
+    if (errorHandler.valid())
         function.set_error_handler(errorHandler);
-    }
 }
 
 void ScriptedOverlay::_logMissingFunctionWarning(std::string_view functionName) {

@@ -109,11 +109,9 @@ void GUIWindow_QuickReference::Update() {
         pY += pFontHeight;
 
         int pSkillsCount = 0;
-        for (Skill j : allVisibleSkills()) {
-            if (player.pActiveSkills[j]) {
+        for (Skill j : allVisibleSkills())
+            if (player.pActiveSkills[j])
                 ++pSkillsCount;
-            }
-        }
         pGUIWindow_CurrentMenu->DrawTextInRect(assets->pFontArrus.get(), {pX, pY}, colorTable.White, fmt::format("{}", pSkillsCount), 84, 0);
         pY += pFontHeight;
 

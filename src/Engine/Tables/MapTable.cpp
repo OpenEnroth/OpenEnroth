@@ -95,11 +95,9 @@ void MapTable::Initialize(const Blob &mapStats) {
 MapId MapTable::GetMapInfo(std::string_view fileName) {
     std::string mapName = ascii::toLower(fileName);
 
-    for (MapId i : pInfos.indices()) {
-        if (pInfos[i].fileName == mapName) {
+    for (MapId i : pInfos.indices())
+        if (pInfos[i].fileName == mapName)
             return i;
-        }
-    }
 
     assert(false); // TODO(captainurist): GUIWindow_IndoorEntryExit checks the result against MAP_INVALID, so this assert or that check is wrong.
     return MAP_INVALID;

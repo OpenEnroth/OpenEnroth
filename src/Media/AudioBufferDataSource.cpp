@@ -13,14 +13,12 @@ extern "C" {
 AudioBufferDataSource::AudioBufferDataSource(Blob buffer) : _ioContext(std::move(buffer)) {}
 
 bool AudioBufferDataSource::Open() {
-    if (bOpened) {
+    if (bOpened)
         return true;
-    }
 
     pFormatContext = avformat_alloc_context();
-    if (pFormatContext == nullptr) {
+    if (pFormatContext == nullptr)
         return false;
-    }
 
     // Seek to start if already played (e.g. looping music tracks).
     avio_seek(_ioContext.avioContext(), 0, SEEK_SET);

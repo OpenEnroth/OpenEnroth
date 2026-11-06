@@ -138,9 +138,8 @@ void GUIWindow_MapBook::Update() {
 
 
     Recti map_window = pViewport;
-    if (engine->_currentLoadedMapId != MAP_INVALID) {
+    if (engine->_currentLoadedMapId != MAP_INVALID)
         DrawTitleText(assets->pFontBookTitle.get(), -14, 12, ui_book_map_title_color, pMapTable->pInfos[engine->_currentLoadedMapId].name, 3, map_window);
-    }
 
     auto party_coordinates = localization->format(LSTR_X_D_Y_D, static_cast<int>(pParty->pos.x), static_cast<int>(pParty->pos.y));
 
@@ -339,9 +338,8 @@ std::string GetMapBookHintText(int mouse_x, int mouse_y) {
                     if (face.eventId) {
                         if (!(face.attributes & FACE_EVENT_IS_HINT)) {
                             std::string hintString = getEventHintString(face.eventId);
-                            if (!hintString.empty()) {
+                            if (!hintString.empty())
                                 result = hintString;
-                            }
                         }
                     }
                 }
