@@ -42,8 +42,7 @@ struct MapTimer {
 static std::vector<EventTrigger> onMapLoadTriggers;
 static std::vector<EventTrigger> onMapLeaveTriggers;
 
-static std::vector<MapTimer> onLongTimerTriggers;
-static std::vector<MapTimer> onTimerTriggers;
+static std::vector<MapTimer> mapTimers;
 
 static std::vector<int> decorationsWithEvents;
 
@@ -123,19 +122,21 @@ static Time firstAlarm(const EvtTimerSchedule &schedule, Time levelLastVisit) {
     return levelLastVisit ? levelLastVisit + schedule.period : pParty->GetPlayingTime(); // Without last visit all timers must fire immediately.
 }
 
-static void registerTimerTriggers(EvtOpcode triggerType, std::vector<MapTimer> *triggers) {
+static void registerTimers() {
     // TODO(Nik-RE-dev): using time of last visit will help timers only slightly because each map leaving resets it.
     //                   To support fair timers they need to be saved directly.
     Time levelLastVisit = uCurrentlyLoadedLevelType == LEVEL_INDOOR ? pIndoor->lastVisitTime : pOutdoor->lastVisitTime;
 
-    triggers->clear();
-    for (const EventTrigger &trigger : engine->_localEventMap.enumerateTriggers(triggerType)) {
-        MapTimer timer;
-        timer.schedule = timerSchedule(engine->_localEventMap.instruction(trigger.eventId, trigger.eventStep));
-        timer.alarmTime = firstAlarm(timer.schedule, levelLastVisit);
-        timer.eventId = trigger.eventId;
-        timer.eventStep = trigger.eventStep;
-        triggers->push_back(timer);
+    mapTimers.clear();
+    for (EvtOpcode triggerType : {EVENT_OnTimer, EVENT_OnLongTimer}) { // The `OnTimer` ones are checked first.
+        for (const EventTrigger &trigger : engine->_localEventMap.enumerateTriggers(triggerType)) {
+            MapTimer timer;
+            timer.schedule = timerSchedule(engine->_localEventMap.instruction(trigger.eventId, trigger.eventStep));
+            timer.alarmTime = firstAlarm(timer.schedule, levelLastVisit);
+            timer.eventId = trigger.eventId;
+            timer.eventStep = trigger.eventStep;
+            mapTimers.push_back(timer);
+        }
     }
 }
 
@@ -181,8 +182,7 @@ static void registerEventTriggers() {
     onMapLeaveTriggers.clear();
     onMapLeaveTriggers = engine->_localEventMap.enumerateTriggers(EVENT_OnMapLeave);
 
-    registerTimerTriggers(EVENT_OnLongTimer, &onLongTimerTriggers);
-    registerTimerTriggers(EVENT_OnTimer, &onTimerTriggers);
+    registerTimers();
 }
 
 void onMapLoad() {
@@ -200,17 +200,14 @@ void onMapLeave() {
         runEvent(EvtContext(EVT_SOURCE_MAP, triggers.eventId), triggers.eventStep + 1);
 
     // Cleanup timers to avoid firing while map transition is in process
-    onLongTimerTriggers.clear();
-    onTimerTriggers.clear();
+    mapTimers.clear();
 }
 
 /**
- * Fires the timers of a list that are due, until one of them starts a map transition.
- *
- * @param timers                        Timers to check.
+ * Fires the timers that are due, until one of them starts a map transition.
  */
-static void checkTimers(std::vector<MapTimer> *timers) {
-    for (MapTimer &timer : *timers) {
+static void checkTimers() {
+    for (MapTimer &timer : mapTimers) {
         if (pParty->GetPlayingTime() < timer.alarmTime)
             continue;
 
@@ -242,6 +239,5 @@ void onTimer() {
 
     timerGuard = pParty->GetPlayingTime();
 
-    checkTimers(&onTimerTriggers);
-    checkTimers(&onLongTimerTriggers);
+    checkTimers();
 }
