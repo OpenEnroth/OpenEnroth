@@ -2594,9 +2594,8 @@ void CastSpellInfoHelpers::castSpell() {
                         continue;
                     }
                     for (Character &character : pParty->pCharacters) {
-                        Time zombieTime = character.conditions.get(CONDITION_ZOMBIE);
-                        character.conditions.resetAll();
-                        character.conditions.set(CONDITION_ZOMBIE, zombieTime); // Vanilla MM7 doesn't cure zombies here.
+                        for (Condition condition : Segment(CONDITION_CURSED, CONDITION_ERADICATED))
+                            character.conditions.reset(condition); // Vanilla MM7 cures every condition except Zombie.
                         character.health = character.GetMaxHealth();
                         character.mana = character.GetMaxMana();
                     }
