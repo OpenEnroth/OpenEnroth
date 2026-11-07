@@ -33,5 +33,9 @@ std::string_view formatDescription(MagicFileFormat format) {
         return "PCX image";
     case MAGIC_WAV:
         return "WAV file";
+    case MAGIC_SMK:
+        return "Smacker video";
+    case MAGIC_BIK:
+        return "Bink video";
     }
 }
