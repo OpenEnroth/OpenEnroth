@@ -4,7 +4,7 @@ Collects font files out of a pile of archives into a content-addressed store, fo
 
 Every font is written once to `STORE/<sha256[:2]>/<sha256>.<ext>`, however many archives carry it, and
 `STORE/index.tsv` maps each hash back to every place it was found. Nested zips are read in memory, other nested
-archives (rar, 7z) are unpacked with `7z` into a scratch directory. Nothing in the archives is ever executed, and
+archives are unpacked into a scratch directory, rar with `unar` and the rest with `7z`. Nothing in the archives is ever executed, and
 archive member names never become paths in the store.
 
 Usage: collect_fonts.py STORE ARCHIVE_OR_DIR... [--jobs N]
@@ -75,7 +75,7 @@ class Collector:
                     source = os.path.join(scratch, f'archive.{ext}')
                     with open(source, 'wb') as f:
                         f.write(data)
-                    self.add_7z(source, origin, depth)
+                    self.add_unpacked(source, origin, depth)
         except Exception as e:
             self.errors.append(f'{origin}: {e}\n')
 
@@ -96,14 +96,19 @@ class Collector:
                 continue
             self.add_member(data, info.filename, member, depth)
 
-    def add_7z(self, source, origin, depth):
+    def add_unpacked(self, source, origin, depth):
         with tempfile.TemporaryDirectory(dir=self.store, prefix='.scratch-') as scratch:
             target = os.path.join(scratch, 'out')
             os.mkdir(target)
-            result = subprocess.run(['7z', 'x', '-y', '-bd', '-p', f'-o{target}', source], stdin=subprocess.DEVNULL,
-                                    stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL, timeout=4 * 3600)
+            # Distribution builds of 7z leave out the non-free rar codec, and extract every rar member as an empty file.
+            if extension(source) == 'rar':
+                command = ['unar', '-q', '-f', '-D', '-p', '', '-o', target, source]
+            else:
+                command = ['7z', 'x', '-y', '-bd', '-p', f'-o{target}', source]
+            result = subprocess.run(command, stdin=subprocess.DEVNULL, stdout=subprocess.DEVNULL,
+                                    stderr=subprocess.DEVNULL, timeout=4 * 3600)
             if result.returncode != 0:
-                self.errors.append(f'{origin}: 7z exited with {result.returncode}, extraction may be partial\n')
+                self.errors.append(f'{origin}: {command[0]} exited with {result.returncode}, extraction may be partial\n')
             for root, _, files in os.walk(target):
                 for name in files:
                     path = os.path.join(root, name)
@@ -128,12 +133,12 @@ def run_task(task):
                 # zipfile chokes on some zip64 directories and on names that aren't valid UTF-8, 7z reads both.
                 archive = None
                 if shard == 0:
-                    collector.add_7z(path, path, 0)
+                    collector.add_unpacked(path, path, 0)
             if archive:
                 with archive:
                     collector.add_zip(archive, path, 0, shard, shards)
         elif ext in ARCHIVE_EXTENSIONS:
-            collector.add_7z(path, path, 0)
+            collector.add_unpacked(path, path, 0)
         else:
             with open(path, 'rb') as f:
                 collector.add_member(f.read(), path, path, 0)
@@ -155,8 +160,9 @@ def main():
     parser.add_argument('--jobs', type=int, default=os.cpu_count())
     args = parser.parse_args()
 
-    if not shutil.which('7z'):
-        sys.exit('7z is required for rar and 7z archives')
+    for tool in ['7z', 'unar']:
+        if not shutil.which(tool):
+            sys.exit(f'{tool} is required to unpack archives')
 
     store = os.path.abspath(args.store)
     os.makedirs(os.path.join(store, 'parts'), exist_ok=True)
