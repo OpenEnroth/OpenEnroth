@@ -157,10 +157,11 @@ static int distance(const Ink &reference, const Ink &candidate, int dy, int dx) 
         if (cellY < 0 || cellY >= static_cast<int>(reference.rows.size()))
             continue;
         uint64_t row = candidate.rows[y];
-        if (dx >= 64 || dx <= -64)
+        if (dx >= 64 || dx <= -64) {
             row = 0;
-        else
+        } else {
             row = dx >= 0 ? row << dx : row >> -dx;
+        }
         overlap += std::popcount(reference.rows[cellY] & row);
     }
     return reference.pixels + candidate.pixels - 2 * overlap;
