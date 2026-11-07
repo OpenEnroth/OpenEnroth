@@ -796,7 +796,7 @@ void reconstruct(const SaveGame_MM7 &src, SaveGame *dst) {
         // TODO(captainurist): Can also use actor names from level deltas.
 
         dst->extension.encoding = detectLegacySaveEncoding(names);
-        logger->info("Savegame encoding '{}' detected.", toString(dst->extension.encoding));
+        MM_INFO("Savegame encoding '{}' detected.", toString(dst->extension.encoding));
     }
 
     reconstruct(src.header, &dst->header, tags::encoding(dst->extension.encoding));

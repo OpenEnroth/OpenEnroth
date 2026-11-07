@@ -2,10 +2,14 @@ cmake_minimum_required(VERSION 3.27 FATAL_ERROR)
 
 set(LIBRARY_FONT_SOURCES
         Font.cpp
+        FontBuilder.cpp
+        FontSheet.cpp
         Oef.cpp)
 
 set(LIBRARY_FONT_HEADERS
         Font.h
+        FontBuilder.h
+        FontSheet.h
         Oef.h
         OefSnapshots.h)
 
@@ -16,6 +20,7 @@ target_check_style(library_font)
 if(OE_BUILD_TESTS)
     set(TEST_LIBRARY_FONT_SOURCES
             Tests/Font_ut.cpp
+            Tests/FontBuilder_ut.cpp
             Tests/Oef_ut.cpp)
 
     add_library(test_library_font OBJECT ${TEST_LIBRARY_FONT_SOURCES})
