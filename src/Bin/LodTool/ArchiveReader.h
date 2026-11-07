@@ -2,22 +2,22 @@
 
 #include <vector>
 #include <string>
-#include <optional>
+#include <string_view>
 #include <memory>
 
-#include "Library/Lod/LodInfo.h"
-#include "Library/Magic/MagicEnums.h"
-
 #include "Utility/Memory/Blob.h"
-#include "Utility/System/Path.h"
 
 class ArchiveReader {
  public:
     virtual ~ArchiveReader() = default;
-    virtual MagicFileFormat format() const = 0;
-    virtual std::optional<LodInfo> info() const = 0;
+    virtual bool exists(std::string_view filename) const = 0;
     virtual Blob read(std::string_view filename) const = 0;
     virtual std::vector<std::string> ls() const = 0;
 
-    static std::unique_ptr<ArchiveReader> createArchiveReader(PathView path);
+    /**
+     * @param data                      Contents of a LOD, VID or SND archive.
+     * @return                          Reader for the archive.
+     * @throws Exception                If `data` is not an archive.
+     */
+    static std::unique_ptr<ArchiveReader> createArchiveReader(Blob data);
 };

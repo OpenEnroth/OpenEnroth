@@ -12,7 +12,7 @@
 
 #include "Utility/Exception.h"
 
-template<class Base, MagicFileFormat magicFormat>
+template<class Base>
 class UniversalReader : public ArchiveReader {
  public:
     explicit UniversalReader(Blob data) {
@@ -23,16 +23,8 @@ class UniversalReader : public ArchiveReader {
         }
     }
 
-    virtual MagicFileFormat format() const override {
-        return magicFormat;
-    }
-
-    virtual std::optional<LodInfo> info() const override {
-        if constexpr (std::is_same_v<Base, LodReader>) {
-            return _base.info();
-        } else {
-            return {};
-        }
+    virtual bool exists(std::string_view filename) const override {
+        return _base.exists(filename);
     }
 
     virtual Blob read(std::string_view filename) const override {
@@ -47,16 +39,15 @@ class UniversalReader : public ArchiveReader {
     Base _base;
 };
 
-std::unique_ptr<ArchiveReader> ArchiveReader::createArchiveReader(PathView path) {
-    Blob data = Blob::fromFile(path);
+std::unique_ptr<ArchiveReader> ArchiveReader::createArchiveReader(Blob data) {
     switch (magic(data)) {
     case MAGIC_LOD:
-        return std::make_unique<UniversalReader<LodReader, MAGIC_LOD>>(std::move(data));
+        return std::make_unique<UniversalReader<LodReader>>(std::move(data));
     case MAGIC_VID:
-        return std::make_unique<UniversalReader<VidReader, MAGIC_VID>>(std::move(data));
+        return std::make_unique<UniversalReader<VidReader>>(std::move(data));
     case MAGIC_SND:
-        return std::make_unique<UniversalReader<SndReader, MAGIC_SND>>(std::move(data));
+        return std::make_unique<UniversalReader<SndReader>>(std::move(data));
     default:
-        throw Exception("File '{}' is not a LOD, VID or SND archive", path);
+        throw Exception("File '{}' is not a LOD, VID or SND archive", data.displayPath());
     }
 }
