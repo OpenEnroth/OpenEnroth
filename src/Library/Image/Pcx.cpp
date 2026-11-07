@@ -165,9 +165,8 @@ Sizei pcx::decodeSize(const Blob &data) {
 
 void *writePcxHeader(void *pcx_data, int width, int height) {
     int pitch = width;
-    if (width & 1) {
+    if (width & 1)
         pitch = width + 1;
-    }
 
     PCXHeader *header = static_cast<PCXHeader *>(pcx_data);
     memset(header, 0, sizeof(PCXHeader));

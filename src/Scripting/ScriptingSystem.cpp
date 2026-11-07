@@ -88,9 +88,8 @@ void ScriptingSystem::_initPackageTable() {
 
 void ScriptingSystem::_initBindingFunction() {
     (*_solState)["_createBindingTable"] = sol::as_function([this](std::string tableName) {
-        if (auto itr = _bindings.find(tableName); itr != _bindings.end()) {
+        if (auto itr = _bindings.find(tableName); itr != _bindings.end())
             return itr->second->createBindingTable(*_solState);
-        }
         MM_WARNING_IN(ScriptingLogCategory, "Can't find a binding table with name: {}", tableName);
         return _solState->create_table();
     });

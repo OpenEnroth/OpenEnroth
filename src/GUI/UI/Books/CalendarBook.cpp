@@ -92,9 +92,8 @@ void GUIWindow_CalendarBook::Update() {
     DrawText(assets->pFontBookCalendar.get(), {70, 8 * assets->pFontBookCalendar->GetHeight() + 31}, ui_book_calendar_moon_color, str, pViewport);
 
     std::string pMapName = "Unknown";
-    if (engine->_currentLoadedMapId != MAP_INVALID) {
+    if (engine->_currentLoadedMapId != MAP_INVALID)
         pMapName = pMapTable->pInfos[engine->_currentLoadedMapId].name;
-    }
 
     str = fmt::format("{}\t100:\t110{}", localization->str(LSTR_LOCATION), pMapName);
     DrawText(assets->pFontBookCalendar.get(), {70, 10 * assets->pFontBookCalendar->GetHeight() + 25}, ui_book_calendar_location_color, str, pViewport);

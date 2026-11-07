@@ -34,9 +34,8 @@ void Timer::setPaused(bool paused) {
 
     _paused = paused;
 
-    if (!_paused) {
+    if (!_paused)
         _lastFrameTime = platformTime();
-    }
 }
 
 void Timer::setTurnBased(bool turnBased) {

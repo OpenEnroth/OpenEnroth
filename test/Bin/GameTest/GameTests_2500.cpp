@@ -159,9 +159,8 @@ GAME_TEST(Issues, Issue2503) {
     game.tick();
     game.pressGuiButton("Rest_WaitTillDawn");
     game.tick(30);
-    for (const auto& charac : pParty->pCharacters) {
+    for (const auto& charac : pParty->pCharacters)
         EXPECT_TRUE(charac.IsWeak());
-    }
 }
 
 GAME_TEST(Issues, Issue2505) {

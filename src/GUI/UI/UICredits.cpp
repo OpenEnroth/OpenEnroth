@@ -41,7 +41,6 @@ void GUICredits::Update() {
 
     _moveY += 0.25; // TODO(captainurist): #time gotta be dt-based.
 
-    if (_moveY >= _creditsTexture->height()) {
+    if (_moveY >= _creditsTexture->height())
         engine->_messageQueue->addMessageCurrentFrame(UIMSG_CreditsFinished);
-    }
 }
