@@ -19,6 +19,7 @@
 #include "Engine/Data/HouseEnums.h"
 #include "Engine/Evt/EvtProgram.h"
 #include "Engine/Evt/EvtVariables.h"
+#include "Engine/Evt/Processor.h"
 #include "Engine/Graphics/Image.h"
 #include "Engine/Graphics/Indoor.h"
 #include "Engine/Graphics/Vis.h"
@@ -1250,6 +1251,35 @@ GAME_TEST(Prs, Pr2876c) {
     EXPECT_EQ(screenTape, tape(SCREEN_INPUT_BLV, SCREEN_HOUSE));
     EXPECT_EQ(houseTape, tape(HOUSE_INVALID, HOUSE_WEAPON_SHOP_EMERALD_ISLAND));
     EXPECT_EQ(mapTape, tape(MAP_HIDDEN_TOMB));
+}
+
+GAME_TEST(Prs, Pr2963) {
+    // A timer that left the map kept the loop over the timers going, and the timers after it fired on the map being left.
+    auto goldTape = tapes.gold();
+    auto mapTape = tapes.map();
+    game.startNewGame();
+    game.teleportTo(MAP_HIDDEN_TOMB, Vec3f(-300, 64, 1), 0);
+    for (int eventId : {9000, 9001}) { // Timers fire in no set order, so each one does both.
+        EvtInstruction timer(EVENT_OnTimer);
+        timer.data.timer_descr.alt_halfmin_interval = 1;
+        EvtInstruction add(EVENT_Add);
+        add.data.variable_descr.type = VAR_FixedGold;
+        add.data.variable_descr.value = 100;
+        add.step = 1;
+        EvtInstruction moveToMap(EVENT_MoveToMap);
+        moveToMap.str = pMapTable->pInfos[MAP_ERATHIA].fileName;
+        moveToMap.step = 2;
+        for (const EvtInstruction &ir : {timer, add, moveToMap})
+            engine->_localEventMap.add(eventId, ir);
+    }
+    onMapLoad(); // Timers are registered on map load.
+    test.startTaping();
+    game.tick();
+    pParty->GetPlayingTime() += Duration::fromMinutes(1);
+    game.tick();
+    game.skipLoadingScreen();
+    EXPECT_EQ(goldTape, tape(200, 300));
+    EXPECT_EQ(mapTape, tape(MAP_HIDDEN_TOMB, MAP_ERATHIA));
 }
 
 GAME_TEST(Issues, Issue2881a) {

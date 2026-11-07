@@ -17,8 +17,10 @@ void checkDecorationEvents();
 /**
  * @param context                       Event to run, and what it runs for.
  * @param startStep                     Step to start from.
+ * @return                              Whether the event started a map transition. If it did, the map's leave
+ *                                      events have already run.
  */
-void runEvent(EvtContext context, int startStep = 0);
+EvtTransition runEvent(EvtContext context, int startStep = 0);
 
 /**
  * @param eventId                       Global event behind an NPC's scripted topic.
