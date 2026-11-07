@@ -46,6 +46,40 @@ bool detect(const Blob &data) {
 }
 } // namespace wav
 
+namespace smk {
+bool detect(const Blob &data) {
+    if (data.size() < 104)
+        return false; // Smacker header is 104 bytes.
+
+    BlobInputStream stream(data);
+    std::array<char, 4> signature;
+    uint32_t width;
+    uint32_t height;
+    deserialize(stream, &signature);
+    deserialize(stream, &width);
+    deserialize(stream, &height);
+
+    std::string_view signatureStr = std::string_view(signature.data(), signature.size());
+    return (signatureStr == "SMK2" || signatureStr == "SMK4") && width > 0 && height > 0;
+}
+} // namespace smk
+
+namespace bik {
+bool detect(const Blob &data) {
+    if (data.size() < 8)
+        return false;
+
+    BlobInputStream stream(data);
+    std::array<char, 4> signature;
+    uint32_t size;
+    deserialize(stream, &signature);
+    deserialize(stream, &size);
+
+    std::string_view signatureStr = std::string_view(signature.data(), 3); // The fourth byte is the version, e.g. 'f' or 'h'.
+    return signatureStr == "BIK" && size == data.size() - 8;
+}
+} // namespace bik
+
 MagicFileFormat magic(const Blob &data) {
     if (lod::detect(data))
         return MAGIC_LOD;
@@ -70,5 +104,9 @@ MagicFileFormat magic(const Blob &data) {
         return MAGIC_PCX;
     if (wav::detect(data))
         return MAGIC_WAV;
+    if (smk::detect(data))
+        return MAGIC_SMK;
+    if (bik::detect(data))
+        return MAGIC_BIK;
     return MAGIC_UNRECOGNIZED;
 }
