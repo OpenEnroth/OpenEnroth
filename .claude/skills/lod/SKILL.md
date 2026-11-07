@@ -25,7 +25,7 @@ an entry name is a single segment, and there are no archives inside archives.
 ```sh
 LodTool ls DIR_OR_ARCHIVE               # directory contents, or archive entries, sorted
 LodTool cat [--raw] FILE                # write to stdout, decompressed unless --raw
-LodTool extract [--raw] SRC [OUT]       # see below
+LodTool extract [--raw] ARCHIVE OUT     # every entry into directory OUT
 LodTool convert [--palettes-lod-path BITMAPS_LOD] FILE OUT.png
 LodTool magic FILE                      # print the format
 ```
@@ -34,9 +34,8 @@ LodTool magic FILE                      # print the format
 `--raw` entry decompresses later with `cat`. `--raw` only matters for LOD entries, SND entries always come out as
 plain WAV.
 
-`extract` follows `cp`. An archive always extracts into the directory `OUT`, which is created if needed. A single
-file goes into `OUT` when `OUT` is an existing directory or ends with `/`, and is written to `OUT` otherwise. `OUT`
-defaults to the current directory. Only decompression happens, and entries are written under the names `ls` prints.
+`extract` takes a LOD, VID or SND archive only, and creates `OUT` if needed. Only decompression happens, and
+entries are written under the names `ls` prints. To save a single entry, redirect `cat` into a file.
 
 `convert` writes PNG only, and takes LOD images, LOD palettes, LOD sprites, LOD fonts (rendered as a 16x16 glyph
 grid) and PCX images, decompressing first. A sprite only stores palette indices and the id of its default palette.
@@ -64,7 +63,7 @@ From a full `magic` scan of every archive in all three games. "Compressed" means
 | movies | `Anims/Anims1.vid`, `Anims2.vid`, Smacker | `Anims/Magic7.vid`, `Might7.vid`, Smacker and Bink | `Anims/Magicdod.vid`, `mightdod.vid`, Smacker and Bink |
 
 Entries without an extension in the image archives are LOD images, palettes or sprites. Movies inside VID archives
-are plain Smacker or Bink files, so `magic` says `Raw data` and `cat` writes them out as they are.
+are plain Smacker or Bink files, which `magic` names as `Smacker video` and `Bink video`.
 
 MM7's `ICONS.LOD` and MM8's `icons.lod` also hold stale copies of a few text tables. In MM7, `dsft.bin`,
 `spells.txt`, `mapstats.txt` and five more differ from the copies in `events.lod`, `dsft.bin` is 116036 bytes in

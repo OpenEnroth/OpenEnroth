@@ -180,28 +180,21 @@ static int runCat(const LodToolOptions &options) {
 }
 
 static int runExtract(const LodToolOptions &options) {
-    Path output = options.output.isEmpty() ? Path(".") : options.output;
-
     Blob data = readFile(options.path);
-    if (isArchive(magic(data))) {
-        std::unique_ptr<ArchiveReader> reader = ArchiveReader::createArchiveReader(std::move(data));
-        std::vector<std::string> names = reader->ls();
-        for (const std::string &name : names)
-            if (PathView(name).name() != name || name == "." || name == "..")
-                throw Exception("Entry '{}' in '{}' is not a valid file name", name, options.path);
+    if (!isArchive(magic(data)))
+        throw Exception("'{}' is not a LOD, VID or SND archive, use cat to decompress a single file", options.path);
 
-        fs::mkdirs(output);
-        for (const std::string &name : names) {
-            Blob entry = reader->read(name);
-            writeFile(output / name, options.raw ? std::move(entry) : lod::decodeMaybeCompressed(entry));
-        }
-        return 0;
+    std::unique_ptr<ArchiveReader> reader = ArchiveReader::createArchiveReader(std::move(data));
+    std::vector<std::string> names = reader->ls();
+    for (const std::string &name : names)
+        if (PathView(name).name() != name || name == "." || name == "..")
+            throw Exception("Entry '{}' in '{}' is not a valid file name", name, options.path);
+
+    fs::mkdirs(options.output);
+    for (const std::string &name : names) {
+        Blob entry = reader->read(name);
+        writeFile(options.output / name, options.raw ? std::move(entry) : lod::decodeMaybeCompressed(entry));
     }
-
-    bool isDirectory = output.name().empty() || fs::stat(output).type == FILE_DIRECTORY; // "out/" names a directory, like in cp.
-    if (isDirectory)
-        fs::mkdirs(output);
-    writeFile(isDirectory ? output / PathView(options.path).name() : output, options.raw ? std::move(data) : lod::decodeMaybeCompressed(data));
     return 0;
 }
 
