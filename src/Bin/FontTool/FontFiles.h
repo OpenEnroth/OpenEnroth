@@ -17,8 +17,9 @@
 Font readFont(PathView path, TextEncoding encoding);
 
 /**
- * @param path                          Path to write to. A `.png` path gets a glyph sheet, anything else gets an
+ * @param path                          Path to write to. A `.png` path gets a glyph sheet, an `.oef` path gets an
  *                                      OpenEnroth font.
+ * @throws Exception                    If the extension is neither.
  * @param font                          Font to write.
  */
 void writeFont(PathView path, const Font &font);

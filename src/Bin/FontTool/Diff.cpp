@@ -16,7 +16,7 @@ static Color glyphColor(uint8_t index) {
     case 0: return CELL;
     case 1: return BOTH;
     case 2: return Color(128, 128, 128, 255);
-    default: return Color(96, 96, 96, 255);
+    default: return Color(64, 64, 64, 255);
     }
 }
 

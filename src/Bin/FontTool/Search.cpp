@@ -25,7 +25,7 @@
 #include "FreeType.h"
 
 static constexpr int MAX_GLYPH_WIDTH = 64; // Glyph rows are single `uint64_t`s.
-static constexpr int MAX_FACES_PER_FILE = 64;
+static constexpr int MAX_FACES_PER_FILE = 64; // Real collections have a handful of faces, more is a broken file.
 static constexpr int MIN_PLACEHOLDER_COUNT = 3; // A glyph image shared by this many characters is a placeholder.
 static constexpr int GRAY_THRESHOLDS[] = {64, 96, 128, 160, 192, 224};
 static constexpr int EXHAUSTIVE_PPEM_RANGE = 12;
@@ -166,6 +166,9 @@ static int distance(const Ink &reference, const Ink &candidate, int dy, int dx) 
     return reference.pixels + candidate.pixels - 2 * overlap;
 }
 
+/**
+ * Score of one rendering of a candidate face, at one size and binarization, against a whole reference.
+ */
 struct CellScore {
     int distance = INT_MAX;
     int baseline = 0;
@@ -273,6 +276,9 @@ class Leaderboard {
     std::vector<SearchMatch> _matches;
 };
 
+/**
+ * How a face is rendered and thresholded into ink, everything about a rendering except the size.
+ */
 struct Binarization {
     RasterMode mode;
     bool oblique;

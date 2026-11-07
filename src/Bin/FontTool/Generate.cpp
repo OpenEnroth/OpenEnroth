@@ -33,7 +33,7 @@ struct FontDesc {
 /**
  * Fonts to generate, and how to merge each one. `icons.lod` also has `calig.fnt`, which the engine doesn't use.
  *
- * `legal` is not localized - the Russian `icons.lod` ships the same font, so its 0xC0-0xFF glyphs are Latin-1
+ * `legal` is not localized. The Russian `icons.lod` ships the same font, so its 0xC0-0xFF glyphs are Latin-1
  * accents rather than Cyrillic. It is taken from the English side only, and ends up without Cyrillic.
  */
 static constexpr FontDesc FONTS[] = {
@@ -65,7 +65,7 @@ static constexpr FontDesc FONTS[] = {
  */
 static Font mergeFonts(const Font &enFont, const Font &ruFont, const FontDesc &desc) {
     // The result is of the English font's height. Some Russian fonts are taller (`quick` is 21 vs 20, `smallnum`
-    // is 15 vs 14), but the extra height is cell padding - their glyphs still fit once baseline-aligned.
+    // is 15 vs 14), but the extra height is cell padding, and their glyphs still fit once baseline-aligned.
     FontBuilder result(enFont.height());
 
     for (int i = 0; i < enFont.size(); i++) {
@@ -76,7 +76,7 @@ static Font mergeFonts(const Font &enFont, const Font &ruFont, const FontDesc &d
     for (int i = 0; i < ruFont.size(); i++) {
         char32_t c = ruFont.character(i);
         if (enFont.supports(c))
-            continue; // English wins.
+            continue;
 
         auto [metrics, image] = reshadow(ruFont.metrics(i), ruFont.image(i), enFont.height(), desc.shadow, desc.russianRaise,
                                         desc.recolorRussian);
@@ -92,7 +92,7 @@ void generateFonts(PathView enIconsLodPath, PathView ruIconsLodPath, PathView ou
     for (const FontDesc &desc : FONTS) {
         std::string lodName = fmt::format("{}.fnt", desc.name);
         Font enFont = readFont(enIconsLodPath / lodName, ENCODING_WINDOWS_1252);
-        Font ruFont = FontBuilder(enFont.height()).build(); // Stays empty if we're not merging.
+        Font ruFont;
         if (desc.merge != MERGE_ENGLISH_ONLY)
             ruFont = readFont(ruIconsLodPath / lodName, ENCODING_WINDOWS_1251);
 

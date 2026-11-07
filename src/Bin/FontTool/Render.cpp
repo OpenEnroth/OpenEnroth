@@ -9,8 +9,8 @@
 #include "Utility/String/Format.h"
 
 std::string RenderSettings::toString() const {
-    std::string mode = this->mode == RASTER_MONO ? "" : fmt::format(" --gray --threshold {}", threshold);
-    return fmt::format("--ppem {}{}{}{} --baseline {} --height {}", ppem, mode, bold ? " --bold" : "",
+    std::string gray = mode == RASTER_MONO ? "" : fmt::format(" --gray --threshold {}", threshold);
+    return fmt::format("--ppem {}{}{}{} --baseline {} --height {}", ppem, gray, bold ? " --bold" : "",
                        oblique ? " --oblique" : "", baseline, height);
 }
 

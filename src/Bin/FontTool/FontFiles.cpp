@@ -1,5 +1,7 @@
 #include "FontFiles.h"
 
+#include <string>
+
 #include "Library/Font/FontSheet.h"
 #include "Library/Font/Oef.h"
 #include "Library/Image/Png.h"
@@ -25,8 +27,12 @@ Font readFont(PathView path, TextEncoding encoding) {
 }
 
 void writeFont(PathView path, const Font &font) {
+    std::string extension = ascii::toLower(path.extension());
+    if (extension != ".png" && extension != ".oef")
+        throw Exception("Can't write a font to '{}', only .oef and .png are supported", path.displayString());
+
     FileOutputStream output(path);
-    output.write(ascii::toLower(path.extension()) == ".png" ? png::encode(renderFontSheet(font)) : oef::encode(font));
+    output.write(extension == ".png" ? png::encode(renderFontSheet(font)) : oef::encode(font));
     output.close();
 }
 

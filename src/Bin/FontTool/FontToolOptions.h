@@ -29,16 +29,13 @@ struct FontToolOptions {
     std::string output;
     std::string text; // UTF-8, empty means the default for the subcommand.
 
-    // render.
     int faceIndex = 0;
     RenderSettings render;
     bool gray = false;
     ShadowMode shadow = SHADOW_NONE;
 
-    // diff.
     int scale = 4;
 
-    // search.
     std::vector<std::string> references;
     std::string listPath; // File listing candidate fonts, one per line.
     int top = 20;
@@ -47,7 +44,6 @@ struct FontToolOptions {
     bool oblique = false;
     int threads = 0;
 
-    // generate.
     std::string enIconsLodPath;
     std::string ruIconsLodPath;
 

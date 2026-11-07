@@ -3,6 +3,8 @@
 #include <algorithm>
 #include <cstdio>
 #include <exception>
+#include <filesystem>
+#include <system_error>
 #include <ranges>
 #include <string>
 #include <string_view>
@@ -117,6 +119,9 @@ static int runRender(const FontToolOptions &options) {
 }
 
 static int runDiff(const FontToolOptions &options) {
+    if (ascii::toLower(PathView(options.output).extension()) != ".png")
+        throw Exception("Can't write a diff to '{}', only .png is supported", options.output);
+
     Font a = readFont(options.input, options.encoding);
     Font b = readFont(options.secondInput, options.encoding);
     writePng(options.output, renderFontDiff(a, b, textOr(options.text, printableAscii()), options.scale));
@@ -136,6 +141,9 @@ static void collectFonts(const Path &path, std::vector<std::string> *result) {
 
     for (const DirectoryEntry &entry : fs::ls(path)) {
         Path child = path / entry.name;
+        std::error_code error;
+        if (std::filesystem::is_symlink(std::filesystem::path(child.native()), error))
+            continue; // Symlinks can form loops.
         if (entry.type == FILE_DIRECTORY) {
             collectFonts(child, result);
         } else if (isFontFile(entry.name)) {
