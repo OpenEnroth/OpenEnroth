@@ -5,7 +5,7 @@ Collects font files out of a pile of archives into a content-addressed store, fo
 Every font is written once to `STORE/<sha256[:2]>/<sha256>.<ext>`, however many archives carry it, and
 `STORE/index.tsv` maps each hash back to every place it was found. Nested zips are read in memory, other nested
 archives (rar, 7z) are unpacked with `7z` into a scratch directory. Nothing in the archives is ever executed, and
-archive member names never become output paths.
+archive member names never become paths in the store.
 
 Usage: collect_fonts.py STORE ARCHIVE_OR_DIR... [--jobs N]
 """
