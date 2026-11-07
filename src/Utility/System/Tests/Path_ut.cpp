@@ -301,6 +301,28 @@ UNIT_TEST(Path, Tails) {
     EXPECT_EQ(rooted.tailAfter(std::string_view()).str(), "/a/b");
 }
 
+UNIT_TEST(Path, Heads) {
+    // headAt ends at a segment, headBefore ends before it and its separators, but keeps the root.
+    using Heads = std::pair<std::string, std::string>;
+    auto heads = [] (const Path &path, std::string_view at) -> Heads {
+        for (std::string_view segment : path.split())
+            if (segment == at)
+                return {std::string(path.headAt(segment).str()), std::string(path.headBefore(segment).str())};
+        return {};
+    };
+
+    EXPECT_EQ(heads("a/b/c", "a"), Heads("a", ""));
+    EXPECT_EQ(heads("a/b/c", "b"), Heads("a/b", "a"));
+    EXPECT_EQ(heads("a/b/c", "c"), Heads("a/b/c", "a/b"));
+    EXPECT_EQ(heads("/a/b", "a"), Heads("/a", "/")); // The root is part of a head.
+    EXPECT_EQ(heads("a//b//", "b"), Heads("a//b", "a")); // headBefore drops the whole run of separators.
+#ifdef _WINDOWS
+    EXPECT_EQ(heads("C:/a/b", "a"), Heads("C:/a", "C:/"));
+    EXPECT_EQ(heads("C:a", "a"), Heads("C:a", "C:"));
+    EXPECT_EQ(heads("a\\/b", "b"), Heads("a\\/b", "a"));
+#endif
+}
+
 UNIT_TEST(Path, Append) {
     // Appending joins the same way operator/ does, also when the tail points into the path itself.
     auto testOne = [] (std::string_view head, std::string_view tail, std::string_view result) {
