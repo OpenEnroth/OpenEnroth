@@ -19,7 +19,8 @@ using enum ShadowMode;
  * Redraws a glyph's shadow, dropping whatever shadow it had and regenerating it from the text.
  *
  * The glyph box grows where needed to leave a pixel of room for the shadow, to the right of the text for a drop
- * shadow and on both sides for an outline.
+ * shadow and on both sides for an outline. With `SHADOW_NONE`, and for a glyph with no text, the pixels are copied
+ * as is, shadow included.
  *
  * @param metrics                       Glyph metrics.
  * @param image                         Glyph image, color index `1` is the text and `2` is the shadow.
