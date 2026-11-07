@@ -1,17 +1,19 @@
 #include <algorithm>
 #include <string>
+#include <utility>
 #include <vector>
 
 #include "Testing/Unit/UnitTest.h"
 
 #include "Library/Font/Oef.h"
 #include "Library/Font/Font.h"
+#include "Library/Font/FontBuilder.h"
 #include "Library/Image/Image.h"
 
 #include "Utility/Memory/Blob.h"
 
 static Font makeFont() {
-    Font result(3);
+    FontBuilder result(3);
 
     std::vector<uint8_t> a = {1, 2, /**/ 0, 1, /**/ 2, 0}; // 2x3.
     result.add(U'A', GlyphMetrics(1, 2, -1), GrayscaleImageView(a.data(), 2, 3));
@@ -22,7 +24,7 @@ static Font makeFont() {
     std::vector<uint8_t> c = {4, 3, 2, /**/ 1, 0, 4, /**/ 3, 2, 1}; // 3x3, uses all four colors.
     result.add(U'Ы', GlyphMetrics(-2, 3, 5), GrayscaleImageView(c.data(), 3, 3));
 
-    return result;
+    return std::move(result).build();
 }
 
 UNIT_TEST(Oef, RoundTrip) {

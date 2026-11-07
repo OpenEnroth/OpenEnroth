@@ -1,7 +1,8 @@
 #include <array>
-#include <string>
+#include <cstring>
 #include <type_traits>
 #include <utility>
+#include <vector>
 
 #include "Testing/Unit/UnitTest.h"
 
@@ -21,109 +22,40 @@ UNIT_TEST(Font, Invalid) {
     EXPECT_EQ(font.index(U'A'), -1);
 }
 
-UNIT_TEST(Font, ValidEmpty) {
-    Font font(10);
+UNIT_TEST(Font, FromData) {
+    std::array<uint8_t, 6> pixels = {{7, /**/ 8, /**/ 1, 2, /**/ 3, 4}}; // 1x2 glyph, then a 2x2 glyph.
+
+    Font font = Font::fromData(2, {U'A', U'Ы' + 0x10000}, {GlyphMetrics(0, 1, 0), GlyphMetrics(-1, 2, 3)}, {0, 2},
+                               Blob::copy(pixels.data(), pixels.size()));
 
     EXPECT_TRUE(static_cast<bool>(font));
-    EXPECT_FALSE(!font);
-    EXPECT_EQ(font.height(), 10);
-    EXPECT_EQ(font.size(), 0);
-    EXPECT_FALSE(font.supports(U'A'));
-    EXPECT_EQ(font.index(U'A'), -1);
-}
-
-UNIT_TEST(Font, Add) {
-    std::array<uint8_t, 4> aPixels = {{255, 0, 0, 255}};
-    std::array<uint8_t, 2> bPixels = {{1, 255}};
-    std::array<uint8_t, 2> spacePixels = {{0, 0}};
-
-    Font font(2);
-    EXPECT_EQ(font.add(U' ', GlyphMetrics(0, 1, 0), GrayscaleImageView(spacePixels.data(), 1, 2)), 0);
-    EXPECT_EQ(font.add(U'A', GlyphMetrics(1, 2, 1), GrayscaleImageView(aPixels.data(), 2, 2)), 1);
-    EXPECT_EQ(font.add(U'A' + 0x10000, GlyphMetrics(0, 1, 0), GrayscaleImageView(bPixels.data(), 1, 2)), 2);
-
     EXPECT_EQ(font.height(), 2);
-    EXPECT_EQ(font.size(), 3);
-
-    EXPECT_TRUE(font.supports(U' '));
-    EXPECT_TRUE(font.supports(U'A'));
-    EXPECT_TRUE(font.supports(U'A' + 0x10000));
-    EXPECT_FALSE(font.supports(U'B')); // Not added, but shares a page with 'A'.
-    EXPECT_FALSE(font.supports(U'☃')); // Not added, page doesn't exist.
-    EXPECT_FALSE(font.supports(U'\0'));
-
-    EXPECT_EQ(font.index(U' '), 0);
-    EXPECT_EQ(font.index(U'A'), 1);
-    EXPECT_EQ(font.index(U'A' + 0x10000), 2);
-    EXPECT_EQ(font.index(U'B'), -1);
-
-    EXPECT_EQ(font.metrics(font.index(U'A')).leftSpacing, 1);
-    EXPECT_EQ(font.metrics(font.index(U'A')).width, 2);
-    EXPECT_EQ(font.metrics(font.index(U'A')).rightSpacing, 1);
-
-    GrayscaleImageView image = font.image(font.index(U'A'));
-    EXPECT_EQ(image.width(), 2);
-    EXPECT_EQ(image.height(), 2);
-    EXPECT_EQ(image[0][0], 255);
-    EXPECT_EQ(image[0][1], 0);
-    EXPECT_EQ(image[1][0], 0);
-    EXPECT_EQ(image[1][1], 255);
-
-    // Images are copied in.
-    aPixels = {{0, 0, 0, 0}};
-    EXPECT_EQ(image[0][0], 255);
-}
-
-UNIT_TEST(Font, Overwrite) {
-    std::array<uint8_t, 2> oldPixels = {{1, 2}};
-    std::array<uint8_t, 2> otherPixels = {{3, 4}};
-    std::array<uint8_t, 4> newPixels = {{5, 6, 7, 8}};
-
-    Font font(2);
-    EXPECT_EQ(font.add(U'A', GlyphMetrics(0, 1, 0), GrayscaleImageView(oldPixels.data(), 1, 2)), 0);
-    EXPECT_EQ(font.add(U'B', GlyphMetrics(0, 1, 0), GrayscaleImageView(otherPixels.data(), 1, 2)), 1);
-    EXPECT_EQ(font.add(U'A', GlyphMetrics(1, 2, 1), GrayscaleImageView(newPixels.data(), 2, 2)), 0); // Same index.
-
-    EXPECT_EQ(font.size(), 2); // Overwriting doesn't add glyphs.
+    EXPECT_EQ(font.size(), 2);
     EXPECT_EQ(font.index(U'A'), 0);
-    EXPECT_EQ(font.metrics(0).width, 2);
-    EXPECT_EQ(font.image(0)[0][0], 5);
-    EXPECT_EQ(font.image(0)[1][1], 8);
+    EXPECT_EQ(font.index(U'Ы' + 0x10000), 1);
+    EXPECT_EQ(font.index(U'B'), -1); // Shares a page with 'A'.
+    EXPECT_EQ(font.index(U'☃'), -1); // Page doesn't exist.
+    EXPECT_EQ(font.character(1), U'Ы' + 0x10000);
+    EXPECT_EQ(font.metrics(1).leftSpacing, -1);
+    EXPECT_EQ(font.metrics(1).rightSpacing, 3);
 
-    // 'B' is untouched.
-    EXPECT_EQ(font.index(U'B'), 1);
-    EXPECT_EQ(font.image(1)[0][0], 3);
+    GrayscaleImageView a = font.image(0);
+    EXPECT_EQ(a.width(), 1);
+    EXPECT_EQ(a.height(), 2);
+    EXPECT_EQ(a[0][0], 7);
+    EXPECT_EQ(a[1][0], 8);
+
+    GrayscaleImageView b = font.image(1);
+    EXPECT_EQ(b.width(), 2);
+    EXPECT_EQ(b[0][1], 2);
+    EXPECT_EQ(b[1][0], 3);
 }
 
-UNIT_TEST(Font, Move) {
+UNIT_TEST(Font, MoveKeepsPixels) {
     std::array<uint8_t, 2> pixels = {{1, 255}};
+    Font font = Font::fromData(2, {U'A'}, {GlyphMetrics(0, 1, 0)}, {0}, Blob::copy(pixels.data(), pixels.size()));
 
-    Font font(2);
-    font.add(U'A', GlyphMetrics(0, 1, 0), GrayscaleImageView(pixels.data(), 1, 2));
-
-    Font movedFont(std::move(font));
-    EXPECT_EQ(movedFont.height(), 2);
-    EXPECT_EQ(movedFont.size(), 1);
-    EXPECT_EQ(movedFont.index(U'A'), 0);
-    EXPECT_EQ(movedFont.image(0)[1][0], 255); // Image data pointers stay valid after a move.
-}
-
-UNIT_TEST(Font, ImageStorageIsPointerStable) {
-    // A single glyph is 16x16=256 bytes, and 64 glyphs is 16KB, spanning several storage chunks. Check that the
-    // images stored first don't get invalidated as the storage grows.
-    Font font(16);
-    for (int i = 1; i <= 64; i++) {
-        std::string pixels(256, static_cast<char>(i));
-        font.add(static_cast<char32_t>(0x2600 + i), GlyphMetrics(0, 16, 0),
-                 GrayscaleImageView(reinterpret_cast<const uint8_t *>(pixels.data()), 16, 16));
-    }
-
-    EXPECT_EQ(font.size(), 64);
-    for (int i = 1; i <= 64; i++) {
-        GrayscaleImageView image = font.image(font.index(static_cast<char32_t>(0x2600 + i)));
-        EXPECT_EQ(image.width(), 16);
-        EXPECT_EQ(image.height(), 16);
-        EXPECT_EQ(image[0][0], i);
-        EXPECT_EQ(image[15][15], i);
-    }
+    Font moved(std::move(font));
+    EXPECT_EQ(moved.index(U'A'), 0);
+    EXPECT_EQ(moved.image(0)[1][0], 255);
 }

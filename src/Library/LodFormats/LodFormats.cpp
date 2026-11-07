@@ -14,7 +14,7 @@
 #include "Library/Binary/CommonSerialization.h"
 #include "Library/Snapshots/CommonSnapshots.h"
 #include "Library/Compression/Compression.h"
-#include "Library/Font/Font.h"
+#include "Library/Font/FontBuilder.h"
 #include "Library/Image/Image.h"
 #include "Library/Serialization/EnumSerialization.h"
 #include "Library/Snapshots/SnapshotSerialization.h"
@@ -310,7 +310,7 @@ Font lod::decodeFont(const Blob &blob, TextEncoding encoding) {
         deserialize(stream, &atlas);
         Blob pixels = stream.readAllAsBlob();
 
-        Font font(header.height);
+        FontBuilder font(header.height);
         for (int c = header.firstChar; c <= header.lastChar; c++) {
             GlyphMetrics metrics = glyphMetrics(atlas, c);
 
@@ -352,7 +352,7 @@ Font lod::decodeFont(const Blob &blob, TextEncoding encoding) {
 
             font.add(codePoint, metrics, image);
         }
-        return font;
+        return std::move(font).build();
     };
 
     try {

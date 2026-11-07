@@ -5,6 +5,7 @@
 #include <algorithm>
 #include <span>
 #include <string_view>
+#include <utility>
 #include <vector>
 
 #include "OefSnapshots.h"
@@ -70,9 +71,12 @@ Font oef::decode(const Blob &blob) {
 
     Blob pixels = payloadStream.readAllAsBlob();
 
-    Font result(header.height);
+    std::vector<char32_t> characters;
+    std::vector<GlyphMetrics> metrics;
+    std::vector<size_t> offsets;
+    detail::UnicodeMap<bool> seen(false);
     for (const OefGlyph &glyph : glyphs) {
-        if (glyph.codePoint == 0 || glyph.codePoint >= MAX_CODE_POINT)
+        if (glyph.codePoint == 0 || glyph.codePoint >= MAX_CODE_POINT || seen.value(glyph.codePoint))
             throw Exception("Cannot decode font '{}': invalid code point {} in glyph table", blob.displayPath(),
                             glyph.codePoint);
         if (glyph.width < 0 || glyph.width > MAX_GLYPH_WIDTH ||
@@ -81,16 +85,18 @@ Font oef::decode(const Blob &blob) {
                             glyph.codePoint);
 
         size_t size = static_cast<size_t>(glyph.width) * header.height;
-        if (glyph.pixelOffset + size > pixels.size())
+        if (glyph.pixelOffset > pixels.size() || size > pixels.size() - glyph.pixelOffset)
             throw Exception("Cannot decode font '{}': invalid glyph data for code point {}", blob.displayPath(),
                             glyph.codePoint);
 
-        GrayscaleImageView image(static_cast<const uint8_t *>(pixels.data()) + glyph.pixelOffset, glyph.width,
-                                 header.height);
-        result.add(glyph.codePoint, GlyphMetrics(glyph.leftSpacing, glyph.width, glyph.rightSpacing), image);
+        seen.insert(glyph.codePoint, true);
+        characters.push_back(glyph.codePoint);
+        metrics.push_back(GlyphMetrics(glyph.leftSpacing, glyph.width, glyph.rightSpacing));
+        offsets.push_back(glyph.pixelOffset);
     }
 
-    return result;
+    return Font::fromData(header.height, std::move(characters), std::move(metrics), std::move(offsets),
+                          std::move(pixels));
 }
 
 Blob oef::encode(const Font &font) {

@@ -1,13 +1,15 @@
 #pragma once
 
 #include <cassert>
+#include <cstddef>
 #include <cstdint>
 #include <array>
 #include <memory>
 #include <vector>
 
 #include "Library/Image/Image.h"
-#include "Utility/Memory/MemoryBuffer.h"
+
+#include "Utility/Memory/Blob.h"
 
 namespace detail {
 /**
@@ -56,7 +58,8 @@ struct GlyphMetrics {
 };
 
 /**
- * A unicode font assembled glyph by glyph.
+ * An immutable unicode bitmap font. All glyph images are stored in a single `Blob`. Use `FontBuilder` to assemble
+ * a font glyph by glyph, or `fromData` if the data is already laid out.
  *
  * Glyphs are addressed by a dense glyph index in `[0, size())`, with `index()` translating characters into
  * glyph indices.
@@ -64,23 +67,28 @@ struct GlyphMetrics {
 class Font {
  public:
     /**
-     * Creates an invalid font. It supports no characters, and `add`ing glyphs to it will assert.
+     * Creates an invalid font that supports no characters.
      */
     Font() = default;
-
-    /**
-     * Creates a valid empty font.
-     *
-     * @param height                    Font height in pixels. Must be positive.
-     */
-    explicit Font(int height) : _height(height) {
-        assert(height > 0);
-    }
 
     Font(const Font &) = delete;
     Font(Font &&) = default;
     Font &operator=(const Font &) = delete;
     Font &operator=(Font &&) = default;
+
+    /**
+     * @param height                    Font height in pixels. Must be positive.
+     * @param characters                Glyph index -> character. Characters must be non-zero and unique.
+     * @param metrics                   Glyph index -> metrics, same size as `characters`.
+     * @param offsets                   Glyph index -> offset of the glyph image in `pixels`, same size as
+     *                                  `characters`.
+     * @param pixels                    Glyph images, byte per pixel, row-major, `metrics[i].width * height` bytes
+     *                                  each. Each pixel is a color index: `0` is the transparent background, and
+     *                                  `1`-`4` are the font colors.
+     * @return                          Font that takes ownership of the provided data.
+     */
+    [[nodiscard]] static Font fromData(int height, std::vector<char32_t> characters, std::vector<GlyphMetrics> metrics,
+                                       std::vector<size_t> offsets, Blob pixels);
 
     [[nodiscard]] bool operator!() const {
         return _height == 0;
@@ -118,7 +126,7 @@ class Font {
 
     /**
      * @param index                     Glyph index, must be in `[0, size())`.
-     * @return                          Character this glyph was added for.
+     * @return                          Character this glyph is for.
      */
     [[nodiscard]] char32_t character(int index) const {
         assert(index >= 0 && index < size());
@@ -141,27 +149,15 @@ class Font {
      */
     [[nodiscard]] GrayscaleImageView image(int index) const {
         assert(index >= 0 && index < size());
-        return GrayscaleImageView(_images[index], _metrics[index].width, _height);
+        return GrayscaleImageView(static_cast<const uint8_t *>(_pixels.data()) + _offsets[index], _metrics[index].width,
+                                  _height);
     }
-
-    /**
-     * Adds a glyph for the given character to this font. Copies the glyph image, the passed image doesn't need to
-     * stay alive after this call.
-     *
-     * If the character already has a glyph, the old glyph is replaced, reusing its glyph index.
-     *
-     * @param c                         Character to add the glyph for.
-     * @param metrics                   Glyph metrics. Width in the metrics must match the image width.
-     * @param image                     Glyph image, byte per pixel. Must be of the same height as this font.
-     * @return                          Glyph index of the added glyph.
-     */
-    int add(char32_t c, const GlyphMetrics &metrics, GrayscaleImageView image);
 
  private:
     int _height = 0;
     detail::UnicodeMap<int> _indexByCharacter{-1}; // Character -> glyph index.
     std::vector<char32_t> _characters; // Glyph index -> character.
     std::vector<GlyphMetrics> _metrics; // Glyph index -> metrics.
-    std::vector<const uint8_t *> _images; // Glyph index -> image data, pointing into `_data`, byte per pixel.
-    MemoryBuffer _data; // Pointer-stable glyph image storage.
+    std::vector<size_t> _offsets; // Glyph index -> offset of the glyph image in `_pixels`.
+    Blob _pixels;
 };

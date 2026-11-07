@@ -25,6 +25,7 @@
 #include "Engine/Objects/SpriteObject.h"
 #include "Engine/Resources/EngineFileSystem.h"
 #include "Engine/Resources/LOD.h"
+#include "Engine/Resources/ResourceManager.h"
 #include "Engine/SaveLoad.h"
 #include "Engine/Snapshots/CompositeSnapshots.h"
 

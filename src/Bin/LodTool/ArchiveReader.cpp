@@ -11,6 +11,7 @@
 #include "Library/Magic/Magic.h"
 
 #include "Utility/Exception.h"
+#include "Utility/System/Fs.h"
 
 template<class Base>
 class UniversalReader : public ArchiveReader {
@@ -46,4 +47,20 @@ std::unique_ptr<ArchiveReader> ArchiveReader::createArchiveReader(Blob data) {
     default:
         throw Exception("File '{}' is not a LOD, VID or SND archive", data.displayPath());
     }
+}
+
+Blob ArchiveReader::readFile(PathView path) {
+    PathView tail;
+    PathView prefix = fs::walk(path, &tail);
+
+    FileStat stat = fs::stat(prefix);
+    if (tail.isEmpty()) {
+        if (stat.type != FILE_REGULAR)
+            throw Exception("'{}' is not a file", path.displayString());
+        return Blob::fromFile(prefix);
+    }
+
+    if (stat.type != FILE_REGULAR)
+        throw Exception("'{}' doesn't exist", path.displayString());
+    return createArchiveReader(Blob::fromFile(prefix))->read(tail.str());
 }
