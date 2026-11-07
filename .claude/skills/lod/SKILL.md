@@ -23,7 +23,7 @@ an entry name is a single segment, and there are no archives inside archives.
 ## Commands
 
 ```sh
-LodTool ls DIR_OR_ARCHIVE              # directory contents, or archive entries, sorted
+LodTool ls DIR_OR_ARCHIVE               # directory contents, or archive entries, sorted
 LodTool cat [--raw] FILE                # write to stdout, decompressed unless --raw
 LodTool extract [--raw] SRC [OUT]       # see below
 LodTool convert [--palettes-lod-path BITMAPS_LOD] FILE OUT.png
