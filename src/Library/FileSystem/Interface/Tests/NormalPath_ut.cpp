@@ -33,6 +33,11 @@ UNIT_TEST(NormalPath, DotDotStopsAtRoot) {
     testOne("../a", "a");
     testOne("..\\a", "a");
     testOne("a/../../b/c", "b/c");
+    testOne("./..", "");
+    testOne("../.", "");
+#ifdef _WINDOWS
+    testOne("../C:.", "C:"); // The strip exposes a drive, and the path is still normalized.
+#endif
 }
 
 UNIT_TEST(NormalPath, DefaultIsRoot) {
@@ -72,6 +77,8 @@ UNIT_TEST(NormalPath, IsAccessible) {
     testOne("C:a", false);
     testOne("./C:/a", false);
     testOne("a/c:b", false); // A tail starting at "c:b" would read as a drive.
+    testOne("C:..", false);
+    testOne("../C:a", false);
     testOne("a/b:c", false);
     testOne("a/bc:d", true);
 #else

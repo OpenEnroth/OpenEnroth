@@ -69,6 +69,7 @@ UNIT_TEST(SubFileSystem, CannotEscapeWithDotDot) {
     EXPECT_ANY_THROW((void) sub.openForReading("../secret.txt"));
 
     // Same for pathological tails that try harder.
+    EXPECT_TRUE(sub.exists("../../..")); // The sub file system's root.
     EXPECT_FALSE(sub.exists("a/../../../secret.txt"));
     EXPECT_ANY_THROW((void) sub.read("a/../../../secret.txt"));
 
@@ -119,4 +120,16 @@ UNIT_TEST(SubFileSystem, RootWhenBasePathIsEmpty) {
     EXPECT_EQ(sub.stat(""), FileStat(FILE_DIRECTORY, 0));
     EXPECT_EQ(sub.ls("").size(), 1);
     EXPECT_EQ(sub.read("1.txt").str(), "lol");
+}
+
+UNIT_TEST(SubFileSystem, InaccessibleBasePath) {
+    // A base path the base file system can't reach is refused up front.
+    MemoryFileSystem base("memfs");
+
+    for (std::string_view basePath : {"/", "/x", "\\x"})
+        EXPECT_ANY_THROW(SubFileSystem(basePath, &base)) << basePath;
+#ifdef _WINDOWS
+    for (std::string_view basePath : {"C:", "C:x", "./C:/x"})
+        EXPECT_ANY_THROW(SubFileSystem(basePath, &base)) << basePath;
+#endif
 }

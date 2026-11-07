@@ -24,7 +24,7 @@ if(OE_BUILD_TESTS)
             Tests/NormalPath_ut.cpp)
 
     add_library(test_library_filesystem_interface OBJECT ${TEST_LIBRARY_FILESYSTEM_INTERFACE_SOURCES})
-    target_link_libraries(test_library_filesystem_interface PUBLIC testing_unit library_filesystem_interface library_filesystem_memory library_filesystem_merging)
+    target_link_libraries(test_library_filesystem_interface PUBLIC testing_unit library_filesystem_interface library_filesystem_memory library_filesystem_merging library_filesystem_sub)
 
     target_check_style(test_library_filesystem_interface)
 

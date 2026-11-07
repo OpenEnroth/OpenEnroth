@@ -35,8 +35,11 @@ NormalPath::NormalPath(PathView path) {
         rest.remove_prefix(rest.size() > 2 ? 3 : 2); // Normal form keeps every ".." at the start, and ".." stops at the root.
     if (rest == ".")
         rest = {};
-    if (rest.size() != _path.str().size())
+    if (rest.size() != _path.str().size()) {
         _path = Path(std::string(rest));
+        if (!_path.isNormalized())
+            _path = _path.normalized(); // On Windows the strip can expose a drive, as in "../C:.".
+    }
 }
 
 NormalPath &NormalPath::operator/=(NormalPathView tail) {

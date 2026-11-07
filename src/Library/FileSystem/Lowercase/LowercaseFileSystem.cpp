@@ -106,8 +106,7 @@ bool LowercaseFileSystem::_remove(NormalPathView path) {
 
 std::string LowercaseFileSystem::_displayPath(NormalPathView path) const {
     auto [basePath, node, tail] = walk(path);
-    basePath /= tail;
-    return _base->displayPath(basePath);
+    return _base->displayPath(basePath / tail);
 }
 
 std::tuple<NormalPath, LowercaseFileSystem::Node *, NormalPathView> LowercaseFileSystem::walk(NormalPathView path) const {
@@ -137,8 +136,7 @@ void LowercaseFileSystem::cacheLs(Node *node, NormalPathView basePath) const {
     if (node->value().listed)
         return;
 
-    std::vector<DirectoryEntry> entries;
-    _base->ls(basePath, &entries);
+    std::vector<DirectoryEntry> entries = _base->ls(basePath);
     for (DirectoryEntry &entry : entries) {
         std::string lowerEntryName = ascii::toLower(entry.name);
 

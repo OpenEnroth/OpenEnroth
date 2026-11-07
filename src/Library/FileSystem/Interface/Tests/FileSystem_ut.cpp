@@ -57,9 +57,9 @@ UNIT_TEST(FileSystem, RootedPathsAreRefused) {
 
     std::vector<std::string_view> paths = {"/", "/foo", "//foo", "\\foo", "/../foo", "/foo/bar/"};
 #ifdef _WINDOWS
-    // On Windows a drive can show up only after normalizing, as in "./C:/foo", and a segment that starts like one
+    // On Windows a drive can also show up after normalizing, as in "./C:/foo", and a segment that starts like one
     // is refused too.
-    for (std::string_view path : {"C:/foo", "C:foo", "C:", "./C:/foo", "a/../C:/foo", "a/c:foo", "a/C:", "//server/share/foo"})
+    for (std::string_view path : {"C:/foo", "C:foo", "C:", "./C:/foo", "a/../C:/foo", "../C:/foo", "..\\C:foo", "a/c:foo", "a/C:", "//server/share/foo"})
         paths.push_back(path);
 #endif
 
@@ -89,7 +89,7 @@ UNIT_TEST(FileSystem, DriveLikeNamesAreNames) {
 #endif
 
 UNIT_TEST(FileSystem, RootIsNotRemovable) {
-    // Every spelling of the root is refused.
+    // No spelling of the root can be removed.
     MemoryFileSystem fs("ram");
     fs.write("foo", Blob::fromString("lol"));
 
@@ -98,7 +98,6 @@ UNIT_TEST(FileSystem, RootIsNotRemovable) {
 
     EXPECT_TRUE(fs.exists("foo"));
 }
-
 
 UNIT_TEST(FileSystem, NormalPathOverloads) {
     // A NormalPath goes through the same checks as a plain path, and its path() names the same thing.
