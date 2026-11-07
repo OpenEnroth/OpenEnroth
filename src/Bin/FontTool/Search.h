@@ -42,10 +42,10 @@ struct SearchResult {
  *
  * Outline faces are rendered at the sizes around the one estimated from glyph heights, in mono plain and
  * emboldened, and in gray at several thresholds, optionally slanted too. Bitmap faces are rendered at each of their
- * strikes, in mono plain and emboldened. The rendered glyphs are aligned to the
- * reference glyphs by their ink centroids, the baseline once per font and the horizontal offset per glyph, and the
- * alignment is then refined by a pixel in each direction. The exhaustive search sweeps sizes, baselines and offsets
- * instead. The score is the number of pixels that differ.
+ * strikes, in mono plain and emboldened. The rendered glyphs are aligned to the reference glyphs by their ink
+ * centroids, the baseline once per font and the horizontal offset per glyph, and the alignment is then refined by a
+ * pixel in each direction. The exhaustive search sweeps sizes, baselines and offsets instead. The score is the
+ * number of pixels that differ.
  *
  * @param references                    Fonts to look for.
  * @param paths                         Candidate font files.
