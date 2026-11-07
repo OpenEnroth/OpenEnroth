@@ -21,12 +21,10 @@ LodToolOptions LodToolOptions::parse(int argc, char **argv) {
     cat->add_flag("--raw", result.raw, "Don't decompress.");
     cat->add_option("PATH", result.path, "Path to a file.")->required()->option_text(" ");
 
-    CLI::App *extract = app->add_subcommand("extract", "Extract an archive, or a single file, decompressing it.", result.subcommand, SUBCOMMAND_EXTRACT)->fallthrough();
+    CLI::App *extract = app->add_subcommand("extract", "Extract an archive, decompressing its entries.", result.subcommand, SUBCOMMAND_EXTRACT)->fallthrough();
     extract->add_flag("--raw", result.raw, "Don't decompress.");
-    extract->add_option("PATH", result.path, "Path to an archive or a file.")->required()->option_text(" ");
-    extract->add_option("OUTPUT", result.output,
-                        "Directory to extract to, current directory by default. A single file goes into OUTPUT if it's an existing directory or ends "
-                        "with a slash, and is written to OUTPUT otherwise.")->option_text(" ");
+    extract->add_option("ARCHIVE", result.path, "Path to a LOD, VID or SND archive.")->required()->option_text(" ");
+    extract->add_option("OUTPUT", result.output, "Directory to extract to, created if needed.")->required()->option_text(" ");
 
     CLI::App *convert = app->add_subcommand("convert", "Convert a file into a format given by the output extension, only png is supported.",
                                             result.subcommand, SUBCOMMAND_CONVERT)->fallthrough();
