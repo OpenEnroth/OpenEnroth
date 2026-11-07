@@ -19,7 +19,7 @@
  * Usage:
  * ```
  * FileSystem *root = ...;
- * SubFileSystem shaders(root, "shaders/");
+ * SubFileSystem shaders("shaders", root);
  * shaders.read("precision.vert");  // reads root/shaders/precision.vert
  * ```
  */
