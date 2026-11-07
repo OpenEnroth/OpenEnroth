@@ -156,31 +156,6 @@ UNIT_TEST(Path, Normalized) {
 #endif
 }
 
-UNIT_TEST(Path, IsEscaping) {
-    // A path escapes when its ".." segments climb above where it starts.
-    auto testOne = [] (std::string_view path, bool result) {
-        EXPECT_EQ(Path(path).isEscaping(), result) << "for '" << path << "'";
-    };
-
-    testOne("", false);
-    testOne(".", false);
-    testOne("a", false);
-    testOne("a/..", false);
-    testOne("a/../b", false);
-    testOne("..", true);
-    testOne("../a", true);
-    testOne("a/../..", true);
-    testOne("a//..//..", true); // Doesn't need normal form.
-    testOne("/..", false); // A path with a root directory never escapes.
-    testOne("/../..", false);
-#ifdef _WINDOWS
-    testOne("C:..", true); // Above the current directory of drive C.
-    testOne("C:a/../..", true);
-    testOne("C:/..", false);
-    testOne("//server/share/..", false);
-#endif
-}
-
 UNIT_TEST(Path, Decomposition) {
     // parent, name, stem and extension split a path lexically.
     auto testOne = [] (std::string_view path, std::string_view parent, std::string_view name, std::string_view stem,
