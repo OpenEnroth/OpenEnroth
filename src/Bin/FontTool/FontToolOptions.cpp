@@ -12,7 +12,7 @@ FontToolOptions FontToolOptions::parse(int argc, char **argv) {
         "Bitmap font tool. Reads LOD fonts (.fnt) and OpenEnroth fonts (.oef), renders outline fonts with FreeType,\n"
         "and searches font collections for the typeface a bitmap font was rendered from.\n"
         "\n"
-        "Font paths can point into archives, as in 'data/icons.lod/arrus.fnt'.\n");
+        "LOD and OpenEnroth font paths can point into archives, as in 'data/icons.lod/arrus.fnt'.\n");
 
     app->set_help_flag("-h,--help", "Print help and exit.");
     app->require_subcommand();
