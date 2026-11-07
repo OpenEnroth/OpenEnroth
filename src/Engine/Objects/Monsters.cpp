@@ -239,9 +239,9 @@ MonsterId MonsterStats::FindMonsterByInternalName(std::string_view internalName)
 }
 
 //----- (00454F4E) --------------------------------------------------------
-void MonsterStats::InitializePlacements(const Blob &placements) {
+void MonsterStats::InitializePlacements(std::string_view placements) {
     // placemon.txt table structure: index | name (localized).
-    for (std::string_view line : split(placements.str()).by("\r\n").drop(1).skip("")) {
+    for (std::string_view line : split(placements).by("\r\n").drop(1).skip("")) {
         std::array<std::string_view, 2> tokens = split(line).by('\t');
         int i = fromString<int>(tokens[0]);
         uniqueNames[i] = unquote(tokens[1]);
@@ -250,7 +250,7 @@ void MonsterStats::InitializePlacements(const Blob &placements) {
 
 // TODO(captainurist): move to MonsterTable?
 //----- (0045501E) --------------------------------------------------------
-void MonsterStats::Initialize(const Blob &monsters) {
+void MonsterStats::Initialize(std::string_view monsters) {
     // monsters.txt table structure: id | name (localized) | internal name | level | hp | ac | exp | treasure |
     //                               blood splat | flying | movement | ai | hostility | speed | recovery |
     //                               attack prefs | special attack | a1 type | a1 dmg | a1 missile |
@@ -506,7 +506,7 @@ void MonsterStats::Initialize(const Blob &monsters) {
         return fromString<int>(buf);
     };
 
-    for (std::string_view line : split(monsters.str()).by("\r\n").drop(4).skip("")) {
+    for (std::string_view line : split(monsters).by("\r\n").drop(4).skip("")) {
         std::array<std::string_view, 39> tokens = split(line).by('\t');
 
         MonsterId id = static_cast<MonsterId>(fromString<int>(tokens[0]));

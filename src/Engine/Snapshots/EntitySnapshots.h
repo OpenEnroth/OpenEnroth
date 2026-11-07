@@ -8,6 +8,7 @@
 #include "Library/Geometry/Plane.h"
 #include "Library/Geometry/BBox.h"
 #include "Library/Binary/BinarySerialization.h"
+#include "Library/Snapshots/SnapshotTags.h"
 
 #include "Utility/Unaligned.h"
 
@@ -418,8 +419,8 @@ struct Character_MM7 {
 static_assert(sizeof(Character_MM7) == 0x1B3C);
 MM_DECLARE_MEMCOPY_SERIALIZABLE(Character_MM7)
 
-void snapshot(const Character &src, Character_MM7 *dst);
-void reconstruct(const Character_MM7 &src, Character *dst, ContextTag<int> characterIndex);
+void snapshot(const Character &src, Character_MM7 *dst, EncodingTag encoding);
+void reconstruct(const Character_MM7 &src, Character *dst, EncodingTag encoding, ContextTag<int> characterIndex);
 void snapshot(const CharacterInventory &src, Character_MM7 *dst);
 void reconstruct(const Character_MM7 &src, CharacterInventory *dst, ContextTag<int> characterIndex);
 
@@ -548,8 +549,8 @@ struct Party_MM7 {
 static_assert(sizeof(Party_MM7) == 0x16238);
 MM_DECLARE_MEMCOPY_SERIALIZABLE(Party_MM7)
 
-void snapshot(const Party &src, Party_MM7 *dst);
-void reconstruct(const Party_MM7 &src, Party *dst);
+void snapshot(const Party &src, Party_MM7 *dst, EncodingTag encoding);
+void reconstruct(const Party_MM7 &src, Party *dst, EncodingTag encoding);
 
 struct Timer_MM7 {
     /** Not used by the engine, was set to true for event timer & to false for misc timer.
@@ -810,8 +811,8 @@ struct Actor_MM7 {
 static_assert(sizeof(Actor_MM7) == 0x344);
 MM_DECLARE_MEMCOPY_SERIALIZABLE(Actor_MM7)
 
-void snapshot(const Actor &src, Actor_MM7 *dst);
-void reconstruct(const Actor_MM7 &src, Actor *dst);
+void snapshot(const Actor &src, Actor_MM7 *dst, EncodingTag encoding);
+void reconstruct(const Actor_MM7 &src, Actor *dst, EncodingTag encoding);
 
 
 struct BLVDoor_MM7 {
@@ -1028,8 +1029,8 @@ struct DecorationData_MM7 : DecorationData_MM6 {
 static_assert(sizeof(DecorationData_MM7) == 84);
 MM_DECLARE_MEMCOPY_SERIALIZABLE(DecorationData_MM7)
 
-void reconstruct(const DecorationData_MM6 &src, DecorationData *dst);
-void reconstruct(const DecorationData_MM7 &src, DecorationData *dst);
+void reconstruct(const DecorationData_MM6 &src, DecorationData *dst, EncodingTag encoding);
+void reconstruct(const DecorationData_MM7 &src, DecorationData *dst, EncodingTag encoding);
 
 
 struct Chest_MM7 {
@@ -1366,8 +1367,8 @@ struct SaveGameHeader_MM7 {
 static_assert(sizeof(SaveGameHeader_MM7) == 0x64);
 MM_DECLARE_MEMCOPY_SERIALIZABLE(SaveGameHeader_MM7)
 
-void snapshot(const SaveGameHeader &src, SaveGameHeader_MM7 *dst);
-void reconstruct(const SaveGameHeader_MM7 &src, SaveGameHeader *dst);
+void snapshot(const SaveGameHeader &src, SaveGameHeader_MM7 *dst, EncodingTag encoding);
+void reconstruct(const SaveGameHeader_MM7 &src, SaveGameHeader *dst, EncodingTag encoding);
 
 
 #pragma pack(pop)

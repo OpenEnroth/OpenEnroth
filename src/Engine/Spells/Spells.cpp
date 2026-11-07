@@ -482,7 +482,7 @@ bool SpellBuff::Apply(Time expire_time, Mastery uSkillMastery,
     return true;
 }
 
-void SpellStats::Initialize(const Blob &spells) {
+void SpellStats::Initialize(std::string_view spells) {
     static const std::map<std::string, DamageType, ascii::NoCaseLess> spellSchoolMaps = { // TODO(captainurist): #enum, use enum serialization
         {"fire", DAMAGE_FIRE},
         {"air", DAMAGE_AIR},
@@ -498,7 +498,7 @@ void SpellStats::Initialize(const Blob &spells) {
 
     // spells.txt table structure: index | ... | name (localized) | school (not localized) | ...
     // Section header lines have an empty first column and are skipped.
-    for (std::string_view line : split(spells.str()).by("\r\n").drop(2).skip("")) {
+    for (std::string_view line : split(spells).by("\r\n").drop(2).skip("")) {
         std::array<std::string_view, 11> tokens = split(line).by('\t');
         if (tokens[0].empty())
             continue; // Skip section headers.
