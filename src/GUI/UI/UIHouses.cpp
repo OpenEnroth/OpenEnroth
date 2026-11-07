@@ -1065,6 +1065,9 @@ void GUIWindow_House::Update() {
         return;
     }
     houseDialogManager();
+    if (!window_SpeakInHouse) {
+        return; // Renting a tavern room closes the house, and this window is already deleted.
+    }
     if (!isShop(houseId())) {
         return;
     }
