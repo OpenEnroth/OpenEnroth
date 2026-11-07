@@ -29,8 +29,7 @@ namespace fs {
  * in the middle of `path` ends the prefix, and `"games.lod/d.odm"` splits into `"games.lod"` and `"d.odm"`. Never
  * throws, errors read as a missing path.
  *
- * Trailing separators are not checked, so `"games.lod/"` gives `"games.lod"` with an empty tail. On Windows the OS
- * collapses `.` and `..` before looking, so a `.` or `..` segment right after a file doesn't end the prefix there.
+ * Trailing separators are not checked, so `"games.lod/"` gives `"games.lod"` with an empty tail.
  *
  * @param path                          Path to walk.
  * @param[out] tail                     If not null, receives the part of `path` that doesn't exist, starting at its
