@@ -45,7 +45,7 @@ static constexpr FontDesc FONTS[] = {
     {"comic",    MERGE_UNION,        SHADOW_DROP,     0, false},
     {"create",   MERGE_UNION,        SHADOW_DROP,     1, false},
     {"endgame",  MERGE_UNION,        SHADOW_NONE,    -1, true },
-    {"legal",    MERGE_ENGLISH_ONLY, SHADOW_OUTLINE,  0, false}, // Not localized.
+    {"legal",    MERGE_ENGLISH_ONLY, SHADOW_OUTLINE,  0, false},
     {"lucida",   MERGE_UNION,        SHADOW_DROP,     0, false},
     {"quick",    MERGE_UNION,        SHADOW_OUTLINE,  1, false},
     {"smallnum", MERGE_UNION,        SHADOW_DROP,     0, false},
@@ -69,7 +69,7 @@ static Font mergeFonts(const Font &enFont, const Font &ruFont, const FontDesc &d
     FontBuilder result(enFont.height());
 
     for (int i = 0; i < enFont.size(); i++) {
-        auto [metrics, image] = reshadow(enFont.metrics(i), enFont.image(i), enFont.height(), desc.shadow, 0, false);
+        auto [metrics, image] = reshadow(enFont.metrics(i), enFont.image(i), enFont.height(), desc.shadow);
         result.add(enFont.character(i), metrics, image);
     }
 

@@ -26,6 +26,7 @@ Font decode(const Blob &blob);
  *
  * @param font                          Font to encode. Must be valid.
  * @return                              Encoded `Blob`.
+ * @throw Exception                     If the font is too big for the format, the limits are the ones `decode` checks.
  */
 Blob encode(const Font &font);
 

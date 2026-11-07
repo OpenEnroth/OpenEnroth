@@ -280,10 +280,10 @@ class Leaderboard {
  * How a face is rendered and thresholded into ink, everything about a rendering except the size.
  */
 struct Binarization {
-    RasterMode mode;
-    bool oblique;
-    int threshold;
-    bool bold;
+    RasterMode mode = RASTER_MONO;
+    bool oblique = false;
+    int threshold = 1;
+    bool bold = false;
 };
 
 class Searcher {
@@ -349,7 +349,8 @@ class Searcher {
                 for (size_t r = 0; r < _references.size(); r++)
                     if (state.active[r])
                         all.push_back(r);
-                searchSize(face, strikes[strike], all, &state, {{RASTER_MONO, false, 1, false}, {RASTER_MONO, false, 1, true}});
+                searchSize(face, strikes[strike], all, &state,
+                           {{.mode = RASTER_MONO, .threshold = 1}, {.mode = RASTER_MONO, .threshold = 1, .bold = true}});
             }
         }
 
@@ -388,9 +389,10 @@ class Searcher {
                 }
                 if (units <= 0)
                     continue;
-                int estimate = static_cast<int>(std::lround(static_cast<double>(pixels) * face.unitsPerEm() / units));
-                first = std::max(4, estimate - _options.ppemWindow);
-                last = estimate + _options.ppemWindow;
+                double estimate = static_cast<double>(pixels) * face.unitsPerEm() / units;
+                int ppem = static_cast<int>(std::lround(std::clamp(estimate, 4.0, 4.0 * reference.height)));
+                first = std::max(4, ppem - _options.ppemWindow);
+                last = ppem + _options.ppemWindow;
             }
             for (int ppem = first; ppem <= last; ppem++)
                 sizes[r].push_back(ppem);
@@ -407,10 +409,10 @@ class Searcher {
         for (bool oblique : {false, true}) {
             if (oblique && !_options.oblique)
                 continue;
-            binarizations.push_back({RASTER_MONO, oblique, 1, false});
-            binarizations.push_back({RASTER_MONO, oblique, 1, true});
+            binarizations.push_back({.mode = RASTER_MONO, .oblique = oblique, .threshold = 1});
+            binarizations.push_back({.mode = RASTER_MONO, .oblique = oblique, .threshold = 1, .bold = true});
             for (int threshold : GRAY_THRESHOLDS)
-                binarizations.push_back({RASTER_GRAY, oblique, threshold, false});
+                binarizations.push_back({.mode = RASTER_GRAY, .oblique = oblique, .threshold = threshold});
         }
 
         for (int ppem : allSizes) {

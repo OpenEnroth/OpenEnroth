@@ -13,7 +13,6 @@ std::pair<GlyphMetrics, GrayscaleImage> reshadow(const GlyphMetrics &metrics, Gr
         return recolor && result == 2 ? 1 : result;
     };
 
-    // Only the text is carried over. Whatever shadow the glyph had is redrawn from scratch below.
     int textLeft = metrics.width;
     int textRight = -1;
     for (int y = 0; y < height; y++) {

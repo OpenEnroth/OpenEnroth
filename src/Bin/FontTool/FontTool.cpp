@@ -108,7 +108,7 @@ static int runRender(const FontToolOptions &options) {
     if (options.shadow != SHADOW_NONE) {
         FontBuilder builder(font.height());
         for (int i = 0; i < font.size(); i++) {
-            auto [metrics, image] = reshadow(font.metrics(i), font.image(i), font.height(), options.shadow, 0, false);
+            auto [metrics, image] = reshadow(font.metrics(i), font.image(i), font.height(), options.shadow);
             builder.add(font.character(i), metrics, image);
         }
         font = std::move(builder).build();
