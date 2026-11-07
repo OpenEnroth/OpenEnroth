@@ -33,12 +33,18 @@ UNIT_TEST(Fs, Walk) {
     EXPECT_EQ(tail, "x");
     EXPECT_EQ(fs::walk("tmp_fs_walk/a/", &tail), "tmp_fs_walk/a");
     EXPECT_EQ(tail, "");
+    EXPECT_EQ(fs::walk("tmp_fs_walk/a/b.lod/", &tail), "tmp_fs_walk/a/b.lod");
+    EXPECT_EQ(tail, "");
     EXPECT_EQ(fs::walk("tmp_fs_doesnt_exist/a", &tail), "");
     EXPECT_EQ(tail, "tmp_fs_doesnt_exist/a");
     EXPECT_EQ(fs::walk("/tmp_fs_doesnt_exist/a", &tail), "/");
     EXPECT_EQ(tail, "tmp_fs_doesnt_exist/a");
     EXPECT_EQ(fs::walk("", &tail), "");
     EXPECT_EQ(tail, "");
+#ifdef _WINDOWS
+    EXPECT_EQ(fs::walk("tmp_fs_walk\\a/b.lod\\c", &tail), "tmp_fs_walk\\a/b.lod");
+    EXPECT_EQ(tail, "c");
+#endif
 }
 
 UNIT_TEST(Fs, LsRemoveMkdirs) {
