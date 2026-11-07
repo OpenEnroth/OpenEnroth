@@ -1,9 +1,6 @@
 #include "Magic.h"
 
-#include <array>
 #include <bit>
-#include <cstdint>
-#include <string_view>
 
 #include "Library/Lod/LodReader.h"
 #include "Library/Snd/SndReader.h"
@@ -11,7 +8,6 @@
 #include "Library/LodFormats/LodFormats.h"
 #include "Library/Image/Pcx.h"
 #include "Library/Image/Png.h"
-#include "Library/Binary/BinarySerialization.h"
 #include "Library/Binary/CommonSerialization.h"
 #include "Utility/Streams/BlobInputStream.h"
 
@@ -68,40 +64,22 @@ bool detect(const Blob &data) {
 }
 } // namespace smk
 
-struct BinkHeader {
-    std::array<char, 4> signature; // "BIK" for Bink 1 or "KB2" for Bink 2, then a version letter.
-    std::uint32_t sizeMinus8;
-    std::uint32_t frameCount;
-    std::uint32_t largestFrameSize;
-    std::uint32_t unk_0;
-    std::uint32_t width;
-    std::uint32_t height;
-    std::uint32_t fpsNumerator;
-    std::uint32_t fpsDenominator;
-};
-static_assert(sizeof(BinkHeader) == 36);
-MM_DECLARE_MEMCOPY_SERIALIZABLE(BinkHeader)
-
 namespace bik {
 bool detect(const Blob &data) {
-    if (data.size() < sizeof(BinkHeader))
+    if (data.size() < 8)
         return false;
 
-    BinkHeader header;
     BlobInputStream stream(data);
-    deserialize(stream, &header);
+    std::array<char, 4> signature;
+    uint32_t size;
+    deserialize(stream, &signature);
+    deserialize(stream, &size);
 
-    // Version letters and limits are the ones FFmpeg's Bink demuxer accepts.
-    std::string_view signature = std::string_view(header.signature.data(), 3);
-    char version = header.signature[3];
-    bool isBink1 = signature == "BIK" && std::string_view("bfghik").contains(version);
-    bool isBink2 = signature == "KB2" && std::string_view("adfghijk").contains(version);
-    return (isBink1 || isBink2) &&
-           header.sizeMinus8 == data.size() - 8 &&
-           header.frameCount > 0 &&
-           header.width > 0 && header.width <= 7680 &&
-           header.height > 0 && header.height <= 4800 &&
-           header.fpsNumerator > 0 && header.fpsDenominator > 0;
+    std::string_view signatureStr = std::string_view(signature.data(), 3);
+    char version = signature[3];
+    bool isBink1 = signatureStr == "BIK" && std::string_view("bfghik").contains(version); // Version letters FFmpeg accepts.
+    bool isBink2 = signatureStr == "KB2" && std::string_view("adfghijk").contains(version);
+    return (isBink1 || isBink2) && size == data.size() - 8;
 }
 } // namespace bik
 
