@@ -44,7 +44,7 @@
 std::unordered_map<std::string, Blob> pMapDeltas;
 
 void loadGame(std::string_view fileName) {
-    std::string path = fmt::format("/saves/{}", fileName);
+    std::string path = fmt::format("saves/{}", fileName);
     if (!ufs->exists(path)) {
         pAudioPlayer->playUISound(SOUND_error);
         MM_WARNING("loadGame: '{}' doesn't exist", fileName);
@@ -226,7 +226,7 @@ SaveGameHeader saveGame(bool isAutoSave, bool resetWorld, std::string_view path,
 }
 
 void autoSave() {
-    saveGame(true, false, fmt::format("/saves/{}", autosaveFileName), localization->str(LSTR_AUTOSAVE));
+    saveGame(true, false, fmt::format("saves/{}", autosaveFileName), localization->str(LSTR_AUTOSAVE));
 }
 
 void doSavegame(std::string fileName, std::string_view title) {
@@ -235,12 +235,12 @@ void doSavegame(std::string fileName, std::string_view title) {
     if (fileName.empty()) {
         for (int i = 0;; i++) { // New save, pick the first free numbered name.
             fileName = fmt::format("save{:03}.mm7", i);
-            if (!ufs->exists(fmt::format("/saves/{}", fileName)))
+            if (!ufs->exists(fmt::format("saves/{}", fileName)))
                 break;
         }
     }
 
-    saveGame(false, false, fmt::format("/saves/{}", fileName), title);
+    saveGame(false, false, fmt::format("saves/{}", fileName), title);
 
     GUI_UpdateWindows();
     pGUIWindow_CurrentMenu = nullptr;
@@ -262,14 +262,14 @@ void saveNewGame() {
     pParty->_viewPitch = 0;
     pParty->_viewYaw = 512;
 
-    saveGame(true, true, fmt::format("/saves/{}", autosaveFileName), localization->str(LSTR_AUTOSAVE));
+    saveGame(true, true, fmt::format("saves/{}", autosaveFileName), localization->str(LSTR_AUTOSAVE));
 }
 
 void quickSaveGame() {
     assert(engine->_currentLoadedMapId != MAP_ARENA); // Not Arena.
 
     engine->config->gameplay.QuickSavesCount.cycleIncrement();
-    saveGame(false, false, fmt::format("/saves/{}", getCurrentQuickSave()), localization->str(LSTR_QUICKSAVE));
+    saveGame(false, false, fmt::format("saves/{}", getCurrentQuickSave()), localization->str(LSTR_QUICKSAVE));
     engine->_statusBar->setEvent(LSTR_GAME_SAVED);
     pAudioPlayer->playUISound(SOUND_StartMainChoice02);
 }
@@ -277,7 +277,7 @@ void quickSaveGame() {
 void quickLoadGame() {
     std::string fileName = getCurrentQuickSave();
 
-    if (ufs->exists(fmt::format("/saves/{}", fileName))) {
+    if (ufs->exists(fmt::format("saves/{}", fileName))) {
         loadGame(fileName);
         uGameState = GAME_STATE_LOADING_GAME;
         pAudioPlayer->playUISound(SOUND_StartMainChoice02);

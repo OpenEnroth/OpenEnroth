@@ -1,6 +1,5 @@
 #pragma once
 
-#include <cassert>
 #include <concepts>
 #include <string_view>
 
@@ -12,7 +11,7 @@ class NormalPath;
 /**
  * View over a path in the normal form the file system layer works in. It comes from a `NormalPath` or from a tail of
  * another `NormalPathView`, so a function that takes one can rely on it being normal. It can be inaccessible, see
- * `isAccessible`, and the public `FileSystem` methods check that. A default-constructed view names the root.
+ * `isAccessible`, and the public `FileSystem` methods check that. An empty view names the root.
  */
 class NormalPathView {
  public:
@@ -27,43 +26,35 @@ class NormalPathView {
     }
 
     [[nodiscard]] bool isRoot() const {
-        return _path.str() == "/";
+        return _path.isEmpty();
     }
 
     /**
-     * @return                          Whether a file system can reach this path, which it can if the path starts
-     *                                  with `/`.
+     * @return                          Whether a file system can reach this path. It can't if the path has a root, as
+     *                                  `"/a"` does. On Windows it also can't if a segment starts with a drive, as in
+     *                                  `"a/c:b"`, because a tail starting there reads as a root.
      */
-    [[nodiscard]] bool isAccessible() const {
-        return _path.str().starts_with('/');
-    }
+    [[nodiscard]] bool isAccessible() const;
 
     [[nodiscard]] PathSplit split() const {
         return _path.split();
     }
 
     /**
-     * @param segment                   Segment of this path, which must be accessible, as handed out by `split`.
-     * @return                          The rest of this path as a path of its own, starting at the separator before
-     *                                  `segment`.
+     * @param segment                   Segment of this path, as handed out by `split`.
+     * @return                          The rest of this path, starting at `segment`.
      */
     [[nodiscard]] NormalPathView tailAt(std::same_as<std::string_view> auto segment) const {
-        assert(isAccessible());
-        return NormalPathView(PathView(str().substr(segment.data() - 1 - str().data())));
+        return NormalPathView(_path.tailAt(segment));
     }
 
     /**
-     * @param segment                   Segment of this path, which must be accessible, as handed out by `split`, or
-     *                                  an empty view.
-     * @return                          The rest of this path after `segment` as a path of its own, the root if
-     *                                  there's nothing left, or all of it for an empty `segment`.
+     * @param segment                   Segment of this path, as handed out by `split`, or an empty view.
+     * @return                          The rest of this path after `segment`, empty if there's nothing left, or all
+     *                                  of it for an empty `segment`.
      */
     [[nodiscard]] NormalPathView tailAfter(std::same_as<std::string_view> auto segment) const {
-        assert(isAccessible());
-        if (segment.empty())
-            return *this;
-        std::string_view tail = str().substr(segment.data() + segment.size() - str().data());
-        return tail.empty() ? NormalPathView() : NormalPathView(PathView(tail));
+        return NormalPathView(_path.tailAfter(segment));
     }
 
  private:
@@ -72,7 +63,7 @@ class NormalPathView {
     explicit NormalPathView(PathView path) : _path(path) {}
 
  private:
-    PathView _path = "/";
+    PathView _path;
 };
 
 /**
@@ -84,10 +75,9 @@ class NormalPathView {
 
 /**
  * A path inside a `FileSystem`, in the normal form the file system layer works in. A backslash is a separator on every
- * platform, and `.`, `..` and repeated separators are folded. The root is `/`, and `..` stops there. A path that
- * doesn't start with `/` stays representable, so that `displayPath` can show it, but `isAccessible` refuses it. A
- * default-constructed path is the root. Build one to join paths, or to use a path repeatedly without normalizing it
- * again.
+ * platform, and `.`, `..` and repeated separators are folded. The root is `""`, so `"."` and `"a/.."` normalize to
+ * it, and `..` stops there, so `"../a"` is `"a"`. A path that `isAccessible` refuses stays representable, so that
+ * `displayPath` can show it. Build one to join paths, or to use a path repeatedly without normalizing it again.
  */
 class NormalPath {
  public:
@@ -117,6 +107,6 @@ class NormalPath {
     friend NormalPath operator/(NormalPathView head, NormalPathView tail);
 
  private:
-    Path _path = "/";
+    Path _path;
 };
 

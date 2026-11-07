@@ -28,7 +28,7 @@ bool MountingFileSystem::unmount(PathView path) {
 
     Node *node = _trie.find(normalPath.path());
     if (!node || !node->hasValue())
-        return false; // Should be a real mount point, unmount("/") is not equivalent to clearMounts().
+        return false; // Should be a real mount point, unmount("") is not equivalent to clearMounts().
 
     return _trie.erase(node);
 }
@@ -124,7 +124,7 @@ bool MountingFileSystem::_remove(NormalPathView path) {
 
 std::string MountingFileSystem::_displayPath(NormalPathView path) const {
     // TODO(captainurist): this is not symmetric with that's done in read / openForReading / openForWriting.
-    return join(_displayName, ":/", txt::encodedToUtf8(path.str(), ENCODING_UTF8)); // Replaces invalid UTF8.
+    return join(_displayName, "://", txt::encodedToUtf8(path.str(), ENCODING_UTF8)); // Replaces invalid UTF8.
 }
 
 MountingFileSystem::WalkResult MountingFileSystem::walk(NormalPathView path) {

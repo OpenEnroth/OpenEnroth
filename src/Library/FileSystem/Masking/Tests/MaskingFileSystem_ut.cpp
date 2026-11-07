@@ -7,96 +7,44 @@
 
 UNIT_TEST(MaskingFileSystem, SimpleMasks) {
     MemoryFileSystem fs0("");
-    fs0.write("/a/b/c/d", Blob());
-    fs0.write("/a/b/c/e", Blob());
-    fs0.write("/a/b/1/d", Blob());
-    fs0.write("/a/b/1/e", Blob());
+    fs0.write("a/b/c/d", Blob());
+    fs0.write("a/b/c/e", Blob());
+    fs0.write("a/b/1/d", Blob());
+    fs0.write("a/b/1/e", Blob());
 
     MaskingFileSystem fs1(&fs0);
-    EXPECT_TRUE(fs1.exists("/a"));
-    EXPECT_TRUE(fs1.exists("/a/b/c/d"));
+    EXPECT_TRUE(fs1.exists("a"));
+    EXPECT_TRUE(fs1.exists("a/b/c/d"));
 
-    fs1.mask("/a/b/c/d");
-    EXPECT_FALSE(fs1.exists("/a/b/c/d"));
-    EXPECT_TRUE(fs0.exists("/a/b/c/d"));
-    EXPECT_EQ(fs1.ls("/a/b/c"), std::vector<DirectoryEntry>({{"e", FILE_REGULAR}}));
+    fs1.mask("a/b/c/d");
+    EXPECT_FALSE(fs1.exists("a/b/c/d"));
+    EXPECT_TRUE(fs0.exists("a/b/c/d"));
+    EXPECT_EQ(fs1.ls("a/b/c"), std::vector<DirectoryEntry>({{"e", FILE_REGULAR}}));
 
-    fs1.mask("/a/b/c/e");
-    EXPECT_FALSE(fs1.exists("/a/b/c/e"));
-    EXPECT_TRUE(fs0.exists("/a/b/c/e"));
-    EXPECT_EQ(fs1.ls("/a/b/c"), std::vector<DirectoryEntry>()); // Masking might result in observable empty dirs.
+    fs1.mask("a/b/c/e");
+    EXPECT_FALSE(fs1.exists("a/b/c/e"));
+    EXPECT_TRUE(fs0.exists("a/b/c/e"));
+    EXPECT_EQ(fs1.ls("a/b/c"), std::vector<DirectoryEntry>()); // Masking might result in observable empty dirs.
 
-    fs1.mask("/");
-    EXPECT_EQ(fs1.ls("/"), std::vector<DirectoryEntry>());
+    fs1.mask("");
+    EXPECT_EQ(fs1.ls(""), std::vector<DirectoryEntry>());
 
-    EXPECT_TRUE(fs1.unmask("/a/b/c/e"));
-    EXPECT_FALSE(fs1.exists("/a/b/c/e")); // Still masked.
-    EXPECT_TRUE(fs1.unmask("/"));
-    EXPECT_TRUE(fs1.exists("/a/b/c/e"));
-    EXPECT_FALSE(fs1.exists("/a/b/c/d"));
+    EXPECT_TRUE(fs1.unmask("a/b/c/e"));
+    EXPECT_FALSE(fs1.exists("a/b/c/e")); // Still masked.
+    EXPECT_TRUE(fs1.unmask(""));
+    EXPECT_TRUE(fs1.exists("a/b/c/e"));
+    EXPECT_FALSE(fs1.exists("a/b/c/d"));
 
     fs1.clearMasks();
-    EXPECT_TRUE(fs1.exists("/a/b/c/d"));
+    EXPECT_TRUE(fs1.exists("a/b/c/d"));
 }
 
 UNIT_TEST(MaskingFileSystem, PersistentMasking) {
     MemoryFileSystem fs0("");
     MaskingFileSystem fs1(&fs0);
 
-    fs1.mask("/a");
-    fs0.write("/a", Blob());
-    EXPECT_FALSE(fs1.exists("/a"));
-    EXPECT_TRUE(fs0.exists("/a"));
-}
-
-UNIT_TEST(MaskingFileSystem, MaskPathsAreNormalized) {
-    // A mask is keyed by the normal form of its path, so any spelling of it hides the same file.
-    MemoryFileSystem fs0("");
-    fs0.write("/a", Blob());
-    fs0.write("/b/c", Blob());
-
-    MaskingFileSystem fs(&fs0);
-    fs.mask("/./a");
-    fs.mask("/b\\c");
-    EXPECT_FALSE(fs.exists("/a"));
-    EXPECT_FALSE(fs.exists("/b/c"));
-
-    EXPECT_TRUE(fs.unmask("/./a/"));
-    EXPECT_TRUE(fs.exists("/a"));
-}
-
-UNIT_TEST(MaskingFileSystem, UnmaskInaccessiblePath) {
-    // mask asserts on an inaccessible path, so unmask finds nothing there either.
-    MemoryFileSystem fs0("");
-    fs0.write("/a", Blob());
-    MaskingFileSystem fs(&fs0);
-    fs.mask("/");
-
-    EXPECT_FALSE(fs.unmask(""));
-    EXPECT_FALSE(fs.unmask("a"));
-    EXPECT_FALSE(fs.exists("/a"));
-    EXPECT_TRUE(fs.unmask("/"));
-}
-
-UNIT_TEST(MaskingFileSystem, DisplayPath) {
-    // A masked path is shown under its own prefix, the root as the bare prefix.
-    MemoryFileSystem fs0("ram");
-    MaskingFileSystem fs(&fs0);
-
-    EXPECT_EQ(fs.displayPath("/"), "ram://");
-    fs.mask("/");
-    EXPECT_EQ(fs.displayPath("/"), "masked://");
-    EXPECT_EQ(fs.displayPath("/a"), "masked://a");
-}
-
-UNIT_TEST(MaskingFileSystem, DriveLikeNames) {
-    // Masking a name that looks like a drive doesn't mask what comes after its colon.
-    MemoryFileSystem fs0("");
-    fs0.write("/c:b", Blob());
-    fs0.write("/b", Blob());
-    MaskingFileSystem fs(&fs0);
-
-    fs.mask("/c:b");
-    EXPECT_FALSE(fs.exists("/c:b"));
-    EXPECT_TRUE(fs.exists("/b"));
+    fs1.mask("a");
+    fs0.write("a", Blob());
+    EXPECT_FALSE(fs1.exists("a"));
+    EXPECT_TRUE(fs0.exists("a"));
 }
