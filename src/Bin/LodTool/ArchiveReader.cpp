@@ -23,10 +23,6 @@ class UniversalReader : public ArchiveReader {
         }
     }
 
-    virtual bool exists(std::string_view filename) const override {
-        return _base.exists(filename);
-    }
-
     virtual Blob read(std::string_view filename) const override {
         return _base.read(filename);
     }

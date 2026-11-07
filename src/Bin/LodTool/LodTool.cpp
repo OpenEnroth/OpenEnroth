@@ -8,6 +8,11 @@
 #include <vector>
 #include <memory>
 
+#ifdef _WINDOWS
+#   include <fcntl.h>
+#   include <io.h>
+#endif
+
 #include "Library/Image/ImageFunctions.h"
 #include "Library/Image/Pcx.h"
 #include "Library/Image/Png.h"
@@ -87,8 +92,9 @@ static Blob readFile(PathView path) {
 }
 
 static void writeFile(PathView path, const Blob &data) {
+    Blob copy = Blob::copy(data); // `data` can be a mapping of the file at `path`, which opening it for writing truncates.
     FileOutputStream output(path);
-    output.write(data);
+    output.write(copy);
     output.close();
 }
 
@@ -137,8 +143,7 @@ static int runLs(const LodToolOptions &options) {
     PathView prefix = fs::walk(options.path, &tail);
 
     if (!tail.isEmpty()) {
-        if (fs::stat(prefix).type != FILE_REGULAR || !ArchiveReader::createArchiveReader(Blob::fromFile(prefix))->exists(tail.str()))
-            throw Exception("'{}' doesn't exist", options.path);
+        (void) readFile(options.path); // Throws if there is no such entry.
         fmt::println("{}", tail);
         return 0;
     }
@@ -166,6 +171,9 @@ static int runCat(const LodToolOptions &options) {
     Blob data = readFile(options.path);
     if (!options.raw)
         data = lod::decodeMaybeCompressed(data);
+#ifdef _WINDOWS
+    _setmode(_fileno(stdout), _O_BINARY);
+#endif
     if (!data.empty() && fwrite(data.data(), data.size(), 1, stdout) != 1)
         return 1;
     return 0;
@@ -176,11 +184,14 @@ static int runExtract(const LodToolOptions &options) {
 
     Blob data = readFile(options.path);
     if (isArchive(magic(data))) {
-        fs::mkdirs(output);
         std::unique_ptr<ArchiveReader> reader = ArchiveReader::createArchiveReader(std::move(data));
-        for (const std::string &name : reader->ls()) {
+        std::vector<std::string> names = reader->ls();
+        for (const std::string &name : names)
             if (PathView(name).name() != name || name == "." || name == "..")
                 throw Exception("Entry '{}' in '{}' is not a valid file name", name, options.path);
+
+        fs::mkdirs(output);
+        for (const std::string &name : names) {
             Blob entry = reader->read(name);
             writeFile(output / name, options.raw ? std::move(entry) : lod::decodeMaybeCompressed(entry));
         }

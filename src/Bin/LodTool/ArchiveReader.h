@@ -10,7 +10,6 @@
 class ArchiveReader {
  public:
     virtual ~ArchiveReader() = default;
-    virtual bool exists(std::string_view filename) const = 0;
     virtual Blob read(std::string_view filename) const = 0;
     virtual std::vector<std::string> ls() const = 0;
 

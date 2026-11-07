@@ -71,7 +71,7 @@ PathView fs::walk(PathView path, PathView *tail) {
     }
 
     if (tail)
-        *tail = {};
+        *tail = str.substr(str.size());
     return str.substr(0, prefixSize);
 }
 
