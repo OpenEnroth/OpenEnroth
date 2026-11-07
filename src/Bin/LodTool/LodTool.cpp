@@ -2,7 +2,6 @@
 
 #include <cstdio>
 #include <string>
-#include <string_view>
 #include <utility>
 #include <algorithm>
 #include <vector>
@@ -54,14 +53,6 @@ static RgbaImage renderFont(const LodFont &font) {
     return image;
 }
 
-/**
- * @param format                        Format to describe.
- * @return                              Description of `format` that reads in the middle of a sentence.
- */
-static std::string_view describe(MagicFileFormat format) {
-    return format == MAGIC_UNRECOGNIZED ? "raw data" : formatDescription(format);
-}
-
 static bool isArchive(MagicFileFormat format) {
     return format == MAGIC_LOD || format == MAGIC_VID || format == MAGIC_SND;
 }
@@ -70,11 +61,6 @@ static bool isCompressed(MagicFileFormat format) {
     return format == MAGIC_LOD_COMPRESSED_DATA || format == MAGIC_LOD_COMPRESSED_PSEUDO_IMAGE;
 }
 
-/**
- * @param path                          Path to a file, or to an entry inside an archive, as in `"games.lod/d.odm"`.
- * @return                              Contents of the file or the archive entry, as stored.
- * @throws Exception                    If there is no such file or entry.
- */
 static Blob readFile(PathView path) {
     PathView tail;
     PathView prefix = fs::walk(path, &tail);
@@ -98,13 +84,6 @@ static void writeFile(PathView path, const Blob &data) {
     output.close();
 }
 
-/**
- * @param data                          Decompressed image, sprite, palette or font.
- * @param palettesLodPath               Path to bitmaps.lod to take sprite palettes from. Without it a sprite comes
- *                                      out grayscale, with palette indices as gray levels.
- * @return                              PNG image.
- * @throws Exception                    If `data` is in a format that has no PNG rendering.
- */
 static Blob convertToPng(const Blob &data, PathView palettesLodPath) {
     switch (magic(data)) {
     case MAGIC_PNG:
@@ -134,7 +113,7 @@ static Blob convertToPng(const Blob &data, PathView palettesLodPath) {
     case MAGIC_LOD_FONT:
         return png::encode(renderFont(lod::decodeFont(data)));
     default:
-        throw Exception("Can't convert {} '{}' to png", describe(magic(data)), data.displayPath());
+        throw Exception("Can't convert {} '{}' to png", formatDescription(magic(data)), data.displayPath());
     }
 }
 
@@ -214,7 +193,7 @@ static int runMagic(const LodToolOptions &options) {
         return 0;
     }
 
-    fmt::println("{} containing {}", formatDescription(format), describe(magic(lod::decodeMaybeCompressed(data))));
+    fmt::println("{} containing {}", formatDescription(format), formatDescription(magic(lod::decodeMaybeCompressed(data))));
     return 0;
 }
 
