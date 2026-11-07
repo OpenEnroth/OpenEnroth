@@ -66,8 +66,8 @@ bool detect(const Blob &data) {
 
 namespace bik {
 bool detect(const Blob &data) {
-    if (data.size() < 8)
-        return false;
+    if (data.size() < 44)
+        return false; // Bink header is 44 bytes.
 
     BlobInputStream stream(data);
     std::array<char, 4> signature;
