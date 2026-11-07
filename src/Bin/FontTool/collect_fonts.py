@@ -14,6 +14,7 @@ import argparse
 import hashlib
 import io
 import os
+import re
 import shutil
 import subprocess
 import sys
@@ -25,6 +26,12 @@ FONT_EXTENSIONS = {'ttf', 'otf', 'ttc', 'otc', 'tt', 'pfb', 'pfa', 'fon', 'fnt',
 ARCHIVE_EXTENSIONS = {'zip', 'rar', '7z'}
 MAX_DEPTH = 4  # Nesting limit, so that a zip bomb of zips can't recurse forever.
 MAX_FONT_SIZE = 64 << 20  # Bigger "fonts" are CJK monsters or garbage, neither is a bitmap game font's source.
+
+
+def is_later_volume(name):
+    """7z unpacks a multi-volume rar from any of its volumes to the end, so only the first one is worth opening."""
+    match = re.search(r'\.part(\d+)\.rar$', name, re.IGNORECASE)
+    return match is not None and int(match.group(1)) > 1
 
 
 def extension(name):
@@ -55,7 +62,7 @@ class Collector:
         if ext in FONT_EXTENSIONS:
             if 0 < len(data) <= MAX_FONT_SIZE:
                 self.add_font(data, ext, origin)
-        elif ext in ARCHIVE_EXTENSIONS and depth < MAX_DEPTH:
+        elif ext in ARCHIVE_EXTENSIONS and depth < MAX_DEPTH and not is_later_volume(name):
             self.add_nested(data, ext, origin, depth + 1)
 
     def add_nested(self, data, ext, origin, depth):
@@ -163,7 +170,7 @@ def main():
         else:
             files.append(input)
     files = [os.path.abspath(f) for f in files
-             if extension(f) in FONT_EXTENSIONS | ARCHIVE_EXTENSIONS and os.path.isfile(f)]
+             if extension(f) in FONT_EXTENSIONS | ARCHIVE_EXTENSIONS and os.path.isfile(f) and not is_later_volume(f)]
 
     # Big zips are split into shards by member index, so that one 22 GB zip doesn't run on a single core.
     shard_size = 1 << 30
