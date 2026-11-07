@@ -164,6 +164,30 @@ class PathView {
         return PathView(_path.substr(offset));
     }
 
+    /**
+     * @param segment                   Segment handed out by `split` of this path.
+     * @return                          This path up to the end of `segment`, root included.
+     */
+    [[nodiscard]] PathView headAt(std::same_as<std::string_view> auto segment) const {
+        assert(segment.data() >= _path.data() && segment.data() + segment.size() <= _path.data() + _path.size());
+        return PathView(_path.substr(0, segment.data() + segment.size() - _path.data()));
+    }
+
+    /**
+     * @param segment                   Segment handed out by `split` of this path.
+     * @return                          This path up to `segment`, without the separators before it, but never
+     *                                  shorter than the root. So the head before `"a"` in `"/a"` is `"/"`, and in
+     *                                  `"a"` it is empty.
+     */
+    [[nodiscard]] PathView headBefore(std::same_as<std::string_view> auto segment) const {
+        assert(segment.data() >= _path.data() && segment.data() + segment.size() <= _path.data() + _path.size());
+        size_t rootSize = root().size();
+        size_t end = segment.data() - _path.data();
+        while (end > rootSize && detail::isPathSeparator(_path[end - 1]))
+            end--;
+        return PathView(_path.substr(0, end));
+    }
+
     friend auto operator<=>(PathView l, PathView r) = default;
 
  private:

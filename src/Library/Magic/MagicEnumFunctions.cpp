@@ -8,7 +8,7 @@ std::string_view formatDescription(MagicFileFormat format) {
         assert(false);
         [[fallthrough]];
     case MAGIC_UNRECOGNIZED:
-        return "Raw data";
+        return "raw data";
     case MAGIC_LOD:
         return "LOD archive";
     case MAGIC_LOD_COMPRESSED_DATA:
@@ -33,5 +33,9 @@ std::string_view formatDescription(MagicFileFormat format) {
         return "PCX image";
     case MAGIC_WAV:
         return "WAV file";
+    case MAGIC_SMK:
+        return "Smacker video";
+    case MAGIC_BIK:
+        return "Bink video";
     }
 }

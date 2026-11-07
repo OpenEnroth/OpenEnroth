@@ -14,5 +14,7 @@ enum class MagicFileFormat {
     MAGIC_PNG,
     MAGIC_PCX,
     MAGIC_WAV,
+    MAGIC_SMK,
+    MAGIC_BIK,
 };
 using enum MagicFileFormat;
