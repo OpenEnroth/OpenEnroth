@@ -16,7 +16,7 @@ struct SearchReference {
 struct SearchOptions {
     int top = 20; // Number of best matches to keep per reference.
     int ppemWindow = 2; // Sizes to try on either side of the estimated one.
-    bool exhaustive = false; // Sweep all sizes, baselines and offsets instead of estimating them.
+    bool exhaustive = false; // Sweep a range of sizes, baselines and offsets instead of estimating them.
     bool oblique = false; // Also try slanted renders of every face.
     int threads = 0; // Zero means one per core.
 };

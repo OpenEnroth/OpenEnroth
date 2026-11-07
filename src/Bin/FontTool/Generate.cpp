@@ -31,7 +31,8 @@ struct FontDesc {
 };
 
 /**
- * Fonts to generate, and how to merge each one. `icons.lod` also has `calig.fnt`, which the engine doesn't use.
+ * Fonts to generate, and how to merge each one. `icons.lod` also has `calig.fnt`, which isn't generated. Neither
+ * `calig` nor `legal` is used by the engine.
  *
  * `legal` is not localized. The Russian `icons.lod` ships the same font, so its 0xC0-0xFF glyphs are Latin-1
  * accents rather than Cyrillic. It is taken from the English side only, and ends up without Cyrillic.
