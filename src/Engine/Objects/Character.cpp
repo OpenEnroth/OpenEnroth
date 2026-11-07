@@ -994,6 +994,14 @@ int Character::CalculateMeleeDmgToEnemyWithWeapon(Item *weapon,
     return totalDmg;
 }
 
+int Character::visibleSkillCount() const {
+    int result = 0;
+    for (Skill skill : allVisibleSkills())
+        if (pActiveSkills[skill])
+            ++result;
+    return result;
+}
+
 //----- (0048D0B9) --------------------------------------------------------
 int Character::GetRangedAttack() {
     InventoryConstEntry mainHandItem = inventory.entry(ITEM_SLOT_MAIN_HAND);

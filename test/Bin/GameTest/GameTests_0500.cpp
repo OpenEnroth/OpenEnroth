@@ -1158,6 +1158,27 @@ GAME_TEST(Issues, Issue929) {
     EXPECT_EQ(itemsTape.delta(), -1);
 }
 
+GAME_TEST(Issues, Issue939) {
+    // The quick reference's Shoot ignored the bow skill and its Skills count included the hidden skills.
+    auto shootTape = tapes.custom([] { return pParty->pCharacters[0].GetRangedAttack(); });
+    auto skillsTape = tapes.custom([] { return pParty->pCharacters[0].visibleSkillCount(); });
+    game.startNewGame();
+    Character &character = pParty->pCharacters[0];
+    character.inventory.equip(ITEM_SLOT_BOW, Item(ITEM_CROSSBOW));
+    character.setSkillValue(SKILL_BOW, CombinedSkillValue::none());
+    character.setSkillValue(SKILL_CLUB, CombinedSkillValue::none());
+    character.setSkillValue(SKILL_MISC, CombinedSkillValue::none());
+    test.startTaping();
+    game.tick();
+    character.setSkillValue(SKILL_BOW, CombinedSkillValue::novice(5));
+    game.tick();
+    character.setSkillValue(SKILL_CLUB, CombinedSkillValue::novice()); // Club and Misc are hidden skills.
+    character.setSkillValue(SKILL_MISC, CombinedSkillValue::novice());
+    game.tick();
+    EXPECT_EQ(shootTape.delta(), 5); // Bow skill adds one point of Shoot per level, at every mastery.
+    EXPECT_EQ(skillsTape.delta(), 1); // Only Bow counts, Club and Misc are hidden.
+}
+
 GAME_TEST(Issues, Issue959) {
     // Human town halls played no greeting.
     auto houseTape = tapes.house();

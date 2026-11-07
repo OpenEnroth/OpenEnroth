@@ -108,13 +108,7 @@ void GUIWindow_QuickReference::Update() {
         pGUIWindow_CurrentMenu->DrawTextInRect(assets->pFontArrus.get(), {pX, pY}, colorTable.White, player.GetRangedDamageString(), 84, 0);
         pY += pFontHeight;
 
-        int pSkillsCount = 0;
-        for (Skill j : allVisibleSkills()) {
-            if (player.pActiveSkills[j]) {
-                ++pSkillsCount;
-            }
-        }
-        pGUIWindow_CurrentMenu->DrawTextInRect(assets->pFontArrus.get(), {pX, pY}, colorTable.White, fmt::format("{}", pSkillsCount), 84, 0);
+        pGUIWindow_CurrentMenu->DrawTextInRect(assets->pFontArrus.get(), {pX, pY}, colorTable.White, fmt::format("{}", player.visibleSkillCount()), 84, 0);
         pY += pFontHeight;
 
         pTextColor = player.uSkillPoints ? ui_character_bonus_text_color : ui_character_default_text_color;
