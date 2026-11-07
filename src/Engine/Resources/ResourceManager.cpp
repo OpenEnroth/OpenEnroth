@@ -12,7 +12,6 @@
 #include "Library/Image/Png.h"
 #include "Library/Json/Json.h"
 #include "Library/LodFormats/LodFormats.h"
-#include "Library/LodFormats/LodFormats.h"
 #include "Library/LodFormats/LodImage.h"
 #include "Library/LodFormats/LodSprite.h"
 #include "Library/Logger/Logger.h"

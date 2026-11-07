@@ -12,6 +12,7 @@
 #include <optional>
 #include <ranges>
 #include <span>
+#include <string>
 #include <thread>
 #include <utility>
 #include <vector>
@@ -205,9 +206,10 @@ CellScore scoreCell(const Reference &reference, const std::vector<const Candidat
         int best = INT_MAX;
         for (size_t k = 0; k < baselines.size(); k++) {
             int glyphDistance = referenceInk.pixels + candidate.ink.pixels;
-            if (!candidate.tooWide && candidate.ink.pixels > 0)
+            if (!candidate.tooWide && candidate.ink.pixels > 0) {
                 for (int dx = firstDx; dx <= lastDx; dx++)
                     glyphDistance = std::min(glyphDistance, distance(referenceInk, candidate.ink, baselines[k] - candidate.top, dx));
+            }
             partial[k] += glyphDistance;
             best = std::min(best, partial[k]);
         }

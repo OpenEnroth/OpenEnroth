@@ -1,6 +1,7 @@
 #include "Render.h"
 
 #include <algorithm>
+#include <string>
 #include <utility>
 
 #include "Library/Font/FontBuilder.h"

@@ -5,6 +5,7 @@
 #include <cstring>
 #include <memory>
 #include <utility>
+#include <vector>
 
 #include "Utility/Memory/FreeDeleter.h"
 
