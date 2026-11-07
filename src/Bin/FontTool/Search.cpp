@@ -8,6 +8,7 @@
 #include <cstdint>
 #include <exception>
 #include <map>
+#include <memory>
 #include <mutex>
 #include <optional>
 #include <ranges>
@@ -17,19 +18,18 @@
 #include <utility>
 #include <vector>
 
+#include "Utility/Exception.h"
 #include "Utility/String/Format.h"
 
 #include "FontFiles.h"
 #include "FreeType.h"
 
-namespace {
-
-constexpr int MAX_GLYPH_WIDTH = 64; // Glyph rows are single `uint64_t`s.
-constexpr int MAX_FACES_PER_FILE = 64;
-constexpr int MIN_PLACEHOLDER_COUNT = 3; // A glyph image shared by this many characters is a placeholder.
-constexpr int GRAY_THRESHOLDS[] = {64, 96, 128, 160, 192, 224};
-constexpr int EXHAUSTIVE_PPEM_RANGE = 12;
-constexpr int EXHAUSTIVE_MAX_OFFSET = 4;
+static constexpr int MAX_GLYPH_WIDTH = 64; // Glyph rows are single `uint64_t`s.
+static constexpr int MAX_FACES_PER_FILE = 64;
+static constexpr int MIN_PLACEHOLDER_COUNT = 3; // A glyph image shared by this many characters is a placeholder.
+static constexpr int GRAY_THRESHOLDS[] = {64, 96, 128, 160, 192, 224};
+static constexpr int EXHAUSTIVE_PPEM_RANGE = 12;
+static constexpr int EXHAUSTIVE_MAX_OFFSET = 4;
 
 struct Ink {
     std::vector<uint64_t> rows;
@@ -41,10 +41,13 @@ struct Ink {
 };
 
 /**
+ * @param width                         Image width, at most `MAX_GLYPH_WIDTH`.
+ * @param rows                          Image height.
  * @param pixel                         Callable `(x, y) -> bool`, whether the pixel is ink.
+ * @return                              Ink of the image.
  */
 template<class Pixel>
-Ink makeInk(int width, int rows, Pixel &&pixel) {
+static Ink makeInk(int width, int rows, Pixel &&pixel) {
     Ink result;
     result.rows.assign(rows, 0);
     int minX = INT_MAX, maxX = -1, minY = INT_MAX, maxY = -1;
@@ -88,7 +91,12 @@ struct CandidateGlyph {
     Ink ink;
 };
 
-Reference prepareReference(const SearchReference &reference) {
+/**
+ * @param reference                     Reference font and the characters to match on.
+ * @return                              Ink of the characters to match on. Characters with no ink, placeholder glyphs
+ *                                      and glyphs wider than `MAX_GLYPH_WIDTH` are left out.
+ */
+static Reference prepareReference(const SearchReference &reference) {
     Reference result;
     result.height = reference.font.height();
     uint8_t color = inkColorIndex(reference.font);
@@ -123,7 +131,7 @@ Reference prepareReference(const SearchReference &reference) {
     return result;
 }
 
-CandidateGlyph makeCandidateGlyph(const InkMask &mask) {
+static CandidateGlyph makeCandidateGlyph(const InkMask &mask) {
     CandidateGlyph result;
     result.top = mask.top;
     if (mask.width > MAX_GLYPH_WIDTH) {
@@ -136,11 +144,13 @@ CandidateGlyph makeCandidateGlyph(const InkMask &mask) {
 }
 
 /**
+ * @param reference                     Reference glyph ink, in cell coordinates.
+ * @param candidate                     Candidate glyph ink, in bitmap coordinates.
  * @param dy                            Cell row of the candidate's first row.
  * @param dx                            Cell column of the candidate's first column.
  * @return                              Number of pixels that differ.
  */
-int distance(const Ink &reference, const Ink &candidate, int dy, int dx) {
+static int distance(const Ink &reference, const Ink &candidate, int dy, int dx) {
     int overlap = 0;
     for (int y = 0; y < static_cast<int>(candidate.rows.size()); y++) {
         int cellY = y + dy;
@@ -165,11 +175,14 @@ struct CellScore {
 /**
  * Scores one rendering of a candidate against a reference.
  *
+ * @param reference                     Reference to score against.
+ * @param candidates                    Candidate glyphs, one per reference glyph.
+ * @param exhaustive                    Whether to try all baselines and offsets instead of the centroid ones.
  * @param bound                         Scoring stops once the distance can't get below this.
  * @return                              Score, `distance` is `INT_MAX` if scoring stopped early.
  */
-CellScore scoreCell(const Reference &reference, const std::vector<const CandidateGlyph *> &candidates, bool exhaustive,
-                    int bound) {
+static CellScore scoreCell(const Reference &reference, const std::vector<const CandidateGlyph *> &candidates,
+                           bool exhaustive, int bound) {
     std::vector<int> baselines;
     if (exhaustive) {
         for (int baseline = 0; baseline <= reference.height + 4; baseline++)
@@ -275,9 +288,12 @@ class Searcher {
             _leaderboards.push_back(std::make_unique<Leaderboard>(options.top));
 
         for (const Reference &reference : references) {
+            std::vector<size_t> &indices = _characterIndices.emplace_back();
             for (const ReferenceGlyph &glyph : reference.glyphs) {
-                if (std::ranges::find(_characters, glyph.character) == _characters.end())
-                    _characters.push_back(glyph.character);
+                auto pos = std::ranges::find(_characters, glyph.character);
+                if (pos == _characters.end())
+                    pos = _characters.insert(pos, glyph.character);
+                indices.push_back(pos - _characters.begin());
             }
         }
     }
@@ -401,7 +417,7 @@ class Searcher {
         }
     }
 
-    void searchSize(const FreeTypeFace &face, int ppem, const std::vector<size_t> &references, FaceState *state,
+    void searchSize(FreeTypeFace &face, int ppem, const std::vector<size_t> &references, FaceState *state,
                     const std::vector<Binarization> &binarizations) {
         std::vector<std::optional<RenderedGlyph>> rendered[2][2]; // Indexed by `RasterMode` and obliqueness.
         std::vector<CandidateGlyph> candidates(_characters.size());
@@ -418,8 +434,8 @@ class Searcher {
             for (size_t r : references) {
                 const Reference &reference = _references[r];
                 std::vector<const CandidateGlyph *> cell;
-                for (const ReferenceGlyph &glyph : reference.glyphs)
-                    cell.push_back(&candidates[std::ranges::find(_characters, glyph.character) - _characters.begin()]);
+                for (size_t index : _characterIndices[r])
+                    cell.push_back(&candidates[index]);
 
                 int bound = _leaderboards[r]->bound();
                 if (state->best[r])
@@ -448,25 +464,30 @@ class Searcher {
     const SearchOptions &_options;
     std::vector<std::unique_ptr<Leaderboard>> _leaderboards;
     std::vector<char32_t> _characters; // Union of the references' characters.
+    std::vector<std::vector<size_t>> _characterIndices; // Reference index -> glyph index -> index in `_characters`.
 };
-
-} // namespace
 
 std::vector<SearchResult> searchFonts(const std::vector<SearchReference> &references, const std::vector<std::string> &paths,
                                       const SearchOptions &options, std::vector<std::string> *failures) {
     std::vector<Reference> prepared;
-    for (const SearchReference &reference : references)
+    for (const SearchReference &reference : references) {
         prepared.push_back(prepareReference(reference));
+        if (prepared.back().glyphs.empty())
+            throw Exception("Reference font '{}' has no glyphs to match on", reference.name);
+    }
 
     Searcher searcher(prepared, options);
     std::atomic<size_t> next = 0;
     std::mutex failuresMutex;
     int threadCount = options.threads > 0 ? options.threads : std::max(1u, std::thread::hardware_concurrency());
 
+    std::vector<std::unique_ptr<FreeTypeLibrary>> libraries;
+    for (int t = 0; t < threadCount; t++)
+        libraries.push_back(std::make_unique<FreeTypeLibrary>());
+
     std::vector<std::thread> threads;
     for (int t = 0; t < threadCount; t++) {
-        threads.emplace_back([&] {
-            FreeTypeLibrary library;
+        threads.emplace_back([&, &library = *libraries[t]] {
             for (size_t i = next++; i < paths.size(); i = next++) {
                 if (i % 10000 == 0)
                     fmt::println(stderr, "{}/{} fonts searched", i, paths.size());

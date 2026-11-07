@@ -7,6 +7,7 @@
 #include "Library/Magic/Magic.h"
 
 #include "Utility/Exception.h"
+#include "Utility/String/Ascii.h"
 #include "Utility/Streams/FileOutputStream.h"
 
 #include "Bin/LodTool/ArchiveReader.h"
@@ -25,7 +26,7 @@ Font readFont(PathView path, TextEncoding encoding) {
 
 void writeFont(PathView path, const Font &font) {
     FileOutputStream output(path);
-    output.write(path.str().ends_with(".png") ? png::encode(renderFontSheet(font)) : oef::encode(font));
+    output.write(ascii::toLower(path.extension()) == ".png" ? png::encode(renderFontSheet(font)) : oef::encode(font));
     output.close();
 }
 
