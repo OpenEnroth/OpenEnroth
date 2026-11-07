@@ -1,5 +1,4 @@
 #include <array>
-#include <cstring>
 #include <type_traits>
 #include <utility>
 #include <vector>

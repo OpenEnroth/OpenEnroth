@@ -366,8 +366,7 @@ class Searcher {
     }
 
     void searchScalable(FreeTypeFace &face, FaceState *state) {
-        // Reference index -> sizes to try.
-        std::vector<std::vector<int>> sizes(_references.size());
+        std::vector<std::vector<int>> sizes(_references.size()); // Reference index -> sizes to try.
         for (size_t r = 0; r < _references.size(); r++) {
             if (!state->active[r])
                 continue;
