@@ -60,8 +60,9 @@ static std::u32string textOr(const std::string &text, std::u32string fallback) {
 }
 
 static void writePng(PathView path, const RgbaImage &image) {
+    Blob data = png::encode(image);
     FileOutputStream output(path);
-    output.write(png::encode(image));
+    output.write(data);
     output.close();
 }
 
