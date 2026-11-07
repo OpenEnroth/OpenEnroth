@@ -41,4 +41,5 @@ UNIT_TEST(Magic, Bink) {
     EXPECT_EQ(magic(header("KB2b", 92, 0, 100)), MAGIC_UNRECOGNIZED);
     EXPECT_EQ(magic(header("BIGf", 92, 0, 100)), MAGIC_UNRECOGNIZED);
     EXPECT_EQ(magic(header("BIKf", 93, 0, 100)), MAGIC_UNRECOGNIZED);
+    EXPECT_EQ(magic(header("BIKf", 35, 0, 43)), MAGIC_UNRECOGNIZED);
 }
