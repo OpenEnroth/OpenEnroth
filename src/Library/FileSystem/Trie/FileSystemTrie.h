@@ -49,14 +49,18 @@ class FileSystemTrieNode {
     friend class FileSystemTrie<T>;
 
  private:
+    /** Parent of this node. */
     FileSystemTrieNode *_parent = nullptr;
 
     /** Key in the parent node. It's only used for node removal, and is not exposed through getters. */
     std::string _key;
 
+    /** Value, if any. */
     std::optional<T> _value;
 
-    /** Children map. */
+    /** Children map. It's possible to jump through hoops here and use `std::unordered_set` of 
+     * `std::unique_ptr<FileSystemTrieNode>` since the key is stored in the `FileSystemTrieNode` anyway. 
+     * But it's just not worth it. */
     std::unordered_map<TransparentString, std::unique_ptr<FileSystemTrieNode>, TransparentStringHash, TransparentStringEquals> _children;
 };
 

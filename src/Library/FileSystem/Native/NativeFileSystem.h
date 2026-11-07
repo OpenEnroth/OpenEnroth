@@ -14,6 +14,9 @@
  * All methods will work as if the root directory of this `FileSystem` exists, even if it doesn't exist on the
  * underlying file system.
  *
+ * Files outside of the root directory are not observable through this `FileSystem` - the methods will behave as if
+ * these files don't exist.
+ *
  * When it comes to permissions, this filesystem tries its best to provide a simple guarantee that `ls` for an existing
  * folder never throws, and is in sync with what `stat` / `exists` return. This means that some files or folders that
  * are observable through `ls` in bash won't be observable through this filesystem.
@@ -21,7 +24,8 @@
 class NativeFileSystem : public FileSystem {
  public:
     /**
-     * @param root                      Directory to view. A relative one resolves against the current directory at construction.
+     * @param root                      Directory to view. A relative one resolves against the current directory
+     *                                  at construction.
      * @throws Exception                If `root` is empty.
      */
     explicit NativeFileSystem(PathView root);

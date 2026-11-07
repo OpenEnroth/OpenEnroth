@@ -36,9 +36,9 @@
  * `"../a"` is `"a"`.
  *
  * Unlike a real file system, this interface doesn't have a concept of a "current directory." All methods take paths
- * relative to the root. A path with a root of its own, like `"/foo/bar"` or `"C:/foo"` on Windows, is refused. Passing
- * one will throw, `exists` will return `false`, `stat` will return `FILE_INVALID`, and `displayPath` will show it next
- * to the root.
+ * relative to the root. A path with a root of its own, like `"/foo/bar"` or `"C:/foo"` on Windows, is refused, and on
+ * Windows so is one with a segment starting with a drive, like `"a/c:b"`. Passing one will throw, `exists` will return
+ * `false`, `stat` will return `FILE_INVALID`, and `displayPath` will show it next to the root.
  *
  * The root folder is `""`, or `"."`, and always exists. Thus, `exists("")` always returns `true`, `stat("")` always
  * returns `FILE_DIRECTORY`, `ls("")` never throws, and `remove("")` always throws.
