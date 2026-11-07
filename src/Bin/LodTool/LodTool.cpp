@@ -15,6 +15,7 @@
 #include "Library/Image/ImageFunctions.h"
 #include "Library/Image/Pcx.h"
 #include "Library/Image/Png.h"
+#include "Library/Font/FontSheet.h"
 #include "Library/Font/Oef.h"
 #include "Library/LodFormats/LodFormats.h"
 #include "Library/Magic/Magic.h"
@@ -28,37 +29,12 @@
 
 #include "ArchiveReader.h"
 
-static RgbaImage renderFont(const Font &font) {
-    int charHeight = font.height();
-    int charWidth = 0;
-    for (int i = 0; i < font.size(); i++)
-        charWidth = std::max(charWidth, font.metrics(i).width);
-
-    // Lay the glyphs out by glyph index - a font is keyed by unicode code point, so laying them out by character
-    // would need a grid the size of the unicode range.
-    int columns = 16;
-    int rows = (font.size() + columns - 1) / columns;
-    RgbaImage image = RgbaImage::solid(Color(0, 0, 0, 255), charWidth * columns, charHeight * rows);
-
-    for (int i = 0; i < font.size(); i++) {
-        int x0 = (i % columns) * charWidth;
-        int y0 = (i / columns) * charHeight;
-
-        GrayscaleImageView glyph = font.image(i);
-        for (int y = 0; y < glyph.height(); y++) {
-            for (int x = 0; x < glyph.width(); x++) {
-                int gray = 0;
-                switch (glyph[y][x]) {
-                case 1: gray = 255; break; // Text.
-                case 2: gray = 128; break; // Shadow, rendered gray.
-                default: break;            // Background.
-                }
-                image[y0 + y][x0 + x] = Color(gray, gray, gray, 255);
-            }
-        }
-    }
-
-    return image;
+/**
+ * @param format                        Format to describe.
+ * @return                              Description of `format` that reads in the middle of a sentence.
+ */
+static std::string_view describe(MagicFileFormat format) {
+    return format == MAGIC_UNRECOGNIZED ? "raw data" : formatDescription(format);
 }
 
 static bool isArchive(MagicFileFormat format) {
@@ -67,22 +43,6 @@ static bool isArchive(MagicFileFormat format) {
 
 static bool isCompressed(MagicFileFormat format) {
     return format == MAGIC_LOD_COMPRESSED_DATA || format == MAGIC_LOD_COMPRESSED_PSEUDO_IMAGE;
-}
-
-static Blob readFile(PathView path) {
-    PathView tail;
-    PathView prefix = fs::walk(path, &tail);
-
-    FileStat stat = fs::stat(prefix);
-    if (tail.isEmpty()) {
-        if (stat.type != FILE_REGULAR)
-            throw Exception("'{}' is not a file", path.displayString());
-        return Blob::fromFile(prefix);
-    }
-
-    if (stat.type != FILE_REGULAR)
-        throw Exception("'{}' doesn't exist", path.displayString());
-    return ArchiveReader::createArchiveReader(Blob::fromFile(prefix))->read(tail.str());
 }
 
 static void writeFile(PathView path, const Blob &data) {
@@ -119,9 +79,9 @@ static Blob convertToPng(const Blob &data, PathView palettesLodPath) {
         return png::encode(makeRgbaImage(lodSprite.image, palette));
     }
     case MAGIC_LOD_FONT:
-        return png::encode(renderFont(lod::decodeFont(data, ENCODING_ISO_8859_1)));
+        return png::encode(renderFontSheet(lod::decodeFont(data, ENCODING_ISO_8859_1)));
     case MAGIC_OE_FONT:
-        return png::encode(renderFont(oef::decode(data)));
+        return png::encode(renderFontSheet(oef::decode(data)));
     default:
         throw Exception("Can't convert {} '{}' to png", formatDescription(magic(data)), data.displayPath());
     }
@@ -132,7 +92,7 @@ static int runLs(const LodToolOptions &options) {
     PathView prefix = fs::walk(options.path, &tail);
 
     if (!tail.isEmpty()) {
-        (void) readFile(options.path); // Throws if there is no such entry.
+        (void) ArchiveReader::readFile(options.path); // Throws if there is no such entry.
         fmt::println("{}", tail);
         return 0;
     }
@@ -157,7 +117,7 @@ static int runLs(const LodToolOptions &options) {
 }
 
 static int runCat(const LodToolOptions &options) {
-    Blob data = readFile(options.path);
+    Blob data = ArchiveReader::readFile(options.path);
     if (!options.raw)
         data = lod::decodeMaybeCompressed(data);
 #ifdef _WINDOWS
@@ -169,7 +129,7 @@ static int runCat(const LodToolOptions &options) {
 }
 
 static int runExtract(const LodToolOptions &options) {
-    Blob data = readFile(options.path);
+    Blob data = ArchiveReader::readFile(options.path);
     if (!isArchive(magic(data)))
         throw Exception("'{}' is not a LOD, VID or SND archive, use cat to decompress a single file", options.path);
 
@@ -191,12 +151,12 @@ static int runConvert(const LodToolOptions &options) {
     if (ascii::toLower(options.output.extension()) != ".png")
         throw Exception("Can't convert to '{}', only png output is supported", options.output);
 
-    writeFile(options.output, convertToPng(lod::decodeMaybeCompressed(readFile(options.path)), options.palettesLodPath));
+    writeFile(options.output, convertToPng(lod::decodeMaybeCompressed(ArchiveReader::readFile(options.path)), options.palettesLodPath));
     return 0;
 }
 
 static int runMagic(const LodToolOptions &options) {
-    Blob data = readFile(options.path);
+    Blob data = ArchiveReader::readFile(options.path);
     MagicFileFormat format = magic(data);
     if (!isCompressed(format)) {
         fmt::println("{}", formatDescription(format));
@@ -207,25 +167,6 @@ static int runMagic(const LodToolOptions &options) {
     return 0;
 }
 
-int runConvert(const LodToolOptions &options) {
-    std::unique_ptr<ArchiveReader> paletteReader = options.palettesLodPath.empty() ? nullptr : ArchiveReader::createArchiveReader(options.palettesLodPath);
-
-    DecodedEntries entries = decodeLodEntry(Blob::fromFile(options.convert.input), options.convert.input, false, paletteReader.get());
-
-    // Conversion can keep the original entry and append the converted form (e.g. fonts yield the .fnt + a .png),
-    // so the converted representation is always the last one.
-    const Blob &data = entries.back().first;
-
-    FILE *output = fopen(options.convert.output.c_str(), "wb");
-    if (!output)
-        throw Exception("Cannot open output file '{}'", options.convert.output);
-    bool ok = data.empty() || fwrite(data.data(), data.size(), 1, output) == 1;
-    fclose(output);
-    if (!ok)
-        throw Exception("Cannot write output file '{}'", options.convert.output);
-
-    return 0;
-}
 
 int main(int argc, char **argv) {
     try {

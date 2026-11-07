@@ -1,21 +1,22 @@
 #include "Font.h"
 
-int Font::add(char32_t c, const GlyphMetrics &metrics, GrayscaleImageView image) {
-    assert(_height > 0); // Adding to an invalid font is a coding error.
-    assert(c != 0);
-    assert(metrics.width == image.width());
-    assert(image.height() == _height);
+#include <utility>
 
-    int result = _indexByCharacter.value(c);
-    if (result == -1) {
-        result = _metrics.size();
-        _indexByCharacter.insert(c, result);
-        _characters.emplace_back(c);
-        _metrics.emplace_back();
-        _images.emplace_back();
+Font Font::fromData(int height, std::vector<char32_t> characters, std::vector<GlyphMetrics> metrics,
+                    std::vector<size_t> offsets, Blob pixels) {
+    assert(height > 0);
+    assert(characters.size() == metrics.size() && characters.size() == offsets.size());
+
+    Font result;
+    result._height = height;
+    for (size_t i = 0; i < characters.size(); i++) {
+        assert(characters[i] != 0 && result._indexByCharacter.value(characters[i]) == -1);
+        assert(metrics[i].width >= 0 && offsets[i] + static_cast<size_t>(metrics[i].width) * height <= pixels.size());
+        result._indexByCharacter.insert(characters[i], static_cast<int>(i));
     }
-
-    _metrics[result] = metrics;
-    _images[result] = _data.store(image.pixels()).data();
+    result._characters = std::move(characters);
+    result._metrics = std::move(metrics);
+    result._offsets = std::move(offsets);
+    result._pixels = std::move(pixels);
     return result;
 }

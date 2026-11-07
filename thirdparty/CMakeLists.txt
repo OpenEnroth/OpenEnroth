@@ -103,12 +103,12 @@ set(ZTD_IDK_EXCLUDE_FROM_ALL ON)
 add_subdirectory(ztd_text EXCLUDE_FROM_ALL)
 
 # freetype
-# Used by the font tools to rasterize source typefaces. EXCLUDE_FROM_ALL keeps it out of the game build - only
-# FontGen and FontMatch link it, and both are gated behind OE_BUILD_TOOLS.
+# Used by FontTool to rasterize source typefaces. EXCLUDE_FROM_ALL keeps it out of the game build, only FontTool
+# links it, and it's gated behind OE_BUILD_TOOLS.
 #
 # zlib and png are left enabled - we already depend on both, and FT_DISABLE_ZLIB doesn't drop gzip support, it
 # makes freetype bundle a second copy of zlib instead of using ours. The rest are formats we have no dependency
-# for: bzip2 costs us `.pcf.bz2` fonts, brotli costs us `.woff2` ones. FontMatch reports every font it fails to
+# for: bzip2 costs us `.pcf.bz2` fonts, brotli costs us `.woff2` ones. FontTool reports every font it fails to
 # open, so a font lost to these is loud rather than silently dropped from the search.
 set(FT_DISABLE_BZIP2 ON CACHE BOOL "" FORCE)
 set(FT_DISABLE_HARFBUZZ ON CACHE BOOL "" FORCE)

@@ -6,6 +6,7 @@
 #include <memory>
 
 #include "Utility/Memory/Blob.h"
+#include "Utility/System/Path.h"
 
 class ArchiveReader {
  public:
@@ -19,4 +20,11 @@ class ArchiveReader {
      * @throws Exception                If `data` is not an archive.
      */
     static std::unique_ptr<ArchiveReader> createArchiveReader(Blob data);
+
+    /**
+     * @param path                      Path to a file, or to an entry inside an archive, as in `"games.lod/d.odm"`.
+     * @return                          Contents of the file or the archive entry, as stored.
+     * @throws Exception                If there is no such file or entry.
+     */
+    static Blob readFile(PathView path);
 };
