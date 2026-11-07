@@ -1,6 +1,7 @@
 #include "Font.h"
 
 #include <utility>
+#include <vector>
 
 Font Font::fromData(int height, std::vector<char32_t> characters, std::vector<GlyphMetrics> metrics,
                     std::vector<size_t> offsets, Blob pixels) {

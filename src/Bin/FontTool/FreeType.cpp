@@ -1,6 +1,8 @@
 #include "FreeType.h"
 
 #include <cmath>
+#include <string>
+#include <vector>
 
 #include FT_OUTLINE_H
 
