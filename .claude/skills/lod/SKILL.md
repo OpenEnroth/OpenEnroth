@@ -4,8 +4,7 @@ description: Look inside the game's LOD, VID and SND archives with LodTool - lis
 ---
 
 `LodTool` reads the archives that MM6, MM7 and MM8 keep their data in. Build the `LodTool` target, the binary
-lands at `<build>/src/Bin/LodTool/LodTool`, and the examples below call it by its bare name. They also use
-`$OPENENROTH_MM7_PATH`, the MM7 game data root, which the game tests need too. Set it if your shell doesn't have it.
+lands at `<build>/src/Bin/LodTool/LodTool`, and the examples below call it by its bare name.
 
 ## Paths
 
@@ -88,19 +87,21 @@ palette. Use `cat --raw FILE | od -A d -t x1z | head` to look at the bytes when 
 
 ## Recipes
 
+Here `mm7` is the MM7 game data folder.
+
 ```sh
 # Decompress an MM7 map for a parser or a hex dump.
-LodTool cat "$OPENENROTH_MM7_PATH/DATA/GAMES.LOD/d01.blv" > d01.blv
+LodTool cat "mm7/DATA/GAMES.LOD/d01.blv" > d01.blv
 
 # Pull every MM7 event script, string table and text table out at once.
-LodTool extract "$OPENENROTH_MM7_PATH/DATA/events.lod" evt/
+LodTool extract "mm7/DATA/events.lod" evt/
 
 # Look at a sprite in its default palette.
-LodTool convert --palettes-lod-path "$OPENENROTH_MM7_PATH/DATA/BITMAPS.LOD" \
-    "$OPENENROTH_MM7_PATH/DATA/SPRITES.LOD/arrowa0" arrowa0.png
+LodTool convert --palettes-lod-path "mm7/DATA/BITMAPS.LOD" \
+    "mm7/DATA/SPRITES.LOD/arrowa0" arrowa0.png
 
 # Count the formats in an archive.
-A="$OPENENROTH_MM7_PATH/DATA/ICONS.LOD"
+A="mm7/DATA/ICONS.LOD"
 LodTool ls "$A" | while IFS= read -r e; do LodTool magic "$A/$e"; done | sort | uniq -c
 ```
 
