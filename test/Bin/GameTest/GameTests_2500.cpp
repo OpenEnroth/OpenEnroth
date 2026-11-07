@@ -33,6 +33,7 @@
 #include "Engine/Objects/MonsterEnumFunctions.h"
 #include "Engine/Objects/SpriteObject.h"
 #include "Engine/Resources/EngineFileSystem.h"
+#include "Engine/Tables/ChestTable.h"
 #include "Engine/Tables/DecorationTable.h"
 #include "Engine/Tables/IconFrameTable.h"
 #include "Engine/Tables/MapTable.h"
@@ -118,12 +119,15 @@ static void emptyOpenChest(EngineController &game) {
 }
 
 static void takeFromOpenChest(EngineController &game, ItemId item) {
-    // Takes items until the wanted one is in a backpack.
+    // Clicks the item in the chest, then the active character's digit key drops it from the cursor into their backpack.
     ASSERT_EQ(current_screen_type, SCREEN_CHEST);
-    for (int i = 0; i < 20 && !pParty->hasItem(item); i++) {
-        game.pressAndReleaseKey(PlatformKey::KEY_SPACE);
-        game.tick();
-    }
+    const Chest &chest = vChests[pGUIWindow_CurrentChest->chestId()];
+    InventoryConstEntry entry = chest.inventory.find(item);
+    ASSERT_TRUE(entry);
+    game.pressAndReleaseButton(BUTTON_LEFT, mapFromInventoryGrid(entry.geometry().topLeft(), chestTable[chest.chestTypeId].inventoryOffset) + Pointi(16, 16));
+    game.tick();
+    game.pressAndReleaseKey(platformKeyForDigit(pParty->activeCharacterIndex() + 1));
+    game.tick();
     ASSERT_TRUE(pParty->hasItem(item));
     game.pressAndReleaseKey(PlatformKey::KEY_ESCAPE);
     game.tick();
