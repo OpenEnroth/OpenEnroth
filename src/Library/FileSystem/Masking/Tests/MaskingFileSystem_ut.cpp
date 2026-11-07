@@ -48,3 +48,14 @@ UNIT_TEST(MaskingFileSystem, PersistentMasking) {
     EXPECT_FALSE(fs1.exists("a"));
     EXPECT_TRUE(fs0.exists("a"));
 }
+
+UNIT_TEST(MaskingFileSystem, UnmaskInaccessiblePath) {
+    // mask asserts on an inaccessible path, so unmask finds nothing there either.
+    MemoryFileSystem fs0("");
+    fs0.write("a", Blob());
+    MaskingFileSystem fs(&fs0);
+    fs.mask("a");
+
+    EXPECT_FALSE(fs.unmask("/a"));
+    EXPECT_FALSE(fs.exists("a"));
+}
