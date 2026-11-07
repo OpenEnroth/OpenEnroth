@@ -7,7 +7,7 @@
  *
  * The English and Russian fonts ship the same letterforms for some faces, but the English ones carry a baked-in
  * shadow and the Latin-1 accents, while only the Russian ones carry Cyrillic. The two are merged into single
- * Unicode-keyed fonts, `<name>.oef` for every `<name>.fnt` the engine uses.
+ * Unicode-keyed fonts, `<name>.oef` for every `<name>.fnt` in `icons.lod` except `calig.fnt`.
  *
  * @param enIconsLodPath                Path to `icons.lod` from an English localization.
  * @param ruIconsLodPath                Path to `icons.lod` from a Russian localization.
