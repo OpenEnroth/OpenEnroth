@@ -153,10 +153,11 @@ int runSearch(const FontToolOptions &options) {
     std::vector<std::string> paths;
     for (const std::string &input : options.inputs)
         collectFonts(Path(PathView(input)), &paths);
-    if (!options.listPath.empty())
+    if (!options.listPath.empty()) {
         for (std::string_view line : split(Blob::fromFile(options.listPath).str()).by('\n'))
             if (std::string_view path = trim(line); !path.empty())
                 paths.emplace_back(path);
+    }
     fmt::println(stderr, "Searching {} font files for {} reference fonts.", paths.size(), references.size());
 
     SearchOptions searchOptions;

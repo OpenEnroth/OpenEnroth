@@ -1,12 +1,12 @@
 #pragma once
 
+#include <ft2build.h>
+#include FT_FREETYPE_H
+
 #include <cstdint>
 #include <optional>
 #include <string>
 #include <vector>
-
-#include <ft2build.h>
-#include FT_FREETYPE_H
 
 enum class RasterMode {
     RASTER_MONO, // `FT_LOAD_TARGET_MONO`, which also hints for whole pixels, the way Windows rendered fonts in 1999.
