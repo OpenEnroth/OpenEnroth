@@ -1,6 +1,5 @@
 #include "Processor.h"
 
-#include <optional>
 #include <vector>
 #include <string>
 
@@ -23,13 +22,19 @@
 
 #include "Library/Logger/Logger.h"
 
+enum class EvtTimerType {
+    EVT_TIMER_INTERVAL, // Fires every `duration`, counted from when it last fired.
+    EVT_TIMER_DAILY, // Fires every day, `duration` past midnight.
+    EVT_TIMER_PERIODIC, // Fires every `duration`, a week, 28 days or a year, counted from the previous alarm.
+};
+using enum EvtTimerType;
+
 /**
- * When a timer fires. Exactly one of `interval` and `period` is non-zero.
+ * When a timer fires.
  */
 struct EvtTimerSchedule {
-    Duration interval; // Time between alarms, counted from when the timer last fired.
-    Duration period; // Time between alarms, counted from the previous alarm: a day, a week, 28 days or a year.
-    std::optional<Duration> timeOfDay; // Time of day that the alarms fall on, set for a daily `period` only.
+    EvtTimerType type = EVT_TIMER_INTERVAL;
+    Duration duration;
 };
 
 struct MapTimer {
@@ -84,17 +89,21 @@ void checkDecorationEvents() {
 static EvtTimerSchedule timerSchedule(const EvtInstruction &ir) {
     EvtTimerSchedule result;
     if (ir.data.timer_descr.alt_halfmin_interval) {
-        result.interval = Duration::fromSeconds(ir.data.timer_descr.alt_halfmin_interval * 30);
+        result.type = EVT_TIMER_INTERVAL;
+        result.duration = Duration::fromSeconds(ir.data.timer_descr.alt_halfmin_interval * 30);
     } else if (ir.data.timer_descr.is_yearly) {
-        result.period = Duration::fromYears(1);
+        result.type = EVT_TIMER_PERIODIC;
+        result.duration = Duration::fromYears(1);
     } else if (ir.data.timer_descr.is_monthly) {
-        result.period = Duration::fromDays(28);
+        result.type = EVT_TIMER_PERIODIC;
+        result.duration = Duration::fromDays(28);
     } else if (ir.data.timer_descr.is_weekly) {
-        result.period = Duration::fromDays(7);
+        result.type = EVT_TIMER_PERIODIC;
+        result.duration = Duration::fromDays(7);
     } else {
-        result.period = Duration::fromDays(1);
-        result.timeOfDay = Duration::fromHours(ir.data.timer_descr.daily_start_hour) + Duration::fromMinutes(ir.data.timer_descr.daily_start_minute) +
-                           Duration::fromSeconds(ir.data.timer_descr.daily_start_second);
+        result.type = EVT_TIMER_DAILY;
+        result.duration = Duration::fromHours(ir.data.timer_descr.daily_start_hour) + Duration::fromMinutes(ir.data.timer_descr.daily_start_minute) +
+                          Duration::fromSeconds(ir.data.timer_descr.daily_start_second);
     }
     return result;
 }
@@ -105,21 +114,24 @@ static EvtTimerSchedule timerSchedule(const EvtInstruction &ir) {
  * @return                              When it fires first.
  */
 static Time firstAlarm(const EvtTimerSchedule &schedule, Time levelLastVisit) {
-    if (schedule.interval)
-        return pParty->GetPlayingTime() + schedule.interval;
-
-    assert(schedule.period > 0_ticks);
-    if (schedule.timeOfDay) {
-        assert(schedule.period == Duration::fromDays(1));
+    switch (schedule.type) {
+    case EVT_TIMER_INTERVAL:
+        return pParty->GetPlayingTime() + schedule.duration;
+    case EVT_TIMER_DAILY: {
         if (!levelLastVisit)
             return Time(); // Fires at the first check, and the zero alarm makes checkTimers put the next one on the time of day.
 
         // Calculate alarm time inside last visit day
-        Time result = Time::fromDays(levelLastVisit.toDays()) + *schedule.timeOfDay;
+        Time result = Time::fromDays(levelLastVisit.toDays()) + schedule.duration;
         return result < levelLastVisit ? result + Duration::fromDays(1) : result; // Last visit time already passed alarm time inside that day so move alarm to next day.
     }
-
-    return levelLastVisit ? levelLastVisit + schedule.period : pParty->GetPlayingTime(); // Without last visit all timers must fire immediately.
+    case EVT_TIMER_PERIODIC:
+        assert(schedule.duration > 0_ticks);
+        return levelLastVisit ? levelLastVisit + schedule.duration : pParty->GetPlayingTime(); // Without last visit all timers must fire immediately.
+    default:
+        assert(false);
+        return Time();
+    }
 }
 
 static void registerTimers() {
@@ -214,15 +226,17 @@ static void checkTimers() {
         if (runEvent(EvtContext(EVT_SOURCE_MAP, timer.eventId), timer.eventStep + 1) == EVT_TRANSITION_STARTED)
             return; // Leaving the map cleared the timers.
 
-        if (timer.schedule.interval) {
-            timer.alarmTime = pParty->GetPlayingTime() + timer.schedule.interval;
+        if (timer.schedule.type == EVT_TIMER_INTERVAL) {
+            timer.alarmTime = pParty->GetPlayingTime() + timer.schedule.duration;
         } else {
-            if (!timer.alarmTime.isValid() && timer.schedule.timeOfDay) {
+            bool isDaily = timer.schedule.type == EVT_TIMER_DAILY;
+            if (!timer.alarmTime.isValid() && isDaily) {
                 // Initial firing of daily timers, next alarm must be configured to fire on exact time of day
-                timer.alarmTime = Time() + *timer.schedule.timeOfDay;
+                timer.alarmTime = Time() + timer.schedule.duration;
             }
+            Duration period = isDaily ? Duration::fromDays(1) : timer.schedule.duration;
             while (pParty->GetPlayingTime() >= timer.alarmTime) {
-                timer.alarmTime += timer.schedule.period;
+                timer.alarmTime += period;
             }
         }
     }
