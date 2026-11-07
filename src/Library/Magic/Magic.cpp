@@ -5,6 +5,7 @@
 #include "Library/Lod/LodReader.h"
 #include "Library/Snd/SndReader.h"
 #include "Library/Vid/VidReader.h"
+#include "Library/Font/Oef.h"
 #include "Library/LodFormats/LodFormats.h"
 #include "Library/Image/Pcx.h"
 #include "Library/Image/Png.h"
@@ -97,6 +98,8 @@ MagicFileFormat magic(const Blob &data) {
         return MAGIC_LOD_SPRITE;
     if (lod::detectFont(data))
         return MAGIC_LOD_FONT;
+    if (oef::detect(data))
+        return MAGIC_OE_FONT;
     if (vid::detect(data))
         return MAGIC_VID;
     if (snd::detect(data))

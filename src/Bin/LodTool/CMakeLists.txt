@@ -13,6 +13,7 @@ if(NOT OE_BUILD_PLATFORM STREQUAL "android")
     add_executable(LodTool ${BIN_LODTOOL_SOURCES} ${BIN_LODTOOL_HEADERS})
     target_link_libraries(LodTool PUBLIC
             library_lod
+            library_font
             library_lod_formats
             library_image
             library_magic

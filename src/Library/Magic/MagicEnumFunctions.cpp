@@ -23,6 +23,8 @@ std::string_view formatDescription(MagicFileFormat format) {
         return "LOD sprite";
     case MAGIC_LOD_FONT:
         return "LOD font";
+    case MAGIC_OE_FONT:
+        return "OpenEnroth font";
     case MAGIC_VID:
         return "VID archive";
     case MAGIC_SND:

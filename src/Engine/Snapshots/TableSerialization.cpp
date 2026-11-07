@@ -31,9 +31,9 @@ void deserialize(const Blob &src, PortraitFrameTable *dst) {
     assert(!dst->pFrames.empty());
 }
 
-void deserialize(const Blob &src, DecorationTable *dst) {
+void deserialize(const Blob &src, DecorationTable *dst, EncodingTag encoding) {
     dst->decorations.clear();
-    deserialize(src, &dst->decorations, tags::append, tags::each, tags::via<DecorationData_MM7>);
+    deserialize(src, &dst->decorations, tags::append, tags::each, tags::via<DecorationData_MM7>, encoding);
 
     assert(!dst->decorations.empty());
 }

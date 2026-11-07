@@ -1,28 +1,40 @@
 #include "GUIFont.h"
 
 #include <cstdlib>
-#include <sstream>
-#include <memory>
 #include <algorithm>
-#include <ranges>
+#include <cmath>
+#include <memory>
+#include <sstream>
 #include <string>
 #include <utility>
 
-#include "Engine/Engine.h"
+#include "Engine/Resources/EngineFileSystem.h"
 #include "Engine/Graphics/Renderer/Renderer.h"
 #include "Engine/Graphics/Image.h"
 #include "Engine/Resources/ResourceManager.h"
 
-static Color parseColorTag(const char *tag, const Color &defaultColor) {
-    char color_code[20];
-    strncpy(color_code, tag, 5);
-    color_code[5] = 0;
-    int color16 = std::strtol(color_code, nullptr, 10);
-    if (color16 == 0) {
-        return defaultColor; // Back to default color.
-    } else {
-        return Color::fromC16(color16);
-    }
+#include "Library/FileSystem/Interface/FileSystem.h"
+#include "Library/Font/Oef.h"
+
+#include "Utility/String/Encoding.h"
+#include "Utility/String/Format.h"
+
+static constexpr char32_t REPLACEMENT_CHARACTER = 0xFFFD; // First fallback for an unsupported character, if present.
+
+// Reads a fixed-width decimal number embedded in the markup, e.g. the offset in a `\tXXX` tag, or the color code in
+// a `\fXXXXX` tag. The tag character is already consumed, `*pos` is at the first digit.
+static int parseMarkupNumber(std::string_view s, size_t *pos, int digitCount) {
+    // Markup numbers are always ASCII digits, so reading them code point by code point works.
+    char digits[6] = {};
+    assert(digitCount > 0 && static_cast<size_t>(digitCount) < sizeof(digits));
+    for (int i = 0; i < digitCount && *pos < s.size(); i++)
+        digits[i] = static_cast<char>(txt::nextRune(s, pos));
+    return std::strtol(digits, nullptr, 10);
+}
+
+static Color parseColorTag(std::string_view s, size_t *pos, const Color &defaultColor) {
+    int color16 = parseMarkupNumber(s, pos, 5);
+    return color16 == 0 ? defaultColor : Color::fromC16(color16); // Zero color code means back to default color.
 }
 
 GUIFont::GUIFont() = default;
@@ -33,31 +45,46 @@ GUIFont::~GUIFont() {
 
 std::unique_ptr<GUIFont> GUIFont::LoadFont(std::string_view pFontFile) {
     std::unique_ptr<GUIFont> result = std::make_unique<GUIFont>();
+    result->_font = oef::decode(dfs->read(fmt::format("fonts/{}", pFontFile)));
 
-    result->_font = engine->resources()->font(pFontFile);
     result->CreateFontTex();
-
     return result;
 }
 
 // TODO(pskelton): Save built atlas so it doesnt get recalcualted on reload?
 void GUIFont::CreateFontTex() {
+    assert(_font.size() > 0);
+
     ReleaseFontTex();
 
-    _layout = AtlasLayout({16, 16}, {32, 32});
+    // Atlas cells are (maxWidth+1) x (height+1) so that there is no color bleeding when rendering with blending.
+    int maxWidth = 0;
+    for (int i = 0; i < _font.size(); i++)
+        maxWidth = std::max(maxWidth, _font.metrics(i).width);
+
+    int columns = static_cast<int>(std::ceil(std::sqrt(static_cast<double>(_font.size()))));
+    int rows = (_font.size() + columns - 1) / columns;
+    _layout = AtlasLayout({columns, rows}, {maxWidth + 1, _font.height() + 1});
 
     RgbaImage pixels = RgbaImage::solid(Color(), _layout.geometry().size());
 
-    // Pack per-channel color weights: R is for text, G is for shadow, B & A are reserved for multi-color fonts
-    // (MM3 fonts use 4 colors and we will import them eventually).
-    for (size_t l = 0; l < _layout.size(); l++) {
+    // Pack per-channel color weights: color index n goes into channel n-1. R is for text, G is for shadow,
+    // B & A are reserved for multi-color fonts (MM3 fonts use 4 colors and we will import them eventually).
+    for (int l = 0; l < _font.size(); l++) {
         Recti cell = _layout[l];
         GrayscaleImageView image = _font.image(l);
 
-        for (int y = 0; y < image.height(); y++)
-            for (int x = 0; x < image.width(); x++)
-                if (uint8_t pixel = image[y][x])
-                    pixels[cell.y + y][cell.x + x] = pixel == 1 ? Color(0, 255, 0, 0) : Color(255, 0, 0, 0);
+        for (int y = 0; y < image.height(); y++) {
+            for (int x = 0; x < image.width(); x++) {
+                switch (image[y][x]) {
+                case 1: pixels[cell.y + y][cell.x + x] = Color(255, 0, 0, 0); break;
+                case 2: pixels[cell.y + y][cell.x + x] = Color(0, 255, 0, 0); break;
+                case 3: pixels[cell.y + y][cell.x + x] = Color(0, 0, 255, 0); break;
+                case 4: pixels[cell.y + y][cell.x + x] = Color(0, 0, 0, 255); break;
+                default: break;
+                }
+            }
+        }
     }
 
     _texture = GraphicsImage::Create(std::move(pixels));
@@ -83,33 +110,36 @@ int GUIFont::GetLineWidth(std::string_view str) {
 }
 
 int GUIFont::GetTextLenLimitedByWidth(std::string_view str, int maxWidth, int& resultWidth) {
-    int len = str.length();
     resultWidth = 0;
-    for (int i = 0; i < len; ++i) {
-        char c = str[i];
+    for (size_t pos = 0; pos < str.size();) {
+        size_t charPos = pos;
+        char32_t c = txt::nextRune(str, &pos);
         switch (c) {
-        case '\n': // New line.
-        case '\t': // Move to next cell, offset from the left border.
-        case '\r': // Right-justify, offset from the right border.
-            return i;
-        case '\f': // Color tag.
-            i += 5;
+        case U'\n': // New line.
+        case U'\t': // Move to next cell, offset from the left border.
+        case U'\r': // Right-justify, offset from the right border.
+            return charPos;
+        case U'\f': // Color tag.
+            parseMarkupNumber(str, &pos, 5);
             break;
-        default:
-            if (!_font.supports(c))
+        default: {
+            int glyph = glyphIndex(c);
+            if (glyph == -1)
                 break;
-            if (i > 0)
-                resultWidth += _font.metrics(c).leftSpacing;
-            resultWidth += _font.metrics(c).width;
-            if (i < len - 1)
-                resultWidth += _font.metrics(c).rightSpacing;
 
-            if (resultWidth > maxWidth) {
-                return i;
-            }
+            const GlyphMetrics &metrics = _font.metrics(glyph);
+            if (charPos > 0)
+                resultWidth += metrics.leftSpacing;
+            resultWidth += metrics.width;
+            if (pos < str.size())
+                resultWidth += metrics.rightSpacing;
+
+            if (resultWidth > maxWidth)
+                return charPos;
+        }
         }
     }
-    return len;
+    return str.length();
 }
 
 
@@ -168,6 +198,18 @@ std::string GUIFont::GetPageText(std::string_view str, Sizei pageSize, int x, in
     return wrappedText;
 }
 
+int GUIFont::glyphIndex(char32_t c) const {
+    // Fall back through the replacement character, '?', and space, so an unsupported character renders as an existing
+    // glyph in the font's own style rather than as a synthesized box (which wouldn't fit e.g. italic fonts). If none
+    // of those exist either, render nothing.
+    for (char32_t candidate : {c, REPLACEMENT_CHARACTER, U'?', U' '}) {
+        int result = _font.index(candidate);
+        if (result != -1)
+            return result;
+    }
+    return -1;
+}
+
 Color GUIFont::DrawTextLine(std::string_view text, Color startColor, Color defaultColor, Pointi position) {
     assert(startColor.a > 0);
 
@@ -178,50 +220,50 @@ Color GUIFont::DrawTextLine(std::string_view text, Color startColor, Color defau
 
     Color color = startColor;
     int x = position.x;
-    for (int i = 0, len = text.size(); i < len; ++i) {
-        char c = text[i];
+    for (size_t pos = 0; pos < text.size();) {
+        size_t charPos = pos;
+        char32_t c = txt::nextRune(text, &pos);
         switch (c) {
-        case '\n': // New line.
+        case U'\n': // New line.
             return color;
-        case '\f': // Color tag.
-            color = parseColorTag(&text[i + 1], defaultColor);
-            i += 5;
+        case U'\f': // Color tag.
+            color = parseColorTag(text, &pos, defaultColor);
             break;
-        case '\t': // Move to next cell, offset from the left border.
-        case '\r': // Right-justify, offset from the right border.
+        case U'\t': // Move to next cell, offset from the left border.
+        case U'\r': // Right-justify, offset from the right border.
             break;
-        default:
-            int charWidth = _font.metrics(c).width;
-            if (charWidth == 0)
-                break; // Non-supported chars have width == 0.
+        default: {
+            int glyph = glyphIndex(c);
+            if (glyph == -1)
+                break;
 
-            if (i > 0)
-                x += _font.metrics(c).leftSpacing;
+            const GlyphMetrics &metrics = _font.metrics(glyph);
+            if (charPos > 0)
+                x += metrics.leftSpacing;
 
-            Recti cell = _layout[static_cast<uint8_t>(c)];
-            Recti srcRect(cell.x, cell.y, charWidth, _font.height());
-            Recti dstRect(x, position.y, charWidth, _font.height());
+            Recti cell = _layout[glyph];
+            Recti srcRect(cell.x, cell.y, metrics.width, _font.height());
+            Recti dstRect(x, position.y, metrics.width, _font.height());
 
             render->DrawTextNew(srcRect, dstRect, {color, colorTable.Black});
 
-            x += charWidth;
-            if (i < len - 1)
-                x += _font.metrics(c).rightSpacing;
+            x += metrics.width;
+            if (pos < text.size())
+                x += metrics.rightSpacing;
+        }
         }
     }
     return color;
 }
 
-void DrawCharToBuff(Color *draw_buff, const uint8_t *pCharPixels, int uCharWidth, int uCharHeight,
-                    Color draw_color, Color shadowColor, int line_width) {
+void DrawCharToBuff(Color *draw_buff, GrayscaleImageView image, Color draw_color, Color shadowColor, int line_width) {
     assert(draw_color.a > 0);
 
-    const uint8_t *pPixels = pCharPixels;
-    for (int y = 0; y < uCharHeight; ++y) {
-        for (int x = 0; x < uCharWidth; ++x) {
-            uint8_t char_pxl = *pPixels++;
+    for (int y = 0; y < image.height(); ++y) {
+        for (int x = 0; x < image.width(); ++x) {
+            uint8_t char_pxl = image[y][x];
             if (char_pxl) {
-                if (char_pxl == 1) {
+                if (char_pxl == 2) {
                     *draw_buff = shadowColor;
                 } else {
                     *draw_buff = draw_color;
@@ -229,7 +271,7 @@ void DrawCharToBuff(Color *draw_buff, const uint8_t *pCharPixels, int uCharWidth
             }
             ++draw_buff;
         }
-        draw_buff += line_width - uCharWidth;
+        draw_buff += line_width - image.width();
     }
 }
 
@@ -242,32 +284,33 @@ void GUIFont::DrawTextLineToBuff(Color startColor, Color shadowColor, Color *uX_
 
     Color color = startColor;
     Color *uX_pos = uX_buff_pos;
-    for (int i = 0, len = text.size(); i < len; ++i) {
-        uint8_t c = text[i];
+    for (size_t pos = 0; pos < text.size();) {
+        size_t charPos = pos;
+        char32_t c = txt::nextRune(text, &pos);
         switch (c) {
-        case '\n': // New line.
+        case U'\n': // New line.
             return;
-        case '\f': // Color tag.
-            color = parseColorTag(&text[i + 1], startColor);
-            i += 5;
+        case U'\f': // Color tag.
+            color = parseColorTag(text, &pos, startColor);
             break;
-        case '\t': // Move to next cell, offset from the left border.
-        case '_': // Use alternative font.
+        case U'\t': // Move to next cell, offset from the left border.
+        case U'_': // Use alternative font.
             break;
-        default:
-            int charWidth = _font.metrics(c).width;
-            if (charWidth == 0)
-                break; // Non-supported chars have width == 0.
+        default: {
+            int glyph = glyphIndex(c);
+            if (glyph == -1)
+                break;
 
-            if (i > 0)
-                uX_pos += _font.metrics(c).leftSpacing;
+            const GlyphMetrics &metrics = _font.metrics(glyph);
+            if (charPos > 0)
+                uX_pos += metrics.leftSpacing;
 
-            const uint8_t *pCharPixels = _font.image(c).pixels().data();
-            DrawCharToBuff(uX_pos, pCharPixels, charWidth, _font.height(), color, shadowColor, line_width);
-            uX_pos += charWidth;
+            DrawCharToBuff(uX_pos, _font.image(glyph), color, shadowColor, line_width);
+            uX_pos += metrics.width;
 
-            if (i < len - 1)
-                uX_pos += _font.metrics(c).rightSpacing;
+            if (pos < text.size())
+                uX_pos += metrics.rightSpacing;
+        }
         }
     }
 }
@@ -284,63 +327,63 @@ std::string GUIFont::WrapText(std::string_view inString, int width, int uX, bool
     int lastCopyPos = 0;
     std::string out;
 
-    for (int i = 0; i < inString.length(); i++) {
-        char c = inString[i];
-
+    for (size_t pos = 0; pos < inString.size();) {
+        size_t charPos = pos;
+        char32_t c = txt::nextRune(inString, &pos);
         switch (c) {
-        case '\t': // Move to next cell, offset from the left border.
-            {
-                char digits[4];
-                strncpy(digits, &inString[i + 1], 3);
-                digits[3] = 0;
-                lineWidth = std::strtol(digits, nullptr, 10) + uX;
-                i += 3;
-                break;
-            }
-        case '\n': // New line.
+        case U'\t': // Move to next cell, offset from the left border.
+            lineWidth = parseMarkupNumber(inString, &pos, 3) + uX;
+            break;
+        case U'\n': // New line.
             lineWidth = uX;
             newlinePos = -1;
-            out += inString.substr(lastCopyPos, i - lastCopyPos);
+            out += inString.substr(lastCopyPos, charPos - lastCopyPos);
             out += "\n";
-            lastCopyPos = i + 1;
+            lastCopyPos = pos;
             break;
-        case '\f': // Color tag.
-            i += 5;
+        case U'\f': // Color tag.
+            parseMarkupNumber(inString, &pos, 5);
             break;
-        case '\r': // Right-justify, offset from the right border.
+        case U'\r': // Right-justify, offset from the right border.
             if (!return_on_carriage) {
                 return std::string(inString); // TODO(captainurist): this return is very sus.
             }
             break;
-        case ' ':
-            lineWidth += _font.metrics(c).width;
-            newlinePos = i;
+        case U' ': {
+            int glyph = glyphIndex(U' ');
+            if (glyph != -1)
+                lineWidth += _font.metrics(glyph).width;
+            newlinePos = charPos;
             break;
-        default:
-            if (!_font.supports(c))
+        }
+        default: {
+            int glyph = glyphIndex(c);
+            if (glyph == -1)
                 break;
 
-            if ((lineWidth + _font.metrics(c).width + _font.metrics(c).leftSpacing + _font.metrics(c).rightSpacing) < width) {
-                if (i > newlinePos)
-                    lineWidth += _font.metrics(c).leftSpacing;
-                lineWidth += _font.metrics(c).width;
-                if (i < inString.length() - 1)
-                    lineWidth += _font.metrics(c).rightSpacing;
+            const GlyphMetrics &metrics = _font.metrics(glyph);
+            if ((lineWidth + metrics.width + metrics.leftSpacing + metrics.rightSpacing) < width) {
+                if (static_cast<int>(charPos) > newlinePos)
+                    lineWidth += metrics.leftSpacing;
+                lineWidth += metrics.width;
+                if (pos < inString.size())
+                    lineWidth += metrics.rightSpacing;
             } else {
                 lineWidth = uX;
                 if (newlinePos >= 0) {
                     out += inString.substr(lastCopyPos, newlinePos - lastCopyPos);
                     out += "\n";
-                    i = newlinePos;
-                    lastCopyPos = i + 1;
+                    lastCopyPos = newlinePos + 1;
+                    pos = newlinePos + 1;
                 } else {
-                    out += inString.substr(lastCopyPos, i - lastCopyPos);
+                    out += inString.substr(lastCopyPos, charPos - lastCopyPos);
                     out += "\n";
-                    lastCopyPos = i;
-                    i--;
+                    lastCopyPos = charPos;
+                    pos = charPos; // Reprocess this character on the new line.
                 }
                 newlinePos = -1;
             }
+        }
         }
     }
 
@@ -382,18 +425,16 @@ void GUIFont::DrawText(const Recti &rect, Pointi position, Color defaultColor, s
 
     Color draw_color = defaultColor;
 
-    char Dest[6] = { 0 };
-    for (int i = 0, len = text.length(); i < len; i++) {
-        uint8_t c = string_base[i];
+    size_t len = text.length();
+    for (size_t pos = 0; pos < string_base.size() && pos < len;) {
+        size_t charPos = pos;
+        char32_t c = txt::nextRune(string_base, &pos);
         switch (c) {
-        case '\t': // Move to next cell, offset from the left border.
-            strncpy(Dest, &string_base[i + 1], 3);
-            Dest[3] = 0;
-            i += 3;
-            left_margin = std::strtol(Dest, nullptr, 10);
+        case U'\t': // Move to next cell, offset from the left border.
+            left_margin = parseMarkupNumber(string_base, &pos, 3);
             out_x = position.x + rect.x + left_margin;
             break;
-        case '\n': // New line.
+        case U'\n': // New line.
             position.y = position.y + _font.height() - 3;
             out_y = position.y + rect.y;
             out_x = position.x + rect.x + left_margin;
@@ -403,43 +444,44 @@ void GUIFont::DrawText(const Recti &rect, Pointi position, Color defaultColor, s
                 }
             }
             break;
-        case '\f': // Color tag.
-            draw_color = parseColorTag(&string_base[i + 1], defaultColor);
-            i += 5;
+        case U'\f': // Color tag.
+            draw_color = parseColorTag(string_base, &pos, defaultColor);
             break;
-        case '\r': // Right-justify, offset from the right border.
-            strncpy(Dest, &string_base[i + 1], 3);
-            Dest[3] = 0;
-            i += 3;
-            left_margin = std::strtol(Dest, nullptr, 10);
-            out_x = rect.x + rect.w - 1 - GetLineWidth(&string_base[i]) - left_margin;
+        case U'\r': // Right-justify, offset from the right border.
+            left_margin = parseMarkupNumber(string_base, &pos, 3);
+            // Measuring from `pos - 1` includes the last digit of the margin in the measured width, shifting the
+            // text left by one digit glyph. This reproduces an off-by-one in the original engine that the game's
+            // UI layouts are tuned around, e.g. the gap after '/' in the character screen stat lines.
+            out_x = rect.x + rect.w - 1 - GetLineWidth(std::string_view(string_base).substr(pos - 1)) - left_margin;
             out_y = position.y + rect.y;
             if (maxY != 0) {
                 if (_font.height() + out_y - 3 > maxY) {
                     return;
                 }
-                break;
             }
             break;
-        default:
-            if (!_font.supports(c))
+        default: {
+            int glyph = glyphIndex(c);
+            if (glyph == -1)
                 break;
 
-            if (i > 0) {
-                out_x += _font.metrics(c).leftSpacing;
+            const GlyphMetrics &metrics = _font.metrics(glyph);
+            if (charPos > 0) {
+                out_x += metrics.leftSpacing;
             }
 
-            Recti cell = _layout[c];
-            Recti srcRect(cell.x, cell.y, _font.metrics(c).width, _font.height());
-            Recti dstRect(out_x, out_y, _font.metrics(c).width, _font.height());
+            Recti cell = _layout[glyph];
+            Recti srcRect(cell.x, cell.y, metrics.width, _font.height());
+            Recti dstRect(out_x, out_y, metrics.width, _font.height());
 
             render->DrawTextNew(srcRect, dstRect, {draw_color, shadowColor});
 
-            out_x += _font.metrics(c).width;
-            if (i < len - 1) {
-                out_x += _font.metrics(c).rightSpacing;
+            out_x += metrics.width;
+            if (pos < len) {
+                out_x += metrics.rightSpacing;
             }
             break;
+        }
         }
     }
     // render->EndTextNew();
@@ -521,67 +563,68 @@ std::string GUIFont::FitTwoFontStringInWindow(std::string_view inString, GUIFont
     int lastCopyPos = 0;
     std::string out;
 
-    for (int i = 0; i < inString.length(); i++) {
-        char c = inString[i];
+    for (size_t pos = 0; pos < inString.size();) {
+        size_t charPos = pos;
+        char32_t c = txt::nextRune(inString, &pos);
         switch (c) {
-        case '\t': // Move to next cell, offset from the left border.
-            {
-                char digits[4];
-                strncpy(digits, &inString[i + 1], 3);
-                digits[3] = 0;
-                lineWidth = std::strtol(digits, nullptr, 10) + x;
-                i += 3;
-                break;
-            }
-        case '\n': // New line.
+        case U'\t': // Move to next cell, offset from the left border.
+            lineWidth = parseMarkupNumber(inString, &pos, 3) + x;
+            break;
+        case U'\n': // New line.
             lineWidth = x;
             newlinePos = -1;
-            out += inString.substr(lastCopyPos, i - lastCopyPos);
+            out += inString.substr(lastCopyPos, charPos - lastCopyPos);
             out += "\n";
-            lastCopyPos = i + 1;
+            lastCopyPos = pos;
             currentFont = this;
             break;
-        case '\f': // Color tag.
-            i += 5;
+        case U'\f': // Color tag.
+            parseMarkupNumber(inString, &pos, 5);
             break;
-        case '\r': // Surprise! Here it's just a \r\n!
+        case U'\r': // Surprise! Here it's just a \r\n!
             break;
-        case ' ':
-            lineWidth += currentFont->_font.metrics(c).width;
-            newlinePos = i;
+        case U' ': {
+            int glyph = currentFont->glyphIndex(U' ');
+            if (glyph != -1)
+                lineWidth += currentFont->_font.metrics(glyph).width;
+            newlinePos = charPos;
             newlineFont = currentFont;
             break;
-        case '_': // Use alternative font.
+        }
+        case U'_': // Use alternative font.
             currentFont = pFontSecond;
             break;
-        default:
-            if (!currentFont->_font.supports(c))
+        default: {
+            int glyph = currentFont->glyphIndex(c);
+            if (glyph == -1)
                 break;
 
-            if ((lineWidth + currentFont->_font.metrics(c).width + currentFont->_font.metrics(c).leftSpacing + currentFont->_font.metrics(c).rightSpacing) < width) {
-                if (i > newlinePos)
-                    lineWidth += currentFont->_font.metrics(c).leftSpacing;
-                lineWidth += currentFont->_font.metrics(c).width;
-                if (i < inString.length() - 1)
-                    lineWidth += currentFont->_font.metrics(c).rightSpacing;
+            const GlyphMetrics &metrics = currentFont->_font.metrics(glyph);
+            if ((lineWidth + metrics.width + metrics.leftSpacing + metrics.rightSpacing) < width) {
+                if (static_cast<int>(charPos) > newlinePos)
+                    lineWidth += metrics.leftSpacing;
+                lineWidth += metrics.width;
+                if (pos < inString.size())
+                    lineWidth += metrics.rightSpacing;
             } else {
                 lineWidth = x;
                 currentFont = newlineFont;
                 if (newlinePos >= 0) {
                     out += inString.substr(lastCopyPos, newlinePos - lastCopyPos);
                     out += "\n";
-                    i = newlinePos;
-                    lastCopyPos = i + 1;
+                    lastCopyPos = newlinePos + 1;
+                    pos = newlinePos + 1;
                 } else {
-                    out += inString.substr(lastCopyPos, i - lastCopyPos);
+                    out += inString.substr(lastCopyPos, charPos - lastCopyPos);
                     out += "\n";
-                    lastCopyPos = i;
-                    i--;
+                    lastCopyPos = charPos;
+                    pos = charPos; // Reprocess this character on the new line.
                 }
                 if (currentFont == pFontSecond)
                     out += "_";
                 newlinePos = -1;
             }
+        }
         }
     }
 

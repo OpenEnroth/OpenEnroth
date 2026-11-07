@@ -15,6 +15,7 @@
 #include "Library/Image/ImageFunctions.h"
 #include "Library/Image/Pcx.h"
 #include "Library/Image/Png.h"
+#include "Library/Font/Oef.h"
 #include "Library/LodFormats/LodFormats.h"
 #include "Library/Magic/Magic.h"
 
@@ -27,24 +28,31 @@
 
 #include "ArchiveReader.h"
 
-static RgbaImage renderFont(const LodFont &font) {
+static RgbaImage renderFont(const Font &font) {
     int charHeight = font.height();
     int charWidth = 0;
-    for (int c = 0; c < 255; c++)
-        charWidth = std::max(charWidth, font.metrics(c).width);
+    for (int i = 0; i < font.size(); i++)
+        charWidth = std::max(charWidth, font.metrics(i).width);
 
-    RgbaImage image = RgbaImage::solid(Color(0, 0, 0, 255), charWidth * 16, charHeight * 16);
+    // Lay the glyphs out by glyph index - a font is keyed by unicode code point, so laying them out by character
+    // would need a grid the size of the unicode range.
+    int columns = 16;
+    int rows = (font.size() + columns - 1) / columns;
+    RgbaImage image = RgbaImage::solid(Color(0, 0, 0, 255), charWidth * columns, charHeight * rows);
 
-    for (int c = 0; c < 255; c++) {
-        int x0 = (c % 16) * charWidth;
-        int y0 = (c / 16) * charHeight;
+    for (int i = 0; i < font.size(); i++) {
+        int x0 = (i % columns) * charWidth;
+        int y0 = (i / columns) * charHeight;
 
-        GrayscaleImageView glyph = font.image(c);
+        GrayscaleImageView glyph = font.image(i);
         for (int y = 0; y < glyph.height(); y++) {
             for (int x = 0; x < glyph.width(); x++) {
-                int gray = glyph[y][x];
-                if (gray == 1)
-                    gray = 128; // Make the shadow gray.
+                int gray = 0;
+                switch (glyph[y][x]) {
+                case 1: gray = 255; break; // Text.
+                case 2: gray = 128; break; // Shadow, rendered gray.
+                default: break;            // Background.
+                }
                 image[y0 + y][x0 + x] = Color(gray, gray, gray, 255);
             }
         }
@@ -111,7 +119,9 @@ static Blob convertToPng(const Blob &data, PathView palettesLodPath) {
         return png::encode(makeRgbaImage(lodSprite.image, palette));
     }
     case MAGIC_LOD_FONT:
-        return png::encode(renderFont(lod::decodeFont(data)));
+        return png::encode(renderFont(lod::decodeFont(data, ENCODING_ISO_8859_1)));
+    case MAGIC_OE_FONT:
+        return png::encode(renderFont(oef::decode(data)));
     default:
         throw Exception("Can't convert {} '{}' to png", formatDescription(magic(data)), data.displayPath());
     }
@@ -196,6 +206,26 @@ static int runMagic(const LodToolOptions &options) {
     }
 
     fmt::println("{} containing {}", formatDescription(format), formatDescription(magic(lod::decodeMaybeCompressed(data))));
+    return 0;
+}
+
+int runConvert(const LodToolOptions &options) {
+    std::unique_ptr<ArchiveReader> paletteReader = options.palettesLodPath.empty() ? nullptr : ArchiveReader::createArchiveReader(options.palettesLodPath);
+
+    DecodedEntries entries = decodeLodEntry(Blob::fromFile(options.convert.input), options.convert.input, false, paletteReader.get());
+
+    // Conversion can keep the original entry and append the converted form (e.g. fonts yield the .fnt + a .png),
+    // so the converted representation is always the last one.
+    const Blob &data = entries.back().first;
+
+    FILE *output = fopen(options.convert.output.c_str(), "wb");
+    if (!output)
+        throw Exception("Cannot open output file '{}'", options.convert.output);
+    bool ok = data.empty() || fwrite(data.data(), data.size(), 1, output) == 1;
+    fclose(output);
+    if (!ok)
+        throw Exception("Cannot write output file '{}'", options.convert.output);
+
     return 0;
 }
 

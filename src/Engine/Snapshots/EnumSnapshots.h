@@ -4,6 +4,13 @@
 #include <string>
 
 #include "Library/Binary/BinaryTags.h"
+#include "Library/Serialization/SerializationFwd.h"
+
+#include "Utility/String/Encoding.h"
+
+// Text encodings are serialized by name into the `z.json` entry of a savegame, so the names below are effectively
+// a part of the savegame format. They are iconv names.
+MM_DECLARE_SERIALIZATION_FUNCTIONS(TextEncoding);
 
 enum class Tileset;
 enum class TileVariant;
