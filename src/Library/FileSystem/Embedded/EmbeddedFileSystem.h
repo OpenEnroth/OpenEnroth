@@ -21,6 +21,8 @@ class EmbeddedFileSystem : public ReadOnlyFileSystem {
     virtual std::unique_ptr<InputStream> _openForReading(FileSystemPathView path) const override;
     virtual std::string _displayPath(FileSystemPathView path) const override;
 
+    static std::string makeBasePath(FileSystemPathView path);
+
  private:
     cmrc::embedded_filesystem _base;
     std::string _displayName;
