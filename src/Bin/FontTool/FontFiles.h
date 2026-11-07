@@ -20,7 +20,8 @@ Font readFont(PathView path, TextEncoding encoding);
  * @param path                          Path to write to. A `.png` path gets a glyph sheet, an `.oef` path gets an
  *                                      OpenEnroth font.
  * @param font                          Font to write.
- * @throws Exception                    If the extension is neither.
+ * @throws Exception                    If the extension is neither, or the font can't be encoded. The file is
+ *                                      left untouched then.
  */
 void writeFont(PathView path, const Font &font);
 
