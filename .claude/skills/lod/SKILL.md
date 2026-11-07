@@ -62,8 +62,7 @@ From a full `magic` scan of every archive in all three games. "Compressed" means
 | sounds | `Sounds/Audio.snd`, WAV | `SOUNDS/Audio.snd`, WAV | `Data/EnglishD.lod`, see below |
 | movies | `Anims/Anims1.vid`, `Anims2.vid`, Smacker | `Anims/Magic7.vid`, `Might7.vid`, Smacker and Bink | `Anims/Magicdod.vid`, `mightdod.vid`, Smacker and Bink |
 
-Entries without an extension in the image archives are LOD images, palettes or sprites. Movies inside VID archives
-are plain Smacker or Bink files, which `magic` names as `Smacker video` and `Bink video`.
+Entries without an extension in the image archives are LOD images, palettes or sprites.
 
 MM7's `ICONS.LOD` and MM8's `icons.lod` also hold stale copies of a few text tables. In MM7, `dsft.bin`,
 `spells.txt`, `mapstats.txt` and five more differ from the copies in `events.lod`, `dsft.bin` is 116036 bytes in
