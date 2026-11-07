@@ -9,6 +9,7 @@ enum class MagicFileFormat {
     MAGIC_LOD_PALETTE,
     MAGIC_LOD_SPRITE,
     MAGIC_LOD_FONT,
+    MAGIC_OE_FONT,
     MAGIC_VID,
     MAGIC_SND,
     MAGIC_PNG,

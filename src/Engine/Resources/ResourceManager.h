@@ -2,6 +2,7 @@
 
 #include <memory>
 #include <span>
+#include <string>
 #include <string_view>
 
 #include "Engine/Tables/ResourceMaskTable.h"
@@ -12,11 +13,12 @@
 #include "Library/Image/Image.h"
 #include "Library/Image/Palette.h"
 #include "Library/Lod/LodReader.h"
-#include "Library/LodFormats/LodFont.h"
 #include "Library/LodFormats/LodImage.h"
 
 class TileGenerator;
 class TileTable;
+
+#include "Utility/String/Encoding.h"
 
 /**
  * This class provides access to everything in `/data` folder.
@@ -36,12 +38,16 @@ class ResourceManager {
 
     Blob eventsData(std::string_view filename);
 
+    TextEncoding encoding() {
+        return _gameDataEncoding;
+    }
+
     /**
      * @param filename                  Name of a text file in `events.lod`.
      * @return                          The file's contents up to the first DOS end-of-file byte (0x1A), or all of it
-     *                                  if there is none.
+     *                                  if there is none, converted to UTF-8 from the game data's encoding.
      */
-    Blob eventsText(std::string_view filename);
+    std::string eventsText(std::string_view filename);
 
     /**
      * @param filename                  Name of an image in `icons.lod`, case-insensitive.
@@ -105,13 +111,6 @@ class ResourceManager {
     LodImage rawBitmap(std::string_view filename);
 
     /**
-     * @param filename                  Name of a font in `icons.lod`, case-insensitive.
-     * @return                          The font.
-     * @throws Exception                If there is no such font.
-     */
-    LodFont font(std::string_view filename);
-
-    /**
      * @param paletteId                 Palette id, the `NNN` in the `palNNN` image in `bitmaps.lod`.
      * @return                          The palette adjusted per `open()`, or a grayscale one if `bitmaps.lod` has no
      *                                  such palette.
@@ -145,4 +144,5 @@ class ResourceManager {
     float _saturation = 1.0f;
     float _lightness = 1.0f;
     std::unique_ptr<TileGenerator> _tileGenerator;
+    TextEncoding _gameDataEncoding = ENCODING_ASCII;
 };

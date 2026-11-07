@@ -820,7 +820,7 @@ void Engine::MM7_Initialize() {
     deserialize(engine->resources()->eventsData("dift.bin"), pIconsFrameTable);
 
     pDecorationTable = new DecorationTable;
-    deserialize(engine->resources()->eventsData("ddeclist.bin"), pDecorationTable);
+    deserialize(engine->resources()->eventsData("ddeclist.bin"), pDecorationTable, tags::encoding(engine->resources()->encoding()));
 
     pObjectTable = new ObjectTable;
     deserialize(engine->resources()->eventsData("dobjlist.bin"), pObjectTable);
@@ -1546,14 +1546,15 @@ Duration timeUntilDawn() {
     return next5am - now;
 }
 
-void initLevelStrings(const Blob &blob) {
+void initLevelStrings(std::string_view blob) {
     engine->_levelStrings.clear();
 
+    // TODO(captainurist): use MemoryInputStream here.
     int offs = 0;
     while (offs < blob.size()) {
-        const char *nextNullTerm = (const char*)memchr(&blob.str()[offs], '\0', blob.size() - offs);
-        size_t stringSize = nextNullTerm ? (nextNullTerm - &blob.str()[offs]) : (blob.size() - offs);
-        engine->_levelStrings.push_back(trimRemoveQuotes(std::string(&blob.str()[offs], stringSize)));
+        const char *nextNullTerm = (const char*)memchr(&blob[offs], '\0', blob.size() - offs);
+        size_t stringSize = nextNullTerm ? (nextNullTerm - &blob[offs]) : (blob.size() - offs);
+        engine->_levelStrings.push_back(trimRemoveQuotes(std::string(&blob[offs], stringSize)));
         offs += stringSize + 1;
     }
 }
@@ -1562,7 +1563,7 @@ void loadMapEventsAndStrings(MapId mapid) {
     std::string mapName = pMapTable->pInfos[mapid].fileName;
     std::string mapNameWithoutExt = mapName.substr(0, mapName.rfind('.'));
 
-    initLevelStrings(engine->resources()->eventsData(fmt::format("{}.str", mapNameWithoutExt)));
+    initLevelStrings(engine->resources()->eventsText(fmt::format("{}.str", mapNameWithoutExt)));
 
     engine->_localEventMap = EvtProgram::load(engine->resources()->eventsData(fmt::format("{}.evt", mapNameWithoutExt)));
 }

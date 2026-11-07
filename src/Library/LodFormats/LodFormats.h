@@ -1,12 +1,13 @@
 #pragma once
 
-#include "LodFont.h"
+#include "Library/Font/Font.h"
 #include "Library/Image/Palette.h"
 #include "Library/Geometry/Size.h"
 
+#include "Utility/String/Encoding.h"
+
 #include "LodImage.h"
 #include "LodSprite.h"
-#include "LodFont.h"
 
 class Blob;
 
@@ -103,12 +104,14 @@ LodSprite decodeSprite(const Blob &blob);
 Sizei decodeSpriteSize(const Blob &blob);
 
 /**
- * This function processes lod fonts.
+ * This function processes lod fonts, decoding them into a `Font` keyed by Unicode code point. Glyph bytes are mapped
+ * to code points using the provided encoding, so e.g. `ENCODING_ISO_8859_1` gives a font keyed by the raw byte value.
  *
  * @param blob                          Font `blob`, as read from a LOD file.
- * @return                              Decoded `LodFont`.
+ * @param encoding                      Encoding (codepage) the font's glyph bytes are in.
+ * @return                              Decoded `Font`.
  * @throw Exception                     If the format is not recognized.
  */
-LodFont decodeFont(const Blob &blob);
+Font decodeFont(const Blob &blob, TextEncoding encoding);
 
 } // namespace lod

@@ -9,6 +9,6 @@ class Blob;
 /**
  * @offset 0x476750
  */
-void initializeAutonotes(const Blob &autonotes);
+void initializeAutonotes(std::string_view autonotes);
 
 extern std::array<AutonoteData, 300> pAutonoteTxt;

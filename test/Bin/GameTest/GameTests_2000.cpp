@@ -20,6 +20,7 @@
 #include "Engine/Graphics/Viewport.h"
 #include "Engine/Objects/Actor.h"
 #include "Engine/Objects/Chest.h"
+#include "Engine/Tables/NPCTable.h"
 #include "Engine/Objects/MonsterEnumFunctions.h"
 #include "Engine/Objects/SpriteObject.h"
 #include "Engine/Resources/EngineFileSystem.h"
@@ -1045,7 +1046,7 @@ GAME_TEST(Prs, Pr2354) {
             std::string dlvFilename = fmt::format("{}.dlv", baseName);
             IndoorDelta_MM7 rawDelta;
             deserialize(lod::decodeMaybeCompressed(pGames_LOD->read(dlvFilename)), &rawDelta, tags::context(rawLocation));
-            reconstruct(rawDelta, &location);
+            reconstruct(rawDelta, &location, tags::encoding(engine->resources()->encoding()));
         } else if (isMapOutdoor(mapId)) {
             // Deserialize and reconstruct the base outdoor location (.odm).
             OutdoorLocation_MM7 rawLocation;
@@ -1077,7 +1078,7 @@ GAME_TEST(Prs, Pr2354) {
             std::string ddmFilename = fmt::format("{}.ddm", baseName);
             OutdoorDelta_MM7 rawDelta;
             deserialize(lod::decodeMaybeCompressed(pGames_LOD->read(ddmFilename)), &rawDelta, tags::context(rawLocation));
-            reconstruct(rawDelta, &location);
+            reconstruct(rawDelta, &location, tags::encoding(engine->resources()->encoding()));
         }
     }
 }

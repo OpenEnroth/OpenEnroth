@@ -52,6 +52,7 @@ ALLOWED_DOMAINS=(
     buildbuddy.io           # app.buildbuddy.io (invocation pages), remote.buildbuddy.io (cache)
     pypi.org                # Python package index — pip installs for tooling.
     gitlab.freedesktop.org
+    unicode.org             # Unicode standard & UCD data.
     pythonhosted.org        # files.pythonhosted.org — pip package downloads.
     anthropic.com           # api.anthropic.com, statsig.anthropic.com
     sentry.io
