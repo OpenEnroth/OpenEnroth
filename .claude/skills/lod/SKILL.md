@@ -65,8 +65,8 @@ From a full `magic` scan of every archive in all three games. "Compressed" means
 Entries without an extension in the image archives are LOD images, palettes or sprites.
 
 MM7's `ICONS.LOD` and MM8's `icons.lod` also hold stale copies of a few text tables. In MM7, `dsft.bin`,
-`spells.txt`, `mapstats.txt` and five more differ from the copies in `events.lod`, `dsft.bin` is 116036 bytes in
-one and 557382 in the other. OpenEnroth reads `events.lod`, so read the table from there.
+`spells.txt`, `mapstats.txt` and five more differ from the copies in `events.lod`. OpenEnroth reads `events.lod`,
+so read the table from there.
 
 `magic` says `Raw data` for two kinds of entries that are compressed in a way LodTool doesn't know, and `cat`
 passes them through unchanged:
