@@ -68,3 +68,10 @@ UNIT_TEST(Oef, DecodeRejectsTruncatedPayload) {
     Blob blob = oef::encode(makeFont());
     EXPECT_ANY_THROW(oef::decode(Blob::fromString(std::string(blob.str().substr(0, blob.size() - 4)))));
 }
+
+UNIT_TEST(Oef, EncodeRejectsWhatDecodeWouldReject) {
+    FontBuilder builder(1);
+    std::vector<uint8_t> pixels(300, 1);
+    builder.add(U'A', GlyphMetrics(0, 300, 0), GrayscaleImageView(pixels.data(), 300, 1));
+    EXPECT_ANY_THROW(oef::encode(std::move(builder).build()));
+}

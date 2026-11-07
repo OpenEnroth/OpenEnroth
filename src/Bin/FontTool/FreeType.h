@@ -72,7 +72,7 @@ class FreeTypeFace {
     /**
      * @param c                         Character to look up.
      * @return                          Height of the glyph's outline in font units, or `std::nullopt` if there's no
-     *                                  such glyph or it has no outline.
+     *                                  such glyph or its outline is empty.
      */
     [[nodiscard]] std::optional<int> outlineHeight(char32_t c);
 
