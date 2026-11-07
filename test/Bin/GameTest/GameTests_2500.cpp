@@ -1,4 +1,5 @@
 #include <algorithm>
+#include <limits>
 #include <numbers>
 #include <string>
 #include <string_view>
@@ -48,6 +49,7 @@
 #include "GUI/UI/UISaveLoad.h"
 
 #include "Library/Platform/Interface/Platform.h"
+#include "Library/Platform/Interface/PlatformEnumFunctions.h"
 
 #include "Media/Audio/SoundList.h"
 
@@ -90,21 +92,10 @@ static int lloydsBookSlotCount() {
     return std::ranges::count_if(pGUIWindow_CurrentMenu->vButtons, [](std::string_view id) { return id.starts_with("LloydsBook_Slot"); }, &GUIButton::id);
 }
 
-static void killHostileMonsters(EngineController &game) {
-    auto isTarget = [](const Actor &actor) { return actor.CanAct() && (actor.ActorEnemy() || (actor.attributes & ACTOR_HOSTILE)); };
-    while (std::ranges::any_of(pActors, isTarget)) {
-        for (const Actor &actor : pActors)
-            if (isTarget(actor))
-                Actor::Die(actor.id);
-        while (std::ranges::any_of(pActors, _1 == Dying, &Actor::aiState))
-            game.tick();
-    }
-}
-
-static void killMonstersAroundParty(EngineController &game, float radius) {
+static void killHostileMonsters(EngineController &game, float radius = std::numeric_limits<float>::infinity()) {
     // Timers can summon more monsters while the first batch is dying, so this goes on until nothing is left.
     auto isTarget = [radius](const Actor &actor) {
-        return actor.CanAct() && actor.monsterId != MONSTER_INVALID && !isPeasant(actor.monsterId) && (actor.pos - pParty->pos).length() < radius;
+        return actor.CanAct() && (actor.ActorEnemy() || (actor.attributes & ACTOR_HOSTILE)) && (actor.pos - pParty->pos).length() < radius;
     };
     while (std::ranges::any_of(pActors, isTarget)) {
         for (const Actor &actor : pActors)
@@ -115,10 +106,8 @@ static void killMonstersAroundParty(EngineController &game, float radius) {
     }
 }
 
-static void takeAllFromChest(EngineController &game, MapId map, Vec3f pos, int yaw) {
-    game.teleportTo(map, pos, yaw);
-    game.pressAndReleaseKey(PlatformKey::KEY_SPACE);
-    game.tick();
+static void emptyOpenChest(EngineController &game) {
+    // Space takes one item per press, in the chest's order.
     ASSERT_EQ(current_screen_type, SCREEN_CHEST);
     while (!vChests[pGUIWindow_CurrentChest->chestId()].inventory.entries().empty()) {
         game.pressAndReleaseKey(PlatformKey::KEY_SPACE);
@@ -126,6 +115,25 @@ static void takeAllFromChest(EngineController &game, MapId map, Vec3f pos, int y
     }
     game.pressAndReleaseKey(PlatformKey::KEY_ESCAPE);
     game.tick();
+}
+
+static void takeFromOpenChest(EngineController &game, ItemId item) {
+    // Takes items until the wanted one is in a backpack.
+    ASSERT_EQ(current_screen_type, SCREEN_CHEST);
+    for (int i = 0; i < 20 && !pParty->hasItem(item); i++) {
+        game.pressAndReleaseKey(PlatformKey::KEY_SPACE);
+        game.tick();
+    }
+    ASSERT_TRUE(pParty->hasItem(item));
+    game.pressAndReleaseKey(PlatformKey::KEY_ESCAPE);
+    game.tick();
+}
+
+static void takeAllFromChest(EngineController &game, MapId map, Vec3f pos, int yaw) {
+    game.teleportTo(map, pos, yaw);
+    game.pressAndReleaseKey(PlatformKey::KEY_SPACE);
+    game.tick();
+    emptyOpenChest(game);
 }
 
 static void pickUpFloorItem(EngineController &game, ItemId item) {
@@ -185,7 +193,6 @@ static void talkToHouseNpc(EngineController &game, std::string_view npcName) {
 
 static void enterHouseThroughDoor(EngineController &game, MapId map, Vec3f pos, int yaw, std::string_view npcName = {}) {
     game.teleportTo(map, pos, yaw);
-    game.tick();
     game.pressAndReleaseKey(PlatformKey::KEY_SPACE);
     game.tick();
     ASSERT_EQ(current_screen_type, SCREEN_HOUSE);
@@ -219,60 +226,60 @@ static void walkThroughExit(EngineController &game, MapId map, Vec3f pos, int ya
     game.skipLoadingScreen();
 }
 
-static bool spaceWouldRun(int eventId) {
-    Pid pid = engine->PickKeyboard(engine->config->gameplay.KeyboardInteractionDepth.value(), &vis_decoration_noevent_filter, &vis_door_filter).pid;
-    if (pid.type() != OBJECT_Face)
+static bool clickFrom(EngineController &game, Vec3f pos, int yaw, int pitch, Pid target) {
+    // Teleports to the spot and clicks the target if the mouse can reach it from there. Indoors the spot has to be
+    // over a floor, and the party stands on it.
+    if (isMapIndoor(engine->_currentLoadedMapId)) {
+        int sector = 0;
+        float floorZ = GetIndoorFloorZ(pos + Vec3f(0, 0, 40), &sector);
+        if (!sector || floorZ < pos.z - 300)
+            return false;
+        pos.z = floorZ;
+    }
+    game.teleportTo(engine->_currentLoadedMapId, pos, yaw, pitch);
+    try {
+        if (target.type() == OBJECT_Actor) {
+            game.pointMouseAtActor(target.id());
+        } else {
+            game.pointMouseAtFace(target.id());
+        }
+    } catch (const Exception &) {
         return false;
-    return (isMapIndoor(engine->_currentLoadedMapId) ? pIndoor->faces[pid.id()] : pOutdoor->face(pid)).eventId == eventId;
+    }
+    if (engine->PickMouseForInteraction().pid != target)
+        return false;
+    game.pressAndReleaseButton(BUTTON_LEFT);
+    game.tick();
+    return true;
+}
+
+static Vec3f directionForYaw(int yaw) {
+    return Vec3f(std::cos(yaw * std::numbers::pi / 180), std::sin(yaw * std::numbers::pi / 180), 0);
 }
 
 static void activateEvent(EngineController &game, int eventId) {
-    // Stands next to a face that runs the event on the current map, where Space or a click reaches that face, and uses it.
-    bool indoor = isMapIndoor(engine->_currentLoadedMapId);
-    const std::vector<BLVFace> &faces = indoor ? pIndoor->faces : pOutdoor->faces;
+    // Clicks a face that runs the event on the current map, from the first spot nearby where the mouse reaches it.
+    // Walls are tried from straight in front, tops of chests and pedestals from all four sides and from above.
+    const std::vector<BLVFace> &faces = isMapIndoor(engine->_currentLoadedMapId) ? pIndoor->faces : pOutdoor->faces;
     for (bool walls : {true, false}) {
         for (const BLVFace &face : faces) {
             if (face.eventId != eventId || (std::abs(face.facePlane.normal.z) < 0.7f) != walls)
                 continue;
             Vec3f center = face.boundingBox.center();
-            std::vector<int> yaws;
+            center.z = face.boundingBox.z1;
             if (walls) {
-                yaws.push_back(static_cast<int>(std::lround(std::atan2(-face.facePlane.normal.y, -face.facePlane.normal.x) * 180 / std::numbers::pi)));
-            } else {
-                yaws = {90, 270, 0, 180};
-            }
-            for (int yaw : yaws) {
-                Vec3f dir(std::cos(yaw * std::numbers::pi / 180), std::sin(yaw * std::numbers::pi / 180), 0);
-                for (float distance : {150.0f, 250.0f, 100.0f, 0.0f}) {
-                    for (int pitch : walls ? std::vector<int>{0} : distance == 0 ? std::vector<int>{-85} : std::vector<int>{-30, -50}) {
-                        Vec3f pos = center - dir * distance;
-                        pos.z = face.boundingBox.z1;
-                        if (indoor) {
-                            int sector = 0;
-                            pos.z = GetIndoorFloorZ(Vec3f(pos.x, pos.y, face.boundingBox.z1 + 40), &sector);
-                            if (!sector || pos.z < face.boundingBox.z1 - 300)
-                                continue;
-                        }
-                        game.teleportTo(engine->_currentLoadedMapId, pos, yaw, pitch);
-                        if (spaceWouldRun(eventId)) {
-                            game.pressAndReleaseKey(PlatformKey::KEY_SPACE);
-                            game.tick();
-                            return;
-                        }
-                        // Space takes the nearest face in a cone, which can be a wall in front of the target. A click
-                        // takes the face under the cursor.
-                        try {
-                            game.pointMouseAtFace(face.faceId);
-                        } catch (const Exception &) {
-                            continue;
-                        }
-                        if (engine->PickMouseForInteraction().pid != Pid::face(face.faceId))
-                            continue;
-                        game.pressAndReleaseButton(BUTTON_LEFT);
-                        game.tick();
+                int yaw = static_cast<int>(std::lround(std::atan2(-face.facePlane.normal.y, -face.facePlane.normal.x) * 180 / std::numbers::pi));
+                for (float distance : {150.0f, 250.0f, 100.0f})
+                    if (clickFrom(game, center - directionForYaw(yaw) * distance, yaw, 0, Pid::face(face.faceId)))
                         return;
-                    }
-                }
+            } else {
+                for (int yaw : {90, 270, 0, 180})
+                    for (float distance : {150.0f, 250.0f, 100.0f})
+                        for (int pitch : {-30, -50})
+                            if (clickFrom(game, center - directionForYaw(yaw) * distance, yaw, pitch, Pid::face(face.faceId)))
+                                return;
+                if (clickFrom(game, center, 90, -85, Pid::face(face.faceId)))
+                    return;
             }
         }
     }
@@ -280,58 +287,13 @@ static void activateEvent(EngineController &game, int eventId) {
 }
 
 static void lootCorpse(EngineController &game, int actorId) {
-    // Stands next to the dead actor where the mouse can reach the body, and clicks it.
-    MapId map = engine->_currentLoadedMapId;
-    for (int yaw : {270, 90, 180, 0}) {
-        Vec3f dir(std::cos(yaw * std::numbers::pi / 180), std::sin(yaw * std::numbers::pi / 180), 0);
-        for (float distance : {200.0f, 300.0f, 120.0f}) {
-            for (int pitch : {-30, -45, -15}) {
-                Vec3f pos = pActors[actorId].pos - dir * distance;
-                if (isMapIndoor(map)) {
-                    int sector = 0;
-                    pos.z = GetIndoorFloorZ(pos + Vec3f(0, 0, 40), &sector);
-                    if (!sector)
-                        continue;
-                }
-                game.teleportTo(map, pos, yaw, pitch);
-                try {
-                    game.pointMouseAtActor(actorId);
-                } catch (const Exception &) {
-                    continue;
-                }
-                game.pressAndReleaseButton(BUTTON_LEFT);
-                game.tick();
-                return;
-            }
-        }
-    }
+    // Clicks the dead actor's body from the first spot nearby where the mouse reaches it.
+    for (int yaw : {270, 90, 180, 0})
+        for (float distance : {200.0f, 300.0f, 120.0f})
+            for (int pitch : {-30, -45, -15})
+                if (clickFrom(game, pActors[actorId].pos - directionForYaw(yaw) * distance, yaw, pitch, Pid(OBJECT_Actor, actorId)))
+                    return;
     throw Exception("Found no spot to loot actor #{}", actorId);
-}
-
-static void takeChestItem(EngineController &game, ItemId item) {
-    // Takes items from the open chest with Space, one per press, until the wanted one is in a backpack.
-    if (current_screen_type != SCREEN_CHEST)
-        throw Exception("No chest is open");
-    for (int i = 0; i < 20 && !pParty->hasItem(item); i++) {
-        game.pressAndReleaseKey(PlatformKey::KEY_SPACE);
-        game.tick();
-    }
-    if (!pParty->hasItem(item))
-        throw Exception("Item {} is not in the chest", std::to_underlying(item));
-    game.pressAndReleaseKey(PlatformKey::KEY_ESCAPE);
-    game.tick();
-}
-
-static void emptyChest(EngineController &game) {
-    // Takes everything from the open chest with Space, one item per press.
-    if (current_screen_type != SCREEN_CHEST)
-        throw Exception("No chest is open");
-    while (!vChests[pGUIWindow_CurrentChest->chestId()].inventory.entries().empty()) {
-        game.pressAndReleaseKey(PlatformKey::KEY_SPACE);
-        game.tick();
-    }
-    game.pressAndReleaseKey(PlatformKey::KEY_ESCAPE);
-    game.tick();
 }
 
 static void clickSkill(EngineController &game, Skill skill) {
@@ -385,7 +347,7 @@ static void fetchSoulJars(EngineController &game) {
     leaveThrough(game, 501); // Thunderfist Mountain.
     killHostileMonsters(game);
     activateEvent(game, 176); // The soul jars chest.
-    takeChestItem(game, ITEM_QUEST_CASE_OF_SOUL_JARS);
+    takeFromOpenChest(game, ITEM_QUEST_CASE_OF_SOUL_JARS);
 }
 
 static void killXenofex(EngineController &game) {
@@ -1995,7 +1957,7 @@ GAME_TEST(Prs, Pr2979) {
 
         // Emerald Island crates: potion bottles and berries for the red potion, and the seashell.
         game.teleportTo(MAP_EMERALD_ISLAND, Vec3f(-696, 16800, 96), 90);
-        killMonstersAroundParty(game, 5000);
+        killHostileMonsters(game, 5000);
         takeAllFromChest(game, MAP_EMERALD_ISLAND, Vec3f(-696, 16800, 96), 90);
         takeAllFromChest(game, MAP_EMERALD_ISLAND, Vec3f(-568, 16560, 96), 90);
         game.goToInventory(0);
@@ -2006,13 +1968,13 @@ GAME_TEST(Prs, Pr2979) {
 
         // Temple of the Moon: the floor tile and the wealthy hat.
         game.teleportTo(MAP_TEMPLE_OF_THE_MOON, Vec3f(-4020, 6336, -96), 180, -30);
-        killMonstersAroundParty(game, 2000);
+        killHostileMonsters(game, 2000);
         pickUpFloorItem(game, ITEM_QUEST_FLOOR_TILE_W_MOON_INSIGNIA);
         takeAllFromChest(game, MAP_TEMPLE_OF_THE_MOON, Vec3f(-6058, 6784, -96), 180);
 
         // Dragon's Lair: the longbow, and a missing contestant's shield that Lord Markham pays for.
         game.teleportTo(MAP_DRAGONS_LAIR, Vec3f(0, 2780, 1), 90, -30);
-        killMonstersAroundParty(game, 3000);
+        killHostileMonsters(game, 3000);
         pickUpFloorItem(game, ITEM_LONGBOW);
         game.teleportTo(MAP_DRAGONS_LAIR, Vec3f(0, 2480, 1), 270, -30);
         pickUpFloorItem(game, ITEM_QUEST_CONTESTANTS_SHIELD);
@@ -2072,7 +2034,7 @@ GAME_TEST(Prs, Pr2979) {
                                           std::pair(5, Vec3f(-3408, 9816, -128)), std::pair(6, Vec3f(1280, 3072, -128)),
                                           std::pair(7, Vec3f(-3784, 5280, -128))}) {
             game.teleportTo(MAP_RED_DWARF_MINES, statue + Vec3f(250, 0, 0), 180);
-            killMonstersAroundParty(game, 2000);
+            killHostileMonsters(game, 2000);
             game.pointMouseAtDecoration(decoration);
             game.pressAndReleaseKey(PlatformKey::KEY_SPACE);
             game.tick();
@@ -2143,14 +2105,14 @@ GAME_TEST(Prs, Pr2979) {
             game.teleportTo(MAP_CELESTE, Vec3f(-6781, 792, 57), 0);
             enterTemple(game, 504, "Enter Temple of Light");
             activateEvent(game, 176); // The altar piece chest.
-            takeChestItem(game, ITEM_QUEST_ALTAR_PIECE_LIGHT);
+            takeFromOpenChest(game, ITEM_QUEST_ALTAR_PIECE_LIGHT);
             game.teleportTo(MAP_PIT, Vec3f(-16202, -4096, -95), 0);
             killHostileMonsters(game);
             enterTemple(game, 502, "Enter Temple of Dark");
             killHostileMonsters(game);
             activateEvent(game, 13); // The altar, it slides open over the chest.
             activateEvent(game, 195); // The altar piece chest.
-            takeChestItem(game, ITEM_QUEST_ALTAR_PIECE_DARK);
+            takeFromOpenChest(game, ITEM_QUEST_ALTAR_PIECE_DARK);
 
             // Crag Hack only needs the party to come out of the Wine Cellar through the vampires' house.
             game.teleportTo(MAP_TATALIA, Vec3f(8216, -10619, 289), 0);
@@ -2221,13 +2183,13 @@ GAME_TEST(Prs, Pr2979) {
             enterTemple(game, 502, "Enter Temple of Dark");
             activateEvent(game, 13); // The altar, it slides open over the chest.
             activateEvent(game, 195); // The altar piece chest.
-            takeChestItem(game, ITEM_QUEST_ALTAR_PIECE_DARK);
+            takeFromOpenChest(game, ITEM_QUEST_ALTAR_PIECE_DARK);
             walkThroughExit(game, MAP_BRACADA_DESERT, Vec3f(-9728, 9950, 2472), 90, 2); // Onto the teleporter to Celeste.
             killHostileMonsters(game);
             enterTemple(game, 504, "Enter Temple of Light");
             killHostileMonsters(game);
             activateEvent(game, 176); // The altar piece chest.
-            takeChestItem(game, ITEM_QUEST_ALTAR_PIECE_LIGHT);
+            takeFromOpenChest(game, ITEM_QUEST_ALTAR_PIECE_LIGHT);
 
             // Maximus wants the soul jars from Thunderfist Mountain.
             fetchSoulJars(game);
@@ -2279,22 +2241,21 @@ GAME_TEST(Prs, Pr2979) {
         leaveHouse(game);
         for (int chest : light ? std::initializer_list<int>{182, 183} : std::initializer_list<int>{181, 182}) {
             activateEvent(game, chest);
-            emptyChest(game);
+            emptyOpenChest(game);
         }
 
         // The active character got all four. Digit keys hand three of them out, then everyone puts one on.
-        static constexpr std::array<PlatformKey, 4> digits = {PlatformKey::KEY_DIGIT_1, PlatformKey::KEY_DIGIT_2, PlatformKey::KEY_DIGIT_3, PlatformKey::KEY_DIGIT_4};
         int holder = pParty->activeCharacterIndex();
         game.goToInventory(holder);
         for (int i = 0; i < 4; i++) {
             if (i == holder)
                 continue;
             clickInventoryItem(game, ITEM_QUEST_WETSUIT, BUTTON_LEFT);
-            game.pressAndReleaseKey(digits[i]);
+            game.pressAndReleaseKey(platformKeyForDigit(i + 1));
             game.tick();
         }
         for (int i = 0; i < 4; i++) {
-            game.pressAndReleaseKey(digits[i]);
+            game.pressAndReleaseKey(platformKeyForDigit(i + 1));
             game.tick();
             clickInventoryItem(game, ITEM_QUEST_WETSUIT, BUTTON_LEFT);
             game.pressAndReleaseButton(BUTTON_LEFT, 560, 170); // The paperdoll.
