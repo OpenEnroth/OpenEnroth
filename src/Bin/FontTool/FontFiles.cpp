@@ -9,6 +9,7 @@
 #include "Library/Magic/Magic.h"
 
 #include "Utility/Exception.h"
+#include "Utility/Memory/Blob.h"
 #include "Utility/String/Ascii.h"
 #include "Utility/Streams/FileOutputStream.h"
 
@@ -31,8 +32,9 @@ void writeFont(PathView path, const Font &font) {
     if (extension != ".png" && extension != ".oef")
         throw Exception("Can't write a font to '{}', only .oef and .png are supported", path.displayString());
 
+    Blob data = extension == ".png" ? png::encode(renderFontSheet(font)) : oef::encode(font);
     FileOutputStream output(path);
-    output.write(extension == ".png" ? png::encode(renderFontSheet(font)) : oef::encode(font));
+    output.write(data);
     output.close();
 }
 

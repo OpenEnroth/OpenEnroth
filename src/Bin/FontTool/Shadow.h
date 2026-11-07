@@ -29,12 +29,4 @@ using enum ShadowMode;
  * @return                              Metrics and image of the resulting glyph.
  */
 std::pair<GlyphMetrics, GrayscaleImage> reshadow(const GlyphMetrics &metrics, GrayscaleImageView image, int height,
-                                                ShadowMode shadow, int raise, bool recolor);
-
-/**
- * Same as above, with the glyph kept in place and the colors as they are.
- */
-inline std::pair<GlyphMetrics, GrayscaleImage> reshadow(const GlyphMetrics &metrics, GrayscaleImageView image,
-                                                       int height, ShadowMode shadow) {
-    return reshadow(metrics, image, height, shadow, 0, false);
-}
+                                                ShadowMode shadow, int raise = 0, bool recolor = false);

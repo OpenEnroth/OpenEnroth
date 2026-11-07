@@ -106,9 +106,9 @@ Blob oef::encode(const Font &font) {
         throw Exception("Cannot encode font: height {} is over {}", font.height(), MAX_FONT_HEIGHT);
     for (int i = 0; i < font.size(); i++) {
         const GlyphMetrics &metrics = font.metrics(i);
-        if (metrics.width > MAX_GLYPH_WIDTH || std::abs(metrics.leftSpacing) > MAX_GLYPH_SPACING ||
-            std::abs(metrics.rightSpacing) > MAX_GLYPH_SPACING)
-            throw Exception("Cannot encode font: metrics for code point {} are out of range", static_cast<uint32_t>(font.character(i)));
+        if (static_cast<uint32_t>(font.character(i)) >= MAX_CODE_POINT || metrics.width > MAX_GLYPH_WIDTH ||
+            std::abs(metrics.leftSpacing) > MAX_GLYPH_SPACING || std::abs(metrics.rightSpacing) > MAX_GLYPH_SPACING)
+            throw Exception("Cannot encode font: code point {} or its metrics are out of range", static_cast<uint32_t>(font.character(i)));
     }
 
     Blob payload;
