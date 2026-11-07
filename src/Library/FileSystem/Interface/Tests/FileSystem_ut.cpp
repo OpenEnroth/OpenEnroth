@@ -17,33 +17,53 @@ static void expectNotAccessible(const std::function<void()> &call, std::string_v
 UNIT_TEST(FileSystem, PublicApiNormalizes) {
     // Every public method normalizes its path, so all of these spellings name the same file.
     MemoryFileSystem fs("ram");
-    fs.write("/foo/bar", Blob::fromString("lol"));
+    fs.write("foo/bar", Blob::fromString("lol"));
 
-    for (std::string_view path : {"/foo/bar", "/foo//bar//", "/foo\\bar", "//foo/bar", "\\foo\\bar", "/./foo/./bar", "/foo/../foo/bar", "/a/../foo/bar", "/../foo/bar"}) {
+    for (std::string_view path : {"foo/bar", "foo//bar//", "foo\\bar", "./foo/./bar", "foo/../foo/bar", "a/../foo/bar"}) {
         EXPECT_TRUE(fs.exists(path)) << path;
         EXPECT_EQ(fs.stat(path), FileStat(FILE_REGULAR, 3)) << path;
         EXPECT_EQ(fs.read(path).str(), "lol") << path;
         EXPECT_EQ(fs.openForReading(path)->readAll(), "lol") << path;
-        EXPECT_EQ(fs.displayPath(path), fs.displayPath("/foo/bar")) << path;
+        EXPECT_EQ(fs.displayPath(path), fs.displayPath("foo/bar")) << path;
     }
 
-    for (std::string_view path : {"/w/x", "/w\\x", "/./w/./x", "/w/../w/x"}) {
+    for (std::string_view path : {"w/x", "w\\x", "./w/./x", "w/../w/x"}) {
         fs.write(path, Blob::fromString(std::string(path)));
-        EXPECT_EQ(fs.read("/w/x").str(), path) << path;
+        EXPECT_EQ(fs.read("w/x").str(), path) << path;
     }
 
     std::vector<DirectoryEntry> entries;
-    fs.ls("/./foo/.", &entries);
+    fs.ls("./foo/.", &entries);
     EXPECT_EQ(entries, std::vector<DirectoryEntry>({{"bar", FILE_REGULAR}}));
-    EXPECT_EQ(fs.ls("/foo/../foo/"), entries);
+    EXPECT_EQ(fs.ls("foo/../foo/"), entries);
 }
 
-UNIT_TEST(FileSystem, RelativePathsAreRefused) {
-    // A path that doesn't start with a separator names nothing in a file system, whichever way it's spelled.
+UNIT_TEST(FileSystem, DotDotStopsAtRoot) {
+    // Climbing above the root stops at the root, whichever spelling it uses.
     MemoryFileSystem fs("ram");
-    fs.write("/foo", Blob::fromString("lol"));
+    fs.write("foo", Blob::fromString("lol"));
 
-    for (std::string_view path : {"foo", "foo/bar", "foo\\bar", ".", "./foo", "..", "../foo", "..\\foo", "foo/../../foo", "../", "C:/foo", "C:foo", "C:"}) {
+    for (std::string_view path : {"../foo", "..\\foo", "foo/../../foo", "a/b/../../../foo"})
+        EXPECT_EQ(fs.read(path).str(), "lol") << path;
+
+    for (std::string_view path : {"..", "../", "../.."})
+        EXPECT_EQ(fs.stat(path), FileStat(FILE_DIRECTORY, 0)) << path;
+}
+
+UNIT_TEST(FileSystem, RootedPathsAreRefused) {
+    // A path with a root of its own names something outside the file system, whichever way it's spelled.
+    MemoryFileSystem fs("ram");
+    fs.write("foo", Blob::fromString("lol"));
+
+    std::vector<std::string_view> paths = {"/", "/foo", "//foo", "\\foo", "/../foo", "/foo/bar/"};
+#ifdef _WINDOWS
+    // On Windows a drive can show up only after normalizing, as in "./C:/foo", and a segment that starts like one
+    // is refused too.
+    for (std::string_view path : {"C:/foo", "C:foo", "C:", "./C:/foo", "a/../C:/foo", "a/c:foo", "a/C:", "//server/share/foo"})
+        paths.push_back(path);
+#endif
+
+    for (std::string_view path : paths) {
         EXPECT_FALSE(fs.exists(path)) << path;
         EXPECT_EQ(fs.stat(path), FileStat()) << path;
         expectNotAccessible([&] { (void) fs.read(path); }, path);
@@ -56,85 +76,53 @@ UNIT_TEST(FileSystem, RelativePathsAreRefused) {
     }
 }
 
-UNIT_TEST(FileSystem, ParentOfRootIsRoot) {
-    // Climbing above the root stops at the root.
-    MemoryFileSystem fs("ram");
-    fs.write("/foo", Blob::fromString("lol"));
-
-    EXPECT_EQ(fs.stat("/.."), FileStat(FILE_DIRECTORY, 0));
-    EXPECT_EQ(fs.read("/../foo").str(), "lol");
-    EXPECT_EQ(fs.read("/a/b/../../../foo").str(), "lol");
-    EXPECT_EQ(fs.displayPath("/.."), "ram://");
-}
-
+#ifndef _WINDOWS
 UNIT_TEST(FileSystem, DriveLikeNamesAreNames) {
-    // A name that looks like a drive is an ordinary name, and doesn't get mixed up with what comes after its colon.
+    // Outside Windows a drive letter is an ordinary name.
     MemoryFileSystem fs("ram");
-    fs.write("/C:/foo", Blob::fromString("lol"));
-    fs.write("/a/c:foo", Blob::fromString("kek"));
-    fs.write("/c:foo", Blob::fromString("cheburek"));
-    fs.write("/foo", Blob::fromString("foo"));
+    fs.write("C:/foo", Blob::fromString("lol"));
+    fs.write("a/c:foo", Blob::fromString("kek"));
 
-    EXPECT_EQ(fs.read("/C:/foo").str(), "lol");
-    EXPECT_EQ(fs.read("/a/c:foo").str(), "kek");
-    EXPECT_EQ(fs.read("/c:foo").str(), "cheburek");
-    EXPECT_EQ(fs.read("/foo").str(), "foo");
-    EXPECT_EQ(fs.ls("/a"), std::vector<DirectoryEntry>({{"c:foo", FILE_REGULAR}}));
-    EXPECT_EQ(fs.displayPath("/a/c:foo"), "ram://a/c:foo");
+    EXPECT_EQ(fs.read("C:/foo").str(), "lol");
+    EXPECT_EQ(fs.read("a/c:foo").str(), "kek");
 }
+#endif
 
 UNIT_TEST(FileSystem, RootIsNotRemovable) {
     // Every spelling of the root is refused.
     MemoryFileSystem fs("ram");
-    fs.write("/foo", Blob::fromString("lol"));
+    fs.write("foo", Blob::fromString("lol"));
 
-    for (std::string_view path : {"/", "/foo/..", "/.."})
+    for (std::string_view path : {"", ".", "foo/..", ".."})
         EXPECT_ANY_THROW((void) fs.remove(path)) << path;
 
-    EXPECT_TRUE(fs.exists("/foo"));
+    EXPECT_TRUE(fs.exists("foo"));
 }
 
-UNIT_TEST(FileSystem, EmptyPathIsRefused) {
-    // An empty path names nothing, it is not a spelling of the root.
-    MemoryFileSystem fs("ram");
-    fs.write("/foo", Blob::fromString("lol"));
-
-    EXPECT_FALSE(fs.exists(""));
-    EXPECT_EQ(fs.stat(""), FileStat());
-    EXPECT_ANY_THROW((void) fs.ls(""));
-    EXPECT_THAT([&] { (void) fs.read(""); }, testing::ThrowsMessage<FileSystemException>(testing::HasSubstr("read ''")));
-    EXPECT_ANY_THROW(fs.write("", Blob::fromString("kek")));
-    EXPECT_ANY_THROW((void) fs.openForReading(""));
-    EXPECT_ANY_THROW((void) fs.openForWriting(""));
-    EXPECT_ANY_THROW((void) fs.remove(""));
-
-    EXPECT_TRUE(fs.exists("/"));
-    EXPECT_EQ(fs.read("/foo").str(), "lol");
-}
 
 UNIT_TEST(FileSystem, NormalPathOverloads) {
     // A NormalPath goes through the same checks as a plain path, and its path() names the same thing.
     MemoryFileSystem fs("ram");
-    fs.write("/foo", Blob::fromString("lol"));
+    fs.write("foo", Blob::fromString("lol"));
 
-    EXPECT_EQ(fs.read(NormalPath("/./foo")).str(), "lol");
-    EXPECT_TRUE(fs.exists(NormalPath("/")));
-    EXPECT_TRUE(fs.exists(NormalPath("/").path()));
-    EXPECT_EQ(fs.stat(NormalPath("/")), FileStat(FILE_DIRECTORY, 0));
+    EXPECT_EQ(fs.read(NormalPath("./foo")).str(), "lol");
+    EXPECT_TRUE(fs.exists(NormalPath(".")));
+    EXPECT_TRUE(fs.exists(NormalPath(".").path()));
+    EXPECT_EQ(fs.stat(NormalPath(".")), FileStat(FILE_DIRECTORY, 0));
 
-    EXPECT_FALSE(fs.exists(NormalPath("../foo")));
-    EXPECT_FALSE(fs.exists(NormalPath("")));
-    expectNotAccessible([&] { (void) fs.read(NormalPath("../foo")); }, "../foo");
-    EXPECT_EQ(fs.displayPath(NormalPath("../foo")), fs.displayPath("../foo"));
+    EXPECT_TRUE(fs.exists(NormalPath("")));
+    EXPECT_FALSE(fs.exists(NormalPath("/foo")));
+    expectNotAccessible([&] { (void) fs.read(NormalPath("/foo")); }, "/foo");
+    EXPECT_EQ(fs.displayPath(NormalPath("/foo")), fs.displayPath("/foo"));
 }
 
 UNIT_TEST(FileSystem, ErrorAboutRootNamesRoot) {
     // An error about the root names it the way displayPath does.
     MemoryFileSystem fs("ram");
-    SubFileSystem sub("/a", &fs);
+    SubFileSystem sub("a", &fs);
 
-    EXPECT_EQ(sub.displayPath("/"), "ram://a");
-    EXPECT_THAT([&] { (void) sub.read("/"); }, testing::ThrowsMessage<FileSystemException>(testing::HasSubstr("'ram://a'")));
+    EXPECT_EQ(sub.displayPath("."), "ram://a");
+    EXPECT_THAT([&] { (void) sub.read("."); }, testing::ThrowsMessage<FileSystemException>(testing::HasSubstr("'ram://a'")));
 }
 
 UNIT_TEST(FileSystem, DisplayPathOfInaccessiblePath) {
@@ -142,7 +130,6 @@ UNIT_TEST(FileSystem, DisplayPathOfInaccessiblePath) {
     MemoryFileSystem fs("ram");
     MergingFileSystem merged({&fs});
 
-    EXPECT_EQ(fs.displayPath(".."), "ram://..");
-    EXPECT_EQ(fs.displayPath("a/../../b"), "ram://../b");
-    EXPECT_EQ(merged.displayPath("../b"), "ram://../b");
+    EXPECT_EQ(fs.displayPath("/a"), "ram:///a");
+    EXPECT_EQ(merged.displayPath("/a/../b"), "ram:///b");
 }

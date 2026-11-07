@@ -15,7 +15,7 @@ enum class FileSystemError {
     FS_READ_FAILED_PATH_NOT_ACCESSIBLE,
 
     FS_WRITE_FAILED_PATH_NOT_WRITEABLE, // E.g. on a read-only filesystem.
-    FS_WRITE_FAILED_FILE_IN_PATH, // Writing to "/a/b.txt/c" where "/a/b.txt" is an existing file.
+    FS_WRITE_FAILED_FILE_IN_PATH, // Writing to "a/b.txt/c" where "a/b.txt" is an existing file.
     FS_WRITE_FAILED_PATH_IS_DIR,
     FS_WRITE_FAILED_PATH_NOT_ACCESSIBLE,
 

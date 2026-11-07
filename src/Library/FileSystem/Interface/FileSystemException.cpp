@@ -46,5 +46,5 @@ std::string FileSystemException::formatMessage(FileSystemError error, std::strin
 }
 
 [[noreturn]] void FileSystemException::raise(const FileSystem *fs, FileSystemError error, NormalPathView path) {
-    throw FileSystemException(error, path.str().empty() ? std::string() : fs->displayPath(path));
+    throw FileSystemException(error, fs->displayPath(path));
 }

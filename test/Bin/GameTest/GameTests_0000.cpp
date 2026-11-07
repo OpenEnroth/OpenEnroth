@@ -69,8 +69,8 @@ GAME_TEST(Issues, Issue159) {
 
 GAME_TEST(Issues, Issue163) {
     // Testing that pressing the Load Game button doesn't crash even if the 'saves' folder doesn't exist.
-    ufs->remove("/saves");
-    EXPECT_FALSE(ufs->exists("/saves"));
+    ufs->remove("saves");
+    EXPECT_FALSE(ufs->exists("saves"));
 
     game.pressGuiButton("MainMenu_LoadGame"); // Shouldn't crash.
     game.tick(10);
@@ -541,7 +541,7 @@ GAME_TEST(Issues, Issue408_970_996) {
     // Trace enters throne room - resurecta - final task and exits gameover loop.
     auto screenTape = tapes.screen();
     auto mapTape = tapes.map();
-    auto certTape = tapes.custom([] { return ufs->exists("/MM7_Win.Pcx"); });
+    auto certTape = tapes.custom([] { return ufs->exists("MM7_Win.Pcx"); });
     auto messageBoxesTape = tapes.messageBoxes();
     test.playTraceFromTestData("issue_408.mm7", "issue_408.json");
     // we should return to game screen

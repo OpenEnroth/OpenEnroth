@@ -62,7 +62,7 @@ void EngineTraceRecorder::startRecording(EngineController *game, const Blob &sav
 
     // Same as in EngineTraceRecorder - replace user fs with a filesystem that only has the current save.
     _ramFs = std::make_unique<MemoryFileSystem>("ramfs");
-    _ramFs->write("/saves/!!!save.mm7", _savedGame);
+    _ramFs->write("saves/!!!save.mm7", _savedGame);
     _fsRollback.emplace(&ufs, _ramFs.get());
 
     component<EngineTraceSimpleRecorder>()->startRecording();
