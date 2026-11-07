@@ -1,4 +1,5 @@
 #include <algorithm>
+#include <numbers>
 #include <string>
 #include <string_view>
 #include <tuple>
@@ -11,6 +12,7 @@
 #include "Engine/EngineGlobals.h"
 #include "Engine/EngineIocContainer.h"
 #include "Engine/MapEnums.h"
+#include "Engine/MapEnumFunctions.h"
 #include "Engine/Party.h"
 #include "Engine/SaveLoad.h"
 #include "Engine/SpellFxRenderer.h"
@@ -19,10 +21,13 @@
 #include "Engine/Data/HouseEnums.h"
 #include "Engine/Evt/EvtProgram.h"
 #include "Engine/Evt/EvtVariables.h"
+#include "Engine/Graphics/Camera.h"
 #include "Engine/Graphics/Image.h"
 #include "Engine/Graphics/Indoor.h"
+#include "Engine/Graphics/Outdoor.h"
 #include "Engine/Graphics/Vis.h"
 #include "Engine/Objects/Actor.h"
+#include "Engine/Objects/Chest.h"
 #include "Engine/Objects/Decoration.h"
 #include "Engine/Objects/MonsterEnumFunctions.h"
 #include "Engine/Objects/SpriteObject.h"
@@ -36,13 +41,18 @@
 #include "GUI/GUIProgressBar.h"
 #include "GUI/GUIWindow.h"
 #include "GUI/UI/ItemGrid.h"
+#include "GUI/UI/UIChest.h"
 #include "GUI/UI/UIGame.h"
 #include "GUI/UI/UIHouses.h"
+#include "GUI/UI/UIRest.h"
 #include "GUI/UI/UISaveLoad.h"
 
 #include "Library/Platform/Interface/Platform.h"
 
 #include "Media/Audio/SoundList.h"
+
+#include "Utility/Exception.h"
+#include "Utility/Lambda.h"
 
 #include "GameTestCommon.h"
 
@@ -80,15 +90,129 @@ static int lloydsBookSlotCount() {
     return std::ranges::count_if(pGUIWindow_CurrentMenu->vButtons, [](std::string_view id) { return id.starts_with("LloydsBook_Slot"); }, &GUIButton::id);
 }
 
-static void clickInventoryItem(EngineController &game, ItemId item) {
-    // Clicks the item in the active character's backpack.
-    InventoryEntry entry = pParty->activeCharacter().inventory.find(item);
-    game.pressAndReleaseButton(BUTTON_LEFT, mapFromInventoryGrid(entry.geometry().topLeft(), Pointi(14, 17)) + Pointi(16, 16));
+static void killHostileMonsters(EngineController &game) {
+    auto isTarget = [](const Actor &actor) { return actor.CanAct() && (actor.ActorEnemy() || (actor.attributes & ACTOR_HOSTILE)); };
+    while (std::ranges::any_of(pActors, isTarget)) {
+        for (const Actor &actor : pActors)
+            if (isTarget(actor))
+                Actor::Die(actor.id);
+        while (std::ranges::any_of(pActors, _1 == Dying, &Actor::aiState))
+            game.tick();
+    }
+}
+
+static void killMonstersAroundParty(EngineController &game, float radius) {
+    // Timers can summon more monsters while the first batch is dying, so this goes on until nothing is left.
+    auto isTarget = [radius](const Actor &actor) {
+        return actor.CanAct() && actor.monsterId != MONSTER_INVALID && !isPeasant(actor.monsterId) && (actor.pos - pParty->pos).length() < radius;
+    };
+    while (std::ranges::any_of(pActors, isTarget)) {
+        for (const Actor &actor : pActors)
+            if (isTarget(actor))
+                Actor::Die(actor.id);
+        while (std::ranges::any_of(pActors, _1 == Dying, &Actor::aiState))
+            game.tick();
+    }
+}
+
+static void takeAllFromChest(EngineController &game, MapId map, Vec3f pos, int yaw) {
+    game.teleportTo(map, pos, yaw);
+    game.pressAndReleaseKey(PlatformKey::KEY_SPACE);
+    game.tick();
+    ASSERT_EQ(current_screen_type, SCREEN_CHEST);
+    while (!vChests[pGUIWindow_CurrentChest->chestId()].inventory.entries().empty()) {
+        game.pressAndReleaseKey(PlatformKey::KEY_SPACE);
+        game.tick();
+    }
+    game.pressAndReleaseKey(PlatformKey::KEY_ESCAPE);
     game.tick();
 }
 
+static void pickUpFloorItem(EngineController &game, ItemId item) {
+    // An item's billboard is drawn upwards from its position, so this tries points above it until the pick hits it.
+    game.tick();
+    auto sprite = std::ranges::find_if(pSpriteObjects, [item](const SpriteObject &sprite) { return sprite.uObjectDescID != 0 && sprite.containing_item.itemId == item; });
+    ASSERT_NE(sprite, pSpriteObjects.end());
+    Vec3f pos = sprite->vPosition;
+    Pointi base = pCamera3D->Project(pCamera3D->ViewTransform(&pos)).toInt();
+    std::vector<Pointi> points;
+    for (int dy = 0; dy <= 60; dy += 4)
+        for (int dx = -40; dx <= 40; dx += 4)
+            points.push_back(base + Pointi(dx, -dy));
+    auto target = std::ranges::find(points, Pid(OBJECT_Sprite, sprite - pSpriteObjects.begin()), [](Pointi point) {
+        return engine->PickMouse(engine->config->gameplay.MouseInteractionDepth.value(), point.x, point.y, &vis_anything_filter, &vis_face_filter).pid;
+    });
+    ASSERT_NE(target, points.end());
+    game.pressAndReleaseButton(BUTTON_LEFT, *target);
+    game.tick();
+}
+
+static void clickInventoryItem(EngineController &game, ItemId item, PlatformMouseButton button) {
+    // Right-click actions run while the button is held, so the press and the release go into separate frames.
+    InventoryEntry entry = pParty->activeCharacter().inventory.find(item);
+    Pointi pos = mapFromInventoryGrid(entry.geometry().topLeft(), Pointi(14, 17)) + Pointi(16, 16);
+    game.pressButton(button, pos);
+    game.tick();
+    game.releaseButton(button, pos);
+    game.tick();
+}
+
+static void chooseDialogueOption(EngineController &game, std::string_view topic) {
+    for (GUIWindow *window : lWindowList) {
+        for (GUIButton *button : window->vButtons) {
+            if (button->id.contains("Option") && button->label.starts_with(topic)) {
+                game.pressGuiButton(button->id);
+                game.tick();
+                return;
+            }
+        }
+    }
+    throw Exception("Dialogue option '{}' not found", topic);
+}
+
+static void talkToNpc(EngineController &game, int npcId) {
+    auto actor = std::ranges::find(pActors, npcId, &Actor::npcId);
+    ASSERT_NE(actor, pActors.end());
+    game.pointMouseAtActor(actor->id);
+    game.pressAndReleaseButton(BUTTON_LEFT);
+    game.tick();
+}
+
+static void talkToHouseNpc(EngineController &game, std::string_view npcName) {
+    // A house with a single resident opens on that resident's topics.
+    if (houseNpcs.size() == 1)
+        return;
+    for (GUIWindow *window : lWindowList) {
+        for (GUIButton *button : window->vButtons) {
+            if (button->id.starts_with("House_Npc") && button->label.contains(npcName)) {
+                game.pressGuiButton(button->id);
+                game.tick();
+                return;
+            }
+        }
+    }
+    throw Exception("House resident '{}' not found", npcName);
+}
+
+static void enterHouseThroughDoor(EngineController &game, MapId map, Vec3f pos, int yaw, std::string_view npcName = {}) {
+    game.teleportTo(map, pos, yaw);
+    game.tick();
+    game.pressAndReleaseKey(PlatformKey::KEY_SPACE);
+    game.tick();
+    ASSERT_EQ(current_screen_type, SCREEN_HOUSE);
+    if (!npcName.empty())
+        talkToHouseNpc(game, npcName);
+}
+
+static void leaveHouse(EngineController &game) {
+    for (int i = 0; i < 3 && current_screen_type != SCREEN_GAME; i++) {
+        game.pressAndReleaseKey(PlatformKey::KEY_ESCAPE);
+        game.tick();
+    }
+    ASSERT_EQ(current_screen_type, SCREEN_GAME);
+}
+
 static void useMapExit(EngineController &game, MapId map, Vec3f pos, int yaw) {
-    // Presses Space in front of the exit and confirms the transition.
     game.teleportTo(map, pos, yaw);
     game.pressAndReleaseKey(PlatformKey::KEY_SPACE);
     game.tick();
@@ -96,26 +220,230 @@ static void useMapExit(EngineController &game, MapId map, Vec3f pos, int yaw) {
     game.skipLoadingScreen();
 }
 
-static void walkOffMapEdge(EngineController &game, MapId map, Vec3f pos, int yaw) {
-    // Walks forward from a spot next to the map edge and confirms the travel.
+static void walkThroughExit(EngineController &game, MapId map, Vec3f pos, int yaw, int frames) {
+    // Walks forward for the given number of frames from a spot next to a map edge or an exit pad, and confirms the travel.
     game.teleportTo(map, pos, yaw);
     game.pressKey(PlatformKey::KEY_UP);
-    game.tick();
+    game.tick(frames);
     game.releaseKey(PlatformKey::KEY_UP);
     game.pressGuiButton("Transition_Yes");
     game.skipLoadingScreen();
 }
 
-static void talkToResurectra(EngineController &game) {
-    // Enters Castle Lambent from Celeste and opens the throne room's Final Task topic.
-    useMapExit(game, MAP_CELESTE, Vec3f(-1216, 19530, 225), 90);
-    game.teleportTo(MAP_CASTLE_LAMBENT, Vec3f(-3456, 12620, 1115), 90); // In front of the throne room door.
-    game.pressAndReleaseKey(PlatformKey::KEY_SPACE);
+static bool spaceWouldRun(int eventId) {
+    Pid pid = engine->PickKeyboard(engine->config->gameplay.KeyboardInteractionDepth.value(), &vis_decoration_noevent_filter, &vis_door_filter).pid;
+    if (pid.type() != OBJECT_Face)
+        return false;
+    return (isMapIndoor(engine->_currentLoadedMapId) ? pIndoor->faces[pid.id()] : pOutdoor->face(pid)).eventId == eventId;
+}
+
+static void activateEvent(EngineController &game, int eventId) {
+    // Stands next to a face that runs the event on the current map, where Space or a click reaches that face, and uses it.
+    bool indoor = isMapIndoor(engine->_currentLoadedMapId);
+    const std::vector<BLVFace> &faces = indoor ? pIndoor->faces : pOutdoor->faces;
+    for (bool walls : {true, false}) {
+        for (const BLVFace &face : faces) {
+            if (face.eventId != eventId || (std::abs(face.facePlane.normal.z) < 0.7f) != walls)
+                continue;
+            Vec3f center = face.boundingBox.center();
+            std::vector<int> yaws;
+            if (walls) {
+                yaws.push_back(static_cast<int>(std::lround(std::atan2(-face.facePlane.normal.y, -face.facePlane.normal.x) * 180 / std::numbers::pi)));
+            } else {
+                yaws = {90, 270, 0, 180};
+            }
+            for (int yaw : yaws) {
+                Vec3f dir(std::cos(yaw * std::numbers::pi / 180), std::sin(yaw * std::numbers::pi / 180), 0);
+                for (float distance : {150.0f, 250.0f, 100.0f, 0.0f}) {
+                    for (int pitch : walls ? std::vector<int>{0} : distance == 0 ? std::vector<int>{-85} : std::vector<int>{-30, -50}) {
+                        Vec3f pos = center - dir * distance;
+                        pos.z = face.boundingBox.z1;
+                        if (indoor) {
+                            int sector = 0;
+                            pos.z = GetIndoorFloorZ(Vec3f(pos.x, pos.y, face.boundingBox.z1 + 40), &sector);
+                            if (!sector || pos.z < face.boundingBox.z1 - 300)
+                                continue;
+                        }
+                        game.teleportTo(engine->_currentLoadedMapId, pos, yaw, pitch);
+                        if (spaceWouldRun(eventId)) {
+                            game.pressAndReleaseKey(PlatformKey::KEY_SPACE);
+                            game.tick();
+                            return;
+                        }
+                        // Space takes the nearest face in a cone, which can be a wall in front of the target. A click
+                        // takes the face under the cursor.
+                        try {
+                            game.pointMouseAtFace(face.faceId);
+                        } catch (const Exception &) {
+                            continue;
+                        }
+                        if (engine->PickMouseForInteraction().pid != Pid::face(face.faceId))
+                            continue;
+                        game.pressAndReleaseButton(BUTTON_LEFT);
+                        game.tick();
+                        return;
+                    }
+                }
+            }
+        }
+    }
+    throw Exception("Found no spot to run event {} on map {}", eventId, std::to_underlying(engine->_currentLoadedMapId));
+}
+
+static void lootCorpse(EngineController &game, int actorId) {
+    // Stands next to the dead actor where the mouse can reach the body, and clicks it.
+    MapId map = engine->_currentLoadedMapId;
+    for (int yaw : {270, 90, 180, 0}) {
+        Vec3f dir(std::cos(yaw * std::numbers::pi / 180), std::sin(yaw * std::numbers::pi / 180), 0);
+        for (float distance : {200.0f, 300.0f, 120.0f}) {
+            for (int pitch : {-30, -45, -15}) {
+                Vec3f pos = pActors[actorId].pos - dir * distance;
+                if (isMapIndoor(map)) {
+                    int sector = 0;
+                    pos.z = GetIndoorFloorZ(pos + Vec3f(0, 0, 40), &sector);
+                    if (!sector)
+                        continue;
+                }
+                game.teleportTo(map, pos, yaw, pitch);
+                try {
+                    game.pointMouseAtActor(actorId);
+                } catch (const Exception &) {
+                    continue;
+                }
+                game.pressAndReleaseButton(BUTTON_LEFT);
+                game.tick();
+                return;
+            }
+        }
+    }
+    throw Exception("Found no spot to loot actor #{}", actorId);
+}
+
+static void takeChestItem(EngineController &game, ItemId item) {
+    // Takes items from the open chest with Space, one per press, until the wanted one is in a backpack.
+    if (current_screen_type != SCREEN_CHEST)
+        throw Exception("No chest is open");
+    for (int i = 0; i < 20 && !pParty->hasItem(item); i++) {
+        game.pressAndReleaseKey(PlatformKey::KEY_SPACE);
+        game.tick();
+    }
+    if (!pParty->hasItem(item))
+        throw Exception("Item {} is not in the chest", std::to_underlying(item));
+    game.pressAndReleaseKey(PlatformKey::KEY_ESCAPE);
     game.tick();
-    game.pressGuiButton("House_Npc1"); // Resurectra, Gavin Magnus is House_Npc0.
+}
+
+static void emptyChest(EngineController &game) {
+    // Takes everything from the open chest with Space, one item per press.
+    if (current_screen_type != SCREEN_CHEST)
+        throw Exception("No chest is open");
+    while (!vChests[pGUIWindow_CurrentChest->chestId()].inventory.entries().empty()) {
+        game.pressAndReleaseKey(PlatformKey::KEY_SPACE);
+        game.tick();
+    }
+    game.pressAndReleaseKey(PlatformKey::KEY_ESCAPE);
     game.tick();
-    game.pressGuiButton("HouseNpcDialogue_Option0"); // Final Task.
+}
+
+static void clickSkill(EngineController &game, Skill skill) {
+    // Clicks the skill's row on the open Skills tab, which spends skill points on it.
+    auto button = std::ranges::find_if(pGUIWindow_CurrentMenu->vButtons, [skill](GUIButton *button) {
+        return button->msg == UIMSG_SkillUp && button->msg_param == std::to_underlying(skill);
+    });
+    if (button == pGUIWindow_CurrentMenu->vButtons.end())
+        throw Exception("Skill {} is not on the Skills tab", std::to_underlying(skill));
+    game.pressAndReleaseButton(BUTTON_LEFT, (*button)->rect.center());
     game.tick();
+}
+
+static void restUntilEvening(EngineController &game) {
+    // Rents a room in the Pit's tavern, whose guests sleep until the evening, when Castle Gloaming's throne room opens.
+    game.teleportTo(MAP_PIT, Vec3f(-1837, -4247, 65), 0);
+    activateEvent(game, 435); // The Vampyre Lounge.
+    game.pressGuiButton("HouseDialogue_Option0"); // Rent Room.
+    game.tick();
+    while (current_screen_type != SCREEN_GAME)
+        game.tick();
+}
+
+static void leaveThrough(EngineController &game, int eventId) {
+    // Runs the exit's event and confirms the transition.
+    activateEvent(game, eventId);
+    game.pressGuiButton("Transition_Yes");
+    game.skipLoadingScreen();
+}
+
+static void talkInThroneRoom(EngineController &game, int castleDoor, int throneRoomDoor, std::string_view npcName, std::string_view topic) {
+    // Enters the castle from its town, then picks the topic with the throne room's resident and leaves the room.
+    leaveThrough(game, castleDoor);
+    activateEvent(game, throneRoomDoor);
+    talkToHouseNpc(game, npcName);
+    chooseDialogueOption(game, topic);
+    leaveHouse(game);
+}
+
+static void enterTemple(EngineController &game, int templeDoor, std::string_view topic) {
+    // Enters the town's temple building and asks its spirit to let the party into the temple proper.
+    activateEvent(game, templeDoor);
+    talkToHouseNpc(game, "Temple");
+    chooseDialogueOption(game, topic);
+    game.skipLoadingScreen();
+}
+
+static void fetchSoulJars(EngineController &game) {
+    // Takes the case of soul jars from its chest in Thunderfist Mountain.
+    game.teleportTo(MAP_MOUNT_NIGHON, Vec3f(-7673, -7957, 3201), 0);
+    leaveThrough(game, 501); // Thunderfist Mountain.
+    killHostileMonsters(game);
+    activateEvent(game, 176); // The soul jars chest.
+    takeChestItem(game, ITEM_QUEST_CASE_OF_SOUL_JARS);
+}
+
+static void killXenofex(EngineController &game) {
+    // Kills Xenofex in Colony Zod and leaves the hive, which is when the game marks him dead.
+    game.teleportTo(MAP_LAND_OF_THE_GIANTS, Vec3f(20890, -3119, 1), 180);
+    game.pressAndReleaseKey(PlatformKey::KEY_ESCAPE); // Archibald's greeting.
+    game.tick();
+    game.pressAndReleaseKey(PlatformKey::KEY_DIGIT_1); // His Blaster goes from the cursor into a backpack.
+    game.tick();
+    killHostileMonsters(game);
+    leaveThrough(game, 501); // Colony Zod.
+    killHostileMonsters(game); // Xenofex is one of them.
+    leaveThrough(game, 501); // Out of the hive.
+}
+
+static void learnDisarmTrap(EngineController &game) {
+    // Trains the thief to level 12 in the capital's training hall, puts the skill points into Disarm Trap and buys
+    // Expert in Tularean Forest and Master in Harmondale. Starts in front of the training hall's door.
+    activateEvent(game, 433); // The training hall.
+    game.pressAndReleaseKey(PlatformKey::KEY_DIGIT_2);
+    game.tick();
+    for (int level = 2; level <= 12; level++) {
+        game.pressGuiButton("HouseDialogue_Option0"); // Train.
+        game.tick(2); // The hall closes the training dialogue and opens its menu again on the next frame.
+    }
+    leaveHouse(game);
+    game.pressAndReleaseKey(PlatformKey::KEY_DIGIT_2); // The character screen.
+    game.tick();
+    game.pressAndReleaseKey(PlatformKey::KEY_S);
+    game.tick();
+    for (int level = 2; level <= 10; level++)
+        clickSkill(game, SKILL_TRAP_DISARM);
+    game.pressAndReleaseKey(PlatformKey::KEY_ESCAPE);
+    game.tick();
+    game.teleportTo(MAP_TULAREAN_FOREST, Vec3f(-2527, -6773, 1153), 0);
+    activateEvent(game, 65); // Gretchin Fiddlebone's house.
+    talkToHouseNpc(game, "Gretchin Fiddlebone");
+    chooseDialogueOption(game, "Disarm Trap Expert");
+    chooseDialogueOption(game, "Become Expert in Disarm Trap");
+    leaveHouse(game);
+    game.teleportTo(MAP_HARMONDALE, Vec3f(-5692, 11137, 1), 0);
+    killHostileMonsters(game);
+    activateEvent(game, 267); // Lenord Skinner's house.
+    talkToHouseNpc(game, "Lenord Skinner");
+    chooseDialogueOption(game, "Disarm Trap Master");
+    chooseDialogueOption(game, "Become Master in Disarm Trap");
+    leaveHouse(game);
 }
 
 // 2500
@@ -1592,92 +1920,381 @@ GAME_TEST(Issues, Issue2950) {
 }
 
 GAME_TEST(Prs, Pr2979) {
-    // The game can be finished on the Light path. Resurectra sends the party to the Lincoln for the Oscillation
-    // Overthruster, and handing it to her plays the ending and shows the winner's certificate.
-    auto mapTape = tapes.map();
-    auto taskTape = tapes.questBit(QBIT_OSCILLATION_OVERTHRUSTER_LIGHT_ACTIVE);
-    auto takenTape = tapes.questBit(QBIT_OSCILLATION_OVERTHRUSTER_TAKEN);
-    auto overthrusterTape = tapes.hasItem(ITEM_QUEST_OSCILLATION_OVERTHRUSTER);
-    auto wetsuitsTape = tapes.custom([] { return static_cast<int>(std::ranges::count_if(pParty->pCharacters, &Character::hasUnderwaterSuitEquipped)); });
-    auto moviesTape = tapes.movies();
-    auto screenTape = tapes.screen();
-    auto messageBoxesTape = tapes.messageBoxes();
-    game.startNewGame();
-    test.startTaping();
+    // The main quest can be finished from a new game on both the Light and the Dark path.
+    for (bool light : {true, false}) {
+        test.prepareForNextTest();
+        std::vector<QuestBit> milestones = {QBIT_HARMONDALE_REBUILT, light ? QBIT_LIGHT_PATH : QBIT_DARK_PATH, QBIT_XENOFEX_KILLED,
+                                            QBIT_OSCILLATION_OVERTHRUSTER_TAKEN};
+        if (light) {
+            milestones.insert(milestones.end(), {QBIT_WALLS_OF_MIST_PASSED, QBIT_ALTAR_PIECES_LIGHT_FINISHED, QBIT_WINE_CELLAR_FINISHED,
+                                                 QBIT_SOUL_JARS_LIGHT_FINISHED, QBIT_TOLBERTI_ASSASSINATED});
+        } else {
+            milestones.insert(milestones.end(), {QBIT_BREEDING_ZONE_FINISHED, QBIT_ALTAR_PIECES_DARK_FINISHED, QBIT_SOUL_JARS_DARK_FINISHED,
+                                                 QBIT_CLANKERS_LAB_FINISHED, QBIT_ROBERT_THE_WISE_ASSASSINATED});
+        }
+        std::vector<TestTape<bool>> bitTapes;
+        for (QuestBit bit : milestones)
+            bitTapes.push_back(tapes.questBit(bit));
+        auto otherPathTape = tapes.questBit(light ? QBIT_DARK_PATH : QBIT_LIGHT_PATH);
+        auto wetsuitsTape = tapes.custom([] { return static_cast<int>(std::ranges::count_if(pParty->pCharacters, &Character::hasUnderwaterSuitEquipped)); });
+        auto overthrusterTape = tapes.hasItem(ITEM_QUEST_OSCILLATION_OVERTHRUSTER);
+        auto moviesTape = tapes.movies();
+        auto screenTape = tapes.screen();
+        auto messageBoxesTape = tapes.messageBoxes();
+        auto mapTape = tapes.map();
+        game.startNewGame();
+        test.startTaping();
 
-    // Killing Xenofex leaves a Light party with Resurectra in the throne room, offering the final task.
-    pParty->_questBits.set(QBIT_LIGHT_PATH);
-    pNPCStats->pNPCData[80].house = HOUSE_CASTLE_LAMBENT_THRONE_ROOM; // Resurectra.
-    pNPCStats->pNPCData[80].dialogue_2_evt_id = 169; // Final Task.
-    talkToResurectra(game);
-    game.pressAndReleaseKey(PlatformKey::KEY_ESCAPE);
-    game.tick();
-    game.pressAndReleaseKey(PlatformKey::KEY_ESCAPE);
-    game.tick();
+        // Margaret's tour would stop the party on every plate it steps on.
+        game.pressGuiButton("Game_Hireling1");
+        game.tick();
+        chooseDialogueOption(game, "Tour Off");
+        game.pressAndReleaseKey(PlatformKey::KEY_ESCAPE);
+        game.tick();
 
-    // The wetsuits wait in the two chests in front of the throne room. The door hides the chests' fronts from Space,
-    // so the party opens them from the sides.
-    for (auto [pos, yaw] : {std::pair(Vec3f(-2930, 12704, 1115), 180), std::pair(Vec3f(-3980, 12704, 1115), 0)}) {
-        game.teleportTo(MAP_CASTLE_LAMBENT, pos, yaw);
+        // Emerald Island crates: potion bottles and berries for the red potion, and the seashell.
+        game.teleportTo(MAP_EMERALD_ISLAND, Vec3f(-696, 16800, 96), 90);
+        killMonstersAroundParty(game, 5000);
+        takeAllFromChest(game, MAP_EMERALD_ISLAND, Vec3f(-696, 16800, 96), 90);
+        takeAllFromChest(game, MAP_EMERALD_ISLAND, Vec3f(-568, 16560, 96), 90);
+        game.goToInventory(0);
+        clickInventoryItem(game, ITEM_REAGENT_WIDOWSWEEP_BERRIES, BUTTON_LEFT);
+        clickInventoryItem(game, ITEM_POTION_BOTTLE, BUTTON_RIGHT);
+        game.pressAndReleaseKey(PlatformKey::KEY_ESCAPE);
+        game.tick();
+
+        // Temple of the Moon: the floor tile and the wealthy hat.
+        game.teleportTo(MAP_TEMPLE_OF_THE_MOON, Vec3f(-4020, 6336, -96), 180, -30);
+        killMonstersAroundParty(game, 2000);
+        pickUpFloorItem(game, ITEM_QUEST_FLOOR_TILE_W_MOON_INSIGNIA);
+        takeAllFromChest(game, MAP_TEMPLE_OF_THE_MOON, Vec3f(-6058, 6784, -96), 180);
+
+        // Dragon's Lair: the longbow, and a missing contestant's shield that Lord Markham pays for.
+        game.teleportTo(MAP_DRAGONS_LAIR, Vec3f(0, 2780, 1), 90, -30);
+        killMonstersAroundParty(game, 3000);
+        pickUpFloorItem(game, ITEM_LONGBOW);
+        game.teleportTo(MAP_DRAGONS_LAIR, Vec3f(0, 2480, 1), 270, -30);
+        pickUpFloorItem(game, ITEM_QUEST_CONTESTANTS_SHIELD);
+        enterHouseThroughDoor(game, MAP_EMERALD_ISLAND, Vec3f(16154, 8560, 128), 180, "Lord Markham");
+        chooseDialogueOption(game, "Missing Contestants");
+        chooseDialogueOption(game, "Missing Contestants");
+        leaveHouse(game);
+
+        // Ailyssa the Bard sells her lute.
+        game.teleportTo(MAP_EMERALD_ISLAND, Vec3f(11700, 4672, 96), 0);
+        talkToNpc(game, 4);
+        chooseDialogueOption(game, "Lute");
+        chooseDialogueOption(game, "Buy Lute for 500 gold");
+        game.pressAndReleaseKey(PlatformKey::KEY_ESCAPE);
+        game.tick();
+        game.pressAndReleaseKey(PlatformKey::KEY_DIGIT_2); // Puts the lute from the cursor into a backpack.
+        game.tick();
+
+        // The judge takes one item per question, and the seventh question declares the winner.
+        enterHouseThroughDoor(game, MAP_EMERALD_ISLAND, Vec3f(16154, 8560, 128), 180, "Thomas the Judge");
+        for (int i = 0; i < 7; i++)
+            chooseDialogueOption(game, "What do you have?");
+        leaveHouse(game);
+        enterHouseThroughDoor(game, MAP_EMERALD_ISLAND, Vec3f(16154, 8560, 128), 180);
+        chooseDialogueOption(game, "Congratulations");
+        chooseDialogueOption(game, "Your ship");
+        leaveHouse(game);
+        enterHouseThroughDoor(game, MAP_EMERALD_ISLAND, Vec3f(11008, 34, 192), 90);
+        chooseDialogueOption(game, "Cast off!");
+        game.skipLoadingScreen();
+
+        // In Harmondale, the butler meets the new lords at the castle door and asks them to clean the castle out.
+        game.teleportTo(MAP_HARMONDALE, Vec3f(-18118, 12544, 480), 180);
         game.pressAndReleaseKey(PlatformKey::KEY_SPACE);
         game.tick();
-        for (int i = 0; i < 2; i++) {
-            game.pressAndReleaseKey(PlatformKey::KEY_SPACE); // Takes one wetsuit.
+        game.pressAndReleaseKey(PlatformKey::KEY_ESCAPE);
+        game.tick();
+        useMapExit(game, MAP_HARMONDALE, Vec3f(-18118, 12544, 480), 180);
+        for (const Actor &actor : pActors)
+            if (actor.group == 5 && actor.CanAct())
+                Actor::Die(actor.id);
+        while (std::ranges::any_of(pActors, _1 == Dying, &Actor::aiState))
+            game.tick();
+        useMapExit(game, MAP_CASTLE_HARMONDALE, Vec3f(-5120, -2630, 0), 270);
+        enterHouseThroughDoor(game, MAP_HARMONDALE, Vec3f(-5184, 13370, 0), 270, "Butler");
+        chooseDialogueOption(game, "Goblins");
+        leaveHouse(game);
+
+        // Hothfarr IX gives an elixir that wakes the dwarves turned to stone in the Red Dwarf Mines.
+        useMapExit(game, MAP_BARROW_DOWNS, Vec3f(-2630, 3072, 2080), 180);
+        enterHouseThroughDoor(game, MAP_STONE_CITY, Vec3f(4486, 384, 59), 0);
+        chooseDialogueOption(game, "Rescue Dwarves");
+        leaveHouse(game);
+        useMapExit(game, MAP_BRACADA_DESERT, Vec3f(20976, 14590, 0), 90);
+        for (auto [decoration, statue] : {std::pair(1, Vec3f(416, 11360, 0)), std::pair(2, Vec3f(11136, 6400, -256)),
+                                          std::pair(3, Vec3f(8704, 13824, 0)), std::pair(4, Vec3f(4892, 8968, -128)),
+                                          std::pair(5, Vec3f(-3408, 9816, -128)), std::pair(6, Vec3f(1280, 3072, -128)),
+                                          std::pair(7, Vec3f(-3784, 5280, -128))}) {
+            game.teleportTo(MAP_RED_DWARF_MINES, statue + Vec3f(250, 0, 0), 180);
+            killMonstersAroundParty(game, 2000);
+            game.pointMouseAtDecoration(decoration);
+            game.pressAndReleaseKey(PlatformKey::KEY_SPACE);
+            game.tick();
+            game.pressAndReleaseKey(PlatformKey::KEY_ESCAPE);
+            game.tick();
+        }
+        enterHouseThroughDoor(game, MAP_STONE_CITY, Vec3f(4486, 384, 59), 0);
+        chooseDialogueOption(game, "Rescue Dwarves");
+        leaveHouse(game);
+
+        // Harmondale's first load after the rebuild starts the clock on the arbiter's messenger, who comes 112 days
+        // later. The party spends the nights in the tavern, where a rented room ends each one outside at dawn.
+        game.teleportTo(MAP_HARMONDALE, Vec3f(-5692, 11137, 1), 0); // The stable yard.
+        for (int night = 0; night < 113; night++) {
+            activateEvent(game, 15); // On the House.
+            talkToHouseNpc(game, "Corbie");
+            game.pressGuiButton("HouseDialogue_Option0"); // Rent Room.
+            game.tick();
+            while (current_screen_type != SCREEN_GAME)
+                game.tick();
+        }
+        useMapExit(game, MAP_HARMONDALE, Vec3f(-18118, 12544, 480), 180); // Into Castle Harmondale.
+        leaveThrough(game, 501); // The messenger meets the party on the way out.
+        game.pressAndReleaseKey(PlatformKey::KEY_ESCAPE);
+        game.tick();
+
+        // Judge Grey is dead, and the judge the lords hire for the arbiter's seat decides which side they're on.
+        if (light) {
+            game.teleportTo(MAP_BRACADA_DESERT, Vec3f(8923, 17191, 1), 0);
+            activateEvent(game, 109); // Familiar Place.
+            talkToHouseNpc(game, "Judge Fairweather");
+        } else {
+            game.teleportTo(MAP_DEYJA, Vec3f(7227, -16007, 2625), 0);
+            activateEvent(game, 9); // The Snobbish Goblin.
+            talkToHouseNpc(game, "Judge Sleen");
+        }
+        chooseDialogueOption(game, "I choose you!");
+        leaveHouse(game);
+        game.teleportTo(MAP_HARMONDALE, Vec3f(-5692, 11137, 1), 0);
+        activateEvent(game, 37); // The arbiter's house.
+        leaveHouse(game);
+
+        if (light) {
+            // Gavin Magnus tests the new allies in the Walls of Mist. They have to leave through the back door
+            // without killing anything.
+            walkThroughExit(game, MAP_BRACADA_DESERT, Vec3f(-9728, 9950, 2472), 90, 2); // Onto the teleporter to Celeste.
+            talkInThroneRoom(game, 503, 416, "Gavin Magnus", "Proving Grounds");
+            leaveThrough(game, 501); // Out to Celeste.
+            leaveThrough(game, 502); // The Walls of Mist.
+            leaveThrough(game, 502); // The back door.
+
+            // Passing the test makes the Light Guild's four advisors move to Celeste with a task each.
+            talkInThroneRoom(game, 503, 416, "Gavin Magnus", "Proving Grounds");
+            leaveThrough(game, 501); // Out to Celeste.
+            for (auto [door, npc, topic] : {std::tuple(420, "Resurectra", "Temple of the Dark"), std::tuple(421, "Crag Hack", "Vampires"),
+                                            std::tuple(422, "Sir Caneghem", "Soul Jars")}) {
+                activateEvent(game, door);
+                talkToHouseNpc(game, npc);
+                chooseDialogueOption(game, topic);
+                leaveHouse(game);
+            }
+
+            // The altar pieces lie in trapped chests that kill a low level party, so the thief learns to disarm them.
+            learnDisarmTrap(game);
+
+            // Resurectra wants both halves of the altar key, one from each faction's temple. The Pit and its temple
+            // attack a Light party.
+            game.teleportTo(MAP_CELESTE, Vec3f(-6781, 792, 57), 0);
+            enterTemple(game, 504, "Enter Temple of Light");
+            activateEvent(game, 176); // The altar piece chest.
+            takeChestItem(game, ITEM_QUEST_ALTAR_PIECE_LIGHT);
+            game.teleportTo(MAP_PIT, Vec3f(-16202, -4096, -95), 0);
+            killHostileMonsters(game);
+            enterTemple(game, 502, "Enter Temple of Dark");
+            killHostileMonsters(game);
+            activateEvent(game, 13); // The altar, it slides open over the chest.
+            activateEvent(game, 195); // The altar piece chest.
+            takeChestItem(game, ITEM_QUEST_ALTAR_PIECE_DARK);
+
+            // Crag Hack only needs the party to come out of the Wine Cellar through the vampires' house.
+            game.teleportTo(MAP_TATALIA, Vec3f(8216, -10619, 289), 0);
+            leaveThrough(game, 501); // The Wine Cellar.
+            leaveThrough(game, 501); // Out through the vampires' house.
+
+            // Sir Caneghem's soul jars are in Thunderfist Mountain.
+            fetchSoulJars(game);
+
+            // The three advisors take their deliveries, and Robert the Wise sends the party after Tolberti's
+            // control cube.
+            game.teleportTo(MAP_CELESTE, Vec3f(-6781, 792, 57), 0);
+            for (auto [door, npc, topic] : {std::tuple(420, "Resurectra", "Temple of the Dark"), std::tuple(421, "Crag Hack", "Vampires"),
+                                            std::tuple(422, "Sir Caneghem", "Soul Jars"), std::tuple(376, "Robert the Wise", "Tolberti")}) {
+                activateEvent(game, door);
+                talkToHouseNpc(game, npc);
+                chooseDialogueOption(game, topic);
+                leaveHouse(game);
+            }
+            game.teleportTo(MAP_PIT, Vec3f(-7745, -6673, 65), 0);
+            killHostileMonsters(game);
+            leaveThrough(game, 376); // Tolberti's house.
+            killHostileMonsters(game);
+            Actor::Die(1); // Tolberti.
+            while (pActors[1].aiState == Dying)
+                game.tick();
+            lootCorpse(game, 1);
+            leaveThrough(game, 501); // Out to Celeste.
+            activateEvent(game, 376); // Robert the Wise.
+            talkToHouseNpc(game, "Robert the Wise");
+            chooseDialogueOption(game, "Tolberti");
+            leaveHouse(game);
+
+            // With the cube delivered, Resurectra waits in the throne room and wants Xenofex dead.
+            talkInThroneRoom(game, 503, 416, "Resurectra", "Strike the Devils");
+            killXenofex(game);
+            game.teleportTo(MAP_CELESTE, Vec3f(-6781, 792, 57), 0);
+            talkInThroneRoom(game, 503, 416, "Resurectra", "Strike the Devils");
+        } else {
+            // Archibald sends the new allies through the Breeding Zone under the Pit. His throne room only opens at
+            // night, and the Pit's tavern lets its guests sleep until the evening.
+            restUntilEvening(game);
+            talkInThroneRoom(game, 504, 5, "Archibald Ironfist", "Breeding Pit");
+            activateEvent(game, 501); // Out to the Pit, no confirmation for this exit.
+            game.skipLoadingScreen();
+            leaveThrough(game, 503); // The Breeding Zone.
+            killHostileMonsters(game);
+            leaveThrough(game, 502); // The far exit.
+
+            // Coming back makes the Dark Guild's four advisors move into the Pit with a task each.
+            talkInThroneRoom(game, 504, 5, "Archibald Ironfist", "Breeding Pit");
+            activateEvent(game, 501); // Out to the Pit, no confirmation for this exit.
+            game.skipLoadingScreen();
+            for (auto [door, npc, topic] : {std::tuple(441, "Kastore", "Temple of the Light"), std::tuple(440, "Maximus", "Soul Jars"),
+                                            std::tuple(439, "Dark Shade", "Clanker's Laboratory")}) {
+                activateEvent(game, door);
+                talkToHouseNpc(game, npc);
+                chooseDialogueOption(game, topic);
+                leaveHouse(game);
+            }
+
+            // The altar pieces lie in trapped chests that kill a low level party, so the thief learns to disarm them.
+            learnDisarmTrap(game);
+
+            // Kastore wants both halves of the altar key, one from each faction's temple. Celeste and its temple
+            // attack a Dark party.
+            game.teleportTo(MAP_PIT, Vec3f(-16202, -4096, -95), 0);
+            enterTemple(game, 502, "Enter Temple of Dark");
+            activateEvent(game, 13); // The altar, it slides open over the chest.
+            activateEvent(game, 195); // The altar piece chest.
+            takeChestItem(game, ITEM_QUEST_ALTAR_PIECE_DARK);
+            walkThroughExit(game, MAP_BRACADA_DESERT, Vec3f(-9728, 9950, 2472), 90, 2); // Onto the teleporter to Celeste.
+            killHostileMonsters(game);
+            enterTemple(game, 504, "Enter Temple of Light");
+            killHostileMonsters(game);
+            activateEvent(game, 176); // The altar piece chest.
+            takeChestItem(game, ITEM_QUEST_ALTAR_PIECE_LIGHT);
+
+            // Maximus wants the soul jars from Thunderfist Mountain.
+            fetchSoulJars(game);
+
+            // Dark Shade wants the defenses of Clanker's Laboratory switched off.
+            game.teleportTo(MAP_TULAREAN_FOREST, Vec3f(14670, 12831, 193), 0);
+            leaveThrough(game, 503); // Clanker's Laboratory.
+            killHostileMonsters(game);
+            activateEvent(game, 376); // The defenses.
+            leaveThrough(game, 501); // Out of the laboratory.
+
+            // The three advisors take their deliveries, and Tolberti sends the party after Robert the Wise's
+            // control cube.
+            game.teleportTo(MAP_PIT, Vec3f(-7745, -6673, 65), 0);
+            for (auto [door, npc, topic] : {std::tuple(441, "Kastore", "Temple of the Light"), std::tuple(440, "Maximus", "Soul Jars"),
+                                            std::tuple(439, "Dark Shade", "Clanker's Laboratory"), std::tuple(376, "Tolberti", "Robert the Wise")}) {
+                activateEvent(game, door);
+                talkToHouseNpc(game, npc);
+                chooseDialogueOption(game, topic);
+                leaveHouse(game);
+            }
+            walkThroughExit(game, MAP_BRACADA_DESERT, Vec3f(-9728, 9950, 2472), 90, 2); // Onto the teleporter to Celeste.
+            killHostileMonsters(game);
+            leaveThrough(game, 376); // Robert the Wise's house.
+            killHostileMonsters(game); // Robert the Wise is one of them.
+            lootCorpse(game, 0);
+            leaveThrough(game, 502); // Out to the Pit.
+            activateEvent(game, 376); // Tolberti.
+            talkToHouseNpc(game, "Tolberti");
+            chooseDialogueOption(game, "Robert the Wise");
+            leaveHouse(game);
+
+            // With the cube delivered, Kastore waits in the castle's throne room and wants Xenofex dead.
+            restUntilEvening(game);
+            talkInThroneRoom(game, 504, 5, "Kastore", "Strike the Devils");
+            killXenofex(game);
+            restUntilEvening(game);
+            talkInThroneRoom(game, 504, 5, "Kastore", "Strike the Devils");
+        }
+
+        // The patron's last task is the Oscillation Overthruster from the Lincoln. The wetsuits for it wait in two
+        // chests in front of the throne room.
+        int castleDoor = light ? 503 : 504;
+        int throneRoom = light ? 416 : 5;
+        const char *patron = light ? "Resurectra" : "Kastore";
+        activateEvent(game, throneRoom);
+        talkToHouseNpc(game, patron);
+        chooseDialogueOption(game, "Final Task");
+        leaveHouse(game);
+        for (int chest : light ? std::initializer_list<int>{182, 183} : std::initializer_list<int>{181, 182}) {
+            activateEvent(game, chest);
+            emptyChest(game);
+        }
+
+        // The active character got all four. Digit keys hand three of them out, then everyone puts one on.
+        static constexpr std::array<PlatformKey, 4> digits = {PlatformKey::KEY_DIGIT_1, PlatformKey::KEY_DIGIT_2, PlatformKey::KEY_DIGIT_3, PlatformKey::KEY_DIGIT_4};
+        int holder = pParty->activeCharacterIndex();
+        game.goToInventory(holder);
+        for (int i = 0; i < 4; i++) {
+            if (i == holder)
+                continue;
+            clickInventoryItem(game, ITEM_QUEST_WETSUIT, BUTTON_LEFT);
+            game.pressAndReleaseKey(digits[i]);
+            game.tick();
+        }
+        for (int i = 0; i < 4; i++) {
+            game.pressAndReleaseKey(digits[i]);
+            game.tick();
+            clickInventoryItem(game, ITEM_QUEST_WETSUIT, BUTTON_LEFT);
+            game.pressAndReleaseButton(BUTTON_LEFT, 560, 170); // The paperdoll.
             game.tick();
         }
         game.pressAndReleaseKey(PlatformKey::KEY_ESCAPE);
         game.tick();
-    }
 
-    // The first character got all four. Digit keys hand three of them out, then everyone puts one on.
-    static constexpr std::array<PlatformKey, 4> digits = {PlatformKey::KEY_DIGIT_1, PlatformKey::KEY_DIGIT_2, PlatformKey::KEY_DIGIT_3, PlatformKey::KEY_DIGIT_4};
-    game.goToInventory(0);
-    for (int i = 1; i < 4; i++) {
-        clickInventoryItem(game, ITEM_QUEST_WETSUIT);
-        game.pressAndReleaseKey(digits[i]);
+        // The Shoals are past Avlee's west edge, and only a party in wetsuits can walk there.
+        walkThroughExit(game, MAP_AVLEE, Vec3f(-22500, 0, 0), 180, 1);
+        useMapExit(game, MAP_SHOALS, Vec3f(-6850, 7920, 288), 180); // The Lincoln's hatch.
+
+        // The Overthruster's pedestal does nothing until the power is back on.
+        activateEvent(game, 475); // The power console.
+        activateEvent(game, 376); // The pedestal, the Overthruster goes to the cursor.
+        game.pressAndReleaseKey(PlatformKey::KEY_DIGIT_1); // Into the first character's backpack.
         game.tick();
-    }
-    for (int i = 0; i < 4; i++) {
-        game.pressAndReleaseKey(digits[i]);
+        leaveThrough(game, 501); // Out to the Shoals.
+        walkThroughExit(game, MAP_SHOALS, Vec3f(22500, -16448, 2405), 0, 1);
+
+        if (light) {
+            game.teleportTo(MAP_CELESTE, Vec3f(-6781, 792, 57), 0);
+        } else {
+            restUntilEvening(game);
+        }
+        talkInThroneRoom(game, castleDoor, throneRoom, patron, "Final Task");
+        game.tick(); // The ending's script queues the certificate window for the next frame.
+        game.pressAndReleaseKey(PlatformKey::KEY_ESCAPE); // Shows the closing message over the certificate.
         game.tick();
-        clickInventoryItem(game, ITEM_QUEST_WETSUIT);
-        game.pressAndReleaseButton(BUTTON_LEFT, 560, 170); // The paperdoll.
+        game.pressAndReleaseKey(PlatformKey::KEY_ESCAPE); // Closes the certificate, the game goes on in Harmondale.
         game.tick();
+        game.skipLoadingScreen();
+
+        for (const TestTape<bool> &bitTape : bitTapes)
+            EXPECT_EQ(bitTape, tape(false, true));
+        EXPECT_EQ(otherPathTape, tape(false));
+        EXPECT_EQ(wetsuitsTape, tape(0, 1, 2, 3, 4));
+        EXPECT_EQ(overthrusterTape, tape(false, true, false));
+        EXPECT_CONTAINS(moviesTape.flatten(), light ? "Endgame 1 Good" : "Endgame 2 Evil");
+        EXPECT_CONTAINS(screenTape, SCREEN_GAMEOVER_WINDOW);
+        EXPECT_TRUE(std::ranges::any_of(messageBoxesTape.flatten(), [](std::string_view text) { return text.starts_with(localization->str(LSTR_CONGRATULATIONS_ADVENTURER)); }));
+        EXPECT_EQ(mapTape.back(), MAP_HARMONDALE);
     }
-    game.pressAndReleaseKey(PlatformKey::KEY_ESCAPE);
-    game.tick();
-
-    // The Shoals are past Avlee's west edge, and only a party in wetsuits can walk there.
-    walkOffMapEdge(game, MAP_AVLEE, Vec3f(-22500, 0, 0), 180);
-    useMapExit(game, MAP_SHOALS, Vec3f(-6850, 7920, 288), 180); // The Lincoln's hatch.
-
-    // The Overthruster's pedestal does nothing until the power is back on.
-    game.teleportTo(MAP_LINCOLN, Vec3f(3650, -1152, 1036), 0); // In front of the power console.
-    game.pressAndReleaseKey(PlatformKey::KEY_SPACE);
-    game.tick();
-    game.teleportTo(MAP_LINCOLN, Vec3f(4356, -9600, 1548), 90, -20); // In front of the pedestal.
-    game.pressAndReleaseKey(PlatformKey::KEY_SPACE); // The Overthruster goes to the cursor.
-    game.tick();
-    game.pressAndReleaseKey(PlatformKey::KEY_DIGIT_1); // Into the first character's backpack.
-    game.tick();
-    useMapExit(game, MAP_LINCOLN, Vec3f(560, 1300, 225), 90);
-    walkOffMapEdge(game, MAP_SHOALS, Vec3f(22500, -16448, 2405), 0);
-
-    talkToResurectra(game);
-    game.tick(); // The ending's script queues the certificate window for the next frame.
-    game.pressAndReleaseKey(PlatformKey::KEY_ESCAPE); // Shows the closing message over the certificate.
-    game.tick();
-    game.pressAndReleaseKey(PlatformKey::KEY_ESCAPE); // Closes the certificate, the game goes on in Harmondale.
-    game.tick();
-    game.skipLoadingScreen();
-
-    EXPECT_EQ(mapTape, tape(MAP_EMERALD_ISLAND, MAP_CELESTE, MAP_CASTLE_LAMBENT, MAP_AVLEE, MAP_SHOALS, MAP_LINCOLN, MAP_SHOALS,
-                            MAP_AVLEE, MAP_CELESTE, MAP_CASTLE_LAMBENT, MAP_HARMONDALE));
-    EXPECT_EQ(taskTape, tape(false, true));
-    EXPECT_EQ(wetsuitsTape, tape(0, 1, 2, 3, 4));
-    EXPECT_EQ(takenTape, tape(false, true));
-    EXPECT_EQ(overthrusterTape, tape(false, true, false));
-    EXPECT_EQ(moviesTape.flatten(), tape("Endgame 1 Good"));
-    EXPECT_CONTAINS(screenTape, SCREEN_GAMEOVER_WINDOW);
-    EXPECT_TRUE(std::ranges::any_of(messageBoxesTape.flatten(), [](std::string_view text) { return text.starts_with(localization->str(LSTR_CONGRATULATIONS_ADVENTURER)); }));
 }
