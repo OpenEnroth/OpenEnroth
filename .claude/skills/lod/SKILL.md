@@ -54,12 +54,12 @@ From a full `magic` scan of every archive in all three games. "Compressed" means
 
 | Data | MM6 | MM7 | MM8 |
 |---|---|---|---|
-| maps, `.blv` `.dlv` `.odm` `.ddm` | `data/Games.lod`, see below | `DATA/GAMES.LOD`, compressed | `Data/games.lod`, compressed |
-| events, strings, text tables, `.evt` `.str` `.txt` `.bin` | `data/icons.lod`, compressed | `DATA/events.lod`, compressed | `Data/EnglishT.lod`, see below |
+| maps, `.blv` `.dlv` `.odm` `.ddm` | `data/Games.lod` | `DATA/GAMES.LOD`, compressed | `Data/games.lod`, compressed |
+| events, strings, text tables, `.evt` `.str` `.txt` `.bin` | `data/icons.lod`, compressed | `DATA/events.lod`, compressed | `Data/EnglishT.lod` |
 | UI images, PCX screens, fonts | `data/icons.lod` | `DATA/ICONS.LOD` | `Data/icons.lod`, `EnglishT.lod`, `EnglishD.lod` |
 | textures and palettes `palNNN` | `data/BITMAPS.LOD` | `DATA/BITMAPS.LOD` | `Data/bitmaps.lod` |
 | sprites | `data/SPRITES.LOD` | `DATA/SPRITES.LOD` | `Data/sprites.lod` |
-| sounds | `Sounds/Audio.snd`, WAV | `SOUNDS/Audio.snd`, WAV | `Data/EnglishD.lod`, see below |
+| sounds | `Sounds/Audio.snd`, WAV | `SOUNDS/Audio.snd`, WAV | `Data/EnglishD.lod` |
 | movies | `Anims/Anims1.vid`, `Anims2.vid`, Smacker | `Anims/Magic7.vid`, `Might7.vid`, Smacker and Bink | `Anims/Magicdod.vid`, `mightdod.vid`, Smacker and Bink |
 
 Entries without an extension in the image archives are LOD images, palettes or sprites.
@@ -67,21 +67,6 @@ Entries without an extension in the image archives are LOD images, palettes or s
 MM7's `ICONS.LOD` and MM8's `icons.lod` also hold stale copies of a few text tables. In MM7, `dsft.bin`,
 `spells.txt`, `mapstats.txt` and five more differ from the copies in `events.lod`. OpenEnroth reads `events.lod`,
 so read the table from there.
-
-`magic` says `Raw data` for two kinds of entries that are compressed in a way LodTool doesn't know, and `cat`
-passes them through unchanged:
-
-- MM6 maps. Each is a little-endian u32 compressed size and a u32 uncompressed size, then a zlib stream. `cd3.blv`
-  and `d08.blv` have bad adler32 checksums, so inflate them raw, as in Python's
-  `zlib.decompressobj(-15).decompress(data[10:])`.
-- MM8 `EnglishT.lod` and `EnglishD.lod` entries. Each has a 96-byte header, the full entry name in the first 64
-  bytes, the compressed size as a u32 at byte 68 and the uncompressed size as a u32 at byte 88. A zlib stream
-  follows. `EnglishD.lod` sounds inflate to WAV.
-
-Past these, the scan found four entries `magic` can't name. MM6 `icons.lod/d4bm.evt` is a 48-byte stub, and MM7
-`SPRITES.LOD/pending` is a 160-byte stub. MM7 `SOUNDS/Audio.snd/02flame01` is a WAV that fails its checksum and
-comes out truncated. MM8 `bitmaps.lod/pal857` has 816 bytes, a header naming `pal857.pal` and what looks like a
-palette. Use `cat --raw FILE | od -A d -t x1z | head` to look at the bytes when `magic` gives up.
 
 ## Recipes
 
