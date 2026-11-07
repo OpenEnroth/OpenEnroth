@@ -19,8 +19,7 @@ class FileSystemException : public Exception {
     /**
      * @param fs                        File system that failed.
      * @param error                     What failed.
-     * @param path                      Path inside `fs` that failed, which may be inaccessible. An empty path is
-     *                                  shown as `''`.
+     * @param path                      Path inside `fs` that failed, which may be inaccessible.
      */
     [[noreturn]] static void raise(const FileSystem *fs, FileSystemError error, NormalPathView path);
 

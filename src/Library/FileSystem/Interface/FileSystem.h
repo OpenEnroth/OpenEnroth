@@ -32,15 +32,16 @@
  * store paths as `Path`s.
  *
  * Paths are normalized internally, and then processed by the implementation in a derived class. A backslash is a
- * separator on every platform, and `.` and `..` are supported.
+ * separator on every platform. Both `".."` and `"."` special dirs are supported, and `".."` stops at the root, so
+ * `"../a"` is `"a"`.
  *
- * There's no "current directory", so every path must start with `/`, which is the root of this file system and not of
- * the OS. `..` stops at the root, so `/../a` is `/a`. Passing a path that doesn't start with `/`, an empty one
- * included, will throw, `exists` will return `false`, `stat` will return `FILE_INVALID`, and `displayPath` will show it
- * next to the root.
+ * Unlike a real file system, this interface doesn't have a concept of a "current directory." All methods take paths
+ * relative to the root. A path with a root of its own, like `"/foo/bar"` or `"C:/foo"` on Windows, is refused. Passing
+ * one will throw, `exists` will return `false`, `stat` will return `FILE_INVALID`, and `displayPath` will show it next
+ * to the root.
  *
- * The root folder always exists. Thus, `exists("/")` always returns `true`, `stat("/")` always returns
- * `FILE_DIRECTORY`, `ls("/")` never throws, and `remove("/")` always throws.
+ * The root folder is `""`, or `"."`, and always exists. Thus, `exists("")` always returns `true`, `stat("")` always
+ * returns `FILE_DIRECTORY`, `ls("")` never throws, and `remove("")` always throws.
  *
  * @see ReadOnlyFileSystem
  */

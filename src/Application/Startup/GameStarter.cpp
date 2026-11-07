@@ -55,7 +55,7 @@
 
 #include "PathResolver.h"
 
-constexpr std::string_view configName = "/openenroth.ini";
+constexpr std::string_view configName = "openenroth.ini";
 
 GameStarter::GameStarter(GameStarterOptions options): _options(std::move(options)) {
     // Note: basic logging is initialized in LogStarter constructor, so it's safe to log here.
@@ -76,7 +76,7 @@ void GameStarter::initialize() {
     // Resolve user path & create user fs.
     resolveUserPath(_environment.get(), &_options);
     _fsStarter.initUserFs(_options.ramFsUserData, _options.userPath);
-    MM_INFO("Using user path '{}'.", ufs->displayPath("/"));
+    MM_INFO("Using user path '{}'.", ufs->displayPath(""));
 
     // Init config.
     _config = std::make_shared<GameConfig>();
@@ -106,7 +106,7 @@ void GameStarter::initialize() {
     // TODO(captainurist): actually move datapath to config?
     resolveDataPath(_environment.get(), &_options);
     _fsStarter.initDataFs(_options.dataPath, _config->debug.OverrideBuiltInResources.value());
-    MM_INFO("Using data path '{}'.", _options.dataPath); // Can't use dfs->displayPath("/") b/c it'll show "embedded://"...
+    MM_INFO("Using data path '{}'.", _options.dataPath); // Can't use dfs->displayPath("") b/c it'll show "embedded://"...
 
     // Migrate saves if needed. We don't migrate anything else.
     if (!_options.ramFsUserData && _options.dataPath.normalized() != _options.userPath.normalized())
@@ -139,7 +139,7 @@ void GameStarter::initialize() {
     // On linux the only way to set window icon is through an API call. On other OSes this is handled by external
     // mechanisms.
 #if defined(__linux__) && !defined(__ANDROID__)
-    window->setIcon(png::decode(dfs->read("/images/OpenEnroth.png")));
+    window->setIcon(png::decode(dfs->read("images/OpenEnroth.png")));
 #endif
 
     // Install & set up components.
@@ -193,7 +193,7 @@ void GameStarter::initialize() {
     _game = std::make_unique<Game>(_application.get(), _config);
 
     // Init scripting system.
-    _scriptingSystem = std::make_unique<ScriptingSystem>("/scripts", "init.lua", *_application, *_logStarter.rootSink());
+    _scriptingSystem = std::make_unique<ScriptingSystem>("scripts", "init.lua", *_application, *_logStarter.rootSink());
     _scriptingSystem->addBindings<LoggerBindings>("log");
     _scriptingSystem->addBindings<GameBindings>("game");
     _scriptingSystem->addBindings<ConfigBindings>("config");
@@ -273,16 +273,16 @@ void GameStarter::failOnInvalidPath(PathView dataPath, Platform *platform) {
 }
 
 void GameStarter::migrateSaves() {
-    MM_INFO("Migrating save files from '{}' to '{}'...", dfs->displayPath("/saves"), ufs->displayPath("/saves"));
+    MM_INFO("Migrating save files from '{}' to '{}'...", dfs->displayPath("saves"), ufs->displayPath("saves"));
 
-    if (ufs->exists("/saves") && !ufs->ls("/saves").empty()) {
+    if (ufs->exists("saves") && !ufs->ls("saves").empty()) {
         MM_INFO("    Target saves directory is not empty, skipping saves migration.");
-    } else if (!dfs->exists("/saves")) {
+    } else if (!dfs->exists("saves")) {
         MM_INFO("    No save files to migrate.");
     } else {
-        for (const DirectoryEntry &entry : dfs->ls("/saves")) {
+        for (const DirectoryEntry &entry : dfs->ls("saves")) {
             if (entry.type == FILE_REGULAR) {
-                std::string path = fmt::format("/saves/{}", entry.name);
+                std::string path = fmt::format("saves/{}", entry.name);
                 ufs->write(path, dfs->read(path));
                 MM_INFO("    Copied '{}'.", entry.name);
             }

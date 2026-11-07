@@ -68,7 +68,7 @@ void EngineTracePlayer::playTrace(EngineController *game, const EngineTraceRecor
     // Place the save game in /saves while the trace is playing - we might want to load the save again from
     // inside the trace.
     MemoryFileSystem ramFs("ramfs");
-    ramFs.write("/saves/!!!save.mm7", recording.save);
+    ramFs.write("saves/!!!save.mm7", recording.save);
     ScopedRollback<FileSystem *> rollback(&ufs, &ramFs);
 
     checkState(recording, _trace->header.startState, true);

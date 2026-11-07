@@ -45,12 +45,12 @@ struct FileSystemDumpEntry {
 };
 
 /**
- * Walks `fs` depth first in sorted order, starting with the root.
+ * Walks `fs` depth first in sorted order, starting with the root as `""`.
  *
  * @param fs                            File system to dump.
  * @param flags                         What to include.
  * @param maxEntries                    Stop after this many entries, root included.
- * @return                              Dumped entries.
+ * @return                              Dumped entries, with paths relative to the root.
  */
 std::vector<FileSystemDumpEntry> dumpFileSystem(FileSystem *fs, FileSystemDumpFlags flags = 0, int maxEntries = 1024 * 1024);
 

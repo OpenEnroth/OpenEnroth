@@ -68,7 +68,7 @@ TestController::~TestController() {
 }
 
 void TestController::loadGameFromTestData(std::string_view name) {
-    _controller->loadGame(_tfs->read(fmt::format("/{}", name)));
+    _controller->loadGame(_tfs->read(name));
 }
 
 void TestController::playTraceFromTestData(std::string_view saveName, std::string_view traceName, std::function<void()> postLoadCallback) {
@@ -78,8 +78,8 @@ void TestController::playTraceFromTestData(std::string_view saveName, std::strin
 void TestController::playTraceFromTestData(std::string_view saveName, std::string_view traceName,
                                            EngineTracePlaybackFlags flags, std::function<void()> postLoadCallback) {
     EngineTraceRecording recording;
-    recording.save = _tfs->read(fmt::format("/{}", saveName));
-    recording.trace = _tfs->read(fmt::format("/{}", traceName));
+    recording.save = _tfs->read(saveName);
+    recording.trace = _tfs->read(traceName);
 
     ::application->component<EngineTracePlayer>()->playTrace(
         _controller,
@@ -128,8 +128,8 @@ void TestController::prepareForNextTestInternal() {
     int frameTimeMs = engine->config->debug.TraceFrameTimeMs.value();
     RandomEngineType rngType = engine->config->debug.TraceRandomEngine.value();
 
-    for (const DirectoryEntry &entry : ufs->ls("/"))
-        ufs->remove(fmt::format("/{}", entry.name));
+    for (const DirectoryEntry &entry : ufs->ls(""))
+        ufs->remove(entry.name);
 
     _callObserver.reset();
     _tapeCallbacks.clear();

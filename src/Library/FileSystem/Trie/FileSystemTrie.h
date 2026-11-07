@@ -7,7 +7,6 @@
 #include <unordered_map>
 #include <string>
 
-#include "Utility/String/Split.h"
 #include "Utility/String/TransparentFunctors.h"
 #include "Utility/System/PathView.h"
 
@@ -62,8 +61,8 @@ class FileSystemTrieNode {
 };
 
 /**
- * Trie map from a path in the file system layer's normal form, see `NormalPath`, to `T`. A segment is whatever is
- * between two `/`, on every platform. `/` and an empty path name the node they start at.
+ * Trie map from a path in the file system layer's normal form, see `NormalPath`, to `T`. An empty path names the node it
+ * starts at.
  * 
  * Each node can contain a value, even if it's not a leaf node. If the user needs a trie that only contains values in
  * the leaf nodes, then it's up to the user to maintain this invariant.
@@ -72,9 +71,9 @@ class FileSystemTrieNode {
  * to a value node. This means, for example, that the following code will leave the trie empty:
  * ```
  * FileSystemTrie<bool> trie;
- * trie.insertOrAssign(Path("/a/b/c"), true);
- * trie.erase(Path("/a/b"));
- * // trie is now empty, trie.find(Path("/a")) will return nullptr.
+ * trie.insertOrAssign(Path("a/b/c"), true);
+ * trie.erase(Path("a/b"));
+ * // trie is now empty, trie.find(Path("a")) will return nullptr.
  * ```
  * 
  * Note that the interface of `FileSystemTrie` is a bit different from what one would expect a map-like class to offer.
@@ -100,7 +99,7 @@ class FileSystemTrie {
     Node *find(Node *base, PathView relativePath) {
         assert(base);
 
-        for (std::string_view chunk : ::split(relativePath.str()).by('/').skip("")) {
+        for (std::string_view chunk : relativePath.split()) {
             base = base->child(chunk);
             if (!base)
                 return base;
@@ -130,7 +129,7 @@ class FileSystemTrie {
     Node *walk(Node *base, PathView relativePath, PathView *tail = nullptr) {
         assert(base);
 
-        for (std::string_view chunk : ::split(relativePath.str()).by('/').skip("")) {
+        for (std::string_view chunk : relativePath.split()) {
             if (Node *child = base->child(chunk)) {
                 base = child;
             } else {
@@ -234,7 +233,7 @@ class FileSystemTrie {
     Node *_grow(Node *base, const PathView relativePath) {
         assert(base);
 
-        for (std::string_view chunk : ::split(relativePath.str()).by('/').skip("")) {
+        for (std::string_view chunk : relativePath.split()) {
             if (Node *child = base->child(chunk)) {
                 base = child;
                 continue;

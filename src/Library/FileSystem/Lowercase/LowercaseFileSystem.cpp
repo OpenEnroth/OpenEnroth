@@ -149,7 +149,8 @@ void LowercaseFileSystem::cacheLs(Node *node, NormalPathView basePath) const {
             continue;
         }
 
-        NormalPath baseName("/" + entry.name);
+        NormalPath baseName(entry.name);
+        assert(baseName.isAccessible());
         _trie.insertOrAssign(node,
                              lowerEntryName,
                              detail::LowercaseFileData(entry.type, std::move(baseName)));
@@ -201,7 +202,7 @@ void LowercaseFileSystem::cacheInsert(Node *node, NormalPathView tail, FileType 
     FileType nodeType = pos == end ? type : FILE_DIRECTORY;
     _trie.insertOrAssign(node,
                          firstChunk,
-                         detail::LowercaseFileData(nodeType, NormalPath("/" + std::string(firstChunk))));
+                         detail::LowercaseFileData(nodeType, NormalPath(firstChunk)));
 }
 
 NormalPath LowercaseFileSystem::locateForReading(NormalPathView path) const {

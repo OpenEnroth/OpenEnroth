@@ -15,11 +15,11 @@
  * This can be handy if, for example, you need to override one of the folders of some other file system:
  * ```
  * SomeFileSystem fs1;
- * MemoryFileSystem fs2("fs2");
+ * MemoryFileSystem fs2;
  *
- * MountingFileSystem fs("mnt");
- * fs.mount("/", &fs1);
- * fs.mount("/data/images", &fs2); // Now "/data/images" is pointing into `fs2`, whatever was there in `fs1` is ignored.
+ * MountingFileSystem fs;
+ * fs.mount("", &fs1);
+ * fs.mount("data/images", &fs2); // Now "data/images" is pointing into `fs2`, whatever was there in `fs1` is ignored.
  * ```
  *
  * In the example above, repeated calls to `mount` create a hierarchy of virtual directories. These virtual directories
