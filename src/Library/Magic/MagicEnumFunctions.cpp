@@ -8,7 +8,7 @@ std::string_view formatDescription(MagicFileFormat format) {
         assert(false);
         [[fallthrough]];
     case MAGIC_UNRECOGNIZED:
-        return "Raw data";
+        return "raw data";
     case MAGIC_LOD:
         return "LOD archive";
     case MAGIC_LOD_COMPRESSED_DATA:
