@@ -12,11 +12,11 @@
 
 std::array<std::string, 465> pTransitionStrings;
 
-void initializeTransitions(const Blob &transitions) {
+void initializeTransitions(std::string_view transitions) {
     // trans.txt table structure: index | description (localized) | name (not localized, not used).
     pTransitionStrings.fill({});
 
-    for (std::string_view line : split(transitions.str()).by("\r\n").drop(1).skip("")) {
+    for (std::string_view line : split(transitions).by("\r\n").drop(1).skip("")) {
         std::array<std::string_view, 2> tokens = split(line).by('\t'); // Some rows have no description, so it defaults to "".
         int i = fromString<int>(tokens[0]);
         pTransitionStrings[i] = unquote(tokens[1]);

@@ -6,8 +6,8 @@
 #include "Engine/Graphics/AtlasLayout.h"
 
 #include "Library/Color/Color.h"
+#include "Library/Font/Font.h"
 #include "Library/Geometry/Point.h"
-#include "Library/LodFormats/LodFont.h"
 
 class GraphicsImage;
 
@@ -105,8 +105,15 @@ class GUIFont {
     std::string FitTwoFontStringInWindow(std::string_view inString, GUIFont *pFontSecond, int width, int x);
     void DrawTextLineToBuff(Color startColor, Color shadowColor, Color *uX_buff_pos, std::string_view text, int line_width);
 
+    /**
+     * @param c                         Character to look up.
+     * @return                          Glyph index for the character, falling back to the replacement character
+     *                                  glyph (aka tofu) for unsupported characters.
+     */
+    int glyphIndex(char32_t c) const;
+
  private:
-    LodFont _font;
+    Font _font;
     AtlasLayout _layout;
     std::unique_ptr<GraphicsImage> _texture;
 };

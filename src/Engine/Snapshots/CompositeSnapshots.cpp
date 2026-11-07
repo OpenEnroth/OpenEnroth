@@ -32,12 +32,22 @@
 #include "Library/Lod/LodReader.h"
 #include "Library/Lod/LodEnums.h"
 #include "Library/Image/Pcx.h"
+#include "Library/Json/Json.h"
 
 #include "Utility/Exception.h"
 #include "Utility/Memory/MemSet.h"
 #include "Utility/Streams/BlobOutputStream.h"
 
 #include "Engine/Graphics/Image.h"
+#include "EnumSnapshots.h"
+#include "LegacyEncodingDetector.h"
+#include "Library/LodFormats/LodFormats.h"
+#include "Library/Logger/Logger.h"
+
+MM_DEFINE_JSON_LEXICAL_SERIALIZATION_FUNCTIONS(TextEncoding);
+MM_DEFINE_JSON_STRUCT_SERIALIZATION_FUNCTIONS(SaveGameExtension, (
+    (encoding, "encoding")
+));
 
 template<class Face>
 static void dropDuplicateFaceVertices(Face *face) {
@@ -196,7 +206,7 @@ void reconstruct(const IndoorLocation_MM7 &src, IndoorLocation *dst) {
         BLVFace *pFace = &dst->faces[i];
 
         std::string texName;
-        reconstruct(src.faceTextures[i], &texName);
+        reconstruct(src.faceTextures[i], &texName, tags::encoding(ENCODING_ASCII));
         pFace->SetTexture(texName);
     }
 
@@ -206,7 +216,7 @@ void reconstruct(const IndoorLocation_MM7 &src, IndoorLocation *dst) {
 
     std::string textureName;
     for (unsigned i = 0; i < faceExtras.size(); ++i) {
-        reconstruct(src.faceExtraTextures[i], &textureName);
+        reconstruct(src.faceExtraTextures[i], &textureName, tags::encoding(ENCODING_ASCII));
 
         if (textureName.empty()) {
             faceExtras[i].additionalBitmapId = -1;
@@ -287,7 +297,7 @@ void reconstruct(const IndoorLocation_MM7 &src, IndoorLocation *dst) {
 
     std::string decorationName;
     for (size_t i = 0; i < pLevelDecorations.size(); ++i) {
-        reconstruct(src.decorationNames[i], &decorationName);
+        reconstruct(src.decorationNames[i], &decorationName, tags::encoding(ENCODING_ASCII));
         pLevelDecorations[i].uDecorationDescID = pDecorationTable->decorationId(decorationName);
     }
 
@@ -317,7 +327,7 @@ void deserialize(InputStream &src, IndoorLocation_MM7 *dst) {
     deserialize(src, &dst->mapOutlines);
 }
 
-void snapshot(const IndoorLocation &src, IndoorDelta_MM7 *dst) {
+void snapshot(const IndoorLocation &src, IndoorDelta_MM7 *dst, EncodingTag encoding) {
     snapshot(src.dlv, &dst->header.info);
     dst->header.totalFacesCount = src.faces.size();
     dst->header.bmodelCount = 0;
@@ -336,7 +346,7 @@ void snapshot(const IndoorLocation &src, IndoorDelta_MM7 *dst) {
 
     // TODO(captainurist): vanilla MM7 only allocated memory for 500 actors, 1000 sprite objects, and 20 chests at
     //                     runtime. We should either cap these or fail gracefully on save to maintain compatibility.
-    snapshot(pActors, &dst->actors);
+    snapshot(pActors, &dst->actors, encoding);
     snapshot(pSpriteObjects, &dst->spriteObjects);
     snapshot(vChests, &dst->chests);
     snapshot(src.doors, &dst->doors);
@@ -346,7 +356,7 @@ void snapshot(const IndoorLocation &src, IndoorDelta_MM7 *dst) {
     dst->lastVisitTime = src.lastVisitTime.ticks();
 }
 
-void reconstruct(const IndoorDelta_MM7 &src, IndoorLocation *dst) {
+void reconstruct(const IndoorDelta_MM7 &src, IndoorLocation *dst, EncodingTag encoding) {
     reconstruct(src.header.info, &dst->dlv); // XXX
     reconstruct(src.visibleOutlines, &dst->_visible_outlines);
 
@@ -366,7 +376,7 @@ void reconstruct(const IndoorDelta_MM7 &src, IndoorLocation *dst) {
     for (size_t i = 0; i < pLevelDecorations.size(); ++i)
         pLevelDecorations[i].uFlags = LevelDecorationFlags(src.decorationFlags[i]);
 
-    reconstruct(src.actors, &pActors);
+    reconstruct(src.actors, &pActors, encoding);
     nextActorReuseScanStart = 0;
     for (size_t i = 0; i < pActors.size(); i++)
         pActors[i].id = i;
@@ -515,7 +525,7 @@ void reconstruct(std::tuple<const BSPModelData_MM7 &, const BSPModelExtras_MM7 &
 
     std::string textureName;
     for (size_t i = 0; i < faces.size(); ++i) {
-        reconstruct(srcExtras.faceTextures[i], &textureName);
+        reconstruct(srcExtras.faceTextures[i], &textureName, tags::encoding(ENCODING_ASCII));
         faces[i].SetTexture(textureName);
 
         if (faces[i].eventId) {
@@ -573,7 +583,7 @@ void reconstruct(const OutdoorLocation_MM7 &src, OutdoorTerrain *dst) {
 }
 
 void reconstruct(const OutdoorLocation_MM7 &src, OutdoorLocation *dst) {
-    reconstruct(src.skyTexture, &dst->sky_texture_filename);
+    reconstruct(src.skyTexture, &dst->sky_texture_filename, tags::encoding(ENCODING_ASCII));
     reconstruct(src, &dst->pTerrain);
 
     dst->pBModels.clear();
@@ -601,7 +611,7 @@ void reconstruct(const OutdoorLocation_MM7 &src, OutdoorLocation *dst) {
 
     std::string decorationName;
     for (size_t i = 0; i < pLevelDecorations.size(); ++i) {
-        reconstruct(src.decorationNames[i], &decorationName);
+        reconstruct(src.decorationNames[i], &decorationName, tags::encoding(ENCODING_ASCII));
         pLevelDecorations[i].uDecorationDescID = pDecorationTable->decorationId(decorationName);
     }
 
@@ -643,7 +653,7 @@ void deserialize(InputStream &src, OutdoorLocation_MM7 *dst) {
     deserialize(src, &dst->spawnPoints);
 }
 
-void snapshot(const OutdoorLocation &src, OutdoorDelta_MM7 *dst) {
+void snapshot(const OutdoorLocation &src, OutdoorDelta_MM7 *dst, EncodingTag encoding) {
     snapshot(src.ddm, &dst->header.info);
     dst->header.totalFacesCount = src.faces.size();
     dst->header.bmodelCount = src.pBModels.size();
@@ -663,7 +673,7 @@ void snapshot(const OutdoorLocation &src, OutdoorDelta_MM7 *dst) {
 
     // TODO(captainurist): vanilla MM7 only allocated memory for 500 actors, 1000 sprite objects, and 20 chests at
     //                     runtime. We should either cap these or fail gracefully on save to maintain compatibility.
-    snapshot(pActors, &dst->actors);
+    snapshot(pActors, &dst->actors, encoding);
     snapshot(pSpriteObjects, &dst->spriteObjects);
     snapshot(vChests, &dst->chests);
     snapshot(engine->_persistentVariables, &dst->eventVariables);
@@ -671,7 +681,7 @@ void snapshot(const OutdoorLocation &src, OutdoorDelta_MM7 *dst) {
     dst->lastVisitTime = src.lastVisitTime.ticks();
 }
 
-void reconstruct(const OutdoorDelta_MM7 &src, OutdoorLocation *dst) {
+void reconstruct(const OutdoorDelta_MM7 &src, OutdoorLocation *dst, EncodingTag encoding) {
     reconstruct(src.header.info, &dst->ddm);
     reconstruct(src.fullyRevealedCells, &dst->uFullyRevealedCellOnMap);
     reconstruct(src.partiallyRevealedCells, &dst->uPartiallyRevealedCellOnMap);
@@ -686,7 +696,7 @@ void reconstruct(const OutdoorDelta_MM7 &src, OutdoorLocation *dst) {
     for (size_t i = 0; i < pLevelDecorations.size(); ++i)
         pLevelDecorations[i].uFlags = LevelDecorationFlags(src.decorationFlags[i]);
 
-    reconstruct(src.actors, &pActors);
+    reconstruct(src.actors, &pActors, encoding);
     nextActorReuseScanStart = 0;
     for (size_t i = 0; i < pActors.size(); i++)
         pActors[i].id = i;
@@ -735,8 +745,8 @@ void deserialize(InputStream &src, OutdoorDelta_MM7 *dst, ContextTag<OutdoorLoca
 }
 
 void snapshot(const SaveGame &src, SaveGame_MM7 *dst) {
-    snapshot(src.header, &dst->header);
-    snapshot(src.party, &dst->party);
+    snapshot(src.header, &dst->header, tags::encoding(src.extension.encoding));
+    snapshot(src.party, &dst->party, tags::encoding(src.extension.encoding));
     snapshot(src.eventTimer, &dst->eventTimer);
     snapshot(src.overlays, &dst->overlays);
     snapshot(src.npcData, &dst->npcData);
@@ -760,11 +770,37 @@ void snapshot(const SaveGame &src, SaveGame_MM7 *dst) {
     }
 
     dst->thumbnail = Blob::share(src.thumbnail);
+
+    Json json;
+    to_json(json, src.extension);
+    dst->extension = Blob::fromString(json.dump(/*indent=*/4));
 }
 
 void reconstruct(const SaveGame_MM7 &src, SaveGame *dst) {
-    reconstruct(src.header, &dst->header);
-    reconstruct(src.party, &dst->party);
+    // Detect encoding first.
+    if (src.extension) {
+        from_json(Json::parse(src.extension.str()), dst->extension);
+    } else {
+        std::string names;
+        auto push = [&]<size_t N>(const std::array<char, N> &str) {
+            std::string tmp;
+            reconstruct(str, &tmp, tags::encoding(ENCODING_BYTES));
+            names += tmp;
+        }; // NOLINT(readability/braces)
+        push(src.header.name);
+        for (int i = 0; i < 4; i++)
+            push(src.party.characters[i].name);
+        push(src.party.hireling1Name);
+        push(src.party.hireling2Name);
+
+        // TODO(captainurist): Can also use actor names from level deltas.
+
+        dst->extension.encoding = detectLegacySaveEncoding(names);
+        MM_INFO("Savegame encoding '{}' detected.", toString(dst->extension.encoding));
+    }
+
+    reconstruct(src.header, &dst->header, tags::encoding(dst->extension.encoding));
+    reconstruct(src.party, &dst->party, tags::encoding(dst->extension.encoding));
     reconstruct(src.eventTimer, &dst->eventTimer);
     reconstruct(src.overlays, &dst->overlays);
     reconstruct(src.npcData, &dst->npcData);
@@ -815,8 +851,8 @@ void serialize(const SaveGame_MM7 &src, Blob *dst) {
     // Apparently vanilla had two bugs canceling each other out:
     // 1. Broken binary search implementation when looking up LOD entries.
     // 2. Writing additional duplicate entry at the end of a saves LOD file.
-    // Our code doesn't support duplicate entries, so we just add a dummy entry.
-    lodWriter.write("z.bin", Blob::fromString("dummy"));
+    // Our code doesn't support duplicate entries, so we just add an entry with OE-specific data.
+    lodWriter.write("z.json", src.extension);
 
     lodWriter.close();
     stream.close();
@@ -847,10 +883,12 @@ void deserialize(const Blob &src, SaveGame_MM7 *dst) {
     }
 
     dst->thumbnail = lodReader.read("image.pcx");
+
+    dst->extension = lodReader.exists("z.json") ? lodReader.read("z.json") : Blob();
 }
 
 void reconstruct(const SaveGameLite_MM7 &src, SaveGameLite *dst) {
-    reconstruct(src.header, &dst->header);
+    reconstruct(src.header, &dst->header, tags::encoding(ENCODING_ASCII)); // TODO(captainurist): detect encoding.
     dst->thumbnail = Blob::share(src.thumbnail);
 }
 

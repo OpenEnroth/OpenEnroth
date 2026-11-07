@@ -696,7 +696,7 @@ GUIWindow_PartyCreation::GUIWindow_PartyCreation() :
     pPlayerCreationUI_BtnMinus = CreateButton({523, 393}, {20, 35}, BUTTON_TYPE_NORMAL, 0, UIMSG_PlayerCreationClickMinus, 0, INPUT_ACTION_PARTY_CREATION_DEC, "", {ui_partycreation_minus});
     pPlayerCreationUI_BtnPlus = CreateButton({613, 393}, {20, 35}, BUTTON_TYPE_NORMAL, 0, UIMSG_PlayerCreationClickPlus, 1, INPUT_ACTION_PARTY_CREATION_INC, "", {ui_partycreation_plus});
 
-    ui_partycreation_font = GUIFont::LoadFont("cchar.fnt");
+    ui_partycreation_font = GUIFont::LoadFont("cchar.oef");
 }
 
 GUIWindow_PartyCreation::~GUIWindow_PartyCreation() {

@@ -2,6 +2,8 @@
 
 #include <optional>
 #include <span>
+#include <type_traits>
+#include <utility>
 #include <vector>
 #include <string>
 #include <algorithm>
@@ -12,6 +14,8 @@
 #include "Library/Binary/CommonSerialization.h"
 #include "Library/Snapshots/CommonSnapshots.h"
 #include "Library/Compression/Compression.h"
+#include "Library/Font/FontBuilder.h"
+#include "Library/Image/Image.h"
 #include "Library/Serialization/EnumSerialization.h"
 #include "Library/Snapshots/SnapshotSerialization.h"
 
@@ -20,6 +24,8 @@
 #include "Utility/Memory/Blob.h"
 #include "Utility/Exception.h"
 #include "Utility/Lambda.h"
+#include "Utility/String/Encoding.h"
+#include "Utility/String/Unicode.h"
 
 enum {
     MIN_GLYPH_WIDTH = 1,
@@ -284,53 +290,78 @@ Sizei lod::decodeSpriteSize(const Blob &blob) {
     return Sizei(header.width, header.height);
 }
 
-LodFont lod::decodeFont(const Blob &blob) {
+static GlyphMetrics glyphMetrics(const LodFontAtlas_MM7 &atlas, int c) {
+    return GlyphMetrics(atlas.metrics[c].leftSpacing, atlas.metrics[c].width, atlas.metrics[c].rightSpacing);
+}
+
+static GlyphMetrics glyphMetrics(const LodFontAtlas_MMX &atlas, int c) {
+    return GlyphMetrics(0, atlas.widths[c], 0);
+}
+
+Font lod::decodeFont(const Blob &blob, TextEncoding encoding) {
     if (!detectFont(blob))
         throw Exception("Cannot decode LOD entry '{}' as LOD font", blob.displayPath());
 
-    auto fixAndValidateFont = [](const Blob &blob, LodFont &font) {
-        for (int c = 0; c <= 255; c++) {
-            if (c < font._header.firstChar || c > font._header.lastChar) {
-                font._atlas.metrics[c].width = 0;
-                font._atlas.metrics[c].leftSpacing = 0;
-                font._atlas.metrics[c].rightSpacing = 0;
-                font._atlas.offsets[c] = 0;
-                continue;
-            }
+    auto decodeFontVia = [&]<typename Atlas>(std::type_identity<Atlas>) -> Font {
+        BlobInputStream stream(blob);
+        LodFontHeader_MM7 header;
+        deserialize(stream, &header);
+        Atlas atlas;
+        deserialize(stream, &atlas);
+        Blob pixels = stream.readAllAsBlob();
+
+        FontBuilder font(header.height);
+        for (int c = header.firstChar; c <= header.lastChar; c++) {
+            GlyphMetrics metrics = glyphMetrics(atlas, c);
 
             // Check that font metrics are sane.
-            const LodFontMetrics &metrics = font._atlas.metrics[c];
-            if (metrics.width < MIN_GLYPH_WIDTH || metrics.width > MAX_GLYPH_WIDTH || metrics.leftSpacing > MAX_GLYPH_SPACING || metrics.rightSpacing > MAX_GLYPH_SPACING)
+            if (metrics.width < MIN_GLYPH_WIDTH || metrics.width > MAX_GLYPH_WIDTH ||
+                metrics.leftSpacing > MAX_GLYPH_SPACING || metrics.rightSpacing > MAX_GLYPH_SPACING)
                 throw Exception("Cannot decode font LOD entry '{}': invalid font metrics encountered for character #{}",
                                 blob.displayPath(), c);
 
-            // Check that all offsets point into the pixel data.
-            int offset = font._atlas.offsets[c];
-            int size = font._header.fontHeight * font._atlas.metrics[c].width;
-            if (offset < 0 || size < 0 || size + offset > font._pixels.size())
+            // Check that the glyph data points into the pixel data.
+            int offset = atlas.offsets[c];
+            int size = header.height * metrics.width;
+            if (offset < 0 || size + offset > pixels.size())
                 throw Exception("Cannot decode font LOD entry '{}': invalid glyph data encountered for character #{}",
                                 blob.displayPath(), c);
+
+            char32_t codePoint = txt::encodedToChar32(static_cast<char>(c), encoding);
+            if (codePoint == 0 || codePoint == 0xFFFD)
+                continue; // This byte doesn't map to a character in the provided encoding.
+
+            // Remap LOD pixel values into font color indices: 255 (text) -> 1, 1 (shadow) -> 2.
+            GrayscaleImageView lodImage(static_cast<const uint8_t *>(pixels.data()) + offset, metrics.width,
+                                        header.height);
+            GrayscaleImage image = GrayscaleImage::solid(0, metrics.width, header.height);
+            bool blank = true;
+            for (int y = 0; y < header.height; y++) {
+                for (int x = 0; x < metrics.width; x++) {
+                    uint8_t pixel = lodImage[y][x];
+                    if (pixel == 0)
+                        continue;
+                    blank = false;
+                    image[y][x] = pixel == 1 ? 2 : 1;
+                }
+            }
+
+            // Some fonts have blank glyphs that should be treated as unsupported. Space is the only legit blank glyph.
+            if (blank && !unicode::isSpace(codePoint))
+                continue;
+
+            font.add(codePoint, metrics, image);
         }
+        return std::move(font).build();
     };
 
-    LodFont result;
     try {
-        BlobInputStream stream(blob);
-        deserialize(stream, &result._header, tags::via<LodFontHeader_MM7>);
-        deserialize(stream, &result._atlas, tags::via<LodFontAtlas_MM7>);
-        result._pixels = stream.readAllAsBlob();
-        fixAndValidateFont(blob, result);
+        return decodeFontVia(std::type_identity<LodFontAtlas_MM7>());
     } catch (const std::exception &e) {
         try {
-            BlobInputStream stream(blob);
-            deserialize(stream, &result._header, tags::via<LodFontHeader_MM7>);
-            deserialize(stream, &result._atlas, tags::via<LodFontAtlas_MMX>);
-            result._pixels = stream.readAllAsBlob();
-            fixAndValidateFont(blob, result);
+            return decodeFontVia(std::type_identity<LodFontAtlas_MMX>());
         } catch (const std::exception &) {
-            throw e; // Re-throw outer exception if trying both formats failed.
+            throw e; // Re-throw MM7 exception if trying both formats failed.
         }
     }
-
-    return result;
 }
