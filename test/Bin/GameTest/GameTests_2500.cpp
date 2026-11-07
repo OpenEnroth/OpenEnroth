@@ -22,7 +22,6 @@
 #include "Engine/Evt/EvtProgram.h"
 #include "Engine/Evt/EvtVariables.h"
 #include "Engine/Evt/Processor.h"
-#include "Engine/Graphics/Camera.h"
 #include "Engine/Graphics/Image.h"
 #include "Engine/Graphics/Indoor.h"
 #include "Engine/Graphics/Outdoor.h"
@@ -130,21 +129,10 @@ static void takeAllFromChest(EngineController &game, MapId map, Vec3f pos, int y
 }
 
 static void pickUpFloorItem(EngineController &game, ItemId item) {
-    // An item's billboard is drawn upwards from its position, so this tries points above it until the pick hits it.
-    game.tick();
     auto sprite = std::ranges::find_if(pSpriteObjects, [item](const SpriteObject &sprite) { return sprite.uObjectDescID != 0 && sprite.containing_item.itemId == item; });
     ASSERT_NE(sprite, pSpriteObjects.end());
-    Vec3f pos = sprite->vPosition;
-    Pointi base = pCamera3D->Project(pCamera3D->ViewTransform(&pos)).toInt();
-    std::vector<Pointi> points;
-    for (int dy = 0; dy <= 60; dy += 4)
-        for (int dx = -40; dx <= 40; dx += 4)
-            points.push_back(base + Pointi(dx, -dy));
-    auto target = std::ranges::find(points, Pid(OBJECT_Sprite, sprite - pSpriteObjects.begin()), [](Pointi point) {
-        return engine->PickMouse(engine->config->gameplay.MouseInteractionDepth.value(), point.x, point.y, &vis_anything_filter, &vis_face_filter).pid;
-    });
-    ASSERT_NE(target, points.end());
-    game.pressAndReleaseButton(BUTTON_LEFT, *target);
+    game.pointMouseAtSprite(sprite - pSpriteObjects.begin());
+    game.pressAndReleaseButton(BUTTON_LEFT);
     game.tick();
 }
 
