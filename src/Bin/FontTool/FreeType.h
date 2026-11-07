@@ -74,7 +74,7 @@ class FreeTypeFace {
      * @return                          Height of the glyph's outline in font units, or `std::nullopt` if there's no
      *                                  such glyph or it has no outline.
      */
-    [[nodiscard]] std::optional<int> outlineHeight(char32_t c) const;
+    [[nodiscard]] std::optional<int> outlineHeight(char32_t c);
 
     /**
      * @param ppem                      Pixels per em to render at.
@@ -95,7 +95,7 @@ class FreeTypeFace {
      * @return                          Rendered glyph, or `std::nullopt` if the face has no glyph for `c`, or it
      *                                  failed to render.
      */
-    [[nodiscard]] std::optional<RenderedGlyph> render(char32_t c, RasterMode mode, bool oblique) const;
+    [[nodiscard]] std::optional<RenderedGlyph> render(char32_t c, RasterMode mode, bool oblique);
 
  private:
     FT_Face _face = nullptr;
