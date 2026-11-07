@@ -115,7 +115,6 @@ def run_task(task):
         if ext == 'zip':
             try:
                 archive = zipfile.ZipFile(path)
-                archive.infolist()[0].filename.encode()
             except Exception:
                 # zipfile chokes on some zip64 directories and on names that aren't valid UTF-8, 7z reads both.
                 archive = None

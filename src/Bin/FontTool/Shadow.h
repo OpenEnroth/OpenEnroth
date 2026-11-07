@@ -11,7 +11,7 @@
 enum class ShadowMode {
     SHADOW_NONE, // Font has no shadow.
     SHADOW_DROP, // Drop shadow - the text shifted by (1,1).
-    SHADOW_OUTLINE, // Outline - the text dilated by its 4 neighbours.
+    SHADOW_OUTLINE, // Outline - the text dilated by its 4 neighbors.
 };
 using enum ShadowMode;
 

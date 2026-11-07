@@ -69,24 +69,3 @@ UNIT_TEST(FontBuilder, Overwrite) {
     EXPECT_EQ(font.index(U'B'), 1);
     EXPECT_EQ(font.image(1)[0][0], 3);
 }
-
-UNIT_TEST(FontBuilder, AddFont) {
-    std::array<uint8_t, 2> aPixels = {{1, 1}};
-    std::array<uint8_t, 2> bPixels = {{2, 2}};
-    std::array<uint8_t, 2> newBPixels = {{3, 3}};
-
-    FontBuilder first(2);
-    first.add(U'A', GlyphMetrics(0, 1, 0), GrayscaleImageView(aPixels.data(), 1, 2));
-    first.add(U'B', GlyphMetrics(0, 1, 0), GrayscaleImageView(bPixels.data(), 1, 2));
-    Font firstFont = std::move(first).build();
-
-    FontBuilder second(2);
-    second.add(U'B', GlyphMetrics(0, 1, 0), GrayscaleImageView(newBPixels.data(), 1, 2));
-    second.add(firstFont);
-    Font font = std::move(second).build();
-
-    EXPECT_EQ(font.size(), 2);
-    EXPECT_EQ(font.index(U'B'), 0);
-    EXPECT_EQ(font.index(U'A'), 1);
-    EXPECT_EQ(font.image(0)[0][0], 2);
-}

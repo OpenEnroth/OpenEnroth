@@ -23,10 +23,10 @@ RgbaImage renderFontSheet(const Font &font) {
             for (int x = 0; x < glyph.width(); x++) {
                 int gray = 0;
                 switch (glyph[y][x]) {
-                case 0: gray = 0; break;
+                case 0: break;
                 case 1: gray = 255; break;
                 case 2: gray = 128; break;
-                default: gray = 192 - 32 * glyph[y][x]; break;
+                default: gray = 64; break;
                 }
                 image[y0 + y][x0 + x] = Color(gray, gray, gray, 255);
             }

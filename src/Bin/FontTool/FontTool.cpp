@@ -31,41 +31,44 @@
 #include "Search.h"
 #include "Shadow.h"
 
-namespace {
+static constexpr std::string_view FONT_EXTENSIONS[] = {".ttf", ".otf", ".ttc", ".otc", ".tt", ".pfb", ".pfa", ".fon", ".fnt", ".dfont", ".woff"};
 
-constexpr std::string_view FONT_EXTENSIONS[] = {".ttf", ".otf", ".ttc", ".otc", ".tt", ".pfb", ".pfa", ".fon", ".fnt", ".dfont", ".woff"};
-
-std::u32string range(char32_t first, char32_t last) {
+static std::u32string range(char32_t first, char32_t last) {
     std::u32string result;
     for (char32_t c = first; c <= last; c++)
         result += c;
     return result;
 }
 
-std::u32string printableAscii() {
+static std::u32string printableAscii() {
     return range(U'!', U'~');
 }
 
-std::u32string cyrillic() {
+static std::u32string cyrillic() {
     return U"Ё" + range(U'А', U'я') + U"ё";
 }
 
-std::u32string textOr(const std::string &text, std::u32string fallback) {
+/**
+ * @param text                          UTF-8 text from the command line, can be empty.
+ * @param fallback                      Text to use if `text` is empty.
+ * @return                              `text` as UTF-32, or `fallback`.
+ */
+static std::u32string textOr(const std::string &text, std::u32string fallback) {
     return text.empty() ? std::move(fallback) : txt::encodedToUtf32(text, ENCODING_UTF8);
 }
 
-void writePng(PathView path, const RgbaImage &image) {
+static void writePng(PathView path, const RgbaImage &image) {
     FileOutputStream output(path);
     output.write(png::encode(image));
     output.close();
 }
 
-int runConvert(const FontToolOptions &options) {
+static int runConvert(const FontToolOptions &options) {
     writeFont(options.output, readFont(options.input, options.encoding));
     return 0;
 }
 
-int runMerge(const FontToolOptions &options) {
+static int runMerge(const FontToolOptions &options) {
     std::vector<Font> fonts;
     for (const std::string &input : options.inputs)
         fonts.push_back(readFont(input, options.encoding));
@@ -83,7 +86,7 @@ int runMerge(const FontToolOptions &options) {
     return 0;
 }
 
-int runRender(const FontToolOptions &options) {
+static int runRender(const FontToolOptions &options) {
     FreeTypeLibrary library;
     FreeTypeFace face(library, options.input, options.faceIndex);
 
@@ -113,19 +116,19 @@ int runRender(const FontToolOptions &options) {
     return 0;
 }
 
-int runDiff(const FontToolOptions &options) {
+static int runDiff(const FontToolOptions &options) {
     Font a = readFont(options.input, options.encoding);
     Font b = readFont(options.secondInput, options.encoding);
     writePng(options.output, renderFontDiff(a, b, textOr(options.text, printableAscii()), options.scale));
     return 0;
 }
 
-bool isFontFile(std::string_view name) {
+static bool isFontFile(std::string_view name) {
     std::string lower = ascii::toLower(name);
     return std::ranges::any_of(FONT_EXTENSIONS, [&](std::string_view extension) { return lower.ends_with(extension); });
 }
 
-void collectFonts(const Path &path, std::vector<std::string> *result) {
+static void collectFonts(const Path &path, std::vector<std::string> *result) {
     if (fs::stat(path).type != FILE_DIRECTORY) {
         result->push_back(path.str());
         return;
@@ -141,7 +144,7 @@ void collectFonts(const Path &path, std::vector<std::string> *result) {
     }
 }
 
-int runSearch(const FontToolOptions &options) {
+static int runSearch(const FontToolOptions &options) {
     std::vector<SearchReference> references;
     for (const std::string &path : options.references) {
         SearchReference &reference = references.emplace_back();
@@ -187,12 +190,10 @@ int runSearch(const FontToolOptions &options) {
     return 0;
 }
 
-int runGenerate(const FontToolOptions &options) {
+static int runGenerate(const FontToolOptions &options) {
     generateFonts(options.enIconsLodPath, options.ruIconsLodPath, options.output);
     return 0;
 }
-
-} // namespace
 
 int main(int argc, char **argv) {
     try {

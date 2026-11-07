@@ -51,4 +51,4 @@ InkMask makeInkMask(const RenderedGlyph &glyph, int threshold, bool bold);
  * @param settings                      Render settings, `ppem` is not used.
  * @return                              Bitmap font with the text in color `1`.
  */
-Font renderFont(const FreeTypeFace &face, const std::u32string &characters, const RenderSettings &settings);
+Font renderFont(FreeTypeFace &face, const std::u32string &characters, const RenderSettings &settings);

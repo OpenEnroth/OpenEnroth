@@ -45,14 +45,14 @@ FontToolOptions FontToolOptions::parse(int argc, char **argv) {
 
     CLI::App *render = app->add_subcommand("render", "Render an outline or bitmap font into a bitmap font.",
                                            result.subcommand, SUBCOMMAND_RENDER)->fallthrough();
-    render->add_option("--face-index", result.faceIndex, "Face to render, for font collections.")->option_text("N");
-    render->add_option("--ppem", result.render.ppem, "Pixels per em, or the strike height for a bitmap font.")->required()->option_text("N");
+    render->add_option("--face-index", result.faceIndex, "Face to render, for font collections.")->check(CLI::NonNegativeNumber)->option_text("N");
+    render->add_option("--ppem", result.render.ppem, "Pixels per em, or the strike height for a bitmap font.")->required()->check(CLI::PositiveNumber)->option_text("N");
     render->add_flag("--gray", result.gray, "Render anti-aliased and threshold the result, instead of rendering in mono.");
-    render->add_option("--threshold", result.render.threshold, "Coverage threshold for --gray, 1-255.")->option_text("N");
+    render->add_option("--threshold", result.render.threshold, "Coverage threshold for --gray, 1-255.")->check(CLI::Range(1, 255))->option_text("N");
     render->add_flag("--bold", result.render.bold, "Embolden the way GDI does, by drawing every glyph again a pixel to the right.");
     render->add_flag("--oblique", result.render.oblique, "Slant the outlines the way FreeType and GDI simulate italics.");
     render->add_option("--baseline", result.render.baseline, "Row of the baseline in the glyph cell.")->required()->option_text("N");
-    render->add_option("--height", result.render.height, "Height of the glyph cell.")->required()->option_text("N");
+    render->add_option("--height", result.render.height, "Height of the glyph cell.")->required()->check(CLI::PositiveNumber)->option_text("N");
     render->add_option("--shadow", result.shadow, "Shadow to draw: none, drop or outline.")
         ->transform(CLI::CheckedTransformer(std::map<std::string, ShadowMode>{
             {"none", SHADOW_NONE}, {"drop", SHADOW_DROP}, {"outline", SHADOW_OUTLINE}}))->option_text("MODE");

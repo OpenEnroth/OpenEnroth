@@ -33,13 +33,6 @@ void FontBuilder::add(char32_t c, const GlyphMetrics &metrics, GrayscaleImageVie
     _images.push_back(std::move(copy));
 }
 
-void FontBuilder::add(const Font &font) {
-    assert(font.height() == _height);
-
-    for (int i = 0; i < font.size(); i++)
-        add(font.character(i), font.metrics(i), font.image(i));
-}
-
 Font FontBuilder::build() && {
     std::vector<size_t> offsets;
     size_t size = 0;

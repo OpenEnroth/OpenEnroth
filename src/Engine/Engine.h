@@ -221,7 +221,7 @@ Duration timeUntilDawn();
 /**
  * @offset 0x443E31
  */
-void initLevelStrings(const Blob &blob);
+void initLevelStrings(std::string_view blob);
 void loadMapEventsAndStrings(MapId mapid);
 bool _44100D_should_alter_right_panel();
 

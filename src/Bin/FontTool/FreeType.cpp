@@ -64,7 +64,7 @@ bool FreeTypeFace::hasGlyph(char32_t c) const {
     return FT_Get_Char_Index(_face, c) != 0;
 }
 
-std::optional<int> FreeTypeFace::outlineHeight(char32_t c) const {
+std::optional<int> FreeTypeFace::outlineHeight(char32_t c) {
     FT_UInt index = FT_Get_Char_Index(_face, c);
     if (index == 0 || FT_Load_Glyph(_face, index, FT_LOAD_NO_SCALE | FT_LOAD_NO_HINTING) != 0)
         return std::nullopt;
@@ -84,7 +84,7 @@ bool FreeTypeFace::selectStrike(int index) {
     return FT_Select_Size(_face, index) == 0;
 }
 
-std::optional<RenderedGlyph> FreeTypeFace::render(char32_t c, RasterMode mode, bool oblique) const {
+std::optional<RenderedGlyph> FreeTypeFace::render(char32_t c, RasterMode mode, bool oblique) {
     FT_UInt index = FT_Get_Char_Index(_face, c);
     if (index == 0)
         return std::nullopt;

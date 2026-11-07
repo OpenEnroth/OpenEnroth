@@ -34,13 +34,6 @@ class FontBuilder {
     void add(char32_t c, const GlyphMetrics &metrics, GrayscaleImageView image);
 
     /**
-     * Adds all glyphs of another font of the same height, replacing the ones already added.
-     *
-     * @param font                      Font to copy glyphs from.
-     */
-    void add(const Font &font);
-
-    /**
      * @return                          Assembled font, with glyph indices in the order the characters were first
      *                                  added.
      */

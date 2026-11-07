@@ -29,14 +29,6 @@
 
 #include "ArchiveReader.h"
 
-/**
- * @param format                        Format to describe.
- * @return                              Description of `format` that reads in the middle of a sentence.
- */
-static std::string_view describe(MagicFileFormat format) {
-    return format == MAGIC_UNRECOGNIZED ? "raw data" : formatDescription(format);
-}
-
 static bool isArchive(MagicFileFormat format) {
     return format == MAGIC_LOD || format == MAGIC_VID || format == MAGIC_SND;
 }
@@ -168,7 +160,6 @@ static int runMagic(const LodToolOptions &options) {
     fmt::println("{} containing {}", formatDescription(format), formatDescription(magic(lod::decodeMaybeCompressed(data))));
     return 0;
 }
-
 
 int main(int argc, char **argv) {
     try {

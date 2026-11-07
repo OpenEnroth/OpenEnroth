@@ -4,16 +4,14 @@
 
 #include "FontFiles.h"
 
-namespace {
+static constexpr Color BACKGROUND = Color(32, 32, 48, 255);
+static constexpr Color CELL = Color(0, 0, 0, 255);
+static constexpr Color BOTH = Color(255, 255, 255, 255);
+static constexpr Color ONLY_A = Color(255, 64, 64, 255);
+static constexpr Color ONLY_B = Color(64, 224, 255, 255);
+static constexpr int GAP = 2;
 
-constexpr Color BACKGROUND = Color(32, 32, 48, 255);
-constexpr Color CELL = Color(0, 0, 0, 255);
-constexpr Color BOTH = Color(255, 255, 255, 255);
-constexpr Color ONLY_A = Color(255, 64, 64, 255);
-constexpr Color ONLY_B = Color(64, 224, 255, 255);
-constexpr int GAP = 2;
-
-Color glyphColor(uint8_t index) {
+static Color glyphColor(uint8_t index) {
     switch (index) {
     case 0: return CELL;
     case 1: return BOTH;
@@ -22,31 +20,40 @@ Color glyphColor(uint8_t index) {
     }
 }
 
-void fill(RgbaImage &image, int x, int y, int scale, Color color) {
+static void fill(RgbaImage &image, int x, int y, int scale, Color color) {
     for (int dy = 0; dy < scale; dy++)
         for (int dx = 0; dx < scale; dx++)
             image[y * scale + dy][x * scale + dx] = color;
 }
 
-void drawGlyph(RgbaImage &image, int x0, int y0, int scale, GrayscaleImageView glyph) {
+static void drawGlyph(RgbaImage &image, int x0, int y0, int scale, GrayscaleImageView glyph) {
     for (int y = 0; y < glyph.height(); y++)
         for (int x = 0; x < glyph.width(); x++)
             fill(image, x0 + x, y0 + y, scale, glyphColor(glyph[y][x]));
 }
 
-int textWidth(const Font &font, const std::u32string &text) {
+/**
+ * @param font                          Font to set the text in.
+ * @param text                          Text to set.
+ * @return                              Rightmost column the text reaches, glyphs can reach past the final pen
+ *                                      position.
+ */
+static int textWidth(const Font &font, const std::u32string &text) {
+    int pen = 0;
     int result = 0;
     for (char32_t c : text) {
         int index = font.index(c);
         if (index == -1)
             continue;
         const GlyphMetrics &metrics = font.metrics(index);
-        result += metrics.leftSpacing + metrics.width + metrics.rightSpacing;
+        result = std::max(result, pen + metrics.leftSpacing + metrics.width);
+        pen += metrics.leftSpacing + metrics.width + metrics.rightSpacing;
+        result = std::max(result, pen);
     }
     return result;
 }
 
-void drawText(RgbaImage &image, int x0, int y0, int scale, const Font &font, const std::u32string &text) {
+static void drawText(RgbaImage &image, int x0, int y0, int scale, const Font &font, const std::u32string &text) {
     int x = x0;
     for (char32_t c : text) {
         int index = font.index(c);
@@ -62,8 +69,6 @@ void drawText(RgbaImage &image, int x0, int y0, int scale, const Font &font, con
         x += metrics.width + metrics.rightSpacing;
     }
 }
-
-} // namespace
 
 RgbaImage renderFontDiff(const Font &a, const Font &b, const std::u32string &text, int scale) {
     uint8_t inkA = inkColorIndex(a);

@@ -36,7 +36,7 @@ InkMask makeInkMask(const RenderedGlyph &glyph, int threshold, bool bold) {
     return result;
 }
 
-Font renderFont(const FreeTypeFace &face, const std::u32string &characters, const RenderSettings &settings) {
+Font renderFont(FreeTypeFace &face, const std::u32string &characters, const RenderSettings &settings) {
     FontBuilder builder(settings.height);
 
     for (char32_t c : characters) {
