@@ -13,7 +13,7 @@ std::pair<GlyphMetrics, GrayscaleImage> reshadow(const GlyphMetrics &metrics, Gr
         return recolor && result == 2 ? 1 : result;
     };
 
-    // Only the text is carried over - whatever shadow the glyph had is redrawn from scratch below.
+    // Only the text is carried over. Whatever shadow the glyph had is redrawn from scratch below.
     int textLeft = metrics.width;
     int textRight = -1;
     for (int y = 0; y < height; y++) {
@@ -36,7 +36,7 @@ std::pair<GlyphMetrics, GrayscaleImage> reshadow(const GlyphMetrics &metrics, Gr
         return {metrics, std::move(result)};
     }
 
-    // The shadow needs a pixel of room around the text - to the right for a drop shadow, and on both sides for an
+    // The shadow needs a pixel of room around the text, to the right for a drop shadow, and on both sides for an
     // outline. Grow the glyph box if the room isn't already there, which is the case for the fonts that ship
     // without a shadow. Growing to the left shifts the text inside the box, so the left spacing compensates and
     // the glyph stays where it was.

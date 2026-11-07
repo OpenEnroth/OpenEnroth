@@ -47,8 +47,8 @@ FontToolOptions FontToolOptions::parse(int argc, char **argv) {
                                            result.subcommand, SUBCOMMAND_RENDER)->fallthrough();
     render->add_option("--face-index", result.faceIndex, "Face to render, for font collections.")->check(CLI::NonNegativeNumber)->option_text("N");
     render->add_option("--ppem", result.render.ppem, "Pixels per em, or the strike height for a bitmap font.")->required()->check(CLI::PositiveNumber)->option_text("N");
-    render->add_flag("--gray", result.gray, "Render anti-aliased and threshold the result, instead of rendering in mono.");
-    render->add_option("--threshold", result.render.threshold, "Coverage threshold for --gray, 1-255.")->check(CLI::Range(1, 255))->option_text("N");
+    CLI::Option *gray = render->add_flag("--gray", result.gray, "Render anti-aliased and threshold the result, instead of rendering in mono.");
+    render->add_option("--threshold", result.render.threshold, "Coverage threshold for --gray, 1-255.")->check(CLI::Range(1, 255))->needs(gray)->option_text("N");
     render->add_flag("--bold", result.render.bold, "Embolden the way GDI does, by drawing every glyph again a pixel to the right.");
     render->add_flag("--oblique", result.render.oblique, "Slant the outlines the way FreeType and GDI simulate italics.");
     render->add_option("--baseline", result.render.baseline, "Row of the baseline in the glyph cell.")->required()->option_text("N");
@@ -80,7 +80,7 @@ FontToolOptions FontToolOptions::parse(int argc, char **argv) {
     search->add_option("--list", result.listPath, "File listing candidate fonts, one path per line.")->check(CLI::ExistingFile)->option_text("FILE");
     search->add_option("--top", result.top, "Number of matches to print per reference.")->check(CLI::PositiveNumber)->option_text("N");
     search->add_option("--ppem-window", result.ppemWindow, "Sizes to try on either side of the estimated one.")->check(CLI::NonNegativeNumber)->option_text("N");
-    search->add_flag("--exhaustive", result.exhaustive, "Try every size, baseline and offset instead of estimating them. Slow, for checking the estimates.");
+    search->add_flag("--exhaustive", result.exhaustive, "Sweep a wide range of sizes, baselines and offsets instead of estimating them. Slow, for checking the estimates.");
     search->add_flag("--oblique", result.oblique, "Also try slanted renders, the way FreeType and GDI simulate italics. Doubles the search time.");
     search->add_option("--threads", result.threads, "Number of threads, one per core by default.")->check(CLI::PositiveNumber)->option_text("N");
     search->add_option("FONTS", result.inputs, "Candidate font files, and directories to search recursively.")->option_text(" ");
