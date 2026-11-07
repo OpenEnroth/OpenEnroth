@@ -66,6 +66,10 @@ OpenEnrothOptions OpenEnrothOptions::parse(int argc, char **argv) {
         "Path to trace file(s) to retrace.")->option_text("...");
     retrace->set_help_flag("-h,--help", "Print help and exit."); // This places --help last in the command list.
 
+    app->add_flag(
+        "--exit-after-start", result.exitAfterStart,
+        "Start the game, then exit through the main menu right away.")->group(""); // group("") hides the option. It's there for the integration tests.
+
     app->parse(argc, argv, result.helpPrinted);
 
     if (!portable && fs::exists(".portable"))
@@ -76,6 +80,9 @@ OpenEnrothOptions OpenEnrothOptions::parse(int argc, char **argv) {
         if (result.dataPath.isEmpty())
             result.dataPath = fs::cwd();
     }
+
+    if (result.exitAfterStart && result.subcommand != SUBCOMMAND_GAME)
+        throw Exception("--exit-after-start can't be used with a subcommand.");
 
     if (result.subcommand == SUBCOMMAND_RETRACE) {
         result.ramFsUserData = true; // No config & no user data if retracing.

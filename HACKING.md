@@ -153,9 +153,11 @@ Our basic guidelines for code organization are:
 
 We strive for a good test coverage of the project, and while we're not there yet, the current policy is to add tests for all the bugs we fix, as long as the fix is testable. E.g. graphical glitches are generally very hard to test, but we have the infrastructure to test game logic and small isolated classes.
 
-Tests in OpenEnroth fall into two categories:
+Tests in OpenEnroth fall into four categories:
 * Unit tests. These are a standard breed of tests, written using Google Test. You can see some examples in `src/Utility/Streams/Tests`.
 * Game tests. If you're familiar with how testing is done these days for complex mobile apps, then you can consider game tests a variation of UI tests that's specific to our project. Game tests need game assets to run.
+* Retrace tests. These play back every trace in `test/Data/`, record it anew and check that the result matches the stored trace, so that traces stay in canonical form. A failing one is fixed with `OpenEnroth retrace`, see below. They need game assets to run.
+* Integration tests. These run the `OpenEnroth` binary as a separate process, which lets them cover the startup sequence. They need game assets to run.
 
 Game tests work by instrumenting the engine, and then running test code in between the game frames. This code usually sends events to the engine (e.g. mouse clicks), which are then processed by the engine in the next frame, but it can do pretty much anything else – all of engine's data is accessible and writable from inside the game test.
 
@@ -175,6 +177,10 @@ If you need to record a trace with non-standard FPS (e.g. if an issue doesn't re
 To run all unit tests locally, build a `OpenEnroth_UnitTest` cmake target and run `<build-dir>/test/Bin/UnitTest/OpenEnroth_UnitTest`.
 
 To run all game tests locally, set `OPENENROTH_MM7_PATH` environment variable to point to the location of the game assets, then build `Run_GameTest_Headless_Parallel` cmake target. Alternatively, you can build `OpenEnroth_GameTest`, and run it manually, passing the paths to both game assets and the test data via command line. Run `OpenEnroth_GameTest --help` for a list of options. Note that you can pass `--headless` to run tests in headless mode. Test data is located in `test/Data/`.
+
+To run all retrace tests locally, set `OPENENROTH_MM7_PATH` as above and build `Run_RetraceTest_Headless_Parallel`.
+
+To run all integration tests locally, set `OPENENROTH_MM7_PATH` as above and build `Run_IntegrationTest`. Alternatively, build `OpenEnroth_IntegrationTest` and run it manually with `OPENENROTH_MM7_PATH` set, passing the path to the `OpenEnroth` binary via `--binary-path`.
 
 If you need to look closely at the recorded trace, you can play it by running `OpenEnroth play --speed 0.5 <path-to-trace.json>`. Alternatively, if you already have a unit test that runs the recorded trace, you can run `OpenEnroth_GameTest --speed 0.5 --gtest_filter=<test-suite-name>.<test-name> --test-path <path-to-test-data-folder>`. Note that `--gtest_filter` needs that `=` and won't work if you try passing the test name after a space. 
 

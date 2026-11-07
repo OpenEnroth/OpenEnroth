@@ -16,6 +16,7 @@ set(UTILITY_SOURCES
         System/Fs.cpp
         System/Path.cpp
         System/PathView.cpp
+        System/Process.cpp
         UnicodeCrt.cpp
         String/Wrap.cpp)
 
@@ -53,6 +54,7 @@ set(UTILITY_HEADERS
         System/Path.h
         System/PathSplit.h
         System/PathView.h
+        System/Process.h
         String/Ascii.h
         String/Encoding.h
         String/Join.h
@@ -75,7 +77,8 @@ target_link_libraries(utility
         Boost::lambda2
         PRIVATE
         ztd::text
-        mio::mio)
+        mio::mio
+        subprocess::subprocess)
 
 # Tweak ztd buffer size, default is 512Kb, but default stack size of non-main threads on MacOS is also 512Kb.
 target_compile_definitions(utility PRIVATE ZTD_INTERMEDIATE_BUFFER_SUGGESTED_BYTE_SIZE=65536)
@@ -106,6 +109,7 @@ if(OE_BUILD_TESTS)
             String/Tests/Encoding_ut.cpp
             System/Tests/Fs_ut.cpp
             System/Tests/Path_ut.cpp
+            System/Tests/Process_ut.cpp
             String/Tests/Split_ut.cpp
             String/Tests/Join_ut.cpp
             String/Tests/Wrap_ut.cpp)
