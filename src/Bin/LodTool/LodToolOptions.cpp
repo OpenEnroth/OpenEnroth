@@ -14,8 +14,8 @@ LodToolOptions LodToolOptions::parse(int argc, char **argv) {
     app->set_help_flag("-h,--help", "Print help and exit.");
     app->require_subcommand();
 
-    CLI::App *ls = app->add_subcommand("ls", "List a directory or an archive.", result.subcommand, SUBCOMMAND_LS)->fallthrough();
-    ls->add_option("PATH", result.path, "Path to a directory or an archive.")->required()->option_text(" ");
+    CLI::App *ls = app->add_subcommand("ls", "List an archive.", result.subcommand, SUBCOMMAND_LS)->fallthrough();
+    ls->add_option("ARCHIVE", result.path, "Path to an archive.")->required()->option_text(" ");
 
     CLI::App *cat = app->add_subcommand("cat", "Write a file to stdout, decompressing it.", result.subcommand, SUBCOMMAND_CAT)->fallthrough();
     cat->add_flag("--raw", result.raw, "Don't decompress.");
