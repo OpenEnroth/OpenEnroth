@@ -73,6 +73,8 @@ std::optional<int> FreeTypeFace::outlineHeight(char32_t c) {
 
     FT_BBox box;
     FT_Outline_Get_CBox(&_face->glyph->outline, &box);
+    if (box.yMax <= box.yMin)
+        return std::nullopt;
     return box.yMax - box.yMin;
 }
 

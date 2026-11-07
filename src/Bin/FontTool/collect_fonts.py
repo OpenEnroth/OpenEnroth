@@ -93,8 +93,10 @@ class Collector:
         with tempfile.TemporaryDirectory(dir=self.store, prefix='.scratch-') as scratch:
             target = os.path.join(scratch, 'out')
             os.mkdir(target)
-            subprocess.run(['7z', 'x', '-y', '-bd', '-p', f'-o{target}', source], stdin=subprocess.DEVNULL,
-                           stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL, timeout=4 * 3600)
+            result = subprocess.run(['7z', 'x', '-y', '-bd', '-p', f'-o{target}', source], stdin=subprocess.DEVNULL,
+                                    stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL, timeout=4 * 3600)
+            if result.returncode != 0:
+                self.errors.append(f'{origin}: 7z exited with {result.returncode}, extraction may be partial\n')
             for root, _, files in os.walk(target):
                 for name in files:
                     path = os.path.join(root, name)
