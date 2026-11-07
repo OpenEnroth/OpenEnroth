@@ -7,9 +7,9 @@
 
 #include "Library/FileSystem/Interface/FileSystemException.h"
 
-#include "Utility/String/Join.h"
 #include "Utility/Streams/FileInputStream.h"
 #include "Utility/Streams/FileOutputStream.h"
+#include "Utility/String/Join.h"
 #include "Utility/Exception.h"
 #include "Utility/System/Fs.h"
 
@@ -36,7 +36,7 @@ void NativeFileSystem::_ls(FileSystemPathView path, std::vector<DirectoryEntry> 
         fs::ls(basePath, entries);
     } catch (const Exception &) {
         if (path.isRoot())
-            return; // ls("/") always works.
+            return; // ls("") always works.
 
         if (fs::stat(basePath).type == FILE_REGULAR)
             FileSystemException::raise(this, FS_LS_FAILED_PATH_IS_FILE, path);

@@ -115,18 +115,16 @@ UNIT_TEST(NativeFileSystem, DisplayPathSymmetry) {
 }
 
 UNIT_TEST(NativeFileSystem, DotDotStaysInside) {
-    // ".." stops at the root, so the file next to the root stays out of reach.
+    // ".." stops at the root, so a file beside the root directory on disk stays out of reach.
     ScopedTestFolder tmp("a");
     ScopedTestFile tmp2("1.txt", "outer");
     ScopedTestFile tmp3("a/1.txt", "inner");
 
     NativeFileSystem fs("a");
 
-    EXPECT_EQ(fs.stat("/.."), FileStat(FILE_DIRECTORY, 0));
-    EXPECT_EQ(fs.read("/../1.txt").str(), "inner");
-    EXPECT_EQ(fs.read("/a/../../1.txt").str(), "inner");
-
+    EXPECT_EQ(fs.stat(".."), FileStat(FILE_DIRECTORY, 0));
     EXPECT_EQ(fs.read("../1.txt").str(), "inner");
+    EXPECT_EQ(fs.read("a/../../1.txt").str(), "inner");
 
     fs.write("../2.txt", Blob::fromString("kek"));
     EXPECT_TRUE(fs::exists("a/2.txt"));

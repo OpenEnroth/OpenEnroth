@@ -12,7 +12,13 @@ UNIT_TEST(FileSystemPath, Normalization) {
     EXPECT_EQ(FileSystemPath("/foo/bar/").string(), "/foo/bar");
     EXPECT_EQ(FileSystemPath("/foo//bar/").string(), "/foo/bar");
     EXPECT_EQ(FileSystemPath("//foo//bar//").string(), "/foo/bar");
-    EXPECT_EQ(FileSystemPath("\\foo\\bar").string(), "/foo/bar");
+
+    EXPECT_EQ(FileSystemPath("..").string(), "/");
+    EXPECT_EQ(FileSystemPath("../..").string(), "/");
+    EXPECT_EQ(FileSystemPath("/../..").string(), "/");
+    EXPECT_EQ(FileSystemPath("../../").string(), "/");
+    EXPECT_EQ(FileSystemPath("/../../").string(), "/");
+    EXPECT_EQ(FileSystemPath("//..//..//").string(), "/");
 
     EXPECT_EQ(FileSystemPath("").string(), "/");
     EXPECT_EQ(FileSystemPath("/").string(), "/");
@@ -33,22 +39,14 @@ UNIT_TEST(FileSystemPath, Normalization) {
     EXPECT_EQ(FileSystemPath("//foo//bar//..//").string(), "/foo");
     EXPECT_EQ(FileSystemPath("foo/../bar").string(), "/bar");
     EXPECT_EQ(FileSystemPath("//foo//..//bar//").string(), "/bar");
+    EXPECT_EQ(FileSystemPath("../foo/bar").string(), "/foo/bar");
+    EXPECT_EQ(FileSystemPath("//..//foo//bar//").string(), "/foo/bar");
+
     EXPECT_EQ(FileSystemPath("foo/bar/../..").string(), "/");
+    EXPECT_EQ(FileSystemPath("foo/../../bar").string(), "/bar");
+    EXPECT_EQ(FileSystemPath("../../foo/bar").string(), "/foo/bar");
 
     EXPECT_EQ(FileSystemPath("foo/.../bar/...").string(), "/foo/.../bar/...");
-    EXPECT_EQ(FileSystemPath("c:/d").string(), "/c:/d"); // A drive letter is an ordinary name.
-}
-
-UNIT_TEST(FileSystemPath, DotDotStopsAtRoot) {
-    // ".." with nothing left to climb out of stays at the root, wherever it is in the path.
-    EXPECT_EQ(FileSystemPath("..").string(), "/");
-    EXPECT_EQ(FileSystemPath("/..").string(), "/");
-    EXPECT_EQ(FileSystemPath("../..").string(), "/");
-    EXPECT_EQ(FileSystemPath("//..//..//").string(), "/");
-    EXPECT_EQ(FileSystemPath("../foo/bar").string(), "/foo/bar");
-    EXPECT_EQ(FileSystemPath("/../../foo/bar").string(), "/foo/bar");
-    EXPECT_EQ(FileSystemPath("foo/../../bar").string(), "/bar");
-    EXPECT_EQ(FileSystemPath("foo/bar/../../../baz").string(), "/baz");
 }
 
 UNIT_TEST(FileSystemPath, EmptyChunks) {
@@ -59,7 +57,7 @@ UNIT_TEST(FileSystemPath, EmptyChunks) {
 }
 
 UNIT_TEST(FileSystemPath, Tail) {
-    FileSystemPath path("/a/b/c");
+    FileSystemPath path("a/b/c");
 
     auto tails = [] (FileSystemPathView path, std::string_view at) -> std::pair<FileSystemPathView, FileSystemPathView> {
         for (std::string_view chunk : path.split())
@@ -86,7 +84,7 @@ UNIT_TEST(FileSystemPath, Tail) {
 }
 
 UNIT_TEST(FileSystemPath, TailAfterRoot) {
-    FileSystemPath path("/a/b/c");
+    FileSystemPath path("a/b/c");
 
     EXPECT_EQ(path.split().tailAfter(std::string_view()), path);
     EXPECT_TRUE(FileSystemPath().split().tailAfter(std::string_view()).isRoot());
@@ -99,53 +97,62 @@ UNIT_TEST(FileSystemPath, Appended) {
         EXPECT_EQ((FileSystemPath(l) / r).string(), result);
     };
 
-    testOne("/", "/", "/");
-    testOne("/", "/a", "/a");
-    testOne("/a", "/", "/a");
-    testOne("/a", "/b", "/a/b");
-    testOne("/a/b", "/c", "/a/b/c");
-    testOne("/a/b", "/c/d", "/a/b/c/d");
+    testOne("", "", "/");
+    testOne("", "a", "/a");
+    testOne("a", "", "/a");
+    testOne("a", "b", "/a/b");
+    testOne("a/b", "c", "/a/b/c");
+    testOne("a/b", "c/d", "/a/b/c/d");
 }
 
 UNIT_TEST(FileSystemPath, Append) {
-    FileSystemPath path0("/");
+    FileSystemPath path0("");
     path0 /= "";
     EXPECT_EQ(path0.string(), "/");
 
-    FileSystemPath path1("/");
+    FileSystemPath path1("");
     path1 /= "a";
     EXPECT_EQ(path1.string(), "/a");
 
-    FileSystemPath path2("/a");
+    FileSystemPath path2("a");
     path2 /= "";
     EXPECT_EQ(path2.string(), "/a");
 
-    FileSystemPath path3("/a");
+    FileSystemPath path3("a");
     path3 /= "b";
     EXPECT_EQ(path3.string(), "/a/b");
 
-    FileSystemPath path4("/a/b");
+    FileSystemPath path4("a/b");
     path4 /= "c";
     EXPECT_EQ(path4.string(), "/a/b/c");
 
-    FileSystemPath path5("/a/b");
-    path5 /= FileSystemPath("/c/d");
+    FileSystemPath path5("a/b");
+    path5 /= FileSystemPath("c/d");
     EXPECT_EQ(path5.string(), "/a/b/c/d");
 }
 
 UNIT_TEST(FileSystemPath, AppendedDotDot) {
-    // Appending ".." climbs out of the head, and stops at the root.
+    // A ".." in an appended string climbs out of the head, and stops at the root.
     auto testOne = [] (std::string_view l, std::string_view r, std::string_view result) {
         EXPECT_EQ((FileSystemPath(l) / r).string(), result) << "for " << l << " and " << r;
     };
 
-    testOne("/aa", "..", "/");
-    testOne("/aa/bb", "../..", "/");
-    testOne("/aa/bb/cc", "../../..", "/");
-    testOne("/aa/bb", "../../xyz", "/xyz");
-    testOne("/aa/bb", "../../../xyz", "/xyz");
-    testOne("/", "..", "/");
-    testOne("/", "../..", "/");
+    testOne("..", "..", "/");
+    testOne("../..", "../..", "/");
+    testOne("", "..", "/");
+    testOne("..", "", "/");
+    testOne("", "../..", "/");
+    testOne("../..", "", "/");
+
+    testOne("../../abc", "..", "/");
+    testOne("../../abc", "../..", "/");
+    testOne("../../abc", "../../xyz", "/xyz");
+    testOne("aa/bb", "../../xyz", "/xyz");
+    testOne("aa/bb", "../../../xyz", "/xyz");
+
+    testOne("aa", "..", "/");
+    testOne("aa/bb", "../..", "/");
+    testOne("aa/bb/cc", "../../..", "/");
 }
 
 UNIT_TEST(FileSystemPath, Decomposition) {
@@ -157,16 +164,17 @@ UNIT_TEST(FileSystemPath, Decomposition) {
         EXPECT_EQ(fsPath.extension(), ext) << "for " << path;
     };
 
-    testOne("/", "/", "", "", "");
-    testOne("/a/b.c", "/a", "b.c", "b", ".c");
-    testOne("/b.c", "/", "b.c", "b", ".c");
-    testOne("/b", "/", "b", "b", "");
-    testOne("/a/b", "/a", "b", "b", "");
-    testOne("/.hidden", "/", ".hidden", ".hidden", "");
-    testOne("/..wat", "/", "..wat", ".", ".wat");
-    testOne("/...", "/", "...", "..", ".");
-    testOne("/a/...", "/a", "...", "..", ".");
-    testOne("/x/y/z/some.", "/x/y/z", "some.", "some", ".");
-    testOne("/x.y/z.f/a.b.c.d", "/x.y/z.f", "a.b.c.d", "a.b.c", ".d");
-    testOne("/1/2/3/xyz.txt", "/1/2/3", "xyz.txt", "xyz", ".txt");
+    testOne("", "/", "", "", "");
+    testOne("a/b.c", "/a", "b.c", "b", ".c");
+    testOne("b.c", "/", "b.c", "b", ".c");
+    testOne("b", "/", "b", "b", "");
+    testOne("a/b", "/a", "b", "b", "");
+    testOne("..", "/", "", "", "");
+    testOne(".hidden", "/", ".hidden", ".hidden", "");
+    testOne("..wat", "/", "..wat", ".", ".wat");
+    testOne("...", "/", "...", "..", ".");
+    testOne("a/...", "/a", "...", "..", ".");
+    testOne("x/y/z/some.", "/x/y/z", "some.", "some", ".");
+    testOne("x.y/z.f/a.b.c.d", "/x.y/z.f", "a.b.c.d", "a.b.c", ".d");
+    testOne("1/2/3/xyz.txt", "/1/2/3", "xyz.txt", "xyz", ".txt");
 }

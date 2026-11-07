@@ -1,10 +1,8 @@
 #pragma once
 
-#include <cassert>
 #include <compare>
 #include <string>
 #include <string_view>
-#include <utility>
 
 #include "FileSystemPathView.h"
 

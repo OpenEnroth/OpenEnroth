@@ -56,25 +56,23 @@ UNIT_TEST(SubFileSystem, DisplayPath) {
     EXPECT_CONTAINS(path, "test.vert");
 }
 
-UNIT_TEST(SubFileSystem, DotDotStopsAtRoot) {
+UNIT_TEST(SubFileSystem, CannotEscapeWithDotDot) {
     MemoryFileSystem base("memfs");
-    base.write("/secret.txt", Blob::fromString("secret"));
-    base.write("/shaders/test.vert", Blob::fromString("test"));
+    base.write("secret.txt", Blob::fromString("secret"));
+    base.write("shaders/test.vert", Blob::fromString("test"));
 
-    SubFileSystem sub("/shaders", &base);
+    SubFileSystem sub("shaders", &base);
 
-    // ".." stops at the root of the sub file system, so this looks for the file in the sub directory.
-    EXPECT_FALSE(sub.exists("/../secret.txt"));
-    EXPECT_ANY_THROW((void) sub.read("/../secret.txt"));
-    EXPECT_ANY_THROW((void) sub.openForReading("/../secret.txt"));
-    EXPECT_EQ(sub.read("/../test.vert").str(), "test");
-
-    // Same for pathological paths that try harder.
-    EXPECT_FALSE(sub.exists("/a/../../../secret.txt"));
-    EXPECT_ANY_THROW((void) sub.read("/a/../../../secret.txt"));
-
-    // A relative path starts at the same root.
+    // Should not be able to access files outside the sub directory.
     EXPECT_FALSE(sub.exists("../secret.txt"));
+    EXPECT_ANY_THROW((void) sub.read("../secret.txt"));
+    EXPECT_ANY_THROW((void) sub.openForReading("../secret.txt"));
+
+    // Same for pathological tails that try harder.
+    EXPECT_FALSE(sub.exists("a/../../../secret.txt"));
+    EXPECT_ANY_THROW((void) sub.read("a/../../../secret.txt"));
+
+    // ".." stops at the root of the sub file system, so this is the file in the sub directory.
     EXPECT_EQ(sub.read("../test.vert").str(), "test");
 }
 

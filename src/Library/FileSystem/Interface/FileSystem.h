@@ -34,7 +34,7 @@
  * special dirs are supported.
  *
  * The current directory is always the root, `/`, which is the root of this file system and not of the OS. So `"a"`
- * and `"/a"` name the same file, and `..` stops at the root, so `/../a` is `/a`.
+ * and `"/a"` name the same file, and `".."` stops at the root, so `"/../a"` is `"/a"`.
  *
  * The root folder always exists. Thus, `exists("/")` always returns `true`, `stat("/")` always returns
  * `FILE_DIRECTORY`, `ls("/")` never throws, and `remove("/")` always throws.

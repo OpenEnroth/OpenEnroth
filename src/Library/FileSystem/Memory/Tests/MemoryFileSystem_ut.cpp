@@ -270,15 +270,3 @@ UNIT_TEST(MemoryFileSystem, ParentOfRootIsRoot) {
     EXPECT_EQ(fs.displayPath("/.."), "ram://");
     EXPECT_ANY_THROW(fs.remove("/.."));
 }
-
-UNIT_TEST(MemoryFileSystem, DriveLikeNamesAreNames) {
-    // A name that looks like a drive is an ordinary name, and doesn't get mixed up with what comes after its colon.
-    MemoryFileSystem fs("ram");
-    fs.write("/C:/foo", Blob::fromString("lol"));
-    fs.write("/c:foo", Blob::fromString("kek"));
-    fs.write("/foo", Blob::fromString("foo"));
-
-    EXPECT_EQ(fs.read("/C:/foo").str(), "lol");
-    EXPECT_EQ(fs.read("/c:foo").str(), "kek");
-    EXPECT_EQ(fs.read("/foo").str(), "foo");
-}

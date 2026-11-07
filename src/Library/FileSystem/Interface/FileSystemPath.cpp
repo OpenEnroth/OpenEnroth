@@ -11,10 +11,10 @@ static size_t fileNameOffset(std::string_view path) {
 }
 
 /**
- * @param path                      Path in normal form, so a name is never spelled `"."` or `".."`.
- * @return                          Offset of the extension inside the path, or `npos` if there is none. Mirrors
- *                                  `std::filesystem`, so a leading dot doesn't start an extension and `".bashrc"`
- *                                  has none.
+ * @param path                          Path in normal form, so a name is never spelled `"."` or `".."`.
+ * @return                              Offset of the extension inside the path, or `npos` if there is none. Mirrors
+ *                                      `std::filesystem`, so a leading dot doesn't start an extension and
+ *                                      `".bashrc"` has none.
  */
 static size_t extensionOffset(std::string_view path) {
     size_t nameOffset = fileNameOffset(path);
@@ -28,7 +28,7 @@ static size_t extensionOffset(std::string_view path) {
 }
 
 /**
- * @param[in,out] path              Path in normal form, loses its last segment. The root stays the root.
+ * @param[in,out] path                  Path in normal form, loses its last segment. The root stays the root.
  */
 static void popOneChunk(std::string &path) {
     size_t separatorPos = path.rfind('/');

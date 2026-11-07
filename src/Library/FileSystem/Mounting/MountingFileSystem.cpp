@@ -29,7 +29,7 @@ bool MountingFileSystem::unmount(std::string_view path) {
 bool MountingFileSystem::unmount(FileSystemPathView path) {
     Node *node = _trie.find(path);
     if (!node || !node->hasValue())
-        return false; // Should be a real mount point, unmount("/") is not equivalent to clearMounts().
+        return false; // Should be a real mount point, unmount("") is not equivalent to clearMounts().
 
     return _trie.erase(node);
 }
