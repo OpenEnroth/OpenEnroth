@@ -309,7 +309,7 @@ void OpenGLRenderer::BeginScene3D() {
 
 void OpenGLRenderer::DrawProjectile(float srcX, float srcY, float srcworldview, float srcfovoworldview,
                                     float dstX, float dstY, float dstworldview, float dstfovoworldview,
-                                    GraphicsImage *texture) {
+                                    Ptr<GraphicsImage> texture) {
     // billboards projectile - lightning bolt
 
     int xDifference = static_cast<int>(std::round(dstX - srcX));
@@ -474,7 +474,7 @@ void OpenGLRenderer::ScreenFade(Color color, float t) {
 }
 
 
-void OpenGLRenderer::DrawImage(GraphicsImage *img, const Recti &rect, int paletteid, Color uColor32) {
+void OpenGLRenderer::DrawImage(Ptr<GraphicsImage> img, const Recti &rect, int paletteid, Color uColor32) {
     if (!img) {
         MM_TRACE("Null img passed to DrawImage");
         return;
@@ -562,7 +562,7 @@ void OpenGLRenderer::DrawImage(GraphicsImage *img, const Recti &rect, int palett
 
 // TODO(pskelton): sort this - forcing the draw is slow
 // TODO(pskelton): stencil masking with opacity would be a better way to do this
-void OpenGLRenderer::BlendTextures(int x, int y, GraphicsImage *imgin, GraphicsImage *imgblend, int time, int start_opacity,
+void OpenGLRenderer::BlendTextures(int x, int y, Ptr<GraphicsImage> imgin, Ptr<GraphicsImage> imgblend, int time, int start_opacity,
                                    int end_opacity) {
     // thrown together as a crude estimate of the enchaintg effects
     // leaves gap where it shouldnt on dark pixels currently
@@ -624,7 +624,7 @@ void OpenGLRenderer::BlendTextures(int x, int y, GraphicsImage *imgin, GraphicsI
 
         // draw image
         std::unique_ptr<GraphicsImage> temp = GraphicsImage::Create(std::move(dstImage));
-        render->DrawQuad2D(temp.get(), {x, y});
+        render->DrawQuad2D(temp, {x, y});
 
         render->DrawTwodVerts();
     }
@@ -715,7 +715,7 @@ void OpenGLRenderer::DrawIndoorSky(int /*uNumVertices*/, int uFaceID) {
     }
 }
 
-void OpenGLRenderer::DrawIndoorSkyPolygon(int uNumVertices, GraphicsImage *texture, int dimmingLevel) {
+void OpenGLRenderer::DrawIndoorSkyPolygon(int uNumVertices, Ptr<GraphicsImage> texture, int dimmingLevel) {
     int texid = texture->renderId().value();
 
     Colorf uTint = GetActorTintColor(dimmingLevel, 0, VertexRenderList[0].vWorldViewPosition.x, 1, 0).toColorf();
@@ -835,7 +835,7 @@ void OpenGLRenderer::EndDecals() {
 
     glActiveTexture(GL_TEXTURE0);
 
-    GraphicsImage *texture = assets->getBitmap("hwsplat04");
+    std::shared_ptr<GraphicsImage> texture = assets->getBitmap("hwsplat04");
     glBindTexture(GL_TEXTURE_2D, texture->renderId().value());
 
     _decalBuffer.bind();
@@ -971,7 +971,6 @@ void OpenGLRenderer::_set_ortho_modelview() {
 
 // ---------------------- terrain -----------------------
 void OpenGLRenderer::DrawOutdoorTerrain() {
-    _initWaterTiles();
     // shader version
     // draws entire terrain in one go at the moment
     // textures must all be square and same size
@@ -997,7 +996,7 @@ void OpenGLRenderer::DrawOutdoorTerrain() {
                 pTerrainVertices[y * 128 + x].vWorldPosition = pOutdoor->pTerrain.vertexByGridUnsafe({x, y}).toFloat();
 
         // reserve first 7 layers for water tiles in unit 0
-        auto wtrtexture = this->hd_water_tile_anim[0];
+        std::shared_ptr<GraphicsImage> wtrtexture = assets->getBitmap("HDWTR000");
         terraintexturesizes[0] = wtrtexture->width();
 
         for (int buff = 0; buff < 7; buff++) {
@@ -1028,7 +1027,7 @@ void OpenGLRenderer::DrawOutdoorTerrain() {
                     tilelayer = 0;
                 } else {
                     // else need to add it
-                    auto thistexture = assets->getBitmap(tile.textureName, tile.flags & TILE_GENERATED_TRANSITION);
+                    std::shared_ptr<GraphicsImage> thistexture = assets->getBitmap(tile.textureName, tile.flags & TILE_GENERATED_TRANSITION);
                     int width = thistexture->width();
                     // check size to see what unit it needs
                     int i;
@@ -1138,7 +1137,7 @@ void OpenGLRenderer::DrawOutdoorTerrain() {
 
                 if (tunit == unit) {
                     // get texture
-                    auto texture = assets->getBitmap(it->first, it->first.starts_with("generated")); // TODO(captainurist): terrible, terrible hack, redo this.
+                    std::shared_ptr<GraphicsImage> texture = assets->getBitmap(it->first, it->first.starts_with("generated")); // TODO(captainurist): terrible, terrible hack, redo this.
                     // send texture data to gpu
                     glTexSubImage3D(GL_TEXTURE_2D_ARRAY,
                         0,
@@ -1502,7 +1501,7 @@ void OpenGLRenderer::DrawOutdoorSky() {
 
 
 //----- (004A2DA3) --------------------------------------------------------
-void OpenGLRenderer::DrawOutdoorSkyPolygon(int numVertices, GraphicsImage *texture, int dimmingLevel) {
+void OpenGLRenderer::DrawOutdoorSkyPolygon(int numVertices, Ptr<GraphicsImage> texture, int dimmingLevel) {
     auto texid = texture->renderId().value();
 
     float texidsolid = static_cast<float>(solidFillTexture()->renderId().value());
@@ -1754,9 +1753,7 @@ void OpenGLRenderer::DoRenderBillboards_D3D() {
             auto texture = billboard->texture;
             gltexid = texture->renderId().value();
         } else {
-            // TODO(captainurist): function-local static caching an asset, make it a member.
-            static GraphicsImage *effpar03 = assets->getBitmap("effpar03");
-            gltexid = static_cast<float>(effpar03->renderId().value());
+            gltexid = static_cast<float>(spell_fx_renderer->effpar03->renderId().value());
         }
 
         //if (gltexid != testtexid) {
@@ -1973,7 +1970,7 @@ void OpenGLRenderer::BeginScene2D() {
     _set_ortho_modelview();
 }
 
-void OpenGLRenderer::DrawQuad2D(GraphicsImage *texture, const Recti &srcRect, const Recti &dstRect, Color color) {
+void OpenGLRenderer::DrawQuad2D(Ptr<GraphicsImage> texture, const Recti &srcRect, const Recti &dstRect, Color color) {
     assert(texture);
 
     if (engine->callObserver)
@@ -2061,7 +2058,7 @@ void OpenGLRenderer::DrawQuad2D(GraphicsImage *texture, const Recti &srcRect, co
     vert5.paletteid = 0;
 }
 
-void OpenGLRenderer::BeginTextNew(GraphicsImage *texture) {
+void OpenGLRenderer::BeginTextNew(Ptr<GraphicsImage> texture) {
     // draw any images in buffer
     if (!_twodVertices.empty()) {
         DrawTwodVerts();
@@ -2239,7 +2236,6 @@ void OpenGLRenderer::Present() {
 }
 
 void OpenGLRenderer::DrawOutdoorBuildings() {
-    _initWaterTiles();
     // shader
     // verts are streamed to gpu as required
     // textures can be different sizes
@@ -2258,7 +2254,7 @@ void OpenGLRenderer::DrawOutdoorBuildings() {
         }
 
         // reserve first 7 layers for water tiles in unit 0
-        auto wtrtexture = this->hd_water_tile_anim[0];
+        std::shared_ptr<GraphicsImage> wtrtexture = assets->getBitmap("HDWTR000");
         //terraintexmap.insert(std::make_pair("wtrtyl", terraintexmap.size()));
         //numterraintexloaded[0]++;
         outbuildtexturewidths[0] = wtrtexture->width();
@@ -2285,7 +2281,7 @@ void OpenGLRenderer::DrawOutdoorBuildings() {
 
                         // TODO(yoctozepto, pskelton): we should probably try to handle these faces as they are otherwise marked as visible (see also BSPRenderer)
                         if (!face.GetTexture()) continue;
-                        GraphicsImage *tex = face.GetTexture();
+                        std::shared_ptr<GraphicsImage> tex = face.GetTexture();
 
                         std::string texname = tex->name();
 
@@ -2339,7 +2335,7 @@ void OpenGLRenderer::DrawOutdoorBuildings() {
                                 texlayer = 0;
                             } else {
                                 // else need to add it
-                                auto thistexture = assets->getBitmap(texname);
+                                std::shared_ptr<GraphicsImage> thistexture = assets->getBitmap(texname);
                                 int width = thistexture->width();
                                 int height = thistexture->height();
                                 // check size to see what unit it needs
@@ -2428,7 +2424,7 @@ void OpenGLRenderer::DrawOutdoorBuildings() {
 
                 if (tunit == unit) {
                     // get texture
-                    auto texture = assets->getBitmap(it->first);
+                    std::shared_ptr<GraphicsImage> texture = assets->getBitmap(it->first);
 
                     glTexSubImage3D(GL_TEXTURE_2D_ARRAY,
                         0,
@@ -2487,7 +2483,7 @@ void OpenGLRenderer::DrawOutdoorBuildings() {
                                 }
 
                                 if (texlayer == -1) { // texture has been reset - see if its in the map
-                                    GraphicsImage *tex = face.GetTexture();
+                                    const std::shared_ptr<GraphicsImage> &tex = face.GetTexture();
                                     std::string texname = tex->name();
                                     auto mapiter = bsptexmap.find(texname);
                                     if (mapiter != bsptexmap.end()) {
@@ -2742,7 +2738,6 @@ void OpenGLRenderer::DrawOutdoorBuildings() {
 }
 
 void OpenGLRenderer::DrawIndoorFaces() {
-    _initWaterTiles();
     // void RenderOpenGL::DrawIndoorBSP() {
 
         glEnable(GL_CULL_FACE);
@@ -2779,7 +2774,7 @@ void OpenGLRenderer::DrawIndoorFaces() {
 
 
             // reserve first 7 layers for water tiles in unit 0
-            auto wtrtexture = this->hd_water_tile_anim[0];
+            std::shared_ptr<GraphicsImage> wtrtexture = assets->getBitmap("HDWTR000");
             //terraintexmap.insert(std::make_pair("wtrtyl", terraintexmap.size()));
             //numterraintexloaded[0]++;
             bsptexturewidths[0] = wtrtexture->width();
@@ -2802,7 +2797,7 @@ void OpenGLRenderer::DrawIndoorFaces() {
                     continue;
 
                 // TODO(pskelton): Same as outdoors. When ODM and BLV face is combined - seperate out function
-                GraphicsImage *tex = face->GetTexture();
+                std::shared_ptr<GraphicsImage> tex = face->GetTexture();
                 std::string texname = tex->name();
 
                 Duration animLength;
@@ -2832,7 +2827,7 @@ void OpenGLRenderer::DrawIndoorFaces() {
                         texlayer = 0;
                     } else {
                         // else need to add it
-                        auto thistexture = assets->getBitmap(texname);
+                        std::shared_ptr<GraphicsImage> thistexture = assets->getBitmap(texname);
                         int width = thistexture->width();
                         int height = thistexture->height();
                         // check size to see what unit it needs
@@ -2909,7 +2904,7 @@ void OpenGLRenderer::DrawIndoorFaces() {
 
                     if (tunit == unit) {
                         // get texture
-                        auto texture = assets->getBitmap(it->first);
+                        std::shared_ptr<GraphicsImage> texture = assets->getBitmap(it->first);
 
                         glTexSubImage3D(GL_TEXTURE_2D_ARRAY,
                             0,
@@ -2999,7 +2994,7 @@ void OpenGLRenderer::DrawIndoorFaces() {
                 }
 
                 if (texlayer == -1) { // texture has been reset - see if its in the map
-                    GraphicsImage *tex = face->GetTexture();
+                    const std::shared_ptr<GraphicsImage> &tex = face->GetTexture();
                     std::string texname = tex->name();
                     auto mapiter = bsptexmap.find(texname);
                     if (mapiter != bsptexmap.end()) {
@@ -3424,16 +3419,6 @@ void OpenGLRenderer::_shutdownImGui() {
     ImGui_ImplOpenGL3_Shutdown();
     ImGui_ImplSDL3_Shutdown();
     ImGui::DestroyContext();
-}
-
-void OpenGLRenderer::_initWaterTiles() {
-    if (hd_water_tile_anim[0])
-        return;
-
-    for (unsigned i = 0; i < 7; ++i) {
-        std::string container_name = fmt::format("HDWTR{:03}", i);
-        hd_water_tile_anim[i] = assets->getBitmap(container_name);
-    }
 }
 
 bool OpenGLRenderer::Reinitialize(bool firstInit) {

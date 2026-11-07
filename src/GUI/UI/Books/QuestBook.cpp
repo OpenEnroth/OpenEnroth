@@ -17,7 +17,7 @@
 
 #include "Media/Audio/AudioPlayer.h"
 
-GraphicsImage *ui_book_quests_background = nullptr;
+std::shared_ptr<GraphicsImage> ui_book_quests_background;
 
 GUIWindow_QuestBook::GUIWindow_QuestBook() {
     this->eWindowType = WINDOW_QUEST_BOOK;

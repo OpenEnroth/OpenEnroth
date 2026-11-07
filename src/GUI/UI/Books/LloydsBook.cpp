@@ -1,3 +1,4 @@
+#include <memory>
 #include <string>
 
 #include "Engine/Engine.h"
@@ -30,8 +31,8 @@ std::array<int, 5> lloydsBeaconsPreviewYs = {{84, 84, 228, 228, 155}};
 std::array<int, 5> lloydsBeacons_SomeXs = {{59, 279, 59, 279, 169}};
 std::array<int, 5> lloydsBeacons_SomeYs = {{82, 82, 226, 226, 153}};
 
-GraphicsImage *ui_book_lloyds_border = nullptr;
-std::array<GraphicsImage *, 2> ui_book_lloyds_backgrounds;
+std::shared_ptr<GraphicsImage> ui_book_lloyds_border;
+std::array<std::shared_ptr<GraphicsImage>, 2> ui_book_lloyds_backgrounds;
 
 IndexedArray<int, MASTERY_NONE, MASTERY_LAST> masteryToMaxBeacons = {
         {MASTERY_NONE, 1},
@@ -113,7 +114,7 @@ void GUIWindow_LloydsBook::Update() {
 
         if (pPlayer->vBeacons[beaconId]) {
             LloydBeacon &beacon = pPlayer->vBeacons[beaconId].value();
-            render->DrawQuad2D(beacon.image.get(), {lloydsBeaconsPreviewXs[beaconId], lloydsBeaconsPreviewYs[beaconId]});
+            render->DrawQuad2D(beacon.image, {lloydsBeaconsPreviewXs[beaconId], lloydsBeaconsPreviewYs[beaconId]});
             std::string Str = pMapTable->pInfos[beacon.mapId].name;
             int pTextHeight = assets->pFontBookLloyds->CalcTextHeight(Str, pWindow.w, 0);
             pWindow.y -= 6 + pTextHeight;

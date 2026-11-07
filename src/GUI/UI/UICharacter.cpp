@@ -6,6 +6,7 @@
 #include <memory>
 #include <string>
 #include <unordered_map>
+#include <utility>
 #include <vector>
 
 #include "Engine/AssetsManager.h"
@@ -41,7 +42,7 @@
 
 void CharacterUI_LoadPaperdollTextures();
 
-static void CharacterUI_DrawItem(int x, int y, Item *item, int id, GraphicsImage *item_texture = nullptr, bool doZDraw = false);
+static void CharacterUI_DrawItem(int x, int y, Item *item, int id, Ptr<GraphicsImage> item_texture = nullptr, bool doZDraw = false);
 
 /**
  * Prepare textures of character doll with wetsuit on.
@@ -197,20 +198,20 @@ void set_default_ui_skin_colors() {
     ui_house_player_cant_interact_color = colorTable.PaleCanary;
 }
 
-GraphicsImage *paperdoll_drhs[4];
-GraphicsImage *paperdoll_dlhus[4];
-GraphicsImage *paperdoll_dlhs[4];
-GraphicsImage *paperdoll_dbods[5];
-IndexedArray<std::array<std::array<GraphicsImage *, 3>, 17>, BODY_TYPE_FIRST, BODY_TYPE_LAST> paperdoll_armor_texture;  // 0x511294
+std::shared_ptr<GraphicsImage> paperdoll_drhs[4];
+std::shared_ptr<GraphicsImage> paperdoll_dlhus[4];
+std::shared_ptr<GraphicsImage> paperdoll_dlhs[4];
+std::shared_ptr<GraphicsImage> paperdoll_dbods[5];
+IndexedArray<std::array<std::array<std::shared_ptr<GraphicsImage>, 3>, 17>, BODY_TYPE_FIRST, BODY_TYPE_LAST> paperdoll_armor_texture;  // 0x511294
 // int paperdoll_array_51132C[165];
-GraphicsImage *paperdoll_dlaus[5];
-GraphicsImage *paperdoll_dlads[4];
-GraphicsImage *paperdoll_flying_feet[22];      // 005115E0
-IndexedArray<std::array<GraphicsImage *, 6>, BODY_TYPE_FIRST, BODY_TYPE_LAST> paperdoll_boots_texture;  // 511638
-IndexedArray<std::array<GraphicsImage *, 10>, BODY_TYPE_FIRST, BODY_TYPE_LAST> paperdoll_cloak_collar_texture;
-IndexedArray<std::array<GraphicsImage *, 10>, BODY_TYPE_FIRST, BODY_TYPE_LAST> paperdoll_cloak_texture;
-IndexedArray<std::array<GraphicsImage *, 16>, BODY_TYPE_HUMAN_MALE, BODY_TYPE_HUMAN_FEMALE> paperdoll_helm_texture;  // 511698
-IndexedArray<std::array<GraphicsImage *, 7>, BODY_TYPE_FIRST, BODY_TYPE_LAST> paperdoll_belt_texture;  // 511718
+std::shared_ptr<GraphicsImage> paperdoll_dlaus[5];
+std::shared_ptr<GraphicsImage> paperdoll_dlads[4];
+std::shared_ptr<GraphicsImage> paperdoll_flying_feet[22];      // 005115E0
+IndexedArray<std::array<std::shared_ptr<GraphicsImage>, 6>, BODY_TYPE_FIRST, BODY_TYPE_LAST> paperdoll_boots_texture;   // 511638
+IndexedArray<std::array<std::shared_ptr<GraphicsImage>, 10>, BODY_TYPE_FIRST, BODY_TYPE_LAST> paperdoll_cloak_collar_texture;
+IndexedArray<std::array<std::shared_ptr<GraphicsImage>, 10>, BODY_TYPE_FIRST, BODY_TYPE_LAST> paperdoll_cloak_texture;
+IndexedArray<std::array<std::shared_ptr<GraphicsImage>, 16>, BODY_TYPE_HUMAN_MALE, BODY_TYPE_HUMAN_FEMALE> paperdoll_helm_texture;   // 511698
+IndexedArray<std::array<std::shared_ptr<GraphicsImage>, 7>, BODY_TYPE_FIRST, BODY_TYPE_LAST> paperdoll_belt_texture;   // 511718
 
 const IndexedArray<std::array<std::array<int, 2>, 16>, BODY_TYPE_FIRST, BODY_TYPE_LAST> paperdoll_Weapon = {  // 4E4C30
     {BODY_TYPE_HUMAN_MALE, {{
@@ -522,18 +523,18 @@ static constexpr std::array<const char *, 25> dlhu_texnames_by_face = {
     "pc15lhu", "pc16lhu", "pc17lhu", "pc18lhu", "pc19lhu", "pc20lhu", "pc21lhu",
     "pc22lhu", "pc23lhu", "pc24lhu", "pc25lhu"};
 
-GraphicsImage *ui_character_skills_background = nullptr;
-GraphicsImage *ui_character_awards_background = nullptr;
-GraphicsImage *ui_character_stats_background = nullptr;
-GraphicsImage *ui_character_inventory_background = nullptr;
-GraphicsImage *ui_character_inventory_background_strip = nullptr;
-GraphicsImage *ui_character_inventory_magnification_glass = nullptr;
-GraphicsImage *ui_character_inventory_paperdoll_background = nullptr;
-GraphicsImage *ui_character_inventory_paperdoll_rings_background = nullptr;
+std::shared_ptr<GraphicsImage> ui_character_skills_background;
+std::shared_ptr<GraphicsImage> ui_character_awards_background;
+std::shared_ptr<GraphicsImage> ui_character_stats_background;
+std::shared_ptr<GraphicsImage> ui_character_inventory_background;
+std::shared_ptr<GraphicsImage> ui_character_inventory_background_strip;
+std::shared_ptr<GraphicsImage> ui_character_inventory_magnification_glass;
+std::shared_ptr<GraphicsImage> ui_character_inventory_paperdoll_background;
+std::shared_ptr<GraphicsImage> ui_character_inventory_paperdoll_rings_background;
 
-static GraphicsImage *scrollstop = nullptr;
+static std::shared_ptr<GraphicsImage> scrollstop;
 
-std::array<GraphicsImage *, 16> paperdoll_dbrds;
+std::array<std::shared_ptr<GraphicsImage>, 16> paperdoll_dbrds;
 
 Recti savedInventoryLeftClickButtonRect;
 
@@ -996,7 +997,7 @@ void CharacterUI_DrawPaperdoll(Character *player) {
             item_X = pPaperdoll_BodyX + paperdoll_Weapon[bodyType][1][0] - pItemTable->items[itemMainHand->itemId].paperdollAnchorOffset.x;
             item_Y = pPaperdoll_BodyY + paperdoll_Weapon[bodyType][1][1] - pItemTable->items[itemMainHand->itemId].paperdollAnchorOffset.y;
 
-            GraphicsImage *texture = nullptr;
+            std::shared_ptr<GraphicsImage> texture;
             if (itemMainHand->itemId == ITEM_BLASTER)
                 texture = assets->getIcon("item64v1");
 
@@ -1018,7 +1019,7 @@ void CharacterUI_DrawPaperdoll(Character *player) {
                 item_X = pPaperdoll_BodyX + paperdoll_Cloak[bodyType][index][0];
                 item_Y = pPaperdoll_BodyY + paperdoll_Cloak[bodyType][index][1];
 
-                GraphicsImage *texture = paperdoll_cloak_texture[bodyType][index];
+                std::shared_ptr<GraphicsImage> texture = paperdoll_cloak_texture[bodyType][index];
                 CharacterUI_DrawItem(item_X, item_Y, cloak.get(), cloak.index(), texture, !bRingsShownInCharScreen);
             }
         }
@@ -1033,7 +1034,7 @@ void CharacterUI_DrawPaperdoll(Character *player) {
                 item_X = pPaperdoll_BodyX + paperdoll_Armor_Coord[bodyType][index][0];
                 item_Y = pPaperdoll_BodyY + paperdoll_Armor_Coord[bodyType][index][1];
 
-                GraphicsImage *texture = paperdoll_armor_texture[bodyType][index][0];
+                std::shared_ptr<GraphicsImage> texture = paperdoll_armor_texture[bodyType][index][0];
                 CharacterUI_DrawItem(item_X, item_Y, armor.get(), armor.index(), texture, !bRingsShownInCharScreen);
             }
         }
@@ -1045,7 +1046,7 @@ void CharacterUI_DrawPaperdoll(Character *player) {
                 item_X = pPaperdoll_BodyX + paperdoll_Boot[bodyType][index][0];
                 item_Y = pPaperdoll_BodyY + paperdoll_Boot[bodyType][index][1];
 
-                GraphicsImage *texture = nullptr;
+                std::shared_ptr<GraphicsImage> texture;
                 if (boots->itemId == ITEM_ARTIFACT_HERMES_SANDALS) {
                     texture = paperdoll_flying_feet[player->uCurrentFace];
                 } else {
@@ -1073,7 +1074,7 @@ void CharacterUI_DrawPaperdoll(Character *player) {
             if (index != -1) {
                 item_X = pPaperdoll_BodyX + paperdoll_Belt[bodyType][index][0];
                 item_Y = pPaperdoll_BodyY + paperdoll_Belt[bodyType][index][1];
-                GraphicsImage *texture = nullptr;
+                std::shared_ptr<GraphicsImage> texture;
                 if (index == 5) // Titan's Belt has dwarf textures.
                     texture = paperdoll_belt_texture[bodyType][index];
                 else
@@ -1087,7 +1088,7 @@ void CharacterUI_DrawPaperdoll(Character *player) {
         if (InventoryEntry armor = player->inventory.entry(ITEM_SLOT_ARMOUR)) {
             index = valueOr(paperdoll_armor_indexByType, armor->itemId, -1);
             if (index != -1) {
-                GraphicsImage *texture = nullptr;
+                std::shared_ptr<GraphicsImage> texture;
                 // Some armors doesn't have sleeves so use normal one for two-handed or none if it also unavailable
                 if (bTwoHandedGrip && paperdoll_shoulder_second_coord[bodyType][index][0]) {
                     item_X = pPaperdoll_BodyX + paperdoll_shoulder_second_coord[bodyType][index][0];
@@ -1115,7 +1116,7 @@ void CharacterUI_DrawPaperdoll(Character *player) {
                     item_X = pPaperdoll_BodyX + paperdoll_CloakCollar[bodyType][index][0];
                     item_Y = pPaperdoll_BodyY + paperdoll_CloakCollar[bodyType][index][1];
 
-                    GraphicsImage *texture = paperdoll_cloak_collar_texture[bodyType][index];
+                    std::shared_ptr<GraphicsImage> texture = paperdoll_cloak_collar_texture[bodyType][index];
                     CharacterUI_DrawItem(item_X, item_Y, cloak.get(), cloak.index(), texture, !bRingsShownInCharScreen);
                 }
             }
@@ -1136,7 +1137,7 @@ void CharacterUI_DrawPaperdoll(Character *player) {
                 item_X = pPaperdoll_BodyX + paperdoll_Helm[bodyType][index][0];
                 item_Y = pPaperdoll_BodyY + paperdoll_Helm[bodyType][index][1];
 
-                GraphicsImage *texture = nullptr;
+                std::shared_ptr<GraphicsImage> texture;
                 if (!isDwarf || helm->itemId != ITEM_PHYNAXIAN_HELM)
                     texture = paperdoll_helm_texture[humanBodyType(bodyType)][index];
                 else
@@ -1151,7 +1152,7 @@ void CharacterUI_DrawPaperdoll(Character *player) {
             item_X = pPaperdoll_BodyX + paperdoll_Weapon[bodyType][1][0] - pItemTable->items[itemMainHand->itemId].paperdollAnchorOffset.x;
             item_Y = pPaperdoll_BodyY + paperdoll_Weapon[bodyType][1][1] - pItemTable->items[itemMainHand->itemId].paperdollAnchorOffset.y;
 
-            GraphicsImage *texture = nullptr;
+            std::shared_ptr<GraphicsImage> texture;
             if (itemMainHand->itemId == ITEM_BLASTER)
                 texture = assets->getIcon("item64v1");
 
@@ -1240,7 +1241,7 @@ void CharacterUI_InventoryTab_Draw(Character *player, bool Cover_Strip) {
 
         Pointi cellPos = mapFromInventoryGrid(entry.geometry().topLeft(), Pointi(14, 17));
 
-        GraphicsImage *pTexture = assets->getIcon(entry->GetIconName());
+        std::shared_ptr<GraphicsImage> pTexture = assets->getIcon(entry->GetIconName());
 
         signed int X_offset = itemOffset(pTexture->width());
         signed int Y_offset = itemOffset(pTexture->height());
@@ -1266,12 +1267,12 @@ void CharacterUI_DrawPickedItemUnderlay(Vec2i gridOffset) {
     }
 }
 
-static void CharacterUI_DrawItem(int x, int y, Item *item, int id, GraphicsImage *item_texture, bool doZDraw) {
+static void CharacterUI_DrawItem(int x, int y, Item *item, int id, Ptr<GraphicsImage> item_texture, bool doZDraw) {
     if (!item_texture)
         item_texture = assets->getIcon(item->GetIconName());
 
     if (item->ItemEnchanted()) { // enchant animation
-        GraphicsImage *enchantment_texture = nullptr;
+        std::shared_ptr<GraphicsImage> enchantment_texture;
         if (item->AuraEffectRed())
             enchantment_texture = assets->getIcon("sptext01");
         else if (item->AuraEffectBlue())

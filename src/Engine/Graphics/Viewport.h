@@ -36,7 +36,7 @@ struct ViewingParams {
     int sViewCenterY = 0;
     int16_t indoor_center_x = 0;
     int16_t indoor_center_y = 0;
-    GraphicsImage *location_minimap = nullptr;  // unsigned int uTextureID_LocationMap; ::40
+    std::shared_ptr<GraphicsImage> location_minimap;  // unsigned int uTextureID_LocationMap; ::40
     int draw_sw_outlines = 0;
     int draw_d3d_outlines = 0;
     Color pPalette[256] {};

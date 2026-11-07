@@ -42,7 +42,7 @@ class Mouse {
     int field_8 = 0;
     bool _arrowCursor = 0;
     int bInitialized = 0;
-    GraphicsImage *cursor_img = nullptr;
+    std::shared_ptr<GraphicsImage> cursor_img;
     uint16_t *pCursorBitmap_sysmem = nullptr;
     uint8_t *pCursorBitmap2_sysmem = nullptr;
     Pointi pickedItemOffset = {}; // Offset of the item's bitmap relative to cursor position, always non-positive.

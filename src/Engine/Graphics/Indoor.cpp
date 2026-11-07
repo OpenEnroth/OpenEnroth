@@ -3,6 +3,7 @@
 #include <cmath>
 #include <algorithm>
 #include <limits>
+#include <memory>
 #include <optional>
 #include <ranges>
 #include <string>
@@ -202,7 +203,7 @@ void IndoorLocation::Draw() {
 }
 
 //----- (004AE5BA) --------------------------------------------------------
-GraphicsImage *BLVFace::GetTexture() const {
+const std::shared_ptr<GraphicsImage> &BLVFace::GetTexture() const {
     if (this->IsAnimated()) {
         return pTextureFrameTable->animationFrame(this->animationId, animTimer->time());
     } else {

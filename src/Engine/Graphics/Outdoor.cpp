@@ -5,6 +5,7 @@
 #include <memory>
 #include <optional>
 #include <string>
+#include <utility>
 
 #include "Engine/Engine.h"
 #include "Engine/EngineGlobals.h"
@@ -423,9 +424,8 @@ void OutdoorLocation::Release() {
     // free shader data for outdoor location
     render->ReleaseTerrain();
 
-    if (viewparams->location_minimap)
-        assets->releaseImage(viewparams->location_minimap);
-    viewparams->location_minimap = nullptr;
+    assets->evict(std::move(viewparams->location_minimap));
+    sky_texture.reset();
 }
 
 void OutdoorLocation::Load(std::string_view filename, int days_played, int respawn_interval_days, bool *outdoors_was_respawned) {
@@ -869,10 +869,7 @@ void ODM_UpdateUserInputAndOther() {
 }
 //----- (0041F54A) --------------------------------------------------------
 void OutdoorLocation::LoadActualSkyFrame() {
-    if (rest_ui_sky_frame_current) {
-        assets->releaseImage(rest_ui_sky_frame_current);
-        rest_ui_sky_frame_current = nullptr;
-    }
+    assets->evict(std::move(rest_ui_sky_frame_current));
 
     rest_ui_sky_frame_current = assets->getIcon(
         fmt::format("TERRA{:03}", pParty->uCurrentMinute / 6 + 10 * pParty->uCurrentHour));
@@ -881,8 +878,6 @@ void OutdoorLocation::LoadActualSkyFrame() {
 OutdoorLocation::OutdoorLocation() {
     this->decal_builder = EngineIocContainer::ResolveDecalBuilder();
     this->spell_fx_renderer = EngineIocContainer::ResolveSpellFxRenderer();
-
-    this->sky_texture = nullptr;
 
     uLastSunlightUpdateMinute = 0;
 

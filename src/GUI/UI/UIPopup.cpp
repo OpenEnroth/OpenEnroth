@@ -2,6 +2,7 @@
 #include <algorithm>
 #include <string>
 #include <utility>
+#include <memory>
 
 #include "Engine/Engine.h"
 #include "Engine/AssetsManager.h"
@@ -48,15 +49,15 @@
 
 #include "Library/Logger/Logger.h"
 
-GraphicsImage *parchment = nullptr;
-GraphicsImage *messagebox_corner_x = nullptr;       // 5076AC
-GraphicsImage *messagebox_corner_y = nullptr;       // 5076B4
-GraphicsImage *messagebox_corner_z = nullptr;       // 5076A8
-GraphicsImage *messagebox_corner_w = nullptr;       // 5076B0
-GraphicsImage *messagebox_border_top = nullptr;     // 507698
-GraphicsImage *messagebox_border_bottom = nullptr;  // 5076A4
-GraphicsImage *messagebox_border_left = nullptr;    // 50769C
-GraphicsImage *messagebox_border_right = nullptr;   // 5076A0
+std::shared_ptr<GraphicsImage> parchment;
+std::shared_ptr<GraphicsImage> messagebox_corner_x;                 // 5076AC
+std::shared_ptr<GraphicsImage> messagebox_corner_y;                 // 5076B4
+std::shared_ptr<GraphicsImage> messagebox_corner_z;                 // 5076A8
+std::shared_ptr<GraphicsImage> messagebox_corner_w;                 // 5076B0
+std::shared_ptr<GraphicsImage> messagebox_border_top;               // 507698
+std::shared_ptr<GraphicsImage> messagebox_border_bottom;            // 5076A4
+std::shared_ptr<GraphicsImage> messagebox_border_left;              // 50769C
+std::shared_ptr<GraphicsImage> messagebox_border_right;             // 5076A0
 
 bool holdingMouseRightButton = false;
 bool rightClickItemActionPerformed = false;
@@ -324,7 +325,7 @@ void GameUI_DrawItemInfo(Item *inspect_item) {
     if (inspect_item->itemId == ITEM_NULL)
         return;
 
-    auto inspect_item_image = assets->getIcon(inspect_item->GetIconName());
+    std::shared_ptr<GraphicsImage> inspect_item_image = assets->getIcon(inspect_item->GetIconName());
 
     Recti iteminfo_window(0, 40, 384, 180);
 
@@ -1622,7 +1623,7 @@ void ShowPopupShopItem() {
 
 //----- (0041D3B7) --------------------------------------------------------
 void GameUI_CharacterQuickRecord_Draw(Recti window, int characterIndex) {
-    GraphicsImage *v13;              // eax@6
+    std::shared_ptr<GraphicsImage> v13;              // eax@6
     std::string spellName;   // eax@16
     int v36;                 // esi@22
     int uFramesetIDa;        // [sp+20h] [bp-8h]@18

@@ -27,7 +27,7 @@
 
 void DrawBook_Map_sub(int tl_x, int tl_y, int br_x, int br_y);
 
-GraphicsImage *ui_book_map_background = nullptr;
+std::shared_ptr<GraphicsImage> ui_book_map_background;
 
 GUIWindow_MapBook::GUIWindow_MapBook() {
     this->eWindowType = WINDOW_MAPS_BOOK;
@@ -215,7 +215,7 @@ void DrawBook_Map_sub(int tl_x, int tl_y, int br_x, int br_y) {
         }
 
         minimaptemp = GraphicsImage::Create(std::move(minimapImage));
-        render->DrawQuad2D(minimaptemp.get(), {tl_x, tl_y});
+        render->DrawQuad2D(minimaptemp, {tl_x, tl_y});
     } else {  // indoors
         if (!pIndoor->mapOutlines.empty()) {
             render->BeginLines2D();

@@ -1,3 +1,4 @@
+#include <memory>
 #include <string>
 
 #include "Engine/AssetsManager.h"
@@ -14,14 +15,14 @@
 #include "GUI/GUIButton.h"
 #include "GUI/UI/UIRest.h"
 
-GraphicsImage *rest_ui_btn_4 = nullptr;
-GraphicsImage *rest_ui_btn_exit = nullptr;
-GraphicsImage *rest_ui_btn_3 = nullptr;
-GraphicsImage *rest_ui_btn_1 = nullptr;
-GraphicsImage *rest_ui_btn_2 = nullptr;
-GraphicsImage *rest_ui_restmain = nullptr;
+std::shared_ptr<GraphicsImage> rest_ui_btn_4;
+std::shared_ptr<GraphicsImage> rest_ui_btn_exit;
+std::shared_ptr<GraphicsImage> rest_ui_btn_3;
+std::shared_ptr<GraphicsImage> rest_ui_btn_1;
+std::shared_ptr<GraphicsImage> rest_ui_btn_2;
+std::shared_ptr<GraphicsImage> rest_ui_restmain;
 
-GraphicsImage *rest_ui_sky_frame_current = nullptr;
+std::shared_ptr<GraphicsImage> rest_ui_sky_frame_current;
 
 int foodRequiredToRest;
 Duration remainingRestTime;

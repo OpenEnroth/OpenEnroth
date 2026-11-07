@@ -1,6 +1,7 @@
 #include "IconFrameTable.h"
 
 #include <cassert>
+#include <memory>
 
 #include "Engine/AssetsManager.h"
 
@@ -21,7 +22,7 @@ Duration IconFrameTable::animationLength(int animationId) const {
     return icon.animationLength;
 }
 
-GraphicsImage *IconFrameTable::animationFrame(int animationId, Duration frameTime) {
+const std::shared_ptr<GraphicsImage> &IconFrameTable::animationFrame(int animationId, Duration frameTime) {
     IconFrameData &icon = _frames[animationId];
     assert(icon.flags & FRAME_FIRST);
 
@@ -37,7 +38,7 @@ GraphicsImage *IconFrameTable::animationFrame(int animationId, Duration frameTim
     return loadTexture(i);
 }
 
-GraphicsImage *IconFrameTable::loadTexture(int frameId) {
+const std::shared_ptr<GraphicsImage> &IconFrameTable::loadTexture(int frameId) {
     assert(_textures.size() == _frames.size());
 
     if (!_textures[frameId])

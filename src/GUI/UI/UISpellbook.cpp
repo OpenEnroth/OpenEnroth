@@ -1,5 +1,6 @@
 #include "GUI/UI/UISpellbook.h"
 
+#include <memory>
 #include <string>
 
 #include "Engine/AssetsManager.h"
@@ -160,7 +161,7 @@ void GUIWindow_Spellbook::Update() {
         Skill skill = skillForMagicSchool(page);
 
         if (player.pActiveSkills[skill] || engine->config->debug.AllMagic.value()) {
-            auto pPageTexture = ui_spellbook_school_tabs[page][0];
+            std::shared_ptr<GraphicsImage> pPageTexture = ui_spellbook_school_tabs[page][0];
             if (player.lastOpenedSpellbookPage == page) {
                 pPageTexture = ui_spellbook_school_tabs[page][1];
                 pX_coord = texture_tab_coord1[page][0];
@@ -179,7 +180,7 @@ void GUIWindow_Spellbook::Update() {
                 if (player.bHaveSpell[spell] || engine->config->debug.AllMagic.value()) {
                     // this should check if player knows spell
                     if (SBPageSSpellsTextureList[index + 1]) {
-                        GraphicsImage *pTexture = (spellbookSelectedSpell == spell) ? SBPageCSpellsTextureList[index + 1] : SBPageSSpellsTextureList[index + 1];
+                        std::shared_ptr<GraphicsImage> pTexture = spellbookSelectedSpell == spell ? SBPageCSpellsTextureList[index + 1] : SBPageSSpellsTextureList[index + 1];
                         if (pTexture) {
                             SpellBookIconPos &iconPos = pIconPos[player.lastOpenedSpellbookPage][pSpellbookSpellIndices[player.lastOpenedSpellbookPage][index + 1]];
 

@@ -1,5 +1,6 @@
 #pragma once
 
+#include <memory>
 #include <string>
 
 #include "Engine/Evt/EvtContinuation.h"
@@ -17,7 +18,7 @@ class GUIWindow_Transition : public GUIWindow {
  protected:
     void createButtons(const std::string &okHint, const std::string &cancelHint, UIMessageType confirmMsg, UIMessageType cancelMsg);
 
-    GraphicsImage *_dialogueBackground = nullptr;
+    std::shared_ptr<GraphicsImage> _dialogueBackground;
 };
 
 class GUIWindow_Travel : public GUIWindow_Transition {

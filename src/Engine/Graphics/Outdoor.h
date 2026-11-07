@@ -3,6 +3,7 @@
 #include <array>
 #include <vector>
 #include <string>
+#include <memory>
 
 #include "Engine/SpawnPoint.h"
 #include "Engine/MapEnums.h"
@@ -88,7 +89,7 @@ struct OutdoorLocation {
     std::vector<BSPModel> pBModels;
     std::vector<Pid> pFaceIDLIST;
     std::array<uint32_t, 128 * 128> pOMAP;
-    GraphicsImage *sky_texture = nullptr;        // signed int sSky_TextureID;
+    std::shared_ptr<GraphicsImage> sky_texture;        // signed int sSky_TextureID;
     std::vector<SpawnPoint> pSpawnPoints;
     LocationInfo ddm;
     Time lastVisitTime;

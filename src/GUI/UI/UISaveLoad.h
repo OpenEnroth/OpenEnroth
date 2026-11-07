@@ -78,10 +78,10 @@ class GUIWindow_Save : public GUIWindow_SaveLoad {
     virtual void slotClicked(int slotIndex, bool isDoubleClick) override;
 
  protected:
-    GraphicsImage *saveload_ui_save_up = nullptr;
-    GraphicsImage *saveload_ui_loadsave = nullptr;
-    GraphicsImage *saveload_ui_saveu = nullptr;
-    GraphicsImage *saveload_ui_x_u = nullptr;
+    std::shared_ptr<GraphicsImage> saveload_ui_save_up;
+    std::shared_ptr<GraphicsImage> saveload_ui_loadsave;
+    std::shared_ptr<GraphicsImage> saveload_ui_saveu;
+    std::shared_ptr<GraphicsImage> saveload_ui_x_u;
 };
 
 class GUIWindow_Load : public GUIWindow_SaveLoad {
@@ -98,12 +98,12 @@ class GUIWindow_Load : public GUIWindow_SaveLoad {
     void quickLoad();
 
  protected:
-    GraphicsImage *main_menu_background = nullptr;
+    std::shared_ptr<GraphicsImage> main_menu_background;
 
-    GraphicsImage *saveload_ui_load_up = nullptr;
-    GraphicsImage *saveload_ui_loadsave = nullptr;
-    GraphicsImage *saveload_ui_loadu = nullptr;
-    GraphicsImage *saveload_ui_x_u = nullptr;
+    std::shared_ptr<GraphicsImage> saveload_ui_load_up;
+    std::shared_ptr<GraphicsImage> saveload_ui_loadsave;
+    std::shared_ptr<GraphicsImage> saveload_ui_loadu;
+    std::shared_ptr<GraphicsImage> saveload_ui_x_u;
 };
 
 /**

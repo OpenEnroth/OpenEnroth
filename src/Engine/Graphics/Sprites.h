@@ -1,6 +1,7 @@
 #pragma once
 
 #include <array>
+#include <memory>
 #include <string>
 #include <vector>
 
@@ -19,7 +20,7 @@ class SpriteFrame {
     std::string spriteName; // E.g. "spell11", only used to look up sprites by name. Only set for the 1st
                             // frame in an animated sequence.
     std::string textureName; // Texture name in sprites.lod w/o rotational suffixes.
-    std::array<GraphicsImage *, 8> sprites = {{}};
+    std::array<std::shared_ptr<GraphicsImage>, 8> sprites;
     float scale = 1.0;
     SpriteFrameFlags flags;
     int glowRadius = 0;

@@ -43,7 +43,7 @@ void NullRenderer::BeginScene3D() {
 
 void NullRenderer::DrawProjectile(float srcX, float srcY, float a3, float a4,
                                   float dstX, float dstY, float a7, float a8,
-                                  GraphicsImage *texture) {}
+                                  Ptr<GraphicsImage> texture) {}
 
 TextureRenderId NullRenderer::CreateTexture(RgbaImageView image) {
     return TextureRenderId(1);
@@ -57,18 +57,18 @@ void NullRenderer::ScreenFade(Color color, float t) {}
 void NullRenderer::SetUIClipRect(const Recti &rect) {}
 void NullRenderer::ResetUIClipRect() {}
 
-void NullRenderer::DrawQuad2D(GraphicsImage *texture, const Recti &srcRect, const Recti &dstRect, Color color) {
+void NullRenderer::DrawQuad2D(Ptr<GraphicsImage> texture, const Recti &srcRect, const Recti &dstRect, Color color) {
     assert(texture);
     if (engine->callObserver)
         engine->callObserver->notify(CALL_DRAW_2D_TEXTURE, texture->name());
 }
 
-void NullRenderer::DrawImage(GraphicsImage *, const Recti &rect, int paletteid, Color colourmask) {}
+void NullRenderer::DrawImage(Ptr<GraphicsImage>, const Recti &rect, int paletteid, Color colourmask) {}
 
-void NullRenderer::BlendTextures(int a2, int a3, GraphicsImage *a4, GraphicsImage *a5, int t,
+void NullRenderer::BlendTextures(int a2, int a3, Ptr<GraphicsImage> a4, Ptr<GraphicsImage> a5, int t,
                                  int start_opacity, int end_opacity) {}
 
-void NullRenderer::BeginTextNew(GraphicsImage *texture) {}
+void NullRenderer::BeginTextNew(Ptr<GraphicsImage> texture) {}
 void NullRenderer::EndTextNew() {}
 void NullRenderer::DrawTextNew(const Recti &srcRect, const Recti &dstRect, const TextColors &colors) {}
 

@@ -1,3 +1,4 @@
+#include <memory>
 #include <string>
 
 #include "Engine/AssetsManager.h"
@@ -15,7 +16,7 @@
 
 #include "Media/Audio/AudioPlayer.h"
 
-GraphicsImage *ui_game_quickref_background = nullptr;
+std::shared_ptr<GraphicsImage> ui_game_quickref_background;
 
 GUIWindow_QuickReference::GUIWindow_QuickReference() : GUIWindow(WINDOW_QUICK_REFERENCE, {0, 0}, render->GetRenderDimensions()) {
     // 004304E7 Game_EventLoop --- part

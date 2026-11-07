@@ -4194,7 +4194,7 @@ void Character::OnInventoryLeftClick() {
         int itemYOffset = mousePos.y + mouseOffset.y - 17 - (corner.y * 32);
 
         if (entry) {
-            auto tex = assets->getIcon(entry->GetIconName());
+            std::shared_ptr<GraphicsImage> tex = assets->getIcon(entry->GetIconName());
             itemXOffset -= itemOffset(tex->width());
             itemYOffset -= itemOffset(tex->height());
         }

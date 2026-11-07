@@ -340,7 +340,7 @@ void BaseRenderer::TransformBillboard(const RenderBillboard *pBillboard, int par
     billboard->paletteId = pBillboard->uPaletteId;
 }
 
-bool BaseRenderer::AddBillboardIfVisible(GraphicsImage *sprite, int palette, const Vec3f& pos, const Vec2f& scale, BillboardFlags flags, Pid id, int sector) {
+bool BaseRenderer::AddBillboardIfVisible(Ptr<GraphicsImage> sprite, int palette, const Vec3f& pos, const Vec2f& scale, BillboardFlags flags, Pid id, int sector) {
     // TODO(pskelton): replace asserts with warning and return false
     assert(::uNumBillboardsToDraw < 500 - 1);
     assert(sprite != nullptr);
@@ -501,7 +501,7 @@ void BaseRenderer::DrawMonsterPortrait(const Recti &rc, SpriteFrame *Portrait, i
     render->ResetUIClipRect();
 }
 
-void BaseRenderer::DrawSpecialEffectsQuad(GraphicsImage *texture, int palette) {
+void BaseRenderer::DrawSpecialEffectsQuad(Ptr<GraphicsImage> texture, int palette) {
     // TODO(captainurist): Old code used BR - TL (one less than actual width/height), preserving that behavior for now.
     Recti targetrect(pViewport.x, pViewport.y, pViewport.w - 1, pViewport.h - 1);
     DrawImage(texture, targetrect, palette, colorTable.MediumGrey);

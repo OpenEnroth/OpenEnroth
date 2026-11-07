@@ -134,7 +134,7 @@ void Io::Mouse::DrawCursor() {
             render->DrawQuad2D(this->cursor_img, pos);
         } else if (_mouseLook == MouseLookState::Enabled) {
             platform->setCursorShown(false);
-            auto pointer = assets->getIcon("MICON2");
+            std::shared_ptr<GraphicsImage> pointer = assets->getIcon("MICON2");
             render->DrawQuad2D(pointer, pViewport.center() - pointer->size() / 2);
         } else {
             platform->setCursorShown(true);
@@ -193,7 +193,7 @@ void Io::Mouse::DrawPickedItem() {
     if (pParty->pPickedItem.itemId == ITEM_NULL)
         return;
 
-    GraphicsImage *pTexture = assets->getIcon(pParty->pPickedItem.GetIconName());
+    std::shared_ptr<GraphicsImage> pTexture = assets->getIcon(pParty->pPickedItem.GetIconName());
     if (!pTexture) return;
 
     Pointi mousePos = this->position();

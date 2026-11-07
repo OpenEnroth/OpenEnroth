@@ -2,6 +2,7 @@
 
 #include <vector>
 #include <string>
+#include <memory>
 
 #include "Engine/HitMap.h"
 #include "Engine/Data/AwardEnums.h"
@@ -58,13 +59,13 @@ class GUIWindow_CharacterRecord : public GUIWindow {
 bool ringscreenactive();
 
 class GraphicsImage;
-extern GraphicsImage *ui_character_skills_background;
-extern GraphicsImage *ui_character_awards_background;
-extern GraphicsImage *ui_character_stats_background;
-extern GraphicsImage *ui_character_inventory_background;
-extern GraphicsImage *ui_character_inventory_background_strip;
-extern GraphicsImage *ui_character_inventory_paperdoll_background;
+extern std::shared_ptr<GraphicsImage> ui_character_skills_background;
+extern std::shared_ptr<GraphicsImage> ui_character_awards_background;
+extern std::shared_ptr<GraphicsImage> ui_character_stats_background;
+extern std::shared_ptr<GraphicsImage> ui_character_inventory_background;
+extern std::shared_ptr<GraphicsImage> ui_character_inventory_background_strip;
+extern std::shared_ptr<GraphicsImage> ui_character_inventory_paperdoll_background;
 
-extern std::array<GraphicsImage *, 16> paperdoll_dbrds;
+extern std::array<std::shared_ptr<GraphicsImage>, 16> paperdoll_dbrds;
 
 extern HitMap<int> equipmentHitMap;
