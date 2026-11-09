@@ -15,6 +15,7 @@
 #include "Engine/Objects/Actor.h"
 #include "Engine/Evt/EvtProgram.h"
 #include "Engine/Evt/EvtInstruction.h"
+#include "Engine/Evt/EvtEnumFunctions.h"
 #include "Engine/Evt/EvtInterpreter.h"
 #include "Engine/Party.h"
 
@@ -22,10 +23,16 @@
 
 #include "Library/Logger/Logger.h"
 
+/**
+ * When a timer fires.
+ */
+struct EvtTimerSchedule {
+    EvtTimerType type = EVT_TIMER_INTERVAL;
+    Duration duration;
+};
+
 struct MapTimer {
-    Duration interval;
-    Duration timeInsideDay;
-    Duration altInterval;
+    EvtTimerSchedule schedule;
     Time alarmTime;
     int eventId = 0;
     int eventStep = 0;
@@ -34,8 +41,7 @@ struct MapTimer {
 static std::vector<EventTrigger> onMapLoadTriggers;
 static std::vector<EventTrigger> onMapLeaveTriggers;
 
-static std::vector<MapTimer> onLongTimerTriggers;
-static std::vector<MapTimer> onTimerTriggers;
+static std::vector<MapTimer> mapTimers;
 
 static std::vector<int> decorationsWithEvents;
 
@@ -74,71 +80,72 @@ void checkDecorationEvents() {
     }
 }
 
-static void registerTimerTriggers(EvtOpcode triggerType, std::vector<MapTimer> *triggers) {
-    std::vector<EventTrigger> timerTriggers = engine->_localEventMap.enumerateTriggers(triggerType);
+static EvtTimerSchedule timerSchedule(const EvtInstruction &ir) {
+    assert(ir.opcode == EVENT_OnTimer || ir.opcode == EVENT_OnLongTimer);
 
-    // TODO(Nik-RE-dev): using time of last visit will help timers only slightly because each map leaving resets it.
-    //                   To support fair timers they need to be saved directly.
-    Time levelLastVisit = uCurrentlyLoadedLevelType == LEVEL_INDOOR ? pIndoor->lastVisitTime : pOutdoor->lastVisitTime;
+    EvtTimerSchedule result;
+    if (ir.data.timer_descr.alt_halfmin_interval) {
+        result.type = EVT_TIMER_INTERVAL;
+        result.duration = Duration::fromSeconds(ir.data.timer_descr.alt_halfmin_interval * 30);
+    } else if (ir.data.timer_descr.is_yearly) {
+        result.type = EVT_TIMER_YEARLY;
+    } else if (ir.data.timer_descr.is_monthly) {
+        result.type = EVT_TIMER_MONTHLY;
+    } else if (ir.data.timer_descr.is_weekly) {
+        result.type = EVT_TIMER_WEEKLY;
+    } else {
+        result.type = EVT_TIMER_DAILY;
+        result.duration = Duration::fromHours(ir.data.timer_descr.daily_start_hour) + Duration::fromMinutes(ir.data.timer_descr.daily_start_minute) +
+                          Duration::fromSeconds(ir.data.timer_descr.daily_start_second);
+    }
+    return result;
+}
 
-    triggers->clear();
-    for (EventTrigger &trigger : timerTriggers) {
-        MapTimer timer;
-        EvtInstruction ir = engine->_localEventMap.instruction(trigger.eventId, trigger.eventStep);
+/**
+ * @param schedule                      When the timer fires.
+ * @param levelEnterTime                When the party entered the current map.
+ * @param levelLastVisit                Last visit to the current map.
+ * @return                              When it fires first.
+ */
+static Time firstAlarm(const EvtTimerSchedule &schedule, Time levelEnterTime, Time levelLastVisit) {
+    switch (schedule.type) {
+    case EVT_TIMER_INTERVAL:
+        return levelEnterTime + schedule.duration;
+    case EVT_TIMER_DAILY: {
+        if (!levelLastVisit)
+            return levelEnterTime;
 
-        if (ir.data.timer_descr.alt_halfmin_interval) {
-            // Alternative interval is defined in terms of half-minutes
-            timer.altInterval = Duration::fromSeconds(ir.data.timer_descr.alt_halfmin_interval * 30);
-            timer.alarmTime = pParty->GetPlayingTime() + timer.altInterval;
-        } else {
-            if (ir.data.timer_descr.is_yearly) {
-                timer.interval = Duration::fromYears(1);
-            } else if (ir.data.timer_descr.is_monthly) {
-                timer.interval = Duration::fromDays(28);
-            } else if (ir.data.timer_descr.is_weekly) {
-                timer.interval = Duration::fromDays(7);
-            } else {
-                // Interval is daily with exact time of day
-                timer.interval = Duration::fromDays(1);
-                timer.timeInsideDay = Duration::fromHours(ir.data.timer_descr.daily_start_hour);
-                timer.timeInsideDay += Duration::fromMinutes(ir.data.timer_descr.daily_start_minute);
-                timer.timeInsideDay += Duration::fromSeconds(ir.data.timer_descr.daily_start_second);
-            }
-
-            if (timer.interval == Duration::fromDays(1)) {
-                if (levelLastVisit) {
-                    // Calculate alarm time inside last visit day
-                    timer.alarmTime = Time::fromDays(levelLastVisit.toDays()) + timer.timeInsideDay;
-                    if (timer.alarmTime < levelLastVisit) {
-                        // Last visit time already passed alarm time inside that day so move alarm to next day
-                        timer.alarmTime = timer.alarmTime + Duration::fromDays(1);
-                    }
-                } else {
-                    // Set alarm time to zero because it must always fire
-                    timer.alarmTime = Time();
-                }
-            } else {
-                if (levelLastVisit) {
-                    timer.alarmTime = levelLastVisit + timer.interval;
-                } else {
-                    // Without last visit all timers must fire immediately
-                    timer.alarmTime = pParty->GetPlayingTime();
-                }
-            }
-
-            assert(timer.interval > 0_ticks);
-        }
-        timer.eventId = trigger.eventId;
-        timer.eventStep = trigger.eventStep;
-
-        triggers->push_back(timer);
+        Time result = Time::fromDays(levelLastVisit.toDays()) + schedule.duration;
+        return result < levelLastVisit ? result + Duration::fromDays(1) : result;
+    }
+    default:
+        return levelLastVisit ? levelLastVisit + periodForTimerType(schedule.type) : levelEnterTime; // Without last visit all timers must fire immediately.
     }
 }
 
-void runEvent(EvtContext context, int startStep) {
+static void registerTimers() {
+    // TODO(Nik-RE-dev): using time of last visit will help timers only slightly because each map leaving resets it.
+    //                   To support fair timers they need to be saved directly.
+    Time levelEnterTime = pParty->GetPlayingTime();
+    Time levelLastVisit = uCurrentlyLoadedLevelType == LEVEL_INDOOR ? pIndoor->lastVisitTime : pOutdoor->lastVisitTime;
+
+    mapTimers.clear();
+    for (EvtOpcode triggerType : {EVENT_OnTimer, EVENT_OnLongTimer}) { // The `OnTimer` ones are checked first.
+        for (const EventTrigger &trigger : engine->_localEventMap.enumerateTriggers(triggerType)) {
+            MapTimer timer;
+            timer.schedule = timerSchedule(engine->_localEventMap.instruction(trigger.eventId, trigger.eventStep));
+            timer.alarmTime = firstAlarm(timer.schedule, levelEnterTime, levelLastVisit);
+            timer.eventId = trigger.eventId;
+            timer.eventStep = trigger.eventStep;
+            mapTimers.push_back(timer);
+        }
+    }
+}
+
+EvtTransition runEvent(EvtContext context, int startStep) {
     if (!context.eventId) {
         engine->_statusBar->nothingHere();
-        return;
+        return EVT_TRANSITION_NONE;
     }
 
     EvtInterpreter interpreter;
@@ -148,11 +155,13 @@ void runEvent(EvtContext context, int startStep) {
     if (!interpreter.isValid()) {
         MM_WARNING("Face has invalid event ID");
         engine->_statusBar->nothingHere();
-        return;
+        return EVT_TRANSITION_NONE;
     }
 
-    if (interpreter.execute(startStep) == EVT_TRANSITION_STARTED)
+    EvtTransition transition = interpreter.execute(startStep);
+    if (transition == EVT_TRANSITION_STARTED)
         onMapLeave();
+    return transition;
 }
 
 bool canShowTopic(int eventId) {
@@ -175,8 +184,7 @@ static void registerEventTriggers() {
     onMapLeaveTriggers.clear();
     onMapLeaveTriggers = engine->_localEventMap.enumerateTriggers(EVENT_OnMapLeave);
 
-    registerTimerTriggers(EVENT_OnLongTimer, &onLongTimerTriggers);
-    registerTimerTriggers(EVENT_OnTimer, &onTimerTriggers);
+    registerTimers();
 }
 
 void onMapLoad() {
@@ -194,23 +202,30 @@ void onMapLeave() {
         runEvent(EvtContext(EVT_SOURCE_MAP, triggers.eventId), triggers.eventStep + 1);
 
     // Cleanup timers to avoid firing while map transition is in process
-    onLongTimerTriggers.clear();
-    onTimerTriggers.clear();
+    mapTimers.clear();
 }
 
-static void checkTimer(MapTimer &timer) {
-    if (pParty->GetPlayingTime() >= timer.alarmTime) {
-        runEvent(EvtContext(EVT_SOURCE_MAP, timer.eventId), timer.eventStep + 1);
-        if (timer.altInterval) {
-            timer.alarmTime = pParty->GetPlayingTime() + timer.altInterval;
+/**
+ * Fires the timers that are due, until one of them starts a map transition.
+ */
+static void checkTimers() {
+    for (MapTimer &timer : mapTimers) {
+        if (pParty->GetPlayingTime() < timer.alarmTime)
+            continue;
+
+        if (runEvent(EvtContext(EVT_SOURCE_MAP, timer.eventId), timer.eventStep + 1) == EVT_TRANSITION_STARTED)
+            return; // Leaving the map cleared the timers.
+
+        Time now = pParty->GetPlayingTime();
+        if (timer.schedule.type == EVT_TIMER_INTERVAL) {
+            timer.alarmTime = now + timer.schedule.duration;
+        } else if (timer.schedule.type == EVT_TIMER_DAILY) {
+            timer.alarmTime = Time::fromDays(now.toDays()) + timer.schedule.duration;
+            if (timer.alarmTime <= now)
+                timer.alarmTime += Duration::fromDays(1);
         } else {
-            if (!timer.alarmTime.isValid() && timer.interval == Duration::fromDays(1)) {
-                // Initial firing of daily timers, next alarm must be configured to fire on exact time of day
-                timer.alarmTime = Time() + timer.timeInsideDay;
-            }
-            while (pParty->GetPlayingTime() >= timer.alarmTime) {
-                timer.alarmTime += timer.interval;
-            }
+            while (now >= timer.alarmTime)
+                timer.alarmTime += periodForTimerType(timer.schedule.type);
         }
     }
 }
@@ -226,11 +241,5 @@ void onTimer() {
 
     timerGuard = pParty->GetPlayingTime();
 
-    for (MapTimer &timer : onTimerTriggers) {
-        checkTimer(timer);
-    }
-
-    for (MapTimer &timer : onLongTimerTriggers) {
-        checkTimer(timer);
-    }
+    checkTimers();
 }

@@ -284,3 +284,24 @@ enum class EvtSource {
 };
 using enum EvtSource;
 
+/**
+ * Whether an event started a map transition.
+ */
+enum class EvtTransition {
+    EVT_TRANSITION_NONE,    // The party stays on this map.
+    EVT_TRANSITION_STARTED, // The party is leaving this map.
+};
+using enum EvtTransition;
+
+/**
+ * How an evt timer fires, and what its `duration` means.
+ */
+enum class EvtTimerType {
+    EVT_TIMER_INTERVAL, // Fires every `duration` that the party spends on the map, counted from the map load.
+    EVT_TIMER_DAILY, // Fires every day, `duration` past midnight.
+    EVT_TIMER_WEEKLY, // Fires every 7 days, counted from the last visit to the map. Has no `duration`.
+    EVT_TIMER_MONTHLY, // Fires every 28 days, counted from the last visit to the map. Has no `duration`.
+    EVT_TIMER_YEARLY, // Fires every year, counted from the last visit to the map. Has no `duration`.
+};
+using enum EvtTimerType;
+
