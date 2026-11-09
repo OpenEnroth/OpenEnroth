@@ -2183,7 +2183,7 @@ void CastSpellInfoHelpers::castSpell() {
                     if (spell_targeted_at.type() == OBJECT_Actor) {
                         pActors[obj_id].LootActor();
                     }
-                    // The cast put the caster into recovery and moved the active slot on, so the event names the caster.
+                    // The caster's recovery moved the active slot on, so the event names the caster.
                     auto runCasterEvent = [&](EvtContext context) {
                         context.who = static_cast<EvtTargetCharacter>(pCastSpell->casterCharacterIndex);
                         runEvent(context);
