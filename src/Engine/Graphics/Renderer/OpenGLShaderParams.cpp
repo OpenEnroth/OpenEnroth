@@ -1,5 +1,6 @@
 #include "OpenGLShaderParams.h"
 
+#include <cassert>
 #include <string>
 
 #include <glad/gl.h> // NOLINT: this is not a C system include.
@@ -77,9 +78,11 @@ static void submitPointLight(const OpenGLShader &shader, const PointLightUniform
 }
 
 template<size_t N>
-static void submitPointLights(const OpenGLShader &shader, const std::array<PointLightUniform, N> &lights) {
-    for (size_t i = 0; i < N; ++i)
-        submitPointLight(shader, lights[i], static_cast<int>(i));
+static void submitPointLights(const OpenGLShader &shader, const std::array<PointLightUniform, N> &lights, int count) {
+    assert(count >= 0 && count <= static_cast<int>(N));
+    glUniform1i(shader.uniformLocation("numPointLights"), count);
+    for (int i = 0; i < count; ++i)
+        submitPointLight(shader, lights[i], i);
 }
 
 void TerrainUniforms::submit(const OpenGLShader &shader) const {
@@ -92,7 +95,7 @@ void TerrainUniforms::submit(const OpenGLShader &shader) const {
     glUniform1i(shader.uniformLocation("textureArray1"), textureArray1);
     fog.submit(shader);
     submitSunLight(shader, sun);
-    submitPointLights(shader, pointLights);
+    submitPointLights(shader, pointLights, numPointLights);
 }
 
 void OutBuildUniforms::submit(const OpenGLShader &shader) const {
@@ -107,7 +110,7 @@ void OutBuildUniforms::submit(const OpenGLShader &shader) const {
     glUniform1i(shader.uniformLocation("watertiles"), watertiles);
     fog.submit(shader);
     submitSunLight(shader, sun);
-    submitPointLights(shader, pointLights);
+    submitPointLights(shader, pointLights, numPointLights);
 }
 
 void BSPUniforms::submit(const OpenGLShader &shader) const {
@@ -120,5 +123,5 @@ void BSPUniforms::submit(const OpenGLShader &shader) const {
     glUniform1i(shader.uniformLocation("flowtimerms"), flowtimerms);
     glUniform1i(shader.uniformLocation("textureArray0"), textureArray0);
     submitSunLight(shader, sun);
-    submitPointLights(shader, pointLights);
+    submitPointLights(shader, pointLights, numPointLights);
 }

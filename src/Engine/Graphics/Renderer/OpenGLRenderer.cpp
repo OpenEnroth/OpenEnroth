@@ -1273,7 +1273,7 @@ void OpenGLRenderer::DrawOutdoorTerrain() {
         num_lights++;
     }
 
-    // remaining lights are default-initialized (type = 0)
+    uniforms.numPointLights = num_lights;
     uniforms.submit(terrainshader);
 
     // actually draw the whole terrain
@@ -2655,7 +2655,7 @@ void OpenGLRenderer::DrawOutdoorBuildings() {
         num_lights++;
     }
 
-    // remaining lights are default-initialized (type = 0)
+    uniforms.numPointLights = num_lights;
     uniforms.submit(outbuildshader);
 
     glActiveTexture(GL_TEXTURE0);
@@ -3195,7 +3195,7 @@ void OpenGLRenderer::DrawIndoorFaces() {
             num_lights++;
         }
 
-        // remaining lights are default-initialized (type = 0)
+        uniforms.numPointLights = num_lights;
         uniforms.submit(bspshader);
 
         // toggle for water faces or not
