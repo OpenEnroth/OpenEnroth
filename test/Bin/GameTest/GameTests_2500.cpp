@@ -1031,19 +1031,22 @@ GAME_TEST(Prs, Pr2963) {
     for (int eventId : {9000, 9001}) { // Timers fire in no set order, so each one does both.
         EvtInstruction timer(EVENT_OnTimer);
         timer.data.timer_descr.alt_halfmin_interval = 1;
+
         EvtInstruction add(EVENT_Add);
         add.data.variable_descr.type = VAR_FixedGold;
         add.data.variable_descr.value = 100;
         add.step = 1;
+
         EvtInstruction moveToMap(EVENT_MoveToMap);
         moveToMap.str = pMapTable->pInfos[MAP_ERATHIA].fileName;
         moveToMap.step = 2;
+
         for (const EvtInstruction &ir : {timer, add, moveToMap})
             engine->_localEventMap.add(eventId, ir);
     }
     onMapLoad(); // Timers are registered on map load.
     test.startTaping();
-    game.tick(); // Let the timers run.
+    game.tick(11); // Let the timers run.
     game.skipLoadingScreen(); // A timer's event sends the party to Erathia.
     EXPECT_EQ(goldTape, tape(200, 300));
     EXPECT_EQ(mapTape, tape(MAP_HIDDEN_TOMB, MAP_ERATHIA));
