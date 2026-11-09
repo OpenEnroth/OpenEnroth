@@ -1043,6 +1043,7 @@ GAME_TEST(Prs, Pr2963) {
     }
     onMapLoad(); // Timers are registered on map load.
     test.startTaping();
+    game.tick(); // Let the timers run.
     game.skipLoadingScreen(); // A timer's event sends the party to Erathia.
     EXPECT_EQ(goldTape, tape(200, 300));
     EXPECT_EQ(mapTape, tape(MAP_HIDDEN_TOMB, MAP_ERATHIA));
