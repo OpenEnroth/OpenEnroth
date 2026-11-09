@@ -67,6 +67,18 @@ static const int ARROW_SPIN_PERIOD_MS = 475;
 
 bool PartyCreationUI_LoopInternal();
 
+/**
+ * @param characterIndex                Party member to leave out.
+ * @param face                          Portrait to look for.
+ * @return                              Whether another party member already has this portrait.
+ */
+static bool isFaceTaken(int characterIndex, int face) {
+    for (int i = 0; i < pParty->pCharacters.size(); i++)
+        if (i != characterIndex && pParty->pCharacters[i].uCurrentFace == face)
+            return true;
+    return false;
+}
+
 bool PlayerCreation_Choose4Skills() {
     for (const auto& character : pParty->pCharacters) {
         int skills_count = 0;
@@ -133,11 +145,13 @@ void CreateParty_EventLoop() {
         }
         case UIMSG_PlayerCreation_FacePrev:
             // pPlayer = &pParty->pCharacters[pParam];
-            if (!pParty->pCharacters[param].uCurrentFace) {
-                pParty->pCharacters[param].uCurrentFace = 19;
-            } else {
-                pParty->pCharacters[param].uCurrentFace -= 1;
-            }
+            do {
+                if (!pParty->pCharacters[param].uCurrentFace) {
+                    pParty->pCharacters[param].uCurrentFace = 19;
+                } else {
+                    pParty->pCharacters[param].uCurrentFace -= 1;
+                }
+            } while (isFaceTaken(param, pParty->pCharacters[param].uCurrentFace));
             pParty->pCharacters[param].uVoiceID =
                 pParty->pCharacters[param].uCurrentFace;
             pParty->pCharacters[param].SetInitialStats();
@@ -158,8 +172,10 @@ void CreateParty_EventLoop() {
         case UIMSG_PlayerCreation_FaceNext:
             // pPlayer = &pParty->pCharacters[pParam];
             int v20;
-            v20 =
-                (char)((int)pParty->pCharacters[param].uCurrentFace + 1) % 20;
+            v20 = pParty->pCharacters[param].uCurrentFace;
+            do {
+                v20 = (v20 + 1) % 20;
+            } while (isFaceTaken(param, v20));
             pParty->pCharacters[param].uCurrentFace = v20;
             pParty->pCharacters[param].uVoiceID = v20;
             pParty->pCharacters[param].SetInitialStats();
