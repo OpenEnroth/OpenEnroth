@@ -4280,8 +4280,11 @@ void SpawnEncounter(MapData *mapData, SpawnPoint *spawn, int monsterCatMod, int 
     NumToSpawn = std::max(1, static_cast<int>(std::ceil(NumToSpawn * engine->config->gameplay.SpawnCountMultiplier.value())));
 
     int pSector = 0;
-    if (uCurrentlyLoadedLevelType == LEVEL_INDOOR)
+    if (uCurrentlyLoadedLevelType == LEVEL_INDOOR) {
         pSector = pIndoor->GetSector(spawn->position);
+        if (pSector == 0)
+            return; // Some MM7 dungeons have spawn points outside the level, vanilla spawns nothing there.
+    }
 
     // spawning loop
     std::string fullInternalName = baseInternalName;
