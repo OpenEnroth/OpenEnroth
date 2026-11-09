@@ -294,11 +294,9 @@ UNIT_TEST(Path, Tails) {
     EXPECT_EQ(PathView(tails("a/c:b", "a").second).root(), "c:"); // A segment can be a drive.
 #endif
 
-    // An empty segment gives the whole path, root included.
-    Path path("a/b/c");
-    EXPECT_EQ(path.tailAfter(std::string_view()).str(), "a/b/c");
-    Path rooted("/a/b");
-    EXPECT_EQ(rooted.tailAfter(std::string_view()).str(), "/a/b");
+    // An empty segment gives everything after the root.
+    EXPECT_EQ(Path("a/b/c").tailAfter(std::string_view()).str(), "a/b/c");
+    EXPECT_EQ(Path("/a/b").tailAfter(std::string_view()).str(), "a/b");
 }
 
 UNIT_TEST(Path, Heads) {
@@ -325,6 +323,29 @@ UNIT_TEST(Path, Heads) {
     EXPECT_EQ(heads("C:a", "a"), Heads("C:a", "C:"));
     EXPECT_EQ(heads("a\\/b", "b"), Heads("a\\/b", "a"));
 #endif
+}
+
+UNIT_TEST(Path, HeadsAndTailsRejoin) {
+    // A head and a tail split at the same place give back the whole path, with only separators between them.
+    auto expectRejoins = [] (PathView path, PathView head, PathView tail) {
+        std::string_view str = path.str();
+        ASSERT_TRUE(str.starts_with(head.str()) && str.ends_with(tail.str()) && head.str().size() + tail.str().size() <= str.size());
+        std::string_view gap = str.substr(head.str().size(), str.size() - head.str().size() - tail.str().size());
+        EXPECT_TRUE(std::ranges::all_of(gap, detail::isPathSeparator)) << "path '" << str << "', gap '" << gap << "'";
+    };
+
+    std::vector<std::string> paths = {"", "a", "a/b/c", "/", "/a/b", "a//b//", "/a/"};
+#ifdef _WINDOWS
+    paths.insert(paths.end(), {"C:/a/b", "C:a/b", "C:", "a\\b/\\c", "//server/share/a"});
+#endif
+    for (const std::string &str : paths) {
+        PathView path = str;
+        expectRejoins(path, path.headAt(std::string_view()), path.tailAfter(std::string_view()));
+        for (std::string_view segment : path.split()) {
+            expectRejoins(path, path.headBefore(segment), path.tailAt(segment));
+            expectRejoins(path, path.headAt(segment), path.tailAfter(segment));
+        }
+    }
 }
 
 UNIT_TEST(Path, Append) {

@@ -150,12 +150,12 @@ class PathView {
     /**
      * @param segment                   Segment handed out by `split` of this path, or an empty view.
      * @return                          The rest of this path after `segment` and the separators that follow it, or
-     *                                  all of it, root included, for an empty `segment`. Like `tailAt`, the rest can
+     *                                  all of it after the root for an empty `segment`. Like `tailAt`, the rest can
      *                                  start with a drive on Windows.
      */
     [[nodiscard]] PathView tailAfter(std::same_as<std::string_view> auto segment) const {
         if (segment.empty())
-            return *this;
+            return PathView(_path.substr(detail::skipPathSeparators(_path, root().size())));
 
         assert(segment.data() >= _path.data() && segment.data() + segment.size() <= _path.data() + _path.size());
         size_t offset = detail::skipPathSeparators(_path, segment.data() + segment.size() - _path.data());
