@@ -113,7 +113,7 @@ static Time firstAlarm(const EvtTimerSchedule &schedule, Time levelEnterTime, Ti
         return levelEnterTime + schedule.duration;
     case EVT_TIMER_DAILY: {
         if (!levelLastVisit)
-            return Time(); // Fires at the first check, and the zero alarm makes checkTimers put the next one on the time of day.
+            return levelEnterTime;
 
         Time result = Time::fromDays(levelLastVisit.toDays()) + schedule.duration;
         return result < levelLastVisit ? result + Duration::fromDays(1) : result;
@@ -216,17 +216,16 @@ static void checkTimers() {
         if (runEvent(EvtContext(EVT_SOURCE_MAP, timer.eventId), timer.eventStep + 1) == EVT_TRANSITION_STARTED)
             return; // Leaving the map cleared the timers.
 
+        Time now = pParty->GetPlayingTime();
         if (timer.schedule.type == EVT_TIMER_INTERVAL) {
-            timer.alarmTime = pParty->GetPlayingTime() + timer.schedule.duration;
+            timer.alarmTime = now + timer.schedule.duration;
+        } else if (timer.schedule.type == EVT_TIMER_DAILY) {
+            timer.alarmTime = Time::fromDays(now.toDays()) + timer.schedule.duration;
+            if (timer.alarmTime <= now)
+                timer.alarmTime += Duration::fromDays(1);
         } else {
-            bool isDaily = timer.schedule.type == EVT_TIMER_DAILY;
-            if (!timer.alarmTime.isValid() && isDaily) {
-                // Initial firing of daily timers, next alarm must be configured to fire on exact time of day
-                timer.alarmTime = Time() + timer.schedule.duration;
-            }
-            while (pParty->GetPlayingTime() >= timer.alarmTime) {
+            while (now >= timer.alarmTime)
                 timer.alarmTime += periodForTimerType(timer.schedule.type);
-            }
         }
     }
 }
