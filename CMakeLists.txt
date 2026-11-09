@@ -107,6 +107,7 @@ if(OE_USE_SANITIZERS)
     if(OE_USE_SANITIZERS MATCHES "address")
         add_compile_definitions(_GLIBCXX_SANITIZE_VECTOR) # ASan then reports access past a vector's size, into its spare capacity.
     endif()
+    add_compile_definitions(_GLIBCXX_DEBUG) # Checked iterators and algorithm preconditions in libstdc++. Changes the ABI of the standard containers.
 endif()
 
 # Set compiler options. We do a lot of tweaks here.
