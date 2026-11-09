@@ -122,9 +122,8 @@ void GUIWindow_Spellbook::openSpellbook() {
     }
 
     CreateButton({0, 0}, {0, 0}, BUTTON_TYPE_NORMAL, 0, UIMSG_SpellBook_PressTab, 0, INPUT_ACTION_NEXT_CHAR);
-    if (pageSpells) {
+    if (pageSpells)
         setKeyboardControlGroup(pageSpells, true, 0, 0);
-    }
 
     static constexpr IndexedArray<Pointi, MAGIC_SCHOOL_FIRST, MAGIC_SCHOOL_LAST> buttonPositions = {
         {MAGIC_SCHOOL_FIRE,     {399, 10}},
@@ -188,9 +187,8 @@ void GUIWindow_Spellbook::Update() {
 
                             Recti iconRect = Recti(pX_coord, pY_coord, pTexture->width(), pTexture->height());
                             if (iconRect.contains(mousePos)) { // mouseover highlight
-                                if (SBPageCSpellsTextureList[index + 1]) {
+                                if (SBPageCSpellsTextureList[index + 1])
                                     render->DrawQuad2D(SBPageCSpellsTextureList[index + 1], {pX_coord, pY_coord});
-                                }
                             } else {
                                 render->DrawQuad2D(pTexture, {pX_coord, pY_coord});
                             }
@@ -231,9 +229,8 @@ void GUIWindow_Spellbook::loadSpellbook() {
 
 void GUIWindow_Spellbook::drawCurrentSchoolBackground() {
     MagicSchool page = MAGIC_SCHOOL_FIRE;
-    if (pParty->hasActiveCharacter()) {
+    if (pParty->hasActiveCharacter())
         page = pParty->activeCharacter().lastOpenedSpellbookPage;
-    }
     render->DrawQuad2D(ui_spellbook_school_backgrounds[page], {8, 8});
 
     render->DrawQuad2D(ui_spellbook_btn_quckspell, {476, 450});

@@ -38,11 +38,9 @@ GUIWindow_QuestBook::GUIWindow_QuestBook() {
     pBtn_Book_2 = CreateButton(pViewport.topLeft() + Pointi(398, 38), ui_book_button2_on->size(), BUTTON_TYPE_NORMAL, 0,
                                UIMSG_ClickBooksBtn, std::to_underlying(BOOK_NEXT_PAGE), INPUT_ACTION_DIALOG_RIGHT, localization->str(LSTR_SCROLL_DOWN), {ui_book_button2_on});
 
-    for (auto i : pQuestTable.indices()) {
-        if (pParty->_questBits[i] && !pQuestTable[i].empty()) {
+    for (auto i : pQuestTable.indices())
+        if (pParty->_questBits[i] && !pQuestTable[i].empty())
             _activeQuestsIdx.push_back(i);
-        }
-    }
 }
 
 void GUIWindow_QuestBook::Update() {
@@ -92,9 +90,8 @@ void GUIWindow_QuestBook::Update() {
 
         DrawText(assets->pFontBookOnlyShadow.get(), {1, 0}, ui_book_quests_text_color, pQuestTable[_activeQuestsIdx[i]], questbook_window);
         pTextHeight = assets->pFontBookOnlyShadow->CalcTextHeight(pQuestTable[_activeQuestsIdx[i]], questbook_window.w, 1);
-        if ((questbook_window.y + pTextHeight) > questbook_window.h) {
+        if ((questbook_window.y + pTextHeight) > questbook_window.h)
             break;
-        }
 
         render->DrawQuad2D(ui_book_quest_div_bar, {100, (questbook_window.y + pTextHeight) + 12});
         questbook_window.y = (questbook_window.y + pTextHeight) + 24;

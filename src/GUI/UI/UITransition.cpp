@@ -141,9 +141,8 @@ GUIWindow_IndoorEntryExit::GUIWindow_IndoorEntryExit(HouseId transitionHouse, un
             pMediaPlayer->OpenHouseMovie(pAnimatedRooms[houseTable[transitionHouse].uAnimationID].video_name, 1);
 
         std::string destMap = std::string(locationName);
-        if (locationName[0] == '0') {
+        if (locationName[0] == '0')
             destMap = pMapTable->pInfos[engine->_currentLoadedMapId].fileName;
-        }
         if (pMapTable->GetMapInfo(destMap) != MAP_INVALID) {
             hint = localization->format(LSTR_ENTER_S, pMapTable->pInfos[pMapTable->GetMapInfo(destMap)].name);
         } else {
@@ -177,9 +176,8 @@ void GUIWindow_IndoorEntryExit::Update() {
     render->DrawQuad2D(dialogue_ui_x_ok_u, {476, 451});
 
     MapId map_id = engine->_currentLoadedMapId;
-    if (pMovie_Track || getSpecialTransferMessageIndex(_mapName)) {
+    if (pMovie_Track || getSpecialTransferMessageIndex(_mapName))
         map_id = pMapTable->GetMapInfo(_mapName);
-    }
 
     Recti transition_window = pPrimaryWindow->frameRect;
     transition_window.x = 493;

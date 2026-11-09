@@ -73,11 +73,8 @@ void GUIWindow_JournalBook::Update() {
         render->DrawQuad2D(ui_book_button2_on, pViewport.topLeft() + Pointi(398, 38));
     }
 
-    if (_journalIdx.size() && !_journalEntryPage[_currentIdx]) {  // for title
-        if (!pHistoryTable->historyLines[_journalIdx[_currentIdx]].pPageTitle.empty()) {
-            DrawTitleText(assets->pFontBookTitle.get(), 0, 22, ui_book_journal_title_color, pHistoryTable->historyLines[_journalIdx[_currentIdx]].pPageTitle, 3, pViewport);
-        }
-    }
+    if (_journalIdx.size() && !_journalEntryPage[_currentIdx] && !pHistoryTable->historyLines[_journalIdx[_currentIdx]].pPageTitle.empty())  // for title
+        DrawTitleText(assets->pFontBookTitle.get(), 0, 22, ui_book_journal_title_color, pHistoryTable->historyLines[_journalIdx[_currentIdx]].pPageTitle, 3, pViewport);
 
     // for other text
     Recti journal_window(48, 70, 360, 264);
