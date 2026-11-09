@@ -1046,6 +1046,7 @@ void Game::processQueuedMessages() {
                 HouseId tavern = static_cast<HouseId>(uMessageParam);
                 assert(isTavern(tavern));
 
+                window_SpeakInHouse.reset();
                 pGUIWindow_CurrentMenu = std::make_unique<GUIWindow_Rest>();
 
                 remainingRestTime = timeUntilDawn() + Duration::fromHours(1);

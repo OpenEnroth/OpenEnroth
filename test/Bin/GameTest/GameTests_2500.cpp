@@ -1550,3 +1550,25 @@ GAME_TEST(Issues, Issue2950) {
     EXPECT_EQ(windowTape, tape(WINDOW_NULL, WINDOW_SPELL_BOOK, WINDOW_LLOYDS_BEACON));
     EXPECT_EQ(beaconTape, tape(false, true));
 }
+
+GAME_TEST(Issues, Issue2991) {
+    // Renting a tavern room used the house window after it was deleted.
+    auto screenTape = tapes.screen();
+    auto dayTape = tapes.custom([] { return pParty->GetPlayingTime().toDays(); });
+    auto goldTape = tapes.gold();
+    game.startNewGame();
+    test.startTaping();
+    game.teleportTo(MAP_HARMONDALE, Vec3f(-5184, 13370, 0), 270); // In front of On the House, Harmondale's tavern.
+    game.pressAndReleaseKey(PlatformKey::KEY_SPACE);
+    game.tick();
+    game.pressGuiButton("House_Npc0"); // Corbie, the innkeeper.
+    game.tick();
+    game.pressGuiButton("HouseDialogue_Option0"); // Rent Room.
+    game.tick();
+    while (current_screen_type != SCREEN_GAME)
+        game.tick(); // The party sleeps until dawn and wakes up outside.
+
+    EXPECT_EQ(screenTape, tape(SCREEN_GAME, SCREEN_HOUSE, SCREEN_REST, SCREEN_GAME));
+    EXPECT_EQ(dayTape, tape(0, 1));
+    EXPECT_EQ(goldTape.delta(), -3);
+}
