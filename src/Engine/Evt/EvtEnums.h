@@ -297,9 +297,11 @@ using enum EvtTransition;
  * How an evt timer fires, and what its `duration` means.
  */
 enum class EvtTimerType {
-    EVT_TIMER_INTERVAL, // Fires every `duration`, counted from when it last fired.
+    EVT_TIMER_INTERVAL, // Fires every `duration` that the party spends on the map, counted from the map load.
     EVT_TIMER_DAILY, // Fires every day, `duration` past midnight.
-    EVT_TIMER_PERIODIC, // Fires every `duration`, a week, 28 days or a year, counted from the previous alarm.
+    EVT_TIMER_WEEKLY, // Fires every 7 days, counted from the last visit to the map. Has no `duration`.
+    EVT_TIMER_MONTHLY, // Fires every 28 days, counted from the last visit to the map. Has no `duration`.
+    EVT_TIMER_YEARLY, // Fires every year, counted from the last visit to the map. Has no `duration`.
 };
 using enum EvtTimerType;
 

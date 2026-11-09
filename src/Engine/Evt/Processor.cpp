@@ -85,20 +85,33 @@ static EvtTimerSchedule timerSchedule(const EvtInstruction &ir) {
         result.type = EVT_TIMER_INTERVAL;
         result.duration = Duration::fromSeconds(ir.data.timer_descr.alt_halfmin_interval * 30);
     } else if (ir.data.timer_descr.is_yearly) {
-        result.type = EVT_TIMER_PERIODIC;
-        result.duration = Duration::fromYears(1);
+        result.type = EVT_TIMER_YEARLY;
     } else if (ir.data.timer_descr.is_monthly) {
-        result.type = EVT_TIMER_PERIODIC;
-        result.duration = Duration::fromDays(28);
+        result.type = EVT_TIMER_MONTHLY;
     } else if (ir.data.timer_descr.is_weekly) {
-        result.type = EVT_TIMER_PERIODIC;
-        result.duration = Duration::fromDays(7);
+        result.type = EVT_TIMER_WEEKLY;
     } else {
         result.type = EVT_TIMER_DAILY;
         result.duration = Duration::fromHours(ir.data.timer_descr.daily_start_hour) + Duration::fromMinutes(ir.data.timer_descr.daily_start_minute) +
                           Duration::fromSeconds(ir.data.timer_descr.daily_start_second);
     }
     return result;
+}
+
+/**
+ * @param type                          Type of a timer that follows the calendar.
+ * @return                              Time between its alarms.
+ */
+static Duration timerPeriod(EvtTimerType type) {
+    switch (type) {
+    case EVT_TIMER_DAILY: return Duration::fromDays(1);
+    case EVT_TIMER_WEEKLY: return Duration::fromDays(7);
+    case EVT_TIMER_MONTHLY: return Duration::fromDays(28);
+    case EVT_TIMER_YEARLY: return Duration::fromYears(1);
+    default:
+        assert(false);
+        return Duration();
+    }
 }
 
 /**
@@ -118,12 +131,8 @@ static Time firstAlarm(const EvtTimerSchedule &schedule, Time levelLastVisit) {
         Time result = Time::fromDays(levelLastVisit.toDays()) + schedule.duration;
         return result < levelLastVisit ? result + Duration::fromDays(1) : result; // Last visit time already passed alarm time inside that day so move alarm to next day.
     }
-    case EVT_TIMER_PERIODIC:
-        assert(schedule.duration > 0_ticks);
-        return levelLastVisit ? levelLastVisit + schedule.duration : pParty->GetPlayingTime(); // Without last visit all timers must fire immediately.
     default:
-        assert(false);
-        return Time();
+        return levelLastVisit ? levelLastVisit + timerPeriod(schedule.type) : pParty->GetPlayingTime(); // Without last visit all timers must fire immediately.
     }
 }
 
@@ -227,9 +236,8 @@ static void checkTimers() {
                 // Initial firing of daily timers, next alarm must be configured to fire on exact time of day
                 timer.alarmTime = Time() + timer.schedule.duration;
             }
-            Duration period = isDaily ? Duration::fromDays(1) : timer.schedule.duration;
             while (pParty->GetPlayingTime() >= timer.alarmTime) {
-                timer.alarmTime += period;
+                timer.alarmTime += timerPeriod(timer.schedule.type);
             }
         }
     }
