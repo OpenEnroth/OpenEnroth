@@ -1048,8 +1048,6 @@ void GUIWindow_House::Update() {
     if (!window_SpeakInHouse)
         return;
     houseDialogManager();
-    if (!window_SpeakInHouse)
-        return; // Renting a tavern room closes the house, and this window is already deleted.
     if (!isShop(houseId()))
         return;
     if (pParty->PartyTimes.shopBanTimes[houseId()] <= pParty->GetPlayingTime()) {
