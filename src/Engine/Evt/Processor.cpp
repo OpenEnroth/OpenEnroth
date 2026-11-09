@@ -53,11 +53,9 @@ void initDecorationEvents() {
     DecorationId id = pDecorationTable->decorationId("Event Trigger");
 
     decorationsWithEvents.clear();
-    for (int i = 0; i < pLevelDecorations.size(); ++i) {
-        if (pLevelDecorations[i].uDecorationDescID == id) {
+    for (int i = 0; i < pLevelDecorations.size(); ++i)
+        if (pLevelDecorations[i].uDecorationDescID == id)
             decorationsWithEvents.push_back(i);
-        }
-    }
 }
 
 void checkDecorationEvents() {
@@ -231,13 +229,11 @@ static void checkTimers() {
 }
 
 void onTimer() {
-    if (gameTimer->isPaused()) {
+    if (gameTimer->isPaused())
         return;
-    }
 
-    if ((pParty->GetPlayingTime() - timerGuard) < Duration::fromSeconds(30)) { // 30 game seconds = 1 realtime second.
+    if ((pParty->GetPlayingTime() - timerGuard) < Duration::fromSeconds(30)) // 30 game seconds = 1 realtime second.
         return;
-    }
 
     timerGuard = pParty->GetPlayingTime();
 

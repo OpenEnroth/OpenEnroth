@@ -12,47 +12,41 @@
 using Io::Mouse;
 
 DecalBuilder *EngineIocContainer::ResolveDecalBuilder() {
-    if (!decal_builder) {
+    if (!decal_builder)
         decal_builder = new DecalBuilder();
-    }
     return decal_builder;
 }
 
 BloodsplatContainer *EngineIocContainer::ResolveBloodsplatContainer() {
-    if (!bloodspalt_container) {
+    if (!bloodspalt_container)
         bloodspalt_container = new BloodsplatContainer();
-    }
     return bloodspalt_container;
 }
 
 SpellFxRenderer *EngineIocContainer::ResolveSpellFxRenderer() {
-    if (!spell_fx_renderer) {
+    if (!spell_fx_renderer)
         spell_fx_renderer = new SpellFxRenderer(ResolveParticleEngine());
-    }
 
     return spell_fx_renderer;
 }
 
 std::shared_ptr<Mouse> EngineIocContainer::ResolveMouse() {
-    if (!mouse) {
+    if (!mouse)
         mouse = std::make_shared<Mouse>();
-    }
 
     return mouse;
 }
 
 std::shared_ptr<ParticleEngine> EngineIocContainer::ResolveParticleEngine() {
-    if (!particle_engine) {
+    if (!particle_engine)
         particle_engine = std::make_shared<ParticleEngine>();
-    }
 
     return particle_engine;
 }
 
 Vis *EngineIocContainer::ResolveVis() {
-    if (!vis) {
+    if (!vis)
         vis = new Vis();
-    }
     return vis;
 }
 

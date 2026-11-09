@@ -140,9 +140,8 @@ void Camera3D::BuildViewFrustum() {
     float HalfAngleX = (M_PI / 2.0) - (odm_fov_rad / 2.0);
     float HalfAngleY = (M_PI / 2.0) - (std::atan((pViewport.h / 2.0) / pCamera3D->ViewPlaneDistPixels));
 
-    if (uCurrentlyLoadedLevelType == LEVEL_INDOOR) {
+    if (uCurrentlyLoadedLevelType == LEVEL_INDOOR)
         HalfAngleX = (M_PI / 2.0) - (blv_fov_rad / 2.0);
-    }
 
     glm::vec3 PlaneVec(0);
 
@@ -300,9 +299,8 @@ void Camera3D::Project(RenderVertexSoft *pVertices, unsigned int uNumVertices, b
         auto v = pVertices + i;
 
         v->vWorldViewProj = Project(v->vWorldViewPosition);
-        if (fit_into_viewport) {
+        if (fit_into_viewport)
             v->vWorldViewProj = FitToViewport(v->vWorldViewProj);
-        }
     }
 }
 
@@ -322,11 +320,9 @@ void Camera3D::CullByNearClip(RenderVertexSoft *pverts, unsigned *unumverts) {
     float near = GetNearClip();
 
     if (!unumverts) return;
-    for (unsigned i = 0; i < *unumverts; ++i) {
-        if (pverts[i].vWorldViewPosition.x > near) {
+    for (unsigned i = 0; i < *unumverts; ++i)
+        if (pverts[i].vWorldViewPosition.x > near)
             return;
-        }
-    }
 
     *unumverts = 0;
     return;
@@ -336,11 +332,9 @@ void Camera3D::CullByFarClip(RenderVertexSoft *pverts, unsigned *unumverts) {
     float far = GetFarClip();
 
     if (!unumverts) return;
-    for (unsigned i = 0; i < *unumverts; ++i) {
-        if (pverts[i].vWorldViewPosition.x < far) {
+    for (unsigned i = 0; i < *unumverts; ++i)
+        if (pverts[i].vWorldViewPosition.x < far)
             return;
-        }
-    }
 
     *unumverts = 0;
     return;

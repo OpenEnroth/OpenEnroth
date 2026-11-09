@@ -23,9 +23,8 @@
 #include "Media/MediaPlayer.h"
 
 void GUIWindow_Tavern::mainDialogue() {
-    if (!checkIfPlayerCanInteract()) {
+    if (!checkIfPlayerCanInteract())
         return;
-    }
 
     int pPriceRoom = PriceCalculator::tavernRoomCostForPlayer(&pParty->activeCharacter(), houseTable[houseId()]);
     int pPriceFood = PriceCalculator::tavernFoodCostForPlayer(&pParty->activeCharacter(), houseTable[houseId()]);
@@ -35,17 +34,15 @@ void GUIWindow_Tavern::mainDialogue() {
                                             localization->format(LSTR_FILL_PACKS_TO_D_DAYS_FOR_D_GOLD, foodNum, pPriceFood),
                                             localization->str(LSTR_LEARN_SKILLS)};
 
-    if (houseId() != HOUSE_TAVERN_EMERALD_ISLAND) {
+    if (houseId() != HOUSE_TAVERN_EMERALD_ISLAND)
         optionsText.push_back(localization->str(LSTR_PLAY_ARCOMAGE));
-    }
 
     drawOptions(optionsText, colorTable.PaleCanary);
 }
 
 void GUIWindow_Tavern::arcomageMainDialogue() {
-    if (!checkIfPlayerCanInteract()) {
+    if (!checkIfPlayerCanInteract())
         return;
-    }
 
     std::vector<std::string> optionsText = {localization->str(LSTR_RULES), localization->str(LSTR_VICTORY_CONDITIONS)};
     if (pParty->hasItem(ITEM_QUEST_ARCOMAGE_DECK))
@@ -72,9 +69,8 @@ void GUIWindow_Tavern::arcomageResultDialogue() {
         return;
     }
 
-    if (pArcomageGame->_gameInProgress == true) {
+    if (pArcomageGame->_gameInProgress == true)
         return;
-    }
     std::string pText;
     if (pArcomageGame->_gameWinner) {
         if (pArcomageGame->_gameWinner == 1) {
@@ -113,9 +109,8 @@ void GUIWindow_Tavern::buyFoodDialogue() {
 
     if ((double)pParty->GetFood() >= houseTable[houseId()].fPriceMultiplier) {
         engine->_statusBar->setEvent(LSTR_YOUR_PACKS_ARE_ALREADY_FULL);
-        if (pParty->hasActiveCharacter()) {
+        if (pParty->hasActiveCharacter())
             pParty->activeCharacter().playReaction(SPEECH_PACKS_FULL);
-        }
         engine->_messageQueue->addMessageCurrentFrame(UIMSG_Escape, 1, 0);
         return;
     }
@@ -142,9 +137,8 @@ void GUIWindow_Tavern::houseDialogueOptionSelected(DialogueId option) {
 
 void GUIWindow_Tavern::houseSpecificDialogue() {
     // TODO(pskelton): check this behaviour
-    if (!pParty->hasActiveCharacter()) {  // avoid nzi
+    if (!pParty->hasActiveCharacter())  // avoid nzi
         pParty->setActiveToFirstCanAct();
-    }
 
     switch (_currentDialogue) {
       case DIALOGUE_MAIN:

@@ -447,11 +447,9 @@ GAME_TEST(Issues, Issue355_2520) {
     auto healthTape = charTapes.hps();
     auto fireboltColZ = tapes.custom([]() {
         std::vector<float> zValues;
-        for (const auto& obj : pSpriteObjects) {
-            if (obj.spriteId == SPRITE_SPELL_FIRE_FIRE_BOLT_IMPACT) {
+        for (const auto& obj : pSpriteObjects)
+            if (obj.spriteId == SPRITE_SPELL_FIRE_FIRE_BOLT_IMPACT)
                 zValues.push_back(obj.vPosition.z);
-            }
-        }
         return zValues;
     });
 
@@ -600,11 +598,9 @@ GAME_TEST(Issues, Issue408_970_996) {
     auto checkSkills = [](std::initializer_list<std::pair<int, int>> numSkillPairs) {
         for (auto pair : numSkillPairs) {
             int pSkillsCount = 0;
-            for (Skill j : allVisibleSkills()) {
-                if (pParty->pCharacters[pair.first].pActiveSkills[j]) {
+            for (Skill j : allVisibleSkills())
+                if (pParty->pCharacters[pair.first].pActiveSkills[j])
                     ++pSkillsCount;
-                }
-            }
             EXPECT_EQ(pSkillsCount , pair.second);
         }
     };
@@ -827,16 +823,14 @@ GAME_TEST(Issues, Issue416) {
     // Area in The Dragon Caves is inaccessible
     test.playTraceFromTestData("issue_416.mm7", "issue_416.json");
     // Make sure all dragons are above the ground
-    for (auto& actor : pActors) {
+    for (auto& actor : pActors)
         EXPECT_GE(actor.pos.z, -1.0f);
-    }
 
     // Same issue in Lincoln
     test.playTraceFromTestData("issue_416b.mm7", "issue_416b.json");
     // Make sure all droids are above the ground
-    for (auto& actor : pActors) {
+    for (auto& actor : pActors)
         EXPECT_GE(actor.pos.z, 224);
-    }
 }
 
 GAME_TEST(Issues, Issue417a) {

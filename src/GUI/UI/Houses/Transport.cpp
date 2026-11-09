@@ -105,9 +105,8 @@ void GUIWindow_Transport::mainDialogue() {
 
     assert(pParty->hasActiveCharacter());
 
-    if (!checkIfPlayerCanInteract()) {
+    if (!checkIfPlayerCanInteract())
         return;
-    }
 
     std::vector<std::string> optionsText;
     int price = PriceCalculator::transportCostForPlayer(&pParty->activeCharacter(), houseTable[houseId()]);
@@ -268,12 +267,9 @@ int GUIWindow_Transport::getTravelTimeTransportDays(int schedule_id) {
 }
 
 bool isTravelAvailable(HouseId houseId) {
-    for (int schedule : transportRoutes[houseId]) {
-        if (transportSchedule[schedule].pSchedule[pParty->uCurrentDayOfMonth % 7]) {
-            if (transportSchedule[schedule].uQuestBit == QBIT_INVALID || pParty->_questBits[transportSchedule[schedule].uQuestBit]) {
-                return true;
-            }
-        }
-    }
+    for (int schedule : transportRoutes[houseId])
+        if (transportSchedule[schedule].pSchedule[pParty->uCurrentDayOfMonth % 7] &&
+            (transportSchedule[schedule].uQuestBit == QBIT_INVALID || pParty->_questBits[transportSchedule[schedule].uQuestBit]))
+            return true;
     return false;
 }

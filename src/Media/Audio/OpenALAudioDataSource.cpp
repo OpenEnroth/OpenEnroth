@@ -8,15 +8,13 @@
 
 OpenALAudioDataSource::~OpenALAudioDataSource() {
     _baseDataSource->Close();
-    if (_buffers.size()) {
+    if (_buffers.size())
         alDeleteBuffers(_buffers.size(), &_buffers.front());
-    }
 }
 
 bool OpenALAudioDataSource::Open() {
-    if (_buffers.size()) {
+    if (_buffers.size())
         return true;
-    }
 
     _baseDataSource->Open();
 
@@ -54,9 +52,8 @@ bool OpenALAudioDataSource::Open() {
 
     while (true) {
         Blob buffer = _baseDataSource->GetNextBuffer();
-        if (!buffer) {
+        if (!buffer)
             break;
-        }
 
         ALuint al_buffer = -1;
         alGenBuffers(1, &al_buffer);
@@ -85,9 +82,8 @@ void OpenALAudioDataSource::Close() {
 
 bool OpenALAudioDataSource::linkSource(ALuint al_source) {
     alSourceQueueBuffers(al_source, _buffers.size(), &_buffers.front());
-    if (checkOpenALError()) {
+    if (checkOpenALError())
         return false;
-    }
     return true;
 }
 

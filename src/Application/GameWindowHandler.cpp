@@ -172,13 +172,11 @@ bool GameWindowHandler::OnChar(PlatformKey key, int c) {
     textInputHandled |= keyboardInputHandler->ProcessTextInput(key, c);
 
     // regular text input
-    if (c != -1) {
+    if (c != -1)
         textInputHandled |= keyboardInputHandler->ProcessTextInput(PlatformKey::KEY_CHAR, c);
-    }
 
-    if (!textInputHandled) {
+    if (!textInputHandled)
         return GUI_HandleHotkey(key);  // try other hotkeys
-    }
     return false;
 }
 
@@ -190,9 +188,8 @@ void GameWindowHandler::OnMouseLeftClick(Pointi position, bool isDoubleClick) {
 
         position = mouse->setPosition(position);
 
-        if (GetCurrentMenuID() == MENU_CREATEPARTY) {
+        if (GetCurrentMenuID() == MENU_CREATEPARTY)
             UI_OnKeyDown(PlatformKey::KEY_SELECT);
-        }
 
         if (engine) {
             engine->PickMouse(engine->config->gameplay.MouseInteractionDepth.value(), position.x, position.y,
@@ -345,9 +342,8 @@ void GameWindowHandler::OnFocusLost() {
 }
 
 void GameWindowHandler::OnPaint() {
-    if (render) {
+    if (render)
         render->Present();
-    }
 }
 
 void GameWindowHandler::OnActivated() {
@@ -376,9 +372,8 @@ void GameWindowHandler::OnActivated() {
         }
 
         pAudioPlayer->resumeSounds();
-        if (!GameOverNoSound && !pMovie_Track) {  // continue an audio track
+        if (!GameOverNoSound && !pMovie_Track)  // continue an audio track
             pAudioPlayer->MusicResume();
-        }
     }
 }
 

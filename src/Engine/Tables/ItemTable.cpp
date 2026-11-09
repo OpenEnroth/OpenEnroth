@@ -177,13 +177,10 @@ void ItemTable::LoadItems(const Blob &itemsBlob) {
                     break;
                 }
             }
-            if (!items[item_counter].standardEnchantment) {
-                for (ItemEnchantment ii : specialEnchantments.indices()) {
-                    if (ascii::noCaseEquals(tokens[12], specialEnchantments[ii].itemSuffixOrPrefix)) { // TODO(captainurist): #unicode this is not ascii
+            if (!items[item_counter].standardEnchantment)
+                for (ItemEnchantment ii : specialEnchantments.indices())
+                    if (ascii::noCaseEquals(tokens[12], specialEnchantments[ii].itemSuffixOrPrefix)) // TODO(captainurist): #unicode this is not ascii
                         items[item_counter].specialEnchantment = ii;
-                    }
-                }
-            }
         }
 
         if ((items[item_counter].rarity == RARITY_SPECIAL) &&
@@ -375,9 +372,8 @@ void ItemTable::generateItem(ItemTreasureLevel treasureLevel, RandomItemType uTr
             }
         }
     }
-    if (outItem->isPotion() && outItem->itemId != ITEM_POTION_BOTTLE) {  // if it potion set potion spec
+    if (outItem->isPotion() && outItem->itemId != ITEM_POTION_BOTTLE)  // if it potion set potion spec
         outItem->potionPower = grng->randomDice(2, 4) * std::to_underlying(treasureLevel);
-    }
 
     if (outItem->itemId == ITEM_SPELLBOOK_DIVINE_INTERVENTION && !pParty->_questBits[QBIT_DIVINE_INTERVENTION_RETRIEVED])
         outItem->itemId = ITEM_SPELLBOOK_SUNRAY;
@@ -431,9 +427,8 @@ void ItemTable::generateItem(ItemTreasureLevel treasureLevel, RandomItemType uTr
                     outItem->standardEnchantmentStrength /= 2;
                 }
                 // if enchantment generated, it needs to actually have an effect
-                if (outItem->standardEnchantmentStrength <= 0) {
+                if (outItem->standardEnchantmentStrength <= 0)
                     outItem->standardEnchantmentStrength = 1;
-                }
                 return;
             } else if (bonusChanceRoll >= standardEnchantmentChanceForEquipment[treasureLevel] + specialEnchantmentChanceForEquipment[treasureLevel]) {
                 return;

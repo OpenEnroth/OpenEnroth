@@ -103,17 +103,15 @@ void AudioBaseDataSource::Close() {
 }
 
 size_t AudioBaseDataSource::GetSampleRate() {
-    if (pCodecContext == nullptr) {
+    if (pCodecContext == nullptr)
         return 0;
-    }
 
     return pCodecContext->sample_rate;
 }
 
 size_t AudioBaseDataSource::GetChannelCount() {
-    if (pCodecContext == nullptr) {
+    if (pCodecContext == nullptr)
         return 0;
-    }
 
     return pCodecContext->ch_layout.nb_channels;
 }
@@ -135,12 +133,10 @@ Blob AudioBaseDataSource::GetNextBuffer() {
             int res = 0;
             while (res >= 0) {
                 res = avcodec_receive_frame(pCodecContext, frame);
-                if (res == AVERROR(EAGAIN) || res == AVERROR_EOF) {
+                if (res == AVERROR(EAGAIN) || res == AVERROR_EOF)
                     break;
-                }
-                if (res < 0) {
+                if (res < 0)
                     return buffer;
-                }
                 size_t tmp_size = frame->nb_samples * pCodecContext->ch_layout.nb_channels * 2;
                 std::unique_ptr<void, FreeDeleter> tmp_buf(malloc(tmp_size));
                 uint8_t *dst_channels[8] = { static_cast<uint8_t *>(tmp_buf.get()) };

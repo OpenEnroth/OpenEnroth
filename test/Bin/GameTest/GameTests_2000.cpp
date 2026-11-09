@@ -62,9 +62,8 @@ GAME_TEST(Issues, Issue2002) {
 
     // check recovery
     EXPECT_TRUE(pParty->bTurnBasedModeOn);
-    for (int i = 0; i < 3; ++i) {
+    for (int i = 0; i < 3; ++i)
         EXPECT_TRUE(pParty->pCharacters[i].timeToRecovery > 0_ticks);
-    }
     EXPECT_FALSE(pParty->pCharacters[3].timeToRecovery > 0_ticks);
 
     // now load a saved game
@@ -80,9 +79,8 @@ GAME_TEST(Issues, Issue2002) {
     game.tick(2);
 
     // check recovery again
-    for (int i = 0; i < 4; i++) {
+    for (int i = 0; i < 4; i++)
         EXPECT_FALSE(pParty->pCharacters[i].timeToRecovery > 0_ticks);
-    }
     EXPECT_FALSE(pParty->bTurnBasedModeOn);
 }
 
@@ -91,9 +89,8 @@ GAME_TEST(Issues, Issue2017) {
     test.playTraceFromTestData("issue_2017.mm7", "issue_2017.json");
     // Make sure all the monsters have stayed contained
     constexpr std::array<int, 3> monsterIds = { 12, 13, 20 };
-    for (auto ids : monsterIds) {
+    for (auto ids : monsterIds)
         EXPECT_LT(pActors[ids].pos.y, -100);
-    }
 }
 
 GAME_TEST(Issues, Issue2018a) {

@@ -47,9 +47,8 @@ GUIWindow_LloydsBook::GUIWindow_LloydsBook(Pid casterPid, SpellCastFlags castFla
 
     _recallingBeacon = false;
 
-    if (!ui_book_lloyds_border) {
+    if (!ui_book_lloyds_border)
         ui_book_lloyds_border = assets->getIcon("lb_bordr");
-    }
 
     ui_book_lloyds_backgrounds[0] = assets->getIcon("sbmap");
     ui_book_lloyds_backgrounds[1] = assets->getIcon("sbmap");
@@ -73,9 +72,8 @@ GUIWindow_LloydsBook::GUIWindow_LloydsBook(Pid casterPid, SpellCastFlags castFla
         _spellLevel = skill.level();
     }
 
-    for (int i = 0; i < _maxBeacons; ++i) {
+    for (int i = 0; i < _maxBeacons; ++i)
         CreateButton(fmt::format("LloydsBook_Slot{}", i), {lloydsBeaconsPreviewXs[i], lloydsBeaconsPreviewYs[i]}, {92, 68}, BUTTON_TYPE_NORMAL, UIMSG_HintBeaconSlot, UIMSG_InstallOrRecallBeacon, i);
-    }
 
     // purges expired beacons
     pParty->pCharacters[casterId].cleanupBeacons();
@@ -88,9 +86,8 @@ void GUIWindow_LloydsBook::Update() {
     render->DrawQuad2D(ui_book_lloyds_backgrounds[_recallingBeacon ? 1 : 0], {8, 8});
     std::string pText = localization->str(LSTR_RECALL_BEACON);
 
-    if (!_recallingBeacon) {
+    if (!_recallingBeacon)
         pText = localization->str(LSTR_SET_BEACON);
-    }
 
     Recti pWindow(pViewport.x, pViewport.y, 428, pViewport.h);
     DrawTitleText(assets->pFontBookTitle.get(), 0, 22, colorTable.White, pText, 3, pWindow);
@@ -103,9 +100,8 @@ void GUIWindow_LloydsBook::Update() {
     }
 
     for (size_t beaconId = 0; beaconId < _maxBeacons; beaconId++) {
-        if (_recallingBeacon && !pPlayer->vBeacons[beaconId]) {
+        if (_recallingBeacon && !pPlayer->vBeacons[beaconId])
             continue;
-        }
 
         pWindow = Recti(lloydsBeaconsPreviewXs[beaconId], lloydsBeaconsPreviewYs[beaconId], 92, 68);
 
@@ -147,9 +143,8 @@ void GUIWindow_LloydsBook::flipButtonClicked(bool isRecalling) {
 void GUIWindow_LloydsBook::hintBeaconSlot(int beaconId) {
     Character &character = pParty->pCharacters[_casterPid.id()];
 
-    if (!character.vBeacons[beaconId]) {
+    if (!character.vBeacons[beaconId])
         return;
-    }
 
     LloydBeacon &beacon = *character.vBeacons[beaconId];
     if (_recallingBeacon) {
@@ -159,9 +154,8 @@ void GUIWindow_LloydsBook::hintBeaconSlot(int beaconId) {
         }
     } else {
         std::string mapName = "Not in Map Stats";
-        if (engine->_currentLoadedMapId != MAP_INVALID) {
+        if (engine->_currentLoadedMapId != MAP_INVALID)
             mapName = pMapTable->pInfos[engine->_currentLoadedMapId].name;
-        }
 
         if (beacon.uBeaconTime) {
             std::string mapName2 = pMapTable->pInfos[beacon.mapId].name;
@@ -174,9 +168,8 @@ void GUIWindow_LloydsBook::hintBeaconSlot(int beaconId) {
 
 void GUIWindow_LloydsBook::installOrRecallBeacon(int beaconId) {
     Character &character = pParty->pCharacters[_casterPid.id()];
-    if (_recallingBeacon && !character.vBeacons[beaconId]) {
+    if (_recallingBeacon && !character.vBeacons[beaconId])
         return;
-    }
 
     if (!(_castFlags & ON_CAST_CastViaScroll) && !engine->config->debug.AllMagic.value())
         character.SpendMana(pSpellDatas[SPELL_WATER_LLOYDS_BEACON].mana_per_skill[_waterMastery]);
