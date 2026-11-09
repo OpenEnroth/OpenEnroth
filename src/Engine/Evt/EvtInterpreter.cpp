@@ -175,7 +175,9 @@ EvtTransition EvtInterpreter::execute(int startStep) {
 
     int step = startStep;
 
-    _who = !pParty->hasActiveCharacter() ? CHOOSE_RANDOM : CHOOSE_ACTIVE;
+    _who = _context.who;
+    if (_who == CHOOSE_ACTIVE && !pParty->hasActiveCharacter())
+        _who = CHOOSE_RANDOM;
 
     while (step != -1)
         step = executeStep(step);

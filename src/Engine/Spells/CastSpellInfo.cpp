@@ -2183,14 +2183,19 @@ void CastSpellInfoHelpers::castSpell() {
                     if (spell_targeted_at.type() == OBJECT_Actor) {
                         pActors[obj_id].LootActor();
                     }
+                    // The cast put the caster into recovery and moved the active slot on, so the event names the caster.
+                    auto runCasterEvent = [&](EvtContext context) {
+                        context.who = static_cast<EvtTargetCharacter>(pCastSpell->casterCharacterIndex);
+                        runEvent(context);
+                    };
                     if (spell_targeted_at.type() == OBJECT_Decoration) {
                         OpenedTelekinesis = true;
                         if (pLevelDecorations[obj_id].uEventID) {
-                            runEvent(EvtContext(EVT_SOURCE_MAP, pLevelDecorations[obj_id].uEventID, spell_targeted_at));
+                            runCasterEvent(EvtContext(EVT_SOURCE_MAP, pLevelDecorations[obj_id].uEventID, spell_targeted_at));
                             pLevelDecorations[obj_id].uFlags |= LEVEL_DECORATION_VISIBLE_ON_MAP;
                         } else if (pLevelDecorations[obj_id].IsInteractive()) {
                             int eventId = engine->_persistentVariables.decorVars[pLevelDecorations[obj_id].eventVarId] + 380; // 380 is the MM7 dispatch base, see EVENT_ChangeEvent.
-                            runEvent(EvtContext(EVT_SOURCE_GLOBAL, eventId, spell_targeted_at));
+                            runCasterEvent(EvtContext(EVT_SOURCE_GLOBAL, eventId, spell_targeted_at));
                         }
                     }
                     if (spell_targeted_at.type() == OBJECT_Face) {
@@ -2201,7 +2206,7 @@ void CastSpellInfoHelpers::castSpell() {
                         } else {
                             event = pOutdoor->face(spell_targeted_at).eventId;
                         }
-                        runEvent(EvtContext(EVT_SOURCE_MAP, event, spell_targeted_at));
+                        runCasterEvent(EvtContext(EVT_SOURCE_MAP, event, spell_targeted_at));
                     }
                     break;
                 }
