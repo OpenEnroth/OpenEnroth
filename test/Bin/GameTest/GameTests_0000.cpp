@@ -369,17 +369,18 @@ GAME_TEST(Prs, Pr314_742) {
     // Trace pretty much presses all the buttons and opens all the popups possible.
     test.playTraceFromTestData("pr_314.mm7", "pr_314.json");
 
-    for (int i = 0; i < 4; i++)
+    for (int i = 0; i < 3; i++)
         EXPECT_EQ(pParty->pCharacters[i]._stats[ATTRIBUTE_LUCK], 20);
+    EXPECT_EQ(pParty->pCharacters[3]._stats[ATTRIBUTE_LUCK], 25); // Humans can raise luck to 25, the other races to 20.
 
     EXPECT_EQ(pParty->pCharacters[0].classType, CLASS_MONK);
     EXPECT_EQ(pParty->pCharacters[1].classType, CLASS_THIEF);
     EXPECT_EQ(pParty->pCharacters[2].classType, CLASS_RANGER);
     EXPECT_EQ(pParty->pCharacters[3].classType, CLASS_CLERIC);
     EXPECT_EQ(pParty->pCharacters[0].GetRace(), RACE_ELF);
-    EXPECT_EQ(pParty->pCharacters[1].GetRace(), RACE_ELF);
+    EXPECT_EQ(pParty->pCharacters[1].GetRace(), RACE_DWARF);
     EXPECT_EQ(pParty->pCharacters[2].GetRace(), RACE_GOBLIN);
-    EXPECT_EQ(pParty->pCharacters[3].GetRace(), RACE_ELF);
+    EXPECT_EQ(pParty->pCharacters[3].GetRace(), RACE_HUMAN);
 
     // #742: Check that party qbits are set even if we press Clear when creating a party.
     EXPECT_TRUE(pParty->_questBits.test(QBIT_EMERALD_ISLAND_RED_POTION_ACTIVE));
