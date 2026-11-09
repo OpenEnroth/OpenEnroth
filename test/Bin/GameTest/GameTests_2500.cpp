@@ -1022,7 +1022,8 @@ GAME_TEST(Prs, Pr2876c) {
 }
 
 GAME_TEST(Prs, Pr2963) {
-    // A timer that left the map kept the loop over the timers going, and the timers after it fired on the map being left.
+    // A timer that left the map cleared the timer list mid-loop, and the loop went on reading timers that no longer
+    // existed, firing the due ones on the map being left.
     auto goldTape = tapes.gold();
     auto mapTape = tapes.map();
     game.startNewGame();
