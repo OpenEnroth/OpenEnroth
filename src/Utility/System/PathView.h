@@ -138,7 +138,8 @@ class PathView {
     }
 
     /**
-     * @param segment                   Segment handed out by `split` of this path.
+     * @param segment                   Segment handed out by `split` of this path. Unlike `tailAfter`, this
+     *                                  doesn't take an empty view.
      * @return                          The rest of this path, starting at `segment`. On Windows a segment can start
      *                                  with a drive, so in `"a/c:b"` the tail at `"c:b"` has a root of its own.
      */
@@ -178,7 +179,8 @@ class PathView {
     }
 
     /**
-     * @param segment                   Segment handed out by `split` of this path.
+     * @param segment                   Segment handed out by `split` of this path. Unlike `headAt`, this
+     *                                  doesn't take an empty view.
      * @return                          This path up to `segment`, without the separators before it, but never
      *                                  shorter than the root. So the head before `"a"` in `"/a"` is `"/"`, and in
      *                                  `"a"` it is empty.
