@@ -516,7 +516,7 @@ void Engine::onGameViewportClick() {
         } else if (pParty->bTurnBasedModeOn && pTurnEngine->turn_stage == TE_MOVEMENT) {
             pParty->setAirborne(true);
         } else if (pParty->hasActiveCharacter() &&
-                   pParty->activeCharacter().uQuickSpell != SPELL_NONE &&
+                   pParty->activeCharacter().castableQuickSpell() != SPELL_NONE &&
                    IsSpellQuickCastableOnShiftClick(pParty->activeCharacter().uQuickSpell)) {
             engine->_messageQueue->addMessageCurrentFrame(UIMSG_CastQuickSpellAtActor, mon_id, 0);
         } else if (pParty->pPickedItem.itemId != ITEM_NULL) {
@@ -524,9 +524,11 @@ void Engine::onGameViewportClick() {
         } else if (!pParty->hasActiveCharacter()) {
             engine->_statusBar->setEvent(LSTR_NOBODY_IS_IN_CONDITION);
             pAudioPlayer->playUISound(SOUND_error);
-        } else {
+        } else if (pParty->activeCharacter().castableQuickSpell() != SPELL_NONE) {
             engine->_statusBar->setEvent(LSTR_SET_A_QUICK_SPELL);
             pAudioPlayer->playUISound(SOUND_error);
+        } else {
+            engine->_messageQueue->addMessageCurrentFrame(UIMSG_Attack, 0, 0);
         }
     } else if (pid.type() == OBJECT_Decoration) {
         int id = pid.id();

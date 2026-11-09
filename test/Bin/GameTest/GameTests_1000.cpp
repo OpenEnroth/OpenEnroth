@@ -1375,6 +1375,49 @@ GAME_TEST(Issues, Issue1489) {
     EXPECT_CONTAINS(amuletTape, ITEM_NULL);
 }
 
+GAME_TEST(Issues, Issue1492) {
+    // Shift-clicking a monster without a quick spell only asked for one, and without the mana for the quick spell the
+    // cast just failed. Both attack now, like the quick cast key, friendly or not. A quick spell the character has the
+    // mana for still fires.
+    for (auto [spell, mana, friendly] : {std::tuple(SPELL_NONE, 100, false),
+                                         std::tuple(SPELL_FIRE_FIRE_BOLT, 0, false),
+                                         std::tuple(SPELL_NONE, 100, true),
+                                         std::tuple(SPELL_FIRE_FIRE_BOLT, 100, false)}) {
+        test.prepareForNextTest();
+        engine->config->debug.NoActors.setValue(true);
+        game.startNewGame();
+        test.startTaping();
+        prepareForBattleTest();
+        engine->config->debug.NoActors.setValue(false);
+
+        Character &knight = pParty->pCharacters[0];
+        knight.setSkillValue(SKILL_FIRE, CombinedSkillValue(1, MASTERY_NOVICE));
+        knight.bHaveSpell[SPELL_FIRE_FIRE_BOLT] = true;
+        knight.uQuickSpell = spell;
+        knight.mana = mana;
+        SpawnFlags flags = SPAWN_DUMMY;
+        if (friendly)
+            flags |= SPAWN_FRIENDLY;
+        Actor *goblin = game.spawnMonster(pParty->pos + Vec3f(0, 200, 0), MONSTER_GOBLIN_A, flags);
+        EXPECT_EQ(goblin->GetActorsRelation(0) == HOSTILITY_FRIENDLY, friendly);
+        auto recoveringTape = charTapes.custom(0, [](const Character &character) {
+            return character.timeToRecovery > 0_ticks;
+        });
+        auto mpTape = charTapes.mp(0);
+        auto statusTape = tapes.statusBar();
+        game.pointMouseAtActor(0);
+        game.pressKey(PlatformKey::KEY_SHIFT);
+        game.pressAndReleaseButton(BUTTON_LEFT);
+        game.tick();
+        game.releaseKey(PlatformKey::KEY_SHIFT);
+        test.stopTaping();
+
+        EXPECT_CONTAINS(recoveringTape, true); // Attacked or cast, the swing can miss.
+        EXPECT_EQ(mpTape.delta() < 0, spell != SPELL_NONE && mana > 0);
+        EXPECT_MISSES(statusTape, "Set a Quick Spell that targets a monster!");
+    }
+}
+
 GAME_TEST(Issues, Issue1497a) {
     // Shift-clicking an actor with Berserk as the quick spell opened the target picker instead of casting at the
     // clicked actor. Paralyze shared the code path and had the same bug. The S key keeps opening the picker.

@@ -248,22 +248,7 @@ void Io::KeyboardInputHandler::ProcessGameplayAction(InputAction action) {
             break;
         }
 
-        SpellId quickSpellNumber = pParty->activeCharacter().uQuickSpell;
-        int uRequiredMana = 0;
-
-        if (!engine->config->debug.AllMagic.value()) {
-            if (quickSpellNumber != SPELL_NONE && !pParty->activeCharacter().bHaveSpell[quickSpellNumber])
-                quickSpellNumber = SPELL_NONE; // Can end up here after setting the quick spell in all magic mode.
-
-            if (quickSpellNumber != SPELL_NONE) {
-                Mastery skill_mastery = pParty->activeCharacter().getActualSkillValue(skillForSpell(quickSpellNumber)).mastery();
-                uRequiredMana = pSpellDatas[quickSpellNumber].mana_per_skill[skill_mastery];
-            }
-        }
-
-        bool enoughMana = pParty->activeCharacter().mana >= uRequiredMana;
-
-        if (quickSpellNumber == SPELL_NONE || engine->IsUnderwater() || !enoughMana) {
+        if (pParty->activeCharacter().castableQuickSpell() == SPELL_NONE || engine->IsUnderwater()) {
             engine->_messageQueue->addMessageCurrentFrame(UIMSG_Attack, 0, 0);
         } else {
             // TODO(Nik-RE-dev): why next frame?
