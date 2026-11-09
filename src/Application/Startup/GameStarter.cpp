@@ -1,5 +1,6 @@
 #include "GameStarter.h"
 
+#include <cassert>
 #include <utility>
 #include <string>
 #include <vector>
@@ -290,6 +291,12 @@ void GameStarter::migrateSaves() {
 }
 
 void GameStarter::run() {
+    if (_options.exitAfterStart) {
+        _application->component<EngineControlComponent>()->runControlRoutine([] (EngineController *game) {
+            game->exitGame();
+        });
+    }
+
     try {
         _game->run();
 
@@ -304,6 +311,8 @@ void GameStarter::run() {
 }
 
 void GameStarter::runInstrumented(std::function<void(EngineController *)> controlRoutine) {
+    assert(!_options.exitAfterStart);
+
     // Instrumentation implies that we'll be running traces, either hand-crafted, or from files. So calling
     // `prepareForPlayback` here makes sense. This also disables intro videos.
     EngineTraceStateAccessor::prepareForPlayback(_config.get(), {});
@@ -313,8 +322,7 @@ void GameStarter::runInstrumented(std::function<void(EngineController *)> contro
 
         controlRoutine(game);
 
-        game->goToMainMenu();
-        game->pressGuiButton("MainMenu_ExitGame");
+        game->exitGame();
     });
 
     run();
