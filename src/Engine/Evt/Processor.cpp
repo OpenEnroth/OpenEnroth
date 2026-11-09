@@ -81,6 +81,8 @@ void checkDecorationEvents() {
 }
 
 static EvtTimerSchedule timerSchedule(const EvtInstruction &ir) {
+    assert(ir.opcode == EVENT_OnTimer || ir.opcode == EVENT_OnLongTimer);
+
     EvtTimerSchedule result;
     if (ir.data.timer_descr.alt_halfmin_interval) {
         result.type = EVT_TIMER_INTERVAL;
@@ -101,13 +103,14 @@ static EvtTimerSchedule timerSchedule(const EvtInstruction &ir) {
 
 /**
  * @param schedule                      When the timer fires.
+ * @param levelEnterTime                When the party entered the current map.
  * @param levelLastVisit                Last visit to the current map.
  * @return                              When it fires first.
  */
-static Time firstAlarm(const EvtTimerSchedule &schedule, Time levelLastVisit) {
+static Time firstAlarm(const EvtTimerSchedule &schedule, Time levelEnterTime, Time levelLastVisit) {
     switch (schedule.type) {
     case EVT_TIMER_INTERVAL:
-        return pParty->GetPlayingTime() + schedule.duration;
+        return levelEnterTime + schedule.duration;
     case EVT_TIMER_DAILY: {
         if (!levelLastVisit)
             return Time(); // Fires at the first check, and the zero alarm makes checkTimers put the next one on the time of day.
@@ -117,13 +120,14 @@ static Time firstAlarm(const EvtTimerSchedule &schedule, Time levelLastVisit) {
         return result < levelLastVisit ? result + Duration::fromDays(1) : result; // Last visit time already passed alarm time inside that day so move alarm to next day.
     }
     default:
-        return levelLastVisit ? levelLastVisit + periodForTimerType(schedule.type) : pParty->GetPlayingTime(); // Without last visit all timers must fire immediately.
+        return levelLastVisit ? levelLastVisit + periodForTimerType(schedule.type) : levelEnterTime; // Without last visit all timers must fire immediately.
     }
 }
 
 static void registerTimers() {
     // TODO(Nik-RE-dev): using time of last visit will help timers only slightly because each map leaving resets it.
     //                   To support fair timers they need to be saved directly.
+    Time levelEnterTime = pParty->GetPlayingTime();
     Time levelLastVisit = uCurrentlyLoadedLevelType == LEVEL_INDOOR ? pIndoor->lastVisitTime : pOutdoor->lastVisitTime;
 
     mapTimers.clear();
@@ -131,7 +135,7 @@ static void registerTimers() {
         for (const EventTrigger &trigger : engine->_localEventMap.enumerateTriggers(triggerType)) {
             MapTimer timer;
             timer.schedule = timerSchedule(engine->_localEventMap.instruction(trigger.eventId, trigger.eventStep));
-            timer.alarmTime = firstAlarm(timer.schedule, levelLastVisit);
+            timer.alarmTime = firstAlarm(timer.schedule, levelEnterTime, levelLastVisit);
             timer.eventId = trigger.eventId;
             timer.eventStep = trigger.eventStep;
             mapTimers.push_back(timer);
