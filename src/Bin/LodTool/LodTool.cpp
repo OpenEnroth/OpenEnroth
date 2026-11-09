@@ -150,9 +150,11 @@ static int runCat(const LodToolOptions &options) {
     Blob data = readFile(options.path);
     if (!options.raw)
         data = lod::decodeMaybeCompressed(data);
+
 #ifdef _WINDOWS
     _setmode(_fileno(stdout), _O_BINARY);
 #endif
+
     if (!data.empty() && fwrite(data.data(), data.size(), 1, stdout) != 1)
         return 1;
     return 0;
