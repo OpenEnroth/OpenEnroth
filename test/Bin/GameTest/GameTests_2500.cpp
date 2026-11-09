@@ -41,6 +41,7 @@
 
 #include "Library/Platform/Interface/Platform.h"
 
+#include "Media/Audio/AudioPlayer.h"
 #include "Media/Audio/SoundList.h"
 
 #include "GameTestCommon.h"
@@ -866,6 +867,41 @@ GAME_TEST(Issues, Issue2784d) {
     game.tick();
     EXPECT_EQ(houseTape.back(), HOUSE_MAGIC_SHOP_TULAREAN_FOREST);
     EXPECT_EQ(soundNames(soundsTape).count("Elf Magic Shop 01"), 1);
+}
+
+GAME_TEST(Issues, Issue2784e) {
+    // Without enough food to rest, goblin men and male zombies said nothing about half the time, and goblin women never
+    // said their second line. The speech table had the wrong number of recorded lines for those voices.
+    for (auto [voice, lines] : {std::pair(16, std::vector<std::string>{"GM114c"}),
+                                std::pair(18, std::vector<std::string>{"GF114a", "GF114c"}),
+                                std::pair(23, std::vector<std::string>{"zm114b"})}) {
+        SCOPED_TRACE(fmt::format("voice={}", voice));
+        test.prepareForNextTest();
+        auto soundsTape = tapes.sounds();
+        game.startNewGame();
+        Character &character = pParty->pCharacters[0];
+        if (voice == 23) {
+            character.SetCondition(CONDITION_ZOMBIE, 0); // A man turned into a zombie takes the zombie voice.
+        } else {
+            character.uVoiceID = voice;
+        }
+        ASSERT_EQ(character.uVoiceID, voice);
+        pParty->SetFood(0);
+        test.startTaping();
+        game.pressAndReleaseKey(PlatformKey::KEY_R);
+        game.tick();
+        for (int i = 0; i < 10; i++) {
+            pAudioPlayer->stopVoiceSounds(); // A character who is still talking skips a new line, and the audio plays in real time.
+            game.pressGuiButton("Rest_RestAndHeal");
+            game.tick();
+        }
+
+        for (const auto &frame : soundsTape)
+            EXPECT_FALSE(frame.empty()); // Every attempt to rest gets a line.
+        AccessibleVector<std::string> names = soundNames(soundsTape);
+        for (const std::string &line : lines)
+            EXPECT_CONTAINS(names, line);
+    }
 }
 
 GAME_TEST(Issues, Issue2789) {
