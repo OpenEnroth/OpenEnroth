@@ -69,7 +69,7 @@ PathView fs::walk(PathView path, PathView *tail) {
 
     if (tail)
         *tail = {};
-    return lastSegment.empty() ? PathView(path.root()) : path.headAt(lastSegment);
+    return path.headAt(lastSegment);
 }
 
 std::vector<DirectoryEntry> fs::ls(PathView path) {

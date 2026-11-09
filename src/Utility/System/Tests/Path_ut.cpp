@@ -316,6 +316,10 @@ UNIT_TEST(Path, Heads) {
     EXPECT_EQ(heads("a/b/c", "c"), Heads("a/b/c", "a/b"));
     EXPECT_EQ(heads("/a/b", "a"), Heads("/a", "/")); // The root is part of a head.
     EXPECT_EQ(heads("a//b//", "b"), Heads("a//b", "a")); // headBefore drops the whole run of separators.
+
+    // An empty segment gives just the root.
+    EXPECT_EQ(Path("a/b").headAt(std::string_view()).str(), "");
+    EXPECT_EQ(Path("/a/b").headAt(std::string_view()).str(), "/");
 #ifdef _WINDOWS
     EXPECT_EQ(heads("C:/a/b", "a"), Heads("C:/a", "C:/"));
     EXPECT_EQ(heads("C:a", "a"), Heads("C:a", "C:"));
