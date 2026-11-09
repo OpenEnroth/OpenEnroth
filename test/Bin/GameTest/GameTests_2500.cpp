@@ -1105,40 +1105,58 @@ GAME_TEST(Issues, Issue2864b) {
 }
 
 GAME_TEST(Issues, Issue2867a) {
-    // A Divine Restoration potion cured a zombie but left the zombie face on.
-    game.startNewGame();
-    Character &zombie = pParty->pCharacters[0];
-    int face = zombie.uCurrentFace;
-    zombie.SetCondition(CONDITION_ZOMBIE, 0);
-    zombie.SetCondition(CONDITION_WEAK, 0);
-    int zombieFace = zombie.IsMale() ? 23 : 24;
+    // A Divine Restoration potion cured a zombie but left the zombie face and voice on. Used on another character's
+    // portrait, it cured the character holding it instead.
+    for (bool otherUser : {false, true}) {
+        SCOPED_TRACE(fmt::format("otherUser={}", otherUser));
+        test.prepareForNextTest();
+        game.startNewGame();
+        Character &zombie = pParty->pCharacters[0];
+        Character &user = pParty->pCharacters[otherUser ? 2 : 0];
+        int face = zombie.uCurrentFace;
+        int voice = zombie.uVoiceID;
+        zombie.SetCondition(CONDITION_ZOMBIE, 0);
+        zombie.SetCondition(CONDITION_WEAK, 0);
+        user.SetCondition(CONDITION_WEAK, 0);
+        int zombieFace = zombie.IsMale() ? 23 : 24;
+        int zombieVoice = zombieFace; // A zombie's voice has the number of its face.
 
-    auto zombieTape = charTapes.hasCondition(0, CONDITION_ZOMBIE);
-    auto weakTape = charTapes.hasCondition(0, CONDITION_WEAK);
-    auto faceTape = charTapes.face(0);
-    test.startTaping();
-    game.tick(); // Tapes the zombie before the potion.
-    pParty->setHoldingItem(Item(ITEM_POTION_DIVINE_RESTORATION));
-    game.pressGuiButton("Game_Character1", BUTTON_RIGHT); // Drink the potion.
-    game.tick();
+        auto zombieTape = charTapes.hasCondition(0, CONDITION_ZOMBIE);
+        auto weakTape = charTapes.hasCondition(0, CONDITION_WEAK);
+        auto userWeakTape = charTapes.hasCondition(2, CONDITION_WEAK);
+        auto faceTape = charTapes.face(0);
+        auto voiceTape = charTapes.custom(0, [](const Character &character) { return character.uVoiceID; });
+        test.startTaping();
+        if (otherUser)
+            game.pressAndReleaseKey(PlatformKey::KEY_DIGIT_3);
+        game.tick(); // Tapes the zombie before the potion.
+        pParty->setHoldingItem(Item(ITEM_POTION_DIVINE_RESTORATION));
+        game.pressGuiButton("Game_Character1", BUTTON_RIGHT); // Use the potion on the zombie's portrait.
+        game.tick();
 
-    EXPECT_EQ(zombieTape, tape(true, false));
-    EXPECT_EQ(weakTape, tape(true, false));
-    EXPECT_EQ(faceTape, tape(zombieFace, face));
-    EXPECT_EQ(game_ui_player_faces[0][0]->name(), portraitName(face));
+        EXPECT_EQ(zombieTape, tape(true, false));
+        EXPECT_EQ(weakTape, tape(true, false));
+        EXPECT_EQ(userWeakTape, tape(otherUser));
+        EXPECT_EQ(faceTape, tape(zombieFace, face));
+        EXPECT_EQ(voiceTape, tape(zombieVoice, voice));
+        EXPECT_EQ(game_ui_player_faces[0][0]->name(), portraitName(face));
+    }
 }
 
 GAME_TEST(Issues, Issue2867b) {
-    // A zombie came back from a party death cured, but with the zombie face.
+    // A zombie came back from a party death cured, but with the zombie face and voice.
     game.startNewGame();
     Character &zombie = pParty->pCharacters[1];
     int face = zombie.uCurrentFace;
+    int voice = zombie.uVoiceID;
     zombie.SetCondition(CONDITION_ZOMBIE, 0);
     int zombieFace = zombie.IsMale() ? 23 : 24;
+    int zombieVoice = zombieFace; // A zombie's voice has the number of its face.
 
     auto deathsTape = tapes.deaths();
     auto zombieTape = charTapes.hasCondition(1, CONDITION_ZOMBIE);
     auto faceTape = charTapes.face(1);
+    auto voiceTape = charTapes.custom(1, [](const Character &character) { return character.uVoiceID; });
     test.startTaping();
     game.tick(); // The frame the party dies in isn't drawn, so the tapes need a frame from before it.
     for (Character &character : pParty->pCharacters)
@@ -1148,26 +1166,30 @@ GAME_TEST(Issues, Issue2867b) {
     EXPECT_EQ(deathsTape.delta(), +1);
     EXPECT_EQ(zombieTape, tape(true, false));
     EXPECT_EQ(faceTape, tape(zombieFace, face));
+    EXPECT_EQ(voiceTape, tape(zombieVoice, voice));
     EXPECT_EQ(game_ui_player_faces[1][0]->name(), portraitName(face));
 }
 
 GAME_TEST(Issues, Issue2867c) {
     // A diseased zombie who drank from the Erathia well that cures every condition stopped being a zombie but kept the
-    // zombie face.
+    // zombie face and voice.
     engine->config->debug.NoActors.setValue(true);
     game.startNewGame();
     game.teleportTo(MAP_ERATHIA, Vec3f(-5872, 5300, 649), 90, -45); // In the well, looking down at the water.
     Character &zombie = pParty->pCharacters[0];
     int face = zombie.uCurrentFace;
+    int voice = zombie.uVoiceID;
     zombie.SetCondition(CONDITION_ZOMBIE, 0);
     zombie.SetCondition(CONDITION_DISEASE_WEAK, 0);
     int zombieFace = zombie.IsMale() ? 23 : 24;
+    int zombieVoice = zombieFace; // A zombie's voice has the number of its face.
     Pid wellFace = Pid::face(pOutdoor->pBModels[21].faces[10]);
     ASSERT_EQ(pOutdoor->face(wellFace).eventId, 205);
 
     auto zombieTape = charTapes.hasCondition(0, CONDITION_ZOMBIE);
     auto diseaseTape = charTapes.hasCondition(0, CONDITION_DISEASE_WEAK);
     auto faceTape = charTapes.face(0);
+    auto voiceTape = charTapes.custom(0, [](const Character &character) { return character.uVoiceID; });
     test.startTaping();
     game.pointMouseAtFace(wellFace.id());
     game.pressAndReleaseButton(BUTTON_LEFT);
@@ -1176,6 +1198,7 @@ GAME_TEST(Issues, Issue2867c) {
     EXPECT_EQ(zombieTape, tape(true, false));
     EXPECT_EQ(diseaseTape, tape(true, false));
     EXPECT_EQ(faceTape, tape(zombieFace, face));
+    EXPECT_EQ(voiceTape, tape(zombieVoice, voice));
     EXPECT_EQ(game_ui_player_faces[0][0]->name(), portraitName(face));
 }
 
