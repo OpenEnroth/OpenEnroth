@@ -3,6 +3,8 @@
 #include <cassert>
 #include <utility>
 
+#include "Core/Time/Duration.h"
+
 inline int historyIndex(EvtVariable variable) {
     assert(variable >= VAR_History_0 && variable <= VAR_History_28);
     return std::to_underlying(variable) - std::to_underlying(VAR_History_0);
@@ -46,5 +48,21 @@ inline bool isPartyVariable(EvtVariable variable) {
             return true;
         default:
             return false;
+    }
+}
+
+/**
+ * @param type                          Type of a timer that follows the calendar.
+ * @return                              Time between its alarms.
+ */
+inline Duration periodForTimerType(EvtTimerType type) {
+    switch (type) {
+    case EVT_TIMER_DAILY: return Duration::fromDays(1);
+    case EVT_TIMER_WEEKLY: return Duration::fromDays(7);
+    case EVT_TIMER_MONTHLY: return Duration::fromDays(28);
+    case EVT_TIMER_YEARLY: return Duration::fromYears(1);
+    default:
+        assert(false);
+        return Duration();
     }
 }

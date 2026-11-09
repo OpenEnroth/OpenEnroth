@@ -15,6 +15,7 @@
 #include "Engine/Objects/Actor.h"
 #include "Engine/Evt/EvtProgram.h"
 #include "Engine/Evt/EvtInstruction.h"
+#include "Engine/Evt/EvtEnumFunctions.h"
 #include "Engine/Evt/EvtInterpreter.h"
 #include "Engine/Party.h"
 
@@ -99,22 +100,6 @@ static EvtTimerSchedule timerSchedule(const EvtInstruction &ir) {
 }
 
 /**
- * @param type                          Type of a timer that follows the calendar.
- * @return                              Time between its alarms.
- */
-static Duration timerPeriod(EvtTimerType type) {
-    switch (type) {
-    case EVT_TIMER_DAILY: return Duration::fromDays(1);
-    case EVT_TIMER_WEEKLY: return Duration::fromDays(7);
-    case EVT_TIMER_MONTHLY: return Duration::fromDays(28);
-    case EVT_TIMER_YEARLY: return Duration::fromYears(1);
-    default:
-        assert(false);
-        return Duration();
-    }
-}
-
-/**
  * @param schedule                      When the timer fires.
  * @param levelLastVisit                Last visit to the current map.
  * @return                              When it fires first.
@@ -132,7 +117,7 @@ static Time firstAlarm(const EvtTimerSchedule &schedule, Time levelLastVisit) {
         return result < levelLastVisit ? result + Duration::fromDays(1) : result; // Last visit time already passed alarm time inside that day so move alarm to next day.
     }
     default:
-        return levelLastVisit ? levelLastVisit + timerPeriod(schedule.type) : pParty->GetPlayingTime(); // Without last visit all timers must fire immediately.
+        return levelLastVisit ? levelLastVisit + periodForTimerType(schedule.type) : pParty->GetPlayingTime(); // Without last visit all timers must fire immediately.
     }
 }
 
@@ -237,7 +222,7 @@ static void checkTimers() {
                 timer.alarmTime = Time() + timer.schedule.duration;
             }
             while (pParty->GetPlayingTime() >= timer.alarmTime) {
-                timer.alarmTime += timerPeriod(timer.schedule.type);
+                timer.alarmTime += periodForTimerType(timer.schedule.type);
             }
         }
     }
