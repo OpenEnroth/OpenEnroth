@@ -954,6 +954,33 @@ GAME_TEST(Issues, Issue2792) {
     }
 }
 
+GAME_TEST(Issues, Issue2813a) {
+    // Human peasants with a generated name and profession had elf portraits.
+    for (auto [actorId, minPortrait, maxPortrait] : {std::tuple(18, 2, 100), std::tuple(1, 201, 250)}) {
+        SCOPED_TRACE(fmt::format("actorId={}", actorId));
+        test.prepareForNextTest();
+        auto screenTape = tapes.screen();
+        auto texturesTape = tapes.hudTextures();
+        auto portraitTape = tapes.custom([] { return houseNpcs.empty() ? std::string() : houseNpcs[0].icon->name(); });
+        game.startNewGame();
+        Actor &peasant = pActors[actorId]; // A man and a woman on Emerald Island.
+        ASSERT_TRUE(isPeasant(peasant.monsterInfo.id));
+        ASSERT_EQ(raceForMonsterType(monsterTypeForMonsterId(peasant.monsterInfo.id)), RACE_HUMAN);
+        test.startTaping();
+        game.teleportTo(MAP_EMERALD_ISLAND, peasant.pos - Vec3f(300, 0, 0), 0);
+        game.pointMouseAtActor(actorId);
+        game.pressAndReleaseButton(BUTTON_LEFT);
+        game.tick();
+
+        EXPECT_EQ(screenTape, tape(SCREEN_GAME, SCREEN_NPC_DIALOGUE));
+        ASSERT_EQ(portraitTape.size(), 2);
+        EXPECT_CONTAINS(texturesTape.back(), portraitTape.back());
+        int portrait = std::stoi(portraitTape.back().substr(3)); // Portrait textures are named "npc" plus the portrait id.
+        EXPECT_GE(portrait, minPortrait);
+        EXPECT_LE(portrait, maxPortrait);
+    }
+}
+
 GAME_TEST(Issues, Issue2815) {
     // Evt skill checks read grandmaster as master, so the trap in Tidewater Caverns that grandmasters of Perception and
     // Disarm Trap should disarm went off for them, and masters disarmed it.
