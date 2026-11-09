@@ -1043,10 +1043,7 @@ GAME_TEST(Prs, Pr2963) {
     }
     onMapLoad(); // Timers are registered on map load.
     test.startTaping();
-    game.tick();
-    pParty->GetPlayingTime() += Duration::fromMinutes(1);
-    game.tick();
-    game.skipLoadingScreen();
+    game.skipLoadingScreen(); // A timer comes due and leaves the map.
     EXPECT_EQ(goldTape, tape(200, 300));
     EXPECT_EQ(mapTape, tape(MAP_HIDDEN_TOMB, MAP_ERATHIA));
 }
