@@ -218,6 +218,11 @@ class Character {
     void ResetCondition(Condition condition);
 
     /**
+     * Clears every condition through `ResetCondition`, so a cured zombie gets its original face and voice back.
+     */
+    void resetAllConditions();
+
+    /**
      * @offset 0x49327B
      */
     bool isClass(Class class_type, bool check_honorary = true) const;

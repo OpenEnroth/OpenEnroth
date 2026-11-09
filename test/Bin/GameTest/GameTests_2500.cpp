@@ -21,6 +21,7 @@
 #include "Engine/Evt/EvtVariables.h"
 #include "Engine/Graphics/Image.h"
 #include "Engine/Graphics/Indoor.h"
+#include "Engine/Graphics/Outdoor.h"
 #include "Engine/Graphics/Vis.h"
 #include "Engine/Objects/Actor.h"
 #include "Engine/Objects/Decoration.h"
@@ -1101,6 +1102,81 @@ GAME_TEST(Issues, Issue2864b) {
     game.tick(2);
 
     EXPECT_EQ(slotCountTape, tape(0, 3));
+}
+
+GAME_TEST(Issues, Issue2867a) {
+    // A Divine Restoration potion cured a zombie but left the zombie face on.
+    game.startNewGame();
+    Character &zombie = pParty->pCharacters[0];
+    int face = zombie.uCurrentFace;
+    zombie.SetCondition(CONDITION_ZOMBIE, 0);
+    zombie.SetCondition(CONDITION_WEAK, 0);
+    int zombieFace = zombie.IsMale() ? 23 : 24;
+
+    auto zombieTape = charTapes.hasCondition(0, CONDITION_ZOMBIE);
+    auto weakTape = charTapes.hasCondition(0, CONDITION_WEAK);
+    auto faceTape = charTapes.face(0);
+    test.startTaping();
+    game.tick(); // Tapes the zombie before the potion.
+    pParty->setHoldingItem(Item(ITEM_POTION_DIVINE_RESTORATION));
+    game.pressGuiButton("Game_Character1", BUTTON_RIGHT); // Drink the potion.
+    game.tick();
+
+    EXPECT_EQ(zombieTape, tape(true, false));
+    EXPECT_EQ(weakTape, tape(true, false));
+    EXPECT_EQ(faceTape, tape(zombieFace, face));
+    EXPECT_EQ(game_ui_player_faces[0][0]->name(), portraitName(face));
+}
+
+GAME_TEST(Issues, Issue2867b) {
+    // A zombie came back from a party death cured, but with the zombie face.
+    game.startNewGame();
+    Character &zombie = pParty->pCharacters[1];
+    int face = zombie.uCurrentFace;
+    zombie.SetCondition(CONDITION_ZOMBIE, 0);
+    int zombieFace = zombie.IsMale() ? 23 : 24;
+
+    auto deathsTape = tapes.deaths();
+    auto zombieTape = charTapes.hasCondition(1, CONDITION_ZOMBIE);
+    auto faceTape = charTapes.face(1);
+    test.startTaping();
+    game.tick(); // The frame the party dies in isn't drawn, so the tapes need a frame from before it.
+    for (Character &character : pParty->pCharacters)
+        character.receiveDamage(10000, DAMAGE_PHYSICAL);
+    game.tick();
+
+    EXPECT_EQ(deathsTape.delta(), +1);
+    EXPECT_EQ(zombieTape, tape(true, false));
+    EXPECT_EQ(faceTape, tape(zombieFace, face));
+    EXPECT_EQ(game_ui_player_faces[1][0]->name(), portraitName(face));
+}
+
+GAME_TEST(Issues, Issue2867c) {
+    // A diseased zombie who drank from the Erathia well that cures every condition stopped being a zombie but kept the
+    // zombie face.
+    engine->config->debug.NoActors.setValue(true);
+    game.startNewGame();
+    game.teleportTo(MAP_ERATHIA, Vec3f(-5872, 5300, 649), 90, -45); // In the well, looking down at the water.
+    Character &zombie = pParty->pCharacters[0];
+    int face = zombie.uCurrentFace;
+    zombie.SetCondition(CONDITION_ZOMBIE, 0);
+    zombie.SetCondition(CONDITION_DISEASE_WEAK, 0);
+    int zombieFace = zombie.IsMale() ? 23 : 24;
+    Pid wellFace = Pid::face(pOutdoor->pBModels[21].faces[10]);
+    ASSERT_EQ(pOutdoor->face(wellFace).eventId, 205);
+
+    auto zombieTape = charTapes.hasCondition(0, CONDITION_ZOMBIE);
+    auto diseaseTape = charTapes.hasCondition(0, CONDITION_DISEASE_WEAK);
+    auto faceTape = charTapes.face(0);
+    test.startTaping();
+    game.pointMouseAtFace(wellFace.id());
+    game.pressAndReleaseButton(BUTTON_LEFT);
+    game.tick();
+
+    EXPECT_EQ(zombieTape, tape(true, false));
+    EXPECT_EQ(diseaseTape, tape(true, false));
+    EXPECT_EQ(faceTape, tape(zombieFace, face));
+    EXPECT_EQ(game_ui_player_faces[0][0]->name(), portraitName(face));
 }
 
 GAME_TEST(Issues, Issue2868a) {

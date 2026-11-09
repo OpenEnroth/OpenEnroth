@@ -839,7 +839,7 @@ void setEvtVariable(Character &character, EvtVariable var_type, int var_value) {
             character.PlayAwardSound_Anim();
             return;
         case VAR_MajorCondition:
-            character.conditions.resetAll();
+            character.resetAllConditions();
             character.PlayAwardSound_Anim();
             return;
         case VAR_AutoNotes:
@@ -1403,7 +1403,7 @@ void addEvtVariable(Character &character, EvtVariable var_type, signed int val) 
             character.PlayAwardSound_Anim97();
             return;
         case VAR_MajorCondition:
-            character.conditions.resetAll();
+            character.resetAllConditions();
             character.PlayAwardSound_Anim97();
             return;
         case VAR_AutoNotes:
