@@ -36,7 +36,8 @@ namespace fs {
  *                                      first segment. Empty if all of `path` exists.
  * @return                              The existing prefix of `path`, without trailing separators. A root is taken
  *                                      to exist without a check, so `"/nope"` gives `"/"`. Empty if not even the
- *                                      first segment exists. Both views point into the string that `path` views.
+ *                                      first segment exists. Non-empty results point into the string that `path`
+ *                                      views.
  */
 [[nodiscard]] PathView walk(PathView path, PathView *tail = nullptr);
 
