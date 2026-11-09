@@ -293,3 +293,13 @@ enum class EvtTransition {
 };
 using enum EvtTransition;
 
+/**
+ * How an evt timer fires, and what its `duration` means.
+ */
+enum class EvtTimerType {
+    EVT_TIMER_INTERVAL, // Fires every `duration`, counted from when it last fired.
+    EVT_TIMER_DAILY, // Fires every day, `duration` past midnight.
+    EVT_TIMER_PERIODIC, // Fires every `duration`, a week, 28 days or a year, counted from the previous alarm.
+};
+using enum EvtTimerType;
+
