@@ -165,10 +165,14 @@ class PathView {
     }
 
     /**
-     * @param segment                   Segment handed out by `split` of this path.
-     * @return                          This path up to the end of `segment`, root included.
+     * @param segment                   Segment handed out by `split` of this path, or an empty view.
+     * @return                          This path up to the end of `segment`, root included, or just the root for an
+     *                                  empty `segment`.
      */
     [[nodiscard]] PathView headAt(std::same_as<std::string_view> auto segment) const {
+        if (segment.empty())
+            return root();
+
         assert(segment.data() >= _path.data() && segment.data() + segment.size() <= _path.data() + _path.size());
         return PathView(_path.substr(0, segment.data() + segment.size() - _path.data()));
     }
