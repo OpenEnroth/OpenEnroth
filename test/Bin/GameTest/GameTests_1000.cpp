@@ -1344,6 +1344,37 @@ GAME_TEST(Issues, Issue1482) {
     EXPECT_LT(timeTape.delta(), Duration::fromMinutes(10));
 }
 
+GAME_TEST(Issues, Issue1485) {
+    // Two regeneration rings should heal twice as fast as one, and two mana rings should restore twice the SP. With
+    // regen_stacking off, as in vanilla, a second ring adds nothing.
+    for (bool stacking : {true, false}) {
+        SCOPED_TRACE(fmt::format("stacking={}", stacking));
+        test.prepareForNextTest();
+        engine->config->gameplay.RegenStacking.setValue(stacking);
+        auto hpTape = charTapes.hp(0);
+        auto mpTape = charTapes.mp(2);
+        game.startNewGame();
+        Character &fighter = pParty->pCharacters[0];
+        Character &caster = pParty->pCharacters[2];
+        for (ItemSlot slot : {ITEM_SLOT_RING1, ITEM_SLOT_RING2}) {
+            Item regenerationRing(ITEM_EMERALD_RING);
+            regenerationRing.specialEnchantment = ITEM_ENCHANTMENT_OF_REGENERATION;
+            fighter.inventory.equip(slot, regenerationRing);
+            Item manaRing(ITEM_EMERALD_RING);
+            manaRing.specialEnchantment = ITEM_ENCHANTMENT_OF_MANA;
+            caster.inventory.equip(slot, manaRing);
+        }
+        fighter.health = 1;
+        caster.mana = 0;
+        test.startTaping();
+        game.tick(100); // Five game minutes, one regeneration tick.
+
+        int perTick = stacking ? 2 : 1;
+        EXPECT_EQ(hpTape, tape(1, 1 + perTick));
+        EXPECT_EQ(mpTape, tape(0, perTick));
+    }
+}
+
 GAME_TEST(Issues, Issue1489) {
     // Cannot equip amulets or gauntlets
     auto equipmentId = [] (ItemSlot slot) -> ItemId {
