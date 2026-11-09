@@ -68,7 +68,7 @@ PathView fs::walk(PathView path, PathView *tail) {
     }
 
     if (tail)
-        *tail = path.str().substr(path.str().size());
+        *tail = {};
     return lastSegment.empty() ? PathView(path.root()) : path.headAt(lastSegment);
 }
 
