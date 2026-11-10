@@ -10,8 +10,13 @@
 
 std::string RenderSettings::toString() const {
     std::string gray = mode == RASTER_MONO ? "" : fmt::format(" --gray --threshold {}", threshold);
-    return fmt::format("--ppem {}{}{}{} --baseline {} --height {}", ppem, gray, bold ? " --bold" : "",
-                       oblique ? " --oblique" : "", baseline, height);
+    std::string spacing;
+    if (inkOffset != 0)
+        spacing += fmt::format(" --ink-offset {}", inkOffset);
+    if (extraAdvance != 0)
+        spacing += fmt::format(" --extra-advance {}", extraAdvance);
+    return fmt::format("--ppem {}{}{}{} --baseline {} --height {}{}", ppem, gray, bold ? " --bold" : "",
+                       oblique ? " --oblique" : "", baseline, height, spacing);
 }
 
 InkMask makeInkMask(const RenderedGlyph &glyph, int threshold, bool bold) {
@@ -46,9 +51,10 @@ Font renderFont(FreeTypeFace &face, const std::u32string &characters, const Rend
         InkMask mask = makeInkMask(*glyph, settings.mode == RASTER_MONO ? 1 : settings.threshold, settings.bold);
 
         if (mask.width == 0) {
-            if (mask.advance <= 0)
+            if (mask.advance + settings.extraAdvance <= 0)
                 continue;
-            builder.add(c, GlyphMetrics(0, mask.advance, 0), GrayscaleImage::solid(0, mask.advance, settings.height));
+            int advance = mask.advance + settings.extraAdvance;
+            builder.add(c, GlyphMetrics(0, advance, 0), GrayscaleImage::solid(0, advance, settings.height));
             continue;
         }
 
@@ -61,7 +67,9 @@ Font renderFont(FreeTypeFace &face, const std::u32string &characters, const Rend
                 image[cellY][x] = mask.pixels[y * mask.width + x];
         }
 
-        builder.add(c, GlyphMetrics(mask.left, mask.width, mask.advance - mask.left - mask.width), image);
+        int left = mask.left + settings.inkOffset;
+        int right = mask.advance + settings.extraAdvance - left - mask.width;
+        builder.add(c, GlyphMetrics(left, mask.width, right), image);
     }
 
     return std::move(builder).build();

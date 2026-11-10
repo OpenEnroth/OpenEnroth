@@ -18,6 +18,8 @@ struct RenderSettings {
     bool oblique = false; // Slants the outlines the way FreeType and GDI simulate italics.
     int baseline = 0; // Row of the baseline in the glyph cell. Rows above it are `[0, baseline)`.
     int height = 0; // Height of the glyph cell.
+    int inkOffset = 0; // Pixels to move every glyph right of where its outline puts it, the advance stays.
+    int extraAdvance = 0; // Pixels to add to every glyph's advance.
 
     /**
      * @return                          The settings as `FontTool render` options.
