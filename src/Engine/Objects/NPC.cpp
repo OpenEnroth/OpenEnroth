@@ -30,9 +30,8 @@ static const Segment<Condition> standardConditionsIncludeDead = {CONDITION_CURSE
 NPCData *getNPCData(int npcId) {
     if (npcId >= 0) {
         if (npcId < 5000) {
-            if (npcId >= 501) {
+            if (npcId >= 501)
                 MM_WARNING("NPC id exceeds MAX_DATA!");
-            }
             return &pNPCStats->pNPCData[npcId];
         } else {
             return &pNPCStats->pAdditionalNPC[npcId - 5000];
@@ -66,9 +65,8 @@ bool CheckHiredNPCSpeciality(NpcProfession prof) {
 
 NpcType getNPCType(int npcId) {
     if (npcId >= 0) {
-        if (npcId < 5000) {
+        if (npcId < 5000)
             return NPC_TYPE_QUEST;
-        }
         return NPC_TYPE_HIREABLE;
     }
 
@@ -116,9 +114,8 @@ int UseNPCSkill(NpcProfession profession, int id) {
         case NPC_PROFESSION_EXPERT_HEALER: {
             for (Character &player : pParty->pCharacters) {
                 player.health = player.GetMaxHealth();
-                for (Condition condition : standardConditionsExcludeDead) {
+                for (Condition condition : standardConditionsExcludeDead)
                     player.conditions.reset(condition);
-                }
                 player.playReaction(SPEECH_TEMPLE_HEAL);
             }
             pAudioPlayer->playExclusiveSound(SOUND_heal);
@@ -129,9 +126,8 @@ int UseNPCSkill(NpcProfession profession, int id) {
                 player.health = player.GetMaxHealth();
                 for (Condition condition : standardConditionsIncludeDead) {
                     // Master healer heals all except Eradicated and zombie
-                    if (condition != CONDITION_ERADICATED) {
+                    if (condition != CONDITION_ERADICATED)
                         player.conditions.reset(condition);
-                    }
                 }
                 player.playReaction(SPEECH_TEMPLE_HEAL);
             }
@@ -139,17 +135,15 @@ int UseNPCSkill(NpcProfession profession, int id) {
         } break;
 
         case NPC_PROFESSION_COOK: {
-            if (pParty->GetFood() >= 14) {
+            if (pParty->GetFood() >= 14)
                 return 1;
-            }
 
             pParty->GiveFood(1);
         } break;
 
         case NPC_PROFESSION_CHEF: {
-            if (pParty->GetFood() >= 14) {
+            if (pParty->GetFood() >= 14)
                 return 1;
-            }
 
             if (pParty->GetFood() == 13) {
                 pParty->GiveFood(1);

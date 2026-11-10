@@ -25,9 +25,8 @@ void StatusBar::draw() {
     render->DrawQuad2D(game_ui_statusbar, {0, 352});
 
     const std::string &status = get();
-    if (status.length() > 0) {
+    if (status.length() > 0)
         GUIWindow::DrawText(assets->pFontLucida.get(), { assets->pFontLucida->AlignText_Center(450, status) + 11, 357}, uGameUIFontMain, status, pPrimaryWindow->frameRect, 0, uGameUIFontShadow);
-    }
 }
 
 void StatusBar::drawForced(std::string_view str, Color color) {
@@ -37,17 +36,13 @@ void StatusBar::drawForced(std::string_view str, Color color) {
 
 void StatusBar::update() {
     // Was also checking that event timer is not stopped
-    if (_eventStatusExpireTime && platform->tickCount() >= _eventStatusExpireTime) {
+    if (_eventStatusExpireTime && platform->tickCount() >= _eventStatusExpireTime)
         _eventStatusExpireTime = 0;
-    }
 }
 
 void StatusBar::setPermanent(std::string_view str) {
-    if (str.length() > 0) {
-        if (_eventStatusExpireTime == 0) {
-            _statusString = str;
-        }
-    }
+    if (str.length() > 0 && _eventStatusExpireTime == 0)
+        _statusString = str;
 }
 
 void StatusBar::clearPermanent() {
@@ -74,7 +69,6 @@ void StatusBar::clearEvent() {
 }
 
 void StatusBar::nothingHere() {
-    if (_eventStatusExpireTime == 0) {
+    if (_eventStatusExpireTime == 0)
         setEvent(LSTR_NOTHING_HERE);
-    }
 }

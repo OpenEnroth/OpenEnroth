@@ -354,9 +354,8 @@ bool compareEvtVariable(Character &character, EvtVariable VarNum, int pValue) {
             return character.conditions.has(CONDITION_ERADICATED);
         case VAR_MajorCondition: {
             Condition condition = character.GetMajorConditionIdx();
-            if (condition != CONDITION_GOOD) {
+            if (condition != CONDITION_GOOD)
                 return std::to_underlying(condition) >= pValue;
-            }
             return true;
         }
         case VAR_AutoNotes:
@@ -438,9 +437,8 @@ bool compareEvtVariable(Character &character, EvtVariable VarNum, int pValue) {
         case VAR_Counter10:
         {
             int idx = std::to_underlying(VarNum) - std::to_underlying(VAR_Counter1);
-            if (pParty->PartyTimes.CounterEventValues[idx].isValid()) {
+            if (pParty->PartyTimes.CounterEventValues[idx].isValid())
                 return (pParty->PartyTimes.CounterEventValues[idx] + Duration::fromHours(pValue)) <= pParty->GetPlayingTime();
-            }
             return false;
         }
 
@@ -1157,9 +1155,8 @@ void addEvtVariable(Character &character, EvtVariable var_type, signed int val) 
             character.sAgeModifier += val;
             return;
         case VAR_Award:
-            if (!character._achievedAwardsBits[static_cast<AwardId>(val)] && !pAwards[static_cast<AwardId>(val)].pText.empty()) {
+            if (!character._achievedAwardsBits[static_cast<AwardId>(val)] && !pAwards[static_cast<AwardId>(val)].pText.empty())
                 character.PlayAwardSound_Anim97_Face(SPEECH_AWARD_GOT);
-            }
             character._achievedAwardsBits.set(static_cast<AwardId>(val));
             return;
         case VAR_Experience:
@@ -2073,17 +2070,13 @@ bool subtractEvtVariable(Character &character, EvtVariable VarNum, signed int pV
             }
             return true;
         case VAR_HiredNPCHasSpeciality:
-            for (int i = 0; i < pNPCStats->uNumNewNPCs; i++) {
-                if (pNPCStats->pNPCData[i].profession == (NpcProfession)pValue) {
+            for (int i = 0; i < pNPCStats->uNumNewNPCs; i++)
+                if (pNPCStats->pNPCData[i].profession == (NpcProfession)pValue)
                     pNPCStats->pNPCData[i].flags &= ~NPC_HIRED;
-                }
-            }
-            if (pParty->pHirelings[0].profession == (NpcProfession)pValue) {
+            if (pParty->pHirelings[0].profession == (NpcProfession)pValue)
                 pParty->pHirelings[0] = NPCData();
-            }
-            if (pParty->pHirelings[1].profession == (NpcProfession)pValue) {
+            if (pParty->pHirelings[1].profession == (NpcProfession)pValue)
                 pParty->pHirelings[1] = NPCData();
-            }
             pParty->hirelingScrollPosition = 0;
             pParty->CountHirelings();
             return true;

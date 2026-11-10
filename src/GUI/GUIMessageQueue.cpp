@@ -18,26 +18,21 @@ void GUIFrameMessageQueue::peekMessage(UIMessageType *msg, int *param, int *para
     assert(msg != nullptr);
 
     *msg = UIMSG_Invalid;
-    if (param) {
+    if (param)
         *param = 0;
-    }
-    if (param2) {
+    if (param2)
         *param2 = 0;
-    }
 
-    if (messageQueue.empty()) {
+    if (messageQueue.empty())
         return;
-    }
 
     const GUIMessage &message = messageQueue.front();
 
     *msg = message.type;
-    if (param) {
+    if (param)
         *param = message.param;
-    }
-    if (param2) {
+    if (param2)
         *param2 = message.param2;
-    }
 }
 
 void GUIFrameMessageQueue::addGUIMessage(UIMessageType msg, int param, int param2) {

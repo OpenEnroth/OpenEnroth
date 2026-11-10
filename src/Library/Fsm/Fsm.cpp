@@ -23,13 +23,11 @@ void Fsm::update() {
 
 void Fsm::_goToState(std::string_view stateName) {
     FsmStateEntry *nextState = _getStateByName(stateName);
-    if (!nextState) {
+    if (!nextState)
         throw Exception("Cannot jump to state [{}]. The state does not exist.", stateName);
-    }
 
-    if (_currentState) {
+    if (_currentState)
         _currentState->state->exit();
-    }
     _currentState = nextState;
     nextState = nullptr;
     FsmAction action = _currentState->state->enter();
@@ -37,9 +35,8 @@ void Fsm::_goToState(std::string_view stateName) {
 }
 
 void Fsm::_performAction(FsmAction &action) {
-    if (action) {
+    if (action)
         _executeTransition(action.transitionName());
-    }
 }
 
 bool Fsm::hasReachedExitState() const {
@@ -50,9 +47,8 @@ void Fsm::_executeTransition(std::string_view transition) {
     // Look for the correct transition
     FsmTransitions &transitions = _currentState->transitions;
     auto itr = transitions.find(transition);
-    if (itr == transitions.end()) {
+    if (itr == transitions.end())
         throw Exception("Cannot execute transition from state [{}]. Transition [{}] does not exist.", _currentState->name, transition);
-    }
 
     // Check if there's at least one transition condition that evaluates to true
     FsmTransitionTarget *transitionTarget = nullptr;
@@ -62,9 +58,8 @@ void Fsm::_executeTransition(std::string_view transition) {
             break;
         }
     }
-    if (!transitionTarget) {
+    if (!transitionTarget)
         throw Exception("Cannot execute transition [{}] from state [{}]. No condition evaluated to true", transition, _currentState->name);
-    }
 
     _hasReachedExitState = transitionTarget->stateName == exitState;
     if (_hasReachedExitState) {
@@ -76,15 +71,13 @@ void Fsm::_executeTransition(std::string_view transition) {
 }
 
 FsmStateEntry *Fsm::_getStateByName(std::string_view stateName) {
-    if (auto itr = _states.find(stateName); itr != _states.end()) {
+    if (auto itr = _states.find(stateName); itr != _states.end())
         return itr->second.get();
-    }
     return nullptr;
 }
 
 bool Fsm::event(const PlatformEvent *event) {
-    if (_currentState) {
+    if (_currentState)
         return _currentState->state->event(event);
-    }
     return false;
 }

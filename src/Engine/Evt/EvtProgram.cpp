@@ -119,21 +119,18 @@ std::string EvtProgram::hint(int eventId) const {
     bool mouseOverFound = false;
 
     const auto* events = valuePtr(_eventsById, eventId);
-    if (!events) { // no entry in .evt file
+    if (!events) // no entry in .evt file
         return result;
-    }
 
     for (const EvtInstruction &ir : *events) {
         if (ir.opcode == EVENT_MouseOver) {
             mouseOverFound = true;
-            if (ir.data.text_id < engine->_levelStrings.size()) {
+            if (ir.data.text_id < engine->_levelStrings.size())
                 result = engine->_levelStrings[ir.data.text_id];
-            }
         }
         if (mouseOverFound && ir.opcode == EVENT_SpeakInHouse) {
-            if (houseTable.indices().contains(ir.data.house_id)) {
+            if (houseTable.indices().contains(ir.data.house_id))
                 result = houseTable[ir.data.house_id].name;
-            }
             break;
         }
     }
@@ -145,9 +142,8 @@ void EvtProgram::dump(int eventId, EvtSource source) const {
     const auto *events = valuePtr(_eventsById, eventId);
     if (events) {
         MM_TRACE("Event: {}", eventId);
-        for (const EvtInstruction &ir : *events) {
+        for (const EvtInstruction &ir : *events)
             MM_TRACE("{}", ir.toString(source));
-        }
     } else {
         MM_TRACE("Event {} not found", eventId);
     }

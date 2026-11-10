@@ -29,9 +29,8 @@ static constexpr IndexedArray<int, HOUSE_FIRST_TRAINING_HALL, HOUSE_LAST_TRAININ
 };
 
 void GUIWindow_Training::mainDialogue() {
-    if (!checkIfPlayerCanInteract()) {
+    if (!checkIfPlayerCanInteract())
         return;
-    }
 
     int pPrice = PriceCalculator::trainingCostForPlayer(&pParty->activeCharacter(), houseTable[houseId()]);
     uint64_t expForNextLevel = 1000ull * pParty->activeCharacter().uLevel * (pParty->activeCharacter().uLevel + 1) / 2;
@@ -74,13 +73,11 @@ void GUIWindow_Training::trainDialogue() {
                 int maxLevelStepsAfter = *std::max_element(_charactersTrainedLevels.begin(), _charactersTrainedLevels.end());
                 if (maxLevelStepsAfter > maxLevelStepsBefore) {
                     Duration trainingTime = timeUntilDawn() + Duration::fromHours(4);
-                    if (houseId() == HOUSE_TRAINING_HALL_PIT || houseId() == HOUSE_TRAINING_HALL_MOUNT_NIGHON) {
+                    if (houseId() == HOUSE_TRAINING_HALL_PIT || houseId() == HOUSE_TRAINING_HALL_MOUNT_NIGHON)
                         trainingTime += Duration::fromHours(12);
-                    }
                     restAndHeal(trainingTime + Duration::fromDays(7));
-                    if (uCurrentlyLoadedLevelType == LEVEL_OUTDOOR) {
+                    if (uCurrentlyLoadedLevelType == LEVEL_OUTDOOR)
                         pOutdoor->SetFog();
-                    }
                 }
                 pParty->activeCharacter().playReaction(SPEECH_LEVEL_UP);
 
@@ -110,16 +107,14 @@ GUIWindow_Training::GUIWindow_Training(HouseId houseId) : GUIWindow_House(houseI
 
 void GUIWindow_Training::houseDialogueOptionSelected(DialogueId option) {
     _currentDialogue = option;
-    if (IsSkillLearningDialogue(option)) {
+    if (IsSkillLearningDialogue(option))
         learnSelectedSkill(GetLearningDialogueSkill(option));
-    }
 }
 
 void GUIWindow_Training::houseSpecificDialogue() {
     // TODO(pskelton): check this behaviour
-    if (!pParty->hasActiveCharacter()) {  // avoid nzi
+    if (!pParty->hasActiveCharacter())  // avoid nzi
         pParty->setActiveToFirstCanAct();
-    }
 
     switch (_currentDialogue) {
       case DIALOGUE_MAIN:
