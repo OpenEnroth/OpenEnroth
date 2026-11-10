@@ -190,7 +190,6 @@ struct CellScore {
     int exactSpacing = 0; // Glyphs spaced exactly that way.
 };
 
-
 /**
  * Scores one rendering of a candidate against a reference.
  *
