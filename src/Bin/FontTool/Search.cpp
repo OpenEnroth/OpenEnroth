@@ -185,21 +185,11 @@ struct CellScore {
     int distance = INT_MAX;
     int baseline = 0;
     int exactWidths = 0;
-    int inkOffset = 0; // Most common reference minus candidate ink start.
-    int extraAdvance = 0; // Most common reference minus candidate advance.
-    int exactSpacing = 0; // Glyphs whose ink start and advance both match with the two offsets above.
+    int inkOffset = 0; // Reference minus candidate ink start, in the most common spacing.
+    int extraAdvance = 0; // Reference minus candidate advance, in the most common spacing.
+    int exactSpacing = 0; // Glyphs spaced exactly that way.
 };
 
-/**
- * @param values                        Values to look at, must not be empty.
- * @return                              Most common value, the smallest one on ties.
- */
-static int mostCommon(const std::vector<int> &values) {
-    std::map<int, int> counts;
-    for (int value : values)
-        counts[value]++;
-    return std::ranges::max_element(counts, std::ranges::less(), [](const auto &pair) { return pair.second; })->first;
-}
 
 /**
  * Scores one rendering of a candidate against a reference.
@@ -264,23 +254,21 @@ static CellScore scoreCell(const Reference &reference, const std::vector<const C
     CellScore result;
     result.distance = partial[k];
     result.baseline = baselines[k];
-    std::vector<int> inkOffsets;
-    std::vector<int> extraAdvances;
+    std::map<std::pair<int, int>, int> spacings; // (ink offset, extra advance) -> number of glyphs.
     for (size_t i = 0; i < candidates.size(); i++) {
         const CandidateGlyph &candidate = *candidates[i];
         if (candidate.tooWide || candidate.ink.pixels == 0)
             continue;
         result.exactWidths += candidate.ink.width == reference.glyphs[i].ink.width;
-        inkOffsets.push_back(reference.glyphs[i].inkStart - candidate.inkStart);
-        extraAdvances.push_back(reference.glyphs[i].advance - candidate.advance);
+        spacings[{reference.glyphs[i].inkStart - candidate.inkStart, reference.glyphs[i].advance - candidate.advance}]++;
     }
-    if (inkOffsets.empty())
+    if (spacings.empty())
         return result;
 
-    result.inkOffset = mostCommon(inkOffsets);
-    result.extraAdvance = mostCommon(extraAdvances);
-    for (size_t i = 0; i < inkOffsets.size(); i++)
-        result.exactSpacing += inkOffsets[i] == result.inkOffset && extraAdvances[i] == result.extraAdvance;
+    auto spacing = std::ranges::max_element(spacings, std::ranges::less(), [](const auto &pair) { return pair.second; });
+    result.inkOffset = spacing->first.first;
+    result.extraAdvance = spacing->first.second;
+    result.exactSpacing = spacing->second;
     return result;
 }
 
