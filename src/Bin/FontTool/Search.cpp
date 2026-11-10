@@ -36,6 +36,7 @@ struct Ink {
     int pixels = 0;
     double cx = 0; // Centroid.
     double cy = 0;
+    int left = 0; // Leftmost ink column.
     int width = 0; // Width of the ink's bounding box.
     int height = 0;
 };
@@ -68,6 +69,7 @@ static Ink makeInk(int width, int rows, Pixel &&pixel) {
     if (result.pixels > 0) {
         result.cx /= result.pixels;
         result.cy /= result.pixels;
+        result.left = minX;
         result.width = maxX - minX + 1;
         result.height = maxY - minY + 1;
     }
@@ -77,6 +79,8 @@ static Ink makeInk(int width, int rows, Pixel &&pixel) {
 struct ReferenceGlyph {
     char32_t character = 0;
     Ink ink;
+    int inkStart = 0; // From the pen position to the leftmost ink column.
+    int advance = 0;
 };
 
 struct Reference {
@@ -89,6 +93,8 @@ struct CandidateGlyph {
     int top = 0;
     bool tooWide = false; // Wider than `MAX_GLYPH_WIDTH`, scored as all wrong.
     Ink ink;
+    int inkStart = 0; // From the pen position to the leftmost ink column.
+    int advance = 0;
 };
 
 /**
@@ -123,6 +129,9 @@ static Reference prepareReference(const SearchReference &reference) {
         glyph.ink = makeInk(image.width(), image.height(), [&](int x, int y) { return image[y][x] == color; });
         if (glyph.ink.pixels == 0)
             continue; // Spaces have nothing to match on.
+        const GlyphMetrics &metrics = reference.font.metrics(index);
+        glyph.inkStart = metrics.leftSpacing + glyph.ink.left;
+        glyph.advance = metrics.leftSpacing + metrics.width + metrics.rightSpacing;
 
         result.inkPixels += glyph.ink.pixels;
         result.glyphs.push_back(std::move(glyph));
@@ -134,12 +143,14 @@ static Reference prepareReference(const SearchReference &reference) {
 static CandidateGlyph makeCandidateGlyph(const InkMask &mask) {
     CandidateGlyph result;
     result.top = mask.top;
+    result.advance = mask.advance;
     if (mask.width > MAX_GLYPH_WIDTH) {
         result.tooWide = true;
         result.ink.pixels = std::ranges::count(mask.pixels, 1);
         return result;
     }
     result.ink = makeInk(mask.width, mask.rows, [&](int x, int y) { return mask.pixels[y * mask.width + x] != 0; });
+    result.inkStart = mask.left + result.ink.left;
     return result;
 }
 
@@ -174,7 +185,21 @@ struct CellScore {
     int distance = INT_MAX;
     int baseline = 0;
     int exactWidths = 0;
+    int inkOffset = 0; // Most common reference minus candidate ink start.
+    int extraAdvance = 0; // Most common reference minus candidate advance.
+    int exactSpacing = 0; // Glyphs whose ink start and advance both match with the two offsets above.
 };
+
+/**
+ * @param values                        Values to look at, must not be empty.
+ * @return                              Most common value, the smallest one on ties.
+ */
+static int mostCommon(const std::vector<int> &values) {
+    std::map<int, int> counts;
+    for (int value : values)
+        counts[value]++;
+    return std::ranges::max_element(counts, std::ranges::less(), [](const auto &pair) { return pair.second; })->first;
+}
 
 /**
  * Scores one rendering of a candidate against a reference.
@@ -239,8 +264,23 @@ static CellScore scoreCell(const Reference &reference, const std::vector<const C
     CellScore result;
     result.distance = partial[k];
     result.baseline = baselines[k];
-    for (size_t i = 0; i < candidates.size(); i++)
-        result.exactWidths += !candidates[i]->tooWide && candidates[i]->ink.width == reference.glyphs[i].ink.width;
+    std::vector<int> inkOffsets;
+    std::vector<int> extraAdvances;
+    for (size_t i = 0; i < candidates.size(); i++) {
+        const CandidateGlyph &candidate = *candidates[i];
+        if (candidate.tooWide || candidate.ink.pixels == 0)
+            continue;
+        result.exactWidths += candidate.ink.width == reference.glyphs[i].ink.width;
+        inkOffsets.push_back(reference.glyphs[i].inkStart - candidate.inkStart);
+        extraAdvances.push_back(reference.glyphs[i].advance - candidate.advance);
+    }
+    if (inkOffsets.empty())
+        return result;
+
+    result.inkOffset = mostCommon(inkOffsets);
+    result.extraAdvance = mostCommon(extraAdvances);
+    for (size_t i = 0; i < inkOffsets.size(); i++)
+        result.exactSpacing += inkOffsets[i] == result.inkOffset && extraAdvances[i] == result.extraAdvance;
     return result;
 }
 
@@ -456,6 +496,9 @@ class Searcher {
                 SearchMatch match;
                 match.distance = score.distance;
                 match.exactWidths = score.exactWidths;
+                match.exactSpacing = score.exactSpacing;
+                match.settings.inkOffset = score.inkOffset;
+                match.settings.extraAdvance = score.extraAdvance;
                 match.settings.ppem = ppem;
                 match.settings.mode = binarization.mode;
                 match.settings.threshold = binarization.threshold;

@@ -24,6 +24,7 @@ struct SearchOptions {
 struct SearchMatch {
     int distance = 0; // Number of pixels that differ.
     int exactWidths = 0; // Number of glyphs whose ink is exactly as wide as the reference's.
+    int exactSpacing = 0; // Number of glyphs spaced exactly like the reference's, with the offsets in `settings`.
     std::string path;
     int faceIndex = 0;
     std::string family;
