@@ -4283,7 +4283,7 @@ void SpawnEncounter(MapData *mapData, SpawnPoint *spawn, int monsterCatMod, int 
     if (uCurrentlyLoadedLevelType == LEVEL_INDOOR) {
         pSector = pIndoor->GetSector(spawn->position);
         if (pSector == 0)
-            return; // Some MM7 dungeons have spawn points outside the level, vanilla spawns nothing there.
+            return; // MM6, MM7 and MM8 all have spawn points outside the level, vanilla MM7 spawns nothing there.
     }
 
     // spawning loop
