@@ -869,6 +869,60 @@ GAME_TEST(Issues, Issue2784d) {
     EXPECT_EQ(soundNames(soundsTape).count("Elf Magic Shop 01"), 1);
 }
 
+GAME_TEST(Issues, Issue2786a) {
+    // A cauldron opened with Telekinesis gave its resistance bonus to the next character in line, not to the caster.
+    auto resistanceSum = [](const Character &character) {
+        int sum = 0;
+        for (Attribute resistance : {ATTRIBUTE_RESIST_FIRE, ATTRIBUTE_RESIST_AIR, ATTRIBUTE_RESIST_WATER, ATTRIBUTE_RESIST_EARTH,
+                                     ATTRIBUTE_RESIST_MIND, ATTRIBUTE_RESIST_BODY})
+            sum += character.GetActualResistance(resistance);
+        return sum;
+    };
+    auto casterTape = charTapes.custom(0, resistanceSum);
+    auto nextTape = charTapes.custom(1, resistanceSum);
+    engine->config->debug.NoActors.setValue(true);
+    game.startNewGame();
+    engine->config->debug.AllMagic.setValue(true);
+    game.teleportTo(MAP_ERATHIA, Vec3f(0, 0, 0), 0); // Decorations belong to the loaded map.
+    const LevelDecoration &cauldron = pLevelDecorations[534];
+    ASSERT_EQ(pDecorationTable->decoration(cauldron.uDecorationDescID)->hint, "cauldron");
+    game.teleportTo(MAP_ERATHIA, cauldron.vPosition - Vec3f(1000, 0, 0), 0);
+    test.startTaping();
+    game.castSpell(0, SPELL_EARTH_TELEKINESIS);
+    game.tick();
+    game.pointMouseAtDecoration(534);
+    game.pressAndReleaseButton(BUTTON_LEFT);
+    game.tick();
+
+    EXPECT_EQ(casterTape.delta(), 2);
+    EXPECT_EQ(nextTape.delta(), 0);
+}
+
+GAME_TEST(Issues, Issue2786b) {
+    // Telekinesis on a locked door played the "door is locked" reaction on the next character in line, not the caster.
+    auto statusTape = tapes.statusBar();
+    auto houseTape = tapes.house();
+    auto soundsTape = tapes.sounds();
+    auto portraitTape = charTapes.portraits();
+    engine->config->debug.NoActors.setValue(true);
+    game.startNewGame();
+    engine->config->debug.AllMagic.setValue(true);
+    pParty->_questBits.set(QBIT_MERCENARY_GUILD_QUEST_FAILED); // Locks the Harmondale shops.
+    game.teleportTo(MAP_HARMONDALE, Vec3f(-6472, 13880, 32), 90); // Facing the Tempered Steel door.
+    test.startTaping();
+    game.castSpell(0, SPELL_EARTH_TELEKINESIS);
+    game.tick();
+    game.pointMouseAtFace(198);
+    game.pressAndReleaseButton(BUTTON_LEFT);
+    game.tick();
+
+    EXPECT_CONTAINS(statusTape, "This Door is Locked");
+    EXPECT_EQ(houseTape, tape(HOUSE_INVALID));
+    EXPECT_CONTAINS(soundNames(soundsTape), "GM228d"); // The caster's voice, the next character's is "hm428a".
+    for (int i = 1; i < 4; i++)
+        EXPECT_MISSES(portraitTape.slice(i), PORTRAIT_NO); // The casting portrait hides the caster's in the same frame.
+}
+
 GAME_TEST(Issues, Issue2789) {
     // Quickloading while an enchantment spell waited for its target item crashed on the next click on an item.
     test.prepareForNextTest(10, RANDOM_ENGINE_SEQUENTIAL);

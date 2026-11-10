@@ -13,6 +13,7 @@
 #include "Engine/Graphics/Vis.h"
 #include "Engine/Graphics/Indoor.h"
 #include "Engine/Graphics/Renderer/Renderer.h"
+#include "Engine/Interaction.h"
 #include "Engine/Localization.h"
 #include "Engine/Objects/Actor.h"
 #include "Engine/Tables/ObjectTable.h"
@@ -2183,15 +2184,11 @@ void CastSpellInfoHelpers::castSpell() {
                     if (spell_targeted_at.type() == OBJECT_Actor) {
                         pActors[obj_id].LootActor();
                     }
+                    // The caster's recovery has already moved the active slot on. Vanilla MM6, MM7 and MM8 run these
+                    // events for the next active character.
                     if (spell_targeted_at.type() == OBJECT_Decoration) {
                         OpenedTelekinesis = true;
-                        if (pLevelDecorations[obj_id].uEventID) {
-                            runEvent(EvtContext(EVT_SOURCE_MAP, pLevelDecorations[obj_id].uEventID, spell_targeted_at));
-                            pLevelDecorations[obj_id].uFlags |= LEVEL_DECORATION_VISIBLE_ON_MAP;
-                        } else if (pLevelDecorations[obj_id].IsInteractive()) {
-                            int eventId = engine->_persistentVariables.decorVars[pLevelDecorations[obj_id].eventVarId] + 380; // 380 is the MM7 dispatch base, see EVENT_ChangeEvent.
-                            runEvent(EvtContext(EVT_SOURCE_GLOBAL, eventId, spell_targeted_at));
-                        }
+                        DecorationInteraction(obj_id, spell_targeted_at, pCastSpell->casterCharacterIndex);
                     }
                     if (spell_targeted_at.type() == OBJECT_Face) {
                         int event;
@@ -2201,7 +2198,9 @@ void CastSpellInfoHelpers::castSpell() {
                         } else {
                             event = pOutdoor->face(spell_targeted_at).eventId;
                         }
-                        runEvent(EvtContext(EVT_SOURCE_MAP, event, spell_targeted_at));
+                        EvtContext context(EVT_SOURCE_MAP, event, spell_targeted_at);
+                        context.actingCharacterIndex = pCastSpell->casterCharacterIndex;
+                        runEvent(context);
                     }
                     break;
                 }
