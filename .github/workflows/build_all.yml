@@ -135,7 +135,7 @@ jobs:
 
       - name: '[android] Set up Java'
         if: matrix.platform == 'android'
-        uses: actions/setup-java@v6.1.0
+        uses: actions/setup-java@v6.2.0
         with:
           distribution: temurin
           java-version: ${{env.JAVA_VERSION}}
@@ -281,7 +281,7 @@ jobs:
 
       - name: '[darwin/windows/android] Publish release'
         if: inputs.releaseTag != '' && matrix.platform != 'linux' # Linux ships as a Flatpak.
-        uses: softprops/action-gh-release@v3.0.3
+        uses: softprops/action-gh-release@v3.0.4
         with:
           prerelease: true
           tag_name: ${{inputs.releaseTag}}
