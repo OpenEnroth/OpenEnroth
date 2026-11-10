@@ -487,6 +487,9 @@ void Engine::onGameViewportClick() {
         }
     } else if (pid.type() == OBJECT_Actor) {
         int mon_id = pid.id();
+        SpellId quickSpell = SPELL_NONE;
+        if (pParty->hasActiveCharacter() && !engine->IsUnderwater())
+            quickSpell = pParty->activeCharacter().castableQuickSpell();
 
         if (pActors[mon_id].aiState == Dead) {
             if (in_range) {
@@ -515,16 +518,14 @@ void Engine::onGameViewportClick() {
             }
         } else if (pParty->bTurnBasedModeOn && pTurnEngine->turn_stage == TE_MOVEMENT) {
             pParty->setAirborne(true);
-        } else if (pParty->hasActiveCharacter() &&
-                   pParty->activeCharacter().castableQuickSpell() != SPELL_NONE &&
-                   IsSpellQuickCastableOnShiftClick(pParty->activeCharacter().uQuickSpell)) {
+        } else if (quickSpell != SPELL_NONE && IsSpellQuickCastableOnShiftClick(quickSpell)) {
             engine->_messageQueue->addMessageCurrentFrame(UIMSG_CastQuickSpellAtActor, mon_id, 0);
         } else if (pParty->pPickedItem.itemId != ITEM_NULL) {
             pParty->dropHeldItem();
         } else if (!pParty->hasActiveCharacter()) {
             engine->_statusBar->setEvent(LSTR_NOBODY_IS_IN_CONDITION);
             pAudioPlayer->playUISound(SOUND_error);
-        } else if (pParty->activeCharacter().castableQuickSpell() != SPELL_NONE) {
+        } else if (quickSpell != SPELL_NONE) {
             engine->_statusBar->setEvent(LSTR_SET_A_QUICK_SPELL);
             pAudioPlayer->playUISound(SOUND_error);
         } else {

@@ -237,13 +237,13 @@ class Character {
     void SalesProcess(InventoryEntry entry, HouseId houseId);  // 0x4BE2DD
     bool Recover(Duration dt);
     bool CanCastSpell(int uRequiredMana);
-    void SpendMana(int uRequiredMana);
 
     /**
      * @return                          This character's quick spell, or `SPELL_NONE` if none is set, the character
      *                                  doesn't know it, or doesn't have the mana to cast it.
      */
     SpellId castableQuickSpell() const;
+    void SpendMana(int uRequiredMana);
     void PlayAwardSound();
 
     /**

@@ -359,7 +359,10 @@ SpellId Character::castableQuickSpell() const {
         return uQuickSpell;
     if (!bHaveSpell[uQuickSpell])
         return SPELL_NONE; // Can end up here after setting the quick spell in all magic mode.
-    Mastery mastery = getActualSkillValue(skillForSpell(uQuickSpell)).mastery();
+    Skill school = skillForSpell(uQuickSpell);
+    if (isSpellFreeNow(school))
+        return uQuickSpell;
+    Mastery mastery = getActualSkillValue(school).mastery();
     return mana >= pSpellDatas[uQuickSpell].mana_per_skill[mastery] ? uQuickSpell : SPELL_NONE;
 }
 
