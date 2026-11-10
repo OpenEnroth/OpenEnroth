@@ -260,6 +260,23 @@ static const int handledSignals[] = {
     SIGXFSZ, // File size limit exceeded.
 };
 
+#if defined(__SANITIZE_ADDRESS__)
+#   define MM_STACK_TRACE_ASAN
+#elif defined(__has_feature)
+#   if __has_feature(address_sanitizer)
+#       define MM_STACK_TRACE_ASAN
+#   endif
+#endif
+
+#ifdef MM_STACK_TRACE_ASAN
+extern "C" const char *__asan_default_options() { // NOLINT: the name is ASan's.
+    // ASan gives every thread it starts an alternate signal stack of its own, 54kb on x86_64 Linux, and with
+    // SA_ONSTACK a crash on such a thread runs the handler there. Symbolizing a trace with ASan on doesn't fit
+    // in it, the thread's own stack is big enough.
+    return "use_sigaltstack=0";
+}
+#endif
+
 #ifdef __APPLE__
 
 /**
