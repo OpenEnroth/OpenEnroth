@@ -39,6 +39,14 @@ TestMultiTape<int> CharacterTapeRecorder::faces() {
     return custom(std::bind<int>(&Character::uCurrentFace, _1));
 }
 
+TestTape<int> CharacterTapeRecorder::voice(int characterIndex) {
+    return custom(characterIndex, std::bind<int>(&Character::uVoiceID, _1));
+}
+
+TestMultiTape<int> CharacterTapeRecorder::voices() {
+    return custom(std::bind<int>(&Character::uVoiceID, _1));
+}
+
 TestTape<int> CharacterTapeRecorder::hp(int characterIndex) {
     return custom(characterIndex, std::bind(&Character::health, _1));
 }

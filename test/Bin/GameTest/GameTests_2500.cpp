@@ -1112,31 +1112,32 @@ GAME_TEST(Issues, Issue2867a) {
         test.prepareForNextTest();
         game.startNewGame();
         Character &zombie = pParty->pCharacters[0];
-        Character &user = pParty->pCharacters[otherUser ? 2 : 0];
         int face = zombie.uCurrentFace;
         int voice = zombie.uVoiceID;
         zombie.SetCondition(CONDITION_ZOMBIE, 0);
         zombie.SetCondition(CONDITION_WEAK, 0);
-        user.SetCondition(CONDITION_WEAK, 0);
+        pParty->pCharacters[2].SetCondition(CONDITION_WEAK, 0);
         int zombieFace = zombie.IsMale() ? 23 : 24;
         int zombieVoice = zombieFace; // A zombie's voice has the number of its face.
 
         auto zombieTape = charTapes.hasCondition(0, CONDITION_ZOMBIE);
         auto weakTape = charTapes.hasCondition(0, CONDITION_WEAK);
-        auto userWeakTape = charTapes.hasCondition(2, CONDITION_WEAK);
+        auto thirdWeakTape = charTapes.hasCondition(2, CONDITION_WEAK);
+        auto activeTape = tapes.activeCharacterIndex();
         auto faceTape = charTapes.face(0);
-        auto voiceTape = charTapes.custom(0, [](const Character &character) { return character.uVoiceID; });
+        auto voiceTape = charTapes.voice(0);
         test.startTaping();
         if (otherUser)
             game.pressAndReleaseKey(PlatformKey::KEY_DIGIT_3);
-        game.tick(); // Tapes the zombie before the potion.
+        game.tick(); // Tapes the zombie before the potion, and makes the third character active before it's in hand.
         pParty->setHoldingItem(Item(ITEM_POTION_DIVINE_RESTORATION));
         game.pressGuiButton("Game_Character1", BUTTON_RIGHT); // Use the potion on the zombie's portrait.
         game.tick();
 
         EXPECT_EQ(zombieTape, tape(true, false));
         EXPECT_EQ(weakTape, tape(true, false));
-        EXPECT_EQ(userWeakTape, tape(otherUser));
+        EXPECT_EQ(thirdWeakTape, tape(true));
+        EXPECT_EQ(activeTape, otherUser ? tape(2, 0) : tape(0, 1)); // The user goes into recovery and gives up the turn.
         EXPECT_EQ(faceTape, tape(zombieFace, face));
         EXPECT_EQ(voiceTape, tape(zombieVoice, voice));
         EXPECT_EQ(game_ui_player_faces[0][0]->name(), portraitName(face));
@@ -1151,12 +1152,12 @@ GAME_TEST(Issues, Issue2867b) {
     int voice = zombie.uVoiceID;
     zombie.SetCondition(CONDITION_ZOMBIE, 0);
     int zombieFace = zombie.IsMale() ? 23 : 24;
-    int zombieVoice = zombieFace; // A zombie's voice has the number of its face.
+    int zombieVoice = zombieFace;
 
     auto deathsTape = tapes.deaths();
     auto zombieTape = charTapes.hasCondition(1, CONDITION_ZOMBIE);
     auto faceTape = charTapes.face(1);
-    auto voiceTape = charTapes.custom(1, [](const Character &character) { return character.uVoiceID; });
+    auto voiceTape = charTapes.voice(1);
     test.startTaping();
     game.tick(); // The frame the party dies in isn't drawn, so the tapes need a frame from before it.
     for (Character &character : pParty->pCharacters)
@@ -1182,14 +1183,14 @@ GAME_TEST(Issues, Issue2867c) {
     zombie.SetCondition(CONDITION_ZOMBIE, 0);
     zombie.SetCondition(CONDITION_DISEASE_WEAK, 0);
     int zombieFace = zombie.IsMale() ? 23 : 24;
-    int zombieVoice = zombieFace; // A zombie's voice has the number of its face.
+    int zombieVoice = zombieFace;
     Pid wellFace = Pid::face(pOutdoor->pBModels[21].faces[10]);
-    ASSERT_EQ(pOutdoor->face(wellFace).eventId, 205);
 
     auto zombieTape = charTapes.hasCondition(0, CONDITION_ZOMBIE);
     auto diseaseTape = charTapes.hasCondition(0, CONDITION_DISEASE_WEAK);
     auto faceTape = charTapes.face(0);
-    auto voiceTape = charTapes.custom(0, [](const Character &character) { return character.uVoiceID; });
+    auto voiceTape = charTapes.voice(0);
+    auto statusTape = tapes.statusBar();
     test.startTaping();
     game.pointMouseAtFace(wellFace.id());
     game.pressAndReleaseButton(BUTTON_LEFT);
@@ -1197,6 +1198,7 @@ GAME_TEST(Issues, Issue2867c) {
 
     EXPECT_EQ(zombieTape, tape(true, false));
     EXPECT_EQ(diseaseTape, tape(true, false));
+    EXPECT_CONTAINS(statusTape, "Disease Cured");
     EXPECT_EQ(faceTape, tape(zombieFace, face));
     EXPECT_EQ(voiceTape, tape(zombieVoice, voice));
     EXPECT_EQ(game_ui_player_faces[0][0]->name(), portraitName(face));
