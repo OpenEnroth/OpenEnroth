@@ -214,12 +214,8 @@ void CastSpellInfoHelpers::castSpell() {
         // Recovery time for spell failure if it cannot be cast at all in current context
         failureRecoveryTime = recoveryTime * engine->config->gameplay.SpellFailureRecoveryMod.value();
 
-        if (!pCastSpell->overrideSkillValue) {
-            if (which_skill == SKILL_DARK && pParty->uCurrentHour == 0 && pParty->uCurrentMinute == 0 ||
-                which_skill == SKILL_LIGHT && pParty->uCurrentHour == 12 && pParty->uCurrentMinute == 0) {  // free spells at midnight or midday
-                uRequiredMana = 0;
-            }
-        }
+        if (!pCastSpell->overrideSkillValue && isSpellFreeNow(which_skill))
+            uRequiredMana = 0;
 
         if (isRegularSpell(pCastSpell->uSpellID) && !pPlayer->CanCastSpell(uRequiredMana)) {
             spellFailed(pCastSpell, LSTR_NOT_ENOUGH_SPELL_POINTS);
@@ -3217,6 +3213,11 @@ void pushNPCSpell(SpellId spell) {
 
 void pushScrollSpell(SpellId spell, int casterIndex) {
     pushSpellOrRangedAttack(spell, casterIndex, SCROLL_OR_NPC_SPELL_SKILL_VALUE, ON_CAST_CastViaScroll);
+}
+
+bool isSpellFreeNow(Skill school) {
+    return school == SKILL_DARK && pParty->uCurrentHour == 0 && pParty->uCurrentMinute == 0 ||
+           school == SKILL_LIGHT && pParty->uCurrentHour == 12 && pParty->uCurrentMinute == 0;
 }
 
 void spellTargetPicked(Pid targetPid, int targetCharacterIndex) {

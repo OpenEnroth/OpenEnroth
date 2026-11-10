@@ -124,6 +124,13 @@ void pushNPCSpell(SpellId spell);
 void pushScrollSpell(SpellId spell, int casterIndex);
 
 /**
+ * @param school                        Magic school of the spell.
+ * @return                              Whether spells of this school cost no mana right now. Dark spells are free at
+ *                                      midnight, and Light spells at noon.
+ */
+bool isSpellFreeNow(Skill school);
+
+/**
  * Process successful picking target for spell.
  *
  * @param targetPid                     `Pid` of the target.

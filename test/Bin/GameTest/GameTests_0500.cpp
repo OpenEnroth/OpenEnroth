@@ -1055,7 +1055,7 @@ GAME_TEST(Issues, Issue833a) {
 }
 
 GAME_TEST(Issues, Issue833b) {
-    // Test that shift+clicking when no quick spell is set doesn't assert.
+    // Shift+clicking a monster with no quick spell set asserted. The click should attack.
     auto manaTape = charTapes.mp(0);
     auto quickSpellTape = charTapes.quickSpell(0);
     auto actorsHpTape = actorTapes.totalHp();
@@ -1064,7 +1064,8 @@ GAME_TEST(Issues, Issue833b) {
     EXPECT_EQ(manaTape.delta(), 0);
     EXPECT_EQ(quickSpellTape, tape(SPELL_NONE));
     EXPECT_EQ(actorsHpTape.size(), 1); // No one was hurt.
-    EXPECT_CONTAINS(soundsTape.flatten(), SOUND_error);
+    EXPECT_CONTAINS(soundsTape.flatten(), SOUND_swing_with_blunt_weapon01);
+    EXPECT_MISSES(soundsTape.flatten(), SOUND_error);
 }
 
 GAME_TEST(Issues, Issue840) {

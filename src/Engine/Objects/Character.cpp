@@ -354,6 +354,18 @@ bool Character::CanCastSpell(int uRequiredMana) {
     return false;
 }
 
+SpellId Character::castableQuickSpell() const {
+    if (uQuickSpell == SPELL_NONE || engine->config->debug.AllMagic.value())
+        return uQuickSpell;
+    if (!bHaveSpell[uQuickSpell])
+        return SPELL_NONE; // Can end up here after setting the quick spell in all magic mode.
+    Skill school = skillForSpell(uQuickSpell);
+    if (isSpellFreeNow(school))
+        return uQuickSpell;
+    Mastery mastery = getActualSkillValue(school).mastery();
+    return mana >= pSpellDatas[uQuickSpell].mana_per_skill[mastery] ? uQuickSpell : SPELL_NONE;
+}
+
 void Character::SpendMana(int uRequiredMana) {
     if (engine->config->debug.AllMagic.value()) {
         return;
