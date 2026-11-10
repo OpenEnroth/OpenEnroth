@@ -52,9 +52,9 @@ FontToolOptions FontToolOptions::parse(int argc, char **argv) {
     render->add_flag("--bold", result.render.bold, "Embolden the way GDI does, by drawing every glyph again a pixel to the right.");
     render->add_flag("--oblique", result.render.oblique, "Slant the outlines the way FreeType and GDI simulate italics.");
     render->add_option("--baseline", result.render.baseline, "Row of the baseline in the glyph cell.")->required()->option_text("N");
+    render->add_option("--height", result.render.height, "Height of the glyph cell.")->required()->check(CLI::PositiveNumber)->option_text("N");
     render->add_option("--ink-offset", result.render.inkOffset, "Move every glyph right by this many pixels, keeping the advance.")->option_text("N");
     render->add_option("--extra-advance", result.render.extraAdvance, "Add this many pixels to every glyph's advance.")->option_text("N");
-    render->add_option("--height", result.render.height, "Height of the glyph cell.")->required()->check(CLI::PositiveNumber)->option_text("N");
     render->add_option("--shadow", result.shadow, "Shadow to draw: none, drop or outline.")
         ->transform(CLI::CheckedTransformer(std::map<std::string, ShadowMode>{
             {"none", SHADOW_NONE}, {"drop", SHADOW_DROP}, {"outline", SHADOW_OUTLINE}}))->option_text("MODE");

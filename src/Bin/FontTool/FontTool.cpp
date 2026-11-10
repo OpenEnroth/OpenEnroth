@@ -111,7 +111,7 @@ static int runRender(const FontToolOptions &options) {
         for (int i = 0; i < font.size(); i++) {
             const GlyphMetrics &old = font.metrics(i);
             auto [metrics, image] = reshadow(old, font.image(i), font.height(), options.shadow);
-            metrics.rightSpacing = old.leftSpacing + old.width + old.rightSpacing - metrics.leftSpacing - metrics.width; // Shadows don't change the spacing.
+            metrics.rightSpacing = old.leftSpacing + old.width + old.rightSpacing - metrics.leftSpacing - metrics.width; // The ink offset and extra advance already leave room for the shadow.
             builder.add(font.character(i), metrics, image);
         }
         font = std::move(builder).build();
@@ -192,10 +192,10 @@ static int runSearch(const FontToolOptions &options) {
         const SearchResult &result = results[r];
         fmt::println("\n{}: {} glyphs, {} ink pixels", references[r].name, result.glyphCount, result.inkPixels);
         for (const SearchMatch &match : result.matches) {
-            fmt::println("  {:6} {:3}/{:<3} {:3}/{:<3}  {:58}  {} / {}  {}{}", match.distance, match.exactWidths,
-                         result.glyphCount, match.exactSpacing, result.glyphCount,
-                         match.settings.toString(), match.family, match.style, match.path,
-                         match.faceIndex > 0 ? fmt::format(" --face-index {}", match.faceIndex) : "");
+            fmt::println("  {:6} {:3}/{:<3} {:3}/{:<3}  {} / {}  {}{}  {}", match.distance, match.exactWidths,
+                         result.glyphCount, match.exactSpacing, result.glyphCount, match.family, match.style,
+                         match.path, match.faceIndex > 0 ? fmt::format(" --face-index {}", match.faceIndex) : "",
+                         match.settings.toString());
         }
     }
 
