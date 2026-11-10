@@ -810,11 +810,33 @@ GAME_TEST(Issues, Issue760) {
 }
 
 GAME_TEST(Issues, Issue774) {
-    // Background stunned actors do idle motions
-    test.playTraceFromTestData("issue_774.mm7", "issue_774.json");
-    for (auto &act : pActors)
-        if (!(act.attributes & ACTOR_FULL_AI_STATE))
-            EXPECT_TRUE(act.aiState == InPain || act.aiState == Dead);
+    // Background actors in pain do idle motions. Armageddon throws them up in pain, and they got up in mid-air to fidget.
+    test.prepareForNextTest(25, RANDOM_ENGINE_MERSENNE_TWISTER); // Armageddon pushes by a fixed amount per frame, at 100ms frames gravity wins and nobody takes off.
+
+    engine->config->debug.NoActors.setValue(true);
+    engine->config->debug.AllMagic.setValue(true);
+    game.startNewGame();
+    test.startTaping();
+    prepareForBattleTest();
+    engine->config->debug.NoActors.setValue(false);
+
+    // Far enough from the party to stay a background actor.
+    int titanId = game.spawnMonster(pParty->pos + Vec3f(0, 6500, 0), MONSTER_TITAN_A, SPAWN_DUMMY)->id;
+    game.tick(1); // Drops it onto the ground.
+
+    auto flightTape = actorTapes.custom(titanId, [] (const Actor &actor) { return std::pair(actor.aiState, actor.pos.z); });
+    auto backgroundTape = actorTapes.custom(titanId, [] (const Actor &actor) { return !(actor.attributes & ACTOR_FULL_AI_STATE); });
+
+    game.castSpell(0, SPELL_DARK_ARMAGEDDON);
+    game.tick(148); // Flies up and lands 3.7s in.
+    test.stopTaping();
+
+    float groundZ = flightTape.front().second;
+    EXPECT_EQ(backgroundTape, tape(true)); // Never made it into full AI state.
+    EXPECT_TRUE(flightTape.contains([] (const auto &p) { return p.first == InPain; })); // Got hurt...
+    EXPECT_GT(flightTape.map([] (const auto &p) { return p.second; }).max(), groundZ + 200); // ...went flying...
+    EXPECT_LE(flightTape.back().second, groundZ + 100); // ...came back down...
+    EXPECT_FALSE(flightTape.contains([=] (const auto &p) { return p.second > groundZ + 100 && p.first != InPain; })); // ...and was in pain all the way up and down.
 }
 
 GAME_TEST(Issues, Issue779) {
