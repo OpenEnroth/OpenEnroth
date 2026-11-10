@@ -52,6 +52,28 @@ static bool characterHasJar(int charIndex, int jarIndex) {
     return false;
 }
 
+static void prepareForShiftClickTest(EngineController &game, Skill school, SpellId quickSpell, int mana) {
+    engine->config->debug.NoActors.setValue(true);
+    game.startNewGame();
+    prepareForBattleTest();
+    engine->config->debug.NoActors.setValue(false);
+
+    Character &knight = pParty->pCharacters[0];
+    knight.setSkillValue(school, CombinedSkillValue(1, MASTERY_NOVICE));
+    if (quickSpell != SPELL_NONE)
+        knight.bHaveSpell[quickSpell] = true;
+    knight.uQuickSpell = quickSpell;
+    knight.mana = mana;
+    knight._some_attack_bonus = 100; // Melee hits almost always.
+}
+
+static void shiftClickActor(EngineController &game, int actorIndex) {
+    game.pointMouseAtActor(actorIndex);
+    game.pressKey(PlatformKey::KEY_SHIFT);
+    game.pressAndReleaseButton(BUTTON_LEFT);
+    game.releaseKey(PlatformKey::KEY_SHIFT);
+}
+
 // 1000
 
 GAME_TEST(Issues, Issue1004) {
@@ -1375,47 +1397,90 @@ GAME_TEST(Issues, Issue1489) {
     EXPECT_CONTAINS(amuletTape, ITEM_NULL);
 }
 
-GAME_TEST(Issues, Issue1492) {
+GAME_TEST(Issues, Issue1492a) {
     // Shift-clicking a monster without a quick spell only asked for one, and without the mana for the quick spell the
-    // cast just failed. Both attack now, like the quick cast key, friendly or not. A quick spell the character has the
-    // mana for still fires.
-    for (auto [spell, mana, friendly] : {std::tuple(SPELL_NONE, 100, false),
-                                         std::tuple(SPELL_FIRE_FIRE_BOLT, 0, false),
-                                         std::tuple(SPELL_NONE, 100, true),
-                                         std::tuple(SPELL_FIRE_FIRE_BOLT, 100, false)}) {
+    // cast failed. Both should attack, like the quick cast key does. A quick spell with the mana for it is cast.
+    for (auto [spell, mana, cast] : {std::tuple(SPELL_NONE, 100, false),
+                                     std::tuple(SPELL_FIRE_FIRE_BOLT, 0, false),
+                                     std::tuple(SPELL_FIRE_FIRE_BOLT, 100, true)}) {
         test.prepareForNextTest();
-        engine->config->debug.NoActors.setValue(true);
-        game.startNewGame();
+        prepareForShiftClickTest(game, SKILL_FIRE, spell, mana);
         test.startTaping();
-        prepareForBattleTest();
-        engine->config->debug.NoActors.setValue(false);
+        game.spawnMonster(pParty->pos + Vec3f(0, 200, 0), MONSTER_GOBLIN_A, SPAWN_DUMMY);
 
-        Character &knight = pParty->pCharacters[0];
-        knight.setSkillValue(SKILL_FIRE, CombinedSkillValue(1, MASTERY_NOVICE));
-        knight.bHaveSpell[SPELL_FIRE_FIRE_BOLT] = true;
-        knight.uQuickSpell = spell;
-        knight.mana = mana;
-        SpawnFlags flags = SPAWN_DUMMY;
-        if (friendly)
-            flags |= SPAWN_FRIENDLY;
-        Actor *goblin = game.spawnMonster(pParty->pos + Vec3f(0, 200, 0), MONSTER_GOBLIN_A, flags);
-        EXPECT_EQ(goblin->GetActorsRelation(0) == HOSTILITY_FRIENDLY, friendly);
-        auto recoveringTape = charTapes.custom(0, [](const Character &character) {
-            return character.timeToRecovery > 0_ticks;
-        });
+        auto hpTape = actorTapes.hp(0);
         auto mpTape = charTapes.mp(0);
-        auto statusTape = tapes.statusBar();
-        game.pointMouseAtActor(0);
-        game.pressKey(PlatformKey::KEY_SHIFT);
-        game.pressAndReleaseButton(BUTTON_LEFT);
+        auto soundsTape = tapes.sounds();
+        shiftClickActor(game, 0);
         game.tick();
-        game.releaseKey(PlatformKey::KEY_SHIFT);
-        test.stopTaping();
 
-        EXPECT_CONTAINS(recoveringTape, true); // Attacked or cast, the swing can miss.
-        EXPECT_EQ(mpTape.delta() < 0, spell != SPELL_NONE && mana > 0);
-        EXPECT_MISSES(statusTape, "Set a Quick Spell that targets a monster!");
+        EXPECT_LT(hpTape.delta(), 0);
+        EXPECT_MISSES(soundsTape.flatten(), SOUND_error);
+        EXPECT_MISSES(soundsTape.flatten(), SOUND_spellfail0201);
+        if (cast) {
+            EXPECT_LT(mpTape.delta(), 0);
+            EXPECT_MISSES(soundsTape.flatten(), SOUND_swing_with_blunt_weapon01);
+        } else {
+            EXPECT_EQ(mpTape.delta(), 0);
+            EXPECT_CONTAINS(soundsTape.flatten(), SOUND_swing_with_blunt_weapon01);
+        }
     }
+}
+
+GAME_TEST(Issues, Issue1492b) {
+    // Shift-clicking a friendly actor without a quick spell only asked for one. It should attack, like the quick cast
+    // key does.
+    prepareForShiftClickTest(game, SKILL_FIRE, SPELL_NONE, 100);
+    test.startTaping();
+    game.spawnMonster(pParty->pos + Vec3f(0, 200, 0), MONSTER_GOBLIN_A, SPAWN_DUMMY | SPAWN_FRIENDLY);
+
+    auto hpTape = actorTapes.hp(0);
+    auto soundsTape = tapes.sounds();
+    shiftClickActor(game, 0);
+    game.tick();
+
+    EXPECT_LT(hpTape.delta(), 0);
+    EXPECT_CONTAINS(soundsTape.flatten(), SOUND_swing_with_blunt_weapon01);
+    EXPECT_MISSES(soundsTape.flatten(), SOUND_error);
+}
+
+GAME_TEST(Issues, Issue1492c) {
+    // Shift-clicking a monster underwater with a castable quick spell said that can't be done there. It should
+    // attack, like the quick cast key does.
+    prepareForShiftClickTest(game, SKILL_FIRE, SPELL_FIRE_FIRE_BOLT, 100);
+    game.teleportTo(MAP_SHOALS, Vec3f(-6974, 5435, 225), 90);
+    test.startTaping();
+    Actor *goblin = game.spawnMonster(pParty->pos + Vec3f(0, 200, 0), MONSTER_GOBLIN_A, SPAWN_DUMMY);
+
+    auto hpTape = actorTapes.hp(goblin->id);
+    auto mpTape = charTapes.mp(0);
+    auto soundsTape = tapes.sounds();
+    shiftClickActor(game, goblin->id);
+    game.tick();
+
+    EXPECT_LT(hpTape.delta(), 0);
+    EXPECT_EQ(mpTape.delta(), 0);
+    EXPECT_CONTAINS(soundsTape.flatten(), SOUND_swing_with_blunt_weapon01);
+    EXPECT_MISSES(soundsTape.flatten(), SOUND_error);
+}
+
+GAME_TEST(Issues, Issue1492d) {
+    // Light spells cost no mana at noon, so a shift-click with Light Bolt as the quick spell should cast it even with
+    // no mana left.
+    prepareForShiftClickTest(game, SKILL_LIGHT, SPELL_LIGHT_LIGHT_BOLT, 0);
+    while (pParty->uCurrentHour != 12)
+        game.tick();
+    test.startTaping();
+    Actor *goblin = game.spawnMonster(pParty->pos + Vec3f(0, 200, 0), MONSTER_GOBLIN_A, SPAWN_DUMMY);
+
+    auto hpTape = actorTapes.hp(goblin->id);
+    auto soundsTape = tapes.sounds();
+    shiftClickActor(game, goblin->id);
+    game.tick();
+
+    EXPECT_LT(hpTape.delta(), 0);
+    EXPECT_MISSES(soundsTape.flatten(), SOUND_swing_with_blunt_weapon01);
+    EXPECT_MISSES(soundsTape.flatten(), SOUND_spellfail0201);
 }
 
 GAME_TEST(Issues, Issue1497a) {
