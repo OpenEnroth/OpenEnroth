@@ -39,7 +39,7 @@
 }
 
 ProcessResult runProcess(const Path &path, const std::vector<std::string> &args, std::chrono::milliseconds timeout) {
-    assert(!path.isEmpty());
+    assert(path);
     assert(timeout >= timeout.zero());
 
     Path absolutePath = fs::absolute(path); // Windows searches PATH and more for a relative name, POSIX doesn't.

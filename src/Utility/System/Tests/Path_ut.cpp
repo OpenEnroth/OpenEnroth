@@ -519,6 +519,14 @@ UNIT_TEST(Path, IsEmpty) {
     EXPECT_FALSE(Path("a").isEmpty());
 }
 
+UNIT_TEST(Path, BoolConversion) {
+    EXPECT_FALSE(Path());
+    EXPECT_TRUE(!Path());
+    EXPECT_TRUE(Path("a"));
+    EXPECT_FALSE(!Path("a"));
+    static_assert(!std::is_convertible_v<Path, bool>);
+}
+
 UNIT_TEST(Path, Format) {
     EXPECT_EQ(fmt::format("[{:>6}]", Path("a/b")), "[   a/b]"); // Format specs reach the string formatter.
     Path path("a/b");

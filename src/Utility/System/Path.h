@@ -73,6 +73,14 @@ class Path {
         return _path.empty();
     }
 
+    [[nodiscard]] bool operator!() const {
+        return isEmpty();
+    }
+
+    [[nodiscard]] explicit operator bool() const {
+        return !isEmpty();
+    }
+
     [[nodiscard]] std::string displayString() const {
         return PathView(*this).displayString();
     }
