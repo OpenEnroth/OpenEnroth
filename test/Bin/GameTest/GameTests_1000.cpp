@@ -1344,9 +1344,9 @@ GAME_TEST(Issues, Issue1482) {
     EXPECT_LT(timeTape.delta(), Duration::fromMinutes(10));
 }
 
-GAME_TEST(Issues, Issue1485) {
-    // Two regeneration rings should heal twice as fast as one, and two mana rings should restore twice the SP. With
-    // regen_stacking off, as in vanilla, a second ring adds nothing.
+GAME_TEST(Issues, Issue1485a) {
+    // With regen_stacking on, two regeneration rings heal twice what one does, and two mana rings restore twice the SP.
+    // With it off, only one ring of each kind counts.
     for (bool stacking : {true, false}) {
         SCOPED_TRACE(fmt::format("stacking={}", stacking));
         test.prepareForNextTest();
@@ -1367,11 +1367,32 @@ GAME_TEST(Issues, Issue1485) {
         fighter.health = 1;
         caster.mana = 0;
         test.startTaping();
-        game.tick(100); // Five game minutes, one regeneration tick.
+        game.tick(100); // One regeneration tick.
 
-        int perTick = stacking ? 2 : 1;
-        EXPECT_EQ(hpTape, tape(1, 1 + perTick));
-        EXPECT_EQ(mpTape, tape(0, perTick));
+        EXPECT_EQ(hpTape, stacking ? tape(1, 3) : tape(1, 2));
+        EXPECT_EQ(mpTape, stacking ? tape(0, 2) : tape(0, 1));
+    }
+}
+
+GAME_TEST(Issues, Issue1485b) {
+    // With regen_stacking on, a Regeneration spell and a regeneration ring add up. With it off, the spell's healing
+    // replaces the ring's.
+    for (bool stacking : {true, false}) {
+        SCOPED_TRACE(fmt::format("stacking={}", stacking));
+        test.prepareForNextTest();
+        engine->config->gameplay.RegenStacking.setValue(stacking);
+        auto hpTape = charTapes.hp(0);
+        game.startNewGame();
+        Character &fighter = pParty->pCharacters[0];
+        fighter.pCharacterBuffs[CHARACTER_BUFF_REGENERATION].Apply(pParty->GetPlayingTime() + Duration::fromDays(1), MASTERY_NOVICE, 1, 0, 0);
+        Item ring(ITEM_EMERALD_RING);
+        ring.specialEnchantment = ITEM_ENCHANTMENT_OF_REGENERATION;
+        fighter.inventory.equip(ITEM_SLOT_RING1, ring);
+        fighter.health = 1;
+        test.startTaping();
+        game.tick(100); // One regeneration tick.
+
+        EXPECT_EQ(hpTape, stacking ? tape(1, 7) : tape(1, 6));
     }
 }
 
