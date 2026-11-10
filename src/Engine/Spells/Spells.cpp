@@ -465,9 +465,8 @@ bool SpellBuff::Apply(Time expire_time, Mastery uSkillMastery,
     // For bug catching
     assert(uSkillMastery >= MASTERY_NOVICE && uSkillMastery <= MASTERY_GRANDMASTER);
 
-    if (this->expireTime && (expire_time < this->expireTime)) {
+    if (this->expireTime && (expire_time < this->expireTime))
         return false;
-    }
 
     this->skillMastery = uSkillMastery;
     this->power = uPower;
@@ -521,9 +520,8 @@ void SpellStats::Initialize(const Blob &spells) {
     // Patch SPELL_SHIFT_CLICK_CASTABLE flags that are bogus in vanilla spells.txt. See issues #1494, #1495, #1496.
     // TODO(captainurist): move these flag patches into the patched data tables instead of hardcoding them here.
     // These spells target a single actor and should be quick-castable on shift+click.
-    for (SpellId spell : {SPELL_WATER_POISON_SPRAY, SPELL_LIGHT_LIGHT_BOLT, SPELL_LIGHT_DESTROY_UNDEAD, SPELL_LIGHT_PARALYZE}) {
+    for (SpellId spell : {SPELL_WATER_POISON_SPRAY, SPELL_LIGHT_LIGHT_BOLT, SPELL_LIGHT_DESTROY_UNDEAD, SPELL_LIGHT_PARALYZE})
         pSpellDatas[spell].flags |= SPELL_SHIFT_CLICK_CASTABLE;
-    }
     // These spells target the casting party or a party member and should NOT be quick-castable on shift+click.
     // For party-target spells the shift+click cast is also confusing because nothing visible happens at the
     // clicked actor; for character-target spells (Cure Paralysis) the player gets a target-character prompt
@@ -661,9 +659,8 @@ void eventCastSpell(SpellId uSpellID, Mastery skillMastery, int skillLevel, Vec3
             pAudioPlayer->playSpellSound(uSpellID, false, SOUND_MODE_PID, Pid(OBJECT_Sprite, spriteid));
             break;
         case SPELL_EARTH_DEATH_BLOSSOM:
-            if (uCurrentlyLoadedLevelType == LEVEL_INDOOR) {
+            if (uCurrentlyLoadedLevelType == LEVEL_INDOOR)
                 return;
-            }
             spell_sprites.spell_target_pid = Pid::character(0);
             launch_speed = pObjectTable->pObjects[spell_sprites.uObjectDescID].uSpeed;
             launch_angle = TrigLUT.uIntegerHalfPi / 2;
@@ -683,11 +680,9 @@ void eventCastSpell(SpellId uSpellID, Mastery skillMastery, int skillLevel, Vec3
                     spell_length = Duration::fromHours(1) + Duration::fromMinutes(4 * skillLevel);
                 }
             }
-            for (Character &player : pParty->pCharacters) {
-                if (player.IsWeak()) {
+            for (Character &player : pParty->pCharacters)
+                if (player.IsWeak())
                     return;
-                }
-            }
             pParty->pPartyBuffs[PARTY_BUFF_HASTE].Apply(pParty->GetPlayingTime() + spell_length, skillMastery, 0, 0, -1);
             spell_fx_renderer->SetPartyBuffAnim(uSpellID);
             //    pAudioPlayer->PlaySound(word_4EE088_sound_ids[uSpellID],
@@ -852,9 +847,8 @@ void armageddonProgress() {
         return; // TODO(captainurist): wtf? Looks like a quick hack for some bug.
     }
 
-    if (pTurnEngine->pending_actions) {
+    if (pTurnEngine->pending_actions)
         --pTurnEngine->pending_actions;
-    }
 
     pParty->_viewYaw = TrigLUT.uDoublePiMask & (pParty->_viewYaw + grng->randomInSegment(-8, 8)); // Was RandomInSegment(-8, 7)
     pParty->_viewPitch = std::clamp(pParty->_viewPitch + grng->randomInSegment(-8, 8), -128, 128); // Was RandomInSegment(-8, 7)
@@ -865,16 +859,14 @@ void armageddonProgress() {
     // while it should be applied in amounts relative to frame time --- basically, armageddon should provide some
     // acceleration, and then this acceleration should be applied to actors over a brief period of time.
     --pParty->armageddonForceCount;
-    if (pParty->armageddon_timer) {
+    if (pParty->armageddon_timer)
         return; // Deal damage only when timer gets to 0.
-    }
 
     int outgoingDamage = pParty->armageddonDamage + 50;
 
     for (Actor &actor : pActors) {
-        if (!actor.CanBeDamaged()) {
+        if (!actor.CanBeDamaged())
             continue;
-        }
 
         int incomingDamage = actor.CalcMagicalDamageToActor(DAMAGE_MAGIC, outgoingDamage);
         if (incomingDamage > 0) {
@@ -884,16 +876,13 @@ void armageddonProgress() {
                 Actor::AI_Pain(actor.id, Pid::character(0), 0);
             } else {
                 Actor::Die(actor.id);
-                if (actor.monsterInfo.exp) {
+                if (actor.monsterInfo.exp)
                     pParty->GivePartyExp(pMonsterStats->infos[actor.monsterInfo.id].exp);
-                }
             }
         }
     }
 
-    for (Character &player : pParty->pCharacters) {
-        if (!player.conditions.hasAny({CONDITION_DEAD, CONDITION_PETRIFIED, CONDITION_ERADICATED})) {
+    for (Character &player : pParty->pCharacters)
+        if (!player.conditions.hasAny({CONDITION_DEAD, CONDITION_PETRIFIED, CONDITION_ERADICATED}))
             player.receiveDamage(outgoingDamage, DAMAGE_MAGIC);
-        }
-    }
 }

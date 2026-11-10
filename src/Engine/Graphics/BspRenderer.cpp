@@ -20,9 +20,8 @@ void BspRenderer::AddFace(const int node_id, const int uFaceID) {
     // NOTE(yoctozepto): the below happens, e.g., on various stairs
     // TODO(yoctozepto): might be nice to check if the vertices actually form a plane and not a line;
     //                   this could be done when loading the location and filtering out such broken faces
-    if (pFace->vertexIds.size() < 3) {
+    if (pFace->vertexIds.size() < 3)
         return;  // nothing to render
-    }
 
     const BspRenderer_ViewportNode *currentNode = &nodes[node_id];
 
@@ -34,9 +33,8 @@ void BspRenderer::AddFace(const int node_id, const int uFaceID) {
     static RenderVertexSoft clippedFaceVertices[64];
 
     // TODO(yoctozepto): are face vertices consecutive? are face vertices shared/overlapping?
-    for (unsigned k = 0; k < pFace->vertexIds.size(); ++k) {
+    for (unsigned k = 0; k < pFace->vertexIds.size(); ++k)
         originalFaceVertices[k].vWorldPosition = pIndoor->vertices[pFace->vertexIds[k]];
-    }
 
     unsigned int pNewNumVertices = pFace->vertexIds.size();
 
@@ -48,9 +46,8 @@ void BspRenderer::AddFace(const int node_id, const int uFaceID) {
         clippedFaceVertices,
         currentNode->ViewportNodeFrustum.data());
 
-    if (!pNewNumVertices) {
+    if (!pNewNumVertices)
         return;  // no triangle of face in view
-    }
 
     if (!pFace->isPortal()) {
         // NOTE(yoctozepto): the below happens, e.g., on various stairs
@@ -59,13 +56,11 @@ void BspRenderer::AddFace(const int node_id, const int uFaceID) {
 
         // TODO(yoctozepto): does the below happen?
         // TODO(yoctozepto, pskelton): we should probably try to handle these faces as they are otherwise marked as visible (see also OpenGLRenderer)
-        if (!pFace->GetTexture()) {
+        if (!pFace->GetTexture())
             return;  // nothing to render
-        }
 
-        if (!pCamera3D->is_face_faced_to_camera(pFace)) {
+        if (!pCamera3D->is_face_faced_to_camera(pFace))
             return;  // we don't see the face, no need to render
-        }
 
         assert(num_faces < 1500 && "please report with a nearby save file");
 
@@ -103,9 +98,8 @@ void BspRenderer::AddFace(const int node_id, const int uFaceID) {
     //                   where there is a ceiling portal and the room is split artificially into two sectors (just why?!)
     //                   - running without this causes the second half of the room to be "seen" both normally and via
     //                   the ceiling (because its normal is in Z and it has frustum reset to camera frustum)
-    if (/*(1)*/ node_id != 0 && /*(2)*/ isPortalFlipped == pCamera3D->is_face_faced_to_camera(pFace)) {
+    if (/*(1)*/ node_id != 0 && /*(2)*/ isPortalFlipped == pCamera3D->is_face_faced_to_camera(pFace))
         return;
-    }
 
     assert(num_nodes < 150 && "please report with a nearby save file");
 
@@ -119,9 +113,8 @@ void BspRenderer::AddFace(const int node_id, const int uFaceID) {
         &pNewNumVertices,
         newNode->ViewportNodeFrustum.data());
 
-    if (!isFrustumBuilt) {
+    if (!isFrustumBuilt)
         return;  // no way we can see through this portal
-    }
 
     // new node should have new sector; use the back one if the front one is current
     newNode->uSectorID = isPortalFlipped ? pFace->sectorId : pFace->backSectorId;
@@ -134,9 +127,8 @@ void BspRenderer::AddFace(const int node_id, const int uFaceID) {
     //                   of our small team of developers
     int nodeIdToCheck = currentNode->parentNodeId;
     while (nodeIdToCheck != -1) {
-        if (nodes[nodeIdToCheck].uSectorID == newNode->uSectorID) {  // would mean we see some sector through the same sector
+        if (nodes[nodeIdToCheck].uSectorID == newNode->uSectorID)  // would mean we see some sector through the same sector
             return;
-        }
         nodeIdToCheck = nodes[nodeIdToCheck].parentNodeId;
     }
 
@@ -227,9 +219,8 @@ void BspRenderer::AddNode() {
     for (uint16_t faceId : pSector->nonBspFaceIds)
         AddFace(node_id, faceId);  // can recurse back to this function
 
-    if (pSector->flags & SECTOR_HAS_BSP) {
+    if (pSector->flags & SECTOR_HAS_BSP)
         AddBSPFaces(node_id, pSector->firstBspNode);  // can recurse back to this function through AddFace
-    }
 }
 
 
@@ -260,9 +251,8 @@ void BspRenderer::AddBSPFaces(const int node_id, const int initialBSPNodeId) {
         if (otherBSPNodeId != -1)
             AddBSPFaces(node_id, otherBSPNodeId);
 
-        for (int i = 0; i < bspNode->uNumBSPFaces; i++) {
+        for (int i = 0; i < bspNode->uNumBSPFaces; i++)
             AddFace(node_id, pSector->faceIds[bspNode->uBSPFaceIDOffset + i]);  // can recurse back to this function through AddNode
-        }
 
         // tail recursion optimised call
         bspNodeId = isFaceFront ? bspNode->uFront : bspNode->uBack;

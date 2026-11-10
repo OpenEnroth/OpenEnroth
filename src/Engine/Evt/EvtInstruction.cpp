@@ -22,25 +22,20 @@
 #include "EvtEnumFunctions.h"
 
 static std::string getVariableSetStr(EvtVariable type, int value) {
-    if (type >= VAR_MapPersistentVariable_0 && type <= VAR_MapPersistentVariable_74) {
+    if (type >= VAR_MapPersistentVariable_0 && type <= VAR_MapPersistentVariable_74)
         return fmt::format("MapVars[{}], {}", std::to_underlying(type) - std::to_underlying(VAR_MapPersistentVariable_0), value);
-    }
 
-    if (type >= VAR_MapPersistentDecorVariable_0 && type <= VAR_MapPersistentDecorVariable_24) {
+    if (type >= VAR_MapPersistentDecorVariable_0 && type <= VAR_MapPersistentDecorVariable_24)
         return fmt::format("MapVarsDecor[{}], {}", std::to_underlying(type) - std::to_underlying(VAR_MapPersistentDecorVariable_0), value);
-    }
 
-    if (type >= VAR_Counter1 && type <= VAR_Counter10) {
+    if (type >= VAR_Counter1 && type <= VAR_Counter10)
         return fmt::format("Counter[{}], PlayingTime", std::to_underlying(type) - std::to_underlying(VAR_Counter1));
-    }
 
-    if (type >= VAR_UnknownTimeEvent0 && type <= VAR_UnknownTimeEvent19) {
+    if (type >= VAR_UnknownTimeEvent0 && type <= VAR_UnknownTimeEvent19)
         return fmt::format("UnkTimeEvent[{}], PlayingTime", std::to_underlying(type) - std::to_underlying(VAR_UnknownTimeEvent0));
-    }
 
-    if (type >= VAR_History_0 && type <= VAR_History_28) {
+    if (type >= VAR_History_0 && type <= VAR_History_28)
         return fmt::format("History[{}]", historyIndex(type));
-    }
 
     switch (type) {
         case VAR_Sex:
@@ -345,25 +340,20 @@ static std::string getVariableSetStr(EvtVariable type, int value) {
 }
 
 static std::string getVariableCompareStr(EvtVariable type, int value) {
-    if (type >= VAR_MapPersistentVariable_0 && type <= VAR_MapPersistentVariable_74) {
+    if (type >= VAR_MapPersistentVariable_0 && type <= VAR_MapPersistentVariable_74)
         return fmt::format("MapVars[{}] >= {}", std::to_underlying(type) - std::to_underlying(VAR_MapPersistentVariable_0), value);
-    }
 
-    if (type >= VAR_MapPersistentDecorVariable_0 && type <= VAR_MapPersistentDecorVariable_24) {
+    if (type >= VAR_MapPersistentDecorVariable_0 && type <= VAR_MapPersistentDecorVariable_24)
         return fmt::format("MapVarsDecor[{}] >= {}", std::to_underlying(type) - std::to_underlying(VAR_MapPersistentDecorVariable_0), value);
-    }
 
-    if (type >= VAR_Counter1 && type <= VAR_Counter10) {
+    if (type >= VAR_Counter1 && type <= VAR_Counter10)
         return fmt::format("Counter[{}] + Hours({}) <= PlayingTime", std::to_underlying(type) - std::to_underlying(VAR_Counter1), value);
-    }
 
-    if (type >= VAR_UnknownTimeEvent0 && type <= VAR_UnknownTimeEvent19) {
+    if (type >= VAR_UnknownTimeEvent0 && type <= VAR_UnknownTimeEvent19)
         return fmt::format("ERROR: UnknownTimeEvent[{}], {}", std::to_underlying(type) - std::to_underlying(VAR_UnknownTimeEvent0), value);
-    }
 
-    if (type >= VAR_History_0 && type <= VAR_History_28) {
+    if (type >= VAR_History_0 && type <= VAR_History_28)
         return fmt::format("ERROR: History[{}], {}", historyIndex(type), value);
-    }
 
     switch (type) {
         case VAR_Sex:
@@ -1039,13 +1029,11 @@ EvtInstruction EvtInstruction::parse(InputStream &stream, size_t size) {
                 rgt.random_goto_len = 0;
                 for (int i = 0; i < rgt.random_goto.size(); i++) {
                     rgt.random_goto[i] = fromStream<uint8_t>(stream);
-                    if (rgt.random_goto[i] > 0) {
+                    if (rgt.random_goto[i] > 0)
                         rgt.random_goto_len++;
-                    }
                 }
-                if (rgt.random_goto_len == 0) {
+                if (rgt.random_goto_len == 0)
                     throw Exception("RandomGoTo event has 0 targets");
-                }
             }
             break;
         case EVENT_InputString:  // TODO(yoctozepto): not present in used MM7 data; likely present in MM8 (e.g., Escaton's riddles)

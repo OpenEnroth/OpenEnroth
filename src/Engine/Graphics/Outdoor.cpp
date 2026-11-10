@@ -353,9 +353,8 @@ int OutdoorLocation::getNumFoodRequiredToRestInCurrentPos(const Vec3f &pos) {
     bool is_on_water = false;
     int floor_face_id = -1;
     ODM_GetFloorLevel(pos, &is_on_water, &floor_face_id);
-    if (pParty->isAirborne() || floor_face_id != -1 || is_on_water) {
+    if (pParty->isAirborne() || floor_face_id != -1 || is_on_water)
         return 2;
-    }
 
     return foodRequiredForTileset(pTerrain.tilesetByPos(pos));
 }
@@ -583,9 +582,8 @@ bool OutdoorLocation::PrepareDecorations() {
 
         const DecorationData *decoration = pDecorationTable->decoration(decor->uDecorationDescID);
 
-        if (decoration->uSoundID != SOUND_Invalid) {
+        if (decoration->uSoundID != SOUND_Invalid)
             decorationsWithSound.push_back(i);
-        }
 
         if ((engine->_currentLoadedMapId == MAP_EVENMORN_ISLAND) && decor->uCog == 20)
             decor->uFlags |= LEVEL_DECORATION_OBELISK_CHEST;
@@ -675,9 +673,8 @@ void OutdoorLocation::PrepareActorsDrawList() {
 
     for (int i = 0; i < pActors.size(); ++i) {
         pActors[i].attributes &= ~ACTOR_VISIBLE;
-        if (pActors[i].aiState == Removed || pActors[i].aiState == Disabled) {
+        if (pActors[i].aiState == Removed || pActors[i].aiState == Disabled)
             continue;
-        }
 
         if (uNumBillboardsToDraw >= 500) return;
 
@@ -751,9 +748,8 @@ void OutdoorLocation::PrepareActorsDrawList() {
         }
 
         BillboardFlags flags = billboardFlagsForSprite(frame->flags, Sprite_Octant);
-        if (pActors[i].buffs[ACTOR_BUFF_STONED].Active()) {
+        if (pActors[i].buffs[ACTOR_BUFF_STONED].Active())
             flags |= BILLBOARD_STONED;
-        }
 
         Vec2f billScale = { frame->scale, frame->scale };
         if (pActors[i].buffs[ACTOR_BUFF_SHRINK].Active() && pActors[i].buffs[ACTOR_BUFF_SHRINK].power > 0) {
@@ -957,18 +953,16 @@ void ODM_ProcessPartyActions() {
     if (!partyNotTouchingFloor) {
         if (pParty->floor_face_id != floorFaceId && floorFaceId != -1) {
             const BLVFace &face = pOutdoor->faces[floorFaceId];
-            if (face.attributes & FACE_PRESSURE_PLATE) {
+            if (face.attributes & FACE_PRESSURE_PLATE)
                 triggerID = face.eventId;
-            }
         }
         pParty->floor_face_id = floorFaceId;
     }
 
     // set params before input
     Vec3f partyInputSpeed = Vec3f(0, 0, pParty->velocity.z);
-    if (pParty->bFlying) {
+    if (pParty->bFlying)
         partyInputSpeed.z = 0;
-    }
     int partyOldFlightZ = pParty->sPartySavedFlightZ;
 
     bool partyAtHighSlope = pOutdoor->pTerrain.isSlopeTooHighByPos(pParty->pos);
@@ -1159,17 +1153,15 @@ void ODM_ProcessPartyActions() {
             case PARTY_LookUp:
                 pParty->_viewPitch += engine->config->settings.VerticalTurnSpeed.value();
                 if (pParty->_viewPitch > 128) pParty->_viewPitch = 128;
-                if (pParty->hasActiveCharacter()) {
+                if (pParty->hasActiveCharacter())
                     pParty->activeCharacter().playReaction(SPEECH_LOOK_UP);
-                }
                 break;
 
             case PARTY_LookDown:
                 pParty->_viewPitch -= engine->config->settings.VerticalTurnSpeed.value();
                 if (pParty->_viewPitch < -128) pParty->_viewPitch = -128;
-                if (pParty->hasActiveCharacter()) {
+                if (pParty->hasActiveCharacter())
                     pParty->activeCharacter().playReaction(SPEECH_LOOK_DOWN);
-                }
                 break;
 
             case PARTY_Jump:
@@ -1187,9 +1179,8 @@ void ODM_ProcessPartyActions() {
                 break;
 
             case PARTY_Land:
-                if (pParty->bFlying) {
+                if (pParty->bFlying)
                     pParty->uFlags |= PARTY_FLAG_LANDING;
-                }
                 pPartyActionQueue->uNumActions = 0;
                 break;
 
@@ -1272,12 +1263,11 @@ void ODM_ProcessPartyActions() {
                 pParty->pos.z - currentGroundLevel > 1000 &&
                 !pParty->FeatherFallActive() &&
                 !(pParty->uFlags & (PARTY_FLAG_LANDING | PARTY_FLAG_JUMPING))) {  // falling scream
-                for (int i = 0; i < 4; ++i) {
+                for (int i = 0; i < 4; ++i)
                     if (!pParty->pCharacters[i].wearsEnchantedItem(ITEM_ENCHANTMENT_OF_FEATHER_FALLING) &&
                         !pParty->pCharacters[i].wearsItem(ITEM_ARTIFACT_HERMES_SANDALS) &&
                         pParty->pCharacters[i].CanAct())
                         pParty->pCharacters[i].playReaction(SPEECH_FALLING);
-                }
             }
         }
     } else {
@@ -1376,9 +1366,8 @@ void ODM_ProcessPartyActions() {
 
         if (partyDrowningFlag) {
             int pTerrainHeight = pOutdoor->pTerrain.heightByPos(pParty->pos);
-            if (pParty->pos.z <= pTerrainHeight + 1) {
+            if (pParty->pos.z <= pTerrainHeight + 1)
                 pParty->uFlags |= PARTY_FLAG_WATER_DAMAGE;
-            }
         }
     }
 
@@ -1608,17 +1597,15 @@ void UpdateActors_ODM() {
                 Actor_Speed = Actor_Speed * 0.5;
             if (actor.aiState == Fleeing || actor.aiState == Pursuing)
                 Actor_Speed *= 2;
-            if (pParty->bTurnBasedModeOn && pTurnEngine->turn_stage == TE_WAIT) {
+            if (pParty->bTurnBasedModeOn && pTurnEngine->turn_stage == TE_WAIT)
                 Actor_Speed *= debug_turn_based_monster_movespeed_mul;
-            }
             if (Actor_Speed > 1000)
                 Actor_Speed = 1000;
 
             actor.velocity.x = TrigLUT.cos(actor.yawAngle) * Actor_Speed;
             actor.velocity.y = TrigLUT.sin(actor.yawAngle) * Actor_Speed;
-            if (uIsFlying) {
+            if (uIsFlying)
                 actor.velocity.z = TrigLUT.sin(actor.pitchAngle) * Actor_Speed;
-            }
         } else {
             actor.velocity.x *= 0.83923339843f;
             actor.velocity.y *= 0.83923339843f;
@@ -1705,9 +1692,8 @@ void UpdateActors_ODM() {
                             }
                         }
                     }
-                    if (tileTestLand) {  // break out nested loop
+                    if (tileTestLand)  // break out nested loop
                         break;
-                    }
                 }
                 if (!tileTestLand) {
                     // no land found so drowning damage
@@ -1777,10 +1763,9 @@ void loadAndPrepareODM(MapId mapid, bool bLoading) {
     uCurrentlyLoadedLevelType = LEVEL_OUTDOOR;
 
     loadAndPrepareODMInternal(mapid);
-    if (!bLoading) {
+    if (!bLoading)
         if (std::optional<PartyPlacement> placement = engine->_pendingTransition->resolvePlacement())
             placeParty(*placement);
-    }
 
     viewparams->_443365();
     PlayLevelMusic();
@@ -1796,9 +1781,8 @@ void loadAndPrepareODM(MapId mapid, bool bLoading) {
 Color GetLevelFogColor() {
     assert(uCurrentlyLoadedLevelType == LEVEL_OUTDOOR);
 
-    if (engine->IsUnderwater()) {
+    if (engine->IsUnderwater())
         return colorTable.Eucalyptus;
-    }
 
     if (pOutdoor->weather.flags & MAP_WEATHER_FOGGY) {
         if (pWeather->bNight) {  // night-time fog
@@ -1825,21 +1809,18 @@ Color GetLevelFogColor() {
 //----- (00436A6D) --------------------------------------------------------
 double OutdoorLocation::GetPolygonMinZ(RenderVertexSoft *pVertices, unsigned int unumverts) {
     double result = FLT_MAX;
-    for (unsigned i = 0; i < unumverts; i++) {
-        if (pVertices[i].vWorldPosition.z < result) {
+    for (unsigned i = 0; i < unumverts; i++)
+        if (pVertices[i].vWorldPosition.z < result)
             result = pVertices[i].vWorldPosition.z;
-        }
-    }
     return result;
 }
 
 //----- (00436A40) --------------------------------------------------------
 double OutdoorLocation::GetPolygonMaxZ(RenderVertexSoft *pVertex, unsigned int unumverts) {
     double result = FLT_MIN;
-    for (unsigned i = 0; i < unumverts; i++) {
+    for (unsigned i = 0; i < unumverts; i++)
         if (pVertex[i].vWorldPosition.z > result)
             result = pVertex[i].vWorldPosition.z;
-    }
     return result;
 }
 

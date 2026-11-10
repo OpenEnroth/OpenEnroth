@@ -29,9 +29,8 @@ void GUIWindow_Temple::mainDialogue() {
 
 void GUIWindow_Temple::healDialogue() {
     Character &character = pParty->activeCharacter();
-    if (!isPlayerHealableByTemple(character)) {
+    if (!isPlayerHealableByTemple(character))
         return;
-    }
 
     int price = PriceCalculator::templeHealingCostForPlayer(&character, houseTable[houseId()].fPriceMultiplier);
     if (pParty->GetGold() < price) {
@@ -64,27 +63,21 @@ void GUIWindow_Temple::donateDialogue() {
         pParty->TakeGold(price);
         LocationInfo *ddm = &currentLocationInfo();
 
-        if (ddm->reputation > -5) {
+        if (ddm->reputation > -5)
             ddm->reputation -= 1;
-        }
         int day = pParty->uCurrentDayOfMonth % 7;
         int counter = _templeSpellCounter[pParty->activeCharacterIndex()] % 7;
         if (counter == day) {
-            if (ddm->reputation <= -5) {
+            if (ddm->reputation <= -5)
                 pushTempleSpell(SPELL_AIR_WIZARD_EYE);
-            }
-            if (ddm->reputation <= -10) {
+            if (ddm->reputation <= -10)
                 pushTempleSpell(SPELL_SPIRIT_PRESERVATION);
-            }
-            if (ddm->reputation <= -15) {
+            if (ddm->reputation <= -15)
                 pushTempleSpell(SPELL_BODY_PROTECTION_FROM_MAGIC);
-            }
-            if (ddm->reputation <= -20) {
+            if (ddm->reputation <= -20)
                 pushTempleSpell(SPELL_LIGHT_HOUR_OF_POWER);
-            }
-            if (ddm->reputation <= -25) {
+            if (ddm->reputation <= -25)
                 pushTempleSpell(SPELL_LIGHT_DAY_OF_PROTECTION);
-            }
         }
         _templeSpellCounter[pParty->activeCharacterIndex()]++;
         pParty->activeCharacter().playReaction(SPEECH_TEMPLE_DONATE);
@@ -102,16 +95,14 @@ GUIWindow_Temple::GUIWindow_Temple(HouseId houseId) : GUIWindow_House(houseId) {
 
 void GUIWindow_Temple::houseDialogueOptionSelected(DialogueId option) {
     _currentDialogue = option;
-    if (IsSkillLearningDialogue(option)) {
+    if (IsSkillLearningDialogue(option))
         learnSelectedSkill(GetLearningDialogueSkill(option));
-    }
 }
 
 void GUIWindow_Temple::houseSpecificDialogue() {
     // TODO(pskelton): check this behaviour
-    if (!pParty->hasActiveCharacter()) {  // avoid nzi
+    if (!pParty->hasActiveCharacter())  // avoid nzi
         pParty->setActiveToFirstCanAct();
-    }
 
     switch (_currentDialogue) {
       case DIALOGUE_MAIN:

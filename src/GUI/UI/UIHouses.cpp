@@ -324,9 +324,8 @@ bool enterHouse(HouseId uHouseID) {
                                      localization->amPm(openCivilTime.isPm),
                                      closeCivilTime.hourAmPm,
                                      localization->amPm(closeCivilTime.isPm));
-        if (pParty->hasActiveCharacter()) {
+        if (pParty->hasActiveCharacter())
             pParty->activeCharacter().playReaction(SPEECH_STORE_CLOSED);
-        }
 
         return false;
     }
@@ -358,15 +357,13 @@ bool enterHouse(HouseId uHouseID) {
 
     prepareHouse(uHouseID);
 
-    if (houseNpcs.size() == 1) {
+    if (houseNpcs.size() == 1)
         currentHouseNpc = 0;
-    }
     pMediaPlayer->OpenHouseMovie(pAnimatedRooms[uCurrentHouse_Animation].video_name, 1u);
     if (isMagicGuild(uHouseID)) {
         // TODO(pskelton): check this behaviour
-        if (!pParty->hasActiveCharacter()) { // avoid nzi
+        if (!pParty->hasActiveCharacter()) // avoid nzi
             pParty->setActiveToFirstCanAct();
-        }
 
         if (!pParty->activeCharacter()._achievedAwardsBits[membershipAwardForGuild(uHouseID)]) {
             playHouseSound(uHouseID, HOUSE_SOUND_MAGIC_GUILD_MEMBERS_ONLY);
@@ -539,9 +536,8 @@ void updateHouseNPCTopics(int npc) {
 }
 
 void selectProprietorDialogueOption(DialogueId option) {
-    if (!pDialogueWindow || !pDialogueWindow->pNumPresenceButton) {
+    if (!pDialogueWindow || !pDialogueWindow->pNumPresenceButton)
         return;
-    }
 
     pParty->placeHeldItemInInventoryOrDrop();
 
@@ -555,9 +551,8 @@ bool houseDialogueGoBack() {
     current_npc_text.clear();
     pParty->placeHeldItemInInventoryOrDrop();
 
-    if (currentHouseNpc == -1) {
+    if (currentHouseNpc == -1)
         return false;
-    }
 
     if (window_SpeakInHouse->currentDialogue() == DIALOGUE_OTHER) {
         updateHouseNPCTopics(currentHouseNpc);
@@ -572,9 +567,8 @@ bool houseDialogueGoBack() {
         // we are in the middle of the update windows loop, so we need to delay closing the dialogue window until the end of the frame
         engine->_messageQueue->addMessageCurrentFrame(UIMSG_CloseDialogueWindow, 0, 0);
 
-        if (houseNpcs.size() == 1) {
+        if (houseNpcs.size() == 1)
             return false;
-        }
 
         pBtn_ExitCancel = window_SpeakInHouse->vButtons.front();
         for (int i = 0; i < houseNpcs.size(); ++i) {
@@ -656,9 +650,8 @@ void createHouseUI(HouseId houseId) {
         break;
     }
 
-    if (houseNpcs.size() == 1) {
+    if (houseNpcs.size() == 1)
         updateHouseNPCTopics(0);
-    }
 }
 
 void BackToHouseMenu() {
@@ -757,16 +750,14 @@ void GUIWindow_House::drawNpcHouseDialogueOptions(NPCData* npcData) const {
         if (pButton) {
             DialogueId topic = (DialogueId)pButton->msg_param;
             std::string str = npcDialogueOptionString(topic, npcData);
-            if (str.empty() && topic >= DIALOGUE_SCRIPTED_LINE_1 && topic <= DIALOGUE_SCRIPTED_LINE_6) {
+            if (str.empty() && topic >= DIALOGUE_SCRIPTED_LINE_1 && topic <= DIALOGUE_SCRIPTED_LINE_6)
                 pButton->msg_param = 0;
-            }
             optionsText.push_back(str);
         }
     }
 
-    if (optionsText.size()) {
+    if (optionsText.size())
         drawOptions(optionsText, colorTable.Sunflower);
-    }
 }
 
 void GUIWindow_House::drawNpcHouseDialogueResponse() {
@@ -790,14 +781,12 @@ void GUIWindow_House::reinitDialogueWindow() {
 }
 
 bool GUIWindow_House::checkIfPlayerCanInteract() {
-    if (!pParty->hasActiveCharacter()) {  // to avoid access zeroeleement
+    if (!pParty->hasActiveCharacter())  // to avoid access zeroeleement
         return false;
-    }
 
     // Do nothing if no current conversation exist
-    if (!pDialogueWindow) {
+    if (!pDialogueWindow)
         return true;
-    }
 
     if (pParty->activeCharacter().CanAct()) {
         pDialogueWindow->pNumPresenceButton = _savedButtonsNum;
@@ -835,9 +824,8 @@ void GUIWindow_House::drawOptions(std::vector<std::string> &optionsText, Color s
     int offset = topOptionShift;
     if (!denseSpacing) {
         spacing = (SIDE_TEXT_BOX_BODY_TEXT_HEIGHT - topOptionShift - allTextHeight) / (activeOptions ? activeOptions : 1);
-        if (spacing > SIDE_TEXT_BOX_MAX_SPACING) {
+        if (spacing > SIDE_TEXT_BOX_MAX_SPACING)
             spacing = SIDE_TEXT_BOX_MAX_SPACING;
-        }
         offset += (SIDE_TEXT_BOX_BODY_TEXT_HEIGHT - topOptionShift - spacing * activeOptions - allTextHeight) / 2 - spacing / 2 + SIDE_TEXT_BOX_BODY_TEXT_OFFSET;
     }
 
@@ -878,9 +866,8 @@ void GUIWindow_House::houseDialogManager() {
         if (!houseTable[houseId()].name.empty()) {
             if (current_screen_type != SCREEN_SHOP_INVENTORY) {
                 int yPos = 2 * assets->pFontCreate->GetHeight() - 6 - assets->pFontCreate->CalcTextHeight(houseTable[houseId()].name, 130, 0);
-                if (yPos < 0) {
+                if (yPos < 0)
                     yPos = 0;
-                }
                 DrawTitleText(assets->pFontCreate.get(), 0x1EAu, yPos / 2 + 4, colorTable.White, houseTable[houseId()].name, 3, pWindow);
             }
         }
@@ -949,9 +936,8 @@ void GUIWindow_House::houseDialogManager() {
 }
 
 void GUIWindow_House::initializeProprietorDialogue() {
-    if (!pDialogueWindow) {
+    if (!pDialogueWindow)
         return;
-    }
 
     std::vector<DialogueId> optionList = listDialogueOptions();
 
@@ -963,9 +949,8 @@ void GUIWindow_House::initializeProprietorDialogue() {
 }
 
 void GUIWindow_House::initializeNPCDialogue(int npc) {
-    if (!pDialogueWindow) {
+    if (!pDialogueWindow)
         return;
-    }
 
     initializeNPCDialogueButtons(prepareScriptedNPCDialogueTopics(houseNpcs[npc].npc));
 }
@@ -979,9 +964,8 @@ void GUIWindow_House::initializeNPCDialogueButtons(std::vector<DialogueId> optio
 }
 
 void GUIWindow_House::learnSkillsDialogue(Color selectColor) {
-    if (!checkIfPlayerCanInteract()) {
+    if (!checkIfPlayerCanInteract())
         return;
-    }
 
     bool haveLearnableSkills = false;
     std::vector<std::string> optionsText;
@@ -1061,13 +1045,11 @@ GUIWindow_House::GUIWindow_House(HouseId houseId) : GUIWindow(WINDOW_HOUSE_INTER
 }
 
 void GUIWindow_House::Update() {
-    if (!window_SpeakInHouse) {
+    if (!window_SpeakInHouse)
         return;
-    }
     houseDialogManager();
-    if (!isShop(houseId())) {
+    if (!isShop(houseId()))
         return;
-    }
     if (pParty->PartyTimes.shopBanTimes[houseId()] <= pParty->GetPlayingTime()) {
         pParty->PartyTimes.shopBanTimes[houseId()] = Time();
         return;

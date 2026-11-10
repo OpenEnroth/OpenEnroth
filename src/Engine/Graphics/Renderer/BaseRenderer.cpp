@@ -37,9 +37,8 @@ void BaseRenderer::Initialize() {
 }
 
 unsigned int BaseRenderer::NextBillboardIndex() {
-    if (uNumBillboardsToDraw >= MAX_BILLBOARDS_D3D) {
+    if (uNumBillboardsToDraw >= MAX_BILLBOARDS_D3D)
         return 0;
-    }
 
     int index = uNumBillboardsToDraw++;
     pSortedBillboardRenderListD3D[index] = &pBillboardRenderListD3D[index];
@@ -67,12 +66,10 @@ void BaseRenderer::DrawSpriteObjects() {
         }
 
         SpriteObject *object = &pSpriteObjects[i];
-        if (!object->uObjectDescID) {  // item probably pciked up - this also gets wiped at end of sprite anims/ particle effects
+        if (!object->uObjectDescID)  // item probably pciked up - this also gets wiped at end of sprite anims/ particle effects
             continue;
-        }
-        if (!object->HasSprite()) {
+        if (!object->HasSprite())
             continue;
-        }
 
         // view culling
         if (uCurrentlyLoadedLevelType == LEVEL_INDOOR) {
@@ -110,9 +107,8 @@ void BaseRenderer::DrawSpriteObjects() {
 
             Vec3f posMod = object->vPosition;
             // centre sprite
-            if (frame->flags & SPRITE_FRAME_CENTER) {
+            if (frame->flags & SPRITE_FRAME_CENTER)
                 posMod.z -= (frame->scale * frame->sprites[octant]->height()) / 2;
-            }
 
             BillboardFlags setflags = billboardFlagsForSprite(frame->flags, octant);
 
@@ -168,13 +164,11 @@ void BaseRenderer::PrepareDecorationsRenderList_ODM() {
                     frame = pSpriteFrameTable->GetFrame(decor_desc->uSpriteID,
                         v6 + Duration::fromTicks(v7));
 
-                    if (config->graphics.SeasonsChange.value()) {
+                    if (config->graphics.SeasonsChange.value())
                         frame = LevelDecorationChangeSeason(decor_desc, v6 + Duration::fromTicks(v7), pParty->uCurrentMonth);
-                    }
 
-                    if (!frame || frame->textureName == "null" || frame->sprites[0] == NULL) {
+                    if (!frame || frame->textureName == "null" || frame->sprites[0] == NULL)
                         continue;
-                    }
 
                     // v8 = pSpriteFrameTable->GetFrame(decor_desc->uSpriteID,
                     // v6 + v7);
@@ -206,9 +200,8 @@ void BaseRenderer::PrepareDecorationsRenderList_ODM() {
                             DECORATION_MAGIC_PEDASTAL_220, DECORATION_MAGIC_PEDASTAL_221
                         };
 
-                        if (lightEmittingDecorations.contains(pLevelDecorations[i].uDecorationDescID)) {
+                        if (lightEmittingDecorations.contains(pLevelDecorations[i].uDecorationDescID))
                              frame->glowRadius = engine->config->graphics.DefaultLightRadius.value();
-                        }
                     }
 
                     Color defaultLightColor = engine->config->graphics.DefaultLightColor.value();
@@ -217,9 +210,8 @@ void BaseRenderer::PrepareDecorationsRenderList_ODM() {
                         if (render->config->graphics.ColoredLights.value()) {
                             color = decor_desc->uColoredLight;
                             // to avoid black lights
-                            if (color == Color(0, 0, 0)) {
+                            if (color == Color(0, 0, 0))
                                 color = defaultLightColor;
-                            }
                         }
                         pStationaryLightsStack->AddLight(pLevelDecorations[i].vPosition + Vec3f(0, 0, decor_desc->uDecorationHeight / 2),
                             frame->glowRadius, color, _4E94D0_light_type);
@@ -446,9 +438,8 @@ void BaseRenderer::BillboardSphereSpellFX(SpellFX_Billboard *a1, Color diffuse) 
     // fireball / implosion sphere
     // TODO(pskelton): could draw in 3d rather than convert to billboard for ogl
 
-    if (a1->uNumVertices < 3) {
+    if (a1->uNumVertices < 3)
         return;
-    }
 
     float depth = 1000000.0;
     int index = 0;
@@ -519,9 +510,8 @@ std::vector<Actor*> BaseRenderer::getActorsInViewport(int pDepth) {
 
     for (int i = 0; i < render->uNumBillboardsToDraw; i++) {
         int renderId = render->pSortedBillboardRenderListD3D[i]->sParentBillboardID;
-        if(renderId == -1) {
+        if(renderId == -1)
             continue; // E.g. spell particle.
-        }
 
         Pid pid = pBillboardRenderList[renderId].object_pid;
         if (pid.type() == OBJECT_Actor) {

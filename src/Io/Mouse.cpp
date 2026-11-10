@@ -53,9 +53,8 @@ void Io::Mouse::SetCursorBitmapFromItemID(ItemId uItemID) {
 void Io::Mouse::SetCurrentCursorBitmap() { SetCursorImage(this->cursor_name); }
 
 void Io::Mouse::SetCursorImage(std::string_view name) {
-    if (!this->bInitialized) {
+    if (!this->bInitialized)
         return;
-    }
 
     if (this->cursor_name != name)
         this->cursor_name = name;
@@ -218,9 +217,8 @@ void Io::Mouse::UI_OnMouseLeftClick(bool isDoubleClick) {
     }
 
     if (pGameOverWindow) {
-        if (pGameOverWindow->toggleAndTestFinished()) {
+        if (pGameOverWindow->toggleAndTestFinished())
             pGameOverWindow = nullptr;
-        }
         return;
     }
 
@@ -288,11 +286,8 @@ void Io::Mouse::UI_OnMouseLeftClick(bool isDoubleClick) {
             0
         );
 
-        if (pParty->bTurnBasedModeOn) {
-            if (pTurnEngine->turn_stage == TE_MOVEMENT) {
-                pTurnEngine->flags |= TE_FLAG_8_finished;
-            }
-        }
+        if (pParty->bTurnBasedModeOn && pTurnEngine->turn_stage == TE_MOVEMENT)
+            pTurnEngine->flags |= TE_FLAG_8_finished;
     }
 }
 
@@ -318,9 +313,8 @@ void Io::Mouse::ToggleMouseLook() {
 }
 
 void Io::Mouse::DoMouseLook(Pointi relChange) {
-    if (_mouseLook != MouseLookState::Enabled) {
+    if (_mouseLook != MouseLookState::Enabled)
         return;
-    }
 
     float modX = relChange.x * engine->config->settings.MouseLookSensitivity.value();
     float modY = relChange.y * engine->config->settings.MouseLookSensitivity.value();
@@ -331,24 +325,21 @@ void Io::Mouse::DoMouseLook(Pointi relChange) {
 }
 
 void Io::Mouse::RestoreMouseLook() {
-    if (_mouseLook == MouseLookState::Suspended) {
+    if (_mouseLook == MouseLookState::Suspended)
         SetMouseLook(MouseLookState::Enabled);
-    }
 }
 
 // TODO(pskelton): Move this to keyboard
 bool UI_OnKeyDown(PlatformKey key) {
     for (GUIWindow *win : lWindowList) {
-        if (!win->receives_keyboard_input) {
+        if (!win->receives_keyboard_input)
             continue;
-        }
 
         if (keyboardActionMapping->isBound(INPUT_ACTION_DIALOG_LEFT, key)) {
             if (win->pCurrentPosActiveItem - win->pStartingPosActiveItem - win->_selectStep >= 0) {
                 win->pCurrentPosActiveItem -= win->_selectStep;
-                if (current_screen_type == SCREEN_PARTY_CREATION) {
+                if (current_screen_type == SCREEN_PARTY_CREATION)
                     pAudioPlayer->playUISound(SOUND_SelectingANewCharacter);
-                }
             }
             if (win->_msgOnKeyboardSelect) {
                 GUIButton *pButton = win->GetControl(win->pCurrentPosActiveItem);
@@ -359,9 +350,8 @@ bool UI_OnKeyDown(PlatformKey key) {
             int newPos = win->pCurrentPosActiveItem + win->_selectStep;
             if (newPos < win->pNumPresenceButton + win->pStartingPosActiveItem) {
                 win->pCurrentPosActiveItem = newPos;
-                if (current_screen_type == SCREEN_PARTY_CREATION) {
+                if (current_screen_type == SCREEN_PARTY_CREATION)
                     pAudioPlayer->playUISound(SOUND_SelectingANewCharacter);
-                }
             }
             if (win->_msgOnKeyboardSelect) {
                 GUIButton *pButton = win->GetControl(win->pCurrentPosActiveItem);
