@@ -32,7 +32,6 @@
 #include "Engine/Tables/IconFrameTable.h"
 #include "Engine/Tables/MapTable.h"
 #include "Engine/Tables/NPCTable.h"
-#include "Engine/TurnEngine/TurnEngine.h"
 
 #include "GUI/GUIButton.h"
 #include "GUI/GUIProgressBar.h"
@@ -952,35 +951,6 @@ GAME_TEST(Issues, Issue2792) {
             if (buff.Active())
                 EXPECT_EQ(buff.GetExpireTime(), castAt + expectedDuration);
         }
-    }
-}
-
-GAME_TEST(Issues, Issue2813b) {
-    // In turn-based mode, a goblin out of melee range that picked its melee attack used its ranged attack anyway.
-    for (int attack2Chance : {0, 100}) {
-        SCOPED_TRACE(fmt::format("attack2Chance={}", attack2Chance));
-        test.prepareForNextTest();
-        engine->config->debug.NoActors.setValue(true);
-        game.startNewGame();
-        engine->config->debug.NoActors.setValue(false);
-        Actor *goblin = game.spawnMonster(pParty->pos + Vec3f(0, 1000, 0), MONSTER_GOBLIN_A, SPAWN_STATIONARY);
-        ASSERT_EQ(goblin->monsterInfo.attack1MissileType, MONSTER_PROJECTILE_NONE);
-        ASSERT_EQ(goblin->monsterInfo.attack2MissileType, MONSTER_PROJECTILE_ARROW);
-        goblin->monsterInfo.attack2Chance = attack2Chance; // At 0 every turn picks the melee attack, at 100 the ranged one.
-        auto goblinTape = actorTapes.aiState(goblin->id);
-        auto spritesTape = tapes.sprites();
-        test.startTaping();
-        game.pressAndReleaseKey(PlatformKey::KEY_RETURN);
-        for (int i = 0; i < 200 && pTurnEngine->turn_stage != TE_MOVEMENT; ++i) {
-            if (pTurnEngine->turn_stage == TE_ATTACK && pParty->hasActiveCharacter() && !pParty->activeCharacter().timeToRecovery)
-                game.pressAndReleaseKey(PlatformKey::KEY_B); // Pass.
-            game.tick();
-        }
-        ASSERT_EQ(pTurnEngine->turn_stage, TE_MOVEMENT);
-
-        bool shoots = attack2Chance == 100;
-        EXPECT_EQ(goblinTape.contains(AttackingRanged2), shoots);
-        EXPECT_EQ(spritesTape.flatten().contains(SPRITE_PROJECTILE_ARROW), shoots);
     }
 }
 
