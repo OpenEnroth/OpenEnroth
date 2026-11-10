@@ -1,6 +1,7 @@
 #include "UITransition.h"
 
 #include <cstdlib>
+#include <memory>
 #include <string>
 
 #include "Engine/Engine.h"
@@ -30,7 +31,7 @@
 
 #include "Utility/String/Ascii.h"
 
-GraphicsImage *transition_ui_icon = nullptr;
+std::shared_ptr<GraphicsImage> transition_ui_icon;
 
 /**
  * all locations which should have special tranfer message:

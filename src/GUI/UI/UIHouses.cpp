@@ -49,7 +49,7 @@
 
 #include "Utility/Math/TrigLut.h"
 
-GraphicsImage *_591428_endcap = nullptr;
+std::shared_ptr<GraphicsImage> _591428_endcap;
 
 std::vector<HouseNpcDesc> houseNpcs;
 int currentHouseNpc;

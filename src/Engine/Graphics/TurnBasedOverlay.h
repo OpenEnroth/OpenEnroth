@@ -1,6 +1,7 @@
 #pragma once
 
 #include <array>
+#include <memory>
 
 #include "Engine/TurnEngine/TurnEngineEnums.h"
 
@@ -33,7 +34,7 @@ class TurnBasedOverlay {
     void draw();
 
  private:
-    GraphicsImage *currentIcon() const;
+    const std::shared_ptr<GraphicsImage> &currentIcon() const;
 
  private:
     TurnBasedOverlayState _state = TURN_BASED_OVERLAY_NONE;
@@ -44,6 +45,7 @@ class TurnBasedOverlay {
     int _attackIconId = 0; // Open hand.
     std::array<int, 5> _movementIconIds = {{}}; // Fingers.
     int _waitIconId = 0; // Hourglass animation.
+    std::shared_ptr<GraphicsImage> _noIcon; // Empty, returned when there is no overlay to draw.
 };
 
 extern TurnBasedOverlay turnBasedOverlay;

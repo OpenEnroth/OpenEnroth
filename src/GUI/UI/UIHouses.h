@@ -1,6 +1,7 @@
 #pragma once
 
 #include <cstdint>
+#include <memory>
 #include <string>
 #include <vector>
 
@@ -90,7 +91,7 @@ using enum HouseNpcType;
 struct HouseNpcDesc {
     HouseNpcType type = HOUSE_PROPRIETOR;
     std::string label = "";
-    GraphicsImage *icon = nullptr;
+    std::shared_ptr<GraphicsImage> icon;
     GUIButton *button = nullptr;
     MapId targetMapID = MAP_INVALID;
     NPCData *npc = nullptr;
@@ -149,8 +150,8 @@ class GUIWindow_House : public GUIWindow {
 
     HouseId _houseId = HOUSE_INVALID;
     DialogueId _currentDialogue = DIALOGUE_NULL;
-    GraphicsImage *_dialogueBackground = nullptr;
-    GraphicsImage *_shopBackground = nullptr; // Only shops and guilds have one.
+    std::shared_ptr<GraphicsImage> _dialogueBackground;
+    std::shared_ptr<GraphicsImage> _shopBackground; // Only shops and guilds have one.
     int _savedButtonsNum = 0;
     bool _transactionPerformed = false;
 };
@@ -165,7 +166,7 @@ struct HouseAnimDescr {
     uint16_t padding_e = 0;
 };
 
-extern GraphicsImage *_591428_endcap;
+extern std::shared_ptr<GraphicsImage> _591428_endcap;
 
 extern std::array<const HouseAnimDescr, 196> pAnimatedRooms;
 

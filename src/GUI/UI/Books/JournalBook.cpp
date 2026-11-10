@@ -17,7 +17,7 @@
 
 #include "Media/Audio/AudioPlayer.h"
 
-GraphicsImage *ui_book_journal_background = nullptr;
+std::shared_ptr<GraphicsImage> ui_book_journal_background;
 
 GUIWindow_JournalBook::GUIWindow_JournalBook() {
     eWindowType = WINDOW_JOURNAL_BOOK;

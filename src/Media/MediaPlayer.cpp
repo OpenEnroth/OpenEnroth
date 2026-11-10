@@ -560,7 +560,7 @@ class Movie : public IMovie {
                 RgbaImage frameImage = RgbaImage::copy(static_cast<const Color *>(video.last_frame.data()), pMovie_Track->GetWidth(), pMovie_Track->GetHeight());
                 tex = GraphicsImage::Create(std::move(frameImage));
 
-                render->DrawImage(tex.get(), calculateVideoRectangle(*pMovie_Track));
+                render->DrawImage(tex, calculateVideoRectangle(*pMovie_Track));
                 render->Present();
             }
 
@@ -708,7 +708,7 @@ class Movie : public IMovie {
         RgbaImage frameImage = RgbaImage::copy(static_cast<const Color *>(buffer.data()), GetWidth(), GetHeight());
         _texture = GraphicsImage::Create(std::move(frameImage));
 
-        render->DrawImage(_texture.get(), calculateVideoRectangle(*this));
+        render->DrawImage(_texture, calculateVideoRectangle(*this));
     }
 
  protected:
@@ -797,7 +797,7 @@ void MPlayer::HouseMovieLoop() {
         RgbaImage frameImage = RgbaImage::copy(static_cast<const Color *>(buffer.data()), pMovie_Track->GetWidth(), pMovie_Track->GetHeight());
         tex = GraphicsImage::Create(std::move(frameImage));
 
-        render->DrawImage(tex.get(), rect);
+        render->DrawImage(tex, rect);
 
     } else {
         pMovie_Track = nullptr;
@@ -882,7 +882,7 @@ void MPlayer::PlayFullscreenMovie(std::string_view pFilename) {
             RgbaImage frameImage = RgbaImage::copy(static_cast<const Color *>(buffer.data()), pMovie_Track->GetWidth(), pMovie_Track->GetHeight());
             tex = GraphicsImage::Create(std::move(frameImage));
 
-            render->DrawImage(tex.get(), calculateVideoRectangle(*pMovie_Track));
+            render->DrawImage(tex, calculateVideoRectangle(*pMovie_Track));
 
             render->Present();
         }

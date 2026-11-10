@@ -37,7 +37,7 @@ struct Particle_sw {
     float shiftZ = 0;
     Color uDiffuse{};
     Duration timeToLive{};
-    GraphicsImage *texture{ nullptr };
+    GraphicsImage *texture = nullptr;
     int paletteID = 0;
     float particle_size = 0;
 };

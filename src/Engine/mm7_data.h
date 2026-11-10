@@ -5,6 +5,7 @@
 #include <vector>
 #include <string>
 #include <utility>
+#include <memory>
 
 #include "Engine/Data/AwardEnums.h"
 #include "Engine/Pid.h"
@@ -79,7 +80,7 @@ extern Duration AfterEnchClickEventTimeout; // 50C9D8 Timer before event "AfterE
 extern unsigned int uNumBlueFacesInBLVMinimap;
 extern std::array<uint16_t, 50> pBlueFacesInBLVMinimapIDs;
 
-extern std::array<GraphicsImage *, 14> party_buff_icons;
+extern std::array<std::shared_ptr<GraphicsImage>, 14> party_buff_icons;
 extern unsigned int uIconIdx_FlySpell;
 extern unsigned int uIconIdx_WaterWalk;
 

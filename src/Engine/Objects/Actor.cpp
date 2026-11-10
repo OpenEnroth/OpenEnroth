@@ -2,6 +2,7 @@
 
 #include <algorithm>
 #include <deque>
+#include <memory>
 #include <string>
 #include <utility>
 #include <vector>
@@ -96,7 +97,7 @@ void Actor::DrawHealthBar(Actor *actor, Recti window) {
         bar_length = 200;
 
     // bar colour
-    GraphicsImage *bar_image = game_ui_monster_hp_green;
+    std::shared_ptr<GraphicsImage> bar_image = game_ui_monster_hp_green;
     if (actor->hp <= (0.34 * actor->monsterInfo.hp))
         bar_image = game_ui_monster_hp_red;
     else if (actor->hp <= (0.67 * actor->monsterInfo.hp))

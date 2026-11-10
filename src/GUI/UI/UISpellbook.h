@@ -1,6 +1,7 @@
 #pragma once
 
 #include <array>
+#include <memory>
 
 #include "Engine/Spells/SpellEnums.h"
 
@@ -23,16 +24,16 @@ class GUIWindow_Spellbook : public GUIWindow {
     void onCloseSpellBook();
     void onCloseSpellBookPage();
 
-    GraphicsImage *ui_spellbook_btn_quckspell = nullptr;
-    GraphicsImage *ui_spellbook_btn_quckspell_click = nullptr;
-    GraphicsImage *ui_spellbook_btn_close = nullptr;
-    GraphicsImage *ui_spellbook_btn_close_click = nullptr;
+    std::shared_ptr<GraphicsImage> ui_spellbook_btn_quckspell;
+    std::shared_ptr<GraphicsImage> ui_spellbook_btn_quckspell_click;
+    std::shared_ptr<GraphicsImage> ui_spellbook_btn_close;
+    std::shared_ptr<GraphicsImage> ui_spellbook_btn_close_click;
 
-    IndexedArray<GraphicsImage *, MAGIC_SCHOOL_FIRST, MAGIC_SCHOOL_LAST> ui_spellbook_school_backgrounds = {};
-    IndexedArray<std::array<GraphicsImage *, 2>, MAGIC_SCHOOL_FIRST, MAGIC_SCHOOL_LAST> ui_spellbook_school_tabs = {};
+    IndexedArray<std::shared_ptr<GraphicsImage>, MAGIC_SCHOOL_FIRST, MAGIC_SCHOOL_LAST> ui_spellbook_school_backgrounds;
+    IndexedArray<std::array<std::shared_ptr<GraphicsImage>, 2>, MAGIC_SCHOOL_FIRST, MAGIC_SCHOOL_LAST> ui_spellbook_school_tabs;
 
-    std::array<GraphicsImage *, 12> SBPageCSpellsTextureList{};
-    std::array<GraphicsImage *, 12> SBPageSSpellsTextureList{};
+    std::array<std::shared_ptr<GraphicsImage>, 12> SBPageCSpellsTextureList;
+    std::array<std::shared_ptr<GraphicsImage>, 12> SBPageSSpellsTextureList;
 };
 
 extern SpellId spellbookSelectedSpell;

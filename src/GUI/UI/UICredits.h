@@ -17,7 +17,7 @@ class GUICredits : public GUIWindow {
     std::unique_ptr<GUIFont> _fontQuick;
     std::unique_ptr<GUIFont> _fontCChar;
 
-    GraphicsImage *_mm6TitleTexture = nullptr;
+    std::shared_ptr<GraphicsImage> _mm6TitleTexture;
     std::unique_ptr<GraphicsImage> _creditsTexture;
     float _moveY = 0;
 };

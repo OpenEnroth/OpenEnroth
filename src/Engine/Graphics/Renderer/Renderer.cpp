@@ -31,21 +31,21 @@ Renderer::~Renderer() {
     assert(!_solidFillTexture);
 }
 
-void Renderer::DrawQuad2D(GraphicsImage *texture, const Recti &srcRect, Pointi dstPoint, Color color) {
+void Renderer::DrawQuad2D(Ptr<GraphicsImage> texture, const Recti &srcRect, Pointi dstPoint, Color color) {
     Recti dstRect(dstPoint.x, dstPoint.y, srcRect.w, srcRect.h);
     DrawQuad2D(texture, srcRect, dstRect, color);
 }
 
-void Renderer::DrawQuad2D(GraphicsImage *texture, Pointi dstPoint, Color color) {
+void Renderer::DrawQuad2D(Ptr<GraphicsImage> texture, Pointi dstPoint, Color color) {
     assert(texture);
     Sizei size = texture->size();
     DrawQuad2D(texture, Recti(Pointi(), size), Recti(dstPoint, size), color);
 }
 
-GraphicsImage *Renderer::solidFillTexture() {
+const std::unique_ptr<GraphicsImage> &Renderer::solidFillTexture() {
     if (!_solidFillTexture)
         _solidFillTexture = GraphicsImage::Create(RgbaImage::solid(colorTable.White, 1, 1));
-    return _solidFillTexture.get();
+    return _solidFillTexture;
 }
 
 void Renderer::releaseSolidFillTexture() {

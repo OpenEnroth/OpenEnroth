@@ -5,6 +5,7 @@
 #include <string>
 #include <array>
 #include <vector>
+#include <memory>
 
 #include "Engine/Engine.h"
 #include "Engine/EngineIocContainer.h"
@@ -203,7 +204,7 @@ static constexpr IndexedArray<ItemTreasureLevel, HOUSE_FIRST_ALCHEMY_SHOP, HOUSE
     {HOUSE_53,                              ITEM_TREASURE_LEVEL_2}
 }};
 
-std::array<GraphicsImage *, 12> shop_ui_items_in_store;
+std::array<std::shared_ptr<GraphicsImage>, 12> shop_ui_items_in_store;
 std::array<int, 6> weaponYPos;
 
 bool isStealingModeActive() {

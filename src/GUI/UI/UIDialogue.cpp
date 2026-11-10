@@ -39,7 +39,7 @@ static const IndexedArray<std::string, PartyAlignment_Good, PartyAlignment_Evil>
     {PartyAlignment_Evil, "evt02-c"}
 };
 
-GraphicsImage *dialogueBackground(PartyAlignment alignment) {
+const std::shared_ptr<GraphicsImage> &dialogueBackground(PartyAlignment alignment) {
     return assets->getIcon(dialogueBackgroundResourceByAlignment[alignment]);
 }
 

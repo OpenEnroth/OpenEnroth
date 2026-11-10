@@ -1,6 +1,7 @@
 #include "GUI/GUIProgressBar.h"
 
 #include <algorithm>
+#include <utility>
 
 #include "Engine/AssetsManager.h"
 #include "Engine/Engine.h"
@@ -70,10 +71,7 @@ void GUIProgressBar::Progress() {
 }
 
 void GUIProgressBar::Release() {
-    if (loading_bg != nullptr) {
-        assets->releaseImage(loading_bg);
-        loading_bg = nullptr;
-    }
+    assets->evict(std::move(loading_bg));
 
     uType = TYPE_None;
 }

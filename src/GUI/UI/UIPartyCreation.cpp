@@ -1,6 +1,7 @@
 #include <cstdlib>
 #include <memory>
 #include <string>
+#include <utility>
 
 #include "Engine/AssetsManager.h"
 #include "Engine/Engine.h"
@@ -30,23 +31,23 @@
 #include "Library/Logger/Logger.h"
 
 
-GraphicsImage *ui_partycreation_top = nullptr;
-GraphicsImage *ui_partycreation_sky_scroller = nullptr;
+std::shared_ptr<GraphicsImage> ui_partycreation_top;
+std::shared_ptr<GraphicsImage> ui_partycreation_sky_scroller;
 
-GraphicsImage *ui_partycreation_left = nullptr;
-GraphicsImage *ui_partycreation_right = nullptr;
-GraphicsImage *ui_partycreation_minus = nullptr;
-GraphicsImage *ui_partycreation_plus = nullptr;
-GraphicsImage *ui_partycreation_buttmake2 = nullptr;
-GraphicsImage *ui_partycreation_buttmake = nullptr;
+std::shared_ptr<GraphicsImage> ui_partycreation_left;
+std::shared_ptr<GraphicsImage> ui_partycreation_right;
+std::shared_ptr<GraphicsImage> ui_partycreation_minus;
+std::shared_ptr<GraphicsImage> ui_partycreation_plus;
+std::shared_ptr<GraphicsImage> ui_partycreation_buttmake2;
+std::shared_ptr<GraphicsImage> ui_partycreation_buttmake;
 
-GraphicsImage *ui_partycreation_character_frame = nullptr;
+std::shared_ptr<GraphicsImage> ui_partycreation_character_frame;
 
-std::array<GraphicsImage *, 9> ui_partycreation_class_icons;
-std::array<GraphicsImage *, 22> ui_partycreation_portraits;
+std::array<std::shared_ptr<GraphicsImage>, 9> ui_partycreation_class_icons;
+std::array<std::shared_ptr<GraphicsImage>, 22> ui_partycreation_portraits;
 
-std::array<GraphicsImage *, 19> ui_partycreation_arrow_r;
-std::array<GraphicsImage *, 19> ui_partycreation_arrow_l;
+std::array<std::shared_ptr<GraphicsImage>, 19> ui_partycreation_arrow_r;
+std::array<std::shared_ptr<GraphicsImage>, 19> ui_partycreation_arrow_l;
 
 
 std::array<GUIButton*, 4> pCreationUI_BtnPressRight2;
@@ -700,8 +701,7 @@ GUIWindow_PartyCreation::GUIWindow_PartyCreation() :
 }
 
 GUIWindow_PartyCreation::~GUIWindow_PartyCreation() {
-    assets->releaseImage(main_menu_background);
-    main_menu_background = nullptr;
+    assets->evict(std::move(main_menu_background));
 }
 
 //----- (00497526) --------------------------------------------------------

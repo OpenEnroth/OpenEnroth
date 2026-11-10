@@ -1,6 +1,5 @@
 #include "Engine/AssetsManager.h"
 
-#include <cassert>
 #include <memory>
 #include <string>
 #include <utility>
@@ -53,39 +52,42 @@ void AssetsManager::releaseAllTextures() {
     ReloadFonts();
 }
 
-void AssetsManager::releaseImage(GraphicsImage *image) {
+void AssetsManager::evict(std::shared_ptr<GraphicsImage> &&image) {
+    std::shared_ptr<GraphicsImage> local = std::move(image);
+    if (!local)
+        return;
+
     for (auto *cache : {&images, &bitmaps, &sprites}) {
-        auto pos = cache->find(image->name());
-        if (pos != cache->end() && pos->second.get() == image) {
-            cache->erase(pos);
+        auto pos = cache->find(local->name());
+        if (pos != cache->end() && pos->second == local) {
+            if (local.use_count() == 2) // The cache and `local`.
+                cache->erase(pos);
             return;
         }
     }
-
-    assert(false && "Image is not in the cache");
 }
 
-GraphicsImage *AssetsManager::getIcon(std::string_view name) {
+const std::shared_ptr<GraphicsImage> &AssetsManager::getIcon(std::string_view name) {
     std::string filename = ascii::toLower(name);
 
     auto i = images.find(filename);
     if (i == images.end())
         i = images.emplace(filename, GraphicsImage::Create(std::make_unique<Icon_LOD_Loader>(engine->resources(), filename))).first;
 
-    return i->second.get();
+    return i->second;
 }
 
-GraphicsImage *AssetsManager::getImage_Buff(std::string_view name) {
+const std::shared_ptr<GraphicsImage> &AssetsManager::getImage_Buff(std::string_view name) {
     std::string filename = ascii::toLower(name);
 
     auto i = images.find(filename);
     if (i == images.end())
         i = images.emplace(filename, GraphicsImage::Create(std::make_unique<Buff_LOD_Loader>(engine->resources(), filename))).first;
 
-    return i->second.get();
+    return i->second;
 }
 
-GraphicsImage *AssetsManager::getBitmap(std::string_view name, bool generated) {
+const std::shared_ptr<GraphicsImage> &AssetsManager::getBitmap(std::string_view name, bool generated) {
     std::string filename = ascii::toLower(name);
 
     auto i = bitmaps.find(filename);
@@ -99,23 +101,24 @@ GraphicsImage *AssetsManager::getBitmap(std::string_view name, bool generated) {
         i = bitmaps.emplace(filename, GraphicsImage::Create(std::move(loader))).first;
     }
 
-    return i->second.get();
+    return i->second;
 }
 
-GraphicsImage *AssetsManager::getSprite(std::string_view name) {
+const std::shared_ptr<GraphicsImage> &AssetsManager::getSprite(std::string_view name) {
     std::string filename = ascii::toLower(name);
 
     auto i = sprites.find(filename);
     if (i == sprites.end()) {
         std::unique_ptr<GraphicsImage> image = GraphicsImage::Create(std::make_unique<Sprites_LOD_Loader>(engine->resources(), filename));
         if (!image->size())
-            return nullptr;
+            return noSprite;
         i = sprites.emplace(filename, std::move(image)).first;
     }
 
-    return i->second.get();
+    return i->second;
 }
 
-void AssetsManager::releaseSprites() {
-    sprites.clear();
+void AssetsManager::releaseUnusedImages() {
+    for (auto *cache : {&images, &bitmaps, &sprites})
+        std::erase_if(*cache, [](const auto &entry) { return entry.second.use_count() == 1; });
 }

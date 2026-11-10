@@ -1,5 +1,7 @@
 #include "TownPortalBook.h"
 
+#include <memory>
+
 #include "Engine/AssetsManager.h"
 #include "Engine/Engine.h"
 #include "Engine/EngineGlobals.h"
@@ -87,10 +89,10 @@ static std::array<Recti, TOWN_PORTAL_DESTINATION_COUNT_WITH_CHEATS> townPortalBu
     { 19, 243, 39, 36}, // Gloaming throne room
 }};
 
-static std::array<GraphicsImage *, TOWN_PORTAL_DESTINATION_COUNT_WITH_CHEATS> ui_book_townportal_icons;
+static std::array<std::shared_ptr<GraphicsImage>, TOWN_PORTAL_DESTINATION_COUNT_WITH_CHEATS> ui_book_townportal_icons;
 
-GraphicsImage *ui_book_townportal_background = nullptr;
-GraphicsImage *ui_townportal_cheat_destination_icon = nullptr;
+std::shared_ptr<GraphicsImage> ui_book_townportal_background;
+std::shared_ptr<GraphicsImage> ui_townportal_cheat_destination_icon;
 
 GUIWindow_TownPortalBook::GUIWindow_TownPortalBook(Pid casterPid, SpellCastFlags castFlags)
         : _casterPid(casterPid), _castFlags(castFlags) {

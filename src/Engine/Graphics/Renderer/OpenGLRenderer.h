@@ -19,6 +19,8 @@
 #include "OpenGLShader.h"
 #include "OpenGLShaderParams.h"
 
+#include "Utility/Ptr.h"
+
 class PlatformOpenGLContext;
 
 class OpenGLRenderer : public BaseRenderer {
@@ -46,7 +48,7 @@ class OpenGLRenderer : public BaseRenderer {
 
     virtual void DrawProjectile(float srcX, float srcY, float a3, float a4,
                                 float dstX, float dstY, float a7, float a8,
-                                GraphicsImage *texture) override;
+                                Ptr<GraphicsImage> texture) override;
 
     virtual TextureRenderId CreateTexture(RgbaImageView image) override;
     virtual void DeleteTexture(TextureRenderId id) override;
@@ -57,13 +59,13 @@ class OpenGLRenderer : public BaseRenderer {
     virtual void SetUIClipRect(const Recti &rect) override;
     virtual void ResetUIClipRect() override;
 
-    virtual void DrawQuad2D(GraphicsImage *texture, const Recti &srcRect, const Recti &dstRect, Color color) override;
-    virtual void DrawImage(GraphicsImage *, const Recti &rect, int paletteid = 0, Color colourmask = colorTable.White) override;
+    virtual void DrawQuad2D(Ptr<GraphicsImage> texture, const Recti &srcRect, const Recti &dstRect, Color color) override;
+    virtual void DrawImage(Ptr<GraphicsImage>, const Recti &rect, int paletteid = 0, Color colourmask = colorTable.White) override;
 
-    virtual void BlendTextures(int a2, int a3, GraphicsImage *a4, GraphicsImage *a5, int t,
+    virtual void BlendTextures(int a2, int a3, Ptr<GraphicsImage> a4, Ptr<GraphicsImage> a5, int t,
                                int start_opacity, int end_opacity) override;
 
-    virtual void BeginTextNew(GraphicsImage *texture) override;
+    virtual void BeginTextNew(Ptr<GraphicsImage> texture) override;
     virtual void EndTextNew() override;
     virtual void DrawTextNew(const Recti &srcRect, const Recti &dstRect, const TextColors &colors) override;
 
@@ -101,8 +103,8 @@ class OpenGLRenderer : public BaseRenderer {
     virtual void DoRenderBillboards_D3D() override;
     void SetBillboardBlendOptions(RenderBillboardD3D::OpacityType a1);
 
-    void DrawOutdoorSkyPolygon(int numVertices, GraphicsImage *texture, int dimmingLevel);
-    void DrawIndoorSkyPolygon(int uNumVertices, GraphicsImage *texture, int dimmingLevel);
+    void DrawOutdoorSkyPolygon(int numVertices, Ptr<GraphicsImage> texture, int dimmingLevel);
+    void DrawIndoorSkyPolygon(int uNumVertices, Ptr<GraphicsImage> texture, int dimmingLevel);
     void DrawForcePerVerts();
 
     void SetFogParametersGL();
@@ -111,7 +113,6 @@ class OpenGLRenderer : public BaseRenderer {
 
     void _initImGui();
     void _shutdownImGui();
-    void _initWaterTiles();
 
     FrameLimiter _frameLimiter;
 
@@ -202,8 +203,6 @@ class OpenGLRenderer : public BaseRenderer {
     FogUniforms fog;
 
     float gamma = 0;
-
-    std::array<GraphicsImage *, 7> hd_water_tile_anim = {{}}; // Water animation textures.
 
     std::vector<GLuint> _texturesForDeletion;
 };

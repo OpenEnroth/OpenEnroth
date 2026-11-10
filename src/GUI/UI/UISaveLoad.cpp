@@ -2,6 +2,7 @@
 
 #include <algorithm>
 #include <cmath>
+#include <memory>
 #include <string>
 #include <string_view>
 #include <utility>
@@ -36,10 +37,10 @@ std::array<int, 2> saveload_dlg_ys = {{60, 0}};
 std::array<int, 2> saveload_dlg_zs = {{460, 640}};
 std::array<int, 2> saveload_dlg_ws = {{344, 480}};
 
-GraphicsImage *saveload_ui_ls_saved = nullptr;
-GraphicsImage *saveload_ui_x_d = nullptr;
+std::shared_ptr<GraphicsImage> saveload_ui_ls_saved;
+std::shared_ptr<GraphicsImage> saveload_ui_x_d;
 
-static GraphicsImage *scrollstop = nullptr;
+static std::shared_ptr<GraphicsImage> scrollstop;
 
 /**
  * @return                          Slots to show in the load menu - all saves from the saves folder, sorted by
@@ -162,7 +163,7 @@ void GUIWindow_SaveLoad::drawSaveLoad() {
         Recti titleRect(frameRect.x + 240, (frameRect.y - assets->pFontSmallnum->GetHeight()) + 157,
                         220, assets->pFontSmallnum->GetHeight());
         if (slot.thumbnail)
-            render->DrawQuad2D(slot.thumbnail.get(), {frameRect.x + 276, frameRect.y + 171});
+            render->DrawQuad2D(slot.thumbnail, {frameRect.x + 276, frameRect.y + 171});
 
         // Draw map name
         GUIWindow::DrawTitleText(assets->pFontSmallnum.get(), 0, 0, colorTable.White,

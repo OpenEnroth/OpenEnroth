@@ -3,6 +3,7 @@
 #include <algorithm>
 #include <array>
 #include <string>
+#include <utility>
 
 #include "Engine/Engine.h"
 #include "Engine/EngineGlobals.h"
@@ -951,11 +952,8 @@ void ArcomageGame::Loop() {
         am_effects_array[i].explosion_eff->Free();
     }
 
-    assets->releaseImage(pArcomageGame->pGameBackground);
-    pArcomageGame->pGameBackground = nullptr;
-
-    assets->releaseImage(pArcomageGame->pSprites);
-    pArcomageGame->pSprites = nullptr;
+    assets->evict(std::move(pArcomageGame->pGameBackground));
+    assets->evict(std::move(pArcomageGame->pSprites));
 
     pArcomageGame->_gameInProgress = false;
 

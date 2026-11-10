@@ -1,5 +1,8 @@
 #include "GUI/UI/UIMainMenu.h"
 
+#include <memory>
+#include <utility>
+
 #include "Engine/EngineGlobals.h"
 #include "Engine/Localization.h"
 #include "Engine/Graphics/Renderer/Renderer.h"
@@ -33,7 +36,7 @@ GUIWindow_MainMenu::GUIWindow_MainMenu() :
 }
 
 GUIWindow_MainMenu::~GUIWindow_MainMenu() {
-    assets->releaseImage(main_menu_background);
+    assets->evict(std::move(main_menu_background));
 }
 
 void GUIWindow_MainMenu::Update() {
@@ -41,7 +44,7 @@ void GUIWindow_MainMenu::Update() {
 
     Pointi pt = mouse->position();
 
-    GraphicsImage *pTexture = nullptr;
+    std::shared_ptr<GraphicsImage> pTexture;
     for (GUIButton *pButton : vButtons) {
         if (pButton->Contains(pt.x, pt.y)) {
             auto pControlParam = pButton->msg_param;

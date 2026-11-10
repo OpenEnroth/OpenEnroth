@@ -10,6 +10,8 @@
 
 #include "Engine/Graphics/Image.h"
 
+#include "Utility/Ptr.h"
+
 /**
  * A canvas-like container that allows adding images with associated values, then querying pixels to get the value of
  * the topmost non-transparent image at that position.
@@ -26,12 +28,12 @@ class HitMap {
      * @param image                     Pointer to the graphics image.
      * @param value                     Value to associate with this image.
      */
-    void add(Pointi position, GraphicsImage *image, T value) {
+    void add(Pointi position, Ptr<GraphicsImage> image, T value) {
         assert(image);
 
+        Recti imageRect = Recti(position, image->size());
         _entries.emplace_back(position, image, std::move(value));
 
-        Recti imageRect = Recti(position, image->size());
         if (_entries.size() == 1) {
             _bounds = imageRect;
         } else {
@@ -80,7 +82,7 @@ class HitMap {
         GraphicsImage *image = nullptr;
         T value;
 
-        Entry(Pointi pos, GraphicsImage *img, T val) : position(pos), image(img), value(val) {}
+        Entry(Pointi pos, Ptr<GraphicsImage> img, T val) : position(pos), image(img), value(val) {}
     };
 
     std::vector<Entry> _entries;

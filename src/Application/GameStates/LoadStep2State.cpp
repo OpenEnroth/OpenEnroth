@@ -1,5 +1,7 @@
 #include "LoadStep2State.h"
 
+#include <utility>
+
 #include "Engine/AssetsManager.h"
 #include "Engine/Engine.h"
 #include "Engine/EngineGlobals.h"
@@ -38,8 +40,7 @@ FsmAction LoadStep2State::update() {
 }
 
 void LoadStep2State::exit() {
-    assets->releaseImage(_fullscreenTexture);
-    _fullscreenTexture = nullptr;
+    assets->evict(std::move(_fullscreenTexture));
     _isFirstPass = false;
 }
 
