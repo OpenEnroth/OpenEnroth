@@ -9,7 +9,8 @@ set(GAME_TEST_MAIN_SOURCES
         GameTests_1000.cpp
         GameTests_1500.cpp
         GameTests_2000.cpp
-        GameTests_2500.cpp)
+        GameTests_2500.cpp
+        GameTests_3000.cpp)
 set(GAME_TEST_MAIN_HEADERS
         GameTestCommon.h
         GameTestOptions.h)
