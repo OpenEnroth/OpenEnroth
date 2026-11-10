@@ -175,9 +175,7 @@ EvtTransition EvtInterpreter::execute(int startStep) {
 
     int step = startStep;
 
-    _who = _context.who;
-    if (_who == CHOOSE_ACTIVE && !pParty->hasActiveCharacter())
-        _who = CHOOSE_RANDOM;
+    _who = resolveTarget(CHOOSE_ACTIVE);
 
     while (step != -1)
         step = executeStep(step);
@@ -282,11 +280,11 @@ EvtFlow EvtInterpreter::executeInstruction(EvtInstruction ir) {
                 return {EVT_FLOW_STOP};
             break;
         case EVENT_ShowFace:
-            for (Character &character : iterateCharacters(ir.who, vrng))
+            for (Character &character : iterateCharacters(resolveTarget(ir.who), vrng))
                 character.playEmotion(ir.data.portrait_id, 0_ticks);
             break;
         case EVENT_ReceiveDamage:
-            for (Character &character : iterateCharacters(ir.who, grng))
+            for (Character &character : iterateCharacters(resolveTarget(ir.who), grng))
                 character.receiveDamage(ir.data.damage_descr.damage, ir.data.damage_descr.damage_type);
             break;
         case EVENT_SetSnow:
@@ -462,7 +460,7 @@ EvtFlow EvtInterpreter::executeInstruction(EvtInstruction ir) {
                                      ir.data.summon_item_descr.speed, ir.data.summon_item_descr.count, ir.data.summon_item_descr.random_rotate);
             break;
         case EVENT_ForPartyMember:
-            _who = ir.who;
+            _who = resolveTarget(ir.who);
             break;
         case EVENT_Jmp:
             return {EVT_FLOW_JUMP, ir.target_step};
@@ -618,7 +616,7 @@ EvtFlow EvtInterpreter::executeInstruction(EvtInstruction ir) {
             Chest::toggleFlag(ir.data.chest_flag_descr.chest_id, ir.data.chest_flag_descr.flag, ir.data.chest_flag_descr.is_set);
             break;
         case EVENT_CharacterAnimation:
-            for (Character &character : iterateCharacters(ir.who, vrng))
+            for (Character &character : iterateCharacters(resolveTarget(ir.who), vrng))
                 character.playReaction(ir.data.speech_id);
             break;
         case EVENT_SetActorItem:
@@ -703,6 +701,12 @@ bool EvtInterpreter::validateVariableValue(const EvtInstruction &ir) const {
     MM_ERROR("Skipping step {} of evt event {}, value {} is out of range for evt variable {}",
              ir.step, _context.eventId, ir.data.variable_descr.value, std::to_underlying(ir.data.variable_descr.type));
     return false;
+}
+
+EvtTargetCharacter EvtInterpreter::resolveTarget(EvtTargetCharacter who) const {
+    if (who == CHOOSE_ACTIVE && _context.actingCharacterIndex)
+        return static_cast<EvtTargetCharacter>(*_context.actingCharacterIndex);
+    return who;
 }
 
 const EvtInstruction *EvtInterpreter::instructionAt(int step) const {

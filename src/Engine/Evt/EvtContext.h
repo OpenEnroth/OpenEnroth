@@ -1,5 +1,7 @@
 #pragma once
 
+#include <optional>
+
 #include "Engine/Evt/EvtEnums.h"
 #include "Engine/Pid.h"
 
@@ -17,8 +19,9 @@ struct EvtContext {
     /** Face or decoration that triggered the event, or empty when none did. */
     Pid objectPid;
 
-    /** Character the commands act on until the script picks another. `CHOOSE_ACTIVE` is whoever is active then. */
-    EvtTargetCharacter who = CHOOSE_ACTIVE;
+    /** Index of the character that the commands' `CHOOSE_ACTIVE` stands for, or empty for the party's active
+     * character. */
+    std::optional<int> actingCharacterIndex;
 
     /** The loading screen is still up, so status texts are dropped and an NPC dialogue waits for the first frame,
      * like Archibald's on entering MM7's Land of the Giants, out12.evt event 1. */

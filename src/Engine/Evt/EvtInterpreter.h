@@ -95,6 +95,13 @@ class EvtInterpreter {
      [[nodiscard]] bool validateVariableValue(const EvtInstruction &ir) const;
 
      /**
+      * @param who                      Characters that a command targets.
+      * @return                         `who`, with `CHOOSE_ACTIVE` replaced by the context's acting character when
+      *                                 it has one.
+      */
+     [[nodiscard]] EvtTargetCharacter resolveTarget(EvtTargetCharacter who) const;
+
+     /**
       * @param step                     Step to look up.
       * @return                         Instruction at that step, or `nullptr` if the event has none.
       */
