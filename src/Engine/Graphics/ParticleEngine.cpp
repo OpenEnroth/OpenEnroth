@@ -61,12 +61,10 @@ void ParticleEngine::AddParticle(Particle_sw *particle) {
 
         for (int i = 0; i < pParticles.size(); i++) {
             if (pParticles[i].type == ParticleType_Invalid) {
-                if (i < this->uStartParticle) {
+                if (i < this->uStartParticle)
                     this->uStartParticle = i;
-                }
-                if (i > this->uEndParticle) {
+                if (i > this->uEndParticle)
                     this->uEndParticle = i;
-                }
                 freeParticle = &pParticles[i];
                 break;
             }
@@ -124,16 +122,14 @@ void ParticleEngine::UpdateParticles() {
     // TODO(captainurist): checking animTimer->isPaused(), then using gameTimer->uTimeElapsed?
     Duration time = !animTimer->isPaused() ? gameTimer->dt() : 0_ticks;
 
-    if (!time) {
+    if (!time)
         return;
-    }
 
     for (unsigned int i = uStartParticle; i <= uEndParticle; ++i) {
         Particle *p = &pParticles[i];
 
-        if (p->type == ParticleType_Invalid) {
+        if (p->type == ParticleType_Invalid)
             continue;
-        }
 
         if (p->timeToLive <= time) {
             p->timeToLive = 0_ticks;
@@ -151,9 +147,8 @@ void ParticleEngine::UpdateParticles() {
         }
 
         // Dropping particles drop downward with acceleration
-        if (p->type & ParticleType_Dropping) {
+        if (p->type & ParticleType_Dropping)
             p->shift_z -= time.ticks() * 5.0;
-        }
 
         // Ascending particles slowly float upward
         if (p->type & ParticleType_Ascending) {
@@ -174,21 +169,18 @@ void ParticleEngine::UpdateParticles() {
 
         // Particle billboards use additive blending, so fading to black fades them out without touching alpha.
         int dissipate_value = 2 * p->timeToLive.ticks();
-        if (dissipate_value >= 255) {
+        if (dissipate_value >= 255)
             dissipate_value = 255;
-        }
         float dissipate_factor = dissipate_value / 255.0f;
         // v10 = (double)v22 * 0.0039215689;
         p->fadedColor = Color(floorf(p->uParticleColor.r * dissipate_factor + 0.5),
                               floorf(p->uParticleColor.g * dissipate_factor + 0.5),
                               floorf(p->uParticleColor.b * dissipate_factor + 0.5));
 
-        if (i < uCurrentBegin) {
+        if (i < uCurrentBegin)
            uCurrentBegin = i;
-        }
-        if (i > uCurrentEnd) {
+        if (i > uCurrentEnd)
            uCurrentEnd = i;
-        }
     }
 
     uEndParticle = uCurrentEnd;

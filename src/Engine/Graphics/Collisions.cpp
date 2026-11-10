@@ -274,9 +274,8 @@ static void CollideBodyWithFace(BLVFace *face, Pid face_pid, bool ignore_etherea
             bool have_collision = false;
             float move_distance = collision_state.move_distance;
             Vec3f col_pos;
-            if (CollideSphereWithFace(face, old_pos, radius, dir, &move_distance, &col_pos, ignore_ethereal, model_idx)) {
+            if (CollideSphereWithFace(face, old_pos, radius, dir, &move_distance, &col_pos, ignore_ethereal, model_idx))
                 have_collision = true;
-            }
 
             if (have_collision && move_distance < collision_state.adjusted_move_distance) {
                 // We allow for a bit of negative movement in case we are already too close to the surface and need pushback
@@ -334,9 +333,8 @@ static bool CollideWithCylinder(const Vec3f &center_lo, float radius, float heig
 
     //// Length of dist vector projected onto collision_state.direction.
     float dist_dot_dir = dist_x * dir.x + dist_y * dir.y;
-    if (dist_dot_dir <= 0.0f) {
+    if (dist_dot_dir <= 0.0f)
         return false; // We're moving away from the cylinder.
-    }
 
     Vec3f vert1 = center_lo;
     Vec3f vert2 = center_lo + Vec3f(0, 0, height + radius);
@@ -686,9 +684,8 @@ void ProcessActorCollisionsBLV(Actor &actor, bool isAboveGround, bool isFlying) 
                 actor.velocity.y = 0;
                 actor.velocity.x = 0;
 
-                if (pParty->pPartyBuffs[PARTY_BUFF_INVISIBILITY].Active()) {
+                if (pParty->pPartyBuffs[PARTY_BUFF_INVISIBILITY].Active())
                     pParty->pPartyBuffs[PARTY_BUFF_INVISIBILITY].Reset();
-                }
             } else {
                 Actor::AI_FaceObject(actor.id, collision_state.pid, nullptr);
             }
@@ -826,9 +823,8 @@ void ProcessActorCollisionsODM(Actor &actor, bool isFlying) {
                 actor.velocity.y = 0;
                 actor.velocity.x = 0;
 
-                if (pParty->pPartyBuffs[PARTY_BUFF_INVISIBILITY].Active()) {
+                if (pParty->pPartyBuffs[PARTY_BUFF_INVISIBILITY].Active())
                     pParty->pPartyBuffs[PARTY_BUFF_INVISIBILITY].Reset();
-                }
             } else {
                 Actor::AI_FaceObject(actor.id, collision_state.pid, nullptr);
             }
@@ -932,9 +928,8 @@ void ProcessPartyCollisionsBLV(int sectorId, int min_party_move_delta_sqr, int *
         }
 
         // Set new position but moved back slightly so we never touch the face
-        if (collision_state.adjusted_move_distance > collision_state.move_distance) {
+        if (collision_state.adjusted_move_distance > collision_state.move_distance)
             collision_state.adjusted_move_distance = collision_state.move_distance;
-        }
         Vec3f adjusted_pos = pParty->pos + (collision_state.adjusted_move_distance - closestdist) * collision_state.direction;
         // Adjust the collision position with the same offset
         collision_state.collisionPos -= closestdist * collision_state.direction;
@@ -946,14 +941,11 @@ void ProcessPartyCollisionsBLV(int sectorId, int min_party_move_delta_sqr, int *
         collision_state.total_move_distance += collision_state.adjusted_move_distance;
         pParty->pos = adjusted_pos;
         pBLVRenderParams->uPartySectorID = collision_state.uSectorID;
-        if (collision_state.adjusted_move_distance >= collision_state.move_distance) {
+        if (collision_state.adjusted_move_distance >= collision_state.move_distance)
             break; // And we're done with collisions.
-        }
 
-        if (collision_state.pid.type() == OBJECT_Actor) {
-            if (pParty->pPartyBuffs[PARTY_BUFF_INVISIBILITY].Active())
-                pParty->pPartyBuffs[PARTY_BUFF_INVISIBILITY].Reset(); // Break invisibility when running into a monster.
-        }
+        if (collision_state.pid.type() == OBJECT_Actor && pParty->pPartyBuffs[PARTY_BUFF_INVISIBILITY].Active())
+            pParty->pPartyBuffs[PARTY_BUFF_INVISIBILITY].Reset(); // Break invisibility when running into a monster.
 
         if (collision_state.pid.type() == OBJECT_Decoration) {
             Vec3f newDirection = decorationSlideDirection();
@@ -968,26 +960,18 @@ void ProcessPartyCollisionsBLV(int sectorId, int min_party_move_delta_sqr, int *
             bool bFaceSlopeTooSteep = pFace->facePlane.normal.z > 0.0f && pFace->facePlane.normal.z < 0.70767211914f; // Was 46378 fixpoint
 
             // TODO(pskelton): Better way to do this? Maybe add a climbable attribute
-            if (engine->_currentLoadedMapId == MAP_TIDEWATER_CAVERNS) {  // Special case for steep staircase in tidewater
-                if (collision_state.pid.id() == 650)
-                    bFaceSlopeTooSteep = false;
-            }
-            if (engine->_currentLoadedMapId == MAP_CASTLE_GLOAMING) { // Special case for exiting teleport boats
-                if (collision_state.pid.id() == 551 || collision_state.pid.id() == 1990 || collision_state.pid.id() == 2217)
-                    bFaceSlopeTooSteep = false;
-            }
-            if (engine->_currentLoadedMapId == MAP_CASTLE_HARMONDALE) {
-                if (collision_state.pid.id() == 398) // Secret tunnel under prison bed
-                    bFaceSlopeTooSteep = false;
-            }
-            if (engine->_currentLoadedMapId == MapId::MAP_HALL_OF_THE_PIT) {
-                if (collision_state.pid.id() == 787 || collision_state.pid.id() == 832 || collision_state.pid.id() == 790)
-                    bFaceSlopeTooSteep = false;
-            }
-            if (engine->_currentLoadedMapId == MAP_CASTLE_GLOAMING) {
-                if (collision_state.pid.id() == 2439 || collision_state.pid.id() == 2438 || collision_state.pid.id() == 2437 || collision_state.pid.id() == 2436) // gloaming
-                    bFaceSlopeTooSteep = false;
-            }
+            if (engine->_currentLoadedMapId == MAP_TIDEWATER_CAVERNS && collision_state.pid.id() == 650)  // Special case for steep staircase in tidewater
+                bFaceSlopeTooSteep = false;
+            if (engine->_currentLoadedMapId == MAP_CASTLE_GLOAMING &&
+                (collision_state.pid.id() == 551 || collision_state.pid.id() == 1990 || collision_state.pid.id() == 2217)) // Special case for exiting teleport boats
+                bFaceSlopeTooSteep = false;
+            if (engine->_currentLoadedMapId == MAP_CASTLE_HARMONDALE && collision_state.pid.id() == 398) // Secret tunnel under prison bed
+                bFaceSlopeTooSteep = false;
+            if (engine->_currentLoadedMapId == MapId::MAP_HALL_OF_THE_PIT && (collision_state.pid.id() == 787 || collision_state.pid.id() == 832 || collision_state.pid.id() == 790))
+                bFaceSlopeTooSteep = false;
+            if (engine->_currentLoadedMapId == MAP_CASTLE_GLOAMING &&
+                (collision_state.pid.id() == 2439 || collision_state.pid.id() == 2438 || collision_state.pid.id() == 2437 || collision_state.pid.id() == 2436)) // gloaming
+                bFaceSlopeTooSteep = false;
 
             // TODO(pskelton): This 'catch all' is probably unsafe - would be better as above
             if (bFaceSlopeTooSteep && pFace->Invisible() && pFace->polygonType == PolygonType::POLYGON_InBetweenFloorAndWall)
@@ -1051,9 +1035,8 @@ void ProcessPartyCollisionsODM(Vec3f *partyNewPos, Vec3f *partyInputSpeed, int *
         Duration frame_movement_dt;
         if (pParty->bTurnBasedModeOn && pTurnEngine->turn_stage == TE_MOVEMENT)
             frame_movement_dt = 26_ticks;
-        if (collision_state.PrepareAndCheckIfStationary(frame_movement_dt)) {
+        if (collision_state.PrepareAndCheckIfStationary(frame_movement_dt))
             break;
-        }
 
         CollideOutdoorWithModels(true);
         CollideOutdoorWithDecorations(worldToGrid(pParty->pos));
@@ -1121,10 +1104,8 @@ void ProcessPartyCollisionsODM(Vec3f *partyNewPos, Vec3f *partyInputSpeed, int *
         collision_state.total_move_distance += collision_state.adjusted_move_distance;
         *partyNewPos = newPosLow;
 
-        if (collision_state.pid.type() == OBJECT_Actor) {
-            if (pParty->Invisible())
-                pParty->pPartyBuffs[PARTY_BUFF_INVISIBILITY].Reset();
-        }
+        if (collision_state.pid.type() == OBJECT_Actor && pParty->Invisible())
+            pParty->pPartyBuffs[PARTY_BUFF_INVISIBILITY].Reset();
 
         if (collision_state.pid.type() == OBJECT_Decoration) {
             Vec3f newDirection = decorationSlideDirection();
@@ -1138,10 +1119,8 @@ void ProcessPartyCollisionsODM(Vec3f *partyNewPos, Vec3f *partyInputSpeed, int *
             const BLVFace* pBLVFace = &pOutdoor->face(collision_state.pid);
             bool bFaceSlopeTooSteep = pBLVFace->facePlane.normal.z > 0.0f && pBLVFace->facePlane.normal.z < 0.70767211914f; // Was 46378 fixpoint
 
-            if (bFaceSlopeTooSteep) { // make small slopes walkable
-                if (pBLVFace->boundingBox.z2 - pBLVFace->boundingBox.z1 < 128)
-                    bFaceSlopeTooSteep = false;
-            }
+            if (bFaceSlopeTooSteep && pBLVFace->boundingBox.z2 - pBLVFace->boundingBox.z1 < 128) // make small slopes walkable
+                bFaceSlopeTooSteep = false;
 
             if (pBLVFace->facePlane.normal.z > 0 && !bFaceSlopeTooSteep)
                 *partyHasHitModel = true;
@@ -1199,18 +1178,16 @@ void ProcessPartyCollisionsODM(Vec3f *partyNewPos, Vec3f *partyInputSpeed, int *
 
 bool hasShorterSolution(const float a, const float b, const float c, const float curSoln, float* outNewSoln, bool inside) {
     float d = b * b - 4.0f * a * c;
-    if (d < 0.0f) {
+    if (d < 0.0f)
         return false;  // no real solutions - No intersection points.
-    }
 
     d = std::sqrt(d);
     float alpha1 = (-b - d) / (2 * a);
     float alpha2 = (-b + d) / (2 * a);
 
     // Deal with smaller solution first
-    if (alpha1 > alpha2) {
+    if (alpha1 > alpha2)
         std::swap(alpha1, alpha2);
-    }
     // May be negative if the collision point was behind us - so ignore
     if (alpha1 > 0.0f && alpha1 < curSoln) {
         *outNewSoln = alpha1;

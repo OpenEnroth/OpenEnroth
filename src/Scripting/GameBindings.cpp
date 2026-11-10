@@ -106,9 +106,8 @@ void GameBindings::_registerPartyBindings(sol::state_view &solState, sol::table 
             }
         }),
         "getCharacterInfo", sol::as_function([this, &solState](int characterIndex, QueryTable queryTable) {
-            if (Character *character = getCharacterByIndex(characterIndex - 1)) {
+            if (Character *character = getCharacterByIndex(characterIndex - 1))
                 return _characterInfoQueryTable->createTable(*character, queryTable);
-            }
             return sol::make_object(solState, sol::lua_nil);
         }),
         "setCharacterInfo", sol::as_function([](int characterIndex, const sol::object &info) {
@@ -173,14 +172,12 @@ void GameBindings::_registerPartyBindings(sol::state_view &solState, sol::table 
             return false;
         }),
         "playAllCharactersAwardSound", sol::as_function([]() {
-            for (auto &&character : pParty->pCharacters) {
+            for (auto &&character : pParty->pCharacters)
                 character.PlayAwardSound_Anim();
-            }
         }),
         "playCharacterAwardSound", sol::as_function([](int characterIndex) {
-            if (Character *character = getCharacterByIndex(characterIndex - 1)) {
+            if (Character *character = getCharacterByIndex(characterIndex - 1))
                 character->PlayAwardSound_Anim();
-            }
         }),
         "clearCondition", sol::as_function([](int characterIndex, std::optional<Condition> conditionToClear) {
             if (Character *character = getCharacterByIndex(characterIndex - 1)) {
@@ -232,9 +229,8 @@ void GameBindings::_registerItemBindings(sol::state_view &solState, sol::table &
             if (filter) {
                 std::vector<ItemId> itemsToRandomizeOn;
                 Segment<ItemId> &&spawnableItems = allSpawnableItems();
-                for (ItemId itemId : spawnableItems | std::views::filter(filter)) {
+                for (ItemId itemId : spawnableItems | std::views::filter(filter))
                     itemsToRandomizeOn.push_back(itemId);
-                }
                 return grng->randomSample(itemsToRandomizeOn);
             }
             return grng->randomSample(allSpawnableItems());
@@ -380,9 +376,8 @@ void GameBindings::_registerFunctions(sol::state_view &solState, sol::table &tab
 }
 
 Character *getCharacterByIndex(int characterIndex) {
-    if (characterIndex >= 0 && characterIndex < pParty->pCharacters.size()) {
+    if (characterIndex >= 0 && characterIndex < pParty->pCharacters.size())
         return &pParty->pCharacters[characterIndex];
-    }
 
     MM_WARNING("Invalid character index. Asked for: {} but the party size is: {}", characterIndex, pParty->pCharacters.size());
     return nullptr;
@@ -391,11 +386,9 @@ Character *getCharacterByIndex(int characterIndex) {
 sol::table createCharacterConditionTable(sol::state_view &luaState, const Character &character) {
     sol::table result = luaState.create_table();
 
-    for (auto &&condition : allConditions()) {
-        if (character.conditions.has(condition)) {
+    for (auto &&condition : allConditions())
+        if (character.conditions.has(condition))
             result[condition] = true;
-        }
-    }
     return result;
 }
 

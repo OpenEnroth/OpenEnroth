@@ -171,9 +171,8 @@ void BLVRenderParams::Reset() {
     this->uPartySectorID = pIndoor->GetSector(pParty->pos);
     this->uPartyEyeSectorID = pIndoor->GetSector(pParty->pos + Vec3f(0, 0, pParty->eyeLevel));
 
-    if (!this->uPartySectorID) {
+    if (!this->uPartySectorID)
         assert(false);  // shouldnt happen, please provide savegame
-    }
 
 
     this->viewportRect = pViewport;
@@ -213,9 +212,8 @@ GraphicsImage *BLVFace::GetTexture() const {
 void BLVFace::SetTexture(std::string_view filename) {
     if (this->IsAnimated()) {
         this->animationId = pTextureFrameTable->animationId(filename);
-        if (this->animationId != -1) {
+        if (this->animationId != -1)
             return;
-        }
 
         // Failed to find animated texture so disable
         this->ToggleIsAnimated();
@@ -401,9 +399,8 @@ int IndoorLocation::GetSector(float sX, float sY, float sZ) {
         // calc distance between this face and party
         if (this->faces[faceId].polygonType == POLYGON_Floor)
             CalcZDist = sZ - this->vertices[this->faces[faceId].vertexIds[0]].z;
-        if (this->faces[faceId].polygonType == POLYGON_InBetweenFloorAndWall) {
+        if (this->faces[faceId].polygonType == POLYGON_InBetweenFloorAndWall)
             CalcZDist = sZ - this->faces[faceId].zCalc.calculate(sX, sY);
-        }
 
         // use this face if its smaller than the current min - prefer faces below party
         if (CalcZDist < MinZDist) {
@@ -623,9 +620,8 @@ void BLV_UpdateDoors() {
         BLVDoor *door = &pIndoor->doors[i];
 
         // door not moving currently
-        if (door->state == DOOR_OPEN || door->state == DOOR_CLOSED) {
+        if (door->state == DOOR_OPEN || door->state == DOOR_CLOSED)
             continue;
-        }
 
         bool shouldPlaySound = !(door->attributes & DOOR_NOSOUND) && door->numVertices != 0;
 
@@ -665,9 +661,8 @@ void BLV_UpdateDoors() {
 
 void BLV_UpdateDoorGeometry(BLVDoor* door, int distance) {
     // adjust verts to how open the door is
-    for (int j = 0; j < door->numVertices; ++j) {
+    for (int j = 0; j < door->numVertices; ++j)
         pIndoor->vertices[door->pVertexIDs[j]] = door->direction * distance + door->offsets[j];
-    }
 
     for (int j = 0; j < door->numFaces; ++j) {
         BLVFace* face = &pIndoor->faces[door->pFaceIDs[j]];
@@ -846,10 +841,8 @@ void BLV_UpdateActors() {
         if (actor.velocity.xy().lengthSqr() < 400) {
             actor.velocity.x = 0;
             actor.velocity.y = 0;
-            if (pIndoor->faces[uFaceID].attributes & FACE_INDOOR_SKY) {
-                if (actor.aiState == Dead)
-                    actor.aiState = Removed;
-            }
+            if ((pIndoor->faces[uFaceID].attributes & FACE_INDOOR_SKY) && actor.aiState == Dead)
+                actor.aiState = Removed;
         }
 
         Vec3f oldPos = actor.pos;
@@ -865,9 +858,8 @@ void BLV_UpdateActors() {
 
         // update actor direction based on movement - better navigation if hit obstacle
         Vec3f travel = actor.pos - oldPos;
-        if (travel.lengthSqr() > 128.f) {
+        if (travel.lengthSqr() > 128.f)
             actor.yawAngle = TrigLUT.atan2(travel.x, travel.y);
-        }
 
         // Update actor sector after movement
         actor.sectorId = pIndoor->GetSector(actor.pos);
@@ -929,9 +921,8 @@ void loadAndPrepareBLV(MapId mapid, bool bLoading) {
     for (unsigned i = 0; i < pLevelDecorations.size(); ++i) {
         const DecorationData *decoration = pDecorationTable->decoration(pLevelDecorations[i].uDecorationDescID);
 
-        if (decoration->uSoundID != SOUND_Invalid) {
+        if (decoration->uSoundID != SOUND_Invalid)
             decorationsWithSound.push_back(i);
-        }
 
         if (!(pLevelDecorations[i].uFlags & LEVEL_DECORATION_INVISIBLE)) {
             if (!decoration->dontDraw()) {
@@ -1005,9 +996,8 @@ void loadAndPrepareBLV(MapId mapid, bool bLoading) {
     if (!bLoading && indoor_was_respawned) {
         int id = pParty->getRandomActiveCharacterId(vrng);
 
-        if (id != -1) {
+        if (id != -1)
             pParty->setDelayedReaction(SPEECH_ENTER_DUNGEON, id);
-        }
     }
 }
 
@@ -1120,9 +1110,8 @@ void IndoorLocation::PrepareDecorationsRenderList_BLV(unsigned int uDecorationID
         return;
     }
 
-    if (decoration->uFlags & DECORATION_DATA_DONT_DRAW) {
+    if (decoration->uFlags & DECORATION_DATA_DONT_DRAW)
         return;
-    }
 
     v8 = pLevelDecorations[uDecorationID]._yawAngle +
          ((signed int)TrigLUT.uIntegerPi >> 3) - TrigLUT.atan2(pLevelDecorations[uDecorationID].vPosition.x - pCamera3D->vCameraPos.x,
@@ -1293,9 +1282,8 @@ bool Check_LOS_Obscurred_Outdoors_Bmodels(const Vec3f &target, const Vec3f &from
                     // greater than dist means intersection is behind the caster
                     if (IntersectionDist >= 0.0 && IntersectionDist <= dist) {
                         Vec3f pos = target + IntersectionDist * dir;
-                        if (face.Contains(pos, model.index)) {
+                        if (face.Contains(pos, model.index))
                             return true;
-                        }
                     }
                 }
             }
@@ -1364,10 +1352,8 @@ void BLV_ProcessPartyActions() {  // could this be combined with odm process act
     }
 
     // not hovering & stepped onto a new face => activate potential pressure plate.
-    if (!isAboveGround && pParty->floor_face_id != -1 && pParty->floor_face_id != faceId) {
-        if (pIndoor->faces[faceId].attributes & FACE_PRESSURE_PLATE)
-            faceEvent = pIndoor->faces[faceId].eventId;
-    }
+    if (!isAboveGround && pParty->floor_face_id != -1 && pParty->floor_face_id != faceId && (pIndoor->faces[faceId].attributes & FACE_PRESSURE_PLATE))
+        faceEvent = pIndoor->faces[faceId].eventId;
 
     if (!isAboveGround)
         pParty->floor_face_id = faceId;
@@ -1655,9 +1641,8 @@ int SpawnEncounterMonsters(MapData *mapData, int enc_index) {
             }
 
             // break loop if point sucessful
-            if (not_in_model) {
+            if (not_in_model)
                 break;
-            }
         }
         failed_point = loop_cnt == 100;
     } else if (uCurrentlyLoadedLevelType == LEVEL_INDOOR) {

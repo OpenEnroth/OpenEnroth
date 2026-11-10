@@ -107,17 +107,14 @@ GUIWindow_TownPortalBook::GUIWindow_TownPortalBook(Pid casterPid, SpellCastFlags
 
     // cheat locations
     ui_townportal_cheat_destination_icon = assets->getIcon("tab-an-2a");
-    for (int i = TOWN_PORTAL_DESTINATION_COUNT; i < TOWN_PORTAL_DESTINATION_COUNT_WITH_CHEATS; ++i) {
+    for (int i = TOWN_PORTAL_DESTINATION_COUNT; i < TOWN_PORTAL_DESTINATION_COUNT_WITH_CHEATS; ++i)
         ui_book_townportal_icons[i] = assets->getIcon("tab-an-2b");
-    }
 
     int count = TOWN_PORTAL_DESTINATION_COUNT;
-    if (engine->config->debug.TownPortal.value()) {
+    if (engine->config->debug.TownPortal.value())
         count = TOWN_PORTAL_DESTINATION_COUNT_WITH_CHEATS;
-    }
-    for (int i = 0; i < count; ++i) {
+    for (int i = 0; i < count; ++i)
         CreateButton(fmt::format("TownPortalBook_Marker{}", i), townPortalButtonsPos[i].topLeft(), townPortalButtonsPos[i].size(), BUTTON_TYPE_NORMAL, UIMSG_HintTownPortal, UIMSG_ClickTownInTP, i);
-    }
 }
 
 void GUIWindow_TownPortalBook::Update() {
@@ -133,28 +130,22 @@ void GUIWindow_TownPortalBook::Update() {
     if (townPortalCheats) {
         // draw grey icons for cheat locations
         // ordinary locations are in the background image already
-        for (int i = TOWN_PORTAL_DESTINATION_COUNT; i < TOWN_PORTAL_DESTINATION_COUNT_WITH_CHEATS; ++i) {
+        for (int i = TOWN_PORTAL_DESTINATION_COUNT; i < TOWN_PORTAL_DESTINATION_COUNT_WITH_CHEATS; ++i)
             render->DrawQuad2D(ui_townportal_cheat_destination_icon, townPortalButtonsPos[i].topLeft());
-        }
     }
 
     // highlight the covered location
-    for (int i = 0; i < count; ++i) {
-        if (townPortalCheats || pParty->_questBits[townPortalList[i].qBit]) {
-            if (townPortalButtonsPos[i].contains(cursorPos)) {
-                render->DrawQuad2D(ui_book_townportal_icons[i], townPortalButtonsPos[i].topLeft());
-            }
-        }
-    }
+    for (int i = 0; i < count; ++i)
+        if ((townPortalCheats || pParty->_questBits[townPortalList[i].qBit]) && townPortalButtonsPos[i].contains(cursorPos))
+            render->DrawQuad2D(ui_book_townportal_icons[i], townPortalButtonsPos[i].topLeft());
 
     DrawTitleText(assets->pFontBookTitle.get(), 0, 22, colorTable.White, localization->str(LSTR_TOWN_PORTAL), 3, pViewport);
 }
 
 void GUIWindow_TownPortalBook::clickTown(int townId) {
     // check if tp location is unlocked
-    if (!engine->config->debug.TownPortal.value() && !pParty->_questBits[townPortalList[townId].qBit]) {
+    if (!engine->config->debug.TownPortal.value() && !pParty->_questBits[townPortalList[townId].qBit])
         return;
-    }
 
     // begin TP
     autoSave();

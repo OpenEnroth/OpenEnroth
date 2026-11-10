@@ -33,22 +33,19 @@ void AudioSample16::defaultSource() {
 
 bool AudioSample16::Open(PAudioDataSource data_source) {
     pDataSource = data_source;
-    if (!pDataSource) {
+    if (!pDataSource)
         return false;
-    }
 
     std::shared_ptr<OpenALAudioDataSource> openalDataSource = std::dynamic_pointer_cast<OpenALAudioDataSource, IAudioDataSource>(pDataSource);
 
-    if (!openalDataSource->Open()) {
+    if (!openalDataSource->Open())
         return false;
-    }
 
     alGenSources(1, &al_source);
 
     // For some obscure reason we sometimes get al_source == -1 even though checkOpenALError() returns false. So we check it too.
-    if (checkOpenALError() || al_source == -1) {
+    if (checkOpenALError() || al_source == -1)
         return false;
-    }
 
     defaultSource();
 
@@ -67,9 +64,8 @@ bool AudioSample16::SetPosition(float x, float y, float z, float max_dist) {
     if (IsValid()) {
         alSource3f(al_source, AL_POSITION, x, y, z);
         alSourcef(al_source, AL_MAX_DISTANCE, max_dist);
-        if (checkOpenALError()) {
+        if (checkOpenALError())
             return false;
-        }
     }
 
     return true;
@@ -87,9 +83,8 @@ bool AudioSample16::IsStopped() {
 }
 
 bool AudioSample16::Play(bool loop, bool positioned) {
-    if (!IsValid()) {
+    if (!IsValid())
         return false;
-    }
 
     alSourcei(al_source, AL_SOURCE_RELATIVE, positioned ? AL_FALSE : AL_TRUE);
     if (!positioned) {
@@ -105,65 +100,55 @@ bool AudioSample16::Play(bool loop, bool positioned) {
 
     ALint status;
     alGetSourcei(al_source, AL_SOURCE_STATE, &status);
-    if (status == AL_PLAYING) {
+    if (status == AL_PLAYING)
         return true;
-    }
 
     alSourcePlay(al_source);
-    if (checkOpenALError()) {
+    if (checkOpenALError())
         return false;
-    }
 
     return true;
 }
 
 bool AudioSample16::Stop() {
-    if (!IsValid()) {
+    if (!IsValid())
         return false;
-    }
 
     alSourceStop(al_source);
-    if (checkOpenALError()) {
+    if (checkOpenALError())
         return false;
-    }
 
     return true;
 }
 
 bool AudioSample16::Pause() {
-    if (!IsValid()) {
+    if (!IsValid())
         return false;
-    }
 
     ALint status;
     alGetSourcei(al_source, AL_SOURCE_STATE, &status);
-    if (status != AL_PLAYING) {
+    if (status != AL_PLAYING)
         return false;
-    }
 
     alSourcePause(al_source);
-    if (checkOpenALError()) {
+    if (checkOpenALError())
         return false;
-    }
 
     return true;
 }
 
 bool AudioSample16::Resume() {
-    if (!IsValid()) {
+    if (!IsValid())
         return false;
-    }
 
     ALint status;
     alGetSourcei(al_source, AL_SOURCE_STATE, &status);
-    if (status != AL_PAUSED) {
+    if (status != AL_PAUSED)
         return false;
-    }
 
     alSourcePlay(al_source);
-    if (checkOpenALError()) {
+    if (checkOpenALError())
         return false;
-    }
 
     return true;
 }
@@ -173,9 +158,8 @@ bool AudioSample16::SetVolume(float volume) {
 
     if (IsValid()) {
         alSourcef(al_source, AL_GAIN, volume);
-        if (checkOpenALError()) {
+        if (checkOpenALError())
             return false;
-        }
     }
 
     return true;

@@ -33,9 +33,8 @@ static void prepareToLoadRestUI() {
         current_screen_type = SCREEN_GAME;
     }
     gameTimer->setPaused(true);
-    if (currentRestType != REST_HEAL) {
+    if (currentRestType != REST_HEAL)
         new OnButtonClick({518, 450}, {0, 0}, pBtn_Rest);
-    }
     remainingRestTime = Duration();
     currentRestType = REST_NONE;
 }
@@ -47,25 +46,19 @@ static void calculateRequiredFood() {
         foodRequiredToRest = 2;
     }
 
-    if (PartyHasDragon()) {
+    if (PartyHasDragon())
         ++foodRequiredToRest;
-    }
 
-    if (CheckHiredNPCSpeciality(NPC_PROFESSION_PORTER)) {
+    if (CheckHiredNPCSpeciality(NPC_PROFESSION_PORTER))
         --foodRequiredToRest;
-    }
-    if (CheckHiredNPCSpeciality(NPC_PROFESSION_QUARTER_MASTER)) {
+    if (CheckHiredNPCSpeciality(NPC_PROFESSION_QUARTER_MASTER))
         foodRequiredToRest -= 2;
-    }
-    if (CheckHiredNPCSpeciality(NPC_PROFESSION_GYPSY)) {
+    if (CheckHiredNPCSpeciality(NPC_PROFESSION_GYPSY))
         --foodRequiredToRest;
-    }
-    if (foodRequiredToRest < 1) {
+    if (foodRequiredToRest < 1)
         foodRequiredToRest = 1;
-    }
-    if (engine->_currentLoadedMapId == MAP_CASTLE_HARMONDALE && pParty->_questBits[QBIT_HARMONDALE_REBUILT]) {
+    if (engine->_currentLoadedMapId == MAP_CASTLE_HARMONDALE && pParty->_questBits[QBIT_HARMONDALE_REBUILT])
         foodRequiredToRest = 0;
-    }
 }
 
 GUIWindow_Rest::GUIWindow_Rest()
@@ -96,25 +89,21 @@ void GUIWindow_Rest::Update() {
     GUIButton tmp_button;
 
     int liveCharacters = 0;
-    for (Character &player : pParty->pCharacters) {
-        if (!player.IsDead() && !player.IsEradicated() && player.health > 0) {
+    for (Character &player : pParty->pCharacters)
+        if (!player.IsDead() && !player.IsEradicated() && player.health > 0)
             ++liveCharacters;
-        }
-    }
 
     if (liveCharacters) {
         render->DrawQuad2D(rest_ui_restmain, {8, 8});
         render->DrawQuad2D(rest_ui_sky_frame_current, {16, 26});
 
         hourglassLoopTimer += gameTimer->dt();
-        if (hourglassLoopTimer >= Duration::fromRealtimeSeconds(4)) {
+        if (hourglassLoopTimer >= Duration::fromRealtimeSeconds(4))
             hourglassLoopTimer = 0_ticks;
-        }
 
         int hourglass_icon_idx = (int)floorf(((double)hourglassLoopTimer.ticks() / 512.0 * 120.0) + 0.5f) % 256 + 1;
-        if (hourglass_icon_idx >= 120) {
+        if (hourglass_icon_idx >= 120)
             hourglass_icon_idx = 1;
-        }
 
         render->DrawQuad2D(assets->getIcon(fmt::format("hglas{:03}", hourglass_icon_idx)), {267, 159});
 
@@ -146,9 +135,8 @@ void GUIWindow_Rest::Update() {
         DrawText(assets->pFontCreate.get(), {350, 222}, colorTable.Diesel, str4, pGUIWindow_CurrentMenu->frameRect, 0, colorTable.StarkWhite);
         std::string str5 = fmt::format("{}\r190{}", localization->str(LSTR_YEAR), time.year);
         DrawText(assets->pFontCreate.get(), {350, 254}, colorTable.Diesel, str5, pGUIWindow_CurrentMenu->frameRect, 0, colorTable.StarkWhite);
-        if (currentRestType != REST_NONE) {
+        if (currentRestType != REST_NONE)
             Party::restOneFrame();
-        }
     } else {
         new OnCancel(pButton_RestUI_Exit->rect.topLeft(), {0, 0}, pButton_RestUI_Exit, localization->str(LSTR_EXIT_REST));
     }

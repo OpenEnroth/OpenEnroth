@@ -11,9 +11,8 @@
 
 bool checkOpenALError() {
     ALenum code1 = alGetError();
-    if (code1 == AL_NO_ERROR) {
+    if (code1 == AL_NO_ERROR)
         return false;
-    }
 
     const char *message = alGetString(code1);
     MM_WARNING("OpenAL: error #{} \"{}\"", code1, message ? message : "");
@@ -38,14 +37,12 @@ OpenALSoundProvider::~OpenALSoundProvider() { Release(); }
 
 bool OpenALSoundProvider::Initialize() {
     const char *device_names = alcGetString(nullptr, ALC_ALL_DEVICES_SPECIFIER);
-    if (!device_names) {
+    if (!device_names)
         device_names = alcGetString(nullptr, ALC_DEVICE_SPECIFIER);
-    }
 
     if (device_names) {
-        for (const char *device_name = device_names; device_name[0]; device_name += strlen(device_name) + 1) {
+        for (const char *device_name = device_names; device_name[0]; device_name += strlen(device_name) + 1)
             MM_INFO("OpenAL: device found \"{}\"", device_name);
-        }
     }
 
     const char *defname = alcGetString(0, ALC_DEFAULT_DEVICE_SPECIFIER);
@@ -113,12 +110,10 @@ void OpenALSoundProvider::SetOrientation(float yaw, float pitch) {
 
 void OpenALSoundProvider::Release() {
     alcMakeContextCurrent(nullptr);
-    if (context) {
+    if (context)
         alcDestroyContext(context);
-    }
-    if (device) {
+    if (device)
         alcCloseDevice(device);
-    }
 }
 
 void OpenALSoundProvider::DeleteBuffers(StreamingTrackBuffer *track, int type) {
@@ -206,9 +201,8 @@ OpenALSoundProvider::CreateStreamingTrack16(int num_channels, int sample_rate,
 
     unsigned int al_source = -1;
     alGenSources(1, &al_source);
-    if (checkOpenALError()) {
+    if (checkOpenALError())
         return nullptr;
-    }
 
     setSourceDefaults(al_source);
 
@@ -222,9 +216,8 @@ OpenALSoundProvider::CreateStreamingTrack16(int num_channels, int sample_rate,
 void OpenALSoundProvider::Stream16(StreamingTrackBuffer *buffer,
                                    int num_samples, const void *samples,
                                    bool wait) {
-    if (buffer == nullptr) {
+    if (buffer == nullptr)
         return;
-    }
 
     int bytes_per_sample = 2;
 
@@ -249,9 +242,8 @@ void OpenALSoundProvider::Stream16(StreamingTrackBuffer *buffer,
     alGetSourcei(buffer->source_id, AL_SOURCE_STATE, (int *)&status);
     if (status != AL_PLAYING) {
         alSourcePlay(buffer->source_id);
-        if (checkOpenALError()) {
+        if (checkOpenALError())
             assert(false);
-        }
 
         if (wait) {
             do {

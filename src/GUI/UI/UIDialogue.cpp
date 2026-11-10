@@ -137,9 +137,8 @@ GUIWindow_Dialogue::GUIWindow_Dialogue(DialogWindowType type) : GUIWindow(WINDOW
         }
     } else {
         assert(type == DIALOG_WINDOW_HIRE_FIRE_SHORT);
-        if (!pNPCStats->pProfessions[speakingNPC->profession].pBenefits.empty()) {
+        if (!pNPCStats->pProfessions[speakingNPC->profession].pBenefits.empty())
             optionList.push_back(DIALOGUE_PROFESSION_DETAILS);
-        }
         optionList.push_back(DIALOGUE_HIRE_FIRE);
     }
     for (int i = 0; i < optionList.size(); i++) {
@@ -160,9 +159,8 @@ GUIWindow_Dialogue::~GUIWindow_Dialogue() {
 }
 
 void GUIWindow_Dialogue::Update() {
-    if (!pDialogueWindow) {
+    if (!pDialogueWindow)
         return;
-    }
 
     // Window title
     NPCData *pNPC = getNPCData(speakingNpcId);
@@ -239,15 +237,13 @@ void GUIWindow_Dialogue::Update() {
     // Right panel
     for (int i = pDialogueWindow->pStartingPosActiveItem; i < pDialogueWindow->pStartingPosActiveItem + pDialogueWindow->pNumPresenceButton; ++i) {
         GUIButton *pButton = pDialogueWindow->GetControl(i);
-        if (!pButton) {
+        if (!pButton)
             break;
-        }
 
         DialogueId topic = (DialogueId)pButton->msg_param;
         pButton->label = npcDialogueOptionString(topic, pNPC);
-        if (pButton->label.empty() && topic >= DIALOGUE_SCRIPTED_LINE_1 && topic <= DIALOGUE_SCRIPTED_LINE_6) {
+        if (pButton->label.empty() && topic >= DIALOGUE_SCRIPTED_LINE_1 && topic <= DIALOGUE_SCRIPTED_LINE_6)
             pButton->msg_param = 0;
-        }
 
         if (pParty->arenaState == ARENA_STATE_FIGHTING) {
             int num_dead_actors = 0;
@@ -260,9 +256,8 @@ void GUIWindow_Dialogue::Update() {
                     ++num_dead_actors;
                 }
             }
-            if (num_dead_actors == pActors.size()) {
+            if (num_dead_actors == pActors.size())
                 pButton->label = localization->str(LSTR_COLLECT_PRIZE);
-            }
         }
     }
 
@@ -294,9 +289,8 @@ void GUIWindow_Dialogue::Update() {
             pButton->rect.h = pTextHeight + 1;
             v42 = pButton->rect.y + pTextHeight - 1;
             Color pTextColor = ui_game_dialogue_option_normal_color;
-            if (pDialogueWindow->pCurrentPosActiveItem == i) {
+            if (pDialogueWindow->pCurrentPosActiveItem == i)
                 pTextColor = ui_game_dialogue_option_highlight_color;
-            }
             DrawTitleText(assets->pFontArrus.get(), 0, pButton->rect.y, pTextColor, pButton->label, 3, window);
         }
     }
@@ -312,9 +306,8 @@ void selectNPCDialogueOption(DialogueId option) {
 
     ((GUIWindow_Dialogue*)pDialogueWindow.get())->setDisplayedDialogueType(option);
 
-    if (!speakingNPC->flags) {
+    if (!speakingNPC->flags)
         speakingNPC->flags = NPC_GREETED_FIRST;
-    }
 
     if (option >= DIALOGUE_SCRIPTED_LINE_1 && option <= DIALOGUE_SCRIPTED_LINE_6) {
         DialogueId newTopic = handleScriptedNPCTopicSelection(option, speakingNPC);
@@ -342,10 +335,9 @@ void selectNPCDialogueOption(DialogueId option) {
             BuildHireableNpcDialogue();
             dialogue_show_profession_details = false;
         } else {
-            for (unsigned i = 0; i < (signed int)pNPCStats->uNumNewNPCs; ++i) {
+            for (unsigned i = 0; i < (signed int)pNPCStats->uNumNewNPCs; ++i)
                 if (pNPCStats->pNPCData[i].Hired() && speakingNPC->name == pNPCStats->pNPCData[i].name)
                     pNPCStats->pNPCData[i].flags &= ~NPC_HIRED;
-            }
             if (ascii::noCaseEquals(pParty->pHirelings[0].name, speakingNPC->name)) { // TODO(captainurist): #unicode this is not ascii
                 pParty->pHirelings[0] = NPCData();
             } else if (ascii::noCaseEquals(pParty->pHirelings[1].name, speakingNPC->name)) { // TODO(captainurist): #unicode this is not ascii
@@ -360,11 +352,6 @@ void selectNPCDialogueOption(DialogueId option) {
 
     selectSpecialNPCTopicSelection(option, speakingNPC);
 
-    if (option == DIALOGUE_HIRE_FIRE) {
-        if (speakingNPC->Hired()) {
-            if (currentSpeakingActor && currentSpeakingActor->npcId >= 0) {
-                currentSpeakingActor->aiState = Removed;
-            }
-        }
-    }
+    if (option == DIALOGUE_HIRE_FIRE && speakingNPC->Hired() && currentSpeakingActor && currentSpeakingActor->npcId >= 0)
+        currentSpeakingActor->aiState = Removed;
 }

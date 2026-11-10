@@ -97,9 +97,8 @@ bool Chest::open(int uChestID, Pid objectPid) {
             }
 
             pDepth = 96;
-            if (length_vector < pDepth) {
+            if (length_vector < pDepth)
                 pDepth = length_vector;
-            }
             pOut = objectPos + Vec3f::fromPolar(pDepth, yawAngle, pitchAngle);
 
             pSpellObject.containing_item.Reset();
@@ -131,9 +130,8 @@ bool Chest::open(int uChestID, Pid objectPid) {
             pAudioPlayer->playSound(SOUND_fireBall, SOUND_MODE_UI);
             pSpellObject.explosionTraps();
             chest->flags &= ~CHEST_TRAPPED;
-            if (pParty->hasActiveCharacter() && !OpenedTelekinesis) {
+            if (pParty->hasActiveCharacter() && !OpenedTelekinesis)
                 pParty->setDelayedReaction(SPEECH_TRAP_EXPLODED, pParty->activeCharacterIndex());
-            }
             OpenedTelekinesis = false;
             return false;
         }
@@ -141,11 +139,8 @@ bool Chest::open(int uChestID, Pid objectPid) {
         flag_shout = true;
     }
     pAudioPlayer->playUISound(SOUND_openchest0101);
-    if (flag_shout == true) {
-        if (!OpenedTelekinesis) {
-            pParty->activeCharacter().playReaction(SPEECH_TRAP_DISARMED);
-        }
-    }
+    if (flag_shout == true && !OpenedTelekinesis)
+        pParty->activeCharacter().playReaction(SPEECH_TRAP_DISARMED);
     OpenedTelekinesis = false;
 
     pGUIWindow_CurrentChest = std::make_unique<GUIWindow_Chest>(uChestID);
@@ -247,9 +242,8 @@ void Chest::OnChestLeftClick() {
             pos = chest->inventory.findSpace(pParty->pPickedItem);
         }
 
-        if (pos) {
+        if (pos)
             chest->inventory.add(*pos, pParty->takeHoldingItem());
-        }
     } else {
         if (InventoryEntry entry = chest->inventory.entry(inventoryPos)) {
             Item item = chest->inventory.take(entry);
@@ -272,9 +266,8 @@ void Chest::OnChestLeftClick() {
 }
 
 void Chest::GrabItem(bool all) {  // new function to grab items from chest using spacebar
-    if (pParty->pPickedItem.itemId != ITEM_NULL || !pParty->hasActiveCharacter()) {
+    if (pParty->pPickedItem.itemId != ITEM_NULL || !pParty->hasActiveCharacter())
         return;
-    }
 
     int InventSlot;
     int grabcount = 0;
@@ -313,12 +306,10 @@ void Chest::GrabItem(bool all) {  // new function to grab items from chest using
     if (engine->config->gameplay.ChestTryPlaceItems.value() == 2)
         Chest::PlaceItems(chestId);
 
-    if (grabcount > 1 || goldcount > 1) {  // found items
+    if (grabcount > 1 || goldcount > 1)  // found items
         engine->_statusBar->setEvent(fmt::format("You found {} item(s) and {} Gold!", grabcount, goldamount));
-    }
-    if (grabcount == 0 && goldcount == 0) {
+    if (grabcount == 0 && goldcount == 0)
         engine->_statusBar->setEvent(LSTR_NOTHING_HERE);
-    }
 }
 
 void GenerateItemsInChest() {
