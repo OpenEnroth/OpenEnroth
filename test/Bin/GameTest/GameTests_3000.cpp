@@ -21,6 +21,7 @@
 
 GAME_TEST(Issues, Issue3002) {
     // Human peasants with a generated name and profession had elf portraits.
+    test.prepareForNextTest(10, RANDOM_ENGINE_MERSENNE_TWISTER); // Short frames keep wandering peasants under the cursor.
     auto speakerTape = tapes.custom([] { return houseNpcs.empty() ? -1 : speakingNpcId; });
     auto texturesTape = tapes.hudTextures();
     auto portraitTape = tapes.custom([] { return houseNpcs.empty() ? std::string() : houseNpcs[0].icon->name(); });
@@ -30,7 +31,7 @@ GAME_TEST(Issues, Issue3002) {
 
     AccessibleVector<int> expectedSpeakers = {-1};
     std::set<Sex> sexes;
-    for (Actor &peasant : pActors) {
+    for (const Actor &peasant : pActors) {
         if (peasant.npcId < 5000)
             continue; // Keep peasants with an NPC generated on map load, their ids start at 5000.
         SCOPED_TRACE(fmt::format("actorId={}", peasant.id));
@@ -39,7 +40,6 @@ GAME_TEST(Issues, Issue3002) {
         Sex sex = sexForMonsterType(monsterType);
         auto [minPortrait, maxPortrait] = sex == SEX_MALE ? std::pair(2, 100) : std::pair(201, 250);
 
-        peasant.moveSpeed = 1; // Wandering peasants walk out from under the cursor.
         game.teleportTo(MAP_EMERALD_ISLAND, peasant.pos - Vec3f(300, 0, 0), 0);
         game.pointMouseAtActor(peasant.id);
         game.pressAndReleaseButton(BUTTON_LEFT);
