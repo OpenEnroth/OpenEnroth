@@ -7,6 +7,8 @@
 
 #include "Testing/Game/GameTest.h"
 
+#include "Application/GameConfig.h"
+
 #include "Engine/Engine.h"
 #include "Engine/EngineGlobals.h"
 #include "Engine/EngineIocContainer.h"
@@ -43,6 +45,8 @@
 #include "Library/Platform/Interface/Platform.h"
 
 #include "Media/Audio/SoundList.h"
+
+#include "Utility/ScopeGuard.h"
 
 #include "GameTestCommon.h"
 
@@ -1272,6 +1276,10 @@ GAME_TEST(Prs, Pr2876c) {
 GAME_TEST(Prs, Pr2963) {
     // A timer that left the map cleared the timer list mid-loop, and the loop went on reading timers that no longer
     // existed, firing the due ones on the map being left.
+    bool wasDecompiling = engine->config->debug.DecompiledEvents.value();
+    MM_AT_SCOPE_EXIT(engine->config->debug.DecompiledEvents.setValue(wasDecompiling));
+    engine->config->debug.DecompiledEvents.setValue(false); // The decompiled scripts would drop the events added below on map load.
+
     auto goldTape = tapes.gold();
     auto mapTape = tapes.map();
     game.startNewGame();
