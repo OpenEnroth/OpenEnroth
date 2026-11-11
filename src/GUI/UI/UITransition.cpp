@@ -31,8 +31,6 @@
 
 #include "Utility/String/Ascii.h"
 
-std::shared_ptr<GraphicsImage> transition_ui_icon;
-
 /**
  * all locations which should have special tranfer message:
  * dragon caves, markham, bandit cave, haunted mansion,
@@ -83,7 +81,7 @@ GUIWindow_Transition::~GUIWindow_Transition() {
 GUIWindow_Travel::GUIWindow_Travel() : GUIWindow_Transition(WINDOW_TRAVEL, SCREEN_CHANGE_LOCATION) {
     std::string hint;
 
-    transition_ui_icon = assets->getIcon("outside");
+    _transitionIcon = assets->getIcon("outside");
 
     if (engine->_currentLoadedMapId != MAP_INVALID) {
         hint = localization->format(LSTR_LEAVE_S, pMapTable->pInfos[engine->_currentLoadedMapId].name);
@@ -99,7 +97,7 @@ void GUIWindow_Travel::Update() {
 
     render->DrawQuad2D(_dialogueBackground, {477, 0});
     render->DrawQuad2D(game_ui_right_panel_frame, {468, 0});
-    render->DrawQuad2D(transition_ui_icon, {pNPCPortraits_x[0][0], pNPCPortraits_y[0][0]});
+    render->DrawQuad2D(_transitionIcon, {pNPCPortraits_x[0][0], pNPCPortraits_y[0][0]});
     render->DrawQuad2D(dialogue_ui_x_x_u, {556, 451});
     render->DrawQuad2D(dialogue_ui_x_ok_u, {476, 451});
     if (destinationMap != MAP_INVALID) {
@@ -133,7 +131,7 @@ GUIWindow_IndoorEntryExit::GUIWindow_IndoorEntryExit(HouseId transitionHouse, un
 
     _mapName = locationName;
 
-    transition_ui_icon = assets->getIcon(pHouse_ExitPictures[exit_pic_id]);
+    _transitionIcon = assets->getIcon(pHouse_ExitPictures[exit_pic_id]);
 
     // animation or special transfer message
     if (transitionHouse != HOUSE_INVALID || getSpecialTransferMessageIndex(locationName)) {
@@ -171,7 +169,7 @@ GUIWindow_IndoorEntryExit::GUIWindow_IndoorEntryExit(HouseId transitionHouse, un
 void GUIWindow_IndoorEntryExit::Update() {
     render->DrawQuad2D(_dialogueBackground, {477, 0});
     render->DrawQuad2D(game_ui_evtnpc, {pNPCPortraits_x[0][0] - 4, pNPCPortraits_y[0][0] - 4});
-    render->DrawQuad2D(transition_ui_icon, {pNPCPortraits_x[0][0], pNPCPortraits_y[0][0]});
+    render->DrawQuad2D(_transitionIcon, {pNPCPortraits_x[0][0], pNPCPortraits_y[0][0]});
     render->DrawQuad2D(game_ui_right_panel_frame, {468, 0});
     render->DrawQuad2D(dialogue_ui_x_x_u, {556, 451});
     render->DrawQuad2D(dialogue_ui_x_ok_u, {476, 451});
