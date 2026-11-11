@@ -19,6 +19,7 @@
 #include "Engine/Objects/MonsterEnumFunctions.h"
 #include "Engine/SaveLoad.h"
 #include "Engine/Graphics/Indoor.h"
+#include "Engine/Graphics/Outdoor.h"
 #include "Engine/Party.h"
 #include "Engine/Engine.h"
 #include "Engine/Resources/EngineFileSystem.h"
@@ -824,19 +825,23 @@ GAME_TEST(Issues, Issue774) {
     int titanId = game.spawnMonster(pParty->pos + Vec3f(0, 6500, 0), MONSTER_TITAN_A, SPAWN_DUMMY)->id;
     game.tick(1); // Drops it onto the ground.
 
-    auto flightTape = actorTapes.custom(titanId, [] (const Actor &actor) { return std::pair(actor.aiState, actor.pos.z); });
+    auto flightTape = actorTapes.custom(titanId, [] (const Actor &actor) {
+        bool onWater = false;
+        int faceId = -1;
+        // Armageddon pushes sideways too, so the titan comes down on terrain of a different height than where it took off.
+        return std::pair(actor.aiState, actor.pos.z - ODM_GetFloorLevel(actor.pos, &onWater, &faceId));
+    });
     auto backgroundTape = actorTapes.custom(titanId, [] (const Actor &actor) { return !(actor.attributes & ACTOR_FULL_AI_STATE); });
 
     game.castSpell(0, SPELL_DARK_ARMAGEDDON);
-    game.tick(150); // Flies up and lands 3.7s in.
+    game.tick(155); // Flies up and lands 3.8s in.
     test.stopTaping();
 
-    float groundZ = flightTape.front().second;
     EXPECT_EQ(backgroundTape, tape(true)); // Never made it into full AI state.
     EXPECT_TRUE(flightTape.contains([] (const auto &p) { return p.first == InPain; })); // Got hurt...
-    EXPECT_GT(flightTape.map([] (const auto &p) { return p.second; }).max(), groundZ + 200); // ...went flying...
-    EXPECT_LE(flightTape.back().second, groundZ + 100); // ...came back down...
-    EXPECT_FALSE(flightTape.contains([=] (const auto &p) { return p.second > groundZ + 100 && p.first != InPain; })); // ...and was in pain all the way up and down.
+    EXPECT_GT(flightTape.map([] (const auto &p) { return p.second; }).max(), 500); // ...went flying...
+    EXPECT_EQ(flightTape.back().second, 0); // ...landed...
+    EXPECT_FALSE(flightTape.contains([] (const auto &p) { return p.second > 0 && p.first != InPain; })); // ...and was in pain all the way up and down.
 }
 
 GAME_TEST(Issues, Issue779) {
