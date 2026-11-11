@@ -1,9 +1,11 @@
+#include <set>
 #include <string>
-#include <tuple>
+#include <utility>
 
 #include "Testing/Game/GameTest.h"
 
 #include "Engine/MapEnums.h"
+#include "Engine/Party.h"
 #include "Engine/Graphics/Image.h"
 #include "Engine/Objects/Actor.h"
 #include "Engine/Objects/MonsterEnumFunctions.h"
@@ -19,32 +21,41 @@
 
 GAME_TEST(Issues, Issue3002) {
     // Human peasants with a generated name and profession had elf portraits.
-    for (auto [actorId, sex, minPortrait, maxPortrait] : {std::tuple(18, SEX_MALE, 2, 100), std::tuple(1, SEX_FEMALE, 201, 250)}) {
-        SCOPED_TRACE(fmt::format("actorId={}", actorId));
-        test.prepareForNextTest();
-        auto screenTape = tapes.screen();
-        auto speakerTape = tapes.custom([] { return houseNpcs.empty() ? -1 : speakingNpcId; });
-        auto texturesTape = tapes.hudTextures();
-        auto portraitTape = tapes.custom([] { return houseNpcs.empty() ? std::string() : houseNpcs[0].icon->name(); });
-        game.startNewGame();
-        test.startTaping();
-        Actor &peasant = pActors[actorId];
+    auto speakerTape = tapes.custom([] { return houseNpcs.empty() ? -1 : speakingNpcId; });
+    auto texturesTape = tapes.hudTextures();
+    auto portraitTape = tapes.custom([] { return houseNpcs.empty() ? std::string() : houseNpcs[0].icon->name(); });
+    game.startNewGame();
+    test.startTaping();
+    pParty->_questBits.set(QBIT_EMERALD_ISLAND_MARGARET_TOUR_OFF); // Margaret's tour hints fire where the party lands.
+
+    AccessibleVector<int> expectedSpeakers = {-1};
+    std::set<Sex> sexes;
+    for (Actor &peasant : pActors) {
+        if (peasant.npcId < 5000)
+            continue; // Keep peasants with an NPC generated on map load, their ids start at 5000.
+        SCOPED_TRACE(fmt::format("actorId={}", peasant.id));
         MonsterType monsterType = monsterTypeForMonsterId(peasant.monsterInfo.id);
         ASSERT_EQ(raceForMonsterType(monsterType), RACE_HUMAN);
-        ASSERT_EQ(sexForMonsterType(monsterType), sex);
-        ASSERT_GE(peasant.npcId, 5000); // Ids from 5000 up are NPCs generated on map load.
+        Sex sex = sexForMonsterType(monsterType);
+        auto [minPortrait, maxPortrait] = sex == SEX_MALE ? std::pair(2, 100) : std::pair(201, 250);
 
+        peasant.moveSpeed = 1; // Wandering peasants walk out from under the cursor.
         game.teleportTo(MAP_EMERALD_ISLAND, peasant.pos - Vec3f(300, 0, 0), 0);
-        game.pointMouseAtActor(actorId);
+        game.pointMouseAtActor(peasant.id);
         game.pressAndReleaseButton(BUTTON_LEFT);
         game.tick();
-
-        EXPECT_EQ(screenTape, tape(SCREEN_GAME, SCREEN_NPC_DIALOGUE));
-        EXPECT_EQ(speakerTape, tape(-1, static_cast<int>(peasant.npcId)));
-        ASSERT_EQ(portraitTape.size(), 2);
         EXPECT_CONTAINS(texturesTape.back(), portraitTape.back());
         int portrait = fromString<int>(portraitTape.back().substr(3)); // Portrait textures are named "npc" plus the portrait id.
         EXPECT_GE(portrait, minPortrait);
         EXPECT_LE(portrait, maxPortrait);
+
+        game.pressAndReleaseKey(PlatformKey::KEY_ESCAPE);
+        game.tick();
+        expectedSpeakers.push_back(peasant.npcId);
+        expectedSpeakers.push_back(-1);
+        sexes.insert(sex);
     }
+
+    EXPECT_EQ(speakerTape, expectedSpeakers);
+    EXPECT_EQ(sexes, std::set({SEX_MALE, SEX_FEMALE}));
 }
