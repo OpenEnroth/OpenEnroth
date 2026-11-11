@@ -573,7 +573,7 @@ GAME_TEST(Issues, Issue2748) {
     auto yellowAlertTape = tapes.custom([] { return pParty->GetYellowAlert(); });
     auto aliveTape = tapes.custom([] { return static_cast<int>(std::ranges::count_if(pActors, &Actor::CanAct)); });
     game.startNewGame();
-    game.teleportTo(MAP_ERATHIAN_SEWERS, Vec3f(5157, 8704, -128), 0); // Right above one of the two spawn points.
+    game.teleportTo(MAP_ERATHIAN_SEWERS, Vec3f(5157, 8704, -128), 0); // The first visit spawns the monsters. The party lands within alert range of a spawn point outside the level.
     test.startTaping();
     game.tick();
     for (Actor &actor : pActors)
