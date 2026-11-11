@@ -186,15 +186,13 @@ GUIWindow::~GUIWindow() {
 }
 
 void GUIWindow::DeleteButtons() {
-    while (vButtons.size()) {
+    while (vButtons.size())
         vButtons.front()->Release();
-    }
 }
 
 GUIButton *GUIWindow::GetControl(unsigned int uID) {
-    if (uID >= vButtons.size()) {
+    if (uID >= vButtons.size())
         return nullptr;
-    }
 
     return vButtons[uID];
 }
@@ -202,9 +200,8 @@ GUIButton *GUIWindow::GetControl(unsigned int uID) {
 // TODO(pskelton): this function may modify frameRect - extract out
 void GUIWindow::DrawMessageBox(Recti& frameRect, std::string sHint) {
     // TODO(pskelton): Derived Messagebox types for different kinds of popup boxes
-    if (engine->callObserver) {
+    if (engine->callObserver)
         engine->callObserver->notify(CALL_DRAW_MESSAGE_BOX, sHint);
-    }
 
     Sizei renDims = render->GetRenderDimensions();
 
@@ -220,18 +217,15 @@ void GUIWindow::DrawMessageBox(Recti& frameRect, std::string sHint) {
     }
 
     if (frameRect.y >= 0) {
-        if (frameRect.y + frameRect.h > renDims.h) {
+        if (frameRect.y + frameRect.h > renDims.h)
             frameRect.y = cursor.y - frameRect.h - 30;
-        }
     } else {
         frameRect.y = cursor.y + 30;
     }
-    if (frameRect.y < 0) {
+    if (frameRect.y < 0)
         frameRect.y = 0;
-    }
-    if (frameRect.x < 0) {
+    if (frameRect.x < 0)
         frameRect.x = 0;
-    }
 
     Recti current_window = frameRect;
     current_window.x += 12;
@@ -244,12 +238,10 @@ void GUIWindow::DrawMessageBox(Recti& frameRect, std::string sHint) {
     } else {
         uBoxHeight = frameRect.h;
     }
-    if (uBoxHeight < 64) {
+    if (uBoxHeight < 64)
         uBoxHeight = 64;
-    }
-    if ((int)(uBoxHeight + frameRect.y) > 479) {
+    if ((int)(uBoxHeight + frameRect.y) > 479)
         uBoxHeight = 479 - frameRect.y;
-    }
     DrawPopupWindow(frameRect.x, frameRect.y, frameRect.w, uBoxHeight);
     if (!sHint.empty()) {
         DrawTitleText(
@@ -307,9 +299,8 @@ void GUIWindow::DrawShops_next_generation_time_string(Duration time, Recti frame
 
 //----- (0044D406) --------------------------------------------------------
 void GUIWindow::DrawTitleText(GUIFont *pFont, int horizontalMargin, int verticalMargin, Color color, std::string_view text, int lineSpacing, Recti frameRect) {
-    if (engine->callObserver) {
+    if (engine->callObserver)
         engine->callObserver->notify(CALL_GUIWINDOW_DRAWTEXT, std::string(text));
-    }
     int width = frameRect.w - horizontalMargin;
     std::string resString = pFont->WrapText(text, frameRect.w, horizontalMargin);
     std::istringstream stream(resString);
@@ -346,9 +337,8 @@ void GUIWindow::DrawDialoguePanel(std::string_view text) {
 
 //----- (0044CE08) --------------------------------------------------------
 void GUIWindow::DrawText(GUIFont *font, Pointi position, Color color, std::string_view text, Recti frameRect, int maxY, Color shadowColor) {
-    if (engine->callObserver) {
+    if (engine->callObserver)
         engine->callObserver->notify(CALL_GUIWINDOW_DRAWTEXT, std::string(text));
-    }
     font->DrawText(frameRect, position, color, text, maxY, shadowColor);
 }
 
@@ -421,9 +411,8 @@ void GUIWindow::InitializeGUI() {
 
 void GUIWindow::DrawFlashingInputCursor(int uX, int uY, GUIFont *a2, Recti frameRect) {
     // TODO(pskelton): check tickcount usage here
-    if (platform->tickCount() % 1000 > 500) {
+    if (platform->tickCount() % 1000 > 500)
         DrawText(a2, {uX, uY}, colorTable.White, "_", frameRect);
-    }
 }
 
 GUIWindow::GUIWindow(WindowType windowType, Pointi position, Sizei dimensions, std::string_view hint): eWindowType(windowType) {
@@ -445,13 +434,11 @@ void DialogueEnding() {
 }
 
 void OnButtonClick::Update() {
-    if (_playSound) {
+    if (_playSound)
         pAudioPlayer->playUISound(SOUND_StartMainChoice02);
-    }
     render->DrawQuad2D(_button->vTextures[0], frameRect.topLeft());
-    if (!sHint.empty()) {
+    if (!sHint.empty())
         _button->DrawLabel(sHint, assets->pFontCreate.get(), colorTable.White);
-    }
 
     delete this;
 }
@@ -460,21 +447,18 @@ void OnButtonClick3::Update() {
     pAudioPlayer->playUISound(SOUND_StartMainChoice02);
 
     render->DrawQuad2D(_button->vTextures[1], frameRect.topLeft());
-    if (!sHint.empty()) {
+    if (!sHint.empty())
         _button->DrawLabel(sHint, assets->pFontCreate.get(), colorTable.White);
-    }
 
     delete this;
 }
 
 void OnSaveLoad::Update() {
-    if (!sHint.empty()) {
+    if (!sHint.empty())
         pAudioPlayer->playUISound(SOUND_StartMainChoice02);
-    }
     render->DrawQuad2D(_button->vTextures[0], frameRect.topLeft());
-    if (!sHint.empty()) {
+    if (!sHint.empty())
         _button->DrawLabel(sHint, assets->pFontCreate.get(), colorTable.White);
-    }
 
     if (current_screen_type == SCREEN_SAVEGAME) {
         engine->_messageQueue->addMessageCurrentFrame(UIMSG_SaveGame, 0, 0);
@@ -486,13 +470,11 @@ void OnSaveLoad::Update() {
 }
 
 void OnCancel::Update() {
-    if (sHint.empty()) {
+    if (sHint.empty())
         pAudioPlayer->playUISound(SOUND_StartMainChoice02);
-    }
     render->DrawQuad2D(_button->vTextures[0], frameRect.topLeft());
-    if (!sHint.empty()) {
+    if (!sHint.empty())
         _button->DrawLabel(sHint, assets->pFontCreate.get(), colorTable.White);
-    }
 
     engine->_messageQueue->addMessageCurrentFrame(UIMSG_Escape, 0, 0);
 
@@ -500,13 +482,11 @@ void OnCancel::Update() {
 }
 
 void OnCancel2::Update() {
-    if (!sHint.empty()) {
+    if (!sHint.empty())
         pAudioPlayer->playUISound(SOUND_StartMainChoice02);
-    }
     render->DrawQuad2D(_button->vTextures[1], frameRect.topLeft());
-    if (!sHint.empty()) {
+    if (!sHint.empty())
         _button->DrawLabel(sHint, assets->pFontCreate.get(), colorTable.White);
-    }
 
     engine->_messageQueue->addMessageCurrentFrame(UIMSG_Escape, 0, 0);
 
@@ -514,14 +494,12 @@ void OnCancel2::Update() {
 }
 
 void OnCancel3::Update() {
-    if (!sHint.empty()) {
+    if (!sHint.empty())
         pAudioPlayer->playUISound(SOUND_StartMainChoice02);
-    }
 
     render->DrawQuad2D(_button->vTextures[0], frameRect.topLeft());
-    if (!sHint.empty()) {
+    if (!sHint.empty())
         _button->DrawLabel(sHint, assets->pFontCreate.get(), colorTable.White);
-    }
 
     engine->_messageQueue->addMessageCurrentFrame(UIMSG_Escape, 0, 0);
 
@@ -539,13 +517,11 @@ void GUI_UpdateWindows() {
 
     std::list<GUIWindow *> tmpWindowList(lWindowList);
     tmpWindowList.reverse();  // new windows are push front - but front should be drawn last?? testing
-    for (GUIWindow *pWindow : tmpWindowList) {
+    for (GUIWindow *pWindow : tmpWindowList)
         pWindow->Update();
-    }
 
-    if (GetCurrentMenuID() == MENU_NONE) {
+    if (GetCurrentMenuID() == MENU_NONE)
         GameUI_DrawFoodAndGold();
-    }
 
     if (isHoldingMouseRightButton()) {
         std::shared_ptr<Io::Mouse> mouse = EngineIocContainer::ResolveMouse();
@@ -563,9 +539,8 @@ void SetUserInterface(PartyAlignment align) {
     extern void set_default_ui_skin_colors();
     set_default_ui_skin_colors();
 
-    if (!parchment) {
+    if (!parchment)
         parchment = assets->getIcon("parchment");
-    }
 
     if (align == PartyAlignment::PartyAlignment_Evil) {
         game_ui_rightframe = assets->getIcon("ib-r-C.pcx");
@@ -730,14 +705,11 @@ bool isHoldingMouseRightButton() {
 }
 
 Color GetSkillColor(Class uPlayerClass, Skill uPlayerSkillType, Mastery skill_mastery) {
-    if (skillMaxMasteryPerClass[uPlayerClass][uPlayerSkillType] >= skill_mastery) {
+    if (skillMaxMasteryPerClass[uPlayerClass][uPlayerSkillType] >= skill_mastery)
         return ui_character_skillinfo_can_learn;
-    }
-    for (Class promotionClass : promotionsForClass(uPlayerClass)) {
-        if (skillMaxMasteryPerClass[promotionClass][uPlayerSkillType] >= skill_mastery) {
+    for (Class promotionClass : promotionsForClass(uPlayerClass))
+        if (skillMaxMasteryPerClass[promotionClass][uPlayerSkillType] >= skill_mastery)
             return ui_character_skillinfo_can_learn_gm;
-        }
-    }
     return ui_character_skillinfo_cant_learn;
 }
 
@@ -800,11 +772,9 @@ std::string BuildDialogueString(std::string_view str, int uPlayerID, NPCData *np
                 // #mm6 remnant, this code simply won't work in mm7, relevant bits don't look like they are related
                 // to titles.
                 assert(false);
-                for (int bit : possibleAddressingAwardBits) {
-                    if (pPlayer->_achievedAwardsBits[static_cast<AwardId>(bit)]) {
+                for (int bit : possibleAddressingAwardBits)
+                    if (pPlayer->_achievedAwardsBits[static_cast<AwardId>(bit)])
                         addressingBits.push_back(static_cast<AwardId>(bit));
-                    }
-                }
                 if (!addressingBits.empty()) {
                     AwardId currentAddressingAwardBit = addressingBits[vrng->random(addressingBits.size())];
                     result += pAwards[currentAddressingAwardBit].pText;

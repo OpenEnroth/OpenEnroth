@@ -252,9 +252,8 @@ DialogueId arenaMainDialogue() {
 
     if (killedMonsters >= pActors.size() || pActors.size() <= 0) {
         pParty->uNumArenaWins[pParty->arenaLevel]++;
-        for (Character &player : pParty->pCharacters) {
+        for (Character &player : pParty->pCharacters)
             player.giveAward(awardForArenaLevel(pParty->arenaLevel));
-        }
         pParty->partyFindsGold(gold_transaction_amount, GOLD_RECEIVE_SHARE);
         pAudioPlayer->playUISound(SOUND_51heroism03);
         pParty->arenaState = ARENA_STATE_WON;
@@ -295,19 +294,16 @@ void prepareArenaFight(ArenaLevel level) {
     int monsterMaxLevel = std::clamp(static_cast<int>(characterMaxLevel * monsterLevelMultiplierForArenaLevel(level)), 2, 100);
 
     std::vector<MonsterId> candidateIds;
-    for (MonsterId i : allArenaMonsters()) {
-        if (pMonsterStats->infos[i].level >= monsterMinLevel && pMonsterStats->infos[i].level <= monsterMaxLevel) {
+    for (MonsterId i : allArenaMonsters())
+        if (pMonsterStats->infos[i].level >= monsterMinLevel && pMonsterStats->infos[i].level <= monsterMaxLevel)
             candidateIds.push_back(i);
-        }
-    }
     assert(!candidateIds.empty());
 
     int maxIdsNum = std::min(6, static_cast<int>(candidateIds.size()));
 
     std::vector<MonsterId> monsterIds;
-    for (int i = 0; i < maxIdsNum; i++) {
+    for (int i = 0; i < maxIdsNum; i++)
         monsterIds.push_back(grng->randomSample(candidateIds));
-    }
 
     int baseReward = 0, monstersNum = 0;
 
@@ -456,21 +452,18 @@ std::string masteryTeacherOptionString() {
     }
 
     // Not in your condition!
-    if (!activePlayer->CanAct()) {
+    if (!activePlayer->CanAct())
         return std::string(pNPCTopics[122].pText);
-    }
 
     // You must know the skill before you can become an expert in it!
     int skillLevel = activePlayer->getSkillValue(skillBeingTaught).level();
-    if (!skillLevel) {
+    if (!skillLevel)
         return std::string(pNPCTopics[131].pText);
-    }
 
     // You are already have this mastery in this skill.
     Mastery skillMastery = activePlayer->getSkillValue(skillBeingTaught).mastery();
-    if (std::to_underlying(skillMastery) > teacherLevel + 1) {
+    if (std::to_underlying(skillMastery) > teacherLevel + 1)
         return std::string(pNPCTopics[teacherLevel + 128].pText);
-    }
 
     bool canLearn = true;
 
@@ -525,14 +518,12 @@ std::string masteryTeacherOptionString() {
     }
 
     // You don't meet the requirements, and cannot be taught until you do.
-    if (!canLearn) {
+    if (!canLearn)
         return std::string(pNPCTopics[127].pText);
-    }
 
     // You don't have enough gold!
-    if (gold_transaction_amount > pParty->GetGold()) {
+    if (gold_transaction_amount > pParty->GetGold())
         return std::string(pNPCTopics[124].pText);
-    }
 
     membershipOrTrainingApproved = true;
 
@@ -590,9 +581,8 @@ std::string npcDialogueOptionString(DialogueId topic, NPCData *npcData) {
 std::vector<DialogueId> prepareScriptedNPCDialogueTopics(NPCData *npcData) {
     std::vector<DialogueId> optionList;
 
-    if (npcData->canJoin) {
+    if (npcData->canJoin)
         optionList.push_back(DIALOGUE_13_hiring_related);
-    }
 
     // TODO(Nik-RE-dev): place NPC events in array
 #define ADD_NPC_SCRIPTED_DIALOGUE(EVENT_ID, MSG_PARAM) \
@@ -693,9 +683,8 @@ void selectSpecialNPCTopicSelection(DialogueId topic, NPCData* npcData) {
         if (membershipOrTrainingApproved) {
             AwardId guildMembershipAwardBit = membershipAwardForGuild(static_cast<GuildId>(topicEventId - 400));
             pParty->TakeGold(gold_transaction_amount, true);
-            for (Character &player : pParty->pCharacters) {
+            for (Character &player : pParty->pCharacters)
                 player.giveAward(guildMembershipAwardBit);
-            }
 
             switch (guildMembershipNPCTopicId) {
               case DIALOGUE_SCRIPTED_LINE_1:
@@ -727,9 +716,8 @@ void selectSpecialNPCTopicSelection(DialogueId topic, NPCData* npcData) {
             }
 
             engine->_messageQueue->addMessageCurrentFrame(UIMSG_Escape, 1, 0);
-            if (pParty->hasActiveCharacter()) {
+            if (pParty->hasActiveCharacter())
                 pParty->activeCharacter().playReaction(SPEECH_JOINED_GUILD);
-            }
         }
     } else if (topic == DIALOGUE_PROFESSION_DETAILS) {
         dialogue_show_profession_details = ~dialogue_show_profession_details;
@@ -737,16 +725,13 @@ void selectSpecialNPCTopicSelection(DialogueId topic, NPCData* npcData) {
         prepareArenaFight(arenaLevelForDialogue(topic));
     } else if (topic == DIALOGUE_USE_HIRED_NPC_ABILITY) {
         int hirelingId;
-        for (hirelingId = 0; hirelingId < pParty->pHirelings.size(); hirelingId++) {
-            if (ascii::noCaseEquals(pParty->pHirelings[hirelingId].name, npcData->name)) { // TODO(captainurist): #unicode
+        for (hirelingId = 0; hirelingId < pParty->pHirelings.size(); hirelingId++)
+            if (ascii::noCaseEquals(pParty->pHirelings[hirelingId].name, npcData->name)) // TODO(captainurist): #unicode
                 break;
-            }
-        }
         assert(hirelingId < pParty->pHirelings.size());
         if (UseNPCSkill(npcData->profession, hirelingId) == 0) {
-            if (npcData->profession != NPC_PROFESSION_GATE_MASTER) {
+            if (npcData->profession != NPC_PROFESSION_GATE_MASTER)
                 npcData->hasUsedAbility = 1;
-            }
             engine->_messageQueue->addMessageCurrentFrame(UIMSG_Escape, 1, 0);
         } else {
             engine->_statusBar->setEvent(LSTR_YOUR_PACKS_ARE_ALREADY_FULL);
@@ -754,11 +739,9 @@ void selectSpecialNPCTopicSelection(DialogueId topic, NPCData* npcData) {
     } else if (topic == DIALOGUE_HIRE_FIRE) {
         if (npcData->Hired()) {
             if (pNPCStats->uNumNewNPCs > 0) {
-                for (int i = 0; i < pNPCStats->uNumNewNPCs; ++i) {
-                    if (pNPCStats->pNPCData[i].Hired() && npcData->name == pNPCStats->pNPCData[i].name) {
+                for (int i = 0; i < pNPCStats->uNumNewNPCs; ++i)
+                    if (pNPCStats->pNPCData[i].Hired() && npcData->name == pNPCStats->pNPCData[i].name)
                         pNPCStats->pNPCData[i].flags &= ~NPC_HIRED;
-                    }
-                }
             }
             if (ascii::noCaseEquals(pParty->pHirelings[0].name, npcData->name)) { // TODO(captainurist): #unicode
                 pParty->pHirelings[0] = NPCData();
@@ -779,9 +762,8 @@ void selectSpecialNPCTopicSelection(DialogueId topic, NPCData* npcData) {
                     engine->_statusBar->setEvent(LSTR_YOU_DONT_HAVE_ENOUGH_GOLD);
                     dialogue_show_profession_details = false;
                     //uDialogueType = DIALOGUE_13_hiring_related;
-                    if (pParty->hasActiveCharacter()) {
+                    if (pParty->hasActiveCharacter())
                         pParty->activeCharacter().playReaction(SPEECH_NOT_ENOUGH_GOLD);
-                    }
                     return;
                 }
                 pParty->TakeGold(pNPCStats->pProfessions[npcData->profession].uHirePrice);
@@ -797,9 +779,8 @@ void selectSpecialNPCTopicSelection(DialogueId topic, NPCData* npcData) {
             pParty->hirelingScrollPosition = 0;
             pParty->CountHirelings();
             engine->_messageQueue->addMessageCurrentFrame(UIMSG_Escape, 1, 0);
-            if (pParty->hasActiveCharacter()) {
+            if (pParty->hasActiveCharacter())
                 pParty->activeCharacter().playReaction(SPEECH_HIRE_NPC);
-            }
         }
     }
 }

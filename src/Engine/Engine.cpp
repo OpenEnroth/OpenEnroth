@@ -203,9 +203,8 @@ void Engine::DrawGUI() {
     GameUI_DrawRightPanelFrames();
     _statusBar->draw();
 
-    if (!pMovie_Track && uGameState != GAME_STATE_CHANGE_LOCATION) {  // ! pVideoPlayer->pSmackerMovie)
+    if (!pMovie_Track && uGameState != GAME_STATE_CHANGE_LOCATION)  // ! pVideoPlayer->pSmackerMovie)
         GameUI_DrawMinimap(Recti(488, 16, 137, 117), viewparams->uMinimapZoom);
-    }
 
     GameUI_DrawPartySpells();
     GameUI_DrawHiredNPCs();
@@ -247,9 +246,8 @@ void Engine::DrawGUI() {
     ++frames_this_second;
 
     if (engine->config->debug.ShowFPS.value()) {
-        if (render_framerate) {
+        if (render_framerate)
             GUIWindow::DrawText(assets->pFontArrus.get(), {494, 0}, colorTable.White, fmt::format("FPS: {: .4f}", framerate), pPrimaryWindow->frameRect);
-        }
 
         GUIWindow::DrawText(assets->pFontArrus.get(), {300, 0}, colorTable.White, fmt::format("DrawCalls: {}", render->drawcalls), pPrimaryWindow->frameRect);
         render->drawcalls = 0;
@@ -470,9 +468,8 @@ void Engine::onGameViewportClick() {
 
     // bug fix - stops you entering shops while dialog still open.
     // was SCREEN_NPC_DIALOGUE
-    if (current_screen_type != SCREEN_GAME) {
+    if (current_screen_type != SCREEN_GAME)
         return;
-    }
 
     auto pidAndDepth = engine->PickMouseForTargeting();
     Pid pid = pidAndDepth.pid;
@@ -734,11 +731,9 @@ void DoPrepareWorld(bool bLoading, int _1_fullscreen_loading_2_box) {
     }
 
     // OE fix - reduce maximum allowed radius in the Lincoln to stop act actors getting stuck in tight corridors.
-    if (engine->_currentLoadedMapId == MAP_LINCOLN) {
-        for (Actor& actor : pActors) {
+    if (engine->_currentLoadedMapId == MAP_LINCOLN)
+        for (Actor& actor : pActors)
             actor.radius = std::min(actor.radius, static_cast<uint16_t>(140));
-        }
-    }
 
     // OE fix - replace spirit lash with bless for clerics of the moon in the temple of baa.
     if (engine->_currentLoadedMapId == MAP_TEMPLE_OF_BAA)
@@ -1054,11 +1049,9 @@ int GetGravityStrength() {
 }
 
 void sub_44861E_set_texture_indoor(unsigned int uFaceCog, std::string_view filename) {
-    for (unsigned i = 0; i < pIndoor->faces.size(); ++i) {
-        if (pIndoor->faces[i].cogNumber == uFaceCog) {
+    for (unsigned i = 0; i < pIndoor->faces.size(); ++i)
+        if (pIndoor->faces[i].cogNumber == uFaceCog)
             pIndoor->faces[i].SetTexture(filename);
-        }
-    }
 }
 
 void sub_44861E_set_texture_outdoor(unsigned int uFaceCog, std::string_view filename) {
@@ -1110,9 +1103,8 @@ void setFacesBit(int sCogNumber, FaceAttribute bit, int on) {
 void setDecorationSprite(uint16_t uCog, bool bHide, std::string_view pFileName) {
     for (size_t i = 0; i < pLevelDecorations.size(); i++) {
         if (pLevelDecorations[i].uCog == uCog) {
-            if (!pFileName.empty() && pFileName != "0") {
+            if (!pFileName.empty() && pFileName != "0")
                 pLevelDecorations[i].uDecorationDescID = pDecorationTable->decorationId(pFileName);
-            }
 
             if (bHide) {
                 pLevelDecorations[i].uFlags &= ~LEVEL_DECORATION_INVISIBLE;
@@ -1132,9 +1124,8 @@ void back_to_game() {
 
     pGUIWindow_ScrollWindow = nullptr;
 
-    if (current_screen_type == SCREEN_GAME && sCurrentMenuID == MENU_NONE && !pGUIWindow_CastTargetedSpell) {
+    if (current_screen_type == SCREEN_GAME && sCurrentMenuID == MENU_NONE && !pGUIWindow_CastTargetedSpell)
         gameTimer->setPaused(false);
-    }
 }
 
 //----- (00494035) --------------------------------------------------------
@@ -1170,9 +1161,8 @@ void _494035_timed_effects__water_walking_damage__etc(Duration dt) {
             if (pParty->GetFood() > 0) {
                 pParty->TakeFood(1);
             } else {
-                for (Character &character : pParty->pCharacters) {
+                for (Character &character : pParty->pCharacters)
                     character.health = character.health / (pParty->days_played_without_rest + 1) + 1;
-                }
             }
 
             // players go insane without rest
@@ -1220,9 +1210,8 @@ void _494035_timed_effects__water_walking_damage__etc(Duration dt) {
     if (pParty->uFlags & PARTY_FLAG_BURNING && pParty->_6FC_water_lava_timer < pParty->GetPlayingTime()) {
         pParty->_6FC_water_lava_timer = pParty->GetPlayingTime() + 128_ticks;
 
-        for (Character &character : pParty->pCharacters) {
+        for (Character &character : pParty->pCharacters)
             character.receiveDamage((int64_t)character.GetMaxHealth() * 0.1, DAMAGE_FIRE);
-        }
         engine->_statusBar->setEventShort(LSTR_YOU_ARE_BURNING);
     }
 
@@ -1250,13 +1239,11 @@ void _494035_timed_effects__water_walking_damage__etc(Duration dt) {
             character.SetCondition(CONDITION_DEAD, 0);
         }
 
-        if (!character.CanAct()) {
+        if (!character.CanAct())
             --numPlayersCouldAct;
-        }
 
-        for (auto &playerBuff : character.pCharacterBuffs) {
+        for (auto &playerBuff : character.pCharacterBuffs)
             playerBuff.IsBuffExpiredToTime(pParty->GetPlayingTime());
-        }
 
         if (character.pCharacterBuffs[CHARACTER_BUFF_HASTE].Expired()) {
             character.SetCondition(CONDITION_WEAK, 0);
@@ -1279,16 +1266,14 @@ void _494035_timed_effects__water_walking_damage__etc(Duration dt) {
     // Check if Fly/Water Walk caster can act
     for (PartyBuff buffIdx : {PARTY_BUFF_WATER_WALK, PARTY_BUFF_FLY}) {
         SpellBuff *pBuff = &pParty->pPartyBuffs[buffIdx];
-        if (pBuff->Inactive()) {
+        if (pBuff->Inactive())
             continue;
-        }
 
         if (!pBuff->isGM) {
             if (!pParty->pCharacters[pBuff->caster].CanAct()) {
                 pBuff->Reset();
-                if (buffIdx == PARTY_BUFF_FLY) {
+                if (buffIdx == PARTY_BUFF_FLY)
                     pParty->bFlying = false;
-                }
             }
         }
     }
@@ -1461,9 +1446,8 @@ void RegeneratePartyHealthMana() {
         }
 
         // Override status bar
-        if (engine->config->settings.ShowHits.value() && totalDmg > 0) {
+        if (engine->config->settings.ShowHits.value() && totalDmg > 0)
             engine->_statusBar->setEvent(LSTR_IMMOLATION_DAMAGE, totalDmg, hitCount);
-        }
     }
 
     for (Character &character : pParty->pCharacters) {
@@ -1483,12 +1467,10 @@ void RegeneratePartyHealthMana() {
                     thisChar.hpRegen++;
                     thisChar.spRegen++;
                 }
-                if (item->itemId == ITEM_ARTIFACT_MINDS_EYE) {
+                if (item->itemId == ITEM_ARTIFACT_MINDS_EYE)
                     thisChar.spRegen++;
-                }
-                if (item->itemId == ITEM_ARTIFACT_HEROS_BELT) {
+                if (item->itemId == ITEM_ARTIFACT_HEROS_BELT)
                     thisChar.hpRegen++;
-                }
             } else {
                 ItemEnchantment special_enchantment = item->specialEnchantment;
                 if (special_enchantment == ITEM_ENCHANTMENT_OF_REGENERATION
@@ -1512,14 +1494,12 @@ void RegeneratePartyHealthMana() {
         }
 
         // Regeneration buff.
-        if (character.pCharacterBuffs[CHARACTER_BUFF_REGENERATION].Active()) {
+        if (character.pCharacterBuffs[CHARACTER_BUFF_REGENERATION].Active())
             thisChar.hpSpellRegen = 5 * character.pCharacterBuffs[CHARACTER_BUFF_REGENERATION].power;
-        }
 
         // Warlock mana regen.
-        if (PartyHasDragon() && character.classType == CLASS_WARLOCK) {
+        if (PartyHasDragon() && character.classType == CLASS_WARLOCK)
             thisChar.spRegen++;
-        }
 
         // Lich mana/health drain/regen.
         if (character.classType == CLASS_LICH) {
@@ -1605,9 +1585,8 @@ void startMapTransition(const MapDestination &destination) {
 
     // pGameLoadingUI_ProgressBar->Initialize(GUIProgressBar::TYPE_None);
 
-    if (engine->_currentLoadedMapId != destination.map()) {
+    if (engine->_currentLoadedMapId != destination.map())
         autoSave();
-    }
 
     uGameState = GAME_STATE_CHANGE_LOCATION;
     engine->_pendingTransition = destination;
@@ -1616,9 +1595,8 @@ void startMapTransition(const MapDestination &destination) {
 //----- (0044C28F) --------------------------------------------------------
 void TeleportToNWCDungeon() {
     // return if we are already in the NWC dungeon
-    if (engine->_currentLoadedMapId == MAP_STRANGE_TEMPLE) {
+    if (engine->_currentLoadedMapId == MAP_STRANGE_TEMPLE)
         return;
-    }
 
     // start tranistion to dungeon
     pGameLoadingUI_ProgressBar->Initialize(GUIProgressBar::TYPE_Fullscreen);

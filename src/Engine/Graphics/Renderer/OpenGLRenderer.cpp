@@ -214,13 +214,11 @@ OpenGLRenderer::~OpenGLRenderer() {
 
 RgbaImage OpenGLRenderer::ReadScreenPixels() {
     RgbaImage result = RgbaImage::uninitialized(outputRender.w, outputRender.h);
-    if (outputRender != outputPresent) {
+    if (outputRender != outputPresent)
         glBindFramebuffer(GL_READ_FRAMEBUFFER, framebuffer);
-    }
     glReadPixels(0, 0, outputRender.w, outputRender.h, GL_RGBA, GL_UNSIGNED_BYTE, result.pixels().data());
-    if (outputRender != outputPresent) {
+    if (outputRender != outputPresent)
         glBindFramebuffer(GL_READ_FRAMEBUFFER, 0);
-    }
     return result;
 }
 
@@ -372,9 +370,8 @@ void OpenGLRenderer::DrawProjectile(float srcX, float srcY, float srcworldview, 
 
     int texid = 0;
 
-    if (texture) {
+    if (texture)
         texid = texture->renderId().value();
-    }
 
     // load up poly
     for (int z = 0; z < 2; z++) {
@@ -784,11 +781,9 @@ RgbaImage OpenGLRenderer::MakeViewportScreenshot(const int width, const int heig
     RgbaImage pPixels = RgbaImage::solid(Color(), width, height);
 
     if (uCurrentlyLoadedLevelType != LEVEL_NULL) {
-        for (int y = 0; y < height; ++y) {
-            for (int x = 0; x < width; ++x) {
+        for (int y = 0; y < height; ++y)
+            for (int x = 0; x < width; ++x)
                 pPixels[y][x] = sPixels[outputRender.h - (y + 1) * interval_y - pViewport.y][x * interval_x + pViewport.x];
-            }
-        }
     }
 
     return pPixels;
@@ -1031,9 +1026,9 @@ void OpenGLRenderer::DrawOutdoorTerrain() {
                     int width = thistexture->width();
                     // check size to see what unit it needs
                     int i;
-                    for (i = 0; i < 8; i++) {
-                        if (terraintexturesizes[i] == width || terraintexturesizes[i] == 0) break;
-                    }
+                    for (i = 0; i < 8; i++)
+                        if (terraintexturesizes[i] == width || terraintexturesizes[i] == 0)
+                            break;
 
                     if (i == 8) {
                         MM_WARNING("Texture unit full - draw terrain!");
@@ -1664,9 +1659,8 @@ void OpenGLRenderer::DrawForcePerVerts() {
         size_t cnt = 0;
         do {
             cnt++;
-            if (offset + (3 * cnt) >= _forcePerVertices.size()) {
+            if (offset + (3 * cnt) >= _forcePerVertices.size())
                 break;
-            }
         } while (_forcePerVertices[offset + (cnt * 3)].texid == thistex);
 
         glDrawArrays(GL_TRIANGLES, offset, (3 * cnt));
@@ -1920,9 +1914,8 @@ void OpenGLRenderer::DrawBillboards() {
         size_t cnt = 0;
         do {
             cnt++;
-            if (offset + (3 * cnt) >= _billboardVertices.size()) {
+            if (offset + (3 * cnt) >= _billboardVertices.size())
                 break;
-            }
         } while (_billboardVertices[offset + (cnt * 3)].texid == thistex && _billboardVertices[offset + (cnt * 3)].blend == thisblend);
 
         glDrawArrays(GL_TRIANGLES, offset, (3 * cnt));
@@ -2060,14 +2053,12 @@ void OpenGLRenderer::DrawQuad2D(Ptr<GraphicsImage> texture, const Recti &srcRect
 
 void OpenGLRenderer::BeginTextNew(Ptr<GraphicsImage> texture) {
     // draw any images in buffer
-    if (!_twodVertices.empty()) {
+    if (!_twodVertices.empty())
         DrawTwodVerts();
-    }
 
     // if we are changing font draw whats in the text buffer
-    if (texture->renderId().value() != _textTexture) {
+    if (texture->renderId().value() != _textTexture)
         EndTextNew();
-    }
 
     _textTexture = texture->renderId().value();
     _textAtlasSize = texture->size();
@@ -2076,9 +2067,8 @@ void OpenGLRenderer::BeginTextNew(Ptr<GraphicsImage> texture) {
 void OpenGLRenderer::EndTextNew() {
     if (_textVertices.empty()) return;
 
-    if (!_twodVertices.empty()) {
+    if (!_twodVertices.empty())
         DrawTwodVerts();
-    }
 
     if (!_textBuffer) {
         _textBuffer.reset(GL_DYNAMIC_DRAW,
@@ -2249,9 +2239,8 @@ void OpenGLRenderer::DrawOutdoorBuildings() {
 
     if (!_outbuildBuffers[0]) {
         // initialize vertex vectors
-        for (int i = 0; i < 16; i++) {
+        for (int i = 0; i < 16; i++)
             _outbuildVertices[i].clear();
-        }
 
         // reserve first 7 layers for water tiles in unit 0
         std::shared_ptr<GraphicsImage> wtrtexture = assets->getBitmap("HDWTR000");
@@ -2340,9 +2329,9 @@ void OpenGLRenderer::DrawOutdoorBuildings() {
                                 int height = thistexture->height();
                                 // check size to see what unit it needs
                                 int i;
-                                for (i = 0; i < 16; i++) {
-                                    if ((outbuildtexturewidths[i] == width && outbuildtextureheights[i] == height) || outbuildtexturewidths[i] == 0) break;
-                                }
+                                for (i = 0; i < 16; i++)
+                                    if ((outbuildtexturewidths[i] == width && outbuildtextureheights[i] == height) || outbuildtexturewidths[i] == 0)
+                                        break;
 
                                 if (i == 16) {
                                     MM_WARNING("Texture unit full - draw building!");
@@ -2456,9 +2445,8 @@ void OpenGLRenderer::DrawOutdoorBuildings() {
     }
 
         // else update verts - blank store
-        for (int i = 0; i < 16; i++) {
+        for (int i = 0; i < 16; i++)
             _outbuildVertices[i].clear();
-        }
 
         for (BSPModel &model : pOutdoor->pBModels) {
             bool reachable;
@@ -2555,11 +2543,9 @@ void OpenGLRenderer::DrawOutdoorBuildings() {
             }
         }
 
-        for (int l = 0; l < 16; l++) {
-            if (!_outbuildVertices[l].empty()) {
+        for (int l = 0; l < 16; l++)
+            if (!_outbuildVertices[l].empty())
                 _outbuildBuffers[l].update(_outbuildVertices[l]);
-            }
-        }
 
     // terrain debug
     if (config->debug.Terrain.value())
@@ -2659,9 +2645,8 @@ void OpenGLRenderer::DrawOutdoorBuildings() {
     for (int unit = 0; unit < 16; unit++) {
         // skip if textures are empty
         //if (numoutbuildtexloaded[unit] > 0) {
-            if (unit == 1) {
+            if (unit == 1)
                 glUniform1i(outbuildshader.uniformLocation("watertiles"), GLint(0));
-            }
 
             // draw each set of triangles
             glBindTexture(GL_TEXTURE_2D_ARRAY, outbuildtextures[unit]);
@@ -2687,9 +2672,8 @@ void OpenGLRenderer::DrawOutdoorBuildings() {
     if (!decal_builder->bloodsplat_container->uNumBloodsplats) return;
 
     for (BSPModel &model : pOutdoor->pBModels) {
-        if (model.faces.empty()) {
+        if (model.faces.empty())
             continue;
-        }
 
         // check for any splat in this models box - if not continue
         bool found = false;
@@ -2704,16 +2688,14 @@ void OpenGLRenderer::DrawOutdoorBuildings() {
 
         for (int faceId : model.faces) {
             BLVFace &face = pOutdoor->faces[faceId];
-            if (face.Invisible()) {
+            if (face.Invisible())
                 continue;
-            }
 
             float _f1 = face.facePlane.normal.x * pOutdoor->vSunlight.x + face.facePlane.normal.y * pOutdoor->vSunlight.y + face.facePlane.normal.z * pOutdoor->vSunlight.z;
             int dimming_level = std::clamp(static_cast<int>(20.0 - floorf(20.0 * _f1 + 0.5f)), 0, 31);
 
-            for (unsigned vertex_id = 1; vertex_id <= face.vertexIds.size(); vertex_id++) {
+            for (unsigned vertex_id = 1; vertex_id <= face.vertexIds.size(); vertex_id++)
                 array_73D150[vertex_id - 1].vWorldPosition = pOutdoor->vertices[face.vertexIds[vertex_id - 1]];
-            }
 
             for (int vertex_id = 0; vertex_id < face.vertexIds.size(); ++vertex_id) {
                 memcpy(&VertexRenderList[vertex_id], &array_73D150[vertex_id], sizeof(VertexRenderList[vertex_id]));
@@ -2768,9 +2750,8 @@ void OpenGLRenderer::DrawIndoorFaces() {
                 MM_WARNING("{} lights - sector not found", cntnosect);
 
             // initialize vertex vectors
-            for (int i = 0; i < 16; i++) {
+            for (int i = 0; i < 16; i++)
                 _bspVertices[i].clear();
-            }
 
 
             // reserve first 7 layers for water tiles in unit 0
@@ -2832,9 +2813,9 @@ void OpenGLRenderer::DrawIndoorFaces() {
                         int height = thistexture->height();
                         // check size to see what unit it needs
                         int i;
-                        for (i = 0; i < 16; i++) {
-                            if ((bsptexturewidths[i] == width && bsptextureheights[i] == height) || bsptexturewidths[i] == 0) break;
-                        }
+                        for (i = 0; i < 16; i++)
+                            if ((bsptexturewidths[i] == width && bsptextureheights[i] == height) || bsptexturewidths[i] == 0)
+                                break;
 
                         if (i == 16) {
                             MM_WARNING("Texture unit full - draw Indoor faces!");
@@ -2934,9 +2915,8 @@ void OpenGLRenderer::DrawIndoorFaces() {
 
 
             // update verts - blank store
-            for (int i = 0; i < 16; i++) {
+            for (int i = 0; i < 16; i++)
                 _bspVertices[i].clear();
-            }
 
             bool drawnsky = false;
 
@@ -3044,11 +3024,9 @@ void OpenGLRenderer::DrawIndoorFaces() {
                 }
             }
 
-            for (int l = 0; l < 16; l++) {
-                if (!_bspVertices[l].empty()) {
+            for (int l = 0; l < 16; l++)
+                if (!_bspVertices[l].empty())
                     _bspBuffers[l].update(_bspVertices[l]);
-                }
-            }
 
             glBindBuffer(GL_ARRAY_BUFFER, 0);
 
@@ -3090,9 +3068,8 @@ void OpenGLRenderer::DrawIndoorFaces() {
 
         // lighting stuff
         int16_t mintest = 0;
-        for (int i = 0; i < pIndoor->sectors.size(); i++) {
+        for (int i = 0; i < pIndoor->sectors.size(); i++)
             mintest = std::max(mintest, pIndoor->sectors[i].minAmbientLightLevel);
-        }
         int uCurrentAmbientLightLevel = (DEFAULT_AMBIENT_LIGHT_LEVEL + mintest);
         float ambient = (248.0f - (uCurrentAmbientLightLevel << 3)) / 255.0f;
         float diffuseon = 0.0f;
@@ -3149,12 +3126,9 @@ void OpenGLRenderer::DrawIndoorFaces() {
             // cull through viewing frustum
             bool visinfrustum = false;
             if (!fromexpanded) {
-                for (int j = 0; j < pBspRenderer->num_nodes; ++j) {
-                    if (pBspRenderer->nodes[j].uSectorID == test.uSectorID) {
-                        if (IsSphereInFrustum(test.vPosition, test.uRadius, pBspRenderer->nodes[j].ViewportNodeFrustum.data()))
-                            visinfrustum = true;
-                    }
-                }
+                for (int j = 0; j < pBspRenderer->num_nodes; ++j)
+                    if (pBspRenderer->nodes[j].uSectorID == test.uSectorID && IsSphereInFrustum(test.vPosition, test.uRadius, pBspRenderer->nodes[j].ViewportNodeFrustum.data()))
+                        visinfrustum = true;
             } else {
                 if (IsSphereInFrustum(test.vPosition, test.uRadius)) visinfrustum = true;
             }
@@ -3201,9 +3175,8 @@ void OpenGLRenderer::DrawIndoorFaces() {
         for (int unit = 0; unit < 16; unit++) {
             // skip if textures are empty
             //if (numoutbuildtexloaded[unit] > 0) {
-            if (unit == 1) {
+            if (unit == 1)
                 glUniform1i(bspshader.uniformLocation("watertiles"), GLint(0));
-            }
 
             // draw each set of triangles
             glBindTexture(GL_TEXTURE_2D_ARRAY, bsptextures[unit]);
@@ -3679,9 +3652,8 @@ void OpenGLRenderer::DrawTwodVerts() {
         size_t cnt = 0;
         do {
             cnt++;
-            if (offset + (6 * cnt) >= _twodVertices.size()) {
+            if (offset + (6 * cnt) >= _twodVertices.size())
                 break;
-            }
         } while (_twodVertices[offset + (cnt * 6)].texid == thistex);
 
         glDrawArrays(GL_TRIANGLES, offset, (6*cnt));

@@ -43,17 +43,15 @@ static bool PartyDoTurnBasedAwareAction(PartyAction action) {
 }
 
 static bool PartyStrafe(PartyAction direction) {
-    if (direction != PARTY_StrafeLeft && direction != PARTY_StrafeRight) {
+    if (direction != PARTY_StrafeLeft && direction != PARTY_StrafeRight)
         return false;
-    }
 
     return PartyDoTurnBasedAwareAction(direction);
 }
 
 static bool PartyMove(PartyAction direction) {
-    if (direction != PARTY_WalkForward && direction != PARTY_RunForward && direction != PARTY_WalkBackward && direction != PARTY_RunBackward) {
+    if (direction != PARTY_WalkForward && direction != PARTY_RunForward && direction != PARTY_WalkBackward && direction != PARTY_RunBackward)
         return false;
-    }
 
     return PartyDoTurnBasedAwareAction(direction);
 }
@@ -88,9 +86,8 @@ void Io::KeyboardInputHandler::GenerateActions(bool isPaused) {
                 break;
             }
 
-            if (isTriggered) {
+            if (isTriggered)
                 break;
-            }
         }
 
         if (isTriggered) {
@@ -118,9 +115,8 @@ void Io::KeyboardInputHandler::ProcessPausedAction(InputAction action) {
         }
         break;
     case INPUT_ACTION_INTERACT:
-        if (current_screen_type == SCREEN_GAME || current_screen_type == SCREEN_CHEST) {
+        if (current_screen_type == SCREEN_GAME || current_screen_type == SCREEN_CHEST)
             engine->_messageQueue->addMessageCurrentFrame(UIMSG_Game_Action, 0, 0);
-        }
         if (current_screen_type == SCREEN_NPC_DIALOGUE || current_screen_type == SCREEN_BRANCHLESS_NPC_DIALOG) {
             // engine->_messageQueue->addMessageCurrentFrame(UIMSG_Escape, 0, 0);
         }
@@ -133,35 +129,30 @@ void Io::KeyboardInputHandler::ProcessPausedAction(InputAction action) {
 void Io::KeyboardInputHandler::ProcessGameplayAction(InputAction action) {
     switch (action) {
     case INPUT_ACTION_MOVE_FORWARD:
-        if (current_screen_type == SCREEN_GAME) {
+        if (current_screen_type == SCREEN_GAME)
             PartyMove(pParty->uFlags2 & PARTY_FLAGS_2_RUNNING ? PARTY_RunForward : PARTY_WalkForward);
-        }
         break;
 
     case INPUT_ACTION_MOVE_BACKWARDS:
-        if (current_screen_type == SCREEN_GAME) {
+        if (current_screen_type == SCREEN_GAME)
             PartyMove(pParty->uFlags2 & PARTY_FLAGS_2_RUNNING ? PARTY_RunBackward : PARTY_WalkBackward);
-        }
         break;
 
     case INPUT_ACTION_STRAFE_LEFT:
-        if (current_screen_type == SCREEN_GAME) {
+        if (current_screen_type == SCREEN_GAME)
             PartyStrafe(PARTY_StrafeLeft);
-        }
         break;
 
     case INPUT_ACTION_STRAFE_RIGHT:
-        if (current_screen_type == SCREEN_GAME) {
+        if (current_screen_type == SCREEN_GAME)
             PartyStrafe(PARTY_StrafeRight);
-        }
         break;
 
     case INPUT_ACTION_TURN_LEFT:
         if (current_screen_type == SCREEN_GAME) {
             if (IsTurnStrafingToggled()) {
-                if (!PartyStrafe(PARTY_StrafeLeft)) {
+                if (!PartyStrafe(PARTY_StrafeLeft))
                     break;
-                }
             } else {
                 pPartyActionQueue->Add(pParty->uFlags2 & PARTY_FLAGS_2_RUNNING ? PARTY_FastTurnLeft : PARTY_TurnLeft);
             }
@@ -174,9 +165,8 @@ void Io::KeyboardInputHandler::ProcessGameplayAction(InputAction action) {
     case INPUT_ACTION_TURN_RIGHT:
         if (current_screen_type == SCREEN_GAME) {
             if (IsTurnStrafingToggled()) {
-                if (!PartyStrafe(PARTY_StrafeRight)) {
+                if (!PartyStrafe(PARTY_StrafeRight))
                     break;
-                }
             } else {
                 pPartyActionQueue->Add(pParty->uFlags2 & PARTY_FLAGS_2_RUNNING ? PARTY_FastTurnRight : PARTY_TurnRight);
             }
@@ -187,9 +177,8 @@ void Io::KeyboardInputHandler::ProcessGameplayAction(InputAction action) {
         break;
 
     case INPUT_ACTION_JUMP:
-        if (current_screen_type == SCREEN_GAME && !pParty->bTurnBasedModeOn) {
+        if (current_screen_type == SCREEN_GAME && !pParty->bTurnBasedModeOn)
             pPartyActionQueue->Add(PARTY_Jump);
-        }
         break;
 
     case INPUT_ACTION_YELL:
@@ -235,18 +224,16 @@ void Io::KeyboardInputHandler::ProcessGameplayAction(InputAction action) {
         break;
 
     case INPUT_ACTION_QUICK_CAST: {
-        if (current_screen_type != SCREEN_GAME) {
+        if (current_screen_type != SCREEN_GAME)
             break;
-        }
 
         if (pParty->bTurnBasedModeOn && pTurnEngine->turn_stage == TE_MOVEMENT) {
             pTurnEngine->flags |= TE_FLAG_8_finished;
             break;
         }
 
-        if (!pParty->hasActiveCharacter()) {
+        if (!pParty->hasActiveCharacter())
             break;
-        }
 
         SpellId quickSpellNumber = pParty->activeCharacter().uQuickSpell;
         int uRequiredMana = 0;
@@ -274,9 +261,8 @@ void Io::KeyboardInputHandler::ProcessGameplayAction(InputAction action) {
     }
 
     case INPUT_ACTION_ATTACK:
-        if (current_screen_type != SCREEN_GAME) {
+        if (current_screen_type != SCREEN_GAME)
             break;
-        }
 
         if (pParty->bTurnBasedModeOn && pTurnEngine->turn_stage == TE_MOVEMENT) {
             pTurnEngine->flags |= TE_FLAG_8_finished;
@@ -317,21 +303,18 @@ void Io::KeyboardInputHandler::ProcessGameplayAction(InputAction action) {
         break;
 
     case INPUT_ACTION_FLY_UP:
-        if (current_screen_type == SCREEN_GAME) {
+        if (current_screen_type == SCREEN_GAME)
             pPartyActionQueue->Add(PARTY_FlyUp);
-        }
         break;
 
     case INPUT_ACTION_FLY_LAND:
-        if (current_screen_type == SCREEN_GAME) {
+        if (current_screen_type == SCREEN_GAME)
             pPartyActionQueue->Add(PARTY_Land);
-        }
         break;
 
     case INPUT_ACTION_FLY_DOWN:
-        if (current_screen_type == SCREEN_GAME) {
+        if (current_screen_type == SCREEN_GAME)
             pPartyActionQueue->Add(PARTY_FlyDown);
-        }
         break;
 
     case INPUT_ACTION_ZOOM_IN:
@@ -351,9 +334,8 @@ void Io::KeyboardInputHandler::ProcessGameplayAction(InputAction action) {
         break;
 
     case INPUT_ACTION_OPEN_INVENTORY:
-        if (current_screen_type == SCREEN_GAME) {
+        if (current_screen_type == SCREEN_GAME)
             engine->_messageQueue->addMessageNextFrame(UIMSG_OpenInventory, 0, 0);
-        }
         break;
 
     default:
@@ -388,9 +370,8 @@ void Io::KeyboardInputHandler::StartTextInput(TextInputType type, int max_string
     this->max_input_string_len = max_string_len;
     this->window = window;
 
-    if (window != nullptr) {
+    if (window != nullptr)
         window->keyboard_input_status = WINDOW_INPUT_IN_PROGRESS;
-    }
 }
 
 void Io::KeyboardInputHandler::EndTextInput() {
@@ -411,30 +392,26 @@ void Io::KeyboardInputHandler::EndTextInput(GUIWindow *window) {
 //----- (00459ED1) --------------------------------------------------------
 void Io::KeyboardInputHandler::SetWindowInputStatus(WindowInputStatus status) {
     inputType = TEXT_INPUT_NONE;
-    if (window) {
+    if (window)
         window->keyboard_input_status = status;
-    }
 }
 
 //----- (00459F10) --------------------------------------------------------
 bool Io::KeyboardInputHandler::ProcessTextInput(PlatformKey key, int c) {
     if (currently_selected_action_for_binding == INPUT_ACTION_INVALID) {
-        if (inputType != TEXT_INPUT_TEXT && inputType != TEXT_INPUT_NUMBER) {
+        if (inputType != TEXT_INPUT_TEXT && inputType != TEXT_INPUT_NUMBER)
             return false;
-        }
 
         if (key == PlatformKey::KEY_BACKSPACE) {
-            if (!pPressedKeysBuffer.empty()) {
+            if (!pPressedKeysBuffer.empty())
                 pPressedKeysBuffer.pop_back();
-            }
         } else if (key == PlatformKey::KEY_RETURN) {
             SetWindowInputStatus(WINDOW_INPUT_CONFIRMED);
         } else if (key == PlatformKey::KEY_ESCAPE) {
             SetWindowInputStatus(WINDOW_INPUT_NONE);
         } else if (key == PlatformKey::KEY_SPACE && pPressedKeysBuffer.size() < this->max_input_string_len) {
-            if (inputType == TEXT_INPUT_TEXT) {
+            if (inputType == TEXT_INPUT_TEXT)
                 pPressedKeysBuffer.push_back(' ');
-            }
         } else if (key == PlatformKey::KEY_CHAR && pPressedKeysBuffer.size() < this->max_input_string_len) {
             if (inputType == TEXT_INPUT_TEXT) {
                 pPressedKeysBuffer.push_back(c);
