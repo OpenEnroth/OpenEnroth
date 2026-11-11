@@ -2,6 +2,19 @@ cmake_minimum_required(VERSION 3.27 FATAL_ERROR)
 
 set(RESOURCE_SOURCES
         data/resource_mask_table.json
+        fonts/arrus.oef
+        fonts/autonote.oef
+        fonts/book.oef
+        fonts/book2.oef
+        fonts/cchar.oef
+        fonts/comic.oef
+        fonts/create.oef
+        fonts/endgame.oef
+        fonts/legal.oef
+        fonts/lucida.oef
+        fonts/quick.oef
+        fonts/smallnum.oef
+        fonts/spell.oef
         images/OpenEnroth.png
         scripts/_definitions/bindings/audio.lua
         scripts/_definitions/bindings/config.lua

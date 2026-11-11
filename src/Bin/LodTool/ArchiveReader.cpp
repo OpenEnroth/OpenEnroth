@@ -11,8 +11,9 @@
 #include "Library/Magic/Magic.h"
 
 #include "Utility/Exception.h"
+#include "Utility/System/Fs.h"
 
-template<class Base, MagicFileFormat magicFormat>
+template<class Base>
 class UniversalReader : public ArchiveReader {
  public:
     explicit UniversalReader(Blob data) {
@@ -20,18 +21,6 @@ class UniversalReader : public ArchiveReader {
             _base.open(std::move(data), LOD_ALLOW_DUPLICATES);
         } else {
             _base.open(std::move(data));
-        }
-    }
-
-    virtual MagicFileFormat format() const override {
-        return magicFormat;
-    }
-
-    virtual std::optional<LodInfo> info() const override {
-        if constexpr (std::is_same_v<Base, LodReader>) {
-            return _base.info();
-        } else {
-            return {};
         }
     }
 
@@ -47,16 +36,31 @@ class UniversalReader : public ArchiveReader {
     Base _base;
 };
 
-std::unique_ptr<ArchiveReader> ArchiveReader::createArchiveReader(PathView path) {
-    Blob data = Blob::fromFile(path);
+std::unique_ptr<ArchiveReader> ArchiveReader::createArchiveReader(Blob data) {
     switch (magic(data)) {
     case MAGIC_LOD:
-        return std::make_unique<UniversalReader<LodReader, MAGIC_LOD>>(std::move(data));
+        return std::make_unique<UniversalReader<LodReader>>(std::move(data));
     case MAGIC_VID:
-        return std::make_unique<UniversalReader<VidReader, MAGIC_VID>>(std::move(data));
+        return std::make_unique<UniversalReader<VidReader>>(std::move(data));
     case MAGIC_SND:
-        return std::make_unique<UniversalReader<SndReader, MAGIC_SND>>(std::move(data));
+        return std::make_unique<UniversalReader<SndReader>>(std::move(data));
     default:
-        throw Exception("File '{}' is not a LOD, VID or SND archive", path);
+        throw Exception("File '{}' is not a LOD, VID or SND archive", data.displayPath());
     }
+}
+
+Blob ArchiveReader::readFile(PathView path) {
+    PathView tail;
+    PathView prefix = fs::walk(path, &tail);
+
+    FileStat stat = fs::stat(prefix);
+    if (tail.isEmpty()) {
+        if (stat.type != FILE_REGULAR)
+            throw Exception("'{}' is not a file", path.displayString());
+        return Blob::fromFile(prefix);
+    }
+
+    if (stat.type != FILE_REGULAR)
+        throw Exception("'{}' doesn't exist", path.displayString());
+    return createArchiveReader(Blob::fromFile(prefix))->read(tail.str());
 }

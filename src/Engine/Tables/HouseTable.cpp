@@ -24,7 +24,7 @@ static float floatOrZero(std::string_view token) {
     return token.empty() ? 0.0f : fromString<float>(token);
 }
 
-void initializeHouses(const Blob &houses) {
+void initializeHouses(std::string_view houses) {
     // 2devents.txt table structure (column names are the headers from the data file):
     //  0: "#"                  - house id
     //  1: "#"                  - per-type sequence number, resets at each new Type         (not used)
@@ -78,7 +78,7 @@ void initializeHouses(const Blob &houses) {
         {"Mercenary Guild", HOUSE_TYPE_TOWN_HALL}, // This is MM6 only. TODO(captainurist): Is this right and not Merc Guild (18)?
     };
 
-    for (std::string_view line : split(houses.str()).by("\r\n").drop(2).skip("")) {
+    for (std::string_view line : split(houses).by("\r\n").drop(2).skip("")) {
         std::array<std::string_view, 24> tokens = split(line).by('\t').resize(24, ""); // Some lines have only ~12 cols.
 
         // TODO(captainurist): We don't check if int is in range. A better way would be to deal away with enums

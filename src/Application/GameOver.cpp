@@ -43,7 +43,7 @@ std::unique_ptr<GraphicsImage> CreateWinnerCertificate() {
 
     std::unique_ptr<GUIWindow> tempwindow_SpeakInHouse = std::make_unique<GUIWindow>(WINDOW_WINNER_CERTIFICATE, Pointi{ 0, 0 }, render->GetRenderDimensions());
     Recti frameRect(75, 60, 469, 338);
-    std::unique_ptr<GUIFont> pFont = GUIFont::LoadFont("endgame.fnt");
+    std::unique_ptr<GUIFont> pFont = GUIFont::LoadFont("endgame.oef");
 
     std::string pInString;
     if (pParty->isPartyGood()) {

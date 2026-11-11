@@ -32,13 +32,13 @@ void GUIWindow_Book::initializeFonts() {
     ui_book_map_frame = assets->getIcon("mapbordr");
 
     if (!assets->pFontBookCalendar)
-        assets->pFontBookCalendar = GUIFont::LoadFont("book.fnt");
+        assets->pFontBookCalendar = GUIFont::LoadFont("book.oef");
     if (!assets->pFontBookTitle)
-        assets->pFontBookTitle = GUIFont::LoadFont("book2.fnt");
+        assets->pFontBookTitle = GUIFont::LoadFont("book2.oef");
     if (!assets->pFontBookOnlyShadow)
-        assets->pFontBookOnlyShadow = GUIFont::LoadFont("autonote.fnt");
+        assets->pFontBookOnlyShadow = GUIFont::LoadFont("autonote.oef");
     if (!assets->pFontBookLloyds)
-        assets->pFontBookLloyds = GUIFont::LoadFont("spell.fnt");
+        assets->pFontBookLloyds = GUIFont::LoadFont("spell.oef");
 }
 
 void GUIWindow_Book::bookButtonClicked(BookButtonAction action) {
