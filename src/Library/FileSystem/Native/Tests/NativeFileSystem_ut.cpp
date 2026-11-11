@@ -114,25 +114,26 @@ UNIT_TEST(NativeFileSystem, DisplayPathSymmetry) {
     EXPECT_EQ(blob.displayPath(), stream->displayPath());
 }
 
-UNIT_TEST(NativeFileSystem, EscapingPaths) {
+UNIT_TEST(NativeFileSystem, DotDotStaysInside) {
+    // ".." stops at the root, so a file beside the root directory on disk stays out of reach.
     ScopedTestFolder tmp("a");
-    ScopedTestFile tmp2("1.txt", "");
-    ScopedTestFile tmp3("a/1.txt", "");
+    ScopedTestFile tmp2("1.txt", "outer");
+    ScopedTestFile tmp3("a/1.txt", "inner");
 
     NativeFileSystem fs("a");
 
-    EXPECT_FALSE(fs.exists(".."));
-    EXPECT_FALSE(fs.stat(".."));
-    EXPECT_ANY_THROW((void) fs.ls(".."));
-    EXPECT_ANY_THROW((void) fs.read("../1.txt"));
-    EXPECT_ANY_THROW((void) fs.openForReading("../1.txt"));
-    EXPECT_ANY_THROW(fs.write("../1.txt", Blob()));
-    EXPECT_ANY_THROW((void) fs.openForWriting("../1.txt"));
-    EXPECT_ANY_THROW(fs.remove("../1.txt"));
+    EXPECT_EQ(fs.stat(".."), FileStat(FILE_DIRECTORY, 0));
+    EXPECT_EQ(fs.read("../1.txt").str(), "inner");
+    EXPECT_EQ(fs.read("a/../../1.txt").str(), "inner");
+
+    fs.write("../2.txt", Blob::fromString("kek"));
+    EXPECT_TRUE(fs::exists("a/2.txt"));
+    EXPECT_FALSE(fs::exists("2.txt"));
 }
 
-UNIT_TEST(NativeFileSystem, EscapingDisplayPath) {
+UNIT_TEST(NativeFileSystem, DisplayPathOfDotDot) {
+    // ".." from the root is the root.
     NativeFileSystem fs(fs::cwd());
 
-    EXPECT_TRUE(fs.displayPath("..").ends_with(".."));
+    EXPECT_EQ(fs.displayPath(".."), fs.displayPath(""));
 }
