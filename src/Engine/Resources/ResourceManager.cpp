@@ -122,7 +122,14 @@ void ResourceManager::open(float saturation, float lightness) {
 }
 
 Blob ResourceManager::eventsData(std::string_view filename) {
-    return lod::decodeMaybeCompressed(_eventsLodReader.read(filename));
+    Blob result = lod::decodeMaybeCompressed(_eventsLodReader.read(filename));
+    if (!ascii::toLower(filename).ends_with(".txt"))
+        return result;
+
+    size_t size = result.size();
+    while (size > 0 && result.str()[size - 1] == '\x1A') // DOS end-of-file byte. The Czech fan translation ends some of its text tables with one.
+        size--;
+    return result.subBlob(0, size);
 }
 
 RgbaImage ResourceManager::icon(std::string_view filename) {

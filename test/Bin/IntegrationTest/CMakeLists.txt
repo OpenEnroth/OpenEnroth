@@ -10,7 +10,7 @@ set(INTEGRATION_TEST_HEADERS
         IntegrationTestOptions.h)
 
 add_executable(OpenEnroth_IntegrationTest ${INTEGRATION_TEST_SOURCES} ${INTEGRATION_TEST_HEADERS})
-target_link_libraries(OpenEnroth_IntegrationTest PUBLIC testing_extensions library_cli library_stack_trace utility GTest::gtest)
+target_link_libraries(OpenEnroth_IntegrationTest PUBLIC testing_extensions library_cli library_lod library_lod_formats library_stack_trace utility GTest::gtest)
 
 target_check_style(OpenEnroth_IntegrationTest)
 
