@@ -1345,6 +1345,58 @@ GAME_TEST(Issues, Issue1482) {
     EXPECT_LT(timeTape.delta(), Duration::fromMinutes(10));
 }
 
+GAME_TEST(Issues, Issue1485a) {
+    // With regen_stacking on, two regeneration rings heal twice what one does, and two mana rings restore twice the SP.
+    // With it off, only one ring of each kind counts.
+    for (bool stacking : {true, false}) {
+        SCOPED_TRACE(fmt::format("stacking={}", stacking));
+        test.prepareForNextTest(1000, RANDOM_ENGINE_MERSENNE_TWISTER); // 1 realtime second per frame.
+        engine->config->gameplay.RegenStacking.setValue(stacking);
+        auto hpTape = charTapes.hp(0);
+        auto mpTape = charTapes.mp(2);
+        game.startNewGame();
+        Character &fighter = pParty->pCharacters[0];
+        Character &caster = pParty->pCharacters[2];
+        for (ItemSlot slot : {ITEM_SLOT_RING1, ITEM_SLOT_RING2}) {
+            Item regenerationRing(ITEM_EMERALD_RING);
+            regenerationRing.specialEnchantment = ITEM_ENCHANTMENT_OF_REGENERATION;
+            fighter.inventory.equip(slot, regenerationRing);
+            Item manaRing(ITEM_EMERALD_RING);
+            manaRing.specialEnchantment = ITEM_ENCHANTMENT_OF_MANA;
+            caster.inventory.equip(slot, manaRing);
+        }
+        fighter.health = 1;
+        caster.mana = 0;
+        test.startTaping();
+        game.tick(10); // Five game minutes, one regeneration tick.
+
+        EXPECT_EQ(hpTape, stacking ? tape(1, 3) : tape(1, 2));
+        EXPECT_EQ(mpTape, stacking ? tape(0, 2) : tape(0, 1));
+    }
+}
+
+GAME_TEST(Issues, Issue1485b) {
+    // With regen_stacking on, a Regeneration spell and a regeneration ring add up. With it off, the spell's healing
+    // replaces the ring's.
+    for (bool stacking : {true, false}) {
+        SCOPED_TRACE(fmt::format("stacking={}", stacking));
+        test.prepareForNextTest(1000, RANDOM_ENGINE_MERSENNE_TWISTER); // 1 realtime second per frame.
+        engine->config->gameplay.RegenStacking.setValue(stacking);
+        auto hpTape = charTapes.hp(0);
+        game.startNewGame();
+        Character &fighter = pParty->pCharacters[0];
+        fighter.pCharacterBuffs[CHARACTER_BUFF_REGENERATION].Apply(pParty->GetPlayingTime() + Duration::fromDays(1), MASTERY_NOVICE, 1, 0, 0);
+        Item ring(ITEM_EMERALD_RING);
+        ring.specialEnchantment = ITEM_ENCHANTMENT_OF_REGENERATION;
+        fighter.inventory.equip(ITEM_SLOT_RING1, ring);
+        fighter.health = 1;
+        test.startTaping();
+        game.tick(10); // Five game minutes, one regeneration tick.
+
+        EXPECT_EQ(hpTape, stacking ? tape(1, 7) : tape(1, 6));
+    }
+}
+
 GAME_TEST(Issues, Issue1489) {
     // Cannot equip amulets or gauntlets
     auto equipmentId = [] (ItemSlot slot) -> ItemId {
