@@ -828,7 +828,7 @@ GAME_TEST(Issues, Issue774) {
     auto backgroundTape = actorTapes.custom(titanId, [] (const Actor &actor) { return !(actor.attributes & ACTOR_FULL_AI_STATE); });
 
     game.castSpell(0, SPELL_DARK_ARMAGEDDON);
-    game.tick(148); // Flies up and lands 3.7s in.
+    game.tick(150); // Flies up and lands 3.7s in.
     test.stopTaping();
 
     float groundZ = flightTape.front().second;
