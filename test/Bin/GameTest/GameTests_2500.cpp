@@ -568,6 +568,23 @@ GAME_TEST(Prs, Pr2723) {
     EXPECT_EQ(pParty->activeCharacterIndex(), 1);
 }
 
+GAME_TEST(Issues, Issue2748) {
+    // Monsters spawned under the floor of the Erathian Sewers, outside the level, kept the party on yellow alert after
+    // the sewers were cleared.
+    auto yellowAlertTape = tapes.custom([] { return pParty->GetYellowAlert(); });
+    auto aliveTape = tapes.custom([] { return static_cast<int>(std::ranges::count_if(pActors, &Actor::CanAct)); });
+    game.startNewGame();
+    game.teleportTo(MAP_ERATHIAN_SEWERS, Vec3f(5157, 8704, -128), 0); // The first visit spawns the monsters. The party lands within alert range of a spawn point outside the level.
+    test.startTaping();
+    game.tick();
+    for (Actor &actor : pActors)
+        if (actor.sectorId != 0) // Everyone the party can reach.
+            Actor::Die(actor.id);
+    game.tick();
+    EXPECT_EQ(aliveTape, tape(45, 0));
+    EXPECT_EQ(yellowAlertTape, tape(true, false));
+}
+
 GAME_TEST(Issues, Issue2754) {
     // Clicking a paralyzed friendly peasant made the active character attack it, and the hit turned the peasant
     // hostile. Past the click reach the same click attacked too. The hostile peasant is the control, clicking

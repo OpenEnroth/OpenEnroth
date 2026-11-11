@@ -4281,8 +4281,11 @@ void SpawnEncounter(MapData *mapData, SpawnPoint *spawn, int monsterCatMod, int 
     NumToSpawn = std::max(1, static_cast<int>(std::ceil(NumToSpawn * engine->config->gameplay.SpawnCountMultiplier.value())));
 
     int pSector = 0;
-    if (uCurrentlyLoadedLevelType == LEVEL_INDOOR)
+    if (uCurrentlyLoadedLevelType == LEVEL_INDOOR) {
         pSector = pIndoor->GetSector(spawn->position);
+        if (pSector == 0)
+            return; // MM6, MM7 and MM8 all have spawn points outside the level, vanilla MM7 spawns nothing there.
+    }
 
     // spawning loop
     std::string fullInternalName = baseInternalName;
