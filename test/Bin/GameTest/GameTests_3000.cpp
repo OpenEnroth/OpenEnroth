@@ -33,7 +33,7 @@ GAME_TEST(Issues, Issue3002) {
     std::set<Sex> sexes;
     for (const Actor &peasant : pActors) {
         if (peasant.npcId < 5000)
-            continue; // Keep peasants with an NPC generated on map load, their ids start at 5000.
+            continue; // Ids from 5000 up are the NPCs rolled on map load.
         SCOPED_TRACE(fmt::format("actorId={}", peasant.id));
         MonsterType monsterType = monsterTypeForMonsterId(peasant.monsterInfo.id);
         ASSERT_EQ(raceForMonsterType(monsterType), RACE_HUMAN);
