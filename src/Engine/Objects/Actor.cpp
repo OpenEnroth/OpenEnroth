@@ -128,21 +128,17 @@ void Actor::toggleFlag(signed int uActorID, ActorAttribute uFlag, bool bValue) {
         if (bValue) {
             pActors[uActorID].attributes |= uFlag;
         } else {
-            if (uFlag == ACTOR_UNKNOW11) {
-                if (pActors[uActorID].aiState == Disabled)
-                    pActors[uActorID].aiState = Standing;
-            }
+            if (uFlag == ACTOR_UNKNOW11 && pActors[uActorID].aiState == Disabled)
+                pActors[uActorID].aiState = Standing;
             pActors[uActorID].attributes &= ~uFlag;
         }
     }
 }
 
 void npcSetItem(int npc, ItemId item, int a3) {
-    for (unsigned i = 0; i < pActors.size(); i++) {
-        if (pActors[i].npcId == npc) {
+    for (unsigned i = 0; i < pActors.size(); i++)
+        if (pActors[i].npcId == npc)
             Actor::giveItem(i, item, a3);
-        }
-    }
 }
 
 void Actor::giveItem(signed int uActorID, ItemId uItemID, unsigned int bGive) {
@@ -203,12 +199,8 @@ void Actor::SetRandomGoldIfTheresNoItem() {
             }
         }
     }
-    if (grng->random(100) < this->monsterInfo.treasureDropChance) {
-        if (this->monsterInfo.treasureLevel != ITEM_TREASURE_LEVEL_INVALID)
-            pItemTable->generateItem(this->monsterInfo.treasureLevel,
-                                     this->monsterInfo.treasureType,
-                                     &this->items[2]);
-    }
+    if (grng->random(100) < this->monsterInfo.treasureDropChance && this->monsterInfo.treasureLevel != ITEM_TREASURE_LEVEL_INVALID)
+        pItemTable->generateItem(this->monsterInfo.treasureLevel, this->monsterInfo.treasureType, &this->items[2]);
     this->attributes |= ACTOR_HAS_ITEM;
 }
 
@@ -267,9 +259,8 @@ void Actor::AI_SpellAttack(unsigned int uActorID, AIDirection *pDir,
             sprite.spellCasterAbility = ABILITY_SPELL1;
 
             spriteId = sprite.Create(pDir->uYawAngle, pDir->uPitchAngle, pObjectTable->pObjects[sprite.uObjectDescID].uSpeed, 0);
-            if (spriteId != -1) {
+            if (spriteId != -1)
                 pAudioPlayer->playSpellSound(uSpellID, false, SOUND_MODE_PID, Pid(OBJECT_Sprite, spriteId));
-            }
             break;
 
         case SPELL_FIRE_HASTE:
@@ -297,9 +288,8 @@ void Actor::AI_SpellAttack(unsigned int uActorID, AIDirection *pDir,
 
         case SPELL_FIRE_METEOR_SHOWER:
         {
-            if (uCurrentlyLoadedLevelType == LEVEL_INDOOR) {
+            if (uCurrentlyLoadedLevelType == LEVEL_INDOOR)
                 break;
-            }
 
             int meteors;
             switch (masteryLevel) {
@@ -350,9 +340,8 @@ void Actor::AI_SpellAttack(unsigned int uActorID, AIDirection *pDir,
                 j = grng->random(1024) - 512;
                 k = grng->random(1024) - 512;
             }
-            if (spriteId != -1) {
+            if (spriteId != -1)
                 pAudioPlayer->playSpellSound(uSpellID, false, SOUND_MODE_PID, Pid(OBJECT_Sprite, spriteId));
-            }
             break;
         }
 
@@ -401,9 +390,8 @@ void Actor::AI_SpellAttack(unsigned int uActorID, AIDirection *pDir,
                     spell_spray_angle_start += ONE_THIRD_PI / (sparks - 1);
                 } while (spell_spray_angle_start <= spell_spray_angle_end);
             }
-            if (spriteId != -1) {
+            if (spriteId != -1)
                 pAudioPlayer->playSpellSound(uSpellID, false, SOUND_MODE_PID, Pid(OBJECT_Sprite, spriteId));
-            }
             break;
         }
 
@@ -533,9 +521,8 @@ void Actor::AI_SpellAttack(unsigned int uActorID, AIDirection *pDir,
 
         case SPELL_BODY_POWER_CURE:
             actorPtr->hp += 5 * realPoints + 10;
-            if (actorPtr->hp >= actorPtr->monsterInfo.hp) {
+            if (actorPtr->hp >= actorPtr->monsterInfo.hp)
                 actorPtr->hp = actorPtr->monsterInfo.hp;
-            }
             spell_fx_renderer->sparklesOnActorAfterItCastsBuff(actorPtr, colorTable.JazzberryJam);
             pAudioPlayer->playSound(SOUND_Fate, SOUND_MODE_PID, Pid(OBJECT_Actor, uActorID));
             break;
@@ -545,18 +532,15 @@ void Actor::AI_SpellAttack(unsigned int uActorID, AIDirection *pDir,
             MM_INFO("Spell Paralyze cast - replaced with dispel");
             [[fallthrough]];
         case SPELL_LIGHT_DISPEL_MAGIC:
-            for (SpellBuff &buff : pParty->pPartyBuffs) {
+            for (SpellBuff &buff : pParty->pPartyBuffs)
                 buff.Reset();
-            }
             for (int i = 0; i < pParty->pCharacters.size(); i++) {
                 int willCheck = pParty->pCharacters[i].GetParameterBonus(pParty->pCharacters[i].GetActualPersonality()) / 2;
                 int intCheck = pParty->pCharacters[i].GetParameterBonus(pParty->pCharacters[i].GetActualIntelligence()) / 2;
                 int luckCheck = pParty->pCharacters[i].GetParameterBonus(pParty->pCharacters[i].GetActualLuck()) + 30;
-                if (grng->random(willCheck + intCheck + luckCheck) < 30) {
-                    for (SpellBuff &buff : pParty->pCharacters[i].pCharacterBuffs) {
+                if (grng->random(willCheck + intCheck + luckCheck) < 30)
+                    for (SpellBuff &buff : pParty->pCharacters[i].pCharacterBuffs)
                         buff.Reset();
-                    }
-                }
             }
             pAudioPlayer->playSpellSound(uSpellID, false, SOUND_MODE_EXCLUSIVE, Pid(OBJECT_Actor, uActorID));
             break;
@@ -657,9 +641,8 @@ void Actor::AI_SpellAttack(unsigned int uActorID, AIDirection *pDir,
                     spell_spray_angle_start += ONE_THIRD_PI / (pieces - 1);
                 } while (spell_spray_angle_start <= spell_spray_angle_end);
             }
-            if (spriteId != -1) {
+            if (spriteId != -1)
                 pAudioPlayer->playSpellSound(uSpellID, false, SOUND_MODE_PID, Pid(OBJECT_Sprite, spriteId));
-            }
             break;
         }
 
@@ -890,9 +873,8 @@ void Actor::GetDirectionInfo(Pid uObj1ID, Pid uObj2ID,
             break;
         }
         case OBJECT_Face: {
-            if (uCurrentlyLoadedLevelType == LEVEL_INDOOR) {
+            if (uCurrentlyLoadedLevelType == LEVEL_INDOOR)
                 out1 = pIndoor->faces[id1].boundingBox.center();
-            }
             break;
         }
         default: {
@@ -922,9 +904,8 @@ void Actor::GetDirectionInfo(Pid uObj1ID, Pid uObj2ID,
             break;
         }
         case OBJECT_Face: {
-            if (uCurrentlyLoadedLevelType == LEVEL_INDOOR) {
+            if (uCurrentlyLoadedLevelType == LEVEL_INDOOR)
                 out2 = pIndoor->faces[id2].boundingBox.center();
-            }
             break;
         }
         default: {
@@ -1105,13 +1086,10 @@ void Actor::ApplyFineForKillingPeasant(unsigned int uActorID) {
     if (currentLocationInfo().reputation < 10000)
         currentLocationInfo().reputation++;
 
-    if (pParty->uFine) {
-        for (Character &character : pParty->pCharacters) {
-            if (!character._achievedAwardsBits[AWARD_FINE]) {
+    if (pParty->uFine)
+        for (Character &character : pParty->pCharacters)
+            if (!character._achievedAwardsBits[AWARD_FINE])
                 character._achievedAwardsBits.set(AWARD_FINE);
-            }
-        }
-    }
 }
 
 //----- (0043AE80) --------------------------------------------------------
@@ -1586,9 +1564,8 @@ void Actor::AI_RandomMove(unsigned int uActor_id, Pid uTarget_id,
         pActors[uActor_id].currentActionLength = 0_ticks;
     pActors[uActor_id].currentActionTime = 0_ticks;
     pActors[uActor_id].aiState = Tethered;
-    if (vrng->random(100) < 2) {
+    if (vrng->random(100) < 2)
         Actor::playSound(uActor_id, ACTOR_BORED_SOUND);
-    }
     pActors[uActor_id].UpdateAnimation();
 }
 
@@ -1721,9 +1698,8 @@ void Actor::AI_Bored(unsigned int uActorID, Pid uObjID,
         actor->velocity.z = 0;
         actor->velocity.y = 0;
         actor->velocity.x = 0;
-        if (vrng->random(100) < 5) {
+        if (vrng->random(100) < 5)
             Actor::playSound(uActorID, ACTOR_BORED_SOUND);
-        }
         actor->UpdateAnimation();
     }
 }
@@ -1789,9 +1765,8 @@ void Actor::Die(unsigned int uActorID) {
                                  actor->pos + Vec3f(0, 0, 16), grng->random(200) + 200, 1, true, 0, &drop);
     }
 
-    if (actor->monsterInfo.specialAbilityType == MONSTER_SPECIAL_ABILITY_EXPLODE) {
+    if (actor->monsterInfo.specialAbilityType == MONSTER_SPECIAL_ABILITY_EXPLODE)
         Actor::Explode(uActorID);
-    }
 }
 
 void Actor::playSound(unsigned int uActorID, ActorSound uSoundID) {
@@ -2027,9 +2002,8 @@ void Actor::AI_Pursue3(unsigned int uActorID, Pid a2,
     v6->currentActionTime = 0_ticks;
     v6->pitchAngle = v16;
     v6->aiState = Pursuing;
-    if (vrng->random(100) < 2) {
+    if (vrng->random(100) < 2)
         Actor::playSound(uActorID, ACTOR_PAIN_SOUND);
-    }
     v6->UpdateAnimation();
 }
 
@@ -2094,9 +2068,8 @@ void Actor::_SelectTarget(unsigned int uActorID, Pid *OutTargetPID,
         }
     }
 
-    if (lowestRadius != UINT_MAX) {
+    if (lowestRadius != UINT_MAX)
         *OutTargetPID = Pid(OBJECT_Actor, closestId);
-    }
 
     if (can_target_party && !pParty->Invisible()) {
         if (thisActor->ActorEnemy() &&
@@ -2128,11 +2101,8 @@ MonsterHostility Actor::GetActorsRelation(Actor *otherActPtr) {
     MonsterType otherGroup;
 
     // Same non-zero group = always friendly (e.g. monsters spawned together).
-    if (otherActPtr) {
-        if (otherActPtr->group != 0 && this->group != 0 &&
-            otherActPtr->group == this->group)
-            return HOSTILITY_FRIENDLY;
-    }
+    if (otherActPtr && otherActPtr->group != 0 && this->group != 0 && otherActPtr->group == this->group)
+        return HOSTILITY_FRIENDLY;
 
     // Resolve this actor's faction for hostility table lookup.
     if (this->buffs[ACTOR_BUFF_BERSERK].Active()) return HOSTILITY_LONG;
@@ -2261,9 +2231,8 @@ void Actor::PrepareSprites(char load_sounds_if_bit1_set) {
     height = v3->monsterHeight;
     radius = v3->monsterRadius;
     moveSpeed = v9->baseSpeed;
-    if (!(load_sounds_if_bit1_set & 1)) {
+    if (!(load_sounds_if_bit1_set & 1))
         soundSampleIds = v3->soundSampleIds;
-    }
 }
 
 //----- (00459667) --------------------------------------------------------
@@ -2341,9 +2310,8 @@ void Actor::ActorDamageFromMonster(Pid attacker_id,
                     pushDistance =
                         20 * finalDmg / pActors[actor_id].monsterInfo.hp;
                     if (pushDistance > 10) pushDistance = 10;
-                    if (supertypeForMonsterId(pActors[actor_id].monsterInfo.id) != MONSTER_SUPERTYPE_TREANT) {
+                    if (supertypeForMonsterId(pActors[actor_id].monsterInfo.id) != MONSTER_SUPERTYPE_TREANT)
                         pActors[actor_id].velocity = 50 * pushDistance * pVelocity;
-                    }
                     Actor::AddOnDamageOverlay(actor_id, 1, finalDmg);
                 } else {
                     Actor::AI_Pain(actor_id, attacker_id, 0);
@@ -2844,9 +2812,8 @@ int Actor::searchDeadActorsByID(int *pTotalActors, int id) {
     *pTotalActors = 0;
     if (!!(pActors[id].attributes & ACTOR_UNKNOW7) == GetAlertStatus()) {
         *pTotalActors = 1;
-        if (pActors[id].IsNotAlive()) {
+        if (pActors[id].IsNotAlive())
             return 1;
-        }
     }
     return 0;
 }
@@ -2905,12 +2872,10 @@ void Actor::InitializeActors() {
     bool bPit = false;
     bool good = false;
     bool evil = false;
-    if (engine->_currentLoadedMapId == MAP_CELESTE) {
+    if (engine->_currentLoadedMapId == MAP_CELESTE)
         bCelestia = true;
-    }
-    if (engine->_currentLoadedMapId == MAP_PIT) {
+    if (engine->_currentLoadedMapId == MAP_PIT)
         bPit = true;
-    }
     if (pParty->isPartyGood())
         good = true;
     if (pParty->isPartyEvil())
@@ -2986,28 +2951,20 @@ int Actor::DamageMonsterFromParty(Pid a1, unsigned int uActorID_Monster, const V
             Mastery main_hand_mastery = character->getSkillValue(main_hand_skill).mastery();
             switch (main_hand_skill) {
                 case SKILL_STAFF:
-                    if (main_hand_mastery >= MASTERY_MASTER) {
-                        if (grng->random(100) < character->getActualSkillValue(SKILL_STAFF).level())
-                            hit_will_stun = true;
-                    }
+                    if (main_hand_mastery >= MASTERY_MASTER && grng->random(100) < character->getActualSkillValue(SKILL_STAFF).level())
+                        hit_will_stun = true;
                     break;
 
                 case SKILL_MACE:
-                    if (main_hand_mastery >= MASTERY_MASTER) {
-                        if (grng->random(100) < character->getActualSkillValue(SKILL_MACE).level())
-                            hit_will_stun = true;
-                    }
-                    if (main_hand_mastery >= MASTERY_GRANDMASTER) {
-                        if (grng->random(100) < character->getActualSkillValue(SKILL_MACE).level())
-                            hit_will_paralyze = true;
-                    }
+                    if (main_hand_mastery >= MASTERY_MASTER && grng->random(100) < character->getActualSkillValue(SKILL_MACE).level())
+                        hit_will_stun = true;
+                    if (main_hand_mastery >= MASTERY_GRANDMASTER && grng->random(100) < character->getActualSkillValue(SKILL_MACE).level())
+                        hit_will_paralyze = true;
                     break;
 
                 case SKILL_AXE:
-                    if (main_hand_mastery >= MASTERY_GRANDMASTER) {
-                        if (grng->random(60) < character->getActualSkillValue(SKILL_AXE).level()) // GrayFace's rate: skill 60 always procs.
-                            hit_will_halve_armor = true;
-                    }
+                    if (main_hand_mastery >= MASTERY_GRANDMASTER && grng->random(60) < character->getActualSkillValue(SKILL_AXE).level()) // GrayFace's rate: skill 60 always procs.
+                        hit_will_halve_armor = true;
                     break;
 
                 default:
@@ -3170,13 +3127,11 @@ int Actor::DamageMonsterFromParty(Pid a1, unsigned int uActorID_Monster, const V
             pParty->GivePartyExp(
                 pMonsterStats->infos[pMonster->monsterInfo.id].exp);
         SpeechId speech = SPEECH_ATTACK_HIT;
-        if (vrng->random(100) < 20) {
+        if (vrng->random(100) < 20)
             speech = pMonster->monsterInfo.hp >= 100 ? SPEECH_KILL_STRONG_ENEMY : SPEECH_KILL_WEAK_ENEMY;
-        }
         character->playReaction(speech);
-        if (engine->config->settings.ShowHits.value()) {
+        if (engine->config->settings.ShowHits.value())
             engine->_statusBar->setEvent(LSTR_S_INFLICTS_LU_POINTS_KILLING_S, character->name, uDamageAmount, pMonster->GetDisplayName());
-        }
     }
     if (pMonster->buffs[ACTOR_BUFF_PAIN_REFLECTION].Active() && uDamageAmount != 0)
         character->receiveDamage(uDamageAmount, attackElement);
@@ -3188,29 +3143,25 @@ int Actor::DamageMonsterFromParty(Pid a1, unsigned int uActorID_Monster, const V
         if (!pParty->bTurnBasedModeOn)
             extraRecoveryTime = debug_combat_recovery_mul * flt_debugrecmod3 * 20_ticks;
         pMonster->monsterInfo.recoveryTime += extraRecoveryTime;
-        if (engine->config->settings.ShowHits.value()) {
+        if (engine->config->settings.ShowHits.value())
             engine->_statusBar->setEvent(LSTR_S_STUNS_S, character->name, pMonster->GetDisplayName());
-        }
     }
     if (hit_will_paralyze && pMonster->CanAct() &&
         pMonster->DoesDmgTypeDoDamage(DAMAGE_EARTH)) {
         CombinedSkillValue maceSkill = character->getActualSkillValue(SKILL_MACE);
         pMonster->buffs[ACTOR_BUFF_PARALYZED].Apply(pParty->GetPlayingTime() + Duration::fromMinutes(maceSkill.level()), maceSkill.mastery(), 0, 0, -1);
-        if (engine->config->settings.ShowHits.value()) {
+        if (engine->config->settings.ShowHits.value())
             engine->_statusBar->setEvent(LSTR_S_PARALYZES_S, character->name, pMonster->GetDisplayName());
-        }
     }
     if (hit_will_halve_armor && pMonster->CanBeDamaged() && pMonster->DoesDmgTypeDoDamage(DAMAGE_PHYSICAL)) {
         CombinedSkillValue axeSkill = character->getActualSkillValue(SKILL_AXE);
         pMonster->buffs[ACTOR_BUFF_HALVED_ARMOR].Apply(pParty->GetPlayingTime() + Duration::fromMinutes(axeSkill.level()), axeSkill.mastery(), 0, 0, -1);
-        if (engine->config->settings.ShowHits.value()) {
+        if (engine->config->settings.ShowHits.value())
             engine->_statusBar->setEvent(LSTR_S_HALVES_ARMOR_OF_S, character->name, pMonster->GetDisplayName());
-        }
     }
     if (knockbackValue > 10) knockbackValue = 10;
-    if (supertypeForMonsterId(pMonster->monsterInfo.id) != MONSTER_SUPERTYPE_TREANT) {
+    if (supertypeForMonsterId(pMonster->monsterInfo.id) != MONSTER_SUPERTYPE_TREANT)
         pMonster->velocity = 50 * knockbackValue * pVelocity;
-    }
     Actor::AddOnDamageOverlay(uActorID_Monster, 1, v61);
 
     return uDamageAmount;
@@ -3279,11 +3230,9 @@ int stru319::which_player_to_attack(Actor *pActor) {
         if (victimCount)
             return victims[grng->random(victimCount)];
     }
-    for (int i = 0; i < pParty->pCharacters.size(); ++i) {
-        if (pParty->pCharacters[i].conditions.hasNone({CONDITION_PARALYZED, CONDITION_UNCONSCIOUS, CONDITION_DEAD,
-                                                       CONDITION_PETRIFIED, CONDITION_ERADICATED}))
+    for (int i = 0; i < pParty->pCharacters.size(); ++i)
+        if (pParty->pCharacters[i].conditions.hasNone({CONDITION_PARALYZED, CONDITION_UNCONSCIOUS, CONDITION_DEAD, CONDITION_PETRIFIED, CONDITION_ERADICATED}))
             victims[victimCount++] = i;
-    }
     if (victimCount)
         return victims[grng->random(victimCount)];
     else
@@ -3472,17 +3421,9 @@ bool CheckActors_proximity() {
         for_x = actor.pos.x - pParty->pos.x;
         for_y = actor.pos.y - pParty->pos.y;
         for_z = actor.pos.z - pParty->pos.z;
-        if (Vec3i(for_x, for_y, for_z).length() < distance) {
-            if (actor.aiState != Dead) {
-                if (actor.aiState != Dying &&
-                    actor.aiState != Removed &&
-                    actor.aiState != Disabled &&
-                    actor.aiState != Summoned &&
-                    (actor.ActorEnemy() ||
-                     actor.GetActorsRelation(0) != HOSTILITY_FRIENDLY))
-                    return true;
-            }
-        }
+        if (Vec3i(for_x, for_y, for_z).length() < distance && actor.aiState != Dead && actor.aiState != Dying && actor.aiState != Removed &&
+            actor.aiState != Disabled && actor.aiState != Summoned && (actor.ActorEnemy() || actor.GetActorsRelation(0) != HOSTILITY_FRIENDLY))
+            return true;
     }
     return false;
 }
@@ -3508,16 +3449,14 @@ void Actor::LootActor() {
     int foundGold = 0;
     if (!ActorHasItem()) {
         foundGold = grng->randomDice(this->monsterInfo.goldDiceRolls, this->monsterInfo.goldDiceSides);
-        if (foundGold) {
+        if (foundGold)
             pParty->partyFindsGold(foundGold, GOLD_RECEIVE_SHARE);
-        }
     } else {
         if (this->items[3].isGold()) {
             foundGold = this->items[3].goldAmount;
             this->items[3].Reset();
-            if (foundGold) {
+            if (foundGold)
                 pParty->partyFindsGold(foundGold, GOLD_RECEIVE_SHARE);
-            }
         }
     }
     if (this->carriedItemId != ITEM_NULL) {
@@ -3527,9 +3466,8 @@ void Actor::LootActor() {
 
         StatusBarItemFound(foundGold, pItemTable->items[Dst.itemId].unidentifiedName);
 
-        if (!pParty->addItemToParty(&Dst)) {
+        if (!pParty->addItemToParty(&Dst))
             pParty->setHoldingItem(Dst);
-        }
         this->carriedItemId = ITEM_NULL;
         if (this->items[0].itemId != ITEM_NULL) {
             if (!pParty->addItemToParty(&this->items[0])) {
@@ -3555,9 +3493,8 @@ void Actor::LootActor() {
 
             StatusBarItemFound(foundGold, pItemTable->items[Dst.itemId].unidentifiedName);
 
-            if (!pParty->addItemToParty(&Dst)) {
+            if (!pParty->addItemToParty(&Dst))
                 pParty->setHoldingItem(Dst);
-            }
             itemFound = true;
         }
     } else {
@@ -3566,9 +3503,8 @@ void Actor::LootActor() {
 
             StatusBarItemFound(foundGold, pItemTable->items[Dst.itemId].unidentifiedName);
 
-            if (!pParty->addItemToParty(&Dst)) {
+            if (!pParty->addItemToParty(&Dst))
                 pParty->setHoldingItem(Dst);
-            }
             itemFound = true;
         }
     }
@@ -3588,9 +3524,8 @@ void Actor::LootActor() {
         }
         this->items[1].Reset();
     }
-    if (!itemFound || grng->random(100) < 90) {  // for repeatedly get gold and item
+    if (!itemFound || grng->random(100) < 90)  // for repeatedly get gold and item
         this->Remove();
-    }
 }
 
 //----- (00427102) --------------------------------------------------------
@@ -3602,18 +3537,13 @@ bool Actor::_427102_IsOkToCastSpell(SpellId spell) {
         }
 
         case SPELL_LIGHT_DISPEL_MAGIC: {
-            for (SpellBuff &buff : pParty->pPartyBuffs) {
-                if (buff.Active()) {
+            for (SpellBuff &buff : pParty->pPartyBuffs)
+                if (buff.Active())
                     return true;
-                }
-            }
-            for (Character &character : pParty->pCharacters) {
-                for (SpellBuff &buff : character.pCharacterBuffs) {
-                    if (buff.Active()) {
+            for (Character &character : pParty->pCharacters)
+                for (SpellBuff &buff : character.pCharacterBuffs)
+                    if (buff.Active())
                         return true;
-                    }
-                }
-            }
             return false;
         }
 
@@ -3840,13 +3770,8 @@ void toggleActorGroupFlag(unsigned int uGroupID, ActorAttribute uFlag,
         } else {
             for (unsigned i = 0; i < (unsigned int)pActors.size(); ++i) {
                 if (pActors[i].group == uGroupID) {
-                    if (uFlag == ACTOR_UNKNOW11) {
-                        if (pActors[i].aiState != Dead) {
-                            if (pActors[i].aiState != Dying &&
-                                pActors[i].aiState != Removed)
-                                pActors[i].aiState = Standing;
-                        }
-                    }
+                    if (uFlag == ACTOR_UNKNOW11 && pActors[i].aiState != Dead && pActors[i].aiState != Dying && pActors[i].aiState != Removed)
+                        pActors[i].aiState = Standing;
                     pActors[i].attributes &= ~uFlag;
                 }
             }
@@ -3955,9 +3880,8 @@ int Actor::MakeActorAIList_BLV() {
         if (pActors[actorId].ActorNearby() || Detect_Between_Objects(Pid(OBJECT_Actor, actorId), Pid(OBJECT_Character, 0))) {
             pActors[actorId].attributes |= ACTOR_NEARBY;
             pickedActorIds.push_back(actorId);
-            if (pickedActorIds.size() >= 30) {
+            if (pickedActorIds.size() >= 30)
                 break;
-            }
         }
     }
 
@@ -4297,9 +4221,8 @@ void SpawnEncounter(MapData *mapData, SpawnPoint *spawn, int monsterCatMod, int 
             int finalCat = 3;  // 2 , 10 , 20 - C
             int lowThresh = word_4E8152[3 * monsterCategoryOddsSet];
             if (catRandom >= lowThresh) {
-                if (catRandom < lowThresh + word_4E8152[3 * monsterCategoryOddsSet + 1]) {
+                if (catRandom < lowThresh + word_4E8152[3 * monsterCategoryOddsSet + 1])
                     finalCat = 2;  // 8 , 20 , 30 - B
-                }
             } else {
                 finalCat = 1;  // 90 , 70 , 50 - A
             }
@@ -4402,9 +4325,8 @@ void evaluateAoeDamage() {
                     // check range
                     if (distanceSq < attackRangeSq) {
                         // check line of sight
-                        if (Check_LineOfSight(pParty->pos + Vec3f(0, 0, pParty->eyeLevel), attack.pos)) {
+                        if (Check_LineOfSight(pParty->pos + Vec3f(0, 0, pParty->eyeLevel), attack.pos))
                             DamageCharacterFromMonster(attack.pid, attack.attackSpecial, stru_50C198.which_player_to_attack(&pActors[attackerId]));
-                        }
                     }
                 }
             } else {  // Actor (peasant) damage from monsters
@@ -4419,9 +4341,8 @@ void evaluateAoeDamage() {
                     // check range
                     if (distanceSq < attackRangeSq) {
                         // check line of sight
-                        if (Check_LineOfSight(actor->pos + Vec3f(0, 0, 50), attack.pos)) {
+                        if (Check_LineOfSight(actor->pos + Vec3f(0, 0, 50), attack.pos))
                             Actor::ActorDamageFromMonster(attack.pid, targetId, attackVector, attack.attackSpecial);
-                        }
                     }
                 }
             }
@@ -4433,11 +4354,9 @@ void evaluateAoeDamage() {
             if (distanceSq < attackRangeSq) {  // party damage
                 // check line of sight to party
                 if (Check_LineOfSight(pParty->pos + Vec3f(0, 0, pParty->eyeLevel), attack.pos)) {
-                    for (int i = 0; i < pParty->pCharacters.size(); i++) {
-                        if (pParty->pCharacters[i].conditions.hasNone({CONDITION_DEAD, CONDITION_PETRIFIED, CONDITION_ERADICATED})) {
+                    for (int i = 0; i < pParty->pCharacters.size(); i++)
+                        if (pParty->pCharacters[i].conditions.hasNone({CONDITION_DEAD, CONDITION_PETRIFIED, CONDITION_ERADICATED}))
                             DamageCharacterFromMonster(attack.pid, attack.attackSpecial, i);
-                        }
-                    }
                 }
             }
 
@@ -4460,9 +4379,8 @@ void evaluateAoeDamage() {
                                     Actor::DamageMonsterFromParty(attack.pid, actorID, attVF);
                                     break;
                                 case OBJECT_Actor:
-                                    if (pSpriteObj && pActors[attackerId].GetActorsRelation(&pActors[actorID]) != HOSTILITY_FRIENDLY) {
+                                    if (pSpriteObj && pActors[attackerId].GetActorsRelation(&pActors[actorID]) != HOSTILITY_FRIENDLY)
                                         Actor::ActorDamageFromMonster(attack.pid, actorID, attVF, pSpriteObj->spellCasterAbility);
-                                    }
                                     break;
                                 case OBJECT_Sprite:
                                     ItemDamageFromActor(attack.pid, actorID, attVF);
@@ -4488,9 +4406,9 @@ double sub_43AE12(signed int a1) {
     double result;  // st7@6
 
     v3 = (double)a1;
-    for (v2 = 0; v2 < 5; ++v2) {
-        if (v3 < flt_4E4A80[v2 + 5]) break;
-    }
+    for (v2 = 0; v2 < 5; ++v2)
+        if (v3 < flt_4E4A80[v2 + 5])
+            break;
     if (v2 <= 0 || v2 >= 5) {
         if (v2)
             result = flt_4E4A80[4];
@@ -4527,9 +4445,8 @@ void ItemDamageFromActor(Pid uObjID, unsigned int uActorID, const Vec3f &pVeloci
                     int knockback = 20 * damage / (signed int)pActors[uActorID].monsterInfo.hp;
                     if (knockback > 10)
                         knockback = 10;
-                    if (supertypeForMonsterId(pActors[uActorID].monsterInfo.id) != MONSTER_SUPERTYPE_TREANT) {
+                    if (supertypeForMonsterId(pActors[uActorID].monsterInfo.id) != MONSTER_SUPERTYPE_TREANT)
                         pActors[uActorID].velocity = 50 * knockback * pVelocity;
-                    }
                     Actor::AddOnDamageOverlay(uActorID, 1, damage);
                 } else {
                     Actor::AI_Pain(uActorID, uObjID, 0);

@@ -592,11 +592,9 @@ void GUIWindow_CharacterRecord::releaseAwardsScrollBar() {
         pBtn_Down->Release();
         pBtn_Down = 0;
         pBtn_Up = 0;
-        for (GUIButton *pButton : pGUIWindow_CurrentMenu->vButtons) {
-            if (pButton->msg == UIMSG_InventoryLeftClick) {
+        for (GUIButton *pButton : pGUIWindow_CurrentMenu->vButtons)
+            if (pButton->msg == UIMSG_InventoryLeftClick)
                 pButton->rect = savedInventoryLeftClickButtonRect;
-            }
-        }
     }
 }
 
@@ -751,13 +749,11 @@ static int drawSkillTable(Character *player, int x, int y, const std::initialize
     for (Skill skill : skill_list) {
         for (size_t j = 0; j < pGUIWindow_CurrentMenu->vButtons.size(); ++j) {
             GUIButton *button = pGUIWindow_CurrentMenu->GetControl(j);
-            if ((short)(button->uData) >= 0) {
+            if ((short)(button->uData) >= 0)
                 continue;  // skips an of the stats skills innv awards buttons
-            }
 
-            if (static_cast<Skill>(button->uData & 0x7FFF) != skill) {
+            if (static_cast<Skill>(button->uData & 0x7FFF) != skill)
                 continue;  // skips buttons that dont match skill
-            }
 
             ++num_skills_drawn;
             y_offset = button->rect.y;
@@ -766,9 +762,8 @@ static int drawSkillTable(Character *player, int x, int y, const std::initialize
 
             Color skill_color = colorTable.White;
             Color skill_mastery_color;
-            if (player->uSkillPoints > skill_level && skills_max_level[skill] != 1) {
+            if (player->uSkillPoints > skill_level && skills_max_level[skill] != 1)
                 skill_color = ui_character_skill_upgradeable_color;
-            }
 
             if (button->Contains(pt)) {
                 if (player->uSkillPoints > skill_level && skills_max_level[skill] > skill_level && skills_max_level[skill] != 1) {
@@ -791,9 +786,8 @@ static int drawSkillTable(Character *player, int x, int y, const std::initialize
             } else {
                 std::string skill_level_str = skill_mastery == MASTERY_NOVICE ? "" : localization->masteryName(skill_mastery);
 
-                if (skill_mastery_color == Color()) {
+                if (skill_mastery_color == Color())
                     skill_mastery_color = ui_character_header_text_color;
-                }
 
                 auto Strsk = fmt::format("{} {::}{}{::}\r{:03}{}",
                         localization->skillName(skill), skill_mastery_color.tag(), skill_level_str, skill_color.tag(), right_margin, skill_level);
@@ -876,29 +870,25 @@ std::string GUIWindow_CharacterRecord::getAchievedAwardsString(int idx) {
         break;
     }
 
-    if (str.empty()) {
+    if (str.empty())
         str = std::string(pAwards[_achievedAwardsList[idx]].pText);
-    }
 
     return str;
 }
 
 void GUIWindow_CharacterRecord::clickAwardsUp() {
-    if (_startAwardElem) {
+    if (_startAwardElem)
         _startAwardElem--;
-    }
 }
 
 void GUIWindow_CharacterRecord::clickAwardsDown() {
-    if (!_awardLimitReached) {
+    if (!_awardLimitReached)
         _startAwardElem++;
-    }
 }
 
 void GUIWindow_CharacterRecord::clickAwardsScroll(int yPos) {
-    if (!_scrollableAwardSteps) {
+    if (!_scrollableAwardSteps)
         return;
-    }
 
     int segmentHeight = pBtn_Scroll->rect.h / _scrollableAwardSteps;
 
@@ -917,9 +907,8 @@ void GUIWindow_CharacterRecord::CharacterUI_AwardsTab_Draw(Character *player) {
     GUIWindow::DrawText(assets->pFontArrus.get(), {24, 18}, colorTable.White, str, pGUIWindow_CurrentMenu->frameRect);
 
 
-    if (_awardsCharacterId != pParty->activeCharacterIndex()) {
+    if (_awardsCharacterId != pParty->activeCharacterIndex())
         fillAwardsData();
-    }
 
     int currentlyDisplayedElems = 0;
     for (int i = _startAwardElem; i < _achievedAwardsList.size(); ++i) {
@@ -928,9 +917,8 @@ void GUIWindow_CharacterRecord::CharacterUI_AwardsTab_Draw(Character *player) {
         GUIWindow::DrawText(assets->pFontArrus.get(), {0, 0}, ui_character_award_color[pAwards[_achievedAwardsList[i]].uPriority % 6], str, window);
         window.y = assets->pFontArrus->CalcTextHeight(str, window.w, 0) + window.y + 8;
         currentlyDisplayedElems++;
-        if (window.y > window.h) {
+        if (window.y > window.h)
             break;
-        }
     }
 
     _awardLimitReached = (_startAwardElem + currentlyDisplayedElems) == _achievedAwardsList.size();
@@ -1614,11 +1602,9 @@ void GUIWindow_CharacterRecord::fillAwardsData() {
     _awardLimitReached = false;
 
     _achievedAwardsList.clear();
-    for (AwardId awardId : allAwards()) {
-        if (pPlayer->_achievedAwardsBits[awardId] && !pAwards[awardId].pText.empty()) {
+    for (AwardId awardId : allAwards())
+        if (pPlayer->_achievedAwardsBits[awardId] && !pAwards[awardId].pText.empty())
             _achievedAwardsList.push_back(awardId);
-        }
-    }
 
     std::stable_sort(_achievedAwardsList.begin(), _achievedAwardsList.end(), [&] (AwardId a, AwardId b) { return pAwards[a].uPriority < pAwards[b].uPriority; });
 
@@ -1646,9 +1632,8 @@ void WetsuitOn(int characterIndex) {
     paperdoll_dlhs[characterIndex] = assets->getIcon(fmt::format("pc23v{}lh", texture_num));  // Left Palm
     paperdoll_dlhus[characterIndex] = assets->getIcon(fmt::format("pc23v{}lhu", texture_num));  // Left Fist
 
-    if (player->uCurrentFace == 12 || player->uCurrentFace == 13) {
+    if (player->uCurrentFace == 12 || player->uCurrentFace == 13)
         paperdoll_dbrds[player->uCurrentFace] = nullptr;
-    }
     paperdoll_flying_feet[player->uCurrentFace] = nullptr;
 }
 
@@ -1662,9 +1647,8 @@ void WetsuitOff(int characterIndex) {
     paperdoll_dlhs[characterIndex] = assets->getIcon(dlh_texnames_by_face[player->uCurrentFace]);
     paperdoll_dlhus[characterIndex] = assets->getIcon(dlhu_texnames_by_face[player->uCurrentFace]);
 
-    if (player->uCurrentFace == 12 || player->uCurrentFace == 13) {
+    if (player->uCurrentFace == 12 || player->uCurrentFace == 13)
         paperdoll_dbrds[player->uCurrentFace] = assets->getIcon(fmt::format("pc{:02}brd", player->uCurrentFace + 1));
-    }
 
     paperdoll_flying_feet[player->uCurrentFace] = assets->getIcon(fmt::format("item281pc{:02}", player->uCurrentFace + 1));
 }
@@ -1700,9 +1684,8 @@ void OnPaperdollLeftClick() {
     InventoryEntry mainhandequip = pParty->activeCharacter().inventory.entry(ITEM_SLOT_MAIN_HAND);
     InventoryEntry shieldequip = pParty->activeCharacter().inventory.entry(ITEM_SLOT_OFF_HAND);
 
-    if (mainhandequip && mainhandequip->type() == ITEM_TYPE_TWO_HANDED) {
+    if (mainhandequip && mainhandequip->type() == ITEM_TYPE_TWO_HANDED)
         twohandedequip = mainhandequip;
-    }
 
     ItemId pickeditem = pParty->pPickedItem.itemId;
 
@@ -1855,9 +1838,8 @@ void OnPaperdollLeftClick() {
                     Item tmp = pParty->activeCharacter().inventory.take(shieldequip);
                     pParty->activeCharacter().inventory.equip(ITEM_SLOT_OFF_HAND, pParty->takeHoldingItem());
                     pParty->setHoldingItem(tmp);
-                    if (!twohandedequip) {
+                    if (!twohandedequip)
                         return;
-                    }
                 } else {
                     if (!pParty->activeCharacter().inventory.canEquip(ITEM_SLOT_OFF_HAND)) {
                         pAudioPlayer->playUISound(SOUND_error); // Out of inventory space.
@@ -1891,9 +1873,8 @@ void OnPaperdollLeftClick() {
                                 Item tmp = pParty->activeCharacter().inventory.take(shieldequip);
                                 pParty->activeCharacter().inventory.equip(ITEM_SLOT_OFF_HAND, pParty->takeHoldingItem());
                                 pParty->setHoldingItem(tmp);
-                                if (pEquipType != ITEM_TYPE_WAND) {
+                                if (pEquipType != ITEM_TYPE_WAND)
                                     return;
-                                }
                                 break;
                             }
                             if (!pParty->activeCharacter().inventory.canEquip(ITEM_SLOT_OFF_HAND)) {
@@ -2074,14 +2055,12 @@ void OnPaperdollLeftClick() {
                 AfterEnchClickEventSecondParam = 0;
                 AfterEnchClickEventTimeout = Duration::fromRealtimeSeconds(2);
             } else {
-                if (!ptr_50C9A4_ItemToEnchant) {
+                if (!ptr_50C9A4_ItemToEnchant)
                     pParty->setHoldingItem(pParty->activeCharacter().inventory.take(entry));
-                }
             }
         } else {
-            if (InventoryEntry entry = pParty->activeCharacter().inventory.entry(ITEM_SLOT_BOW)) {
+            if (InventoryEntry entry = pParty->activeCharacter().inventory.entry(ITEM_SLOT_BOW))
                 pParty->setHoldingItem(pParty->activeCharacter().inventory.take(entry));
-            }
         }
     }
 }
@@ -2090,19 +2069,14 @@ void CharacterUI_ReleaseButtons() {
     if (dword_507CC0_activ_ch != -1) {
         dword_507CC0_activ_ch = -1;
         std::vector<GUIButton*> to_delete;
-        for (GUIButton *pButton : pGUIWindow_CurrentMenu->vButtons) {
-            if (pButton->uData & 0x8000) {
+        for (GUIButton *pButton : pGUIWindow_CurrentMenu->vButtons)
+            if (pButton->uData & 0x8000)
                 to_delete.push_back(pButton);
-            }
-        }
-        for (GUIButton *pButton : to_delete) {
+        for (GUIButton *pButton : to_delete)
             pButton->Release();
-        }
-        for (GUIButton *pButton : pGUIWindow_CurrentMenu->vButtons) {
-            if (pButton->msg == UIMSG_InventoryLeftClick) {
+        for (GUIButton *pButton : pGUIWindow_CurrentMenu->vButtons)
+            if (pButton->msg == UIMSG_InventoryLeftClick)
                 pButton->rect = savedInventoryLeftClickButtonRect;
-            }
-        }
     }
 }
 

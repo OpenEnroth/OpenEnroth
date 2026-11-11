@@ -21,18 +21,15 @@ OpenALTrack16::~OpenALTrack16() { Close(); }
 
 bool OpenALTrack16::Open(PAudioDataSource data_source) {
     pDataSource = data_source;
-    if (!pDataSource) {
+    if (!pDataSource)
         return false;
-    }
 
-    if (!pDataSource->Open()) {
+    if (!pDataSource->Open())
         return false;
-    }
 
     alGenSources((ALuint)1, &al_source);
-    if (checkOpenALError()) {
+    if (checkOpenALError())
         return false;
-    }
 
     setSourceDefaults(al_source);
     alSourcei(al_source, AL_SOURCE_RELATIVE, AL_TRUE);
@@ -48,15 +45,13 @@ bool OpenALTrack16::Open(PAudioDataSource data_source) {
 bool OpenALTrack16::IsValid() { return (alIsSource(al_source) != 0); }
 
 bool OpenALTrack16::Play() {
-    if (!IsValid()) {
+    if (!IsValid())
         return false;
-    }
 
     ALint status;
     alGetSourcei(al_source, AL_SOURCE_STATE, &status);
-    if (status == AL_PLAYING) {
+    if (status == AL_PLAYING)
         return true;
-    }
 
     bool updateSucceeded;
     {
@@ -70,9 +65,8 @@ bool OpenALTrack16::Play() {
     }
 
     alSourcePlay(al_source);
-    if (checkOpenALError()) {
+    if (checkOpenALError())
         return false;
-    }
 
     updater.Start(10, [this]() {
         std::lock_guard<std::mutex> lock(_mutex);
@@ -83,9 +77,8 @@ bool OpenALTrack16::Play() {
 }
 
 bool OpenALTrack16::Stop() {
-    if (!IsValid()) {
+    if (!IsValid())
         return false;
-    }
 
     Close();
 
@@ -93,14 +86,12 @@ bool OpenALTrack16::Stop() {
 }
 
 bool OpenALTrack16::Pause() {
-    if (!IsValid()) {
+    if (!IsValid())
         return false;
-    }
 
     alSourcePause(al_source);
-    if (checkOpenALError()) {
+    if (checkOpenALError())
         return false;
-    }
 
     updater.Stop();
 
@@ -110,28 +101,24 @@ bool OpenALTrack16::Pause() {
 bool OpenALTrack16::Resume() { return Play(); }
 
 bool OpenALTrack16::SetVolume(float volume) {
-    if (!IsValid()) {
+    if (!IsValid())
         return false;
-    }
 
     alSourcef(al_source, AL_GAIN, volume);
-    if (checkOpenALError()) {
+    if (checkOpenALError())
         return false;
-    }
 
     return true;
 }
 
 float OpenALTrack16::GetVolume() {
-    if (!IsValid()) {
+    if (!IsValid())
         return 0.f;
-    }
 
     ALfloat volume = 0.f;
     alGetSourcef(al_source, AL_GAIN, &volume);
-    if (checkOpenALError()) {
+    if (checkOpenALError())
         volume = 0.f;
-    }
     return volume;
 }
 
@@ -140,9 +127,8 @@ void OpenALTrack16::Close() {
 
     {
         std::lock_guard<std::mutex> lock(_mutex);
-        if (pDataSource) {
+        if (pDataSource)
             pDataSource->Close();
-        }
     }
 
     if (alIsSource(al_source) != 0) {
@@ -177,9 +163,8 @@ void OpenALTrack16::DrainBuffers() {
             alGetBufferi(buffer, AL_SIZE, &size);
             uiReservedData -= size;
             alDeleteBuffers(1, &buffer);
-            if (checkOpenALError()) {
+            if (checkOpenALError())
                 MM_WARNING("OpenAL: Failed to delete played buffer");
-            }
         }
     }
 }
@@ -202,19 +187,16 @@ bool OpenALTrack16::Update() {
 
         ALuint al_buffer = -1;
         alGenBuffers(1, &al_buffer);
-        if (checkOpenALError()) {
+        if (checkOpenALError())
             return false;
-        }
 
         alBufferData(al_buffer, al_format, buffer.data(), buffer.size(), al_sample_rate);
-        if (checkOpenALError()) {
+        if (checkOpenALError())
             return false;
-        }
 
         alSourceQueueBuffers(al_source, 1, &al_buffer);
-        if (checkOpenALError()) {
+        if (checkOpenALError())
             return false;
-        }
 
         uiReservedData += buffer.size();
     }
@@ -226,9 +208,8 @@ PAudioTrack CreateAudioTrack(Blob data) {
     PAudioTrack track = std::make_shared<OpenALTrack16>();
 
     PAudioDataSource source = CreateAudioBufferDataSource(std::move(data));
-    if (!track->Open(source)) {
+    if (!track->Open(source))
         track = nullptr;
-    }
 
     return track;
 }

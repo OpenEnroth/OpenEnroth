@@ -104,9 +104,8 @@ int GUIFont::GetTextLenLimitedByWidth(std::string_view str, int maxWidth, int& r
             if (i < len - 1)
                 resultWidth += _font.metrics(c).rightSpacing;
 
-            if (resultWidth > maxWidth) {
+            if (resultWidth > maxWidth)
                 return i;
-            }
         }
     }
     return len;
@@ -236,9 +235,8 @@ void DrawCharToBuff(Color *draw_buff, const uint8_t *pCharPixels, int uCharWidth
 void GUIFont::DrawTextLineToBuff(Color startColor, Color shadowColor, Color *uX_buff_pos, std::string_view text, int line_width) {
     assert(startColor.a > 0);
 
-    if (text.empty()) {
+    if (text.empty())
         return;
-    }
 
     Color color = startColor;
     Color *uX_pos = uX_buff_pos;
@@ -275,9 +273,8 @@ void GUIFont::DrawTextLineToBuff(Color startColor, Color shadowColor, Color *uX_
 std::string GUIFont::WrapText(std::string_view inString, int width, int uX, bool return_on_carriage) {
     assert(uX < width);
 
-    if (inString.empty()) {
+    if (inString.empty())
         return {};
-    }
 
     int lineWidth = uX;
     int newlinePos = -1;
@@ -308,9 +305,8 @@ std::string GUIFont::WrapText(std::string_view inString, int width, int uX, bool
             i += 5;
             break;
         case '\r': // Right-justify, offset from the right border.
-            if (!return_on_carriage) {
+            if (!return_on_carriage)
                 return std::string(inString); // TODO(captainurist): this return is very sus.
-            }
             break;
         case ' ':
             lineWidth += _font.metrics(c).width;
@@ -344,9 +340,8 @@ std::string GUIFont::WrapText(std::string_view inString, int width, int uX, bool
         }
     }
 
-    if (lastCopyPos < inString.length()) {
+    if (lastCopyPos < inString.length())
         out += inString.substr(lastCopyPos, inString.length() - lastCopyPos);
-    }
 
     return out;
 }
@@ -355,30 +350,25 @@ void GUIFont::DrawText(const Recti &rect, Pointi position, Color defaultColor, s
     assert(defaultColor.a > 0);
 
     int left_margin = 0;
-    if (text.empty()) {
+    if (text.empty())
         return;
-    }
-    if (text == "null") {
+    if (text == "null")
         return;
-    }
 
     render->BeginTextNew(_texture);
 
-    if (!position.x) {
+    if (!position.x)
         position.x = 12;
-    }
 
     std::string string_base = std::string(text);
-    if (maxY == 0) {
+    if (maxY == 0)
         string_base = WrapText(text, rect.w, position.x);
-    }
 
     int out_x = position.x + rect.x;
     int out_y = position.y + rect.y;
 
-    if (maxY != 0 && out_y + _font.height() > maxY) {
+    if (maxY != 0 && out_y + _font.height() > maxY)
         return;
-    }
 
     Color draw_color = defaultColor;
 
@@ -397,11 +387,8 @@ void GUIFont::DrawText(const Recti &rect, Pointi position, Color defaultColor, s
             position.y = position.y + _font.height() - 3;
             out_y = position.y + rect.y;
             out_x = position.x + rect.x + left_margin;
-            if (maxY != 0) {
-                if (_font.height() + out_y - 3 > maxY) {
-                    return;
-                }
-            }
+            if (maxY != 0 && _font.height() + out_y - 3 > maxY)
+                return;
             break;
         case '\f': // Color tag.
             draw_color = parseColorTag(&string_base[i + 1], defaultColor);
@@ -415,9 +402,8 @@ void GUIFont::DrawText(const Recti &rect, Pointi position, Color defaultColor, s
             out_x = rect.x + rect.w - 1 - GetLineWidth(&string_base[i]) - left_margin;
             out_y = position.y + rect.y;
             if (maxY != 0) {
-                if (_font.height() + out_y - 3 > maxY) {
+                if (_font.height() + out_y - 3 > maxY)
                     return;
-                }
                 break;
             }
             break;
@@ -425,9 +411,8 @@ void GUIFont::DrawText(const Recti &rect, Pointi position, Color defaultColor, s
             if (!_font.supports(c))
                 break;
 
-            if (i > 0) {
+            if (i > 0)
                 out_x += _font.metrics(c).leftSpacing;
-            }
 
             Recti cell = _layout[c];
             Recti srcRect(cell.x, cell.y, _font.metrics(c).width, _font.height());
@@ -436,9 +421,8 @@ void GUIFont::DrawText(const Recti &rect, Pointi position, Color defaultColor, s
             render->DrawTextNew(srcRect, dstRect, {draw_color, shadowColor});
 
             out_x += _font.metrics(c).width;
-            if (i < len - 1) {
+            if (i < len - 1)
                 out_x += _font.metrics(c).rightSpacing;
-            }
             break;
         }
     }
@@ -495,24 +479,21 @@ void GUIFont::DrawCreditsEntry(GUIFont *pSecondFont, int uFrameX, int uFrameY, u
                 start_str_pos = 1;
             }
             int line_w = (int)(w - currentFont->GetLineWidth(&work_string[start_str_pos])) / 2;
-            if (line_w < 0) {
+            if (line_w < 0)
                 line_w = 0;
-            }
             currentFont->DrawTextLineToBuff(currentColor, shadowColor, &curr_pixel_pos[line_w + half_frameX],
                 work_string, image->width());
             curr_pixel_pos += image->width() * (currentFont->GetHeight() - 3);
             std::getline(stream, work_string);
-            if (work_string.empty()) {
+            if (work_string.empty())
                 break;
-            }
         }
     }
 }
 
 std::string GUIFont::FitTwoFontStringInWindow(std::string_view inString, GUIFont *pFontSecond, int width, int x) {
-    if (inString.empty()) {
+    if (inString.empty())
         return "";
-    }
 
     GUIFont *currentFont = this;
     GUIFont *newlineFont = this;
@@ -585,17 +566,15 @@ std::string GUIFont::FitTwoFontStringInWindow(std::string_view inString, GUIFont
         }
     }
 
-    if (lastCopyPos < inString.length()) {
+    if (lastCopyPos < inString.length())
         out += inString.substr(lastCopyPos, inString.length() - lastCopyPos);
-    }
 
     return out;
 }
 
 int GUIFont::GetStringHeightWithSecondFont(GUIFont *secondFont, std::string_view text_str, int width, int x) {
-    if (text_str.empty()) {
+    if (text_str.empty())
         return 0;
-    }
 
     int uAllHeght = GetHeight() - 3;
     std::string test_string = FitTwoFontStringInWindow(text_str, secondFont, width, x);
