@@ -45,14 +45,12 @@ extern OpenALSoundProvider *provider;
 AudioPlayer::~AudioPlayer() = default;
 
 void AudioPlayer::MusicPlayTrack(MusicId eTrack) {
-    if (currentMusicTrack == eTrack) {
+    if (currentMusicTrack == eTrack)
         return;
-    }
 
     if (!engine->config->debug.NoSound.value() && bPlayerReady) {
-        if (pCurrentMusicTrack) {
+        if (pCurrentMusicTrack)
             pCurrentMusicTrack->Stop();
-        }
         currentMusicTrack = MUSIC_INVALID;
 
         std::string file_path = fmt::format("music/{}.mp3", std::to_underlying(eTrack));
@@ -67,9 +65,8 @@ void AudioPlayer::MusicPlayTrack(MusicId eTrack) {
 
             pCurrentMusicTrack->SetVolume(uMusicVolume);
             pCurrentMusicTrack->Play();
-            if (uMusicVolume == 0.0) {
+            if (uMusicVolume == 0.0)
                 pCurrentMusicTrack->Pause();
-            }
         }
     }
 }
@@ -77,9 +74,8 @@ void AudioPlayer::MusicPlayTrack(MusicId eTrack) {
 void AudioPlayer::MusicStart() {}
 
 void AudioPlayer::MusicStop() {
-    if (!pCurrentMusicTrack) {
+    if (!pCurrentMusicTrack)
         return;
-    }
 
     pCurrentMusicTrack->Stop();
     pCurrentMusicTrack = nullptr;
@@ -87,17 +83,15 @@ void AudioPlayer::MusicStop() {
 }
 
 void AudioPlayer::MusicPause() {
-    if (!pCurrentMusicTrack) {
+    if (!pCurrentMusicTrack)
         return;
-    }
 
     pCurrentMusicTrack->Pause();
 }
 
 void AudioPlayer::MusicResume() {
-    if (!pCurrentMusicTrack) {
+    if (!pCurrentMusicTrack)
         return;
-    }
 
     if (!pCurrentMusicTrack->Resume()) {
         MusicId playedMusicTrack = currentMusicTrack;
@@ -112,9 +106,8 @@ void AudioPlayer::SetMusicVolume(int level) {
     level = std::clamp(level, 0, 9);
     uMusicVolume = pSoundVolumeLevels[level];
 
-    if (!pCurrentMusicTrack) {
+    if (!pCurrentMusicTrack)
         return;
-    }
 
     pCurrentMusicTrack->SetVolume(uMusicVolume);
     if (level == 0) {
@@ -130,9 +123,8 @@ void AudioPlayer::SetMasterVolume(int level) {
 
     _regularSoundPool.setVolume(uMasterVolume);
     _loopingSoundPool.setVolume(uMasterVolume);
-    if (_currentWalkingSample) {
+    if (_currentWalkingSample)
         _currentWalkingSample->SetVolume(uMasterVolume);
-    }
 }
 
 void AudioPlayer::SetVoiceVolume(int level) {
@@ -143,9 +135,8 @@ void AudioPlayer::SetVoiceVolume(int level) {
 }
 
 void AudioPlayer::stopSounds() {
-    if (!bPlayerReady) {
+    if (!bPlayerReady)
         return;
-    }
 
     _voiceSoundPool.stop();
     _regularSoundPool.stop();
@@ -157,17 +148,15 @@ void AudioPlayer::stopSounds() {
 }
 
 void AudioPlayer::stopVoiceSounds() {
-    if (!bPlayerReady) {
+    if (!bPlayerReady)
         return;
-    }
 
     _voiceSoundPool.stop();
 }
 
 void AudioPlayer::stopWalkingSounds() {
-    if (!bPlayerReady) {
+    if (!bPlayerReady)
         return;
-    }
 
     if (_currentWalkingSample) {
         _currentWalkingSample->Stop();
@@ -179,9 +168,8 @@ void AudioPlayer::resumeSounds() {
     _voiceSoundPool.resume();
     _regularSoundPool.resume();
     _loopingSoundPool.resume();
-    if (_currentWalkingSample) {
+    if (_currentWalkingSample)
         _currentWalkingSample->Resume();
-    }
 }
 
 void AudioPlayer::playSound(SoundId eSoundID, SoundPlaybackMode mode, Pid pid) {
@@ -191,9 +179,8 @@ void AudioPlayer::playSound(SoundId eSoundID, SoundPlaybackMode mode, Pid pid) {
     //logger->Info("AudioPlayer: trying to load sound id {}", eSoundID);
 
     // TODO(pskelton): do we need to reinstate this optimisation? dropped to allow better sound tracing
-    if (/*engine->config->settings.SoundLevel.value() < 1 ||*/ eSoundID == SOUND_Invalid) {
+    if (/*engine->config->settings.SoundLevel.value() < 1 ||*/ eSoundID == SOUND_Invalid)
         return;
-    }
 
     SoundInfo *si = pSoundList->soundInfo(eSoundID);
     if (!si) {
@@ -218,9 +205,8 @@ void AudioPlayer::playSound(SoundId eSoundID, SoundPlaybackMode mode, Pid pid) {
     } else if (mode == SOUND_MODE_NON_RESETTABLE) {
         result = _regularSoundPool.playUniqueSoundId(sample, si->dataSource, eSoundID);
     } else if (mode == SOUND_MODE_WALKING) {
-        if (_currentWalkingSample) {
+        if (_currentWalkingSample)
             _currentWalkingSample->Stop();
-        }
         _currentWalkingSample = sample;
         _currentWalkingSample->Open(si->dataSource);
         _currentWalkingSample->Play();
@@ -384,21 +370,18 @@ void AudioPlayer::UpdateSounds() {
     _regularSoundPool.update();
     _loopingSoundPool.update();
 
-    if (current_screen_type != SCREEN_GAME) {
+    if (current_screen_type != SCREEN_GAME)
         stopWalkingSounds();
-    }
-    if (_currentWalkingSample && _currentWalkingSample->IsStopped()) {
+    if (_currentWalkingSample && _currentWalkingSample->IsStopped())
         _currentWalkingSample = nullptr;
-    }
 }
 
 void AudioPlayer::pauseAllSounds() {
     _voiceSoundPool.pause();
     _regularSoundPool.pause();
     _loopingSoundPool.pause();
-    if (_currentWalkingSample) {
+    if (_currentWalkingSample)
         _currentWalkingSample->Pause();
-    }
 }
 
 void AudioPlayer::pauseLooping() {
@@ -406,9 +389,8 @@ void AudioPlayer::pauseLooping() {
 }
 
 bool AudioPlayer::isWalkingSoundPlays() {
-    if (_currentWalkingSample) {
+    if (_currentWalkingSample)
         return !_currentWalkingSample->IsStopped();
-    }
     return false;
 }
 
@@ -449,9 +431,8 @@ void AudioPlayer::UpdateVolumeFromConfig() {
 }
 
 void PlayLevelMusic() {
-    if (engine->_currentLoadedMapId != MAP_INVALID) {
+    if (engine->_currentLoadedMapId != MAP_INVALID)
         pAudioPlayer->MusicPlayTrack(pMapTable->pInfos[engine->_currentLoadedMapId].musicId);
-    }
 }
 
 Blob AudioPlayer::LoadSound(std::string_view pSoundName) {

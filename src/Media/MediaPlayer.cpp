@@ -67,9 +67,8 @@ class AVStreamWrapper {
     }
 
     virtual void reset() {
-        if (dec_ctx != nullptr) {
+        if (dec_ctx != nullptr)
             avcodec_flush_buffers(dec_ctx);
-        }
     }
 
     virtual void close() {
@@ -137,9 +136,8 @@ class AVAudioStream : public AVStreamWrapper {
     }
 
     virtual bool open(AVFormatContext *format_ctx) override {
-        if (!AVStreamWrapper::open(format_ctx, AVMEDIA_TYPE_AUDIO)) {
+        if (!AVStreamWrapper::open(format_ctx, AVMEDIA_TYPE_AUDIO))
             return false;
-        }
 
         AVChannelLayout stereoLayout = {};
         av_channel_layout_default(&stereoLayout, 2);
@@ -177,9 +175,8 @@ class AVAudioStream : public AVStreamWrapper {
             int res = 0;
             while (res >= 0) {
                 res = avcodec_receive_frame(dec_ctx, frame);
-                if (res == AVERROR(EAGAIN) || res == AVERROR_EOF) {
+                if (res == AVERROR(EAGAIN) || res == AVERROR_EOF)
                     break;
-                }
                 if (res < 0) {
                     av_frame_free(&frame);
                     return result;
@@ -224,9 +221,8 @@ class AVVideoStream : public AVStreamWrapper {
     }
 
     virtual bool open(AVFormatContext *format_ctx) override {
-        if (!AVStreamWrapper::open(format_ctx, AVMEDIA_TYPE_VIDEO)) {
+        if (!AVStreamWrapper::open(format_ctx, AVMEDIA_TYPE_VIDEO))
             return false;
-        }
 
         width = dec_ctx->width;
         height = dec_ctx->height;
@@ -254,24 +250,21 @@ class AVVideoStream : public AVStreamWrapper {
             int res = 0;
             while (res >= 0) {
                 res = avcodec_receive_frame(dec_ctx, frame);
-                if (res == AVERROR(EAGAIN) || res == AVERROR_EOF) {
+                if (res == AVERROR(EAGAIN) || res == AVERROR_EOF)
                     break;
-                }
                 if (res < 0) {
                     av_frame_free(&frame);
                     return result;
                 }
                 int linesizes[4] = { 0, 0, 0, 0 };
-                if (av_image_fill_linesizes(linesizes, AV_PIX_FMT_RGB32, width) < 0) {
+                if (av_image_fill_linesizes(linesizes, AV_PIX_FMT_RGB32, width) < 0)
                     assert(false);
-                }
                 size_t tmp_size = frame->height * linesizes[0] * 2;
                 std::unique_ptr<void, FreeDeleter> tmp_buf(malloc(tmp_size));
                 uint8_t *data[4] = { static_cast<uint8_t *>(tmp_buf.get()), nullptr, nullptr, nullptr };
 
-                if (sws_scale(converter, frame->data, frame->linesize, 0, frame->height, data, linesizes) < 0) {
+                if (sws_scale(converter, frame->data, frame->linesize, 0, frame->height, data, linesizes) < 0)
                     assert(false);
-                }
 
                 Blob tmp_blob = Blob::fromMalloc(std::move(tmp_buf), tmp_size);
 
@@ -346,9 +339,8 @@ class Movie : public IMovie {
     void Close() {
         ReleaseAVCodec();
 
-        if (audio_data_in_device) {
+        if (audio_data_in_device)
             provider->DeleteStreamingTrack(&audio_data_in_device);
-        }
     }
 
     inline void ReleaseAVCodec() {
@@ -392,9 +384,8 @@ class Movie : public IMovie {
         width = video.width;
         height = video.height;
 
-        if (audio.stream_idx >= 0) {
+        if (audio.stream_idx >= 0)
             audio_data_in_device = provider->CreateStreamingTrack16(2, audio.dec_ctx->sample_rate, 2);
-        }
 
         return true;
     }
@@ -402,17 +393,15 @@ class Movie : public IMovie {
     bool LoadFromLOD(const Blob &blob) {
         _ioContext.reset(Blob::share(blob));
 
-        if (!format_ctx) {
+        if (!format_ctx)
             format_ctx = avformat_alloc_context();
-        }
         format_ctx->pb = _ioContext.avioContext();
         return Load(blob.displayPath());
     }
 
     virtual Blob GetFrame() override {
-        if (!playing) {
+        if (!playing)
             return Blob();
-        }
 
         auto current_time = std::chrono::system_clock::now();
         auto diff = std::chrono::time_point_cast<std::chrono::milliseconds>(current_time) - std::chrono::time_point_cast<std::chrono::milliseconds>(start_time);
@@ -421,9 +410,8 @@ class Movie : public IMovie {
         start_time = current_time;
 
         int desired_frame_number = std::round(playback_time / video.frame_len);
-        if (last_resampled_frame_num == desired_frame_number) {
+        if (last_resampled_frame_num == desired_frame_number)
             return Blob::share(video.last_frame);
-        }
         last_resampled_frame_num++;
         if (last_resampled_frame_num == video.stream->duration) {
             if (looping) {
@@ -648,9 +636,8 @@ class Movie : public IMovie {
                 // ignore audio packets
                 if (_binkPacket.stream_index == audio.stream_idx) {
                     // but still render the last frame
-                    if (video.last_frame) {
+                    if (video.last_frame)
                         _renderTexture(video.last_frame);
-                    }
                     av_packet_unref(&_binkPacket);
                     return false;
                 }
@@ -691,9 +678,8 @@ class Movie : public IMovie {
             std::this_thread::sleep_for(2ms);
 
             Blob buffer = GetFrame();
-            if (!buffer) {
+            if (!buffer)
                 return true;
-            }
 
             _renderTexture(buffer);
         }
@@ -748,9 +734,8 @@ void MPlayer::Initialize() {
 }
 
 void MPlayer::OpenHouseMovie(std::string_view pMovieName, bool bLoop) {
-    if (IsMoviePlaying()) {
+    if (IsMoviePlaying())
         return;
-    }
 
     gameTimer->setPaused(true);
     pAudioPlayer->pauseLooping();
@@ -759,9 +744,8 @@ void MPlayer::OpenHouseMovie(std::string_view pMovieName, bool bLoop) {
         return;
 
     Blob blob = LoadMovie(pMovieName);
-    if (!blob) {
+    if (!blob)
         return;
-    }
 
     std::shared_ptr<Movie> pMovie = std::make_shared<Movie>();
     pMovie->LoadFromLOD(blob);
@@ -770,13 +754,11 @@ void MPlayer::OpenHouseMovie(std::string_view pMovieName, bool bLoop) {
 }
 
 void MPlayer::HouseMovieLoop() {
-    if (!pMovie_Track || engine->config->debug.NoVideo.value()) {
+    if (!pMovie_Track || engine->config->debug.NoVideo.value())
         return;
-    }
 
-    if (!pMovie_Track->IsPlaying()) {
+    if (!pMovie_Track->IsPlaying())
         pMovie_Track->Play(false);
-    }
 
     render->BeginScene2D();
 
@@ -815,19 +797,16 @@ void MPlayer::HouseMovieLoop() {
 
 std::unique_ptr<IMovie> MPlayer::loadFullScreenMovie(std::string_view movieFileName) {
     Blob blob = LoadMovie(movieFileName);
-    if (!blob) {
+    if (!blob)
         return nullptr;
-    }
 
     auto movie = std::make_unique<Movie>();
-    if (!movie->LoadFromLOD(blob)) {
+    if (!movie->LoadFromLOD(blob))
         return nullptr;
-    }
 
     bool setupSuccess = movie->prepare();
-    if (!setupSuccess) {
+    if (!setupSuccess)
         return nullptr;
-    }
 
     return movie;
 }
@@ -836,19 +815,16 @@ void MPlayer::PlayFullscreenMovie(std::string_view pFilename) {
     if (engine->callObserver)
         engine->callObserver->notify(CALL_PLAY_MOVIE, std::string(pFilename));
 
-    if (engine->config->debug.NoVideo.value()) {
+    if (engine->config->debug.NoVideo.value())
         return;
-    }
 
     Blob blob = LoadMovie(pFilename);
-    if (!blob) {
+    if (!blob)
         return;
-    }
 
     std::shared_ptr<Movie> pMovie = std::make_shared<Movie>();
-    if (!pMovie->LoadFromLOD(blob)) {
+    if (!pMovie->LoadFromLOD(blob))
         return;
-    }
     pMovie_Track = std::dynamic_pointer_cast<IMovie>(pMovie);
 
     gameTimer->setPaused(true);
@@ -873,9 +849,8 @@ void MPlayer::PlayFullscreenMovie(std::string_view pFilename) {
             std::this_thread::sleep_for(2ms);
 
             Blob buffer = pMovie_Track->GetFrame();
-            if (!buffer) {
+            if (!buffer)
                 break;
-            }
 
             // create texture from buffer
             // TODO(captainurist): no need to copy here.
@@ -898,17 +873,15 @@ void MPlayer::PlayFullscreenMovie(std::string_view pFilename) {
 }
 
 bool MPlayer::IsMoviePlaying() const {
-    if (!pMovie_Track) {
+    if (!pMovie_Track)
         return false;
-    }
 
     return pMovie_Track->IsPlaying();
 }
 
 bool MPlayer::StopMovie() {
-    if (pMovie_Track) {
+    if (pMovie_Track)
         return pMovie_Track->Stop();
-    }
     return false;
 }
 
@@ -917,30 +890,25 @@ Blob MPlayer::LoadMovie(std::string_view video_name) {
     std::string pVideoNameSmk = fmt::format("{}.smk", video_name);
 
     if (might_list.isOpen()) {
-        if (might_list.exists(pVideoNameBik)) {
+        if (might_list.exists(pVideoNameBik))
             return might_list.read(pVideoNameBik);
-        }
-        if (might_list.exists(pVideoNameSmk)) {
+        if (might_list.exists(pVideoNameSmk))
             return might_list.read(pVideoNameSmk);
-        }
     }
 
     if (magic_list.isOpen()) {
-        if (magic_list.exists(pVideoNameBik)) {
+        if (magic_list.exists(pVideoNameBik))
             return magic_list.read(pVideoNameBik);
-        }
-        if (magic_list.exists(pVideoNameSmk)) {
+        if (magic_list.exists(pVideoNameSmk))
             return magic_list.read(pVideoNameSmk);
-        }
     }
 
     return {};
 }
 
 void MPlayer::Unload() {
-    if (pMovie_Track) {
+    if (pMovie_Track)
         pMovie_Track->Stop();
-    }
     pMovie_Track = nullptr;
     if (!GameOverNoSound) {
         pAudioPlayer->MusicResume();

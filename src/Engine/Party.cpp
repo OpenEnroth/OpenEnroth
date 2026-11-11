@@ -145,9 +145,8 @@ void Party::Zero() {
     _roundingDt = 0_ticks;
 
     // Characters
-    for (Character &player : this->pCharacters) {
+    for (Character &player : this->pCharacters)
         player.Zero();
-    }
 
     // hirelings
     pHirelings.fill(NPCData());
@@ -295,17 +294,15 @@ void Party::GiveFood(int amount) {
 }
 
 int Party::GetFood() const {
-    if (engine->config->debug.InfiniteFood.value()) {
+    if (engine->config->debug.InfiniteFood.value())
         return 99999;
-    }
 
     return uNumFoodRations;
 }
 
 int Party::GetGold() const {
-    if (engine->config->debug.InfiniteGold.value()) {
+    if (engine->config->debug.InfiniteGold.value())
         return 99999;
-    }
 
     return uNumGold;
 }
@@ -371,9 +368,8 @@ void Party::TakeFine(int amount) {
 //----- (0049135E) --------------------------------------------------------
 unsigned int Party::fame() {
     uint64_t total_exp = 0;
-    for (Character &player : this->pCharacters) {
+    for (Character &player : this->pCharacters)
         total_exp += player.experience;
-    }
     return std::min(
         (unsigned int)(total_exp / 1000),
         UINT_MAX);  // min wasn't present, but could be incorrect without it
@@ -527,18 +523,16 @@ void Party::Reset() {
         player.timeToRecovery = 0_ticks;
         player.conditions.resetAll();
 
-        for (SpellBuff &buff : player.pCharacterBuffs) {
+        for (SpellBuff &buff : player.pCharacterBuffs)
             buff.Reset();
-        }
 
         player.portrait = PORTRAIT_NORMAL;
         player.portraitTimePassed = 0_ticks;
         player.portraitTimeLength = Duration::randomRealtimeSeconds(vrng, 1, 3);
     }
 
-    for (SpellBuff &buff : this->pPartyBuffs) {
+    for (SpellBuff &buff : this->pPartyBuffs)
         buff.Reset();
-    }
 
     current_character_screen_window = WINDOW_CHARACTER_STATS;  // default character ui - stats
     uFlags = 0;
@@ -560,9 +554,8 @@ void Party::Reset() {
 }
 
 void Party::yell() {
-    if (pParty->pPartyBuffs[PARTY_BUFF_INVISIBILITY].Active()) {
+    if (pParty->pPartyBuffs[PARTY_BUFF_INVISIBILITY].Active())
         pParty->pPartyBuffs[PARTY_BUFF_INVISIBILITY].Reset();
-    }
 
     if (!pParty->bTurnBasedModeOn) {
         for (int i = 0; i < pActors.size(); i++) {
@@ -570,9 +563,8 @@ void Party::yell() {
             if (actor.CanAct() &&
                 actor.monsterInfo.hostilityType != HOSTILITY_LONG &&
                 actor.monsterInfo.movementType != MONSTER_MOVEMENT_TYPE_STATIONARY) {
-                if ((actor.pos - pParty->pos).length() < 512) {
+                if ((actor.pos - pParty->pos).length() < 512)
                     Actor::AI_Flee(i, Pid::character(0), 0_ticks, 0);
-                }
             }
         }
     }
@@ -592,14 +584,11 @@ void Party::ResetPosMiscAndSpellBuffs() {
     this->jump_strength = 5;
     this->_6FC_water_lava_timer = Time();
 
-    for (Character &player : this->pCharacters) {
-        for (SpellBuff &buff : player.pCharacterBuffs) {
+    for (Character &player : this->pCharacters)
+        for (SpellBuff &buff : player.pCharacterBuffs)
             buff.Reset();
-        }
-    }
-    for (SpellBuff &buff : this->pPartyBuffs) {
+    for (SpellBuff &buff : this->pPartyBuffs)
         buff.Reset();
-    }
 }
 
 void Party::resetCharacterEmotions() {
@@ -617,9 +606,8 @@ void Party::resetCharacterEmotions() {
 }
 
 void Party::updateCharactersAndHirelingsEmotions() {
-    if (pParty->cNonHireFollowers < 0) {
+    if (pParty->cNonHireFollowers < 0)
         pParty->CountHirelings();
-    }
 
     for (Character &player : this->pCharacters) {
         player.portraitTimePassed += animTimer->dt();
@@ -702,9 +690,8 @@ void Party::restAndHeal() {
     Character *pPlayer;         // esi@4
     bool have_vessels_soul;  // [sp+10h] [bp-8h]@10
 
-    for (SpellBuff &buff : pParty->pPartyBuffs) {
+    for (SpellBuff &buff : pParty->pPartyBuffs)
         buff.Reset();
-    }
 
     for (int pPlayerID = 0; pPlayerID < this->pCharacters.size(); ++pPlayerID) {
         pPlayer = &pParty->pCharacters[pPlayerID];
@@ -712,9 +699,8 @@ void Party::restAndHeal() {
             buff.Reset();
 
         pPlayer->resetTempBonuses();
-        if (pPlayer->conditions.hasAny({CONDITION_DEAD, CONDITION_PETRIFIED, CONDITION_ERADICATED})) {
+        if (pPlayer->conditions.hasAny({CONDITION_DEAD, CONDITION_PETRIFIED, CONDITION_ERADICATED}))
             continue;
-        }
 
         pPlayer->conditions.reset(CONDITION_UNCONSCIOUS);
         pPlayer->conditions.reset(CONDITION_DRUNK);
@@ -757,9 +743,8 @@ void Party::restAndHeal() {
 }
 
 void Rest(Duration restTime) {
-    if (restTime > Duration::fromHours(4)) {
+    if (restTime > Duration::fromHours(4))
         Actor::InitializeActors();
-    }
 
     _494035_timed_effects__water_walking_damage__etc(restTime);
 }
@@ -795,9 +780,8 @@ void Party::restOneFrame() {
     // Game time is 30x real time, so given the calculation below we're resting ~6 game hours per realtime second.
     Duration restTick = gameTimer->dt() * 12 * 64;
 
-    if (remainingRestTime < restTick) {
+    if (remainingRestTime < restTick)
         restTick = remainingRestTime;
-    }
 
     if (restTick) {
         Rest(restTick);
@@ -840,11 +824,9 @@ void Party::GivePartyExp(int pEXPNum) {
     if (pEXPNum > 0) {
         // Count active characters
         int pActivePlayerCount = 0;
-        for (Character &player : this->pCharacters) {
-            if (player.conditions.hasNone({CONDITION_UNCONSCIOUS, CONDITION_DEAD, CONDITION_PETRIFIED, CONDITION_ERADICATED})) {
+        for (Character &player : this->pCharacters)
+            if (player.conditions.hasNone({CONDITION_UNCONSCIOUS, CONDITION_DEAD, CONDITION_PETRIFIED, CONDITION_ERADICATED}))
                 pActivePlayerCount++;
-            }
-        }
         // Split gained xp between active characters
         if (pActivePlayerCount) {
             int perCharXP = pEXPNum / pActivePlayerCount;
@@ -872,39 +854,32 @@ void Party::partyFindsGold(int amount, GoldReceivePolicy policy) {
 
         for (int i = 0; i < buf.Size(); i++) {
             NpcProfession prof = buf.Get(i)->profession;
-            if (prof != NPC_PROFESSION_NONE) {
+            if (prof != NPC_PROFESSION_NONE)
                 hirelingSalaries += pNPCStats->pProfessions[prof].uHirePrice;
-            }
         }
-        if (CheckHiredNPCSpeciality(NPC_PROFESSION_FACTOR)) {
+        if (CheckHiredNPCSpeciality(NPC_PROFESSION_FACTOR))
             goldToGain += (signed int)(10 * goldToGain) / 100;
-        }
-        if (CheckHiredNPCSpeciality(NPC_PROFESSION_BANKER)) {
+        if (CheckHiredNPCSpeciality(NPC_PROFESSION_BANKER))
             goldToGain += (signed int)(20 * goldToGain) / 100;
-        }
-        if (CheckHiredNPCSpeciality(NPC_PROFESSION_PIRATE)) {
+        if (CheckHiredNPCSpeciality(NPC_PROFESSION_PIRATE))
             goldToGain += (signed int)(10 * goldToGain) / 100;
-        }
         if (hirelingSalaries) {
             hirelingSalaries = (signed int)(goldToGain * hirelingSalaries / 100) / 100;
-            if (hirelingSalaries < 1) {
+            if (hirelingSalaries < 1)
                 hirelingSalaries = 1;
-            }
             status = localization->format(LSTR_YOU_FOUND_LU_GOLD_FOLLOWERS_TAKE_LU, goldToGain, hirelingSalaries);
         } else {
             status = localization->format(LSTR_YOU_FOUND_LU_GOLD, amount);
         }
     }
     AddGold(goldToGain - hirelingSalaries);
-    if (status.length() > 0) {
+    if (status.length() > 0)
         engine->_statusBar->setEvent(status);
-    }
 }
 
 void Party::dropHeldItem() {
-    if (pPickedItem.itemId == ITEM_NULL) {
+    if (pPickedItem.itemId == ITEM_NULL)
         return;
-    }
 
     SpriteObject sprite;
     sprite.spriteId = pItemTable->items[pPickedItem.itemId].spriteId;
@@ -923,9 +898,8 @@ void Party::dropHeldItem() {
 
 void Party::placeHeldItemInInventoryOrDrop() {
     // no picked item
-    if (pPickedItem.itemId == ITEM_NULL) {
+    if (pPickedItem.itemId == ITEM_NULL)
         return;
-    }
 
     if (addItemToParty(&pPickedItem, true)) {
         pParty->takeHoldingItem();
@@ -935,16 +909,14 @@ void Party::placeHeldItemInInventoryOrDrop() {
 }
 
 bool Party::addItemToParty(Item *pItem, bool isSilent) {
-    if (!pItemTable->items[pItem->itemId].identifyAndRepairDifficulty) {
+    if (!pItemTable->items[pItem->itemId].identifyAndRepairDifficulty)
         pItem->SetIdentified();
-    }
 
     if (!pItemTable->items[pItem->itemId].iconName.empty()) {
         int playerId = hasActiveCharacter() ? pParty->_activeCharacterIndex : 0;
         for (int i = 0; i < pCharacters.size(); i++, playerId++) {
-            if (playerId >= pCharacters.size()) {
+            if (playerId >= pCharacters.size())
                 playerId = 0;
-            }
             if (pCharacters[playerId].inventory.tryAdd(*pItem)) {
                 pItem->Reset();
                 if (!isSilent) {
@@ -963,14 +935,11 @@ bool Party::addItemToParty(Item *pItem, bool isSilent) {
 
 int Party::getRandomActiveCharacterId(RandomEngine *rng) const {
     std::vector<int> activeCharacters = {};
-    for (int i = 0; i < pCharacters.size(); i++) {
-        if (pCharacters[i].CanAct()) {
+    for (int i = 0; i < pCharacters.size(); i++)
+        if (pCharacters[i].CanAct())
             activeCharacters.push_back(i);
-        }
-    }
-    if (!activeCharacters.empty()) {
+    if (!activeCharacters.empty())
         return activeCharacters[rng->random(activeCharacters.size())];
-    }
     return -1;
 }
 
