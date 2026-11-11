@@ -1378,7 +1378,7 @@ void CastSpellInfoHelpers::castSpell() {
                     // http://www.pottsland.com/mm6/enchant.shtml
                     // also see STDITEMS.tx and SPCITEMS.txt in Events.lod
 
-                    if ((spell_mastery == MASTERY_NOVICE || spell_mastery == MASTERY_EXPERT))
+                    if (spell_mastery == MASTERY_NOVICE || spell_mastery == MASTERY_EXPERT)
                         assert(false); // SPELL_WATER_ENCHANT_ITEM is a master level spell
 
                     if ((spell_mastery == MASTERY_MASTER || spell_mastery == MASTERY_GRANDMASTER) &&
