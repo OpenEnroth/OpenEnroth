@@ -1349,7 +1349,7 @@ GAME_TEST(Issues, Issue1485a) {
     // With it off, only one ring of each kind counts.
     for (bool stacking : {true, false}) {
         SCOPED_TRACE(fmt::format("stacking={}", stacking));
-        test.prepareForNextTest();
+        test.prepareForNextTest(1000, RANDOM_ENGINE_MERSENNE_TWISTER); // 1 realtime second per frame.
         engine->config->gameplay.RegenStacking.setValue(stacking);
         auto hpTape = charTapes.hp(0);
         auto mpTape = charTapes.mp(2);
@@ -1367,7 +1367,7 @@ GAME_TEST(Issues, Issue1485a) {
         fighter.health = 1;
         caster.mana = 0;
         test.startTaping();
-        game.tick(100); // One regeneration tick.
+        game.tick(10); // One regeneration tick.
 
         EXPECT_EQ(hpTape, stacking ? tape(1, 3) : tape(1, 2));
         EXPECT_EQ(mpTape, stacking ? tape(0, 2) : tape(0, 1));
@@ -1379,7 +1379,7 @@ GAME_TEST(Issues, Issue1485b) {
     // replaces the ring's.
     for (bool stacking : {true, false}) {
         SCOPED_TRACE(fmt::format("stacking={}", stacking));
-        test.prepareForNextTest();
+        test.prepareForNextTest(1000, RANDOM_ENGINE_MERSENNE_TWISTER); // 1 realtime second per frame.
         engine->config->gameplay.RegenStacking.setValue(stacking);
         auto hpTape = charTapes.hp(0);
         game.startNewGame();
@@ -1390,7 +1390,7 @@ GAME_TEST(Issues, Issue1485b) {
         fighter.inventory.equip(ITEM_SLOT_RING1, ring);
         fighter.health = 1;
         test.startTaping();
-        game.tick(100); // One regeneration tick.
+        game.tick(10); // One regeneration tick.
 
         EXPECT_EQ(hpTape, stacking ? tape(1, 7) : tape(1, 6));
     }
