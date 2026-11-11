@@ -1604,3 +1604,10 @@ GAME_TEST(Issues, Issue2991) {
     EXPECT_EQ(dayTape, tape(0, 1));
     EXPECT_EQ(goldTape.delta(), -3);
 }
+
+GAME_TEST(Issues, Issue2998) {
+    // A wall beside a doorway in the Temple of Baa was brown blocks in a grey brick room.
+    game.startNewGame();
+    game.teleportTo(MAP_TEMPLE_OF_BAA, Vec3f(200, -600, -3072), 256); // Facing that wall from inside its room.
+    EXPECT_EQ(pIndoor->faces[406].texture->name(), pIndoor->faces[408].texture->name()); // The walls on both sides of the doorway.
+}

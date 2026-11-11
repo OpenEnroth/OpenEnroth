@@ -275,6 +275,10 @@ void IndoorLocation::Load(std::string_view filename, int num_days_played, int re
     deserialize(lod::decodeMaybeCompressed(pGames_LOD->read(blv_filename)), &location); // read throws if file doesn't exist.
     reconstruct(location, this);
 
+    // TODO(captainurist): this should be a data patch.
+    if (pMapTable->GetMapInfo(filename) == MAP_TEMPLE_OF_BAA && faces.size() > 406)
+        faces[406].SetTexture("T6s1bs"); // The wall beside a doorway, "T1S2B" in the 1.0 games.lod. The Millennium Edition's games.lod retextures it to match the rest of the room.
+
     std::string dlv_filename = fmt::format("{}.dlv", filename.substr(0, filename.size() - 4));
 
     bool respawnInitial = false; // Perform initial location respawn?
