@@ -1142,7 +1142,7 @@ GAME_TEST(Issues, Issue2867b) {
     int voice = zombie.uVoiceID;
     zombie.SetCondition(CONDITION_ZOMBIE, 0);
     int zombieFace = zombie.IsMale() ? 23 : 24;
-    int zombieVoice = zombieFace;
+    int zombieVoice = zombieFace; // A zombie's voice has the number of its face.
 
     auto deathsTape = tapes.deaths();
     auto zombieTape = charTapes.hasCondition(1, CONDITION_ZOMBIE);
@@ -1158,6 +1158,8 @@ GAME_TEST(Issues, Issue2867b) {
     EXPECT_EQ(zombieTape, tape(true, false));
     EXPECT_EQ(faceTape, tape(zombieFace, face));
     EXPECT_EQ(voiceTape, tape(zombieVoice, voice));
+
+    // Checks the portrait on screen, a texture loaded separately from uCurrentFace that the face tape doesn't see.
     EXPECT_EQ(game_ui_player_faces[1][0]->name(), portraitName(face));
 }
 
@@ -1173,7 +1175,7 @@ GAME_TEST(Issues, Issue2867c) {
     zombie.SetCondition(CONDITION_ZOMBIE, 0);
     zombie.SetCondition(CONDITION_DISEASE_WEAK, 0);
     int zombieFace = zombie.IsMale() ? 23 : 24;
-    int zombieVoice = zombieFace;
+    int zombieVoice = zombieFace; // A zombie's voice has the number of its face.
     Pid wellFace = Pid::face(pOutdoor->pBModels[21].faces[10]);
 
     auto zombieTape = charTapes.hasCondition(0, CONDITION_ZOMBIE);
@@ -1191,6 +1193,8 @@ GAME_TEST(Issues, Issue2867c) {
     EXPECT_CONTAINS(statusTape, "Disease Cured");
     EXPECT_EQ(faceTape, tape(zombieFace, face));
     EXPECT_EQ(voiceTape, tape(zombieVoice, voice));
+
+    // Checks the portrait on screen, a texture loaded separately from uCurrentFace that the face tape doesn't see.
     EXPECT_EQ(game_ui_player_faces[0][0]->name(), portraitName(face));
 }
 
