@@ -179,11 +179,12 @@ class EngineController {
     void teleportTo(MapId map, Vec3f position, int viewYaw, int viewPitch = 0);
 
     /**
-     * Leaves the current map for the given destination, and waits until the new map has loaded.
+     * Leaves the current map for the given destination, and waits until the new map has loaded. Unlike the overload
+     * above, this one loads the map again when the destination is on the current map.
      *
-     * @param destination               Where to go. The map can be the current one, which then loads again.
+     * @param destination               Where to go.
      */
-    void travelTo(const MapDestination &destination);
+    void teleportTo(const MapDestination &destination);
 
     void castSpell(int characterIndex, SpellId spell);
 

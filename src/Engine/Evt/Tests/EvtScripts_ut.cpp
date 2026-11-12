@@ -37,7 +37,7 @@ GAME_TEST(EvtScripts, DecompiledEvents) {
     for (MapId map : allMaps()) {
         std::string name = mapFileStem(map);
 
-        game.travelTo(MapDestination(map, MAP_START_POINT_PARTY));
+        game.teleportTo(MapDestination(map, MAP_START_POINT_PARTY));
 
         EvtProgram program = evtFile(name);
         EXPECT_EQ(engine->_localEventMap.eventCount(), 0) << name << ".evt";
