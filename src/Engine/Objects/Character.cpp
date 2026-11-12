@@ -3340,7 +3340,8 @@ void Character::useItem(int targetCharacter, bool isPortraitClick) {
                 Time deadTime = playerAffected->conditions.get(CONDITION_DEAD);
                 Time petrifedTime = playerAffected->conditions.get(CONDITION_PETRIFIED);
                 Time eradicatedTime = playerAffected->conditions.get(CONDITION_ERADICATED);
-                playerAffected->resetAllConditions();
+                // TODO(Nik-RE-dev): why not playerAffected?
+                resetAllConditions();
                 playerAffected->conditions.set(CONDITION_DEAD, deadTime);
                 playerAffected->conditions.set(CONDITION_PETRIFIED, petrifedTime);
                 playerAffected->conditions.set(CONDITION_ERADICATED, eradicatedTime);
