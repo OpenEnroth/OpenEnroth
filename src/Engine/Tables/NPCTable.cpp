@@ -114,15 +114,15 @@ void NPCStats::InitializeNPCNews(const Blob &npcNews) {
 //----- (0047702F) --------------------------------------------------------
 void NPCStats::Initialize(ResourceManager *resourceManager) {
     pOriginalNPCData.fill(NPCData());
-    InitializeNPCData(resourceManager->eventsData("npcdata.txt"));
-    InitializeNPCGreets(resourceManager->eventsData("npcgreet.txt"));
-    InitializeNPCGroups(resourceManager->eventsData("npcgroup.txt"));
-    InitializeNPCNews(resourceManager->eventsData("npcnews.txt"));
-    InitializeNPCText(resourceManager->eventsData("npctext.txt"));
-    InitializeNPCTopics(resourceManager->eventsData("npctopic.txt"));
-    InitializeNPCDist(resourceManager->eventsData("npcdist.txt"));
-    InitializeNPCNames(resourceManager->eventsData("npcnames.txt"));
-    InitializeNPCProfs(resourceManager->eventsData("npcprof.txt"));
+    InitializeNPCData(resourceManager->eventsText("npcdata.txt"));
+    InitializeNPCGreets(resourceManager->eventsText("npcgreet.txt"));
+    InitializeNPCGroups(resourceManager->eventsText("npcgroup.txt"));
+    InitializeNPCNews(resourceManager->eventsText("npcnews.txt"));
+    InitializeNPCText(resourceManager->eventsText("npctext.txt"));
+    InitializeNPCTopics(resourceManager->eventsText("npctopic.txt"));
+    InitializeNPCDist(resourceManager->eventsText("npcdist.txt"));
+    InitializeNPCNames(resourceManager->eventsText("npcnames.txt"));
+    InitializeNPCProfs(resourceManager->eventsText("npcprof.txt"));
 }
 
 void NPCStats::InitializeNPCNames(const Blob &npcNames) {

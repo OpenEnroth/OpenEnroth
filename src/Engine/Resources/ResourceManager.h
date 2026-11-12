@@ -37,6 +37,13 @@ class ResourceManager {
     Blob eventsData(std::string_view filename);
 
     /**
+     * @param filename                  Name of a text file in `events.lod`.
+     * @return                          The file's contents up to the first DOS end-of-file byte (0x1A), or all of it
+     *                                  if there is none.
+     */
+    Blob eventsText(std::string_view filename);
+
+    /**
      * @param filename                  Name of an image in `icons.lod`, case-insensitive.
      * @return                          The icon, or an empty image if there is no such icon.
      */

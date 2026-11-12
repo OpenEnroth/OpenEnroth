@@ -232,12 +232,12 @@ void ItemTable::LoadRandomItems(const Blob &rnditems) {
 
 //----- (00456D84) --------------------------------------------------------
 void ItemTable::Initialize(ResourceManager *resourceManager) {
-    LoadPotions(resourceManager->eventsData("potion.txt"));
-    LoadPotionNotes(resourceManager->eventsData("potnotes.txt"));
-    LoadStandardEnchantments(resourceManager->eventsData("stditems.txt"));
-    LoadSpecialEnchantments(resourceManager->eventsData("spcitems.txt"));
-    LoadItems(resourceManager->eventsData("items.txt"));
-    LoadRandomItems(resourceManager->eventsData("rnditems.txt"));
+    LoadPotions(resourceManager->eventsText("potion.txt"));
+    LoadPotionNotes(resourceManager->eventsText("potnotes.txt"));
+    LoadStandardEnchantments(resourceManager->eventsText("stditems.txt"));
+    LoadSpecialEnchantments(resourceManager->eventsText("spcitems.txt"));
+    LoadItems(resourceManager->eventsText("items.txt"));
+    LoadRandomItems(resourceManager->eventsText("rnditems.txt"));
 
     Item::PopulateSpecialBonusMap();
     Item::PopulateArtifactBonusMap();
