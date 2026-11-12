@@ -1130,7 +1130,7 @@ GAME_TEST(Issues, Issue2867a) {
     EXPECT_EQ(faceTape, tape(zombieFace, face));
     EXPECT_EQ(voiceTape, tape(zombieVoice, voice));
 
-    // The portrait on screen is a texture loaded separately from uCurrentFace, the face tape doesn't see it.
+    // Checks the portrait on screen, a texture loaded separately from uCurrentFace that the face tape doesn't see.
     EXPECT_EQ(game_ui_player_faces[0][0]->name(), portraitName(face));
 }
 
