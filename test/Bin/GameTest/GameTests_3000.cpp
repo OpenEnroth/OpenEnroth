@@ -59,3 +59,24 @@ GAME_TEST(Issues, Issue3002) {
     EXPECT_EQ(speakerTape, expectedSpeakers);
     EXPECT_EQ(sexes, std::set({SEX_MALE, SEX_FEMALE}));
 }
+
+GAME_TEST(Issues, Issue3009) {
+    // A Divine Restoration potion used on another character's portrait cured the character holding it instead.
+    game.startNewGame();
+    for (int i = 0; i < 3; i++)
+        pParty->pCharacters[i].SetCondition(CONDITION_WEAK, 0);
+
+    auto weakTape = charTapes.haveConditions(CONDITION_WEAK);
+    auto activeTape = tapes.activeCharacterIndex();
+    auto heldItemTape = tapes.custom([] { return pParty->pPickedItem.itemId; });
+    test.startTaping();
+    game.pressAndReleaseKey(PlatformKey::KEY_DIGIT_3);
+    game.tick();
+    pParty->setHoldingItem(Item(ITEM_POTION_DIVINE_RESTORATION));
+    game.pressGuiButton("Game_Character1", BUTTON_RIGHT); // Use the potion on the first character's portrait.
+    game.tick();
+
+    EXPECT_EQ(weakTape, tape({true, true, true, false}, {false, true, true, false})); // Only the first character is cured.
+    EXPECT_EQ(activeTape, tape(2, 0)); // The third character used the potion and went into recovery.
+    EXPECT_EQ(heldItemTape, tape(ITEM_NULL)); // The potion is gone in the frame it was picked up in.
+}
