@@ -47,7 +47,7 @@ void GUIWindow_Temple::healDialogue() {
 
     for (Condition condition : allConditions())
         if (condition != CONDITION_ZOMBIE || !keepZombie)
-            character.ResetCondition(condition);
+            character.resetCondition(condition);
     if (makeZombie)
         character.SetCondition(CONDITION_ZOMBIE, 0);
     pParty->TakeGold(price);

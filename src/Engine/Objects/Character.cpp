@@ -599,7 +599,7 @@ void Character::SetCondition(Condition condition, int blockable) {
     return;
 }
 
-void Character::ResetCondition(Condition condition) {
+void Character::resetCondition(Condition condition) {
     if (!conditions.has(condition)) {
         return;
     }
@@ -620,7 +620,7 @@ void Character::ResetCondition(Condition condition) {
 
 void Character::resetAllConditions() {
     for (Condition condition : allConditions())
-        ResetCondition(condition);
+        resetCondition(condition);
 }
 
 //----- (00492700) --------------------------------------------------------

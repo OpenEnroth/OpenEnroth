@@ -215,10 +215,10 @@ class Character {
      *
      * @param condition                 Condition to clear.
      */
-    void ResetCondition(Condition condition);
+    void resetCondition(Condition condition);
 
     /**
-     * Clears every condition through `ResetCondition`, so a cured zombie gets its original face and voice back.
+     * Clears every condition through `resetCondition`, so a cured zombie gets its original face and voice back.
      */
     void resetAllConditions();
 
