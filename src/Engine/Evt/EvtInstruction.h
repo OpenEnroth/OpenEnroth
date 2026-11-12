@@ -26,7 +26,13 @@ class EvtInstruction {
      * @return                          The instruction in readable form, for logging.
      */
     std::string toString(EvtSource source) const;
-    static EvtInstruction parse(InputStream &stream, size_t size);
+
+    /**
+     * @param stream                    An evt record, from its step byte to its end.
+     * @return                          The instruction of the record.
+     * @throws Exception                If the record is malformed.
+     */
+    static EvtInstruction parse(InputStream &stream);
 
     EvtOpcode opcode = EVENT_Invalid;
     int step = 0;
