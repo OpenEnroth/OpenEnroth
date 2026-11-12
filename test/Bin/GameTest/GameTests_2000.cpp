@@ -11,6 +11,7 @@
 #include "Engine/mm7_data.h"
 #include "Engine/MapEnums.h"
 #include "Engine/Tables/MapTable.h"
+#include "Engine/TurnEngine/TurnEngine.h"
 #include "Engine/Party.h"
 #include "Engine/Random/Random.h"
 #include "Engine/Graphics/DecalBuilder.h"
@@ -901,12 +902,26 @@ GAME_TEST(Issues, Issue2279) {
 }
 
 GAME_TEST(Issues, Issue2289) {
-    // Monsters were skipping their turns in turn-based mode when their action length was zero.
-    auto turnBasedTape = tapes.custom([] { return pParty->bTurnBasedModeOn; });
-    auto meleeAttacksTape = actorTapes.countByState(AttackingMelee);
-    test.playTraceFromTestData("issue_2289.mm7", "issue_2289.json");
-    EXPECT_CONTAINS(turnBasedTape, true); // We were in turn-based combat.
-    EXPECT_GT(meleeAttacksTape.max(), 0); // Monsters actually attacked.
+    // In turn-based mode, of two goblins next to the party only one ever attacked, the other stood through every round.
+    engine->config->debug.NoActors.setValue(true);
+    game.startNewGame();
+    game.teleportTo(MAP_HARMONDALE, Vec3f(-5858, 10324, 0), 0); // In front of the J.V.C Corral.
+    engine->config->debug.NoActors.setValue(false);
+    Actor *goblin0 = game.spawnMonster(pParty->pos + Vec3f(250, -150, 0), MONSTER_GOBLIN_A, SPAWN_STATIONARY);
+    Actor *goblin1 = game.spawnMonster(pParty->pos + Vec3f(250, 150, 0), MONSTER_GOBLIN_A, SPAWN_STATIONARY);
+    auto goblin0Tape = actorTapes.aiState(goblin0->id);
+    auto goblin1Tape = actorTapes.aiState(goblin1->id);
+    test.startTaping();
+    game.pressAndReleaseKey(PlatformKey::KEY_RETURN);
+    for (int i = 0; i < 200 && pTurnEngine->turn_stage != TE_MOVEMENT; ++i) {
+        if (pTurnEngine->turn_stage == TE_ATTACK && pParty->hasActiveCharacter() && !pParty->activeCharacter().timeToRecovery)
+            game.pressAndReleaseKey(PlatformKey::KEY_B); // Pass.
+        game.tick();
+    }
+    ASSERT_EQ(pTurnEngine->turn_stage, TE_MOVEMENT);
+
+    EXPECT_EQ(goblin0Tape, tape(Standing, Fidgeting, AttackingMelee, Standing));
+    EXPECT_EQ(goblin1Tape, tape(Standing, AttackingMelee, Standing, Fidgeting));
 }
 
 GAME_TEST(Issues, Issue2298) {
