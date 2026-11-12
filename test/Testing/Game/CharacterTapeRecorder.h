@@ -48,6 +48,9 @@ class CharacterTapeRecorder {
     TestTape<int> face(int characterIndex);
     TestMultiTape<int> faces();
 
+    TestTape<int> voice(int characterIndex);
+    TestMultiTape<int> voices();
+
     TestTape<int> hp(int characterIndex);
     TestMultiTape<int> hps();
 

@@ -182,9 +182,9 @@ void GameBindings::_registerPartyBindings(sol::state_view &solState, sol::table 
         "clearCondition", sol::as_function([](int characterIndex, std::optional<Condition> conditionToClear) {
             if (Character *character = getCharacterByIndex(characterIndex - 1)) {
                 if (conditionToClear) {
-                    character->conditions.reset(*conditionToClear);
+                    character->resetCondition(*conditionToClear);
                 } else {
-                    character->conditions.resetAll();
+                    character->resetAllConditions();
                 }
             }
         }),

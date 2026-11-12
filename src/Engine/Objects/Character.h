@@ -215,7 +215,12 @@ class Character {
      *
      * @param condition                 Condition to clear.
      */
-    void ResetCondition(Condition condition);
+    void resetCondition(Condition condition);
+
+    /**
+     * Clears every condition through `resetCondition`, so a cured zombie gets its original face and voice back.
+     */
+    void resetAllConditions();
 
     /**
      * @offset 0x49327B

@@ -1637,7 +1637,7 @@ void Game::gameLoop() {
                     pParty->bTurnBasedModeOn = false;
                 }
                 for (Character &character : pParty->pCharacters) {
-                    character.conditions.resetAll();
+                    character.resetAllConditions();
                     character.pCharacterBuffs.fill(
                         SpellBuff());  // ???
                                        // memset(pParty->pCharacters[i].conditions_times.data(),

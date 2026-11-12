@@ -599,7 +599,7 @@ void Character::SetCondition(Condition condition, int blockable) {
     return;
 }
 
-void Character::ResetCondition(Condition condition) {
+void Character::resetCondition(Condition condition) {
     if (!conditions.has(condition)) {
         return;
     }
@@ -616,6 +616,11 @@ void Character::ResetCondition(Condition condition) {
         default:
             break;
     }
+}
+
+void Character::resetAllConditions() {
+    for (Condition condition : allConditions())
+        resetCondition(condition);
 }
 
 //----- (00492700) --------------------------------------------------------
@@ -3336,7 +3341,7 @@ void Character::useItem(int targetCharacter, bool isPortraitClick) {
                 Time petrifedTime = playerAffected->conditions.get(CONDITION_PETRIFIED);
                 Time eradicatedTime = playerAffected->conditions.get(CONDITION_ERADICATED);
                 // TODO(Nik-RE-dev): why not playerAffected?
-                conditions.resetAll();
+                resetAllConditions();
                 playerAffected->conditions.set(CONDITION_DEAD, deadTime);
                 playerAffected->conditions.set(CONDITION_PETRIFIED, petrifedTime);
                 playerAffected->conditions.set(CONDITION_ERADICATED, eradicatedTime);
