@@ -20,6 +20,7 @@
 class GUIButton;
 class PlatformEvent;
 class Actor;
+class MapDestination;
 
 enum class SpawnFlag {
     SPAWN_STATIONARY = 0x1, // Set moveSpeed to 1 so that the monster stays in place.
@@ -176,6 +177,14 @@ class EngineController {
      * @param viewPitch                 View pitch, in degrees. Negative values look down.
      */
     void teleportTo(MapId map, Vec3f position, int viewYaw, int viewPitch = 0);
+
+    /**
+     * Leaves the current map for the given destination, and waits until the new map has loaded. Unlike the overload
+     * above, this one loads the map again when the destination is on the current map.
+     *
+     * @param destination               Where to go.
+     */
+    void teleportTo(const MapDestination &destination);
 
     void castSpell(int characterIndex, SpellId spell);
 

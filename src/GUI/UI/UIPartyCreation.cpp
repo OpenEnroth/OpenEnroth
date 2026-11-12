@@ -6,6 +6,7 @@
 #include "Engine/AssetsManager.h"
 #include "Engine/Engine.h"
 #include "Engine/EngineGlobals.h"
+#include "Engine/Evt/Processor.h"
 #include "Engine/Objects/CharacterEnumFunctions.h"
 #include "Engine/Graphics/Renderer/Renderer.h"
 #include "Engine/Graphics/Image.h"
@@ -269,6 +270,7 @@ bool PartyCreationUI_Loop() {
     pNPCStats->pNPCData = pNPCStats->pOriginalNPCData;
     pNPCStats->pGroups = pNPCStats->pOriginalGroups;
     pNPCStats->pNPCData[3].flags |= NPC_HIRED; // Lady Margaret.
+    onGameLoad();
 
     pGUIWindow_CurrentMenu = std::make_unique<GUIWindow_PartyCreation>();
     return !PartyCreationUI_LoopInternal();

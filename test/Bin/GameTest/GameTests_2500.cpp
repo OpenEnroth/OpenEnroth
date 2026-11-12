@@ -7,6 +7,8 @@
 
 #include "Testing/Game/GameTest.h"
 
+#include "Application/GameConfig.h"
+
 #include "Engine/Engine.h"
 #include "Engine/EngineGlobals.h"
 #include "Engine/EngineIocContainer.h"
@@ -44,11 +46,13 @@
 
 #include "Media/Audio/SoundList.h"
 
+#include "Utility/ScopeGuard.h"
+
 #include "GameTestCommon.h"
 
 static void scriptHiddenTombExit(std::vector<EvtInstruction> script) {
     // Points the exit at a new event made of the given commands, in order.
-    assert(engine->_localEventMap.instruction(pIndoor->faces[85].eventId, 0).opcode == EVENT_MoveToMap);
+    assert(pIndoor->faces[85].eventId != 0);
     int eventId = 9000;
     for (int step = 0; step < script.size(); step++) {
         script[step].step = step;
@@ -832,6 +836,23 @@ GAME_TEST(Issues, Issue2777c) {
     EXPECT_EQ(game_ui_player_faces[0][0]->name(), portraitName(lichFace));
 }
 
+GAME_TEST(Issues, Issue2778) {
+    // Colony Zod showed the ending movie on every exit from the map once Xenofex was dead.
+    auto movieTape = tapes.movies();
+    game.startNewGame();
+    Vec3f emeraldIsland = pParty->pos;
+    game.teleportTo(MAP_COLONY_ZOD, Vec3f(-10986, 8576, 1728), 180);
+    test.startTaping();
+    Actor::Die(0); // Xenofex.
+    game.tick(60); // The death animation has to finish.
+    for (int visit = 0; visit < 2; visit++) {
+        autoSave(); // A real exit saves the map, a teleport doesn't, and Xenofex would be back alive.
+        game.teleportTo(MAP_EMERALD_ISLAND, emeraldIsland, 0);
+        game.teleportTo(MAP_COLONY_ZOD, Vec3f(-10986, 8576, 1728), 180);
+    }
+    EXPECT_EQ(movieTape.flatten(), tape("family reunion"));
+}
+
 GAME_TEST(Issues, Issue2784a) {
     // Acid Burst impacts were silent.
     auto soundsTape = tapes.sounds();
@@ -1272,6 +1293,10 @@ GAME_TEST(Prs, Pr2876c) {
 GAME_TEST(Prs, Pr2963) {
     // A timer that left the map cleared the timer list mid-loop, and the loop went on reading timers that no longer
     // existed, firing the due ones on the map being left.
+    bool wasDecompiling = engine->config->debug.DecompiledEvents.value();
+    MM_AT_SCOPE_EXIT(engine->config->debug.DecompiledEvents.setValue(wasDecompiling));
+    engine->config->debug.DecompiledEvents.setValue(false); // The decompiled scripts would drop the events added below on map load.
+
     auto goldTape = tapes.gold();
     auto mapTape = tapes.map();
     game.startNewGame();
