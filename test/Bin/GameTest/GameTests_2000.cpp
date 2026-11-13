@@ -902,15 +902,17 @@ GAME_TEST(Issues, Issue2279) {
 }
 
 GAME_TEST(Issues, Issue2289) {
-    // In turn-based mode, monsters whose turn came up mid-round skipped it and stood around, so most of a group never attacked.
+    // In turn-based mode, monsters whose turn came up mid-round skipped it and stood around, so some monsters in a group never attacked.
     engine->config->debug.NoActors.setValue(true);
     game.startNewGame();
     game.teleportTo(MAP_HARMONDALE, Vec3f(-5858, 10324, 0), 0); // In front of the J.V.C Corral.
     engine->config->debug.NoActors.setValue(false);
-    Actor *goblin0 = game.spawnMonster(pParty->pos + Vec3f(250, -150, 0), MONSTER_GOBLIN_A, SPAWN_STATIONARY);
-    Actor *goblin1 = game.spawnMonster(pParty->pos + Vec3f(250, 150, 0), MONSTER_GOBLIN_A, SPAWN_STATIONARY);
+    Actor *goblin0 = game.spawnMonster(pParty->pos + Vec3f(-250, -150, 0), MONSTER_GOBLIN_A, SPAWN_STATIONARY);
+    Actor *goblin1 = game.spawnMonster(pParty->pos + Vec3f(-250, 0, 0), MONSTER_GOBLIN_A, SPAWN_STATIONARY);
+    Actor *goblin2 = game.spawnMonster(pParty->pos + Vec3f(-250, 150, 0), MONSTER_GOBLIN_A, SPAWN_STATIONARY);
     auto goblin0Tape = actorTapes.aiState(goblin0->id);
     auto goblin1Tape = actorTapes.aiState(goblin1->id);
+    auto goblin2Tape = actorTapes.aiState(goblin2->id);
     test.startTaping();
     game.pressAndReleaseKey(PlatformKey::KEY_RETURN);
     for (int i = 0; i < 200 && pTurnEngine->turn_stage != TE_MOVEMENT; ++i) {
@@ -920,8 +922,9 @@ GAME_TEST(Issues, Issue2289) {
     }
     ASSERT_EQ(pTurnEngine->turn_stage, TE_MOVEMENT);
 
-    EXPECT_EQ(goblin0Tape, tape(Standing, Fidgeting, AttackingMelee, Standing));
+    EXPECT_EQ(goblin0Tape, tape(Standing, AttackingMelee, Standing, Fidgeting));
     EXPECT_EQ(goblin1Tape, tape(Standing, AttackingMelee, Standing, Fidgeting));
+    EXPECT_EQ(goblin2Tape, tape(Standing, AttackingMelee, Standing, Fidgeting));
 }
 
 GAME_TEST(Issues, Issue2298) {
