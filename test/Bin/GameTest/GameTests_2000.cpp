@@ -922,7 +922,7 @@ GAME_TEST(Issues, Issue2289) {
     }
     ASSERT_EQ(pTurnEngine->turn_stage, TE_MOVEMENT);
 
-    EXPECT_EQ(goblin0Tape, tape(Standing, AttackingMelee, Standing, Fidgeting));
+    EXPECT_EQ(goblin0Tape, tape(Standing, AttackingMelee, Standing, Fidgeting)); // The bug left this one standing.
     EXPECT_EQ(goblin1Tape, tape(Standing, AttackingMelee, Standing, Fidgeting));
     EXPECT_EQ(goblin2Tape, tape(Standing, AttackingMelee, Standing, Fidgeting));
 }
