@@ -24,7 +24,7 @@
 // 3000
 
 GAME_TEST(Issues, Issue3000) {
-    // In turn-based mode, a goblin out of melee range shot an arrow on every turn, not only when it rolled its ranged attack.
+    // In turn-based mode, a monster out of melee range that picked its first attack fired its second attack's missile.
     for (int attack2Chance : {0, 100}) {
         SCOPED_TRACE(fmt::format("attack2Chance={}", attack2Chance));
         test.prepareForNextTest();
