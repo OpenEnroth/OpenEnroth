@@ -311,5 +311,9 @@ MM_DEFINE_ENUM_SERIALIZATION_FUNCTIONS(EvtVariable, CASE_SENSITIVE, {
     {VAR_ArenaWinsKnight,               "ArenaWinsKnight"},
     {VAR_ArenaWinsLord,                 "ArenaWinsLord"},
     {VAR_Invisible,                     "Invisible"},
-    {VAR_ItemEquipped,                  "IsWearingItem"}
+    {VAR_ItemEquipped,                  "IsWearingItem"},
+
+    // Other names that MMExtension takes from a script. They are only read.
+    {VAR_DisarmTrapSkill,               "DisarmTrapsSkill"}, // MMExtension writes this one, and calls "DisarmTrap" the proper name since 2.3.
+    {VAR_Paralyzed,                     "Paralysed"} // MMExtension writes this one, and takes the American spelling too.
 })
