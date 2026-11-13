@@ -18,6 +18,7 @@ MM_DEFINE_ENUM_SERIALIZATION_FUNCTIONS(EvtVariable, CASE_SENSITIVE, {
     {VAR_Age,                           "AgeBonus"},
     {VAR_Award,                         "Awards"},
     {VAR_Experience,                    "Experience"},
+    {VAR_Race,                          "RaceIs"}, // Has no name in MMExtension.
     {VAR_QBits_QuestsDone,              "QBits"},
     {VAR_PlayerItemInHands,             "Inventory"},
     {VAR_Hour,                          "HourIs"},
@@ -57,6 +58,7 @@ MM_DEFINE_ENUM_SERIALIZATION_FUNCTIONS(EvtVariable, CASE_SENSITIVE, {
     {VAR_BodyResistance,                "BodyResistance"},
     {VAR_LightResistance,               "LightResistance"},
     {VAR_DarkResistance,                "DarkResistance"},
+    {VAR_PhysicalResistance,            "PhysicalResistance"}, // Has no name in MMExtension.
     {VAR_MagicResistance,               "MagicResistance"},
     {VAR_FireResistanceBonus,           "FireResBonus"},
     {VAR_AirResistanceBonus,            "AirResBonus"},
@@ -67,6 +69,7 @@ MM_DEFINE_ENUM_SERIALIZATION_FUNCTIONS(EvtVariable, CASE_SENSITIVE, {
     {VAR_BodyResistanceBonus,           "BodyResBonus"},
     {VAR_LightResistanceBonus,          "LightResBonus"},
     {VAR_DarkResistanceBonus,           "DarkResBonus"},
+    {VAR_PhysicalResistanceBonus,       "PhysicalResBonus"}, // Has no name in MMExtension.
     {VAR_MagicResistanceBonus,          "MagicResBonus"},
     {VAR_StaffSkill,                    "StaffSkill"},
     {VAR_SwordSkill,                    "SwordSkill"},

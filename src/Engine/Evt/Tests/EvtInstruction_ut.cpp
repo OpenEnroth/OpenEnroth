@@ -122,9 +122,9 @@ UNIT_TEST(EvtEnums, VariableNames) {
     EXPECT_EQ(fromString<EvtVariable>("MapVar75"), VAR_MapPersistentDecorVariable_0);
     EXPECT_EQ(fromString<EvtVariable>("History29"), VAR_History_28);
 
+    EXPECT_EQ(toString(VAR_Race), "RaceIs");
+
     EvtVariable variable = VAR_Sex;
-    std::string name;
-    EXPECT_FALSE(trySerialize(VAR_Race, &name));
     EXPECT_FALSE(tryDeserialize("MapVar100", &variable));
     EXPECT_FALSE(tryDeserialize("MapVar01", &variable));
     EXPECT_FALSE(tryDeserialize("History0", &variable));

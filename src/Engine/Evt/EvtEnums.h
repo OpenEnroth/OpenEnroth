@@ -394,8 +394,7 @@ enum class EvtVariable {
     VAR_LAST_SKILL = VAR_LearningSkill,
 };
 using enum EvtVariable;
-MM_DECLARE_SERIALIZATION_FUNCTIONS(EvtVariable) // MMExtension's names, e.g. "QBits" and "MapVar3". It has none for race and physical resistance.
-
+MM_DECLARE_SERIALIZATION_FUNCTIONS(EvtVariable) // MMExtension's names, e.g. "QBits" and "MapVar3".
 enum class Season {
     SEASON_SPRING = 0,
     SEASON_SUMMER = 1,
