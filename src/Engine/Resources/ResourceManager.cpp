@@ -125,6 +125,11 @@ Blob ResourceManager::eventsData(std::string_view filename) {
     return lod::decodeMaybeCompressed(_eventsLodReader.read(filename));
 }
 
+Blob ResourceManager::eventsText(std::string_view filename) {
+    Blob result = eventsData(filename);
+    return result.subBlob(0, result.str().find('\x1A')); // The Czech fan translation ends some of its text tables with a 0x1A.
+}
+
 RgbaImage ResourceManager::icon(std::string_view filename) {
     std::string name = ascii::toLower(filename);
     if (!_iconsLodReader.exists(name)) {
