@@ -104,6 +104,9 @@ if(OE_USE_SANITIZERS)
     message(STATUS "Using sanitizers: ${OE_USE_SANITIZERS}.")
     add_compile_options(-fsanitize=${OE_USE_SANITIZERS} -fno-sanitize-recover=all) # UBSan only warns by default, and gtest-parallel drops the output of passing tests.
     add_link_options(-fsanitize=${OE_USE_SANITIZERS})
+    if(OE_USE_SANITIZERS MATCHES "address")
+        add_compile_definitions(_GLIBCXX_SANITIZE_VECTOR) # ASan then reports access past a vector's size, into its spare capacity.
+    endif()
 endif()
 
 # Set compiler options. We do a lot of tweaks here.
