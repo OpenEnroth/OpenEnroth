@@ -1633,6 +1633,8 @@ void UpdateActors_ODM() {
         }
 
         // ARMAGEDDON PANIC
+        // TODO(captainurist): the push is a fixed amount per frame for a fixed number of frames, so how far the actors
+        // fly depends on the frame rate. Armageddon should give them an acceleration that's applied over frame time.
         if (pParty->armageddon_timer && actor.CanBeDamaged() && pParty->armageddonForceCount > 0) {
             actor.velocity.x += grng->random(100) - 50;
             actor.velocity.y += grng->random(100) - 50;
