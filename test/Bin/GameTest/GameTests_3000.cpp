@@ -25,6 +25,7 @@
 
 GAME_TEST(Issues, Issue3000) {
     // In turn-based mode, a monster out of melee range that picked its first attack fired its second attack's missile.
+    // It should have fired its first attack's missile, or stood if its first attack is melee.
     for (int attack2Chance : {0, 100}) {
         SCOPED_TRACE(fmt::format("attack2Chance={}", attack2Chance));
         test.prepareForNextTest();
