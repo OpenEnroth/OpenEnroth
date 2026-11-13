@@ -902,7 +902,7 @@ GAME_TEST(Issues, Issue2279) {
 }
 
 GAME_TEST(Issues, Issue2289) {
-    // In turn-based mode, of two goblins next to the party only one ever attacked, the other stood through every round.
+    // In turn-based mode, monsters whose turn came up mid-round skipped it and stood around, so most of a group never attacked.
     engine->config->debug.NoActors.setValue(true);
     game.startNewGame();
     game.teleportTo(MAP_HARMONDALE, Vec3f(-5858, 10324, 0), 0); // In front of the J.V.C Corral.
