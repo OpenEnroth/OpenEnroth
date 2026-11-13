@@ -56,6 +56,22 @@ FileStat fs::stat(PathView path) {
     return FileStat(isRegular ? FILE_REGULAR : FILE_DIRECTORY, size);
 }
 
+PathView fs::walk(PathView path, PathView *tail) {
+    std::string_view lastSegment;
+    for (std::string_view segment : path.split()) {
+        if (!exists(path.headAt(segment))) {
+            if (tail)
+                *tail = path.tailAt(segment);
+            return path.headBefore(segment);
+        }
+        lastSegment = segment;
+    }
+
+    if (tail)
+        *tail = {};
+    return path.headAt(lastSegment);
+}
+
 std::vector<DirectoryEntry> fs::ls(PathView path) {
     std::vector<DirectoryEntry> result;
     ls(path, &result);

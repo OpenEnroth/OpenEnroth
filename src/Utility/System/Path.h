@@ -133,6 +133,14 @@ class Path {
         return PathView(*this).tailAfter(segment);
     }
 
+    [[nodiscard]] PathView headAt(std::same_as<std::string_view> auto segment) const MM_LIFETIMEBOUND {
+        return PathView(*this).headAt(segment);
+    }
+
+    [[nodiscard]] PathView headBefore(std::same_as<std::string_view> auto segment) const MM_LIFETIMEBOUND {
+        return PathView(*this).headBefore(segment);
+    }
+
     /**
      * @param tail                      Path to append, joined the same way `operator/` does it.
      * @return                          This path.

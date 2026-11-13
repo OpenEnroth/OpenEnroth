@@ -25,6 +25,23 @@ namespace fs {
 [[nodiscard]] FileStat stat(PathView path);
 
 /**
+ * Splits `path` into its longest existing prefix and the rest. Prefixes are checked one segment at a time, so a file
+ * in the middle of `path` ends the prefix, and `"games.lod/d.odm"` splits into `"games.lod"` and `"d.odm"`. Never
+ * throws, errors read as a missing path.
+ *
+ * Trailing separators are not checked, so `"games.lod/"` gives `"games.lod"` with an empty tail.
+ *
+ * @param path                          Path to walk.
+ * @param[out] tail                     If not null, receives the part of `path` that doesn't exist, starting at its
+ *                                      first segment. Empty if all of `path` exists.
+ * @return                              The existing prefix of `path`, without trailing separators. A root is taken
+ *                                      to exist without a check, so `"/nope"` gives `"/"`. Empty if not even the
+ *                                      first segment exists. Non-empty results point into the string that `path`
+ *                                      views.
+ */
+[[nodiscard]] PathView walk(PathView path, PathView *tail = nullptr);
+
+/**
  * Lists a directory. Entries that can't be stat'ed are skipped, and a directory that can't be opened lists as empty,
  * so the result is always in sync with what `stat` returns.
  *

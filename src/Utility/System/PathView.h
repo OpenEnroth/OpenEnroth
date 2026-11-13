@@ -138,7 +138,8 @@ class PathView {
     }
 
     /**
-     * @param segment                   Segment handed out by `split` of this path.
+     * @param segment                   Segment handed out by `split` of this path. Unlike `tailAfter`, this
+     *                                  doesn't take an empty view.
      * @return                          The rest of this path, starting at `segment`. On Windows a segment can start
      *                                  with a drive, so in `"a/c:b"` the tail at `"c:b"` has a root of its own.
      */
@@ -150,18 +151,47 @@ class PathView {
     /**
      * @param segment                   Segment handed out by `split` of this path, or an empty view.
      * @return                          The rest of this path after `segment` and the separators that follow it, or
-     *                                  all of it, root included, for an empty `segment`. Like `tailAt`, the rest can
+     *                                  all of it after the root for an empty `segment`. Like `tailAt`, the rest can
      *                                  start with a drive on Windows.
      */
     [[nodiscard]] PathView tailAfter(std::same_as<std::string_view> auto segment) const {
         if (segment.empty())
-            return *this;
+            return PathView(_path.substr(detail::skipPathSeparators(_path, root().size())));
 
         assert(segment.data() >= _path.data() && segment.data() + segment.size() <= _path.data() + _path.size());
         size_t offset = detail::skipPathSeparators(_path, segment.data() + segment.size() - _path.data());
         if (offset == _path.size())
             return {};
         return PathView(_path.substr(offset));
+    }
+
+    /**
+     * @param segment                   Segment handed out by `split` of this path, or an empty view.
+     * @return                          This path up to the end of `segment`, root included, or just the root for an
+     *                                  empty `segment`.
+     */
+    [[nodiscard]] PathView headAt(std::same_as<std::string_view> auto segment) const {
+        if (segment.empty())
+            return root();
+
+        assert(segment.data() >= _path.data() && segment.data() + segment.size() <= _path.data() + _path.size());
+        return PathView(_path.substr(0, segment.data() + segment.size() - _path.data()));
+    }
+
+    /**
+     * @param segment                   Segment handed out by `split` of this path. Unlike `headAt`, this
+     *                                  doesn't take an empty view.
+     * @return                          This path up to `segment`, without the separators before it, but never
+     *                                  shorter than the root. So the head before `"a"` in `"/a"` is `"/"`, and in
+     *                                  `"a"` it is empty.
+     */
+    [[nodiscard]] PathView headBefore(std::same_as<std::string_view> auto segment) const {
+        assert(segment.data() >= _path.data() && segment.data() + segment.size() <= _path.data() + _path.size());
+        size_t rootSize = root().size();
+        size_t end = segment.data() - _path.data();
+        while (end > rootSize && detail::isPathSeparator(_path[end - 1]))
+            end--;
+        return PathView(_path.substr(0, end));
     }
 
     friend auto operator<=>(PathView l, PathView r) = default;
