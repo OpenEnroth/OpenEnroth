@@ -124,6 +124,11 @@ UNIT_TEST(EvtEnums, VariableNames) {
 
     EXPECT_EQ(toString(VAR_Race), "RaceIs");
 
+    EXPECT_EQ(toString(VAR_DisarmTrapSkill), "DisarmTrapSkill");
+    EXPECT_EQ(fromString<EvtVariable>("DisarmTrapsSkill"), VAR_DisarmTrapSkill);
+    EXPECT_EQ(toString(VAR_Paralyzed), "Paralyzed");
+    EXPECT_EQ(fromString<EvtVariable>("Paralysed"), VAR_Paralyzed);
+
     EvtVariable variable = VAR_Sex;
     EXPECT_FALSE(tryDeserialize("MapVar100", &variable));
     EXPECT_FALSE(tryDeserialize("MapVar01", &variable));
