@@ -28,6 +28,9 @@ GameTestOptions GameTestOptions::parse(int argc, char **argv) {
         "--speed", result.speed,
         "Playback speed, default is infinite, use '1.0' for realtime playback.")->option_text("SPEED");
     app->add_flag(
+        "--decompiled-events", result.decompiledEvents,
+        "Run the events of every evt file through its decompiled Lua script, see debug.decompiled_events.")->group(otherOptions);
+    app->add_flag(
         "--tracing-rng", result.tracingRng,
         "Use random number generators that print stack trace on each call.")->group(otherOptions);
     app->add_option(

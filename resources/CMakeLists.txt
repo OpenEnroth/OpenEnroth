@@ -5,6 +5,7 @@ set(RESOURCE_SOURCES
         images/OpenEnroth.png
         scripts/_definitions/bindings/audio.lua
         scripts/_definitions/bindings/config.lua
+        scripts/_definitions/bindings/evt.lua
         scripts/_definitions/bindings/game.lua
         scripts/_definitions/bindings/input.lua
         scripts/_definitions/bindings/log.lua
@@ -12,6 +13,7 @@ set(RESOURCE_SOURCES
         scripts/_definitions/bindings/platform.lua
         scripts/_definitions/bindings/renderer.lua
         scripts/_definitions/def_common.lua
+        scripts/_definitions/def_evt.lua
         scripts/_definitions/def_game.lua
         scripts/_definitions/def_imgui.lua
         scripts/console.lua
@@ -40,6 +42,9 @@ set(RESOURCE_SOURCES
         scripts/dev/console_overlay.lua
         scripts/dev/imgui_demo_overlay.lua
         scripts/init.lua
+        scripts/maps/d25.lua
+        scripts/maps/d27.lua
+        scripts/mmext/core.lua
         scripts/utils.lua
         shaders/fog.glsl
         shaders/glbillbshader.frag
