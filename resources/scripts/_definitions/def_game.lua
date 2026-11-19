@@ -11,6 +11,7 @@
 --- @field ClassType ClassTypeEnum | table<string, ClassType>
 --- @field ItemType ItemTypeEnum | table<string, ItemType>
 --- @field QBits table<string, QBits>
+--- @field ArcomageTaverns ArcomageTavernsEnum | table<string, ArcomageTaverns>
 --- @field debugCallback fun()
 
 --- @class SkillEntry
@@ -57,6 +58,7 @@
 --- @field clearCondition fun(charIndex: integer, condition: CharacterCondition?)
 --- @field getQBit fun(qbit: QBits):boolean
 --- @field setQBit fun(qbit: QBits, value: boolean)
+--- @field arcomageWins fun(): table<integer, boolean>
 
 --- @class ItemInfo
 --- @field name string
@@ -69,8 +71,8 @@
 
 --- ENUMS
 
----@alias AnyGameEnum PartyAlignmentEnum|SkillMasteryEnum|SkillTypeEnum|CharacterConditionEnum|ClassTypeEnum|ItemTypeEnum
----@alias AnyGameEnumValue PartyAlignment|SkillMastery|SkillType|CharacterCondition|ClassType|ItemType
+---@alias AnyGameEnum PartyAlignmentEnum|SkillMasteryEnum|SkillTypeEnum|CharacterConditionEnum|ClassTypeEnum|ItemTypeEnum|ArcomageTavernsEnum
+---@alias AnyGameEnumValue PartyAlignment|SkillMastery|SkillType|CharacterCondition|ClassType|ItemType|ArcomageTaverns
 
 --- @enum PartyAlignment
 --- @class PartyAlignmentEnum
@@ -196,3 +198,19 @@
 --- @class QBitsEnum
 --- @field DarkPath QBits
 --- @field LightPath QBits
+
+--- @enum ArcomageTaverns
+--- @class ArcomageTavernsEnum
+--- @field Harmondale ArcomageTaverns
+--- @field Erathia ArcomageTaverns
+--- @field TulareanForest ArcomageTaverns
+--- @field Deyja ArcomageTaverns
+--- @field BracadaDesert ArcomageTaverns
+--- @field Celeste ArcomageTaverns
+--- @field Pit ArcomageTaverns
+--- @field EvenmornIsland ArcomageTaverns
+--- @field Nighon ArcomageTaverns
+--- @field BarrowDowns ArcomageTaverns
+--- @field Tatalia ArcomageTaverns
+--- @field Avlee ArcomageTaverns
+--- @field StoneCity ArcomageTaverns

@@ -12,6 +12,7 @@
 #include "Engine/Tables/ItemTable.h"
 #include "Engine/Random/Random.h"
 #include "Engine/mm7_data.h"
+#include "Engine/Data/HouseEnumFunctions.h"
 #include "Library/Logger/Logger.h"
 #include "Media/Audio/AudioPlayer.h"
 #include "Media/Audio/SoundList.h"
@@ -196,6 +197,12 @@ void GameBindings::_registerPartyBindings(sol::state_view &solState, sol::table 
         }),
         "setQBit", sol::as_function([](QuestBit qbit, bool value) {
             pParty->_questBits.set(qbit, value);
+        }),
+        "arcomageWins", sol::as_function([&solState]() {
+            sol::table result = solState.create_table();
+            for (HouseId i : allArcomageTaverns())
+                result[i] = pParty->pArcomageWins[i];
+            return result;
         })
     );
 }
@@ -370,6 +377,22 @@ void GameBindings::_registerEnums(sol::state_view &solState, sol::table &table) 
     // go through this enum, everything else goes through `items.allItems`.
     table.new_enum<false>("ItemType",
         "LichJarFull", ITEM_QUEST_LICH_JAR_FULL
+    );
+
+    table.new_enum<false>("ArcomageTaverns",
+        "Harmondale", HOUSE_TAVERN_HARMONDALE,
+        "Erathia", HOUSE_TAVERN_ERATHIA,
+        "TulareanForest", HOUSE_TAVERN_TULAREAN_FOREST,
+        "Deyja", HOUSE_TAVERN_DEYJA,
+        "BracadaDesert", HOUSE_TAVERN_BRACADA_DESERT,
+        "Celeste", HOUSE_TAVERN_CELESTE,
+        "Pit", HOUSE_TAVERN_PIT,
+        "EvenmornIsland", HOUSE_TAVERN_EVENMORN_ISLAND,
+        "Nighon", HOUSE_TAVERN_MOUNT_NIGHON,
+        "BarrowDowns", HOUSE_TAVERN_BARROW_DOWNS,
+        "Tatalia", HOUSE_TAVERN_TATALIA,
+        "Avlee", HOUSE_TAVERN_AVLEE,
+        "StoneCity", HOUSE_TAVERN_STONE_CITY
     );
 }
 
