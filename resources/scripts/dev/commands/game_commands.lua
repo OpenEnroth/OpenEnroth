@@ -13,6 +13,7 @@ local ManaCommand = require "dev.commands.mana_command"
 local SkillsCommand = require "dev.commands.skills_command"
 local ClassCommand = require "dev.commands.class_command"
 local DebugCommand = require "dev.commands.debug_command"
+local QuestsCommand = require "dev.commands.quests_command"
 
 local Renderer = require "bindings.renderer"
 
@@ -54,6 +55,7 @@ GameCommands.registerGameCommands = function ()
     CommandManager.register(SkillsCommand)
     CommandManager.register(ClassCommand)
     CommandManager.register(DebugCommand)
+    CommandManager.register(QuestsCommand)
 end
 
 return GameCommands
