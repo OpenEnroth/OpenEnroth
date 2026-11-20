@@ -5,12 +5,13 @@ local function listArcomage()
     --- @type { id: integer, flag: boolean, name: string }[]
     local entries = {}
     for id, flag in pairs(Game.party.arcomageWins()) do
-        local label = enumToString(Game.ArcomageTaverns, id)
-        local name = tostring(label:gsub("(%l)(%u)", "%1 %2"))
+        local label = enumToString(Game.ArcomageTaverns, id) or "?"
+        local name = string.gsub(label, "(%l)(%u)", "%1 %2")
         entries[#entries + 1] = { id = id, flag = flag, name = name }
     end
-    table.sort(entries, function(a, b) return a.name < b.name end)
+    table.sort(entries, function (a, b) return a.name < b.name end)
 
+    --- @type string[]
     local lines = {}
     for _, e in ipairs(entries) do
         lines[#lines + 1] = e.id .. ": " .. tostring(e.flag) .. " in " .. e.name
