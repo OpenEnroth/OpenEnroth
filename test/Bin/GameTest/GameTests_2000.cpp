@@ -11,6 +11,7 @@
 #include "Engine/mm7_data.h"
 #include "Engine/MapEnums.h"
 #include "Engine/Tables/MapTable.h"
+#include "Engine/TurnEngine/TurnEngine.h"
 #include "Engine/Party.h"
 #include "Engine/Random/Random.h"
 #include "Engine/Graphics/DecalBuilder.h"
@@ -901,12 +902,27 @@ GAME_TEST(Issues, Issue2279) {
 }
 
 GAME_TEST(Issues, Issue2289) {
-    // Monsters were skipping their turns in turn-based mode when their action length was zero.
-    auto turnBasedTape = tapes.custom([] { return pParty->bTurnBasedModeOn; });
-    auto meleeAttacksTape = actorTapes.countByState(AttackingMelee);
-    test.playTraceFromTestData("issue_2289.mm7", "issue_2289.json");
-    EXPECT_CONTAINS(turnBasedTape, true); // We were in turn-based combat.
-    EXPECT_GT(meleeAttacksTape.max(), 0); // Monsters actually attacked.
+    // In turn-based mode, a monster whose turn came right after another monster's skipped it, so some of a group never attacked.
+    engine->config->debug.NoActors.setValue(true);
+    game.startNewGame();
+    game.teleportTo(MAP_HARMONDALE, Vec3f(-5858, 10324, 0), 0); // In front of the J.V.C Corral.
+    engine->config->debug.NoActors.setValue(false);
+    std::vector<TestTape<AIState>> goblinTapes;
+    for (int i = 0; i < 10; i++) // Starting turn order is random, with ten some goblins are sure to come up after others.
+        goblinTapes.push_back(actorTapes.aiState(game.spawnMonster(pParty->pos + Vec3f(-250, 0, 0), MONSTER_GOBLIN_A, SPAWN_STATIONARY)->id));
+    test.startTaping();
+    game.pressAndReleaseKey(PlatformKey::KEY_RETURN);
+    for (int i = 0; i < 200 && pTurnEngine->turn_stage != TE_MOVEMENT; ++i) {
+        if (pTurnEngine->turn_stage == TE_ATTACK && pParty->hasActiveCharacter() && !pParty->activeCharacter().timeToRecovery)
+            game.pressAndReleaseKey(PlatformKey::KEY_B); // Pass.
+        game.tick();
+    }
+    ASSERT_EQ(pTurnEngine->turn_stage, TE_MOVEMENT);
+
+    for (int i = 0; i < 10; i++) {
+        SCOPED_TRACE(fmt::format("goblin={}", i));
+        EXPECT_CONTAINS(goblinTapes[i], AttackingMelee);
+    }
 }
 
 GAME_TEST(Issues, Issue2298) {

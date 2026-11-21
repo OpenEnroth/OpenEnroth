@@ -698,6 +698,7 @@ void stru262_TurnBased::AI_Action_(int queue_index) {
                             pQueue[queue_index].AI_action_type =
                                     TE_AI_RANGED_ATTACK;
                         }
+                        break;
                     case ABILITY_ATTACK2:
                         if (pActors[actor_id].monsterInfo.attack2MissileType != MONSTER_PROJECTILE_NONE) {
                             Actor::AI_MissileAttack2(actor_id, v22, &v18);
