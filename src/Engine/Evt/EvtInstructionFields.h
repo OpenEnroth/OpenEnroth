@@ -1,5 +1,6 @@
 #pragma once
 
+#include <array>
 #include <cstdint>
 #include <functional>
 #include <string>
@@ -10,11 +11,11 @@
 /**
  * Walks the fields of an instruction in the order that an evt record stores them, after the step and the opcode, and
  * calls `visitor(type, name, member, convert)` for each field:
- * - `type` is a `std::type_identity` of what the record stores, an unsigned integer or an `std::string` that ends
- *   with a zero.
+ * - `type` is a `std::type_identity` of what the record stores: an unsigned integer, an array of them, or an
+ *   `std::string` that ends with a zero.
  * - `name` is the name of the field as a `const char *`, MMExtension's where a script can call the command.
  * - `member` is a pointer to the member that holds the field, which is a number, a bool, an enum, a string, or an
- *   array of numbers that the record stores one after another.
+ *   array of numbers of the size that is stored.
  * - `convert` takes what the record stores and returns what goes into the member. It's `std::identity` for most
  *   fields.
  *
@@ -29,6 +30,7 @@ bool visitEvtFields(Instruction &ir, Visitor &&visitor) {
     constexpr std::type_identity<uint8_t> u8;
     constexpr std::type_identity<uint16_t> u16;
     constexpr std::type_identity<uint32_t> u32;
+    constexpr std::type_identity<std::array<uint8_t, 6>> u8x6;
     constexpr std::type_identity<std::string> str;
 
     auto fld = [&](auto type, const char *name, auto *member) {
@@ -156,7 +158,7 @@ bool visitEvtFields(Instruction &ir, Visitor &&visitor) {
             fld(u8, "On", &data.actor_flag_descr.is_set);
             return true;
         case EVENT_RandomGoTo:
-            fld(u8, "Jumps", &data.random_goto_descr.random_goto);
+            fld(u8x6, "Jumps", &data.random_goto_descr.random_goto);
             return true;
         case EVENT_InputString: // TODO(yoctozepto): not present in used MM7 data, likely present in MM8 (e.g., Escaton's riddles)
         case EVENT_StatusText:

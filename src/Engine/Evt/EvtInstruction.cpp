@@ -1,6 +1,7 @@
 #include "EvtInstruction.h"
 
 #include <algorithm>
+#include <array>
 #include <functional>
 #include <string>
 #include <string_view>
@@ -31,6 +32,11 @@ template<class T, class Value>
 static T fromWire(Value value, const char *name) {
     if constexpr (std::is_same_v<T, Value>) {
         return value;
+    } else if constexpr (requires { std::tuple_size<T>::value; }) { // An array, stored as an array of the same size.
+        T result;
+        for (size_t i = 0; i < result.size(); i++)
+            result[i] = fromWire<typename T::value_type>(value[i], name);
+        return result;
     } else if constexpr (std::is_enum_v<T>) {
         if (!std::in_range<std::underlying_type_t<T>>(value))
             throw Exception("Value '{}' is out of range for evt field '{}'", value, name);
@@ -112,21 +118,23 @@ std::string EvtInstruction::toString(EvtSource source) const {
 EvtInstruction EvtInstruction::parse(InputStream &stream) {
     EvtInstruction ir = {};  // A zeroed member may be unset or may be a real 0, the two are not distinguishable here.
 
-    ir.step = fromStream<uint8_t>(stream);
-    ir.opcode = EvtOpcode(fromStream<uint8_t>(stream));
+    uint8_t step = 0;
+    uint8_t opcode = 0;
+    deserialize(stream, &step);
+    deserialize(stream, &opcode);
+    ir.step = step;
+    ir.opcode = static_cast<EvtOpcode>(opcode);
 
     // TODO(captainurist): verify enum ranges here.
     bool isKnown = visitEvtFields(ir, [&]<class Wire>(std::type_identity<Wire>, const char *name, auto *member, auto &&convert) {
         using Member = std::remove_pointer_t<decltype(member)>;
-        if constexpr (std::is_void_v<Member>) {
-            fromStream<Wire>(stream);
-        } else if constexpr (std::is_same_v<Wire, std::string>) {
-            *member = fromStream<std::string>(stream, tags::nullTerminated);
-        } else if constexpr (std::is_arithmetic_v<Member> || std::is_enum_v<Member>) {
-            *member = fromWire<Member>(convert(fromStream<Wire>(stream)), name);
+        if constexpr (std::is_same_v<Wire, std::string>) {
+            deserialize(stream, member, tags::nullTerminated);
         } else {
-            for (auto &element : *member) // An array of numbers.
-                element = fromWire<std::remove_reference_t<decltype(element)>>(convert(fromStream<Wire>(stream)), name);
+            Wire stored = Wire();
+            deserialize(stream, &stored);
+            if constexpr (!std::is_void_v<Member>)
+                *member = fromWire<Member>(convert(stored), name);
         }
     });
     if (!isKnown)

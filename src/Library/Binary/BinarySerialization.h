@@ -22,16 +22,6 @@ struct BlobDeserializer {
         return result;
     }
 };
-
-template<class T>
-struct StreamDeserializer {
-    template<class... Tags>
-    T operator()(InputStream &src, const Tags &... tags) const {
-        T val;
-        deserialize(src, &val, tags...);
-        return val;
-    }
-};
 } // namespace detail
 
 /**
@@ -56,15 +46,3 @@ constexpr detail::BlobSerializer toBlob;
  */
 template<class T>
 constexpr detail::BlobDeserializer<T> fromBlob;
-
-/**
- * Value-returning binary stream deserialization object.
- *
- * Can be used as `fromStream<uint32_t>(stream)` or `fromStream<std::string>(stream, tags::nullTerminated)`.
- *
- * Under the hood it's calling the `deserialize` function using argument-dependent lookup.
- *
- * @see fromBlob
- */
-template<class T>
-constexpr detail::StreamDeserializer<T> fromStream;
