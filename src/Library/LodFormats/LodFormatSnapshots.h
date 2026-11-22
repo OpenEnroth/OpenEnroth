@@ -11,14 +11,14 @@ struct LodFontAtlas;
 
 #pragma pack(push, 1)
 
-struct LodCompressionHeader_MM6 {
+struct LodCompressionHeader_MM7 {
     std::uint32_t version; // Always 91969.
     std::array<char, 4> signature; // Always "mvii".
     std::uint32_t dataSize;
     std::uint32_t decompressedSize; // Size of the decompressed data, 0 if data is not compressed.
 };
-static_assert(sizeof(LodCompressionHeader_MM6) == 16);
-MM_DECLARE_MEMCOPY_SERIALIZABLE(LodCompressionHeader_MM6)
+static_assert(sizeof(LodCompressionHeader_MM7) == 16);
+MM_DECLARE_MEMCOPY_SERIALIZABLE(LodCompressionHeader_MM7)
 
 struct LodImageHeader_MM6 {
     std::array<char, 16> name;
