@@ -8,23 +8,6 @@
 #include "Engine/Evt/EvtInstruction.h"
 
 /**
- * @param value                         Mastery as an evt record stores it for a spell, 0 to 3 for novice to grandmaster.
- * @return                              The mastery.
- */
-inline Mastery evtSpellMastery(uint8_t value) {
-    return static_cast<Mastery>(value + 1);
-}
-
-/**
- * @param value                         Mastery as an evt record stores it for a skill check, 0 for any mastery and 1 to
- *                                      3 for expert to grandmaster.
- * @return                              The mastery.
- */
-inline Mastery evtSkillMastery(uint8_t value) {
-    return value == 0 ? MASTERY_NONE : static_cast<Mastery>(value + 1);
-}
-
-/**
  * Walks the fields of an instruction in the order that an evt record stores them, after the step and the opcode, and
  * calls `visitor(type, name, member, convert)` for each field:
  * - `type` is a `std::type_identity` of what the record stores, an unsigned integer or an `std::string` that ends
@@ -48,10 +31,13 @@ bool visitEvtFields(Instruction &ir, Visitor &&visitor) {
     constexpr std::type_identity<uint32_t> u32;
     constexpr std::type_identity<std::string> str;
 
-    auto field = [&](auto type, const char *name, auto *member) {
+    auto fld = [&](auto type, const char *name, auto *member) {
         visitor(type, name, member, std::identity());
     };
-    auto padding = [&](auto type) {
+    auto cnv = [&](auto type, const char *name, auto *member, auto &&convert) {
+        visitor(type, name, member, convert);
+    };
+    auto pad = [&](auto type) {
         visitor(type, static_cast<const char *>(nullptr), static_cast<void *>(nullptr), std::identity());
     };
 
@@ -60,229 +46,233 @@ bool visitEvtFields(Instruction &ir, Visitor &&visitor) {
     // TODO(yoctozepto): which are present in global events and which in local?
     switch (ir.opcode) {
         case EVENT_Exit:
-            padding(u8); // TODO(yoctozepto): always 0 in MM7 data, check MM6&8
+            pad(u8); // TODO(yoctozepto): always 0 in MM7 data, check MM6&8
             return true;
         case EVENT_SpeakInHouse:
-            field(u32, "Id", &data.house_id);
+            fld(u32, "Id", &data.house_id);
             return true;
         case EVENT_PlaySound:
-            field(u32, "Id", &data.sound_descr.sound_id);
-            field(u32, "X", &data.sound_descr.x);
-            field(u32, "Y", &data.sound_descr.y);
+            fld(u32, "Id", &data.sound_descr.sound_id);
+            fld(u32, "X", &data.sound_descr.x);
+            fld(u32, "Y", &data.sound_descr.y);
             return true;
         case EVENT_MouseOver:
-            field(u8, "Str", &data.text_id);
+            fld(u8, "Str", &data.text_id);
             return true;
         case EVENT_LocationName: // Only in MM6 data.
-            field(u8, "Str", &data.text_id);
+            fld(u8, "Str", &data.text_id);
             return true;
         case EVENT_MoveToMap:
-            field(u32, "X", &data.move_map_descr.x);
-            field(u32, "Y", &data.move_map_descr.y);
-            field(u32, "Z", &data.move_map_descr.z);
-            field(u32, "Direction", &data.move_map_descr.yaw);
-            field(u32, "LookAngle", &data.move_map_descr.pitch);
-            field(u32, "SpeedZ", &data.move_map_descr.zspeed);
-            field(u8, "HouseId", &data.move_map_descr.house_id); // TODO(captainurist): Is this correct? Houses can have ids > 255.
-            field(u8, "Icon", &data.move_map_descr.exit_pic_id);
-            field(str, "Name", &ir.str);
+            fld(u32, "X", &data.move_map_descr.x);
+            fld(u32, "Y", &data.move_map_descr.y);
+            fld(u32, "Z", &data.move_map_descr.z);
+            fld(u32, "Direction", &data.move_map_descr.yaw);
+            fld(u32, "LookAngle", &data.move_map_descr.pitch);
+            fld(u32, "SpeedZ", &data.move_map_descr.zspeed);
+            fld(u8, "HouseId", &data.move_map_descr.house_id); // TODO(captainurist): Is this correct? Houses can have ids > 255.
+            fld(u8, "Icon", &data.move_map_descr.exit_pic_id);
+            fld(str, "Name", &ir.str);
             return true;
         case EVENT_OpenChest:
-            field(u8, "Id", &data.chest_id);
+            fld(u8, "Id", &data.chest_id);
             return true;
         case EVENT_ShowFace: // TODO(yoctozepto): not present in used MM7 data
-            field(u8, "Player", &ir.who);
-            field(u8, "Frame", &data.portrait_id);
+            fld(u8, "Player", &ir.who);
+            fld(u8, "Frame", &data.portrait_id);
             return true;
         case EVENT_ReceiveDamage:
-            field(u8, "Player", &ir.who);
-            field(u8, "DamageType", &data.damage_descr.damage_type);
-            field(u32, "Damage", &data.damage_descr.damage);
+            fld(u8, "Player", &ir.who);
+            fld(u8, "DamageType", &data.damage_descr.damage_type);
+            fld(u32, "Damage", &data.damage_descr.damage);
             return true;
-        case EVENT_SetSnow: // TODO(yoctozepto): not present in used MM7 data; likely present in MM6
-            field(u8, "EffectId", &data.snow_descr.is_nop);
-            field(u8, "On", &data.snow_descr.is_enable);
+        case EVENT_SetSnow: // TODO(yoctozepto): not present in used MM7 data, likely present in MM6
+            fld(u8, "EffectId", &data.snow_descr.is_nop);
+            fld(u8, "On", &data.snow_descr.is_enable);
             return true;
         case EVENT_SetTexture:
-            field(u32, "Facet", &data.sprite_texture_descr.cog);
-            field(str, "Name", &ir.str);
+            fld(u32, "Facet", &data.sprite_texture_descr.cog);
+            fld(str, "Name", &ir.str);
             return true;
         case EVENT_ShowMovie:
-            padding(u8); // TODO(yoctozepto): always 1 in MM7 data, check MM6&8
-            field(u8, "ExitCurrentScreen", &data.movie_unknown_field); // NOTE(yoctozepto): seems to be a boolean as it takes either 0 or 1 in MM7 data
-            field(str, "Name", &ir.str);
+            pad(u8); // TODO(yoctozepto): always 1 in MM7 data, check MM6&8
+            fld(u8, "ExitCurrentScreen", &data.movie_unknown_field); // NOTE(yoctozepto): seems to be a boolean as it takes either 0 or 1 in MM7 data
+            fld(str, "Name", &ir.str);
             return true;
         case EVENT_SetSprite:
-            field(u32, "SpriteId", &data.sprite_texture_descr.cog);
-            field(u8, "Visible", &data.sprite_texture_descr.hide);
-            field(str, "Name", &ir.str);
+            fld(u32, "SpriteId", &data.sprite_texture_descr.cog);
+            fld(u8, "Visible", &data.sprite_texture_descr.hide);
+            fld(str, "Name", &ir.str);
             return true;
         case EVENT_Compare:
         case EVENT_OnCanShowDialogItemCmp:
-            field(u16, "VarNum", &data.variable_descr.type);
-            field(u32, "Value", &data.variable_descr.value);
-            field(u8, "Jump", &ir.target_step);
+            fld(u16, "VarNum", &data.variable_descr.type);
+            fld(u32, "Value", &data.variable_descr.value);
+            fld(u8, "Jump", &ir.target_step);
             return true;
         case EVENT_ChangeDoorState:
-            field(u8, "Id", &data.door_descr.door_id);
-            field(u8, "State", &data.door_descr.door_action);
+            fld(u8, "Id", &data.door_descr.door_id);
+            fld(u8, "State", &data.door_descr.door_action);
             return true;
         case EVENT_Add:
         case EVENT_Subtract:
         case EVENT_Set:
-            field(u16, "VarNum", &data.variable_descr.type);
-            field(u32, "Value", &data.variable_descr.value);
+            fld(u16, "VarNum", &data.variable_descr.type);
+            fld(u32, "Value", &data.variable_descr.value);
             return true;
         case EVENT_SummonMonsters:
-            field(u8, "TypeIndexInMapStats", &data.monster_descr.type);
-            field(u8, "Level", &data.monster_descr.level);
-            field(u8, "Count", &data.monster_descr.count);
-            field(u32, "X", &data.monster_descr.x);
-            field(u32, "Y", &data.monster_descr.y);
-            field(u32, "Z", &data.monster_descr.z);
-            field(u32, "NPCGroup", &data.monster_descr.group);
-            field(u32, "unk", &data.monster_descr.name_id);
+            fld(u8, "TypeIndexInMapStats", &data.monster_descr.type);
+            fld(u8, "Level", &data.monster_descr.level);
+            fld(u8, "Count", &data.monster_descr.count);
+            fld(u32, "X", &data.monster_descr.x);
+            fld(u32, "Y", &data.monster_descr.y);
+            fld(u32, "Z", &data.monster_descr.z);
+            fld(u32, "NPCGroup", &data.monster_descr.group);
+            fld(u32, "unk", &data.monster_descr.name_id);
             return true;
         case EVENT_CastSpell:
-            field(u8, "Spell", &data.spell_descr.spell_id);
-            visitor(u8, "Mastery", &data.spell_descr.spell_mastery, &evtSpellMastery);
-            field(u8, "Skill", &data.spell_descr.spell_level);
-            field(u32, "FromX", &data.spell_descr.fromx);
-            field(u32, "FromY", &data.spell_descr.fromy);
-            field(u32, "FromZ", &data.spell_descr.fromz);
-            field(u32, "ToX", &data.spell_descr.tox);
-            field(u32, "ToY", &data.spell_descr.toy);
-            field(u32, "ToZ", &data.spell_descr.toz);
+            fld(u8, "Spell", &data.spell_descr.spell_id);
+            cnv(u8, "Mastery", &data.spell_descr.spell_mastery, [](uint8_t mastery) {
+                return static_cast<Mastery>(mastery + 1); // 0 to 3 are novice to grandmaster.
+            });
+            fld(u8, "Skill", &data.spell_descr.spell_level);
+            fld(u32, "FromX", &data.spell_descr.fromx);
+            fld(u32, "FromY", &data.spell_descr.fromy);
+            fld(u32, "FromZ", &data.spell_descr.fromz);
+            fld(u32, "ToX", &data.spell_descr.tox);
+            fld(u32, "ToY", &data.spell_descr.toy);
+            fld(u32, "ToZ", &data.spell_descr.toz);
             return true;
         case EVENT_SpeakNPC:
-            field(u32, "NPC", &data.npc_descr.npc_id);
+            fld(u32, "NPC", &data.npc_descr.npc_id);
             return true;
         case EVENT_SetFacesBit:
-            field(u32, "Id", &data.faces_bit_descr.cog);
-            field(u32, "Bit", &data.faces_bit_descr.face_bit);
-            field(u8, "On", &data.faces_bit_descr.is_on);
+            fld(u32, "Id", &data.faces_bit_descr.cog);
+            fld(u32, "Bit", &data.faces_bit_descr.face_bit);
+            fld(u8, "On", &data.faces_bit_descr.is_on);
             return true;
         case EVENT_ToggleActorFlag: // TODO(yoctozepto): not present in used MM7 data
-            field(u32, "Monster", &data.actor_flag_descr.id);
-            field(u32, "Bit", &data.actor_flag_descr.attr);
-            field(u8, "On", &data.actor_flag_descr.is_set);
+            fld(u32, "Monster", &data.actor_flag_descr.id);
+            fld(u32, "Bit", &data.actor_flag_descr.attr);
+            fld(u8, "On", &data.actor_flag_descr.is_set);
             return true;
         case EVENT_RandomGoTo:
-            field(u8, "Jumps", &data.random_goto_descr.random_goto);
+            fld(u8, "Jumps", &data.random_goto_descr.random_goto);
             return true;
-        case EVENT_InputString: // TODO(yoctozepto): not present in used MM7 data; likely present in MM8 (e.g., Escaton's riddles)
+        case EVENT_InputString: // TODO(yoctozepto): not present in used MM7 data, likely present in MM8 (e.g., Escaton's riddles)
         case EVENT_StatusText:
         case EVENT_ShowMessage:
-            field(u32, "Str", &data.text_id);
+            fld(u32, "Str", &data.text_id);
             return true;
         case EVENT_OnTimer:
         case EVENT_OnLongTimer:
-            field(u8, "EachYear", &data.timer_descr.is_yearly);
-            field(u8, "EachMonth", &data.timer_descr.is_monthly);
-            field(u8, "EachWeek", &data.timer_descr.is_weekly);
-            field(u8, "Hour", &data.timer_descr.daily_start_hour);
-            field(u8, "Minute", &data.timer_descr.daily_start_minute);
-            field(u8, "Second", &data.timer_descr.daily_start_second);
-            field(u16, "HalfMinutes", &data.timer_descr.alt_halfmin_interval);
-            padding(u16); // TODO(yoctozepto): always 0 in MM7 data, check MM6&8
+            fld(u8, "EachYear", &data.timer_descr.is_yearly);
+            fld(u8, "EachMonth", &data.timer_descr.is_monthly);
+            fld(u8, "EachWeek", &data.timer_descr.is_weekly);
+            fld(u8, "Hour", &data.timer_descr.daily_start_hour);
+            fld(u8, "Minute", &data.timer_descr.daily_start_minute);
+            fld(u8, "Second", &data.timer_descr.daily_start_second);
+            fld(u16, "HalfMinutes", &data.timer_descr.alt_halfmin_interval);
+            pad(u16); // TODO(yoctozepto): always 0 in MM7 data, check MM6&8
             return true;
         case EVENT_ToggleIndoorLight:
-            field(u32, "Id", &data.light_descr.light_id);
-            field(u8, "On", &data.light_descr.is_enable);
+            fld(u32, "Id", &data.light_descr.light_id);
+            fld(u8, "On", &data.light_descr.is_enable);
             return true;
         case EVENT_PressAnyKey: // Only in MM6 data.
-            padding(u8); // Always 0 in MM6 data.
+            pad(u8); // Always 0 in MM6 data.
             return true;
         case EVENT_SummonItem: // TODO(yoctozepto): not present in used MM7 data
-            field(u32, "Type", &data.summon_item_descr.sprite);
-            field(u32, "X", &data.summon_item_descr.x);
-            field(u32, "Y", &data.summon_item_descr.y);
-            field(u32, "Z", &data.summon_item_descr.z);
-            field(u32, "Speed", &data.summon_item_descr.speed);
-            field(u8, "Count", &data.summon_item_descr.count);
-            field(u8, "RandomAngle", &data.summon_item_descr.random_rotate);
+            fld(u32, "Type", &data.summon_item_descr.sprite);
+            fld(u32, "X", &data.summon_item_descr.x);
+            fld(u32, "Y", &data.summon_item_descr.y);
+            fld(u32, "Z", &data.summon_item_descr.z);
+            fld(u32, "Speed", &data.summon_item_descr.speed);
+            fld(u8, "Count", &data.summon_item_descr.count);
+            fld(u8, "RandomAngle", &data.summon_item_descr.random_rotate);
             return true;
         case EVENT_ForPartyMember:
-            field(u8, "Player", &ir.who);
+            fld(u8, "Player", &ir.who);
             return true;
         case EVENT_Jmp:
-            field(u8, "Jump", &ir.target_step);
+            fld(u8, "Jump", &ir.target_step);
             return true;
         case EVENT_OnMapReload:
         case EVENT_OnMapLeave:
         case EVENT_EndCanShowDialogItem:
-            padding(u8); // TODO(yoctozepto): always 0 in MM7 data, check MM6&8
+            pad(u8); // TODO(yoctozepto): always 0 in MM7 data, check MM6&8
             return true;
         case EVENT_SetNPCTopic:
-            field(u32, "NPC", &data.npc_topic_descr.npc_id);
-            field(u8, "Index", &data.npc_topic_descr.index);
-            field(u32, "Event", &data.npc_topic_descr.event_id);
+            fld(u32, "NPC", &data.npc_topic_descr.npc_id);
+            fld(u8, "Index", &data.npc_topic_descr.index);
+            fld(u32, "Event", &data.npc_topic_descr.event_id);
             return true;
         case EVENT_MoveNPC:
-            field(u32, "NPC", &data.npc_move_descr.npc_id);
-            field(u32, "HouseId", &data.npc_move_descr.location_id);
+            fld(u32, "NPC", &data.npc_move_descr.npc_id);
+            fld(u32, "HouseId", &data.npc_move_descr.location_id);
             return true;
         case EVENT_GiveItem:
-            field(u8, "Strength", &data.give_item_descr.treasure_level);
-            field(u8, "Type", &data.give_item_descr.treasure_type);
-            field(u32, "Id", &data.give_item_descr.item_id);
+            fld(u8, "Strength", &data.give_item_descr.treasure_level);
+            fld(u8, "Type", &data.give_item_descr.treasure_type);
+            fld(u32, "Id", &data.give_item_descr.item_id);
             return true;
         case EVENT_ChangeEvent:
-            field(u32, "NewEvent", &data.event_id);
+            fld(u32, "NewEvent", &data.event_id);
             return true;
         case EVENT_CheckSkill:
-            field(u8, "Skill", &data.check_skill_descr.skill_type);
-            visitor(u8, "Mastery", &data.check_skill_descr.skill_mastery, &evtSkillMastery);
-            field(u32, "Level", &data.check_skill_descr.skill_level);
-            field(u8, "Jump", &ir.target_step);
+            fld(u8, "Skill", &data.check_skill_descr.skill_type);
+            cnv(u8, "Mastery", &data.check_skill_descr.skill_mastery, [](uint8_t mastery) {
+                return mastery == 0 ? MASTERY_NONE : static_cast<Mastery>(mastery + 1); // 0 is any mastery, 1 to 3 are expert to grandmaster.
+            });
+            fld(u32, "Level", &data.check_skill_descr.skill_level);
+            fld(u8, "Jump", &ir.target_step);
             return true;
         case EVENT_SetCanShowDialogItem:
-            field(u8, "Visible", &data.can_show_npc_dialogue);
+            fld(u8, "Visible", &data.can_show_npc_dialogue);
             return true;
         case EVENT_SetNPCGroupNews:
-            field(u32, "NPCGroup", &data.npc_groups_descr.groups_id);
-            field(u32, "NPCNews", &data.npc_groups_descr.group);
+            fld(u32, "NPCGroup", &data.npc_groups_descr.groups_id);
+            fld(u32, "NPCNews", &data.npc_groups_descr.group);
             return true;
         case EVENT_NPCSetItem:
-            field(u32, "NPC", &data.npc_item_descr.id);
-            field(u32, "Item", &data.npc_item_descr.item);
-            field(u8, "On", &data.npc_item_descr.is_give);
+            fld(u32, "NPC", &data.npc_item_descr.id);
+            fld(u32, "Item", &data.npc_item_descr.item);
+            fld(u8, "On", &data.npc_item_descr.is_give);
             return true;
         case EVENT_SetActorItem:
-            field(u32, "Monster", &data.npc_item_descr.id);
-            field(u32, "Item", &data.npc_item_descr.item);
-            field(u8, "Has", &data.npc_item_descr.is_give);
+            fld(u32, "Monster", &data.npc_item_descr.id);
+            fld(u32, "Item", &data.npc_item_descr.item);
+            fld(u8, "Has", &data.npc_item_descr.is_give);
             return true;
         case EVENT_SetNPCGreeting:
-            field(u32, "NPC", &data.npc_descr.npc_id);
-            field(u32, "Greeting", &data.npc_descr.greeting);
+            fld(u32, "NPC", &data.npc_descr.npc_id);
+            fld(u32, "Greeting", &data.npc_descr.greeting);
             return true;
         case EVENT_IsActorKilled:
         case EVENT_CanShowTopic_IsActorKilled: // TODO(yoctozepto): not present in used MM7 data
-            field(u8, "CheckType", &data.actor_descr.policy);
-            visitor(u32, "Id", &data.actor_descr.param, [&](uint32_t id) -> int {
+            fld(u8, "CheckType", &data.actor_descr.policy);
+            cnv(u32, "Id", &data.actor_descr.param, [&](uint32_t id) -> int {
                 return data.actor_descr.policy == KILL_CHECK_MONSTERID ? id + 1 : id; // Evt scripts count monster ids from 0.
             });
-            field(u8, "Count", &data.actor_descr.num);
-            field(u8, "Jump", &ir.target_step);
+            fld(u8, "Count", &data.actor_descr.num);
+            fld(u8, "Jump", &ir.target_step);
             return true;
         case EVENT_CheckSeason:
-            field(u8, "Season", &data.season);
-            field(u8, "Jump", &ir.target_step);
+            fld(u8, "Season", &data.season);
+            fld(u8, "Jump", &ir.target_step);
             return true;
         case EVENT_ToggleActorGroupFlag:
-            field(u32, "NPCGroup", &data.actor_flag_descr.id);
-            field(u32, "Bit", &data.actor_flag_descr.attr);
-            field(u8, "On", &data.actor_flag_descr.is_set);
+            fld(u32, "NPCGroup", &data.actor_flag_descr.id);
+            fld(u32, "Bit", &data.actor_flag_descr.attr);
+            fld(u8, "On", &data.actor_flag_descr.is_set);
             return true;
         case EVENT_ToggleChestFlag:
-            field(u32, "ChestId", &data.chest_flag_descr.chest_id);
-            field(u32, "Bit", &data.chest_flag_descr.flag);
-            field(u8, "On", &data.chest_flag_descr.is_set);
+            fld(u32, "ChestId", &data.chest_flag_descr.chest_id);
+            fld(u32, "Bit", &data.chest_flag_descr.flag);
+            fld(u8, "On", &data.chest_flag_descr.is_set);
             return true;
         case EVENT_CharacterAnimation:
-            field(u8, "Player", &ir.who);
-            field(u8, "Animation", &data.speech_id);
+            fld(u8, "Player", &ir.who);
+            fld(u8, "Animation", &data.speech_id);
             return true;
         default:
             return false; // TODO(yoctozepto): the rest aren't present in used MM7 data, and nobody has decoded them.
