@@ -395,6 +395,7 @@ enum class EvtVariable {
 };
 using enum EvtVariable;
 MM_DECLARE_SERIALIZATION_FUNCTIONS(EvtVariable) // MMExtension's names, e.g. "QBits" and "MapVar3".
+
 enum class Season {
     SEASON_SPRING = 0,
     SEASON_SUMMER = 1,
