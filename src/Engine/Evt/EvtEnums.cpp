@@ -304,7 +304,7 @@ MM_DEFINE_ENUM_SERIALIZATION_FUNCTIONS(EvtVariable, CASE_SENSITIVE, {
     {VAR_AlertStatus,                   "MapAlert"},
     {VAR_GoldInBank,                    "BankGold"},
     {VAR_NumDeaths,                     "Deaths"},
-    {VAR_NumBounties,                   "MontersHunted"}, // MMExtension's spelling.
+    {VAR_NumBounties,                   "MonstersHunted"},
     {VAR_PrisonTerms,                   "PrisonTerms"},
     {VAR_ArenaWinsPage,                 "ArenaWinsPage"},
     {VAR_ArenaWinsSquire,               "ArenaWinsSquire"},
@@ -315,5 +315,6 @@ MM_DEFINE_ENUM_SERIALIZATION_FUNCTIONS(EvtVariable, CASE_SENSITIVE, {
 
     // Other names that MMExtension takes from a script. They are only read.
     {VAR_DisarmTrapSkill,               "DisarmTrapsSkill"}, // MMExtension writes this one, and calls "DisarmTrap" the proper name since 2.3.
-    {VAR_Paralyzed,                     "Paralysed"} // MMExtension writes this one, and takes the American spelling too.
+    {VAR_Paralyzed,                     "Paralysed"}, // MMExtension writes this one, and takes the American spelling too.
+    {VAR_NumBounties,                   "MontersHunted"} // MMExtension's only name for it, a typo.
 })
