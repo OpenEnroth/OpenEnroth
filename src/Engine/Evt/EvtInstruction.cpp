@@ -33,7 +33,7 @@ static T fromWire(Value value, const char *name) {
         return value;
     } else if constexpr (std::is_enum_v<T>) {
         if (!std::in_range<std::underlying_type_t<T>>(value))
-            throw Exception("Evt field {} doesn't take {}", name, value);
+            throw Exception("Value '{}' is out of range for evt field '{}'", value, name);
         return static_cast<T>(value);
     } else if constexpr (std::is_same_v<T, bool>) {
         return value != 0;
