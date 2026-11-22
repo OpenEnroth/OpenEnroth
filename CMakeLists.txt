@@ -8,6 +8,7 @@ project("OpenEnroth")
 set(CMAKE_CXX_STANDARD 23)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON) # For clang-tidy and IDEs.
+set(CMAKE_CXX_SCAN_FOR_MODULES OFF) # No C++ modules here, and since CMake 4.5 a scanned target also gets an `import std` module built.
 
 list(APPEND CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/CMakeModules)
 include(Git)
