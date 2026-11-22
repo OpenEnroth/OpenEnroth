@@ -96,8 +96,8 @@ std::string EvtInstruction::toString(EvtSource source) const {
         name = name.substr(6);
 
     std::string fields;
-    bool isKnown = visitEvtFields(*this, [&]<class Wire, class Member, class Convert>(std::type_identity<Wire>, const char *fieldName, const Member *member, Convert &&) {
-        if constexpr (!std::is_void_v<Member>)
+    bool isKnown = visitEvtFields(*this, [&](auto, const char *fieldName, const auto *member, auto &&) {
+        if constexpr (!std::is_void_v<std::remove_pointer_t<decltype(member)>>)
             fields += fmt::format("{}{} = {}", fields.empty() ? "" : ", ", fieldName, toLogString(*member));
     });
     if (!isKnown)
@@ -116,7 +116,8 @@ EvtInstruction EvtInstruction::parse(InputStream &stream) {
     ir.opcode = EvtOpcode(fromStream<uint8_t>(stream));
 
     // TODO(captainurist): verify enum ranges here.
-    bool isKnown = visitEvtFields(ir, [&]<class Wire, class Member, class Convert>(std::type_identity<Wire>, const char *name, Member *member, Convert &&convert) {
+    bool isKnown = visitEvtFields(ir, [&]<class Wire>(std::type_identity<Wire>, const char *name, auto *member, auto &&convert) {
+        using Member = std::remove_pointer_t<decltype(member)>;
         if constexpr (std::is_void_v<Member>) {
             fromStream<Wire>(stream);
         } else if constexpr (std::is_same_v<Wire, std::string>) {
