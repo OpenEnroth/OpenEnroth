@@ -45,9 +45,6 @@ jobs:
   build_flatpak_bundle:
     timeout-minutes: 60
     runs-on: ubuntu-24.04
-    container:
-      image: ghcr.io/flathub-infra/flatpak-github-actions:freedesktop-25.08
-      options: --privileged
     strategy:
       fail-fast: false
       matrix:
@@ -71,6 +68,12 @@ jobs:
           submodules: recursive
           ref: ${{inputs.myCommit}}
 
+      - name: 'Install flatpak-builder'
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y flatpak flatpak-builder
+          flatpak remote-add --user --if-not-exists flathub https://dl.flathub.org/repo/flathub.flatpakrepo
+
       - name: 'Set up ccache'
         uses: hendrikmuhs/ccache-action@v1.2.24
         with:
@@ -80,16 +83,11 @@ jobs:
           save: ${{github.event_name != 'pull_request'}}
 
       - name: 'Run Flatpak build'
-        uses: flatpak/flatpak-github-actions/flatpak-builder@79327416609af08178ad73b352877e51450790b3 # v6.8
-        with:
-          run-tests: true
-          bundle: ${{env.RELEASE_FILE}}
-          manifest-path: distribution/linux/flatpak/dev.io.github.openenroth.openenroth.yml
-          arch: ${{matrix.architecture}}
-          verbose: true
-          cache: true
-          restore-cache: false
-          upload-artifact: false
+        run: |
+          flatpak-builder --user --install-deps-from=flathub --disable-rofiles-fuse --ccache --force-clean --verbose \
+            --arch=${{matrix.architecture}} --repo=repo flatpak_app distribution/linux/flatpak/dev.io.github.openenroth.openenroth.yml
+          flatpak build-bundle --runtime-repo=https://flathub.org/repo/flathub.flatpakrepo --arch=${{matrix.architecture}} \
+            repo "$RELEASE_FILE" io.github.openenroth.openenroth master
 
       - name: 'Publish release'
         if: inputs.releaseTag != ''
