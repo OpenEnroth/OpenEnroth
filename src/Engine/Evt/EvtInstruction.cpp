@@ -1,7 +1,7 @@
 #include "EvtInstruction.h"
 
 #include <algorithm>
-#include <array>
+#include <functional>
 #include <string>
 #include <string_view>
 #include <type_traits>
@@ -21,117 +21,50 @@
 #include "Utility/Exception.h"
 #include "Utility/Lambda.h"
 
-namespace {
+/**
+ * @param value                         What an evt record stores for a field, after the field's conversion.
+ * @param name                          Name of the field.
+ * @return                              The value as the member of type `T` that holds the field.
+ * @throws Exception                    If the value doesn't fit the member.
+ */
+template<class T, class Value>
+static T fromWire(Value value, const char *name) {
+    if constexpr (std::is_same_v<T, Value>) {
+        return value;
+    } else if constexpr (std::is_enum_v<T>) {
+        if (!std::in_range<std::underlying_type_t<T>>(value))
+            throw Exception("Evt field {} doesn't take {}", name, value);
+        return static_cast<T>(value);
+    } else if constexpr (std::is_same_v<T, bool>) {
+        return value != 0;
+    } else {
+        return static_cast<T>(value); // An unsigned value past the range of a signed member is a negative one.
+    }
+}
 
 /**
- * Reads the fields of an instruction from an evt record.
+ * @param value                         Member of an instruction.
+ * @return                              The member as the log shows it.
  */
-class EvtFieldReader {
- public:
-    explicit EvtFieldReader(InputStream &stream) : _stream(stream) {}
-
-    template<class Wire>
-    void operator()(EvtWire<Wire>, EvtPadding) {
-        fromStream<Wire>(_stream);
-    }
-
-    template<class Wire, class T>
-    void operator()(EvtWire<Wire>, std::string_view name, T &field) {
-        field = convert<T>(fromStream<Wire>(_stream), name);
-    }
-
-    template<class Wire, class T, size_t N>
-    void operator()(EvtWire<Wire>, std::string_view name, std::array<T, N> &field) {
-        for (T &element : field)
-            element = convert<T>(fromStream<Wire>(_stream), name);
-    }
-
-    template<class Wire, class T, class Convert>
-    void operator()(EvtWire<Wire>, std::string_view, T &field, Convert &&convert) {
-        field = convert(fromStream<Wire>(_stream));
-    }
-
-    void operator()(EvtWireString, std::string_view, std::string &field) {
-        field = fromStream<std::string>(_stream, tags::nullTerminated);
-    }
-
- private:
-    template<class T, class Wire>
-    static T convert(Wire value, std::string_view name) {
-        if constexpr (std::is_enum_v<T>) {
-            if (!std::in_range<std::underlying_type_t<T>>(value))
-                throw Exception("Evt field {} doesn't take {}", name, value);
-            return static_cast<T>(value);
-        } else if constexpr (std::is_same_v<T, bool>) {
-            return value != 0;
-        } else {
-            return static_cast<T>(value); // An unsigned value past the range of a signed member is a negative one.
-        }
-    }
-
- private:
-    InputStream &_stream;
-};
-
-/**
- * Writes the fields of an instruction as `Name = value` pairs, for logging.
- */
-class EvtFieldWriter {
- public:
-    template<class Wire>
-    void operator()(EvtWire<Wire>, EvtPadding) {}
-
-    template<class Wire, class T, class... Convert>
-    void operator()(EvtWire<Wire>, std::string_view name, const T &field, Convert &&...) {
-        add(name, format(field));
-    }
-
-    void operator()(EvtWireString, std::string_view name, const std::string &field) {
-        add(name, fmt::format("\"{}\"", field));
-    }
-
-    [[nodiscard]] const std::string &text() const {
-        return _text;
-    }
-
- private:
-    void add(std::string_view name, std::string_view value) {
-        _text += fmt::format("{}{} = {}", _text.empty() ? "" : ", ", name, value);
-    }
-
-    static std::string format(bool value) {
+template<class T>
+static std::string toLogString(const T &value) {
+    if constexpr (std::is_same_v<T, std::string>) {
+        return fmt::format("\"{}\"", value);
+    } else if constexpr (std::is_same_v<T, bool>) {
         return value ? "true" : "false";
-    }
-
-    static std::string format(EvtVariable value) {
+    } else if constexpr (std::is_same_v<T, EvtVariable>) {
         std::string name;
         return trySerialize(value, &name) ? fmt::format("\"{}\"", name) : fmt::format("{}", std::to_underlying(value));
-    }
-
-    template<class T> requires std::is_same_v<T, FaceAttribute> || std::is_same_v<T, ActorAttribute> || std::is_same_v<T, ChestFlag>
-    static std::string format(T value) {
+    } else if constexpr (std::is_same_v<T, FaceAttribute> || std::is_same_v<T, ActorAttribute> || std::is_same_v<T, ChestFlag>) {
         return fmt::format("0x{:X}", std::to_underlying(value));
+    } else if constexpr (std::is_enum_v<T>) {
+        return fmt::format("{}", std::to_underlying(value));
+    } else if constexpr (std::is_arithmetic_v<T>) {
+        return fmt::format("{}", value);
+    } else {
+        return fmt::format("{{{}}}", fmt::join(value, ", ")); // An array of numbers.
     }
-
-    template<class T, size_t N>
-    static std::string format(const std::array<T, N> &value) {
-        return fmt::format("{{{}}}", fmt::join(value, ", "));
-    }
-
-    template<class T>
-    static std::string format(T value) {
-        if constexpr (std::is_enum_v<T>) {
-            return fmt::format("{}", std::to_underlying(value));
-        } else {
-            return fmt::format("{}", value);
-        }
-    }
-
- private:
-    std::string _text;
-};
-
-} // namespace
+}
 
 /**
  * @param ir                            Instruction to look at.
@@ -162,11 +95,15 @@ std::string EvtInstruction::toString(EvtSource source) const {
     if (name.starts_with("EVENT_"))
         name = name.substr(6);
 
-    EvtFieldWriter writer;
-    if (!visitEvtFields(*this, writer))
+    std::string fields;
+    bool isKnown = visitEvtFields(*this, [&]<class Wire, class Member, class Convert>(std::type_identity<Wire>, const char *fieldName, const Member *member, Convert &&) {
+        if constexpr (!std::is_void_v<Member>)
+            fields += fmt::format("{}{} = {}", fields.empty() ? "" : ", ", fieldName, toLogString(*member));
+    });
+    if (!isKnown)
         return fmt::format("{}: UNPROCESSED/{}", step, name);
 
-    std::string result = fmt::format("{}: {}{{{}}}", step, name, writer.text());
+    std::string result = fmt::format("{}: {}{{{}}}", step, name, fields);
     if (std::string text = referencedText(*this, source); !text.empty())
         result += fmt::format("  -- \"{}\"", text);
     return result;
@@ -179,7 +116,19 @@ EvtInstruction EvtInstruction::parse(InputStream &stream) {
     ir.opcode = EvtOpcode(fromStream<uint8_t>(stream));
 
     // TODO(captainurist): verify enum ranges here.
-    if (!visitEvtFields(ir, EvtFieldReader(stream)))
+    bool isKnown = visitEvtFields(ir, [&]<class Wire, class Member, class Convert>(std::type_identity<Wire>, const char *name, Member *member, Convert &&convert) {
+        if constexpr (std::is_void_v<Member>) {
+            fromStream<Wire>(stream);
+        } else if constexpr (std::is_same_v<Wire, std::string>) {
+            *member = fromStream<std::string>(stream, tags::nullTerminated);
+        } else if constexpr (std::is_arithmetic_v<Member> || std::is_enum_v<Member>) {
+            *member = fromWire<Member>(convert(fromStream<Wire>(stream)), name);
+        } else {
+            for (auto &element : *member) // An array of numbers.
+                element = fromWire<std::remove_reference_t<decltype(element)>>(convert(fromStream<Wire>(stream)), name);
+        }
+    });
+    if (!isKnown)
         throw Exception("Unknown evt type: {}", std::to_underlying(ir.opcode));
 
     if (ir.opcode == EVENT_MouseOver || ir.opcode == EVENT_LocationName) {
