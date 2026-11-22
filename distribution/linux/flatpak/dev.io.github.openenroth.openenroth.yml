@@ -66,7 +66,7 @@ modules:
       - -DOE_CHECK_TIDY=OFF
       - -DOE_CHECK_LUA_STYLE=OFF
       - -DOE_USE_PREBUILT_DEPENDENCIES=OFF
-      - -DCMAKE_BUILD_TYPE=RelWithDbgInfo
+      - -DCMAKE_BUILD_TYPE=RelWithDebInfo
       - -DCMAKE_LINKER=lld
     sources:
       - type: dir
