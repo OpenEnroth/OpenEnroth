@@ -88,8 +88,13 @@ Blob SndReader::read(std::string_view filename) const {
                 MM_WARNING("SndReader: failed to decompress '{}', skipping: {}", path, e.what());
                 return Blob();
             }
-            MM_WARNING("SndReader: '{}' has corrupt checksum, recovered {} of {} expected bytes",
-                       path, result.size(), entry.decompressedSize);
+            if (result.size() == entry.decompressedSize) {
+                MM_WARNING("SndReader: '{}' has a zlib checksum that doesn't match, but its data unpacks to the expected {} bytes",
+                           path, result.size());
+            } else {
+                MM_WARNING("SndReader: '{}' has corrupt zlib data, only {} of {} bytes could be unpacked",
+                           path, result.size(), entry.decompressedSize);
+            }
         }
     }
     return result.withDisplayPath(path);
