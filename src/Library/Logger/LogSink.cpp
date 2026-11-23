@@ -38,11 +38,8 @@ class AndroidSinkSt : public LogSink {
  public:
     virtual void write(const LogCategory &category, LogLevel level, std::string_view message) override {
         auto pos = _sinkByCategory.find(category.name());
-        if (pos == _sinkByCategory.end()) {
-            pos = _sinkByCategory.emplace(std::piecewise_construct,
-                                          std::forward_as_tuple(category.name()),
-                                          std::forward_as_tuple(std::string(category.name()))).first;
-        }
+        if (pos == _sinkByCategory.end())
+            pos = _sinkByCategory.emplace(std::piecewise_construct, std::forward_as_tuple(category.name()), std::forward_as_tuple(std::string(category.name()))).first;
 
         pos->second.log(spdlog::details::log_msg(category.name(), translateLogLevel(level), message));
     }

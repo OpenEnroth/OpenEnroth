@@ -844,12 +844,9 @@ GAME_TEST(Issues, Issue417b) {
 }
 
 static void check427Buffs(const char *ctx, std::initializer_list<int> players, bool hasBuff) {
-    for (int character : players) {
-        for (CharacterBuff buff : {CHARACTER_BUFF_BLESS, CHARACTER_BUFF_PRESERVATION, CHARACTER_BUFF_HAMMERHANDS, CHARACTER_BUFF_PAIN_REFLECTION}) {
-            EXPECT_EQ(pParty->pCharacters[character].pCharacterBuffs[buff].Active(), hasBuff)
-                << "(with ctx=" << ctx << ", character=" << character << ", buff=" << std::to_underlying(buff) << ")";
-        }
-    }
+    for (int character : players)
+        for (CharacterBuff buff : {CHARACTER_BUFF_BLESS, CHARACTER_BUFF_PRESERVATION, CHARACTER_BUFF_HAMMERHANDS, CHARACTER_BUFF_PAIN_REFLECTION})
+            EXPECT_EQ(pParty->pCharacters[character].pCharacterBuffs[buff].Active(), hasBuff) << "(with ctx=" << ctx << ", character=" << character << ", buff=" << std::to_underlying(buff) << ")";
 }
 
 GAME_TEST(Issues, Issue427a) {

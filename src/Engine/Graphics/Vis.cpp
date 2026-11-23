@@ -882,10 +882,8 @@ void Vis::PickOutdoorFaces_Keyboard(float pick_depth, Vis_SelectionList *list,
                     BLVFace &face = pOutdoor->faces[faceId];
                     if (isFacePartOfSelection(&face, filter)) {
                         Pid pid = Pid::face(face.faceId);
-                        if (Vis_ObjectInfo *object_info =
-                                DetermineFacetIntersection(&face, pid, pick_depth)) {
+                        if (Vis_ObjectInfo *object_info = DetermineFacetIntersection(&face, pid, pick_depth))
                             list->AddObject(object_info->object_type, object_info->depth, object_info->object_pid);
-                        }
                     }
                 }
             }

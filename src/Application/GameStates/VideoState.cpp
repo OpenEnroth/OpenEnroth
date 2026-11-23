@@ -15,11 +15,8 @@ FsmAction VideoState::enter() {
     _skipVideo = false;
     _previousScreenType = current_screen_type;
 
-    if (engine->config->debug.NoVideo.value() ||
-        (engine->config->debug.NoIntro.value() && _type == Type::VIDEO_INTRO) ||
-        (engine->config->debug.NoLogo.value() && _type == Type::VIDEO_LOGO)) {
+    if (engine->config->debug.NoVideo.value() || (engine->config->debug.NoIntro.value() && _type == Type::VIDEO_INTRO) || (engine->config->debug.NoLogo.value() && _type == Type::VIDEO_LOGO))
         return FsmAction::transition("videoEnd");
-    }
 
     _movie = pMediaPlayer->loadFullScreenMovie(_videoFileName.c_str());
     if (!_movie)

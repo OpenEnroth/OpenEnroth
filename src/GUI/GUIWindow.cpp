@@ -154,10 +154,8 @@ GUIButton *GUI_HandleHotkey(PlatformKey hotkey) {
 
         int width = render->GetPresentDimensions().w;
         // TODO(captainurist): Sus. Comparing height to width?
-        if (pWindow->frameRect.x == 0 && pWindow->frameRect.y == 0 &&
-            pWindow->frameRect.w == width && pWindow->frameRect.h == width) {
+        if (pWindow->frameRect.x == 0 && pWindow->frameRect.y == 0 && pWindow->frameRect.w == width && pWindow->frameRect.h == width)
             break;
-        }
     }
     return 0;
 }
@@ -243,12 +241,8 @@ void GUIWindow::DrawMessageBox(Recti& frameRect, std::string sHint) {
     if ((int)(uBoxHeight + frameRect.y) > 479)
         uBoxHeight = 479 - frameRect.y;
     DrawPopupWindow(frameRect.x, frameRect.y, frameRect.w, uBoxHeight);
-    if (!sHint.empty()) {
-        DrawTitleText(
-            assets->pFontLucida.get(),
-            0, (int)(uBoxHeight - assets->pFontLucida->CalcTextHeight(sHint, current_window.w, 0)) / 2 - 14,
-            colorTable.White, sHint, 3, current_window);
-    }
+    if (!sHint.empty())
+        DrawTitleText(assets->pFontLucida.get(), 0, (int)(uBoxHeight - assets->pFontLucida->CalcTextHeight(sHint, current_window.w, 0)) / 2 - 14, colorTable.White, sHint, 3, current_window);
 }
 
 std::string MakeDateTimeString(Duration time) {

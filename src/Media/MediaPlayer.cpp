@@ -450,11 +450,8 @@ class Movie : public IMovie {
             // audio packet - queue into playing
             if (avpacket->stream_index == audio.stream_idx) {
                 Blob buffer = audio.decode_frame(avpacket);
-                if (buffer) {
-                    provider->Stream16(audio_data_in_device,
-                                       buffer.size() / 2,
-                                       buffer.data());
-                }
+                if (buffer)
+                    provider->Stream16(audio_data_in_device, buffer.size() / 2, buffer.data());
             } else if (avpacket->stream_index == video.stream_idx) {
               // Decode video frame
               // video packet - decode & maybe show

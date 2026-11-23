@@ -1020,12 +1020,9 @@ void GUIWindow_Shop::houseScreenClick() {
                             testpos = ((86 - (shop_ui_items_in_store[testx]->width() / 2)) + testx * 105);
                         }
 
-                        if (pt.x >= testpos && pt.x <= testpos + (shop_ui_items_in_store[testx]->width())) {
-                            if ((pt.y >= 126 && pt.y < (126 + (shop_ui_items_in_store[testx]->height()))) ||
-                                (pt.y <= 98 && pt.y >= (98 - (shop_ui_items_in_store[testx]->height())))) {
-                                break;  // good
-                            }
-                        }
+                        if (pt.x >= testpos && pt.x <= testpos + (shop_ui_items_in_store[testx]->width()) &&
+                            ((pt.y >= 126 && pt.y < (126 + (shop_ui_items_in_store[testx]->height()))) || (pt.y <= 98 && pt.y >= (98 - (shop_ui_items_in_store[testx]->height())))))
+                            break;  // good
                     }
                 }
                 return;

@@ -743,11 +743,8 @@ int CalculateCardPower(ArcomagePlayer *player, ArcomagePlayer *enemy,
         card_power += 9999;
     }
 
-    if ((pCard->to_player_tower2 + pCard->to_pl_enm_tower2 +
-         pCard->to_player_tower + pCard->to_pl_enm_tower +
-         player->tower_height) >= max_tower_height) {
+    if ((pCard->to_player_tower2 + pCard->to_pl_enm_tower2 + pCard->to_player_tower + pCard->to_pl_enm_tower + player->tower_height) >= max_tower_height)
         card_power += 9999;
-    }
 
     return card_power;
 }

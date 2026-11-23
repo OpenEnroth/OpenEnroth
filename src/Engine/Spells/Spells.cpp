@@ -526,10 +526,8 @@ void SpellStats::Initialize(const Blob &spells) {
     // For party-target spells the shift+click cast is also confusing because nothing visible happens at the
     // clicked actor; for character-target spells (Cure Paralysis) the player gets a target-character prompt
     // that doesn't relate to the clicked actor.
-    for (SpellId spell : {SPELL_MIND_CURE_PARALYSIS, SPELL_LIGHT_DAY_OF_PROTECTION, SPELL_LIGHT_HOUR_OF_POWER,
-                          SPELL_MIND_MASS_FEAR, SPELL_LIGHT_PRISMATIC_LIGHT, SPELL_DARK_ARMAGEDDON}) {
+    for (SpellId spell : {SPELL_MIND_CURE_PARALYSIS, SPELL_LIGHT_DAY_OF_PROTECTION, SPELL_LIGHT_HOUR_OF_POWER, SPELL_MIND_MASS_FEAR, SPELL_LIGHT_PRISMATIC_LIGHT, SPELL_DARK_ARMAGEDDON})
         pSpellDatas[spell].flags &= ~SPELL_SHIFT_CLICK_CASTABLE;
-    }
 
     // Vanilla bug fix: Control Undead is a Dark Magic spell, but its description in spells.txt
     // states the duration scales with "Mind Magic". See issue #1698. The replacement is a no-op

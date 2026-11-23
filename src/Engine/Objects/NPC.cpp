@@ -53,12 +53,9 @@ bool CheckHiredNPCSpeciality(NpcProfession prof) {
     if (isHirelingsBlockedOnMap(engine->_currentLoadedMapId))
         return false;
 
-    for (unsigned i = 0; i < pNPCStats->uNumNewNPCs; ++i) {
-        if (pNPCStats->pNPCData[i].profession == prof &&
-            (pNPCStats->pNPCData[i].flags & NPC_HIRED)) {
+    for (unsigned i = 0; i < pNPCStats->uNumNewNPCs; ++i)
+        if (pNPCStats->pNPCData[i].profession == prof && (pNPCStats->pNPCData[i].flags & NPC_HIRED))
             return true;
-        }
-    }
     return pParty->pHirelings[0].profession == prof
         || pParty->pHirelings[1].profession == prof;
 }
