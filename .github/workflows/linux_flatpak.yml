@@ -85,9 +85,10 @@ jobs:
       - name: 'Run Flatpak build'
         run: |
           flatpak-builder --user --install-deps-from=flathub --disable-rofiles-fuse --ccache --force-clean --verbose \
-            --arch=${{matrix.architecture}} --repo=flatpak_repo flatpak_app distribution/linux/flatpak/dev.io.github.openenroth.openenroth.yml
-          flatpak build-bundle --runtime-repo=https://flathub.org/repo/flathub.flatpakrepo --arch=${{matrix.architecture}} \
-            flatpak_repo "$RELEASE_FILE" io.github.openenroth.openenroth master
+            --arch=${{matrix.architecture}} --repo=flatpak_repo \
+            flatpak_app distribution/linux/flatpak/dev.io.github.openenroth.openenroth.yml
+          flatpak build-bundle --runtime-repo=https://flathub.org/repo/flathub.flatpakrepo \
+            --arch=${{matrix.architecture}} flatpak_repo "$RELEASE_FILE" io.github.openenroth.openenroth master
 
       - name: 'Publish release'
         if: inputs.releaseTag != ''
