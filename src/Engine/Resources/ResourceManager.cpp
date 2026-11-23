@@ -147,7 +147,7 @@ RgbaImage ResourceManager::icon(std::string_view filename) {
         return result;
     }
 
-    LodImage image = lod::decodeImage(_iconsLodReader.read(name));
+    LodImage image = lod::decodeMm6Image(_iconsLodReader.read(name));
     return makeRgbaImage(image.image, maskedPalette(image, mask));
 }
 
@@ -160,7 +160,7 @@ Sizei ResourceManager::iconSize(std::string_view filename) {
 
     if (name.ends_with(".pcx"))
         return pcx::decodeSize(lod::decodeMaybeCompressed(_iconsLodReader.read(name)));
-    return lod::decodeImageSize(_iconsLodReader.read(name));
+    return lod::decodeMm6ImageSize(_iconsLodReader.read(name));
 }
 
 RgbaImage ResourceManager::bitmap(std::string_view filename) {
@@ -196,7 +196,7 @@ Sizei ResourceManager::bitmapSize(std::string_view filename) {
         MM_ERROR("Trying to load non-existent LOD entry '{}'.", _bitmapsLodReader.displayPath(name));
         return {};
     }
-    return lod::decodeImageSize(_bitmapsLodReader.read(name));
+    return lod::decodeMm6ImageSize(_bitmapsLodReader.read(name));
 }
 
 RgbaImage ResourceManager::generated(std::string_view filename) {
@@ -220,7 +220,7 @@ LodImage ResourceManager::rawIcon(std::string_view filename) {
         MM_ERROR("Trying to load non-existent LOD entry '{}'.", _iconsLodReader.displayPath(name));
         return {};
     }
-    return lod::decodeImage(_iconsLodReader.read(name));
+    return lod::decodeMm6Image(_iconsLodReader.read(name));
 }
 
 LodImage ResourceManager::rawBitmap(std::string_view filename) {
@@ -229,11 +229,11 @@ LodImage ResourceManager::rawBitmap(std::string_view filename) {
         MM_ERROR("Trying to load non-existent LOD entry '{}'.", _bitmapsLodReader.displayPath(name));
         return {};
     }
-    return lod::decodeImage(_bitmapsLodReader.read(name));
+    return lod::decodeMm6Image(_bitmapsLodReader.read(name));
 }
 
 LodFont ResourceManager::font(std::string_view filename) {
-    return lod::decodeFont(lod::decodeMaybeCompressed(_iconsLodReader.read(filename)));
+    return lod::decodeAnyFont(lod::decodeMaybeCompressed(_iconsLodReader.read(filename)));
 }
 
 Palette ResourceManager::palette(int paletteId) {
@@ -241,7 +241,7 @@ Palette ResourceManager::palette(int paletteId) {
     if (!_bitmapsLodReader.exists(name))
         return grayscalePalette();
 
-    Palette result = lod::decodeImage(_bitmapsLodReader.read(name)).palette;
+    Palette result = lod::decodeMm6Palette(_bitmapsLodReader.read(name));
     desaturate(result.colors);
     return result;
 }
@@ -253,7 +253,7 @@ RgbaImage ResourceManager::sprite(std::string_view filename) {
         return {};
     }
 
-    LodSprite sprite = lod::decodeSprite(_spritesLodReader.read(name));
+    LodSprite sprite = lod::decodeMm6Sprite(_spritesLodReader.read(name));
     RgbaImage result = RgbaImage::uninitialized(sprite.image.width(), sprite.image.height());
     auto srcPixels = sprite.image.pixels();
     auto dstPixels = result.pixels();
@@ -268,7 +268,7 @@ Sizei ResourceManager::spriteSize(std::string_view filename) {
         MM_ERROR("Trying to load non-existent LOD entry '{}'.", _spritesLodReader.displayPath(name));
         return {};
     }
-    return lod::decodeSpriteSize(_spritesLodReader.read(name));
+    return lod::decodeMm6SpriteSize(_spritesLodReader.read(name));
 }
 
 void ResourceManager::desaturate(std::span<Color> colors) const {

@@ -45,12 +45,13 @@ background and magenta in the recolored parts, so it's not what the game shows. 
 image.
 
 `magic` prints one line. For compressed data it names the format inside too, as in
-`LOD compressed file containing raw data` for an MM7 map.
+`MM7 LOD compressed file containing raw data` for an MM7 map. Format names start with the game that introduced the
+format, so MM7's images and fonts show up as `MM6 LOD image` and `MM6 LOD font`.
 
 ## What's where
 
-From a full `magic` scan of every archive in all three games. "Compressed" means `magic` prints
-`LOD compressed file` or `LOD compressed pseudo image`, and `cat` decompresses it.
+From a full `magic` scan of every archive in all three games. "Compressed" means the format `magic`
+prints has `LOD compressed` in its name, and `cat` decompresses it.
 
 | Data | MM6 | MM7 | MM8 |
 |---|---|---|---|

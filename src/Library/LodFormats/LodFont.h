@@ -9,7 +9,8 @@
 class LodFont;
 
 namespace lod {
-LodFont decodeFont(const Blob &blob);
+LodFont decodeMm6Font(const Blob &blob);
+LodFont decodeMmxFont(const Blob &blob);
 } // namespace lod
 
 struct LodFontHeader {
@@ -60,7 +61,8 @@ class LodFont {
             _header.fontHeight);
     }
 
-    friend LodFont lod::decodeFont(const Blob &blob);
+    friend LodFont lod::decodeMm6Font(const Blob &blob);
+    friend LodFont lod::decodeMmxFont(const Blob &blob);
 
  private:
     LodFontHeader _header;

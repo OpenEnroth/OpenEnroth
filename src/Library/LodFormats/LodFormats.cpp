@@ -1,6 +1,6 @@
 #include "LodFormats.h"
 
-#include <optional>
+#include <cstdint>
 #include <span>
 #include <vector>
 #include <string>
@@ -37,7 +37,43 @@ static void deserialize(InputStream &src, Palette *dst) {
         dst->colors[i] = Color(rawPalette[i * 3], rawPalette[i * 3 + 1], rawPalette[i * 3 + 2]);
 }
 
-bool lod::detectCompressedData(const Blob &blob) {
+static bool detectFontHeader(MemoryInputStream &stream, size_t blobSize, LodFontHeader_MM6 *header) {
+    if (blobSize < sizeof(LodFontHeader_MM6))
+        return false;
+
+    deserialize(stream, header);
+    return header->firstChar < header->lastChar && header->field_3 == 8 && header->field_4 == 0 && header->field_5 == 0 &&
+        header->height >= MIN_GLYPH_HEIGHT && header->height <= MAX_GLYPH_HEIGHT && header->field_7 == 0 &&
+        header->field_8 == 0 && header->paletteCount == 0 &&
+        std::ranges::all_of(header->palettes, _1 == 0);
+}
+
+static void fixAndValidateFont(const Blob &blob, const LodFontHeader &header, LodFontAtlas *atlas, const Blob &pixels) {
+    for (int c = 0; c <= 255; c++) {
+        if (c < header.firstChar || c > header.lastChar) {
+            atlas->metrics[c].width = 0;
+            atlas->metrics[c].leftSpacing = 0;
+            atlas->metrics[c].rightSpacing = 0;
+            atlas->offsets[c] = 0;
+            continue;
+        }
+
+        // Check that font metrics are sane.
+        const LodFontMetrics &metrics = atlas->metrics[c];
+        if (metrics.width < MIN_GLYPH_WIDTH || metrics.width > MAX_GLYPH_WIDTH || metrics.leftSpacing > MAX_GLYPH_SPACING || metrics.rightSpacing > MAX_GLYPH_SPACING)
+            throw Exception("Cannot decode font LOD entry '{}': invalid font metrics encountered for character #{}",
+                            blob.displayPath(), c);
+
+        // Check that all offsets point into the pixel data.
+        int offset = atlas->offsets[c];
+        int size = header.fontHeight * metrics.width;
+        if (offset < 0 || size < 0 || size + offset > pixels.size())
+            throw Exception("Cannot decode font LOD entry '{}': invalid glyph data encountered for character #{}",
+                            blob.displayPath(), c);
+    }
+}
+
+bool lod::detectMm7CompressedData(const Blob &blob) {
     if (blob.size() < sizeof(LodCompressionHeader_MM7))
         return false;
 
@@ -48,7 +84,7 @@ bool lod::detectCompressedData(const Blob &blob) {
     return header.version == 91969 && memcmp(header.signature.data(), "mvii", 4) == 0;
 }
 
-bool lod::detectCompressedPseudoImage(const Blob &blob) {
+bool lod::detectMm6CompressedPseudoImage(const Blob &blob) {
     if (blob.size() < sizeof(LodImageHeader_MM6))
         return false;
 
@@ -62,10 +98,7 @@ bool lod::detectCompressedPseudoImage(const Blob &blob) {
         blob.size() == sizeof(LodImageHeader_MM6) + header.dataSize;
 }
 
-bool lod::detectImage(const Blob &blob, bool *isPalette) {
-    if (isPalette)
-        *isPalette = false;
-
+bool lod::detectMm6Image(const Blob &blob) {
     if (blob.size() < sizeof(LodImageHeader_MM6))
         return false;
 
@@ -73,22 +106,27 @@ bool lod::detectImage(const Blob &blob, bool *isPalette) {
     LodImageHeader_MM6 header;
     deserialize(stream, &header);
 
-    if (header.size == 0 && header.dataSize == 0 && header.width == 0 && header.height == 0 &&
-        header.widthLn2 == 0 && header.heightLn2 == 0 && header.widthMinus1 == 0 && header.heightMinus1 == 0 &&
-        header.paletteId == 0 && header.anotherPaletteId == 0 && header.decompressedSize == 0 && header.flags == 0 &&
-        blob.size() == sizeof(LodImageHeader_MM6) + 0x300)
-        return isPalette ? *isPalette = true : true;
-
-    if (header.size > 0 && header.dataSize > 0 && header.width > 0 && header.height > 0 &&
+    return header.size > 0 && header.dataSize > 0 && header.width > 0 && header.height > 0 &&
         header.size == header.width * header.height &&
         (header.decompressedSize == 0 && header.dataSize >= header.size || header.decompressedSize > 0 && header.decompressedSize >= header.size) &&
-        blob.size() == sizeof(LodImageHeader_MM6) + header.dataSize + 0x300)
-        return true;
-
-    return false;
+        blob.size() == sizeof(LodImageHeader_MM6) + header.dataSize + 0x300;
 }
 
-bool lod::detectSprite(const Blob &blob) {
+bool lod::detectMm6Palette(const Blob &blob) {
+    if (blob.size() < sizeof(LodImageHeader_MM6))
+        return false;
+
+    MemoryInputStream stream(blob.data(), blob.size());
+    LodImageHeader_MM6 header;
+    deserialize(stream, &header);
+
+    return header.size == 0 && header.dataSize == 0 && header.width == 0 && header.height == 0 &&
+        header.widthLn2 == 0 && header.heightLn2 == 0 && header.widthMinus1 == 0 && header.heightMinus1 == 0 &&
+        header.paletteId == 0 && header.anotherPaletteId == 0 && header.decompressedSize == 0 && header.flags == 0 &&
+        blob.size() == sizeof(LodImageHeader_MM6) + 0x300;
+}
+
+bool lod::detectMm6Sprite(const Blob &blob) {
     if (blob.size() < sizeof(LodSpriteHeader_MM6))
         return false;
 
@@ -96,34 +134,48 @@ bool lod::detectSprite(const Blob &blob) {
     LodSpriteHeader_MM6 header;
     deserialize(stream, &header);
 
-    if (header.dataSize > 0 && header.width > 0 && header.height > 0 &&
+    return header.dataSize > 0 && header.width > 0 && header.height > 0 &&
         header.paletteId > 0 && header.unk_0 == 0 && header.emptyBottomLines <= header.height &&
-        blob.size() == sizeof(LodSpriteHeader_MM6) + header.height * sizeof(LodSpriteLine_MM6) + header.dataSize)
-        return true;
-
-    return false;
+        blob.size() == sizeof(LodSpriteHeader_MM6) + header.height * sizeof(LodSpriteLine_MM6) + header.dataSize;
 }
 
-bool lod::detectFont(const Blob &blob) {
-    if (blob.size() < sizeof(LodFontHeader_MM6) + std::min(sizeof(LodFontAtlas_MM6), sizeof(LodFontAtlas_MMX)))
-        return {};
-
+bool lod::detectMm6Font(const Blob &blob) {
     MemoryInputStream stream(blob.data(), blob.size());
     LodFontHeader_MM6 header;
-    deserialize(stream, &header);
+    if (!detectFontHeader(stream, blob.size(), &header) || blob.size() < sizeof(LodFontHeader_MM6) + sizeof(LodFontAtlas_MM6))
+        return false;
 
-    if (header.firstChar < header.lastChar && header.field_3 == 8 && header.field_4 == 0 && header.field_5 == 0 &&
-        header.height >= MIN_GLYPH_HEIGHT && header.height <= MAX_GLYPH_HEIGHT && header.field_7 == 0 &&
-        header.field_8 == 0 && header.paletteCount == 0 &&
-        std::ranges::all_of(header.palettes, _1 == 0))
-        return true;
+    LodFontAtlas_MM6 atlas;
+    deserialize(stream, &atlas);
 
-    return false;
+    int64_t pixelsSize = 0;
+    for (int c = header.firstChar; c <= header.lastChar; c++)
+        pixelsSize += static_cast<int64_t>(header.height) * atlas.metrics[c].width;
+    return pixelsSize >= 0 && blob.size() == sizeof(LodFontHeader_MM6) + sizeof(LodFontAtlas_MM6) + pixelsSize; // Glyphs fill the rest exactly.
 }
 
-Blob lod::decodeCompressedData(const Blob &blob) {
-    if (!detectCompressedData(blob))
-        throw Exception("Cannot decode LOD entry '{}' as LOD compressed data", blob.displayPath());
+bool lod::detectMmxFont(const Blob &blob) {
+    MemoryInputStream stream(blob.data(), blob.size());
+    LodFontHeader_MM6 header;
+    if (!detectFontHeader(stream, blob.size(), &header) || blob.size() < sizeof(LodFontHeader_MM6) + sizeof(LodFontAtlas_MMX))
+        return false;
+
+    LodFontAtlas_MMX atlas;
+    deserialize(stream, &atlas);
+
+    size_t pixelsSize = 0;
+    for (int c = header.firstChar; c <= header.lastChar; c++)
+        pixelsSize += static_cast<size_t>(header.height) * atlas.widths[c];
+    return blob.size() == sizeof(LodFontHeader_MM6) + sizeof(LodFontAtlas_MMX) + pixelsSize; // Glyphs fill the rest exactly.
+}
+
+bool lod::detectAnyFont(const Blob &blob) {
+    return detectMm6Font(blob) || detectMmxFont(blob);
+}
+
+Blob lod::decodeMm7CompressedData(const Blob &blob) {
+    if (!detectMm7CompressedData(blob))
+        throw Exception("Cannot decode LOD entry '{}' as MM7 LOD compressed data", blob.displayPath());
 
     BlobInputStream stream(blob);
     LodCompressionHeader_MM7 header;
@@ -142,9 +194,9 @@ Blob lod::decodeCompressedData(const Blob &blob) {
     return result.withDisplayPath(blob.displayPath());
 }
 
-Blob lod::decodeCompressedPseudoImage(const Blob &blob) {
-    if (!detectCompressedPseudoImage(blob))
-        throw Exception("Cannot decode LOD entry '{}' as LOD compressed pseudo image", blob.displayPath());
+Blob lod::decodeMm6CompressedPseudoImage(const Blob &blob) {
+    if (!detectMm6CompressedPseudoImage(blob))
+        throw Exception("Cannot decode LOD entry '{}' as MM6 LOD compressed pseudo image", blob.displayPath());
 
     BlobInputStream stream(blob);
     LodImageHeader_MM6 header;
@@ -157,16 +209,16 @@ Blob lod::decodeCompressedPseudoImage(const Blob &blob) {
 }
 
 Blob lod::decodeMaybeCompressed(const Blob &blob) {
-    if (detectCompressedData(blob))
-        return decodeCompressedData(blob);
+    if (detectMm7CompressedData(blob))
+        return decodeMm7CompressedData(blob);
 
-    if (detectCompressedPseudoImage(blob))
-        return decodeCompressedPseudoImage(blob);
+    if (detectMm6CompressedPseudoImage(blob))
+        return decodeMm6CompressedPseudoImage(blob);
 
     return Blob::share(blob); // Not compressed.
 }
 
-Blob lod::encodeCompressed(const Blob &blob) {
+Blob lod::encodeMm7CompressedData(const Blob &blob) {
     Blob compressed = zlib::compress(blob);
 
     LodCompressionHeader_MM7 header;
@@ -178,57 +230,37 @@ Blob lod::encodeCompressed(const Blob &blob) {
     return Blob::concat(Blob::view(&header, sizeof(header)), compressed);
 }
 
-Palette lod::decodePalette(const Blob &blob) {
-    if (!detectImage(blob))
-        throw Exception("Cannot decode LOD entry '{}' as LOD palette", blob.displayPath());
-
-    MemoryInputStream stream(blob.data(), blob.size());
-    LodImageHeader_MM6 header;
-    deserialize(stream, &header);
-
-    stream.skipOrFail(header.dataSize);
-
-    Palette result;
-    deserialize(stream, &result);
-    return result;
-}
-
-LodImage lod::decodeImage(const Blob &blob) {
-    bool isPalette = false;
-    if (!detectImage(blob, &isPalette))
-        throw Exception("Cannot decode LOD entry '{}' as LOD image", blob.displayPath());
+LodImage lod::decodeMm6Image(const Blob &blob) {
+    if (!detectMm6Image(blob))
+        throw Exception("Cannot decode LOD entry '{}' as MM6 LOD image", blob.displayPath());
 
     BlobInputStream stream(blob);
     LodImageHeader_MM6 header;
     deserialize(stream, &header);
 
-    Blob pixels;
-    if (!isPalette) {
-        pixels = stream.readAsBlobOrFail(header.dataSize);
-        if (header.decompressedSize)
-            pixels = zlib::uncompress(pixels.withDisplayPath(blob.displayPath()), header.decompressedSize);
+    Blob pixels = stream.readAsBlobOrFail(header.dataSize);
+    if (header.decompressedSize)
+        pixels = zlib::uncompress(pixels.withDisplayPath(blob.displayPath()), header.decompressedSize);
 
-        // Note that this check isn't redundant. The checks in magic() only check sizes as written in the header.
-        // Actual stream size might be different.
-        if (pixels.size() < header.width * header.height)
-            throw Exception("Cannot decode image LOD entry '{}': expected {}x{}={} pixels, got {}",
-                            blob.displayPath(), header.width, header.height,
-                            header.width * header.height, pixels.size());
-    }
+    // Note that this check isn't redundant. The checks in magic() only check sizes as written in the header.
+    // Actual stream size might be different.
+    if (pixels.size() < header.width * header.height)
+        throw Exception("Cannot decode image LOD entry '{}': expected {}x{}={} pixels, got {}",
+                        blob.displayPath(), header.width, header.height,
+                        header.width * header.height, pixels.size());
 
     LodImage result;
     deserialize(stream, &result.palette);
     result.zeroIsTransparent = header.flags & 512;
 
     // TODO(captainurist): just store blob in GrayscaleImage, no need to copy here.
-    if (pixels)
-        result.image = GrayscaleImage::copy(static_cast<const uint8_t *>(pixels.data()), header.width, header.height); // NOLINT: this is not std::copy.
+    result.image = GrayscaleImage::copy(static_cast<const uint8_t *>(pixels.data()), header.width, header.height); // NOLINT: this is not std::copy.
     return result;
 }
 
-Sizei lod::decodeImageSize(const Blob &blob) {
-    if (!detectImage(blob))
-        throw Exception("Cannot decode LOD entry '{}' as LOD image", blob.displayPath());
+Sizei lod::decodeMm6ImageSize(const Blob &blob) {
+    if (!detectMm6Image(blob))
+        throw Exception("Cannot decode LOD entry '{}' as MM6 LOD image", blob.displayPath());
 
     BlobInputStream stream(blob);
     LodImageHeader_MM6 header;
@@ -237,9 +269,22 @@ Sizei lod::decodeImageSize(const Blob &blob) {
     return Sizei(header.width, header.height);
 }
 
-LodSprite lod::decodeSprite(const Blob &blob) {
-    if (!detectSprite(blob))
-        throw Exception("Cannot decode LOD entry '{}' as LOD sprite", blob.displayPath());
+Palette lod::decodeMm6Palette(const Blob &blob) {
+    if (!detectMm6Palette(blob))
+        throw Exception("Cannot decode LOD entry '{}' as MM6 LOD palette", blob.displayPath());
+
+    MemoryInputStream stream(blob.data(), blob.size());
+    LodImageHeader_MM6 header;
+    deserialize(stream, &header);
+
+    Palette result;
+    deserialize(stream, &result);
+    return result;
+}
+
+LodSprite lod::decodeMm6Sprite(const Blob &blob) {
+    if (!detectMm6Sprite(blob))
+        throw Exception("Cannot decode LOD entry '{}' as MM6 LOD sprite", blob.displayPath());
 
     BlobInputStream stream(blob);
     LodSpriteHeader_MM6 header;
@@ -273,9 +318,9 @@ LodSprite lod::decodeSprite(const Blob &blob) {
     return result;
 }
 
-Sizei lod::decodeSpriteSize(const Blob &blob) {
-    if (!detectSprite(blob))
-        throw Exception("Cannot decode LOD entry '{}' as LOD sprite", blob.displayPath());
+Sizei lod::decodeMm6SpriteSize(const Blob &blob) {
+    if (!detectMm6Sprite(blob))
+        throw Exception("Cannot decode LOD entry '{}' as MM6 LOD sprite", blob.displayPath());
 
     BlobInputStream stream(blob);
     LodSpriteHeader_MM6 header;
@@ -284,53 +329,36 @@ Sizei lod::decodeSpriteSize(const Blob &blob) {
     return Sizei(header.width, header.height);
 }
 
-LodFont lod::decodeFont(const Blob &blob) {
-    if (!detectFont(blob))
-        throw Exception("Cannot decode LOD entry '{}' as LOD font", blob.displayPath());
-
-    auto fixAndValidateFont = [](const Blob &blob, LodFont &font) {
-        for (int c = 0; c <= 255; c++) {
-            if (c < font._header.firstChar || c > font._header.lastChar) {
-                font._atlas.metrics[c].width = 0;
-                font._atlas.metrics[c].leftSpacing = 0;
-                font._atlas.metrics[c].rightSpacing = 0;
-                font._atlas.offsets[c] = 0;
-                continue;
-            }
-
-            // Check that font metrics are sane.
-            const LodFontMetrics &metrics = font._atlas.metrics[c];
-            if (metrics.width < MIN_GLYPH_WIDTH || metrics.width > MAX_GLYPH_WIDTH || metrics.leftSpacing > MAX_GLYPH_SPACING || metrics.rightSpacing > MAX_GLYPH_SPACING)
-                throw Exception("Cannot decode font LOD entry '{}': invalid font metrics encountered for character #{}",
-                                blob.displayPath(), c);
-
-            // Check that all offsets point into the pixel data.
-            int offset = font._atlas.offsets[c];
-            int size = font._header.fontHeight * font._atlas.metrics[c].width;
-            if (offset < 0 || size < 0 || size + offset > font._pixels.size())
-                throw Exception("Cannot decode font LOD entry '{}': invalid glyph data encountered for character #{}",
-                                blob.displayPath(), c);
-        }
-    };
+LodFont lod::decodeMm6Font(const Blob &blob) {
+    if (!detectMm6Font(blob))
+        throw Exception("Cannot decode LOD entry '{}' as MM6 LOD font", blob.displayPath());
 
     LodFont result;
-    try {
-        BlobInputStream stream(blob);
-        deserialize(stream, &result._header, tags::via<LodFontHeader_MM6>);
-        deserialize(stream, &result._atlas, tags::via<LodFontAtlas_MM6>);
-        result._pixels = stream.readAllAsBlob();
-        fixAndValidateFont(blob, result);
-    } catch (const std::exception &e) {
-        try {
-            BlobInputStream stream(blob);
-            deserialize(stream, &result._header, tags::via<LodFontHeader_MM6>);
-            deserialize(stream, &result._atlas, tags::via<LodFontAtlas_MMX>);
-            result._pixels = stream.readAllAsBlob();
-            fixAndValidateFont(blob, result);
-        } catch (const std::exception &) {
-            throw e; // Re-throw outer exception if trying both formats failed.
-        }
-    }
-
+    BlobInputStream stream(blob);
+    deserialize(stream, &result._header, tags::via<LodFontHeader_MM6>);
+    deserialize(stream, &result._atlas, tags::via<LodFontAtlas_MM6>);
+    result._pixels = stream.readAllAsBlob();
+    fixAndValidateFont(blob, result._header, &result._atlas, result._pixels);
     return result;
+}
+
+LodFont lod::decodeMmxFont(const Blob &blob) {
+    if (!detectMmxFont(blob))
+        throw Exception("Cannot decode LOD entry '{}' as MMX LOD font", blob.displayPath());
+
+    LodFont result;
+    BlobInputStream stream(blob);
+    deserialize(stream, &result._header, tags::via<LodFontHeader_MM6>);
+    deserialize(stream, &result._atlas, tags::via<LodFontAtlas_MMX>);
+    result._pixels = stream.readAllAsBlob();
+    fixAndValidateFont(blob, result._header, &result._atlas, result._pixels);
+    return result;
+}
+
+LodFont lod::decodeAnyFont(const Blob &blob) {
+    if (detectMm6Font(blob))
+        return decodeMm6Font(blob);
+    if (detectMmxFont(blob))
+        return decodeMmxFont(blob);
+    throw Exception("Cannot decode LOD entry '{}' as LOD font", blob.displayPath());
 }

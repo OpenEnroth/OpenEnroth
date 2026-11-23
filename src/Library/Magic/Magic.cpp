@@ -86,17 +86,20 @@ bool detect(const Blob &data) {
 MagicFileFormat magic(const Blob &data) {
     if (lod::detect(data))
         return MAGIC_LOD;
-    if (lod::detectCompressedData(data))
-        return MAGIC_LOD_COMPRESSED_DATA;
-    if (lod::detectCompressedPseudoImage(data))
-        return MAGIC_LOD_COMPRESSED_PSEUDO_IMAGE;
-    bool isPalette = false;
-    if (lod::detectImage(data, &isPalette))
-        return isPalette ? MAGIC_LOD_PALETTE : MAGIC_LOD_IMAGE;
-    if (lod::detectSprite(data))
-        return MAGIC_LOD_SPRITE;
-    if (lod::detectFont(data))
-        return MAGIC_LOD_FONT;
+    if (lod::detectMm7CompressedData(data))
+        return MAGIC_LOD_COMPRESSED_DATA_MM7;
+    if (lod::detectMm6CompressedPseudoImage(data))
+        return MAGIC_LOD_COMPRESSED_PSEUDO_IMAGE_MM6;
+    if (lod::detectMm6Image(data))
+        return MAGIC_LOD_IMAGE_MM6;
+    if (lod::detectMm6Palette(data))
+        return MAGIC_LOD_PALETTE_MM6;
+    if (lod::detectMm6Sprite(data))
+        return MAGIC_LOD_SPRITE_MM6;
+    if (lod::detectMm6Font(data))
+        return MAGIC_LOD_FONT_MM6;
+    if (lod::detectMmxFont(data))
+        return MAGIC_LOD_FONT_MMX;
     if (vid::detect(data))
         return MAGIC_VID;
     if (snd::detect(data))
