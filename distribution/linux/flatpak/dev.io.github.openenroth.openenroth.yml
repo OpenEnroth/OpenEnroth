@@ -82,7 +82,7 @@ modules:
     post-install:
       - install -Dm755 src/Bin/OpenEnroth/OpenEnroth /app/bin/OpenEnroth
       - install -Dm755 test/Bin/UnitTest/OpenEnroth_UnitTest /app/bin/OpenEnroth_UnitTest  # Removed again by cleanup.
-      - strip --strip-debug /app/bin/OpenEnroth /app/bin/OpenEnroth_UnitTest  # Keeps the symbol table for crash traces.
+      - strip --strip-debug /app/bin/OpenEnroth /app/bin/OpenEnroth_UnitTest  # Drops DWARF, keeps function names.
       # launcher script
       - install -Dm755 ../distribution/linux/flatpak/${FLATPAK_ID}.sh /app/bin/${FLATPAK_ID}.sh
       # Icon
