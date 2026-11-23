@@ -78,7 +78,7 @@ modules:
     run-tests: true
     test-rule: ''  # Without it flatpak-builder runs "ninja test", and CMake makes no such target here.
     test-commands:
-      - OpenEnroth_UnitTest  # The stripped copy from post-install, so the StackTrace tests see what users get.
+      - OpenEnroth_UnitTest  # The stripped copy from post-install, so the tests see the binary users get.
     post-install:
       - install -Dm755 src/Bin/OpenEnroth/OpenEnroth /app/bin/OpenEnroth
       - install -Dm755 test/Bin/UnitTest/OpenEnroth_UnitTest /app/bin/OpenEnroth_UnitTest
