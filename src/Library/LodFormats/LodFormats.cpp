@@ -118,32 +118,58 @@ bool lod::detectAnyCompressedData(const Blob &blob) {
     return detectMm6CompressedData(blob) || detectMm7CompressedData(blob);
 }
 
-bool lod::detectMm6CompressedPseudoImage(const Blob &blob) {
-    if (blob.size() < sizeof(LodImageHeader_MM6))
+template<class Header>
+static bool detectCompressedPseudoImageAs(const Blob &blob) {
+    if (blob.size() < sizeof(Header))
         return false;
 
     MemoryInputStream stream(blob.data(), blob.size());
-    LodImageHeader_MM6 header;
+    Header header;
     deserialize(stream, &header);
 
     return header.size == 0 && header.dataSize > 0 && header.width == 0 && header.height == 0 &&
         header.widthLn2 == 0 && header.heightLn2 == 0 &&
         header.paletteId == 0 && header.anotherPaletteId == 0 && (header.flags & 256) &&
-        blob.size() == sizeof(LodImageHeader_MM6) + header.dataSize;
+        blob.size() == sizeof(Header) + header.dataSize;
 }
 
-bool lod::detectMm6Image(const Blob &blob) {
-    if (blob.size() < sizeof(LodImageHeader_MM6))
+bool lod::detectMm6CompressedPseudoImage(const Blob &blob) {
+    return detectCompressedPseudoImageAs<LodImageHeader_MM6>(blob);
+}
+
+bool lod::detectMm8CompressedPseudoImage(const Blob &blob) {
+    return detectCompressedPseudoImageAs<LodImageHeader_MM8>(blob);
+}
+
+bool lod::detectAnyCompressedPseudoImage(const Blob &blob) {
+    return detectMm6CompressedPseudoImage(blob) || detectMm8CompressedPseudoImage(blob);
+}
+
+template<class Header>
+static bool detectImageAs(const Blob &blob) {
+    if (blob.size() < sizeof(Header))
         return false;
 
     MemoryInputStream stream(blob.data(), blob.size());
-    LodImageHeader_MM6 header;
+    Header header;
     deserialize(stream, &header);
 
     return header.size > 0 && header.dataSize > 0 && header.width > 0 && header.height > 0 &&
         header.size == header.width * header.height &&
         (header.decompressedSize == 0 && header.dataSize >= header.size || header.decompressedSize > 0 && header.decompressedSize >= header.size) &&
-        blob.size() == sizeof(LodImageHeader_MM6) + header.dataSize + 0x300;
+        blob.size() == sizeof(Header) + header.dataSize + 0x300;
+}
+
+bool lod::detectMm6Image(const Blob &blob) {
+    return detectImageAs<LodImageHeader_MM6>(blob);
+}
+
+bool lod::detectMm8Image(const Blob &blob) {
+    return detectImageAs<LodImageHeader_MM8>(blob);
+}
+
+bool lod::detectAnyImage(const Blob &blob) {
+    return detectMm6Image(blob) || detectMm8Image(blob);
 }
 
 bool lod::detectMm6Palette(const Blob &blob) {
@@ -247,12 +273,10 @@ Blob lod::decodeAnyCompressedData(const Blob &blob) {
     throw Exception("Cannot decode LOD entry '{}' as LOD compressed data", blob.displayPath());
 }
 
-Blob lod::decodeMm6CompressedPseudoImage(const Blob &blob) {
-    if (!detectMm6CompressedPseudoImage(blob))
-        throw Exception("Cannot decode LOD entry '{}' as MM6 LOD compressed pseudo image", blob.displayPath());
-
+template<class Header>
+static Blob decodeCompressedPseudoImageAs(const Blob &blob) {
     BlobInputStream stream(blob);
-    LodImageHeader_MM6 header;
+    Header header;
     deserialize(stream, &header);
 
     Blob result = stream.readAsBlobOrFail(header.dataSize);
@@ -261,12 +285,32 @@ Blob lod::decodeMm6CompressedPseudoImage(const Blob &blob) {
     return result.withDisplayPath(blob.displayPath());
 }
 
+Blob lod::decodeMm6CompressedPseudoImage(const Blob &blob) {
+    if (!detectMm6CompressedPseudoImage(blob))
+        throw Exception("Cannot decode LOD entry '{}' as MM6 LOD compressed pseudo image", blob.displayPath());
+    return decodeCompressedPseudoImageAs<LodImageHeader_MM6>(blob);
+}
+
+Blob lod::decodeMm8CompressedPseudoImage(const Blob &blob) {
+    if (!detectMm8CompressedPseudoImage(blob))
+        throw Exception("Cannot decode LOD entry '{}' as MM8 LOD compressed pseudo image", blob.displayPath());
+    return decodeCompressedPseudoImageAs<LodImageHeader_MM8>(blob);
+}
+
+Blob lod::decodeAnyCompressedPseudoImage(const Blob &blob) {
+    if (detectMm6CompressedPseudoImage(blob))
+        return decodeMm6CompressedPseudoImage(blob);
+    if (detectMm8CompressedPseudoImage(blob))
+        return decodeMm8CompressedPseudoImage(blob);
+    throw Exception("Cannot decode LOD entry '{}' as LOD compressed pseudo image", blob.displayPath());
+}
+
 Blob lod::decodeMaybeCompressed(const Blob &blob) {
     if (detectAnyCompressedData(blob))
         return decodeAnyCompressedData(blob);
 
-    if (detectMm6CompressedPseudoImage(blob))
-        return decodeMm6CompressedPseudoImage(blob);
+    if (detectAnyCompressedPseudoImage(blob))
+        return decodeAnyCompressedPseudoImage(blob);
 
     return Blob::share(blob); // Not compressed.
 }
@@ -283,12 +327,10 @@ Blob lod::encodeMm7CompressedData(const Blob &blob) {
     return Blob::concat(Blob::view(&header, sizeof(header)), compressed);
 }
 
-LodImage lod::decodeMm6Image(const Blob &blob) {
-    if (!detectMm6Image(blob))
-        throw Exception("Cannot decode LOD entry '{}' as MM6 LOD image", blob.displayPath());
-
+template<class Header>
+static LodImage decodeImageAs(const Blob &blob) {
     BlobInputStream stream(blob);
-    LodImageHeader_MM6 header;
+    Header header;
     deserialize(stream, &header);
 
     Blob pixels = stream.readAsBlobOrFail(header.dataSize);
@@ -311,15 +353,53 @@ LodImage lod::decodeMm6Image(const Blob &blob) {
     return result;
 }
 
-Sizei lod::decodeMm6ImageSize(const Blob &blob) {
+LodImage lod::decodeMm6Image(const Blob &blob) {
     if (!detectMm6Image(blob))
         throw Exception("Cannot decode LOD entry '{}' as MM6 LOD image", blob.displayPath());
+    return decodeImageAs<LodImageHeader_MM6>(blob);
+}
 
+LodImage lod::decodeMm8Image(const Blob &blob) {
+    if (!detectMm8Image(blob))
+        throw Exception("Cannot decode LOD entry '{}' as MM8 LOD image", blob.displayPath());
+    return decodeImageAs<LodImageHeader_MM8>(blob);
+}
+
+LodImage lod::decodeAnyImage(const Blob &blob) {
+    if (detectMm6Image(blob))
+        return decodeMm6Image(blob);
+    if (detectMm8Image(blob))
+        return decodeMm8Image(blob);
+    throw Exception("Cannot decode LOD entry '{}' as LOD image", blob.displayPath());
+}
+
+template<class Header>
+static Sizei decodeImageSizeAs(const Blob &blob) {
     BlobInputStream stream(blob);
-    LodImageHeader_MM6 header;
+    Header header;
     deserialize(stream, &header);
 
     return Sizei(header.width, header.height);
+}
+
+Sizei lod::decodeMm6ImageSize(const Blob &blob) {
+    if (!detectMm6Image(blob))
+        throw Exception("Cannot decode LOD entry '{}' as MM6 LOD image", blob.displayPath());
+    return decodeImageSizeAs<LodImageHeader_MM6>(blob);
+}
+
+Sizei lod::decodeMm8ImageSize(const Blob &blob) {
+    if (!detectMm8Image(blob))
+        throw Exception("Cannot decode LOD entry '{}' as MM8 LOD image", blob.displayPath());
+    return decodeImageSizeAs<LodImageHeader_MM8>(blob);
+}
+
+Sizei lod::decodeAnyImageSize(const Blob &blob) {
+    if (detectMm6Image(blob))
+        return decodeMm6ImageSize(blob);
+    if (detectMm8Image(blob))
+        return decodeMm8ImageSize(blob);
+    throw Exception("Cannot decode LOD entry '{}' as LOD image", blob.displayPath());
 }
 
 Palette lod::decodeMm6Palette(const Blob &blob) {

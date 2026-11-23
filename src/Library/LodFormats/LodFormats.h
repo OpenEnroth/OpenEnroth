@@ -21,7 +21,11 @@ bool detectMm6CompressedData(const Blob &blob);
 bool detectMm7CompressedData(const Blob &blob);
 bool detectAnyCompressedData(const Blob &blob);
 bool detectMm6CompressedPseudoImage(const Blob &blob);
+bool detectMm8CompressedPseudoImage(const Blob &blob);
+bool detectAnyCompressedPseudoImage(const Blob &blob);
 bool detectMm6Image(const Blob &blob);
+bool detectMm8Image(const Blob &blob);
+bool detectAnyImage(const Blob &blob);
 bool detectMm6Palette(const Blob &blob);
 bool detectMm6Sprite(const Blob &blob);
 bool detectMm6Font(const Blob &blob);
@@ -58,6 +62,21 @@ Blob decodeAnyCompressedData(const Blob &blob);
 Blob decodeMm6CompressedPseudoImage(const Blob &blob);
 
 /**
+ * @param blob                          MM8 compressed pseudo image, the MM6 one with a 64-byte name instead of a
+ *                                      16-byte one.
+ * @return                              Uncompressed data.
+ * @throw Exception                     If the format is not recognized.
+ */
+Blob decodeMm8CompressedPseudoImage(const Blob &blob);
+
+/**
+ * @param blob                          MM6 or MM8 compressed pseudo image.
+ * @return                              Uncompressed data.
+ * @throw Exception                     If the format is not recognized.
+ */
+Blob decodeAnyCompressedPseudoImage(const Blob &blob);
+
+/**
  * Decodes every compressed format above, and returns everything else as is.
  *
  * @param blob                          `Blob` from a LOD file.
@@ -80,6 +99,21 @@ Blob encodeMm7CompressedData(const Blob &blob);
 LodImage decodeMm6Image(const Blob &blob);
 
 /**
+ * @param blob                          MM8 image, the MM6 one with a 64-byte name instead of a 16-byte one, as read
+ *                                      from a LOD file.
+ * @return                              Decoded `LodImage`.
+ * @throw Exception                     If the format is not recognized.
+ */
+LodImage decodeMm8Image(const Blob &blob);
+
+/**
+ * @param blob                          MM6 or MM8 image, as read from a LOD file.
+ * @return                              Decoded `LodImage`.
+ * @throw Exception                     If the format is not recognized.
+ */
+LodImage decodeAnyImage(const Blob &blob);
+
+/**
  * Reads the image header and returns the image size without decompressing the pixel data.
  *
  * @param blob                          MM6 image, as read from a LOD file.
@@ -87,6 +121,24 @@ LodImage decodeMm6Image(const Blob &blob);
  * @throw Exception                     If the format is not recognized.
  */
 Sizei decodeMm6ImageSize(const Blob &blob);
+
+/**
+ * Reads the image header and returns the image size without decompressing the pixel data.
+ *
+ * @param blob                          MM8 image, as read from a LOD file.
+ * @return                              Image size.
+ * @throw Exception                     If the format is not recognized.
+ */
+Sizei decodeMm8ImageSize(const Blob &blob);
+
+/**
+ * Reads the image header and returns the image size without decompressing the pixel data.
+ *
+ * @param blob                          MM6 or MM8 image, as read from a LOD file.
+ * @return                              Image size.
+ * @throw Exception                     If the format is not recognized.
+ */
+Sizei decodeAnyImageSize(const Blob &blob);
 
 /**
  * @param blob                          MM6 palette, an image header without an image followed by the palette, as

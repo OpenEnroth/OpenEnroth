@@ -17,8 +17,12 @@ std::string_view formatDescription(MagicFileFormat format) {
         return "MM7 LOD compressed file";
     case MAGIC_LOD_COMPRESSED_PSEUDO_IMAGE_MM6:
         return "MM6 LOD compressed pseudo image";
+    case MAGIC_LOD_COMPRESSED_PSEUDO_IMAGE_MM8:
+        return "MM8 LOD compressed pseudo image";
     case MAGIC_LOD_IMAGE_MM6:
         return "MM6 LOD image";
+    case MAGIC_LOD_IMAGE_MM8:
+        return "MM8 LOD image";
     case MAGIC_LOD_PALETTE_MM6:
         return "MM6 LOD palette";
     case MAGIC_LOD_SPRITE_MM6:

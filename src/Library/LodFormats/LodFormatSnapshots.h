@@ -54,6 +54,27 @@ static_assert(sizeof(LodImageHeader_MM6) == 48);
 MM_DECLARE_MEMCOPY_SERIALIZABLE(LodImageHeader_MM6)
 
 /**
+ * `LodImageHeader_MM6` with a 64-byte name, as MM8's `MMVIII` LODs store it, `EnglishT.lod` and `EnglishD.lod`.
+ */
+struct LodImageHeader_MM8 {
+    std::array<char, 64> name;
+    uint32_t size;
+    uint32_t dataSize;
+    uint16_t width;
+    uint16_t height;
+    int16_t widthLn2;
+    int16_t heightLn2;
+    int16_t widthMinus1;
+    int16_t heightMinus1;
+    int16_t paletteId;
+    int16_t anotherPaletteId;
+    uint32_t decompressedSize;
+    uint32_t flags;
+};
+static_assert(sizeof(LodImageHeader_MM8) == 96);
+MM_DECLARE_MEMCOPY_SERIALIZABLE(LodImageHeader_MM8)
+
+/**
  * @see https://github.com/GrayFace/MMExtension/blob/4d6600f164315f38157591d7f0307a86594c22ef/Src/RSPak/Extra/RSLod.pas#L553
  */
 struct LodSpriteHeader_MM6 {

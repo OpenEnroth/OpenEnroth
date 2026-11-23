@@ -92,8 +92,12 @@ MagicFileFormat magic(const Blob &data) {
         return MAGIC_LOD_COMPRESSED_DATA_MM6;
     if (lod::detectMm6CompressedPseudoImage(data))
         return MAGIC_LOD_COMPRESSED_PSEUDO_IMAGE_MM6;
+    if (lod::detectMm8CompressedPseudoImage(data))
+        return MAGIC_LOD_COMPRESSED_PSEUDO_IMAGE_MM8;
     if (lod::detectMm6Image(data))
         return MAGIC_LOD_IMAGE_MM6;
+    if (lod::detectMm8Image(data))
+        return MAGIC_LOD_IMAGE_MM8;
     if (lod::detectMm6Palette(data))
         return MAGIC_LOD_PALETTE_MM6;
     if (lod::detectMm6Sprite(data))

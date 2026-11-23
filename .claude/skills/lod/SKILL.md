@@ -56,11 +56,11 @@ prints has `LOD compressed` in its name, and `cat` decompresses it.
 | Data | MM6 | MM7 | MM8 |
 |---|---|---|---|
 | maps, `.blv` `.dlv` `.odm` `.ddm` | `data/Games.lod`, compressed | `DATA/GAMES.LOD`, compressed | `Data/games.lod`, compressed |
-| events, strings, text tables, `.evt` `.str` `.txt` `.bin` | `data/icons.lod`, compressed | `DATA/events.lod`, compressed | `Data/EnglishT.lod` |
+| events, strings, text tables, `.evt` `.str` `.txt` `.bin` | `data/icons.lod`, compressed | `DATA/events.lod`, compressed | `Data/EnglishT.lod`, compressed |
 | UI images, PCX screens, fonts | `data/icons.lod` | `DATA/ICONS.LOD` | `Data/icons.lod`, `EnglishT.lod`, `EnglishD.lod` |
 | textures and palettes `palNNN` | `data/BITMAPS.LOD` | `DATA/BITMAPS.LOD` | `Data/bitmaps.lod` |
 | sprites | `data/SPRITES.LOD` | `DATA/SPRITES.LOD` | `Data/sprites.lod` |
-| sounds | `Sounds/Audio.snd`, WAV | `SOUNDS/Audio.snd`, WAV | `Data/EnglishD.lod` |
+| sounds | `Sounds/Audio.snd`, WAV | `SOUNDS/Audio.snd`, WAV | `Data/EnglishD.lod`, compressed WAV |
 | movies | `Anims/Anims1.vid`, `Anims2.vid`, Smacker | `Anims/Magic7.vid`, `Might7.vid`, Smacker and Bink | `Anims/Magicdod.vid`, `mightdod.vid`, Smacker and Bink |
 
 Entries without an extension in the image archives are LOD images, palettes or sprites.
