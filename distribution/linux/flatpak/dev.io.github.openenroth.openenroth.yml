@@ -51,8 +51,10 @@ modules:
     build-options:
       append-path: /usr/lib/sdk/llvm20/bin
       prepend-ld-library-path: /usr/lib/sdk/llvm20/lib
-      strip: false  # Both of flatpak-builder's strip passes drop the symbol table, the post-install strips instead.
-      no-debuginfo: true
+      # Both flatpak-builder passes below would remove the symbol table that crash traces need for function names.
+      # The post-install runs `strip --strip-debug` instead, which removes only the debug info.
+      strip: false  # Would run a plain `strip`, which removes the symbol table along with the debug info.
+      no-debuginfo: true  # Would move the debug info and the symbol table to the .Debug extension, which isn't bundled.
     cleanup:
       - /bin/OpenEnroth_UnitTest
       - /share/cmake
