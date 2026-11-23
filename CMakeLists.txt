@@ -8,7 +8,7 @@ project("OpenEnroth")
 set(CMAKE_CXX_STANDARD 23)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON) # For clang-tidy and IDEs.
-set(CMAKE_CXX_SCAN_FOR_MODULES OFF) # No C++ modules here, and since CMake 4.5 a scanned target also gets an `import std` module built.
+set(CMAKE_CXX_SCAN_FOR_MODULES OFF) # No modules here. On Android, scanning makes CMake 4.5 build `import std` from the host's libstdc++ module sources, which the NDK's clang can't compile.
 
 list(APPEND CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/CMakeModules)
 include(Git)
