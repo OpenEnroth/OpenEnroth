@@ -513,18 +513,14 @@ void GUIWindow_GameOptions::Update() {
             break;
     }
 
-    if (engine->config->settings.WalkSound.value()) {
+    if (engine->config->settings.WalkSound.value())
         render->DrawQuad2D(options_menu_skin.uTextureID_WalkSound, {20, 303});
-    }
-    if (engine->config->settings.ShowHits.value()) {
+    if (engine->config->settings.ShowHits.value())
         render->DrawQuad2D(options_menu_skin.uTextureID_ShowDamage, {128, 303});
-    }
-    if (engine->config->settings.FlipOnExit.value()) {
+    if (engine->config->settings.FlipOnExit.value())
         render->DrawQuad2D(options_menu_skin.uTextureID_FlipOnExit, {128, 325});
-    }
-    if (engine->config->settings.AlwaysRun.value()) {
+    if (engine->config->settings.AlwaysRun.value())
         render->DrawQuad2D(options_menu_skin.uTextureID_AlwaysRun, {20, 325});
-    }
 
     render->DrawQuad2D(options_menu_skin.uTextureID_SoundLevels[engine->config->settings.SoundLevel.value()],
         {265 + 17 * engine->config->settings.SoundLevel.value(), 162});
@@ -542,20 +538,17 @@ void GameUI_OnPlayerPortraitLeftClick(int uPlayerID) {
             return;
         }
 
-        if (!player->CanAct()) {
+        if (!player->CanAct())
             player = &pParty->activeCharacter();
-        }
-        if (player->CanAct() || !pParty->activeCharacter().CanAct()) {
+        if (player->CanAct() || !pParty->activeCharacter().CanAct())
             player->playReaction(SPEECH_NO_ROOM);
-        }
     }
 
     if (current_screen_type == SCREEN_GAME) {
         if (pParty->hasActiveCharacter()) {
             if (pParty->activeCharacterIndex() != uPlayerID) {
-                if (player->timeToRecovery || !player->CanAct()) {
+                if (player->timeToRecovery || !player->CanAct())
                     return;
-                }
 
                 pParty->setActiveCharacterIndex(uPlayerID);
                 return;
@@ -566,9 +559,8 @@ void GameUI_OnPlayerPortraitLeftClick(int uPlayerID) {
         return;
     }
 
-    if (current_screen_type == SCREEN_SPELL_BOOK) {
+    if (current_screen_type == SCREEN_SPELL_BOOK)
         return;
-    }
 
     if (current_screen_type == SCREEN_CHEST) {
         if (pParty->activeCharacterIndex() == uPlayerID) {
@@ -576,9 +568,8 @@ void GameUI_OnPlayerPortraitLeftClick(int uPlayerID) {
             current_screen_type = SCREEN_CHEST_INVENTORY;
             return;
         }
-        if (player->timeToRecovery) {
+        if (player->timeToRecovery)
             return;
-        }
         pParty->setActiveCharacterIndex(uPlayerID);
         return;
     }
@@ -597,15 +588,13 @@ void GameUI_OnPlayerPortraitLeftClick(int uPlayerID) {
             pParty->setActiveCharacterIndex(uPlayerID);
             return;
         }
-        if (player->timeToRecovery) {
+        if (player->timeToRecovery)
             return;
-        }
         pParty->setActiveCharacterIndex(uPlayerID);
         return;
     }
-    if (window_SpeakInHouse->keyboard_input_status == WINDOW_INPUT_IN_PROGRESS) {
+    if (window_SpeakInHouse->keyboard_input_status == WINDOW_INPUT_IN_PROGRESS)
         return;
-    }
 
     if (pParty->activeCharacterIndex() != uPlayerID) {
         pParty->setActiveCharacterIndex(uPlayerID);
@@ -673,9 +662,8 @@ std::string GameUI_GetMinimapHintText() {
 
 //----- (0041AD6E) --------------------------------------------------------
 void GameUI_DrawRightPanelItems() {
-    if (bookFlashTimer > pParty->GetPlayingTime()) {
+    if (bookFlashTimer > pParty->GetPlayingTime())
         bookFlashTimer = {};
-    }
 
     if (pParty->GetPlayingTime() - bookFlashTimer > 128_ticks) {
         bookFlashTimer = pParty->GetPlayingTime();
@@ -683,33 +671,25 @@ void GameUI_DrawRightPanelItems() {
     }
 
     if (bookFlashState && current_screen_type != SCREEN_REST) {
-        if (bFlashQuestBook) {
+        if (bFlashQuestBook)
             render->DrawQuad2D(game_ui_tome_quests, {493, 355});
-        }
-        if (bFlashAutonotesBook) {
+        if (bFlashAutonotesBook)
             render->DrawQuad2D(game_ui_tome_autonotes, {527, 353});
-        }
-        if (bFlashHistoryBook) {
+        if (bFlashHistoryBook)
             render->DrawQuad2D(game_ui_tome_storyline, {600, 361});
-        }
     }
 
     if (current_screen_type ==  SCREEN_BOOKS) {
-        if (pGUIWindow_CurrentMenu->eWindowType == WINDOW_QUEST_BOOK) {
+        if (pGUIWindow_CurrentMenu->eWindowType == WINDOW_QUEST_BOOK)
             render->DrawQuad2D(game_ui_tome_quests, {493, 355});
-        }
-        if (pGUIWindow_CurrentMenu->eWindowType == WINDOW_AUTONOTES_BOOK) {
+        if (pGUIWindow_CurrentMenu->eWindowType == WINDOW_AUTONOTES_BOOK)
             render->DrawQuad2D(game_ui_tome_autonotes, {527, 353});
-        }
-        if (pGUIWindow_CurrentMenu->eWindowType == WINDOW_JOURNAL_BOOK) {
+        if (pGUIWindow_CurrentMenu->eWindowType == WINDOW_JOURNAL_BOOK)
             render->DrawQuad2D(game_ui_tome_storyline, {600, 361});
-        }
-        if (pGUIWindow_CurrentMenu->eWindowType == WINDOW_MAPS_BOOK) {
+        if (pGUIWindow_CurrentMenu->eWindowType == WINDOW_MAPS_BOOK)
             render->DrawQuad2D(game_ui_tome_maps, {546, 353});
-        }
-        if (pGUIWindow_CurrentMenu->eWindowType == WINDOW_CALENDAR_BOOK) {
+        if (pGUIWindow_CurrentMenu->eWindowType == WINDOW_CALENDAR_BOOK)
             render->DrawQuad2D(game_ui_tome_calendar, {570, 353});
-        }
     }
 }
 
@@ -743,9 +723,8 @@ void GameUI_DrawLifeManaBars() {
 
             std::shared_ptr<GraphicsImage> pTextureHealth = game_ui_bar_green;
             if (hpFillRatio > 0.5) {
-                if (hpFillRatio > 1.0) {
+                if (hpFillRatio > 1.0)
                     hpFillRatio = 1.0;
-                }
             } else if (hpFillRatio > 0.25) {
                 pTextureHealth = game_ui_bar_yellow;
             } else if (hpFillRatio > 0.0) {
@@ -764,9 +743,8 @@ void GameUI_DrawLifeManaBars() {
         }
         if (pParty->pCharacters[i].mana > 0) {
             double mpFillRatio = (double)pParty->pCharacters[i].mana / (double)pParty->pCharacters[i].GetMaxMana();
-            if (mpFillRatio > 1.0) {
+            if (mpFillRatio > 1.0)
                 mpFillRatio = 1.0;
-            }
             int v17 = 0;
             if (i == 2) v17 = 1;
             int height = mpFillRatio * game_ui_bar_blue->height();
@@ -822,17 +800,12 @@ void GameUI_WritePointedObjectStatusString() {
         return;
 
     auto shouldMirror = [&](GUIWindow *pWindow) -> bool {
-        if (pWindow->eWindowType != WINDOW_DIALOGUE) {
+        if (pWindow->eWindowType != WINDOW_DIALOGUE)
             return true;
-        }
-        if (current_screen_type == SCREEN_NPC_DIALOGUE) {
+        if (current_screen_type == SCREEN_NPC_DIALOGUE)
             return true;
-        }
-        if (current_screen_type == SCREEN_HOUSE) {
-            if (currentHouseNpc != -1 && currentHouseNpc < (int)houseNpcs.size()) {
-                return houseNpcs[currentHouseNpc].type == HOUSE_NPC;
-            }
-        }
+        if (current_screen_type == SCREEN_HOUSE && currentHouseNpc != -1 && currentHouseNpc < (int)houseNpcs.size())
+            return houseNpcs[currentHouseNpc].type == HOUSE_NPC;
         return false;
     };
 
@@ -840,9 +813,8 @@ void GameUI_WritePointedObjectStatusString() {
         if (pX <= (renDims.w - 1) * 0.73125 &&
             pY <= (renDims.h - 1) * 0.73125) {
             if (!pViewport.contains(Pointi(pX, pY))) {
-                if (uLastPointedObjectID) {
+                if (uLastPointedObjectID)
                     engine->_statusBar->clearPermanent();
-                }
                 uLastPointedObjectID = Pid();
                 return;
             }
@@ -870,9 +842,8 @@ void GameUI_WritePointedObjectStatusString() {
                     engine->_statusBar->setPermanent(pText);
                 } else {
                     std::string hintString = getEventHintString(pLevelDecorations[pickedObjectID].uEventID);
-                    if (!hintString.empty()) {
+                    if (!hintString.empty())
                         engine->_statusBar->setPermanent(hintString);
-                    }
                 }  // intentional fallthrough
             } else if (pickedObject.pid.type() == OBJECT_Face) {
                 if (pickedObject.depth < engine->config->gameplay.MouseInteractionDepth.value()) {
@@ -880,16 +851,14 @@ void GameUI_WritePointedObjectStatusString() {
                     if (uCurrentlyLoadedLevelType != LEVEL_INDOOR) {
                         const BLVFace &face = pOutdoor->faces[pickedObject.pid.id()];
                         short triggeredId = face.eventId;
-                        if (triggeredId != 0) {
+                        if (triggeredId != 0)
                             newString = getEventHintString(face.eventId);
-                        }
                     } else {
                         pFace = &pIndoor->faces[pickedObjectID];
                         if (pFace->attributes & FACE_INDICATE) {
                             unsigned short eventId = pFace->eventId;
-                            if (eventId != 0) {
+                            if (eventId != 0)
                                 newString = getEventHintString(eventId);
-                            }
                         }
                     }
                     if (!newString.empty()) {
@@ -904,9 +873,8 @@ void GameUI_WritePointedObjectStatusString() {
             } else if (pickedObject.pid.type() == OBJECT_Actor) {
                 engine->_statusBar->setPermanent(pActors[pickedObjectID].GetDisplayName());
             }
-            if (!pickedObject.pid && uLastPointedObjectID) {
+            if (!pickedObject.pid && uLastPointedObjectID)
                 engine->_statusBar->clearPermanent();
-            }
             uLastPointedObjectID = pickedObject.pid;
             return;
         }
@@ -954,9 +922,8 @@ void GameUI_WritePointedObjectStatusString() {
                     // pSRZBufferLineOffsets[pY]];
                     if (pickedObjectID == 0 || pickedObjectID == -65536 ||
                         pickedObjectID >= 5000) {
-                        if (uLastPointedObjectID) {
+                        if (uLastPointedObjectID)
                             engine->_statusBar->clearPermanent();
-                        }
                         uLastPointedObjectID = Pid();
                         // return;
                     } else {
@@ -976,9 +943,8 @@ void GameUI_WritePointedObjectStatusString() {
                     switch (pButton->uButtonType) {
                         case BUTTON_TYPE_NORMAL:  // for dialogue window
                             if (pButton->Contains(pX, pY)) {
-                                if (shouldMirror(pWindow)) {
+                                if (shouldMirror(pWindow))
                                     engine->_statusBar->setPermanent(pButton->label);
-                                }
                                 pMessageType1 = (UIMessageType)pButton->uData;
                                 if (pMessageType1)
                                     GameUI_handleHintMessage(pMessageType1, pButton->msg_param);
@@ -1020,9 +986,8 @@ void GameUI_WritePointedObjectStatusString() {
             }
 
             // ?? if we get here nothing is curos over??
-            if (uLastPointedObjectID) {  // not found so reset
+            if (uLastPointedObjectID)  // not found so reset
                 engine->_statusBar->clearPermanent();
-            }
             uLastPointedObjectID = Pid();
 
             if (pWindow->frameRect.h == 480) {
@@ -1125,9 +1090,8 @@ void GameUI_WritePointedObjectStatusString() {
         }
     }
 
-    if (uLastPointedObjectID) {
+    if (uLastPointedObjectID)
         engine->_statusBar->clearPermanent();
-    }
     uLastPointedObjectID = Pid();
 }
 
@@ -1520,12 +1484,10 @@ void GameUI_DrawTorchlightAndWizardEye() {
         current_screen_type == SCREEN_BOOKS ||
         current_screen_type == SCREEN_BRANCHLESS_NPC_DIALOG ||
         current_screen_type == SCREEN_QUICK_REFERENCE) {
-        if (pParty->TorchlightActive()) {
+        if (pParty->TorchlightActive())
             render->DrawQuad2D(pIconsFrameTable->animationFrame(game_ui_torchLight, animTimer->time()), {468, 0});
-        }
-        if (pParty->wizardEyeActive()) {
+        if (pParty->wizardEyeActive())
             render->DrawQuad2D(pIconsFrameTable->animationFrame(game_ui_wizardEye, animTimer->time()), {606, 0});
-        }
     }
 }
 
@@ -1640,9 +1602,8 @@ void GameUI_handleHintMessage(UIMessageType type, int param) {
             if (!pParty->hasActiveCharacter())
                 break;
             SpellId selectedSpell = static_cast<SpellId>(param);
-            if (isHoldingMouseRightButton()) {
+            if (isHoldingMouseRightButton())
                 dword_507B00_spell_info_to_draw_in_popup = selectedSpell;
-            }
             if (spellbookSelectedSpell == selectedSpell) {
                 engine->_statusBar->setPermanent(LSTR_CAST_S, pSpellStats->pInfos[selectedSpell].name);
             } else {
@@ -1692,16 +1653,14 @@ void GameUI_handleHintMessage(UIMessageType type, int param) {
         }
 
         case UIMSG_HintBeaconSlot: {
-            if (pGUIWindow_CurrentMenu) {
+            if (pGUIWindow_CurrentMenu)
                 (dynamic_cast<GUIWindow_LloydsBook*>(pGUIWindow_CurrentMenu.get()))->hintBeaconSlot(param);
-            }
             break;
         }
 
         case UIMSG_HintTownPortal: {
-            if (pGUIWindow_CurrentMenu) {
+            if (pGUIWindow_CurrentMenu)
                 (dynamic_cast<GUIWindow_TownPortalBook*>(pGUIWindow_CurrentMenu.get()))->hintTown(param);
-            }
             break;
         }
 

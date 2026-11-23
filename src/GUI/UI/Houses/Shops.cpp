@@ -212,11 +212,9 @@ bool isStealingModeActive() {
 }
 
 void addUniqueItemClasses(const ITEM_VARIATION &variation, std::vector<RandomItemType> &set) {
-    for (RandomItemType itemClass : variation.itemClass) {
-        if (std::find(set.begin(), set.end(), itemClass) == set.end()) {
+    for (RandomItemType itemClass : variation.itemClass)
+        if (std::find(set.begin(), set.end(), itemClass) == set.end())
             set.push_back(itemClass);
-        }
-    }
 }
 
 DialogueId getSkillLearnDualogueForItemClass(RandomItemType itemClass) {
@@ -249,9 +247,8 @@ DialogueId getSkillLearnDualogueForItemClass(RandomItemType itemClass) {
 }
 
 void GUIWindow_Shop::mainDialogue() {
-    if (!checkIfPlayerCanInteract()) {
+    if (!checkIfPlayerCanInteract())
         return;
-    }
 
     std::vector<std::string> optionsText = {localization->str(LSTR_STANDARD), localization->str(LSTR_SPECIAL), localization->str(LSTR_DISPLAY_INVENTORY)};
     if (!listShopLearnableSkills().empty()) // Vanilla MM7 always offers "Learn Skills", even in Vander's Blades & Bows in Tatalia, which has nothing to teach.
@@ -266,9 +263,8 @@ void GUIWindow_Shop::displayEquipmentDialogue() {
 
     std::vector<std::string> optionsText = {localization->str(LSTR_SELL), localization->str(LSTR_IDENTIFY)};
 
-    if (buildingType() != HOUSE_TYPE_ALCHEMY_SHOP) {
+    if (buildingType() != HOUSE_TYPE_ALCHEMY_SHOP)
         optionsText.push_back(localization->str(LSTR_REPAIR));
-    }
 
     drawOptions(optionsText, colorTable.Sunflower);
 }
@@ -387,9 +383,8 @@ void GUIWindow_WeaponShop::shopWaresDialogue(bool isSpecial) {
 
     if (checkIfPlayerCanInteract()) {
         int item_num = 0;
-        for (int i = 0; i < 6; ++i) {
+        for (int i = 0; i < 6; ++i)
             item_num += (isSpecial ? pParty->specialItemsInShops[houseId()][i].itemId : pParty->standartItemsInShops[houseId()][i].itemId) != ITEM_NULL;
-        }
 
         if (isStealingModeActive()) {
             engine->_statusBar->drawForced(localization->str(LSTR_STEAL_ITEM), colorTable.White);
@@ -460,9 +455,8 @@ void GUIWindow_ArmorShop::shopWaresDialogue(bool isSpecial) {
 
     if (checkIfPlayerCanInteract()) {
         int pItemCount = 0;
-        for (int i = 0; i < 6; ++i) {
+        for (int i = 0; i < 6; ++i)
             pItemCount += (isSpecial ? pParty->specialItemsInShops[houseId()][i].itemId : pParty->standartItemsInShops[houseId()][i].itemId) != ITEM_NULL;
-        }
 
         if (isStealingModeActive()) {
             engine->_statusBar->drawForced(localization->str(LSTR_STEAL_ITEM), colorTable.White);
@@ -476,9 +470,8 @@ void GUIWindow_ArmorShop::shopWaresDialogue(bool isSpecial) {
             // testx limits check
             int testx = (pt.x - 40) / 105;
             if (testx >= 0 && testx < 4) {
-                if (pt.y >= 126) {
+                if (pt.y >= 126)
                     testx += 4;
-                }
 
                 Item *item;
                 if (isSpecial) {
@@ -545,16 +538,11 @@ void GUIWindow_MagicAlchemyShop::shopWaresDialogue(bool isSpecial) {
                 itemx = 75 * i - (shop_ui_items_in_store[i]->width() / 2) + 40;
             }
 
-            if (i == 0 || i == 6) {
-                if (itemx < 18)
-                    itemx = 18;
-            }
+            if ((i == 0 || i == 6) && itemx < 18)
+                itemx = 18;
 
-            if (i == 5 || i == 11) {
-                if (itemx > 457 - (shop_ui_items_in_store[i]->width())) {
-                    itemx = 457 - (shop_ui_items_in_store[i]->width());
-                }
-            }
+            if ((i == 5 || i == 11) && itemx > 457 - (shop_ui_items_in_store[i]->width()))
+                itemx = 457 - (shop_ui_items_in_store[i]->width());
 
             render->DrawQuad2D(shop_ui_items_in_store[i], {itemx, itemy});
         }
@@ -563,9 +551,8 @@ void GUIWindow_MagicAlchemyShop::shopWaresDialogue(bool isSpecial) {
     if (checkIfPlayerCanInteract()) {
         int item_num = 0;
 
-        for (int i = 0; i < 12; ++i) {
+        for (int i = 0; i < 12; ++i)
             item_num += (isSpecial ? pParty->specialItemsInShops[houseId()][i].itemId : pParty->standartItemsInShops[houseId()][i].itemId) != ITEM_NULL;
-        }
 
         if (isStealingModeActive()) {
             engine->_statusBar->drawForced(localization->str(LSTR_STEAL_ITEM), colorTable.White);
@@ -579,9 +566,8 @@ void GUIWindow_MagicAlchemyShop::shopWaresDialogue(bool isSpecial) {
             // testx limits check
             int testx = (pt.x) / 75;
             if (testx >= 0 && testx < 6) {
-                if (pt.y > 152) {
+                if (pt.y > 152)
                     testx += 6;
-                }
 
                 Item *item;
                 if (isSpecial) {
@@ -702,9 +688,8 @@ std::vector<DialogueId> GUIWindow_WeaponShop::listShopLearnableSkills() {
 
     for (RandomItemType itemClass : itemClasses) {
         DialogueId dialogue = getSkillLearnDualogueForItemClass(itemClass);
-        if (dialogue != DIALOGUE_NULL) {
+        if (dialogue != DIALOGUE_NULL)
             skillsOptions.push_back(dialogue);
-        }
     }
 
     return skillsOptions;
@@ -721,9 +706,8 @@ std::vector<DialogueId> GUIWindow_ArmorShop::listShopLearnableSkills() {
 
     for (RandomItemType itemClass : itemClasses) {
         DialogueId dialogue = getSkillLearnDualogueForItemClass(itemClass);
-        if (dialogue != DIALOGUE_NULL) {
+        if (dialogue != DIALOGUE_NULL)
             skillsOptions.push_back(dialogue);
-        }
     }
 
     return skillsOptions;
@@ -781,11 +765,9 @@ void GUIWindow_Shop::houseDialogueOptionSelected(DialogueId option) {
 
         HouseType shopType = buildingType();
         const std::array<Item, 12> &itemArray = (option == DIALOGUE_SHOP_BUY_STANDARD) ? pParty->standartItemsInShops[houseId()] : pParty->specialItemsInShops[houseId()];
-        for (int i = 0; i < itemAmountInShop[shopType]; ++i) {
-            if (itemArray[i].itemId != ITEM_NULL) {
+        for (int i = 0; i < itemAmountInShop[shopType]; ++i)
+            if (itemArray[i].itemId != ITEM_NULL)
                 shop_ui_items_in_store[i] = assets->getIcon(itemArray[i].GetIconName());
-            }
-        }
         if (shopType == HOUSE_TYPE_WEAPON_SHOP) {
             for (int i = 0; i < itemAmountInShop[shopType]; ++i) {
                 if (itemArray[i].itemId != ITEM_NULL) {
@@ -817,9 +799,8 @@ std::vector<DialogueId> GUIWindow_Shop::listDialogueOptions() {
 }
 
 std::vector<DialogueId> GUIWindow_AlchemyShop::listDialogueOptions() {
-    if (_currentDialogue == DIALOGUE_SHOP_DISPLAY_EQUIPMENT) {
+    if (_currentDialogue == DIALOGUE_SHOP_DISPLAY_EQUIPMENT)
         return {DIALOGUE_SHOP_SELL, DIALOGUE_SHOP_IDENTIFY};
-    }
     return GUIWindow_Shop::listDialogueOptions();
 }
 
@@ -844,9 +825,8 @@ void GUIWindow_Shop::playHouseGoodbyeSpeech() {
 
     if (pParty->PartyTimes.shopBanTimes[houseId()] <= pParty->GetPlayingTime()) {
         if (pParty->GetGold() <= 10000) {
-            if (_transactionPerformed) {
+            if (_transactionPerformed)
                 playHouseSound(houseId(), HOUSE_SOUND_SHOP_GOODBYE_POLITE);
-            }
             return;
         }
         playHouseSound(houseId(), _transactionPerformed ? HOUSE_SOUND_SHOP_GOODBYE_POLITE : HOUSE_SOUND_SHOP_GOODBYE_RUDE);
@@ -870,9 +850,8 @@ void GUIWindow_AlchemyShop::playHouseGoodbyeSpeech() {
     } else if (!pParty->_delayedReactionTimer) {
         int id = pParty->getRandomActiveCharacterId(vrng);
 
-        if (id != -1) {
+        if (id != -1)
             pParty->setDelayedReaction(SPEECH_SHOP_RUDE, id);
-        }
     }
 }
 
@@ -898,16 +877,14 @@ void GUIWindow_Shop::houseScreenClick() {
         }
 
         case DIALOGUE_SHOP_SELL: {
-            if (pt.x <= 13 || pt.x >= 462) {
+            if (pt.x <= 13 || pt.x >= 462)
                 return;
-            }
 
             Pointi gridPos = mapToInventoryGrid(pt, Pointi(14, 17));
 
             InventoryEntry entry = pParty->activeCharacter().inventory.entry(gridPos);
-            if (!entry) {
+            if (!entry)
                 return;
-            }
 
             if (entry->canSellRepairIdentifyAt(houseId())) {
                 _transactionPerformed = true;
@@ -922,16 +899,14 @@ void GUIWindow_Shop::houseScreenClick() {
         }
 
         case DIALOGUE_SHOP_IDENTIFY: {
-            if (pt.x <= 13 || pt.x >= 462) {
+            if (pt.x <= 13 || pt.x >= 462)
                 return;
-            }
 
             Pointi gridPos = mapToInventoryGrid(pt, Pointi(14, 17));
 
             InventoryEntry entry = pParty->activeCharacter().inventory.entry(gridPos);
-            if (!entry) {
+            if (!entry)
                 return;
-            }
 
             float fPriceMultiplier = houseTable[houseId()].fPriceMultiplier;
             int uPriceItemService = PriceCalculator::itemIdentificationPriceForPlayer(&pParty->activeCharacter(), fPriceMultiplier);
@@ -963,16 +938,14 @@ void GUIWindow_Shop::houseScreenClick() {
         }
 
         case DIALOGUE_SHOP_REPAIR: {
-            if (pt.x <= 13 || pt.x >= 462) {
+            if (pt.x <= 13 || pt.x >= 462)
                 return;
-            }
 
             Pointi gridPos = mapToInventoryGrid(pt, Pointi(14, 17));
 
             InventoryEntry entry = pParty->activeCharacter().inventory.entry(gridPos);
-            if (!entry) {
+            if (!entry)
                 return;
-            }
 
             Item &item = *entry;
             float fPriceMultiplier = houseTable[houseId()].fPriceMultiplier;
@@ -1021,11 +994,9 @@ void GUIWindow_Shop::houseScreenClick() {
 
                     if (boughtItem->itemId != ITEM_NULL) {
                         testpos = ((60 - (shop_ui_items_in_store[testx]->width() / 2)) + testx * 70);
-                        if (pt.x >= testpos && pt.x < (testpos + (shop_ui_items_in_store[testx]->width()))) {
-                            if (pt.y >= weaponYPos[testx] + 30 && pt.y < (weaponYPos[testx] + 30 + (shop_ui_items_in_store[testx]->height()))) {
-                                break;  // good
-                            }
-                        }
+                        if (pt.x >= testpos && pt.x < (testpos + (shop_ui_items_in_store[testx]->width())) &&
+                            pt.y >= weaponYPos[testx] + 30 && pt.y < (weaponYPos[testx] + 30 + (shop_ui_items_in_store[testx]->height())))
+                            break;  // good
                     }
                 }
                 return;
@@ -1033,9 +1004,8 @@ void GUIWindow_Shop::houseScreenClick() {
               case HOUSE_TYPE_ARMOR_SHOP:
                 testx = (pt.x - 40) / 105;
                 if (testx >= 0 && testx < 4) {
-                    if (pt.y >= 126) {
+                    if (pt.y >= 126)
                         testx += 4;
-                    }
 
                     if (_currentDialogue == DIALOGUE_SHOP_BUY_STANDARD) {
                         boughtItem = &pParty->standartItemsInShops[houseId()][testx];
@@ -1064,9 +1034,8 @@ void GUIWindow_Shop::houseScreenClick() {
               case HOUSE_TYPE_MAGIC_SHOP:
                 testx = (pt.x) / 75;
                 if (testx >= 0 && testx < 6) {
-                    if (pt.y > 152) {
+                    if (pt.y > 152)
                         testx += 6;
-                    }
 
                     if (_currentDialogue == DIALOGUE_SHOP_BUY_STANDARD) {
                         boughtItem = &pParty->standartItemsInShops[houseId()][testx];
@@ -1101,9 +1070,8 @@ void GUIWindow_Shop::houseScreenClick() {
             int stealResult = 0;
             int stealDifficulty = 0;
             int fine;
-            if (engine->_currentLoadedMapId != MAP_INVALID) {
+            if (engine->_currentLoadedMapId != MAP_INVALID)
                 stealDifficulty = pMapTable->pInfos[engine->_currentLoadedMapId].baseStealingFine;
-            }
             int partyReputation = pParty->GetPartyReputation();
             if (isStealingModeActive()) {
                 stealResult = pParty->activeCharacter().StealFromShop(boughtItem, stealDifficulty, partyReputation, 0, &fine);
@@ -1150,13 +1118,10 @@ void GUIWindow_Shop::processStealingResult(int stealingResult, int fineToAdd) { 
 
     if (stealingResult == 0 || stealingResult == 1) {  // got caught
         pParty->uFine = std::clamp(pParty->uFine + fineToAdd, 0, 4000000);
-        if (pParty->uFine) {
-            for (Character &player : pParty->pCharacters) {
-                if (!player._achievedAwardsBits[AWARD_FINE]) {
+        if (pParty->uFine)
+            for (Character &player : pParty->pCharacters)
+                if (!player._achievedAwardsBits[AWARD_FINE])
                     player._achievedAwardsBits.set(AWARD_FINE);
-                }
-            }
-        }
         if (stealingResult == 1) {
             reputationDelta = 2;
         } else {

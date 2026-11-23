@@ -719,9 +719,8 @@ int CalculateCardPower(ArcomagePlayer *player, ArcomagePlayer *enemy,
     }
     card_power += mastery_coeff[E_RES][mastery] * element_power;
 
-    if (pCard->field_30 || pCard->field_4D) {
+    if (pCard->field_30 || pCard->field_4D)
         card_power *= 10;
-    }
 
     if (pCard->card_resource_type == 1) {
         element_power = player->resource_bricks - pCard->needed_bricks;
@@ -730,14 +729,12 @@ int CalculateCardPower(ArcomagePlayer *player, ArcomagePlayer *enemy,
     } else if (pCard->card_resource_type == 3) {
         element_power = player->resource_beasts - pCard->needed_beasts;
     }
-    if (element_power > 3) {
+    if (element_power > 3)
         element_power = 3;
-    }
     card_power += 5 * element_power;
 
-    if (enemy->tower_height <= pCard->to_enemy_tower2 + pCard->to_enemy_tower) {
+    if (enemy->tower_height <= pCard->to_enemy_tower2 + pCard->to_enemy_tower)
         card_power += 9999;
-    }
 
     if (pCard->to_enemy_tower2 + pCard->to_enemy_tower + pCard->to_enemy_wall +
             pCard->to_enemy_wall2 + pCard->to_enemy_buildings +
@@ -818,21 +815,15 @@ bool OpponentsAITurn(int player_num) {
 
         // if we have to discard pick the least powerful to chuck
         int discard_slot = 0;
-        for (int i = ai_player_cards_count - 1; i; --i) {
-            if (i >= 0) {
-                if (pCards[am_Players[player_num].cards_at_hand[cards_power[i].slot_index]].can_be_discarded) {
-                    discard_slot = cards_power[i].slot_index;
-                }
-            }
-        }
+        for (int i = ai_player_cards_count - 1; i; --i)
+            if (i >= 0 && pCards[am_Players[player_num].cards_at_hand[cards_power[i].slot_index]].can_be_discarded)
+                discard_slot = cards_power[i].slot_index;
 
         if (!need_to_discard_card) {
             // try and play most powerful card
-            for (int i = 0; i < ai_player_cards_count - 1; ++i) {
-                if (CanCardBePlayed(player_num, cards_power[i].slot_index) && cards_power[i].card_power) {
+            for (int i = 0; i < ai_player_cards_count - 1; ++i)
+                if (CanCardBePlayed(player_num, cards_power[i].slot_index) && cards_power[i].card_power)
                     return PlayCard(player_num, cards_power[i].slot_index);
-                }
-            }
         }
 
         // fall back - have to discard
@@ -1112,9 +1103,9 @@ void GetNextCardFromDeck(int player_num) {
 
 int GetEmptyCardSlotIndex(int player_num) {
     // find first empty card slot
-    for (int i = 0; i < 10; ++i) {
-        if (am_Players[player_num].cards_at_hand[i] == -1) return i;
-    }
+    for (int i = 0; i < 10; ++i)
+        if (am_Players[player_num].cards_at_hand[i] == -1)
+            return i;
     return -1;
 }
 
@@ -1235,9 +1226,8 @@ char PlayerTurn(int player_num) {
                     drawn_card_anim_start = 0;
                     drawn_card_anim_cnt = 10;
                     break_loop = false;
-                    if (GetPlayerHandCardCount(current_player_num) <= minimum_cards_at_hand) {
+                    if (GetPlayerHandCardCount(current_player_num) <= minimum_cards_at_hand)
                         GetNextCardFromDeck(current_player_num);
-                    }
                 }
             }
 
@@ -1286,9 +1276,8 @@ char PlayerTurn(int player_num) {
         }
 
         // if the hover rectangle has moved redraw
-        if (Card_Hover_Index != DrawCardsRectangles(player_num)) {
+        if (Card_Hover_Index != DrawCardsRectangles(player_num))
             Card_Hover_Index = DrawCardsRectangles(player_num);
-        }
 
         // always redraw
         DrawGameUI(animation_stage);
@@ -1315,9 +1304,9 @@ void DrawGameUI(int animation_stage) {
         current_card_slot_index = DrawCardsRectangles(current_player_num);
 
     // update explosion effects
-    for (size_t i = 0; i < am_effects_array.size(); ++i) {
-        if (am_effects_array[i].have_effect) am_effects_array[i].explosion_eff->UpdateEffect();
-    }
+    for (size_t i = 0; i < am_effects_array.size(); ++i)
+        if (am_effects_array[i].have_effect)
+            am_effects_array[i].explosion_eff->UpdateEffect();
     DrawSparks();
 
     // draw texts
@@ -1913,9 +1902,9 @@ void DrawCardAnimation(int animation_stage) {
             anim_card_pos_playdiscard.x = 272;
             anim_card_pos_playdiscard.y = 173;
             int v17;
-            for (v17 = 0; v17 < 10; ++v17) {
-                if (shown_cards[v17].uCardId == -1) break;
-            }
+            for (v17 = 0; v17 < 10; ++v17)
+                if (shown_cards[v17].uCardId == -1)
+                    break;
             anim_card_spd_playdiscard.x = ((int)shown_cards[v17].table_pos.x - 272) / 5;
             anim_card_spd_playdiscard.y = ((int)shown_cards[v17].table_pos.y - 173) / 5;
 
@@ -1974,9 +1963,9 @@ void ArcomageGame::GetCardRect(int uCardID, Recti *pCardRect) {
 
 int GetPlayerHandCardCount(int player_num) {
     int card_count = 0;
-    for (int i = 0; i < 10; ++i) {
-        if (am_Players[player_num].cards_at_hand[i] != -1) ++card_count;
-    }
+    for (int i = 0; i < 10; ++i)
+        if (am_Players[player_num].cards_at_hand[i] != -1)
+            ++card_count;
 
     return card_count;
 }
@@ -2055,9 +2044,9 @@ bool DiscardCard(int player_num, int card_slot_index) {
         // find first free table slot
         int table_slot = 0;
         if (!hide_card_anim_start) {
-            for (table_slot = 0; table_slot < 10; ++table_slot) {
-                if (shown_cards[table_slot].uCardId == -1) break;
-            }
+            for (table_slot = 0; table_slot < 10; ++table_slot)
+                if (shown_cards[table_slot].uCardId == -1)
+                    break;
         }
 
         anim_card_spd_playdiscard.x = ((int)shown_cards[table_slot].table_pos.x - (int)anim_card_pos_playdiscard.x) / 10;
@@ -2823,24 +2812,19 @@ void GameResultsApply() {
             if (!pParty->pArcomageWins[i]) break;
             tavern_num++;
         }
-        if (tavern_num == allArcomageTaverns().size()) {
+        if (tavern_num == allArcomageTaverns().size())
             pParty->_questBits.set(QBIT_ARCOMAGE_CHAMPION);
-        }
 
-        for (int i = 0; i < 4; ++i) {
-            if (!pParty->pCharacters[i]._achievedAwardsBits[AWARD_FINE]) {
+        for (int i = 0; i < 4; ++i)
+            if (!pParty->pCharacters[i]._achievedAwardsBits[AWARD_FINE])
                 pParty->pCharacters[i]._achievedAwardsBits.set(AWARD_ARCOMAGE_WINS);
-            }
-        }
         ++pParty->uNumArcomageWins;
         if (pParty->uNumArcomageWins > 1000000)
             pParty->uNumArcomageWins = 1000000;
     } else {  // loss or draw
-        for (int i = 0; i < 4; ++i) {
-            if (!pParty->pCharacters[i]._achievedAwardsBits[AWARD_FINE]) {
+        for (int i = 0; i < 4; ++i)
+            if (!pParty->pCharacters[i]._achievedAwardsBits[AWARD_FINE])
                 pParty->pCharacters[i]._achievedAwardsBits.set(AWARD_ARCOMAGE_LOSES);
-            }
-        }
         ++pParty->uNumArcomageLoses;
         if (pParty->uNumArcomageLoses > 1000000)
             pParty->uNumArcomageLoses = 1000000;

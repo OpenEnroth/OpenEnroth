@@ -351,9 +351,8 @@ void GameUI_DrawItemInfo(Item *inspect_item) {
         inspect_item->SetIdentified();
 
     int GoldAmount = 0;
-    if (inspect_item->isGold()) {
+    if (inspect_item->isGold())
         GoldAmount = inspect_item->goldAmount;
-    }
 
     if (pParty->hasActiveCharacter()) {
         SpeechId speech = SPEECH_NONE;
@@ -367,9 +366,8 @@ void GameUI_DrawItemInfo(Item *inspect_item) {
                 engine->_statusBar->setEvent(LSTR_IDENTIFY_FAILED);
             } else {
                 speech = SPEECH_ID_ITEM_STRONG;
-                if (inspect_item->GetValue() < 100 * (pParty->activeCharacter().uLevel + 5)) {
+                if (inspect_item->GetValue() < 100 * (pParty->activeCharacter().uLevel + 5))
                     speech = SPEECH_ID_ITEM_WEAK;
-                }
             }
         }
         inspect_item->UpdateTempBonus(pParty->GetPlayingTime());
@@ -728,9 +726,8 @@ std::pair<int, int> MonsterPopup_Draw(unsigned int uActorID, Recti* pWindow) {
         if (skill_points > 0) {
             skill_mastery = idMonsterSkill.mastery();
             if (skill_mastery == MASTERY_NOVICE) {
-                if (skill_points + 10 >= monsterInfo.level) {
+                if (skill_points + 10 >= monsterInfo.level)
                     normal_level = true;
-                }
             } else if (skill_mastery == MASTERY_EXPERT) {
                 if (2 * skill_points + 10 >= monsterInfo.level) {
                     normal_level = true;
@@ -910,9 +907,8 @@ std::pair<int, int> MonsterPopup_Draw(unsigned int uActorID, Recti* pWindow) {
             spell1Str = localization->str(LSTR_NONE);
             spellX = X_RIGHT_DATA;
         }
-        if (monsterInfo.spell1Id != SPELL_NONE && monsterInfo.spell2Id != SPELL_NONE) {
+        if (monsterInfo.spell1Id != SPELL_NONE && monsterInfo.spell2Id != SPELL_NONE)
             spellTitleStr = localization->str(LSTR_SPELLS);
-        }
         if (monsterInfo.spell1Id != SPELL_NONE) {
             if (extended)
                 spell2Str = fmt::format("{} {}", pSpellStats->pInfos[monsterInfo.spell1Id].pShortName, localization->skillValueShortString(monsterInfo.spell1SkillMastery));
@@ -1169,16 +1165,14 @@ void CharacterUI_StatsTab_ShowHint() {
         {
             int eligbleLevel = pParty->activeCharacter().uLevel;
             do {
-                if (pParty->activeCharacter().experience < GetExperienceRequiredForLevel(eligbleLevel)) {
+                if (pParty->activeCharacter().experience < GetExperienceRequiredForLevel(eligbleLevel))
                     break;
-                }
                 ++eligbleLevel;
             } while (eligbleLevel <= 10000);
 
             std::string str;
-            if (eligbleLevel > pParty->activeCharacter().uLevel) {
+            if (eligbleLevel > pParty->activeCharacter().uLevel)
                 str = localization->format(LSTR_YOU_ARE_ELIGIBLE_TO_TRAIN_TO_U, eligbleLevel);
-            }
             int nextLevelExp = GetExperienceRequiredForLevel(eligbleLevel) - pParty->activeCharacter().experience;
             str += "\n" + localization->format(LSTR_YOU_NEED_D_MORE_EXPERIENCE_TO_TRAIN_TO, nextLevelExp, eligbleLevel + 1);
             str = std::string(localization->expDescription()) + "\n \n" + str;
@@ -1356,17 +1350,15 @@ static void drawBuffPopupWindow() {
     Recti frameRect(38, 60, 400, 0);
 
     stringCount = 0;
-    for (SpellBuff &spellBuff : pParty->pPartyBuffs) {
+    for (SpellBuff &spellBuff : pParty->pPartyBuffs)
         stringCount += (spellBuff.Active()) ? 1 : 0;
-    }
 
     frameRect.h = assets->pFontArrus->GetHeight() + 72;
     frameRect.h += (stringCount - 1) * assets->pFontArrus->GetHeight();
     GUIWindow::DrawMessageBox(frameRect, "");
     GUIWindow::DrawTitleText(assets->pFontArrus.get(), 0, 12, colorTable.White, localization->str(LSTR_ACTIVE_PARTY_SPELLS), 3, frameRect);
-    if (!stringCount) {
+    if (!stringCount)
         GUIWindow::DrawTitleText(assets->pFontComic.get(), 0, 40, colorTable.White, localization->str(LSTR_NONE), 3, frameRect);
-    }
 
     stringCount = 0;
     for (PartyBuff i : pParty->pPartyBuffs.indices()) {
@@ -1394,9 +1386,8 @@ void showSpellbookInfo(ItemId spellbook) {
 
     Pointi cursorPos = EngineIocContainer::ResolveMouse()->position();
     int popupVertPos = 30;
-    if (cursorPos.y <= 320) {
+    if (cursorPos.y <= 320)
         popupVertPos = cursorPos.y + 30;
-    }
 
     Recti popup(90, popupVertPos, 328, 68);
 
@@ -1414,9 +1405,8 @@ void showSpellbookInfo(ItemId spellbook) {
                                   localization->str(LSTR_GRAND_1), maxLineWidth + 3, maxLineWidth + 10, pSpellStats->pInfos[spell].pGrandmasterSkillDesc);
 
     popup.h += assets->pFontSmallnum->CalcTextHeight(str, popup.w, 0);
-    if (popup.h < 150) {
+    if (popup.h < 150)
         popup.h = 150;
-    }
     popup.w = pViewport.w;
     GUIWindow::DrawMessageBox(popup, "");
     popup.w -= 12;
@@ -1487,9 +1477,8 @@ void ShowPopupShopItem() {
                         if (item->itemId != ITEM_NULL) {
                             testpos = ((60 - (shop_ui_items_in_store[testx]->width() / 2)) + testx * 70);
                             if (pt.x >= testpos && pt.x < (testpos + (shop_ui_items_in_store[testx]->width()))) {
-                                if (pt.y >= weaponYPos[testx] + 30 && pt.y < (weaponYPos[testx] + 30 + (shop_ui_items_in_store[testx]->height()))) {
+                                if (pt.y >= weaponYPos[testx] + 30 && pt.y < (weaponYPos[testx] + 30 + (shop_ui_items_in_store[testx]->height())))
                                     GameUI_DrawItemInfo(item);
-                                }
                             } else {
                                 return;
                             }
@@ -1504,9 +1493,8 @@ void ShowPopupShopItem() {
                 case HOUSE_TYPE_ARMOR_SHOP:
                     testx = (pt.x - 40) / 105;
                     if (testx >= 0 && testx < 4) {
-                        if (pt.y >= 126) {
+                        if (pt.y >= 126)
                             testx += 4;
-                        }
 
                         if (dialogue == DIALOGUE_SHOP_BUY_STANDARD)
                             item = &pParty->standartItemsInShops[window_SpeakInHouse->houseId()][testx];
@@ -1539,9 +1527,8 @@ void ShowPopupShopItem() {
                     testx = (pt.x) / 75;
                     // testx limits check
                     if (testx >= 0 && testx < 6) {
-                        if (pt.y >= 152) {
+                        if (pt.y >= 152)
                             testx += 6;
-                        }
 
                         if (dialogue == DIALOGUE_SHOP_BUY_STANDARD)
                             item = &pParty->standartItemsInShops[window_SpeakInHouse->houseId()][testx];
@@ -1597,9 +1584,8 @@ void ShowPopupShopItem() {
     if (houseType <= HOUSE_TYPE_MIRRORED_PATH_GUILD && dialogue == DIALOGUE_GUILD_BUY_BOOKS) {
         int testx = (pt.x - 32) / 70;
         if (testx >= 0 && testx < 6) {
-            if (pt.y >= 250) {
+            if (pt.y >= 250)
                 testx += 6;
-            }
 
             item = &pParty->spellBooksInGuilds[window_SpeakInHouse->houseId()][testx];
 
@@ -1611,11 +1597,9 @@ void ShowPopupShopItem() {
                     testpos = 32 + 70 * testx;
                 }
 
-                if (pt.x >= testpos && pt.x <= testpos + (shop_ui_items_in_store[testx]->width())) {
-                    if ((pt.y >= 90 && pt.y <= (90 + (shop_ui_items_in_store[testx]->height()))) || (pt.y >= 250 && pt.y <= (250 + (shop_ui_items_in_store[testx]->height())))) {
-                        showSpellbookInfo(pParty->spellBooksInGuilds[window_SpeakInHouse->houseId()][testx].itemId);
-                    }
-                }
+                if (pt.x >= testpos && pt.x <= testpos + (shop_ui_items_in_store[testx]->width()) &&
+                    ((pt.y >= 90 && pt.y <= (90 + (shop_ui_items_in_store[testx]->height()))) || (pt.y >= 250 && pt.y <= (250 + (shop_ui_items_in_store[testx]->height())))))
+                    showSpellbookInfo(pParty->spellBooksInGuilds[window_SpeakInHouse->houseId()][testx].itemId);
             }
         }
     }
@@ -1775,9 +1759,8 @@ void UI_OnMouseRightClick(Pointi mousePos) {
 
             if ((signed int)pY > pViewport.y + pViewport.h - 1) {
                 int characterIndex = pX / 118;
-                if (characterIndex < 4) { // portaits zone
+                if (characterIndex < 4) // portaits zone
                     GameUI_CharacterQuickRecord_Draw(Recti(38, 60, 400, 200), characterIndex);
-                }
             } else if ((int)pX > pViewport.x + pViewport.w - 1) {
                 if (pY >= 130) {
                     if (pX >= 476 && pX <= 636 && pY >= 240 && pY <= 300) {  // buff_tooltip zone
@@ -1811,18 +1794,14 @@ void UI_OnMouseRightClick(Pointi mousePos) {
                     GUIWindow::DrawMessageBox(popup_window, "");
                     MonsterPopup_Draw(pointedObject.id(), &popup_window);
                 }
-                if (pointedObject.type() == OBJECT_Sprite) {
-                    if (!(pObjectTable->pObjects[pSpriteObjects[pointedObject.id()].uObjectDescID].uFlags & OBJECT_DESC_UNPICKABLE)) {
-                        GameUI_DrawItemInfo(&pSpriteObjects[pointedObject.id()].containing_item);
-                    }
-                }
+                if (pointedObject.type() == OBJECT_Sprite && !(pObjectTable->pObjects[pSpriteObjects[pointedObject.id()].uObjectDescID].uFlags & OBJECT_DESC_UNPICKABLE))
+                    GameUI_DrawItemInfo(&pSpriteObjects[pointedObject.id()].containing_item);
             }
             break;
         }
         case SCREEN_BOOKS: {
-            if (pGUIWindow_CurrentMenu->eWindowType != WINDOW_MAPS_BOOK || !pViewport.contains(mousePos)) {
+            if (pGUIWindow_CurrentMenu->eWindowType != WINDOW_MAPS_BOOK || !pViewport.contains(mousePos))
                 break;
-            }
 
             auto hint = GetMapBookHintText(mousePos.x, mousePos.y);
             if (!hint.empty()) {
@@ -1999,13 +1978,11 @@ void Inventory_ItemPopupAndAlchemy() {
         } else {  // rings displayed
             ItemSlot pos = ITEM_SLOT_INVALID;
 
-            if (mouse->position().x < 490 || mouse->position().x > 618) {
+            if (mouse->position().x < 490 || mouse->position().x > 618)
                 return;
-            }
 
-            if (mouse->position().y < 88 || mouse->position().y > 282) {
+            if (mouse->position().y < 88 || mouse->position().y > 282)
                 return;
-            }
 
             if (mouse->position().x >= amuletx && mouse->position().x <= (amuletx + slotSize) &&
                 mouse->position().y >= amulety && mouse->position().y <= (amulety + 2 * slotSize)) {
@@ -2024,17 +2001,15 @@ void Inventory_ItemPopupAndAlchemy() {
                 }
             }
 
-            if (pos != ITEM_SLOT_INVALID) {
+            if (pos != ITEM_SLOT_INVALID)
                 entry = pParty->activeCharacter().inventory.entry(pos);
-            }
         }
     } else {
         entry = pParty->activeCharacter().inventory.entry(gridPos);
     }
 
-    if (!entry) {  // no item
+    if (!entry)  // no item
         return;
-    }
 
     // check character condition
     if (!pParty->activeCharacter().CanAct()) {
@@ -2122,9 +2097,8 @@ void Inventory_ItemPopupAndAlchemy() {
 
             Vec3f pos = pParty->pos + Vec3f(0, 0, pParty->eyeLevel) + Vec3f::fromPolar(64, pParty->_viewYaw, pParty->_viewPitch);
             SpriteObject::dropItemAt(SPRITE_SPELL_FIRE_FIREBALL_IMPACT, pos, 0);
-            if (pParty->activeCharacter().CanAct()) {
+            if (pParty->activeCharacter().CanAct())
                 pParty->activeCharacter().playReaction(SPEECH_POTION_EXPLODE);
-            }
             engine->_statusBar->setEvent(LSTR_OOOPS);
             pParty->takeHoldingItem();
             rightClickItemActionPerformed = true;
@@ -2145,13 +2119,11 @@ void Inventory_ItemPopupAndAlchemy() {
                 entry->potionPower = (pParty->pPickedItem.potionPower + entry->potionPower) / 2;
                 // Can be zero even for valid potion combination when resulting potion is of lower grade than it's components
                 // Example: "Cure Paralysis(white) + Cure Wounds(red) = Cure Wounds(red)"
-                if (pItemTable->potionNotes[potionSrc1][potionSrc2] != 0) {
+                if (pItemTable->potionNotes[potionSrc1][potionSrc2] != 0)
                     pParty->activeCharacter().giveAutonote(pItemTable->potionNotes[potionSrc1][potionSrc2]);
-                }
             }
-            if (!(pItemTable->items[entry->itemId].identifyAndRepairDifficulty)) {
+            if (!(pItemTable->items[entry->itemId].identifyAndRepairDifficulty))
                 entry->flags |= ITEM_IDENTIFIED;
-            }
             pParty->activeCharacter().playReaction(SPEECH_POTION_SUCCESS);
             pParty->takeHoldingItem();
             rightClickItemActionPerformed = true;
@@ -2172,9 +2144,8 @@ void Inventory_ItemPopupAndAlchemy() {
     if (pParty->pPickedItem.itemId == ITEM_POTION_RECHARGE_ITEM) {
         if (entry->isWand()) { // can recharge only wands
             int maxChargesDecreasePercent = 70 - pParty->pPickedItem.potionPower;
-            if (maxChargesDecreasePercent < 0) {
+            if (maxChargesDecreasePercent < 0)
                 maxChargesDecreasePercent = 0;
-            }
 
             float invMaxChargesDecrease = (100 - maxChargesDecreasePercent) * 0.01;
             int newCharges = entry->maxCharges * invMaxChargesDecrease;
