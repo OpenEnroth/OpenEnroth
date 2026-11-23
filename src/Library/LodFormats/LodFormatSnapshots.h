@@ -76,7 +76,7 @@ MM_DECLARE_MEMCOPY_SERIALIZABLE(LodSpriteLine_MM6)
  * @see https://github.com/might-and-magic/fnt-generator/blob/master/fntgen.py#L217
  * @see https://github.com/GrayFace/MMExtension/blob/master/Scripts/Structs/01%20common%20structs.lua#L3034
  */
-struct LodFontHeader_MM7 {
+struct LodFontHeader_MM6 {
     uint8_t firstChar; // Always 30 or 31. Internet says can also be 64.
     uint8_t lastChar; // Always 255.
     uint8_t field_3; // Always 8.
@@ -88,29 +88,29 @@ struct LodFontHeader_MM7 {
     uint32_t paletteCount; // Always 0.
     std::array<uint32_t, 5> palettes; // Always 0. Looks like these were pointers originally.
 };
-static_assert(sizeof(LodFontHeader_MM7) == 32);
-MM_DECLARE_MEMCOPY_SERIALIZABLE(LodFontHeader_MM7)
+static_assert(sizeof(LodFontHeader_MM6) == 32);
+MM_DECLARE_MEMCOPY_SERIALIZABLE(LodFontHeader_MM6)
 
-void reconstruct(const LodFontHeader_MM7 &src, LodFontHeader *dst);
+void reconstruct(const LodFontHeader_MM6 &src, LodFontHeader *dst);
 
-struct LodFontMetrics_MM7 {
+struct LodFontMetrics_MM6 {
     int32_t leftSpacing;
     int32_t width;
     int32_t rightSpacing;
 };
-static_assert(sizeof(LodFontMetrics_MM7) == 12);
-MM_DECLARE_MEMCOPY_SERIALIZABLE(LodFontMetrics_MM7)
+static_assert(sizeof(LodFontMetrics_MM6) == 12);
+MM_DECLARE_MEMCOPY_SERIALIZABLE(LodFontMetrics_MM6)
 
-void reconstruct(const LodFontMetrics_MM7 &src, LodFontMetrics *dst);
+void reconstruct(const LodFontMetrics_MM6 &src, LodFontMetrics *dst);
 
-struct LodFontAtlas_MM7 {
-    std::array<LodFontMetrics_MM7, 256> metrics;
+struct LodFontAtlas_MM6 {
+    std::array<LodFontMetrics_MM6, 256> metrics;
     std::array<uint32_t, 256> offsets;
 };
-static_assert(sizeof(LodFontAtlas_MM7) == 4096);
-MM_DECLARE_MEMCOPY_SERIALIZABLE(LodFontAtlas_MM7)
+static_assert(sizeof(LodFontAtlas_MM6) == 4096);
+MM_DECLARE_MEMCOPY_SERIALIZABLE(LodFontAtlas_MM6)
 
-void reconstruct(const LodFontAtlas_MM7 &src, LodFontAtlas *dst);
+void reconstruct(const LodFontAtlas_MM6 &src, LodFontAtlas *dst);
 
 /**
  * This is used for 'calig.fnt' in MM7 'icons.lod'. This font is not loaded by the engine. Not sure if it's from
