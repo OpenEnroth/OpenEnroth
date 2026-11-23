@@ -56,7 +56,7 @@ modules:
       strip: false  # Would run a plain `strip`, which removes the symbol table along with the debug info.
       no-debuginfo: true  # Would move the debug info and the symbol table to the .Debug extension, which isn't bundled.
     cleanup:
-      - /bin/OpenEnroth_UnitTest
+      - /bin/OpenEnroth_UnitTest  # Installed only for the tests, see the comment above run-tests.
       - /share/cmake
       - /lib/cmake
       - /share/man
@@ -74,14 +74,20 @@ modules:
     sources:
       - type: dir
         path: ../../../
+    # The unit tests run against a binary stripped the same way as the shipped OpenEnroth. A strip that loses the
+    # function names crash traces need then fails the stack trace tests, and the build with them. This relies on
+    # flatpak-builder running post-install first, then the tests, then the cleanup stage:
+    # * post-install installs OpenEnroth_UnitTest next to OpenEnroth and strips both with the same command.
+    # * test-commands runs that stripped copy, not the unstripped binary in the build tree.
+    # * The cleanup list at the top of the module deletes the copy before the app is exported, so it doesn't ship.
     # TODO(captainurist): would be cool to run game tests here too!
     run-tests: true
     test-rule: ''  # Without it flatpak-builder runs "ninja test", and CMake makes no such target here.
     test-commands:
-      - OpenEnroth_UnitTest  # The stripped copy from post-install, so the tests see the binary users get.
+      - OpenEnroth_UnitTest
     post-install:
       - install -Dm755 src/Bin/OpenEnroth/OpenEnroth /app/bin/OpenEnroth
-      - install -Dm755 test/Bin/UnitTest/OpenEnroth_UnitTest /app/bin/OpenEnroth_UnitTest  # Removed again by cleanup.
+      - install -Dm755 test/Bin/UnitTest/OpenEnroth_UnitTest /app/bin/OpenEnroth_UnitTest
       - strip --strip-debug /app/bin/OpenEnroth /app/bin/OpenEnroth_UnitTest  # Drops DWARF, keeps function names.
       # launcher script
       - install -Dm755 ../distribution/linux/flatpak/${FLATPAK_ID}.sh /app/bin/${FLATPAK_ID}.sh
