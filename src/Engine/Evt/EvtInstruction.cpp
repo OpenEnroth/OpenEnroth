@@ -22,6 +22,12 @@
 #include "Utility/Exception.h"
 #include "Utility/Lambda.h"
 
+template<class T>
+constexpr bool is_std_array_v = false;
+
+template<class T, size_t N>
+constexpr bool is_std_array_v<std::array<T, N>> = true;
+
 /**
  * @param value                         What an evt record stores for a field, after the field's conversion.
  * @param name                          Name of the field.
@@ -32,7 +38,7 @@ template<class T, class Value>
 static T fromWire(Value value, const char *name) {
     if constexpr (std::is_same_v<T, Value>) {
         return value;
-    } else if constexpr (requires { std::tuple_size<T>::value; }) { // An array, stored as an array of the same size.
+    } else if constexpr (is_std_array_v<T>) { // Stored as an array of the same size.
         T result;
         for (size_t i = 0; i < result.size(); i++)
             result[i] = fromWire<typename T::value_type>(value[i], name);
@@ -68,7 +74,8 @@ static std::string toLogString(const T &value) {
     } else if constexpr (std::is_arithmetic_v<T>) {
         return fmt::format("{}", value);
     } else {
-        return fmt::format("{{{}}}", fmt::join(value, ", ")); // An array of numbers.
+        static_assert(is_std_array_v<T>);
+        return fmt::format("{{{}}}", fmt::join(value, ", "));
     }
 }
 
