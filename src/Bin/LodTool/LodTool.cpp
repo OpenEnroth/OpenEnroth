@@ -58,7 +58,7 @@ static bool isArchive(MagicFileFormat format) {
 }
 
 static bool isCompressed(MagicFileFormat format) {
-    return format == MAGIC_LOD_COMPRESSED_DATA_MM7 || format == MAGIC_LOD_COMPRESSED_PSEUDO_IMAGE_MM6;
+    return format == MAGIC_LOD_COMPRESSED_DATA_MM6 || format == MAGIC_LOD_COMPRESSED_DATA_MM7 || format == MAGIC_LOD_COMPRESSED_PSEUDO_IMAGE_MM6;
 }
 
 static Blob readFile(PathView path) {

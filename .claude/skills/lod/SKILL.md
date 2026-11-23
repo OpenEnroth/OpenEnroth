@@ -55,7 +55,7 @@ prints has `LOD compressed` in its name, and `cat` decompresses it.
 
 | Data | MM6 | MM7 | MM8 |
 |---|---|---|---|
-| maps, `.blv` `.dlv` `.odm` `.ddm` | `data/Games.lod` | `DATA/GAMES.LOD`, compressed | `Data/games.lod`, compressed |
+| maps, `.blv` `.dlv` `.odm` `.ddm` | `data/Games.lod`, compressed | `DATA/GAMES.LOD`, compressed | `Data/games.lod`, compressed |
 | events, strings, text tables, `.evt` `.str` `.txt` `.bin` | `data/icons.lod`, compressed | `DATA/events.lod`, compressed | `Data/EnglishT.lod` |
 | UI images, PCX screens, fonts | `data/icons.lod` | `DATA/ICONS.LOD` | `Data/icons.lod`, `EnglishT.lod`, `EnglishD.lod` |
 | textures and palettes `palNNN` | `data/BITMAPS.LOD` | `DATA/BITMAPS.LOD` | `Data/bitmaps.lod` |

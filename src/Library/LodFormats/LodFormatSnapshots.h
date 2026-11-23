@@ -11,6 +11,13 @@ struct LodFontAtlas;
 
 #pragma pack(push, 1)
 
+struct LodCompressionHeader_MM6 {
+    std::uint32_t dataSize;
+    std::uint32_t decompressedSize;
+};
+static_assert(sizeof(LodCompressionHeader_MM6) == 8);
+MM_DECLARE_MEMCOPY_SERIALIZABLE(LodCompressionHeader_MM6)
+
 struct LodCompressionHeader_MM7 {
     std::uint32_t version; // Always 91969.
     std::array<char, 4> signature; // Always "mvii".
