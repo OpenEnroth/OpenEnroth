@@ -21,6 +21,8 @@
 
 bool CheckPortretAgainstSex(int portret_num, int sex);
 
+// TODO(captainurist): move these two to CharacterEnums.h, next to Condition.
+
 // All conditions for alive character excluding zombie
 static const Segment<Condition> standardConditionsExcludeDead = {CONDITION_CURSED, CONDITION_UNCONSCIOUS};
 
