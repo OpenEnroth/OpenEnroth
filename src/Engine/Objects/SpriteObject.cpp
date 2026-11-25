@@ -702,11 +702,8 @@ bool processSpellImpact(unsigned int uLayingItemID, Pid pid) {
         case SPRITE_SPELL_FIRE_FIRE_SPIKE:
         case SPRITE_SPELL_AIR_SPARKS:
         case SPRITE_SPELL_DARK_TOXIC_CLOUD: {
-            if (pid.type() == OBJECT_Face
-                || pid.type() == OBJECT_Decoration
-                || pid.type() == OBJECT_None) {
+            if (pid.type() == OBJECT_Face || pid.type() == OBJECT_Decoration || pid.type() == OBJECT_None)
                 return 1;
-            }
             if (pid.type() != OBJECT_Sprite) {
                 applySpellSpriteDamage(uLayingItemID, pid);
                 updateSpriteOnImpact(object);

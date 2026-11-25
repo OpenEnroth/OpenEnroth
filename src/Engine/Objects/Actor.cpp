@@ -2087,10 +2087,8 @@ void Actor::_SelectTarget(unsigned int uActorID, Pid *OutTargetPID,
             unsigned v16 = std::abs(thisActor->pos.x - pParty->pos.x);
             unsigned v28 = std::abs(thisActor->pos.y - pParty->pos.y);
             unsigned v17 = std::abs(thisActor->pos.z - pParty->pos.z);
-            if (v16 <= v15 && v28 <= v15 && v17 <= v15 &&
-                (v16 * v16 + v28 * v28 + v17 * v17 < lowestRadius)) {
+            if (v16 <= v15 && v28 <= v15 && v17 <= v15 && (v16 * v16 + v28 * v28 + v17 * v17 < lowestRadius))
                 *OutTargetPID = Pid(OBJECT_Character, 0);
-            }
         }
     }
 }
@@ -2565,10 +2563,8 @@ void Actor::UpdateActorAI() {
             continue;
         }
 
-        if (pActor->buffs[ACTOR_BUFF_STONED].Active() ||
-            pActor->buffs[ACTOR_BUFF_PARALYZED].Active()) {
+        if (pActor->buffs[ACTOR_BUFF_STONED].Active() || pActor->buffs[ACTOR_BUFF_PARALYZED].Active())
             continue;
-        }
 
         pActor->monsterInfo.recoveryTime = std::max(0_ticks, pActor->monsterInfo.recoveryTime - gameTimer->dt()); // was animTimer
         pActor->currentActionTime += gameTimer->dt(); // was animTimer
@@ -2891,10 +2887,8 @@ void Actor::InitializeActors() {
             actor->pos.y = actor->initialPosition.y;
             actor->pos.z = actor->initialPosition.z;
             actor->hp = actor->monsterInfo.hp;
-            if (actor->aiState != Disabled) {
-                Actor::AI_Stand(i, ai_near_actors_targets_pid[i],
-                                actor->monsterInfo.recoveryTime, 0);
-            }
+            if (actor->aiState != Disabled)
+                Actor::AI_Stand(i, ai_near_actors_targets_pid[i], actor->monsterInfo.recoveryTime, 0);
         }
 
         actor->monsterInfo.hostilityType = HOSTILITY_FRIENDLY;
