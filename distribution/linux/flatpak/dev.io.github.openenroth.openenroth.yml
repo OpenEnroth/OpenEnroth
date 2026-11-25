@@ -51,7 +51,6 @@ modules:
     build-options:
       append-path: /usr/lib/sdk/llvm20/bin
       prepend-ld-library-path: /usr/lib/sdk/llvm20/lib
-      # Crash traces take function names from the symbol table. post-install strips only the DWARF.
       strip: false  # Skips a plain `strip`, which drops the symbol table.
       no-debuginfo: true  # Skips moving DWARF and the symbol table into the .Debug extension, which isn't bundled.
     cleanup:
