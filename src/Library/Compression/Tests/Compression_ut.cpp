@@ -39,3 +39,17 @@ UNIT_TEST(Compression, UncompressBestEffort_CorruptChecksum) {
 UNIT_TEST(Compression, UncompressBestEffort_EmptyReturnsEmpty) {
     EXPECT_FALSE(zlib::uncompressBestEffort(Blob()));
 }
+
+UNIT_TEST(Compression, Detect) {
+    // detect accepts the headers zlib writes, and rejects the ones zlib can't decode or that fail their checksum.
+    EXPECT_TRUE(zlib::detect(zlib::compress(Blob::fromString(std::string(1000, 'A')))));
+    EXPECT_TRUE(zlib::detect(Blob::fromString("\x78\x01")));
+    EXPECT_TRUE(zlib::detect(Blob::fromString("\x78\xDA")));
+
+    EXPECT_FALSE(zlib::detect(Blob()));
+    EXPECT_FALSE(zlib::detect(Blob::fromString("\x78")));
+    EXPECT_FALSE(zlib::detect(Blob::fromString("\x78\x9D"))); // Header checksum fails.
+    EXPECT_FALSE(zlib::detect(Blob::fromString("\x7F\x07"))); // Method 15, reserved.
+    EXPECT_FALSE(zlib::detect(Blob::fromString("\x88\x1C"))); // 64K window.
+    EXPECT_FALSE(zlib::detect(Blob::fromString("\x78\x20"))); // Preset dictionary.
+}
