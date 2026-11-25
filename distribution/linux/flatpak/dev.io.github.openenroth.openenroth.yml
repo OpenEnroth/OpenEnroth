@@ -81,7 +81,7 @@ modules:
     # * The cleanup list at the top of the module deletes the copy before the app is exported, so it doesn't ship.
     # TODO(captainurist): would be cool to run game tests here too!
     run-tests: true
-    test-rule: ''  # Without it flatpak-builder runs "ninja test", and CMake makes no such target here.
+    test-rule: ''  # Skips "ninja test", which doesn't exist. Run_UnitTest would test the unstripped binary.
     test-commands:
       - OpenEnroth_UnitTest
     post-install:
