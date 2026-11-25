@@ -125,6 +125,7 @@ static bool CollideSphereWithFace(BLVFace* face, const Vec3f& pos, float radius,
     } else {
         // how far do we need to move the sphere to touch infinite plane
         move_distance = (center_face_distance - radius) / -dir_normal_projection;
+
         // This happens when we are already closer than the radius.
         // We are interested in edge collisions up to the point where the sphere center is touching the plane.
         if (move_distance < -radius)
