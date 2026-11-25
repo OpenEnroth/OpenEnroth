@@ -19,6 +19,7 @@
 #include "Engine/Objects/SpriteObject.h"
 #include "Engine/Objects/NPC.h"
 #include "Engine/Objects/CharacterEnumFunctions.h"
+#include "Engine/Objects/CharacterMM8Abilities.h"
 #include "Engine/Objects/MonsterEnumFunctions.h"
 #include "Engine/Party.h"
 #include "Engine/MapEnumFunctions.h"
@@ -166,7 +167,7 @@ void CastSpellInfoHelpers::castSpell() {
             spell_targeted_at = stru_50C198.FindClosestActor(engine->config->gameplay.RangedAttackDepth.value(), 1, target_undead);
         }
 
-        pSpellSprite.spriteId = SpellSpriteMapping[pCastSpell->uSpellID];
+        pSpellSprite.spriteId = pCastSpell->uSpellID <= SPELL_LAST_WITH_SPRITE ? SpellSpriteMapping[pCastSpell->uSpellID] : SPRITE_NULL;
 
         if (pSpellSprite.spriteId != SPRITE_NULL) {
             if (spell_targeted_at.type() == OBJECT_Actor) {
@@ -314,7 +315,7 @@ void CastSpellInfoHelpers::castSpell() {
                 pCastSpell->flags |= ON_CAST_NoRecoverySpell;
             }
         } else {
-            switch (pCastSpell->uSpellID) {
+            switch (spellEffect(pCastSpell->uSpellID)) {
                 case SPELL_FIRE_TORCH_LIGHT:
                 {
                     int spell_power;
@@ -673,8 +674,7 @@ void CastSpellInfoHelpers::castSpell() {
                 {
                     Item *item = pParty->pCharacters[pCastSpell->targetCharacterIndex].inventory.entry(pCastSpell->targetInventoryIndex).get();
                     item->UpdateTempBonus(pParty->GetPlayingTime());
-                    if (item->itemId == ITEM_BLASTER ||
-                            item->itemId == ITEM_BLASTER_RIFLE ||
+                    if (isAncientWeapon(item->itemId) ||
                             item->IsBroken() ||
                             item->rarity() != RARITY_COMMON ||
                             item->specialEnchantment != ITEM_ENCHANTMENT_NULL ||
@@ -849,7 +849,7 @@ void CastSpellInfoHelpers::castSpell() {
                         pParty->pCharacters[pCastSpell->targetCharacterIndex].pCharacterBuffs[CHARACTER_BUFF_BLESS]
                             .Apply(pParty->GetPlayingTime() + spell_duration, spell_mastery, spell_power, 0, -1);
                     } else {
-                        for (size_t i = 0; i < pParty->pCharacters.size(); i++) {
+                        for (int i = 0; i < pParty->activeCharacterCount(); i++) {
                             pParty->pCharacters[i].pCharacterBuffs[CHARACTER_BUFF_BLESS]
                                 .Apply(pParty->GetPlayingTime() + spell_duration, spell_mastery, spell_power, 0, -1);
                         }
@@ -1273,6 +1273,20 @@ void CastSpellInfoHelpers::castSpell() {
                             spell_spray_angle_start += ONE_THIRD_PI / (shots_num - 1);
                         } while (spell_spray_angle_start <= spell_spray_angle_end);
                     }
+                    break;
+                }
+
+                case SPELL_VAMPIRE_LEVITATE:
+                {
+                    if (!pPlayer->pActiveSkills[SKILL_VAMPIRE] && !engine->config->debug.AllMagic.value()) {
+                        spellFailed(pCastSpell, LSTR_SPELL_FAILED);
+                        setSpellRecovery(pCastSpell, failureRecoveryTime);
+                        continue;
+                    }
+
+                    recoveryTime = 100_ticks;
+                    pParty->pPartyBuffs[PARTY_BUFF_LEVITATE]
+                        .Apply(pParty->GetPlayingTime() + mm8VampireLevitateDuration(spell_mastery, spell_level), spell_mastery, 0, 0, pCastSpell->casterCharacterIndex);
                     break;
                 }
 
@@ -1778,14 +1792,15 @@ void CastSpellInfoHelpers::castSpell() {
                         shared_life_count = 3 * spell_level;
                     }
                     int active_pl_num = 0;
-                    for (const Character &character : pParty->pCharacters) {
+                    for (int i = 0; i < pParty->activeCharacterCount(); i++) {
+                        const Character &character = pParty->pCharacters[i];
                         if (character.conditions.hasNone({CONDITION_DEAD, CONDITION_PETRIFIED, CONDITION_ERADICATED})) {
                             shared_life_count += character.health;
                             active_pl_num++;
                         }
                     }
                     int mean_life = shared_life_count / active_pl_num;
-                    for (size_t i = 0; i < pParty->pCharacters.size(); i++) {
+                    for (int i = 0; i < pParty->activeCharacterCount(); i++) {
                         if (pParty->pCharacters[i].conditions.hasNone({CONDITION_DEAD, CONDITION_PETRIFIED, CONDITION_ERADICATED})) {
                             pParty->pCharacters[i].health = mean_life;
                             if (pParty->pCharacters[i].health > pParty->pCharacters[i].GetMaxHealth())
@@ -1932,8 +1947,7 @@ void CastSpellInfoHelpers::castSpell() {
                             item.itemId = pActors[monster_id].carriedItemId;
                         } else {
                             for (const Item &actorItem : pActors[monster_id].items) {
-                                if (actorItem.itemId != ITEM_NULL &&
-                                        pItemTable->items[actorItem.itemId].type != ITEM_TYPE_GOLD) {
+                                if (actorItem.itemId != ITEM_NULL && !actorItem.isGold()) {
                                     item = actorItem;
                                 }
                             }
@@ -2736,6 +2750,24 @@ void CastSpellInfoHelpers::castSpell() {
 
                 case SPELL_DARK_SACRIFICE:
                 {
+                    if (gameType() == GAME_TYPE_MM8) { // MM8 has Dark Grasp in this slot.
+                        if (!spell_targeted_at || spell_targeted_at.type() != OBJECT_Actor) {
+                            spellFailed(pCastSpell, LSTR_SPELL_FAILED);
+                            setSpellRecovery(pCastSpell, failureRecoveryTime);
+                            continue;
+                        }
+
+                        Time graspEnd = pParty->GetPlayingTime() + Duration::fromMinutes((spell_mastery == MASTERY_GRANDMASTER ? 10 : 5) * spell_level);
+                        Actor &grasped = pActors[spell_targeted_at.id()];
+                        grasped.buffs[ACTOR_BUFF_MELEE_ONLY].Apply(graspEnd, spell_mastery, 0, 0, -1);
+                        grasped.buffs[ACTOR_BUFF_DAMAGE_HALVED].Apply(graspEnd, spell_mastery, 0, 0, -1);
+                        grasped.buffs[ACTOR_BUFF_SLOWED].Apply(graspEnd, spell_mastery, 2, 0, -1);
+                        grasped.buffs[ACTOR_BUFF_HALVED_ARMOR].Apply(graspEnd, spell_mastery, 0, 0, -1);
+                        grasped.attributes |= ACTOR_AGGRESSOR;
+                        spell_fx_renderer->sparklesOnActorAfterItCastsBuff(&grasped, Color());
+                        break;
+                    }
+
                     if (isHirelingsBlockedOnMap(engine->_currentLoadedMapId)) {
                         spellFailed(pCastSpell, LSTR_SPELL_FAILED);
                         pPlayer->SpendMana(uRequiredMana); // decrease mana on failure
@@ -2814,10 +2846,10 @@ void CastSpellInfoHelpers::castSpell() {
                     }
                     int drained_health = (actorsInViewport.size() * (7 * spell_level + 25));
                     int active_pl_num = 0;
-                    for (const Character &character : pParty->pCharacters)
-                        if (character.CanAct())
+                    for (int i = 0; i < pParty->activeCharacterCount(); i++)
+                        if (pParty->pCharacters[i].CanAct())
                             active_pl_num++;
-                    for (size_t i = 0; i < pParty->pCharacters.size(); i++) {
+                    for (int i = 0; i < pParty->activeCharacterCount(); i++) {
                         if (pParty->pCharacters[i].CanAct()) {
                             pParty->pCharacters[i].health += drained_health / active_pl_num;
                             if (pParty->pCharacters[i].health > pParty->pCharacters[i].GetMaxHealth())
@@ -2889,7 +2921,7 @@ void CastSpellInfoHelpers::castSpell() {
 
             pPlayer->SpendMana(uRequiredMana);
             setSpellRecovery(pCastSpell, recoveryTime);
-            pAudioPlayer->playSpellSound(pCastSpell->uSpellID, false, SOUND_MODE_EXCLUSIVE);
+            pAudioPlayer->playSpellSound(pCastSpell->uSpellID == SPELL_VAMPIRE_LEVITATE ? SPELL_AIR_FLY : pCastSpell->uSpellID, false, SOUND_MODE_EXCLUSIVE);  // no sound row of its own
         }
 
         pCastSpell->uSpellID = SPELL_NONE;
@@ -2965,10 +2997,10 @@ void pushSpellOrRangedAttack(SpellId spell,
     }
 
     CombinedSkillValue checkSkill = skill_value;
-    assert(casterIndex >= 0 && casterIndex < 4);
+    assert(casterIndex >= 0 && casterIndex < std::ssize(pParty->pCharacters));
     Character *character = &pParty->pCharacters[casterIndex];
     if (!(flags & ON_CAST_TargetIsParty)) {
-        switch (spell) {
+        switch (spellEffect(spell)) {
             case SPELL_SPIRIT_FATE:
             case SPELL_BODY_FIRST_AID:
             case SPELL_DARK_REANIMATE:
@@ -3068,7 +3100,11 @@ void pushSpellOrRangedAttack(SpellId spell,
                 break;
 
             case SPELL_DARK_SACRIFICE:
-                flags |= ON_CAST_TargetedHireling;
+                if (gameType() != GAME_TYPE_MM8) {
+                    flags |= ON_CAST_TargetedHireling;
+                } else if (!(flags & (ON_CAST_CastViaQuickSpell | ON_CAST_CastViaWand))) { // Dark Grasp, aimed like Slow.
+                    flags |= ON_CAST_TargetedActor;
+                }
                 break;
             default:
                 break;

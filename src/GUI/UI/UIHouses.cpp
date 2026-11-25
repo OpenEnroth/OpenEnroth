@@ -5,22 +5,27 @@
 #include <memory>
 #include <vector>
 #include <utility>
+#include <algorithm>
 #include <string>
 
 #include "Engine/AssetsManager.h"
 #include "Engine/Engine.h"
 #include "Engine/Data/AwardEnums.h"
 #include "Engine/Data/HouseEnumFunctions.h"
+#include "Engine/GameType.h"
 #include "Engine/Graphics/Camera.h"
 #include "Engine/Graphics/Indoor.h"
 #include "Engine/Graphics/Image.h"
 #include "Engine/Graphics/Renderer/Renderer.h"
 #include "Engine/Localization.h"
 #include "Engine/Tables/MapTable.h"
+#include "Engine/Objects/CharacterEnumFunctions.h"
+#include "Engine/Objects/NPC.h"
 #include "Engine/Party.h"
 #include "Engine/PriceCalculator.h"
 #include "Engine/Graphics/Viewport.h"
 #include "Engine/Tables/HouseTable.h"
+#include "Engine/Tables/RosterTable.h"
 #include "Engine/Tables/TransitionTable.h"
 
 #include "GUI/GUIButton.h"
@@ -45,6 +50,7 @@
 #include "Io/KeyboardInputHandler.h"
 
 #include "Media/Audio/AudioPlayer.h"
+#include "Media/Audio/SoundList.h"
 #include "Media/MediaPlayer.h"
 
 #include "Utility/Math/TrigLut.h"
@@ -253,7 +259,179 @@ std::array<const HouseAnimDescr, 196> pAnimatedRooms = { {  // 0x4E5F70
     { "Player Castle Bad", 0x24, 0, HOUSE_TYPE_CASTLE, 0, 0 }
 } };
 
-const IndexedArray<int, HOUSE_TYPE_WEAPON_SHOP, HOUSE_TYPE_DARK_GUILD> itemAmountInShop = {{
+// MM8's per-house animation table (video/npc/sound), distinct from MM7's `pAnimatedRooms` above.
+// From MM8's Data/Tables/House Movies.txt. The row index is 2dEvents.txt's "Picture" column.
+std::array<const HouseAnimDescr, 161> pAnimatedRoomsMM8 = { {
+    { "lmedhs1", 0, 0, HOUSE_TYPE_INVALID, 0, 0 },  // 0
+    { "lmedhs1", 0, 0, HOUSE_TYPE_INVALID, 0, 0 },  // 1
+    { "lmedhs2", 0, 0, HOUSE_TYPE_INVALID, 0, 0 },  // 2
+    { "lporhs1", 0, 0, HOUSE_TYPE_INVALID, 0, 0 },  // 3
+    { "lporhs2", 0, 0, HOUSE_TYPE_INVALID, 0, 0 },  // 4
+    { "ltemple", 0, 2108, HOUSE_TYPE_TEMPLE, 1, 0 },  // 5
+    { "lwpshp", 0, 2109, HOUSE_TYPE_WEAPON_SHOP, 2, 0 },  // 6
+    { "larmshp", 0, 2110, HOUSE_TYPE_ARMOR_SHOP, 3, 0 },  // 7
+    { "lalcshop", 0, 2111, HOUSE_TYPE_ALCHEMY_SHOP, 4, 0 },  // 8
+    { "lmagshp", 0, 2112, HOUSE_TYPE_MAGIC_SHOP, 5, 0 },  // 9
+    { "lsplshp", 0, 2113, HOUSE_TYPE_ELEMENTAL_GUILD, 6, 0 },  // 10
+    { "ltrhall", 0, 2114, HOUSE_TYPE_TRAINING_GROUND, 7, 0 },  // 11
+    { "lbank", 0, 2115, HOUSE_TYPE_BANK, 8, 0 },  // 12
+    { "ltavern", 0, 2116, HOUSE_TYPE_TAVERN, 9, 0 },  // 13
+    { "lchwar", 0, 0, HOUSE_TYPE_THRONE_ROOM, 0, 0 },  // 14
+    { "derchhs1", 0, 0, HOUSE_TYPE_INVALID, 0, 0 },  // 15
+    { "derchhs2", 0, 0, HOUSE_TYPE_INVALID, 0, 0 },  // 16
+    { "demedhs", 0, 0, HOUSE_TYPE_INVALID, 0, 0 },  // 17
+    { "deporhs", 0, 0, HOUSE_TYPE_INVALID, 0, 0 },  // 18
+    { "detemple", 0, 2118, HOUSE_TYPE_TEMPLE, 12, 0 },  // 19
+    { "dewpshp", 0, 2119, HOUSE_TYPE_WEAPON_SHOP, 13, 0 },  // 20
+    { "dearmshp", 0, 2128, HOUSE_TYPE_ARMOR_SHOP, 14, 0 },  // 21
+    { "dealcshp", 0, 2121, HOUSE_TYPE_ALCHEMY_SHOP, 15, 0 },  // 22
+    { "demagshp", 0, 2102, HOUSE_TYPE_MAGIC_SHOP, 16, 0 },  // 23
+    { "desplshp", 0, 2123, HOUSE_TYPE_ELEMENTAL_GUILD, 17, 0 },  // 24
+    { "detrhall", 0, 2124, HOUSE_TYPE_TRAINING_GROUND, 18, 0 },  // 25
+    { "debank", 0, 2125, HOUSE_TYPE_BANK, 19, 0 },  // 26
+    { "detavern", 0, 2126, HOUSE_TYPE_TAVERN, 20, 0 },  // 27
+    { "demguild", 0, 0, HOUSE_TYPE_INVALID, 0, 0 },  // 28
+    { "deboat", 0, 2127, HOUSE_TYPE_BOAT, 21, 0 },  // 29
+    { "decouncl", 0, 0, HOUSE_TYPE_INVALID, 0, 0 },  // 30
+    { "mrchhs", 0, 0, HOUSE_TYPE_INVALID, 0, 0 },  // 31
+    { "mmedhs", 0, 0, HOUSE_TYPE_INVALID, 0, 0 },  // 32
+    { "mporhs", 0, 0, HOUSE_TYPE_INVALID, 0, 0 },  // 33
+    { "mdrownhs", 0, 0, HOUSE_TYPE_INVALID, 0, 0 },  // 34
+    { "mtemple", 0, 2171, HOUSE_TYPE_TEMPLE, 23, 0 },  // 35
+    { "mwepshp", 0, 2130, HOUSE_TYPE_WEAPON_SHOP, 24, 0 },  // 36
+    { "marmshp", 0, 2131, HOUSE_TYPE_ARMOR_SHOP, 25, 0 },  // 37
+    { "malcshp", 0, 2166, HOUSE_TYPE_ALCHEMY_SHOP, 26, 0 },  // 38
+    { "mmagshp", 0, 2167, HOUSE_TYPE_MAGIC_SHOP, 27, 0 },  // 39
+    { "msplshp", 0, 2168, HOUSE_TYPE_ELEMENTAL_GUILD, 28, 0 },  // 40
+    { "mtrhall", 0, 2170, HOUSE_TYPE_TRAINING_GROUND, 29, 0 },  // 41
+    { "mbank", 0, 2136, HOUSE_TYPE_BANK, 30, 0 },  // 42
+    { "mtavern", 0, 2169, HOUSE_TYPE_TAVERN, 31, 0 },  // 43
+    { "mledden", 0, 0, HOUSE_TYPE_INVALID, 0, 0 },  // 44
+    { "dhrchhs", 0, 0, HOUSE_TYPE_INVALID, 0, 0 },  // 45
+    { "dhmedhs", 0, 0, HOUSE_TYPE_INVALID, 0, 0 },  // 46
+    { "dhporhs", 0, 0, HOUSE_TYPE_INVALID, 0, 0 },  // 47
+    { "dhtemple", 0, 1138, HOUSE_TYPE_TEMPLE, 34, 0 },  // 48
+    { "dhwepshp", 0, 2139, HOUSE_TYPE_WEAPON_SHOP, 35, 0 },  // 49
+    { "dharmshp", 0, 2140, HOUSE_TYPE_ARMOR_SHOP, 36, 0 },  // 50
+    { "dhmagshp", 0, 2141, HOUSE_TYPE_MAGIC_SHOP, 38, 0 },  // 51
+    { "dhtrhall", 0, 2142, HOUSE_TYPE_TRAINING_GROUND, 40, 0 },  // 52
+    { "dhtavern", 0, 1137, HOUSE_TYPE_TAVERN, 42, 0 },  // 53
+    { "cquixote", 0, 0, HOUSE_TYPE_INVALID, 0, 0 },  // 54
+    { "clrchhs", 0, 0, HOUSE_TYPE_INVALID, 0, 0 },  // 55
+    { "clporhs", 0, 0, HOUSE_TYPE_INVALID, 0, 0 },  // 56
+    { "tthrone", 0, 0, HOUSE_TYPE_THRONE_ROOM, 0, 0 },  // 57
+    { "nrchhs1", 0, 0, HOUSE_TYPE_INVALID, 0, 0 },  // 58
+    { "nrchss2", 0, 0, HOUSE_TYPE_INVALID, 0, 0 },  // 59
+    { "nmedhs", 0, 0, HOUSE_TYPE_INVALID, 0, 0 },  // 60
+    { "nporhs", 0, 0, HOUSE_TYPE_INVALID, 0, 0 },  // 61
+    { "ntemple", 0, 2145, HOUSE_TYPE_TEMPLE, 45, 0 },  // 62
+    { "nwepshp", 0, 2146, HOUSE_TYPE_WEAPON_SHOP, 46, 0 },  // 63
+    { "narmshp", 0, 2147, HOUSE_TYPE_ARMOR_SHOP, 47, 0 },  // 64
+    { "nalcshp", 0, 2148, HOUSE_TYPE_ALCHEMY_SHOP, 48, 0 },  // 65
+    { "nmagshp", 0, 2145, HOUSE_TYPE_MAGIC_SHOP, 49, 0 },  // 66
+    { "nsplshp", 0, 2150, HOUSE_TYPE_ELEMENTAL_GUILD, 50, 0 },  // 67
+    { "ntrhall", 0, 1149, HOUSE_TYPE_TRAINING_GROUND, 51, 0 },  // 68
+    { "nbank", 0, 2152, HOUSE_TYPE_BANK, 52, 0 },  // 69
+    { "ntavern", 0, 2153, HOUSE_TYPE_TAVERN, 53, 0 },  // 70
+    { "tsthrone", 0, 0, HOUSE_TYPE_THRONE_ROOM, 0, 0 },  // 71
+    { "dlcavern", 0, 0, HOUSE_TYPE_INVALID, 0, 0 },  // 72
+    { "felmcell", 0, 0, HOUSE_TYPE_INVALID, 0, 0 },  // 73
+    { "eelmcell", 0, 0, HOUSE_TYPE_INVALID, 0, 0 },  // 74
+    { "welmcell", 0, 0, HOUSE_TYPE_INVALID, 0, 0 },  // 75
+    { "aelmcell", 0, 0, HOUSE_TYPE_INVALID, 0, 0 },  // 76
+    { "trporhs1", 0, 0, HOUSE_TYPE_INVALID, 0, 0 },  // 77
+    { "trporhs2", 0, 0, HOUSE_TYPE_INVALID, 0, 0 },  // 78
+    { "trtavern", 0, 2158, HOUSE_TYPE_TAVERN, 68, 0 },  // 79
+    { "wrboat", 0, 2180, HOUSE_TYPE_BOAT, 0, 0 },  // 80
+    { "wrthrone", 0, 0, HOUSE_TYPE_INVALID, 0, 0 },  // 81
+    { "rrchhs1", 0, 0, HOUSE_TYPE_INVALID, 0, 0 },  // 82
+    { "rrchs2", 0, 0, HOUSE_TYPE_INVALID, 0, 0 },  // 83
+    { "rmedhs", 0, 0, HOUSE_TYPE_INVALID, 0, 0 },  // 84
+    { "rtemple", 0, 1228, HOUSE_TYPE_TEMPLE, 56, 0 },  // 85
+    { "rwepshp", 0, 2177, HOUSE_TYPE_WEAPON_SHOP, 57, 0 },  // 86
+    { "rarmshp", 0, 2173, HOUSE_TYPE_ARMOR_SHOP, 58, 0 },  // 87
+    { "ralcshp", 0, 2172, HOUSE_TYPE_ALCHEMY_SHOP, 59, 0 },  // 88
+    { "rmagshp", 0, 2174, HOUSE_TYPE_MAGIC_SHOP, 60, 0 },  // 89
+    { "rsplshp", 0, 2175, HOUSE_TYPE_ELEMENTAL_GUILD, 61, 0 },  // 90
+    { "rtavern", 0, 2176, HOUSE_TYPE_TAVERN, 64, 0 },  // 91
+    { "rsub", 0, 0, HOUSE_TYPE_INVALID, 0, 0 },  // 92
+    { "esthrone", 0, 0, HOUSE_TYPE_INVALID, 0, 0 },  // 93
+    { "stables", 0, 1249, HOUSE_TYPE_STABLE, 22, 0 },  // 94
+    { "tavern", 0, 2178, HOUSE_TYPE_TAVERN, 64, 0 },  // 95
+    { "inn", 0, 2167, HOUSE_TYPE_ADVENTURERS_INN, 67, 0 },  // 96
+    { "oracle", 0, 0, HOUSE_TYPE_INVALID, 0, 0 },  // 97
+    { "felmhs", 0, 0, HOUSE_TYPE_INVALID, 0, 0 },  // 98
+    { "welmhs", 0, 0, HOUSE_TYPE_INVALID, 0, 0 },  // 99
+    { "eelmhs", 0, 0, HOUSE_TYPE_INVALID, 0, 0 },  // 100
+    { "aelmhs", 0, 0, HOUSE_TYPE_INVALID, 0, 0 },  // 101
+    { "ab_temp", 0, 0, HOUSE_TYPE_DUNGEON, 0, 0 },  // 102
+    { "p_outpst", 0, 0, HOUSE_TYPE_DUNGEON, 0, 0 },  // 103
+    { "smg_cove", 0, 0, HOUSE_TYPE_DUNGEON, 0, 0 },  // 104
+    { "dire_lr", 0, 0, HOUSE_TYPE_DUNGEON, 0, 0 },  // 105
+    { "mrch_hs", 0, 0, HOUSE_TYPE_DUNGEON, 0, 0 },  // 106
+    { "in_cryst", 0, 0, HOUSE_TYPE_DUNGEON, 0, 0 },  // 107
+    { "wasp_nst", 0, 0, HOUSE_TYPE_DUNGEON, 0, 0 },  // 108
+    { "ogre_ft", 0, 0, HOUSE_TYPE_DUNGEON, 0, 0 },  // 109
+    { "trol_tmb", 0, 0, HOUSE_TYPE_DUNGEON, 0, 0 },  // 110
+    { "cyc_lr", 0, 0, HOUSE_TYPE_DUNGEON, 0, 0 },  // 111
+    { "ch_fire", 0, 0, HOUSE_TYPE_DUNGEON, 0, 0 },  // 112
+    { "dh_camp", 0, 0, HOUSE_TYPE_DUNGEON, 0, 0 },  // 113
+    { "drgn_cav", 0, 0, HOUSE_TYPE_DUNGEON, 0, 0 },  // 114
+    { "naga_vlt", 0, 0, HOUSE_TYPE_DUNGEON, 0, 0 },  // 115
+    { "tpl_sun", 0, 0, HOUSE_TYPE_DUNGEON, 0, 0 },  // 116
+    { "ab_druid", 0, 0, HOUSE_TYPE_DUNGEON, 0, 0 },  // 117
+    { "mino_lr", 0, 0, HOUSE_TYPE_DUNGEON, 0, 0 },  // 118
+    { "barb_frt", 0, 0, HOUSE_TYPE_DUNGEON, 0, 0 },  // 119
+    { "p_strong", 0, 0, HOUSE_TYPE_DUNGEON, 0, 0 },  // 120
+    { "a_p_keep", 0, 0, HOUSE_TYPE_DUNGEON, 0, 0 },  // 121
+    { "s_subpen", 0, 0, HOUSE_TYPE_DUNGEON, 0, 0 },  // 122
+    { "nec_gild", 0, 0, HOUSE_TYPE_DUNGEON, 0, 0 },  // 123
+    { "mad_lab", 0, 0, HOUSE_TYPE_DUNGEON, 0, 0 },  // 124
+    { "cstl_air", 0, 0, HOUSE_TYPE_DUNGEON, 0, 0 },  // 125
+    { "rav_nest", 0, 0, HOUSE_TYPE_DUNGEON, 0, 0 },  // 126
+    { "cstl_fir", 0, 0, HOUSE_TYPE_DUNGEON, 0, 0 },  // 127
+    { "war_camp", 0, 0, HOUSE_TYPE_DUNGEON, 0, 0 },  // 128
+    { "esch_pal", 0, 0, HOUSE_TYPE_DUNGEON, 0, 0 },  // 129
+    { "pr_elords", 0, 0, HOUSE_TYPE_DUNGEON, 0, 0 },  // 130
+    { "gw_fire", 0, 0, HOUSE_TYPE_DUNGEON, 0, 0 },  // 131
+    { "gw_earth", 0, 0, HOUSE_TYPE_DUNGEON, 0, 0 },  // 132
+    { "gw_air", 0, 0, HOUSE_TYPE_DUNGEON, 0, 0 },  // 133
+    { "gw_water", 0, 0, HOUSE_TYPE_DUNGEON, 0, 0 },  // 134
+    { "ab_tempBD", 0, 0, HOUSE_TYPE_DUNGEON, 0, 0 },  // 135
+    { "pr_lorde", 0, 0, HOUSE_TYPE_DUNGEON, 0, 0 },  // 136
+    { "pr_lordf", 0, 0, HOUSE_TYPE_DUNGEON, 0, 0 },  // 137
+    { "pr_lordw", 0, 0, HOUSE_TYPE_DUNGEON, 0, 0 },  // 138
+    { "lsplshp", 0, 2113, HOUSE_TYPE_ELEMENTAL_GUILD, 6, 0 },  // 139
+    { "lsplshp", 0, 2113, HOUSE_TYPE_SELF_GUILD, 6, 0 },  // 140
+    { "lsplshp", 0, 2113, HOUSE_TYPE_LIGHT_GUILD, 6, 0 },  // 141
+    { "lsplshp", 0, 2113, HOUSE_TYPE_DARK_GUILD, 6, 0 },  // 142
+    { "desplshp", 0, 2123, HOUSE_TYPE_ELEMENTAL_GUILD, 17, 0 },  // 143
+    { "desplshp", 0, 2123, HOUSE_TYPE_SELF_GUILD, 17, 0 },  // 144
+    { "desplshp", 0, 2123, HOUSE_TYPE_LIGHT_GUILD, 17, 0 },  // 145
+    { "desplshp", 0, 2123, HOUSE_TYPE_DARK_GUILD, 17, 0 },  // 146
+    { "msplshp", 0, 2168, HOUSE_TYPE_ELEMENTAL_GUILD, 28, 0 },  // 147
+    { "msplshp", 0, 2168, HOUSE_TYPE_SELF_GUILD, 28, 0 },  // 148
+    { "msplshp", 0, 2168, HOUSE_TYPE_LIGHT_GUILD, 28, 0 },  // 149
+    { "msplshp", 0, 2168, HOUSE_TYPE_DARK_GUILD, 28, 0 },  // 150
+    { "nsplshp", 0, 2150, HOUSE_TYPE_ELEMENTAL_GUILD, 50, 0 },  // 151
+    { "nsplshp", 0, 2150, HOUSE_TYPE_SELF_GUILD, 50, 0 },  // 152
+    { "nsplshp", 0, 2150, HOUSE_TYPE_LIGHT_GUILD, 50, 0 },  // 153
+    { "nsplshp", 0, 2150, HOUSE_TYPE_DARK_GUILD, 50, 0 },  // 154
+    { "rsplshp", 0, 2175, HOUSE_TYPE_ELEMENTAL_GUILD, 61, 0 },  // 155
+    { "rsplshp", 0, 2175, HOUSE_TYPE_SELF_GUILD, 61, 0 },  // 156
+    { "rsplshp", 0, 2175, HOUSE_TYPE_LIGHT_GUILD, 61, 0 },  // 157
+    { "rsplshp", 0, 2175, HOUSE_TYPE_DARK_GUILD, 61, 0 },  // 158
+    { "null", 0, 0, HOUSE_TYPE_DUNGEON, 0, 0 },  // 159
+    { "cave", 0, 0, HOUSE_TYPE_INVALID, 0, 0 },  // 160
+} };
+
+const HouseAnimDescr &animatedRoom(int uAnimationID) {
+    if (gameType() == GAME_TYPE_MM8)
+        return pAnimatedRoomsMM8[uAnimationID];
+    return pAnimatedRooms[uAnimationID];
+}
+
+const IndexedArray<int, HOUSE_TYPE_WEAPON_SHOP, HOUSE_TYPE_SELF_GUILD> itemAmountInShop = {{
     {HOUSE_TYPE_WEAPON_SHOP,   6},
     {HOUSE_TYPE_ARMOR_SHOP,    8},
     {HOUSE_TYPE_MAGIC_SHOP,   12},
@@ -266,7 +444,9 @@ const IndexedArray<int, HOUSE_TYPE_WEAPON_SHOP, HOUSE_TYPE_DARK_GUILD> itemAmoun
     {HOUSE_TYPE_MIND_GUILD,   12},
     {HOUSE_TYPE_BODY_GUILD,   12},
     {HOUSE_TYPE_LIGHT_GUILD,  12},
-    {HOUSE_TYPE_DARK_GUILD,   12}
+    {HOUSE_TYPE_DARK_GUILD,   12},
+    {HOUSE_TYPE_ELEMENTAL_GUILD, 12}, // Combined guilds use the same 12-slot shelf as single-school guilds.
+    {HOUSE_TYPE_SELF_GUILD,      12}
 }};
 
 static constexpr IndexedArray<const char *, HOUSE_TYPE_WEAPON_SHOP, HOUSE_TYPE_MIRRORED_PATH_GUILD> shopBackgroundNames = {{
@@ -289,6 +469,21 @@ static constexpr IndexedArray<const char *, HOUSE_TYPE_WEAPON_SHOP, HOUSE_TYPE_M
 }};
 
 bool enterHouse(HouseId uHouseID) {
+    // A free-roam NPC dialogue (e.g. the daily-timer greeting, out01.evt event 500) may still
+    // be open here, `EVENT_SpeakInHouse` calls this function on any screen. The house overwrites
+    // `pDialogueWindow` and `game_ui_dialogue_background`, so close the dialogue first, as Escape does.
+    if (current_screen_type == SCREEN_NPC_DIALOGUE) {
+        DialogueEnding();
+        current_screen_type = SCREEN_GAME;
+    }
+
+    // A house can be entered again while `window_SpeakInHouse` is still open (a double click on a
+    // door, `EVENT_SpeakInHouse` firing again). Close the open house window first, or its
+    // destructor releases the images the new window uses.
+    if (window_SpeakInHouse) {
+        window_SpeakInHouse = nullptr;
+    }
+
     engine->_statusBar->clearAll();
     engine->_messageQueue->clear();
 
@@ -340,7 +535,9 @@ bool enterHouse(HouseId uHouseID) {
     }
 
     uCurrentHouse_Animation = houseTable[uHouseID].uAnimationID;
-    if (pAnimatedRooms[uCurrentHouse_Animation].uBuildingType == HOUSE_TYPE_THRONE_ROOM && pParty->uFine) {  // going to jail
+    // The jail is Might and Magic VII's (a throne room entered with a fine = a year in prison). MM8 has no jail, and its
+    // house 187 is another house, the Temple of the Sun Leader Room.
+    if (gameType() != GAME_TYPE_MM8 && animatedRoom(uCurrentHouse_Animation).uBuildingType == HOUSE_TYPE_THRONE_ROOM && pParty->uFine) {  // going to jail
         uHouseID = HOUSE_JAIL;
         uCurrentHouse_Animation = houseTable[uHouseID].uAnimationID;
         restAndHeal(Duration::fromYears(1));
@@ -359,13 +556,13 @@ bool enterHouse(HouseId uHouseID) {
 
     if (houseNpcs.size() == 1)
         currentHouseNpc = 0;
-    pMediaPlayer->OpenHouseMovie(pAnimatedRooms[uCurrentHouse_Animation].video_name, 1u);
+    pMediaPlayer->OpenHouseMovie(animatedRoom(uCurrentHouse_Animation).video_name, 1u);
     if (isMagicGuild(uHouseID)) {
         // TODO(pskelton): check this behaviour
         if (!pParty->hasActiveCharacter()) // avoid nzi
             pParty->setActiveToFirstCanAct();
 
-        if (!pParty->activeCharacter()._achievedAwardsBits[membershipAwardForGuild(uHouseID)]) {
+        if (gameType() != GAME_TYPE_MM8 && !pParty->activeCharacter()._achievedAwardsBits[membershipAwardForGuild(uHouseID)]) {
             playHouseSound(uHouseID, HOUSE_SOUND_MAGIC_GUILD_MEMBERS_ONLY);
             return true;
         }
@@ -376,16 +573,34 @@ bool enterHouse(HouseId uHouseID) {
     return true;
 }
 
+// An MM8 companion who has joined (in the party, or benched at the Adventurer's Inn) has left home. The companion is the
+// house NPC whose own join slot (601-649, roster row id + 600) names his roster row.
+static bool companionHasLeftHome(const NPCData &npc) {
+    if (gameType() != GAME_TYPE_MM8)
+        return false;
+    for (unsigned int eventId : {npc.dialogue_1_evt_id, npc.dialogue_2_evt_id, npc.dialogue_3_evt_id,
+                                 npc.dialogue_4_evt_id, npc.dialogue_5_evt_id, npc.dialogue_6_evt_id}) {
+        if (!isRosterJoinTopic(eventId))
+            continue;
+        const int rosterId = static_cast<int>(eventId) - 600;
+        if (static_cast<size_t>(rosterId) >= rosterMm8.size() || rosterMm8[rosterId].name != npc.name)
+            continue;
+        if (pParty->isRosterInParty(rosterId) || pParty->mm8Roster.isInInn(rosterId))
+            return true;
+    }
+    return false;
+}
+
 void prepareHouse(HouseId house) {
     houseNpcs.clear();
 
     // Default proprietor of non-simple houses
-    int proprietorId = pAnimatedRooms[houseTable[house].uAnimationID].house_npc_id;
+    int proprietorId = animatedRoom(houseTable[house].uAnimationID).house_npc_id;
     if (proprietorId) {
         HouseNpcDesc desc;
         desc.type = HOUSE_PROPRIETOR;
         desc.label = localization->format(LSTR_CONVERSE_WITH_S, houseTable[house].pProprieterName);
-        desc.icon = assets->getIcon(fmt::format("npc{:03}", proprietorId));
+        desc.icon = assets->getImage_ColorKey(npcPortraitTextureName(proprietorId));
 
         houseNpcs.push_back(desc);
     }
@@ -393,11 +608,11 @@ void prepareHouse(HouseId house) {
     // NPCs of this house
     for (int i = 1; i < pNPCStats->uNumNewNPCs; ++i) {
         if (pNPCStats->pNPCData[i].house == house) {
-            if (!(pNPCStats->pNPCData[i].flags & NPC_HIRED)) {
+            if (!(pNPCStats->pNPCData[i].flags & NPC_HIRED) && !companionHasLeftHome(pNPCStats->pNPCData[i])) {
                 HouseNpcDesc desc;
                 desc.type = HOUSE_NPC;
                 desc.label = localization->format(LSTR_CONVERSE_WITH_S, pNPCStats->pNPCData[i].name);
-                desc.icon = assets->getIcon(fmt::format("npc{:03}", pNPCStats->pNPCData[i].portraitId));
+                desc.icon = assets->getImage_ColorKey(npcPortraitTextureName(pNPCStats->pNPCData[i].portraitId));
                 desc.npc = &pNPCStats->pNPCData[i];
 
                 houseNpcs.push_back(desc);
@@ -429,6 +644,18 @@ void prepareHouse(HouseId house) {
     }
 }
 
+// MM8's "Close" button ("c_close_up") is 83x30 at (516,431), not MM7's 169x35 at (471,445).
+// GUIWindow_House recreates pBtn_ExitCancel at several points as its dialogue state
+// changes (ctor, reinitDialogueWindow, NPCHireableDialogPrepare). CreateButton's dimensions are
+// closed-interval (stores w/h + 1), so the size returned is one less than the asset's size.
+// Shared with the free-roam GUIWindow_Dialogue (UIDialogue.cpp).
+std::pair<Pointi, Sizei> exitCancelButtonGeometry() {
+    if (gameType() == GAME_TYPE_MM8) {
+        return {{516, 431}, {82, 29}};
+    }
+    return {{471, 445}, {169, 35}};
+}
+
 /**
  * TODO(Nik-RE-dev): untested until houses NPC can join the party
  *
@@ -439,7 +666,8 @@ void NPCHireableDialogPrepare() {
     NPCData *v1 = houseNpcs[currentHouseNpc].npc;
 
     pDialogueWindow = std::make_unique<GUIWindow>(WINDOW_DIALOGUE, Pointi(0, 0), Sizei(render->GetRenderDimensions().w, 350));
-    pBtn_ExitCancel = pDialogueWindow->CreateButton({471, 445}, {169, 35}, BUTTON_TYPE_NORMAL, 0,
+    auto [exitCancelPos, exitCancelSize] = exitCancelButtonGeometry();
+    pBtn_ExitCancel = pDialogueWindow->CreateButton(exitCancelPos, exitCancelSize, BUTTON_TYPE_NORMAL, 0,
         UIMSG_Escape, 0, INPUT_ACTION_INVALID, localization->str(LSTR_CANCEL), {ui_exit_cancel_button_background}
     );
     pDialogueWindow->CreateButton({0, 0}, {0, 0}, BUTTON_TYPE_NORMAL, 0, UIMSG_HouseScreenClick, 0);
@@ -593,6 +821,12 @@ void houseDialogueGoBackToTop() {
 }
 
 void createHouseUI(HouseId houseId) {
+    // The original's Adventurer's Inn is a screen of its own (id 29), not
+    // reached through GUIWindow_Tavern's dialogue options even though the house is data-mapped to
+    // HOUSE_TYPE_TAVERN.
+    if (houseTable[houseId].isGenericAdventurersInn) {
+        window_SpeakInHouse = std::make_unique<GUIWindow_AdventurersInn>(houseId);
+    } else {
     switch (houseTable[houseId].uType) {
       case HOUSE_TYPE_FIRE_GUILD:
       case HOUSE_TYPE_AIR_GUILD:
@@ -649,9 +883,18 @@ void createHouseUI(HouseId houseId) {
         window_SpeakInHouse = std::make_unique<GUIWindow_House>(houseId);
         break;
     }
+    }
 
     if (houseNpcs.size() == 1)
         updateHouseNPCTopics(0);
+
+    // The world stops redrawing on SCREEN_HOUSE, so the last exploration frame, with its HUD
+    // chrome, would stay frozen around the panel. Draw two clean frames, one per buffer of the
+    // double-buffered renderer.
+    engine->setWorldDrawForced(true);
+    engine->Draw();
+    engine->Draw();
+    engine->setWorldDrawForced(false);
 }
 
 void BackToHouseMenu() {
@@ -679,17 +922,29 @@ static SoundId houseSoundId(int roomSoundId, HouseSoundType type) {
 }
 
 void playHouseSound(HouseId houseID, HouseSoundType type) {
-    if (houseID != HOUSE_INVALID && pAnimatedRooms[houseTable[houseID].uAnimationID].uRoomSoundId) {
-        int roomSoundId = pAnimatedRooms[houseTable[houseID].uAnimationID].uRoomSoundId;
-        pAudioPlayer->playHouseSound(houseSoundId(roomSoundId, type), true);
+    if (houseID != HOUSE_INVALID && animatedRoom(houseTable[houseID].uAnimationID).uRoomSoundId) {
+        // TODO(captainurist): encapsulate
+        int roomSoundId = animatedRoom(houseTable[houseID].uAnimationID).uRoomSoundId;
+        SoundId soundId = houseSoundId(roomSoundId, type);
+        // This `30000 + 100 * room + type` scheme is MM8's own - MM8's
+        // `dsounds.bin` holds that whole 30101..37004 block under the expected `eventNN_01a..d`
+        // names - but MM8 did not record four variants for every room (room 67 has only `a`,
+        // room 46 only `a`/`b`/`c`). A variant that was never recorded is silent in the original
+        // too, so ask the table. MM7's table fills every variant this scheme names.
+        if (gameType() == GAME_TYPE_MM8 && !pSoundList->soundInfo(soundId))
+            return;
+        pAudioPlayer->playHouseSound(soundId, true);
     }
 }
 
 int64_t houseSoundLengthMs(HouseId houseId, HouseSoundType type) {
-    int roomSoundId = pAnimatedRooms[houseTable[houseId].uAnimationID].uRoomSoundId;
+    int roomSoundId = animatedRoom(houseTable[houseId].uAnimationID).uRoomSoundId;
     if (!roomSoundId)
         return 0;
-    return static_cast<int64_t>(std::ceil(pAudioPlayer->getSoundLength(houseSoundId(roomSoundId, type)) * 1000));
+    SoundId soundId = houseSoundId(roomSoundId, type);
+    if (gameType() == GAME_TYPE_MM8 && !pSoundList->soundInfo(soundId))
+        return 0; // MM8 did not record every variant for every room, see playHouseSound.
+    return static_cast<int64_t>(std::ceil(pAudioPlayer->getSoundLength(soundId) * 1000));
 }
 
 void GUIWindow_House::houseNPCDialogue() {
@@ -775,7 +1030,8 @@ void GUIWindow_House::reinitDialogueWindow() {
         pDialogueWindow = std::make_unique<GUIWindow>(WINDOW_DIALOGUE, Pointi(0, 0), Sizei(render->GetPresentDimensions().w, 345));
     }
 
-    pBtn_ExitCancel = pDialogueWindow->CreateButton({471, 445}, {169, 35}, BUTTON_TYPE_NORMAL, 0, UIMSG_Escape, 0, INPUT_ACTION_INVALID,
+    auto [exitCancelPos, exitCancelSize] = exitCancelButtonGeometry();
+    pBtn_ExitCancel = pDialogueWindow->CreateButton(exitCancelPos, exitCancelSize, BUTTON_TYPE_NORMAL, 0, UIMSG_Escape, 0, INPUT_ACTION_INVALID,
         localization->str(LSTR_END_CONVERSATION), {ui_exit_cancel_button_background});
     pDialogueWindow->CreateButton({8, 8}, {450, 320}, BUTTON_TYPE_NORMAL, 0, UIMSG_HouseScreenClick, 0, INPUT_ACTION_INVALID, "");
 }
@@ -876,7 +1132,7 @@ void GUIWindow_House::houseDialogManager() {
     pWindow.w += 8;
     if (currentHouseNpc == -1) {
         // Either house have no residents or current screen is for selecting resident to begin dialogue
-        render->DrawQuad2D(ui_exit_cancel_button_background, {471, 445});
+        render->DrawQuad2D(ui_exit_cancel_button_background, pBtn_ExitCancel->rect.topLeft());
 
         if (buildingType() == HOUSE_TYPE_JAIL) {
             houseSpecificDialogue();
@@ -916,7 +1172,7 @@ void GUIWindow_House::houseDialogManager() {
     render->DrawQuad2D(houseNpcs[currentHouseNpc].icon, {pNPCPortraits_x[0][0], pNPCPortraits_y[0][0]});
     if (current_screen_type == SCREEN_SHOP_INVENTORY) {
         CharacterUI_InventoryTab_Draw(&pParty->activeCharacter(), true);
-        render->DrawQuad2D(ui_exit_cancel_button_background, {471, 445});
+        render->DrawQuad2D(ui_exit_cancel_button_background, pBtn_ExitCancel->rect.topLeft());
         return;
     }
     if (currentHouseNpc || houseNpcs[0].type != HOUSE_PROPRIETOR) {
@@ -931,7 +1187,7 @@ void GUIWindow_House::houseDialogManager() {
         render->DrawQuad2D(dialogue_ui_x_x_u, {556, 451});
         render->DrawQuad2D(dialogue_ui_x_ok_u, {476, 451});
     } else {
-        render->DrawQuad2D(ui_exit_cancel_button_background, {471, 445});
+        render->DrawQuad2D(ui_exit_cancel_button_background, pBtn_ExitCancel->rect.topLeft());
     }
 }
 
@@ -973,7 +1229,7 @@ void GUIWindow_House::learnSkillsDialogue(Color selectColor) {
     int buttonsLimit = pDialogueWindow->pStartingPosActiveItem + pDialogueWindow->pNumPresenceButton;
     for (int i = pDialogueWindow->pStartingPosActiveItem; i < buttonsLimit; i++) {
         Skill skill = GetLearningDialogueSkill((DialogueId)pDialogueWindow->GetControl(i)->msg_param);
-        if (skillMaxMasteryPerClass[pParty->activeCharacter().classType][skill] != MASTERY_NONE &&
+        if (skillMaxMasteryForClass(pParty->activeCharacter().classType, skill) != MASTERY_NONE &&
             !pParty->activeCharacter().pActiveSkills[skill]) {
             optionsText.push_back(localization->skillName(skill));
             haveLearnableSkills = true;
@@ -1003,7 +1259,7 @@ void GUIWindow_House::learnSkillsDialogue(Color selectColor) {
 
 void GUIWindow_House::learnSelectedSkill(Skill skill) {
     int pPrice = PriceCalculator::skillLearningCostForPlayer(&pParty->activeCharacter(), houseTable[houseId()]);
-    if (skillMaxMasteryPerClass[pParty->activeCharacter().classType][skill] != MASTERY_NONE) {
+    if (skillMaxMasteryForClass(pParty->activeCharacter().classType, skill) != MASTERY_NONE) {
         if (!pParty->activeCharacter().pActiveSkills[skill]) {
             if (pParty->GetGold() < pPrice) {
                 engine->_statusBar->setEvent(LSTR_YOU_DONT_HAVE_ENOUGH_GOLD);
@@ -1028,7 +1284,8 @@ GUIWindow_House::GUIWindow_House(HouseId houseId) : GUIWindow(WINDOW_HOUSE_INTER
     gameTimer->setPaused(true);  // pause timer so not attacked
 
     current_screen_type = SCREEN_HOUSE;
-    pBtn_ExitCancel = CreateButton({471, 445}, {169, 35}, BUTTON_TYPE_NORMAL, 0, UIMSG_Escape, 0, INPUT_ACTION_INVALID,
+    auto [exitCancelPos, exitCancelSize] = exitCancelButtonGeometry();
+    pBtn_ExitCancel = CreateButton(exitCancelPos, exitCancelSize, BUTTON_TYPE_NORMAL, 0, UIMSG_Escape, 0, INPUT_ACTION_INVALID,
                                    localization->str(LSTR_EXIT_BUILDING), {ui_exit_cancel_button_background});
 
     _dialogueBackground = dialogueBackground(pParty->alignment);
@@ -1047,11 +1304,15 @@ GUIWindow_House::GUIWindow_House(HouseId houseId) : GUIWindow(WINDOW_HOUSE_INTER
 void GUIWindow_House::Update() {
     if (!window_SpeakInHouse)
         return;
+    // houseDialogManager() can destroy this window (under its
+    // houseSpecificDialogue() call), so read what we need from `this` before calling it.
+    HouseId house = houseId();
     houseDialogManager();
-    if (!isShop(houseId()))
+    if (!isShop(house)) {
         return;
-    if (pParty->PartyTimes.shopBanTimes[houseId()] <= pParty->GetPlayingTime()) {
-        pParty->PartyTimes.shopBanTimes[houseId()] = Time();
+    }
+    if (pParty->PartyTimes.shopBanTimes[house] <= pParty->GetPlayingTime()) {
+        pParty->PartyTimes.shopBanTimes[house] = Time();
         return;
     }
     engine->_messageQueue->addMessageCurrentFrame(UIMSG_Escape, 0, 0);  // banned from shop so leaving
@@ -1094,4 +1355,16 @@ void GUIWindow_House::houseScreenClick() {
 
 void GUIWindow_House::playHouseGoodbyeSpeech() {
     // No speech by default
+}
+
+void GUIWindow_House::innClickBenchPortrait(int rosterId) {
+    // Nothing to do by default - see GUIWindow_AdventurersInn.
+}
+
+void GUIWindow_House::innClickActivePortrait(int rosterId) {
+    // Nothing to do by default - see GUIWindow_AdventurersInn.
+}
+
+void GUIWindow_House::innClickDismiss(int rosterId) {
+    // Nothing to do by default - see GUIWindow_AdventurersInn.
 }

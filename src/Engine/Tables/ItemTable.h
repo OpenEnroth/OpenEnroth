@@ -30,6 +30,17 @@ struct ItemTable {
      */
     void generateItem(ItemTreasureLevel treasureLevel, RandomItemType uTreasureType, Item *pItem);
 
+    /**
+     * Finds the cheapest common-rarity item associated with the provided skill, e.g. for granting a starting
+     * item at character creation. Looked up by the item's actual `skill` data field, so it stays correct
+     * regardless of how a particular game's `items.txt` orders its rows (unlike a hardcoded `ItemId`).
+     *
+     * @param skill                         Skill to find a starting item for.
+     * @return                              The matching item with the lowest `baseValue`, or `ITEM_NULL` if no
+     *                                      such item exists.
+     */
+    ItemId startingItemForSkill(Skill skill) const;
+
     /** Item data for all items in the game. */
     IndexedArray<ItemData, ITEM_FIRST_VALID, ITEM_LAST_VALID> items;
 

@@ -6,6 +6,7 @@
 #include "Engine/EngineGlobals.h"
 #include "Engine/Components/Control/EngineController.h"
 #include "Engine/Components/Control/EngineControlState.h"
+#include "Engine/Random/Random.h"
 
 #include "Library/Platform/Application/PlatformApplication.h"
 
@@ -14,6 +15,10 @@
 static EngineController *globalEngineController = nullptr;
 static TestController *globalTestController = nullptr;
 static bool globalTerminating = false;
+
+// `grng` is seeded once from the wall clock and shared by every `GAME_TEST` in the process. Reseeding it in
+// `SetUp()` makes each test independent of the ones before it. `vrng` is left alone.
+static constexpr int kFixedGameTestRngSeed = 20260926;
 
 void GameTest::init(EngineController *engineController, TestController *testController) {
     assert(!globalEngineController && !globalTestController);
@@ -30,6 +35,8 @@ void GameTest::SetUp() {
 
     const_cast<EngineController *&>(game) = globalEngineController;
     const_cast<TestController *&>(test) = globalTestController;
+
+    grng->seed(kFixedGameTestRngSeed);
 
     test->prepareForNextTest();
 }

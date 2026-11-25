@@ -63,6 +63,12 @@ struct OutdoorLocation {
     // TODO(captainurist): also sets uDefaultTravelTime_ByFoot and clears party flags as a side effect, and the travel
     //                     dialog calls it every frame just to draw the map name. Split the lookup from the commit.
     MapDestination getTravelDestination(int partyX, int partyY);
+
+    /**
+     * The direction (0=north, 1=south, 2=east, 3=west) in which a map-edge foot-travel from `fromMap` leads to
+     * `toMap`, or -1 if there is no such edge. Table lookup only, no party position involved.
+     */
+    static int footTravelEdgeDirectionTo(MapId fromMap, MapId toMap);
     void UpdateSunlightVectors();
     void UpdateFog();
     int getNumFoodRequiredToRestInCurrentPos(const Vec3f &pos);

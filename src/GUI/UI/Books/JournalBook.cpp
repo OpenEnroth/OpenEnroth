@@ -2,6 +2,7 @@
 #include <string>
 
 #include "Engine/AssetsManager.h"
+#include "Engine/GameType.h"
 #include "Engine/Localization.h"
 #include "Engine/Party.h"
 
@@ -19,6 +20,9 @@
 
 std::shared_ptr<GraphicsImage> ui_book_journal_background;
 
+// MM8's Close button position, measured from the original game's screen.
+static const Pointi kMm8JournalCloseButtonPos = {555, 445};
+
 GUIWindow_JournalBook::GUIWindow_JournalBook() {
     eWindowType = WINDOW_JOURNAL_BOOK;
 
@@ -26,17 +30,40 @@ GUIWindow_JournalBook::GUIWindow_JournalBook() {
     bFlashHistoryBook = false;
 
 
-    ui_book_journal_background = assets->getIcon("sbplayrnot");
+    // MM8's equivalents of "sbplayrnot" and "tab-an-6/7".
+    if (gameType() == GAME_TYPE_MM8) {
+        ui_book_journal_background = assets->getImage_ColorKey("irbgrnd");
+        ui_book_button1_on = assets->getImage_Alpha("irt01r");
+        ui_book_button2_on = assets->getImage_Alpha("irt02r");
+        ui_book_button1_off = assets->getImage_Alpha("irt01b");
+        ui_book_button2_off = assets->getImage_Alpha("irt02b");
+    } else {
+        ui_book_journal_background = assets->getImage_ColorKey("sbplayrnot");
+        ui_book_button1_on = assets->getImage_Alpha("tab-an-6b");
+        ui_book_button2_on = assets->getImage_Alpha("tab-an-7b");
+        ui_book_button1_off = assets->getImage_Alpha("tab-an-6a");
+        ui_book_button2_off = assets->getImage_Alpha("tab-an-7a");
+    }
 
-    ui_book_button1_on = assets->getIcon("tab-an-6b");
-    ui_book_button2_on = assets->getIcon("tab-an-7b");
-    ui_book_button1_off = assets->getIcon("tab-an-6a");
-    ui_book_button2_off = assets->getIcon("tab-an-7a");
-
-    pBtn_Book_1 = CreateButton(pViewport.topLeft() + Pointi(398, 1), ui_book_button1_on->size(), BUTTON_TYPE_NORMAL, 0,
+    bool isMm8 = gameType() == GAME_TYPE_MM8;
+    Sizei book1Size = isMm8 ? Sizei{50, 34} : ui_book_button1_on->size();
+    Sizei book2Size = isMm8 ? Sizei{50, 34} : ui_book_button2_on->size();
+    pBtn_Book_1 = CreateButton(pViewport.topLeft() + Pointi(398, 1), book1Size, BUTTON_TYPE_NORMAL, 0,
                                UIMSG_ClickBooksBtn, std::to_underlying(BOOK_PREV_PAGE), INPUT_ACTION_DIALOG_LEFT, localization->str(LSTR_SCROLL_UP), {ui_book_button1_on});
-    pBtn_Book_2 = CreateButton(pViewport.topLeft() + Pointi(398, 38), ui_book_button2_on->size(), BUTTON_TYPE_NORMAL, 0,
+    pBtn_Book_2 = CreateButton(pViewport.topLeft() + Pointi(398, 38), book2Size, BUTTON_TYPE_NORMAL, 0,
                                UIMSG_ClickBooksBtn, std::to_underlying(BOOK_NEXT_PAGE), INPUT_ACTION_DIALOG_RIGHT, localization->str(LSTR_SCROLL_DOWN), {ui_book_button2_on});
+
+    if (isMm8) {
+        CreateMm8BookTabColumn();
+        // Real MM8 Close button position/size (see kMm8JournalCloseButtonPos above) -
+        // re-positions the clickable rect the base ctor already created at MM7's slot.
+        for (GUIButton *button : vButtons) {
+            if (button->id == "Book_Close") {
+                button->rect = Recti(kMm8JournalCloseButtonPos, ui_exit_cancel_button_background->size());
+                break;
+            }
+        }
+    }
 
     Recti journal_window(48, 70, 360, 264);
     journal_window.h = (assets->pFontBookOnlyShadow->GetHeight() - 3) * 264 / assets->pFontBookOnlyShadow->GetHeight() - 3;
@@ -58,9 +85,13 @@ GUIWindow_JournalBook::GUIWindow_JournalBook() {
 }
 
 void GUIWindow_JournalBook::Update() {
-    render->DrawQuad2D(ui_exit_cancel_button_background, {471, 445});
+    bool isMm8 = gameType() == GAME_TYPE_MM8;
+    if (!isMm8)
+        render->DrawQuad2D(ui_exit_cancel_button_background, {471, 445});
 
     render->DrawQuad2D(ui_book_journal_background, pViewport.topLeft());
+    if (isMm8)
+        DrawMm8BookTabColumn();
     if ((_bookButtonClicked && _bookButtonAction == BOOK_PREV_PAGE) || !_currentIdx) {
         render->DrawQuad2D(ui_book_button1_off, pViewport.topLeft() + Pointi(407, 2));
     } else {
@@ -99,4 +130,9 @@ void GUIWindow_JournalBook::Update() {
         DrawText(assets->pFontBookOnlyShadow.get(), {1, 0}, ui_book_journal_text_color, pStringOnPage, journal_window,
                                 journal_window.y + journal_window.h, ui_book_journal_text_shadow);
     }
+
+    // Drawn last (not at the top of Update() like MM7's line above) so the background fill above
+    // doesn't paint over it - see kMm8JournalCloseButtonPos's own comment.
+    if (isMm8)
+        render->DrawQuad2D(ui_exit_cancel_button_background, kMm8JournalCloseButtonPos);
 }

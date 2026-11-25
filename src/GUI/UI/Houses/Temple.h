@@ -17,15 +17,15 @@ class GUIWindow_Temple : public GUIWindow_House {
     virtual void updateDialogueOnEscape() override;
     virtual void playHouseGoodbyeSpeech() override;
 
- protected:
-    void mainDialogue();
-    void healDialogue();
-    void donateDialogue();
-
     /**
      * @offset 0x4B6FF9
      */
     bool isPlayerHealableByTemple(const Character &player) const;
+
+ protected:
+    void mainDialogue();
+    void healDialogue();
+    void donateDialogue();
 
     /**
      * @return                          Whether this is one of the three temples that raise the dead as zombies.

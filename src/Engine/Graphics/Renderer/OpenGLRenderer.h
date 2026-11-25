@@ -154,12 +154,12 @@ class OpenGLRenderer : public BaseRenderer {
     std::map<std::string, int> terraintexmap;
 
     // outside building shader
-    std::array<OpenGLVertexBuffer<ShaderVertex>, 16> _outbuildBuffers;
-    std::array<std::vector<ShaderVertex>, 16> _outbuildVertices;
-    GLuint outbuildtextures[16]{};
-    unsigned int numoutbuildtexloaded[16]{};
-    unsigned int outbuildtexturewidths[16]{};
-    unsigned int outbuildtextureheights[16]{};
+    std::array<OpenGLVertexBuffer<ShaderVertex>, 32> _outbuildBuffers;
+    std::array<std::vector<ShaderVertex>, 32> _outbuildVertices;
+    GLuint outbuildtextures[32]{};
+    unsigned int numoutbuildtexloaded[32]{};
+    unsigned int outbuildtexturewidths[32]{};
+    unsigned int outbuildtextureheights[32]{};
     std::map<std::string, int> outbuildtexmap;
 
     // indoors bsp shader

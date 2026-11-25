@@ -1,13 +1,17 @@
 #include "OutdoorTerrain.h"
 
+#include <array>
 #include <cassert>
 #include <algorithm>
+#include <cmath>
+#include <utility>
 
 #include "Engine/Tables/TileTable.h"
 #include "Engine/Seasons.h"
 
 #include "Outdoor.h"
 #include "Engine/Data/TileEnumFunctions.h"
+#include "Library/Logger/Logger.h"
 
 OutdoorTerrain::OutdoorTerrain() {
     // Map is 127x127 squares.
@@ -56,6 +60,12 @@ float OutdoorTerrain::heightByPos(const Vec3f &pos) const {
     //                     good, as if the party is actually a bit submerged and swimming. The only problem is that
     //                     party would be jerked up upon coming ashore, and this just looks ugly. Find a way to
     //                     reimplement this properly.
+    if (!std::isfinite(pos.x) || !std::isfinite(pos.y)) {
+        // `worldToGrid` below would `static_cast<int>` a NaN/Inf float, which is undefined behavior.
+        MM_WARNING("OutdoorTerrain::heightByPos: non-finite pos ({}, {}), returning 0.", pos.x, pos.y);
+        return 0;
+    }
+
     Pointi gridPos = worldToGrid(pos);
     TileGeometry tile = tileGeometryByGrid(gridPos);
     if (tile.z00 != tile.z10 || tile.z10 != tile.z11 || tile.z11 != tile.z01) {
@@ -79,8 +89,15 @@ float OutdoorTerrain::heightByPos(const Vec3f &pos) const {
             rpos = tile.v0.y - pos.y;
         }
 
-        assert(lpos >= 0 && lpos < 512);
-        assert(rpos >= 0 && rpos < 512);
+        // `lpos`/`rpos` are in `[0, 512)` for every finite `pos` that `worldToGrid` maps into `gridPos`, so a value
+        // outside that range here means `pos` is inconsistent with the tile `worldToGrid` picked for it.
+        if (lpos < 0 || lpos >= 512 || rpos < 0 || rpos >= 512) {
+            MM_WARNING("OutdoorTerrain::heightByPos: pos ({}, {}) out of range for its own tile "
+                                 "gridPos ({}, {}) (lpos={}, rpos={}), clamping.",
+                                 pos.x, pos.y, gridPos.x, gridPos.y, lpos, rpos);
+            lpos = std::clamp(lpos, 0.0f, 511.0f);
+            rpos = std::clamp(rpos, 0.0f, 511.0f);
+        }
 
         return originz + rpos * (rz - originz) / 512 + lpos * (lz - originz) / 512;
     } else {
@@ -217,17 +234,42 @@ void OutdoorTerrain::recalculateTransitions(Image<int16_t> *tileMap) {
 
     for (int y = 0; y < map.height(); y++) {
         for (int x = 0; x < map.width(); x++) {
-            const TileData &tileData = pTileTable->tile(map[y][x]);
-            if (isRoad(tileData.tileset) || tileData.tileset == TILESET_DIRT) // No transitions for roads & dirt.
+            Pointi pos(x, y);
+            Tileset tileset = pTileTable->tile(map[y][x]).tileset;
+
+            if (tileset == TILESET_INVALID) {
+                // Some MM8 outdoor maps encode a handful of terrain cells (typically under
+                // decorations) with a reserved/unused local tile id that resolves to the TileTable's
+                // global "pending" placeholder entry instead of a real terrain tile - rendering as a
+                // visible missing-texture tile in a spot the original game never shows as broken.
+                // Adopt whichever real tileset the majority of the 8 neighbors use instead.
+                std::array<int, 9> neighborTilesetCounts{}; // Indexed by Tileset's underlying value.
+                for (Direction dir : allDirections()) {
+                    Tileset neighborTileset = snappedTilesetByGrid(pos + offsetForDirection(dir));
+                    if (neighborTileset != TILESET_INVALID)
+                        neighborTilesetCounts[std::to_underlying(neighborTileset)]++;
+                }
+
+                auto bestIt = std::max_element(neighborTilesetCounts.begin(), neighborTilesetCounts.end());
+                if (*bestIt == 0)
+                    continue; // Surrounded by other invalid cells too - nothing sensible to fall back to.
+                tileset = static_cast<Tileset>(bestIt - neighborTilesetCounts.begin());
+
+                int baseTileId = pTileTable->tileId(tileset, isRoad(tileset) ? TILE_VARIANT_ROAD_N_S_E_W : TILE_VARIANT_BASE1);
+                if (!baseTileId)
+                    continue;
+                map[y][x] = baseTileId;
+            }
+
+            if (isRoad(tileset) || tileset == TILESET_DIRT) // No transitions for roads & dirt.
                 continue;
 
-            Pointi pos(x, y);
             Directions transitions = 0;
             for (Direction dir : allDirections())
-                if (snappedTilesetByGrid(pos + offsetForDirection(dir)) != tileData.tileset)
+                if (snappedTilesetByGrid(pos + offsetForDirection(dir)) != tileset)
                     transitions |= dir;
 
-            int tileId = pTileTable->tileId(tileData.tileset, tileVariantForTransitionDirections(transitions));
+            int tileId = pTileTable->tileId(tileset, tileVariantForTransitionDirections(transitions));
             if (tileId)
                 map[y][x] = tileId;
         }

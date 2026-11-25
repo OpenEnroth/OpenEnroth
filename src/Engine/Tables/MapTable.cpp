@@ -4,6 +4,9 @@
 #include <array>
 #include <map>
 #include <string>
+#include <utility>
+
+#include "Engine/GameType.h"
 
 #include "Library/Serialization/Serialization.h"
 
@@ -61,7 +64,27 @@ void MapTable::Initialize(const Blob &mapStats) {
 
     for (std::string_view line : split(mapStats.str()).by("\r\n").drop(3).skip("")) {
         std::array<std::string_view, 30> tokens = split(line).by('\t');
-        MapId mapId = static_cast<MapId>(fromString<int>(tokens[0]));
+
+        if (gameType() == GAME_TYPE_MM8 && trim(tokens[0]).empty())
+            // MM8's MapStats.txt has a trailing all-blank row after row 76 (tab
+            // characters only, so it isn't caught by the `.skip("")` above) - skip it same as the
+            // blank filler padding rows below.
+            continue;
+
+        int rawId = fromString<int>(tokens[0]);
+
+        MapId mapId;
+        if (gameType() == GAME_TYPE_MM8) {
+            // MM8's mapstats.txt reuses low numeric row ids (1-61) just like MM7 does (1-76), so remap them
+            // into the `MAP_MM8_*` range appended after MM7's ids (see MapEnums.h). Rows past the 61 real
+            // Jadame maps are blank filler padding the table out to MM7's own row count - skip them.
+            int mm8Id = rawId + std::to_underlying(MAP_LAST_MM7);
+            if (mm8Id < std::to_underlying(MAP_FIRST_MM8) || mm8Id > std::to_underlying(MAP_LAST_MM8))
+                continue;
+            mapId = static_cast<MapId>(mm8Id);
+        } else {
+            mapId = static_cast<MapId>(rawId);
+        }
         MapData &info = pInfos[mapId];
         info.name = unquote(tokens[1]);
         info.fileName = ascii::toLower(unquote(tokens[2]));

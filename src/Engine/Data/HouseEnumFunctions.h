@@ -1,6 +1,9 @@
 #pragma once
 
+#include <cassert>
 #include <utility>
+
+#include "Engine/GameType.h"
 
 #include "AwardEnums.h"
 #include "HouseEnums.h"
@@ -15,7 +18,11 @@ inline Segment<HouseId> allHouses() {
     return {HOUSE_FIRST, HOUSE_LAST};
 }
 
+// MM7 has 13 Arcomage taverns (houses 108..120); MM8's 11 real taverns are houses 107..117
+// (118+ are Placeholder rows). The set is game-variant dependent; the save layout stays 13 slots, indexed by position.
 inline Segment<HouseId> allArcomageTaverns() {
+    if (gameType() == GAME_TYPE_MM8)
+        return {HOUSE_TAVERN_EMERALD_ISLAND, static_cast<HouseId>(117)};
     return {HOUSE_FIRST_ARCOMAGE_TAVERN, HOUSE_LAST_ARCOMAGE_TAVERN};
 }
 
@@ -43,6 +50,14 @@ inline bool isMagicGuild(HouseId houseId) {
     return houseId >= HOUSE_FIRST_MAGIC_GUILD && houseId <= HOUSE_LAST_MAGIC_GUILD;
 }
 
+// "combined" guilds (real MM6/MM8 concept, a single building teaching several magic
+// schools at once) as opposed to the single-school HOUSE_TYPE_FIRE_GUILD..HOUSE_TYPE_DARK_GUILD
+// towers. HOUSE_TYPE_MIRRORED_PATH_GUILD is a third combined type but never shipped in any
+// released game (see its own enum comment), so it's intentionally not included here.
+inline bool isCombinedMagicGuild(HouseType houseType) {
+    return houseType == HOUSE_TYPE_ELEMENTAL_GUILD || houseType == HOUSE_TYPE_SELF_GUILD;
+}
+
 inline bool isStable(HouseId houseId) {
     return houseId >= HOUSE_FIRST_STABLE && houseId <= HOUSE_LAST_STABLE;
 }
@@ -56,12 +71,18 @@ inline bool isTavern(HouseId houseId) {
 }
 
 inline bool isArcomageTavern(HouseId houseId) {
-    return houseId >= HOUSE_FIRST_ARCOMAGE_TAVERN && houseId <= HOUSE_LAST_ARCOMAGE_TAVERN;
+    return allArcomageTaverns().contains(houseId);
+}
+
+// Position of an Arcomage tavern within the tavern set; indexes pArcomageWins, start conditions and topics.
+inline int arcomageTavernIndex(HouseId houseId) {
+    assert(isArcomageTavern(houseId));
+    return std::to_underlying(houseId) - std::to_underlying(allArcomageTaverns().front());
 }
 
 inline int arcomageTopicForTavern(HouseId houseId) {
     assert(isArcomageTavern(houseId));
-    return std::to_underlying(houseId) - std::to_underlying(HOUSE_FIRST_ARCOMAGE_TAVERN) + 355;
+    return arcomageTavernIndex(houseId) + 355;
 }
 
 AwardId membershipAwardForGuild(HouseId houseId);

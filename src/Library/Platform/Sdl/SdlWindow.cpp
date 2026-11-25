@@ -52,6 +52,12 @@ void SdlWindow::setIcon(RgbaImageView image) {
 void SdlWindow::resize(const Sizei &size) {
     if (!SDL_SetWindowSize(_window, size.w, size.h))
         _state->logSdlError("SDL_SetWindowSize");
+
+    // SDL_SetWindowSize is asynchronous on X11 - until the server's ConfigureNotify is
+    // pumped, SDL_GetWindowSize keeps returning the old size (100x100 from SdlPlatform::createWindow).
+    // The renderer caches size() right after this call (BaseRenderer::updateRenderDimensions), so
+    // wait for the resize to land. Cocoa applies it synchronously, so this is a no-op on macOS.
+    SDL_SyncWindow(_window);
 }
 
 Sizei SdlWindow::size() const {

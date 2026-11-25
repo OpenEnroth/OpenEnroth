@@ -5,6 +5,7 @@
 
 #include "Engine/AssetsManager.h"
 #include "Engine/Engine.h"
+#include "Engine/GameType.h"
 #include "Engine/Objects/CharacterEnumFunctions.h"
 #include "Engine/Graphics/Renderer/Renderer.h"
 #include "Engine/Graphics/Viewport.h"
@@ -17,6 +18,7 @@
 #include "Engine/Timer.h"
 
 #include "GUI/GUIButton.h"
+#include "GUI/GUIFont.h"
 
 #include "Io/Mouse.h"
 
@@ -58,6 +60,9 @@ static constexpr IndexedArray<const char *, MAGIC_SCHOOL_FIRST, MAGIC_SCHOOL_LAS
     {MAGIC_SCHOOL_DARK,   "SBDB00"}
 };
 
+// MM8's own school-tab column (see initializeTextures()) has no MM7-style "flip left when
+// selected" shift - the "d"(im)/"u"(p) art itself already carries the selected/unselected look,
+// so both states share one position per school.
 static constexpr IndexedArray<std::array<int, 2>, MAGIC_SCHOOL_FIRST, MAGIC_SCHOOL_LAST> texture_tab_coord1 = {{
     {MAGIC_SCHOOL_FIRE,     {406, 9}},
     {MAGIC_SCHOOL_AIR,      {406, 46}},
@@ -81,6 +86,22 @@ static constexpr IndexedArray<std::array<int, 2>, MAGIC_SCHOOL_FIRST, MAGIC_SCHO
     {MAGIC_SCHOOL_LIGHT,    {416, 271}},
     {MAGIC_SCHOOL_DARK,     {416, 307}}
 }};
+
+// MM8's school-tab column runs down the far left edge of the frame, not MM7's
+// mid-book x~399-416 seam. One fixed slot per school, 32px pitch, matching the "st{suffix}d/u"
+// medallions' own 48x39 native size.
+static constexpr Pointi kMm8SpellbookTabOrigin = {0, 20};
+static constexpr int kMm8SpellbookTabPitch = 32;
+static constexpr Sizei kMm8SpellbookTabSize = {48, 39};
+
+// MM8's action-icon column, immediately below the tabs (three stacked buttons, flush left edge, no gap):
+//   {0,320} 42x43 "gf-aspell"/"gf-aspelld" - Quick Spell. Not drawn: the entries are in "00 add.icons.lod",
+//                                            which the engine does not open. kMm8QuickSpellSize is the hitbox.
+//   {0,363} 37x46 "stssu"/"stssd" (icons.lod) - role unknown, decorative only (see initializeTextures())
+//   {0,409} 37x44 "stxtu"/"stxtd" (icons.lod) - Close
+static constexpr Pointi kMm8QuickSpellPos = {0, 320};
+static constexpr Sizei kMm8QuickSpellSize = {42, 43};
+static constexpr Pointi kMm8ClosePos = {0, 409};
 
 SpellId spellbookSelectedSpell;
 
@@ -138,15 +159,23 @@ void GUIWindow_Spellbook::openSpellbook() {
         {MAGIC_SCHOOL_DARK,     {400, 307}},
     };
 
+    bool isMm8 = gameType() == GAME_TYPE_MM8;
     for (MagicSchool school : allMagicSchools())
-        if (player.pActiveSkills[skillForMagicSchool(school)] || engine->config->debug.AllMagic.value())
-            CreateButton(fmt::format("SpellBook_School{}", std::to_underlying(school)), buttonPositions[school],
-                         {50, 36}, BUTTON_TYPE_NORMAL, 0, UIMSG_OpenSpellbookPage, std::to_underlying(school), INPUT_ACTION_INVALID,
+        if (player.pActiveSkills[skillForMagicSchool(school)] || engine->config->debug.AllMagic.value()) {
+            Pointi pos = isMm8 ? Pointi(kMm8SpellbookTabOrigin.x, kMm8SpellbookTabOrigin.y + kMm8SpellbookTabPitch * std::to_underlying(school))
+                                : buttonPositions[school];
+            Sizei size = isMm8 ? kMm8SpellbookTabSize : Sizei(50, 36);
+            CreateButton(fmt::format("SpellBook_School{}", std::to_underlying(school)), pos,
+                         size, BUTTON_TYPE_NORMAL, 0, UIMSG_OpenSpellbookPage, std::to_underlying(school), INPUT_ACTION_INVALID,
                          localization->spellSchoolName(school));
+        }
 
-    pBtn_InstallRemoveSpell = CreateButton({476, 450}, ui_spellbook_btn_quckspell->size(), BUTTON_TYPE_NORMAL, UIMSG_HintSelectRemoveQuickSpellBtn,
+    Pointi quickSpellPos = isMm8 ? kMm8QuickSpellPos : Pointi(476, 450);
+    Pointi closePos = isMm8 ? kMm8ClosePos : Pointi(561, 450);
+    Sizei quickSpellSize = ui_spellbook_btn_quckspell ? ui_spellbook_btn_quckspell->size() : kMm8QuickSpellSize;
+    pBtn_InstallRemoveSpell = CreateButton(quickSpellPos, quickSpellSize, BUTTON_TYPE_NORMAL, UIMSG_HintSelectRemoveQuickSpellBtn,
                                            UIMSG_ClickInstallRemoveQuickSpellBtn, 0, INPUT_ACTION_INVALID, "", {ui_spellbook_btn_quckspell_click});
-    pBtn_CloseBook = CreateButton({561, 450}, ui_spellbook_btn_close->size(), BUTTON_TYPE_NORMAL, 0, UIMSG_Escape, 0, INPUT_ACTION_INVALID,
+    pBtn_CloseBook = CreateButton(closePos, ui_spellbook_btn_close->size(), BUTTON_TYPE_NORMAL, 0, UIMSG_Escape, 0, INPUT_ACTION_INVALID,
                                   localization->str(LSTR_EXIT_DIALOGUE), {ui_spellbook_btn_close_click});
 }
 
@@ -160,8 +189,17 @@ void GUIWindow_Spellbook::Update() {
         Skill skill = skillForMagicSchool(page);
 
         if (player.pActiveSkills[skill] || engine->config->debug.AllMagic.value()) {
-            std::shared_ptr<GraphicsImage> pPageTexture = ui_spellbook_school_tabs[page][0];
-            if (player.lastOpenedSpellbookPage == page) {
+            std::shared_ptr<GraphicsImage> pPageTexture;
+            if (gameType() == GAME_TYPE_MM8) {
+                // MM8's tab art is "st{suffix}d"/"st{suffix}u" (icons.lod), one fixed
+                // left-edge slot per school (kMm8SpellbookTabOrigin/Pitch). Unlike MM7's mid-book
+                // tabs (which draw a "selected" variant for the current page), the original shows no tab
+                // for the open page. The button stays, clicking the current
+                // page's own tab is a no-op in Game.cpp's UIMSG_OpenSpellbookPage.
+                pPageTexture = player.lastOpenedSpellbookPage == page ? nullptr : ui_spellbook_school_tabs[page][0];
+                pX_coord = kMm8SpellbookTabOrigin.x;
+                pY_coord = kMm8SpellbookTabOrigin.y + kMm8SpellbookTabPitch * std::to_underlying(page);
+            } else if (player.lastOpenedSpellbookPage == page) {
                 pPageTexture = ui_spellbook_school_tabs[page][1];
                 pX_coord = texture_tab_coord1[page][0];
                 pY_coord = texture_tab_coord1[page][1];
@@ -217,13 +255,29 @@ void GUIWindow_Spellbook::loadSpellbook() {
     for (SpellId spell : spellsForMagicSchool(page)) {
         if (pParty->activeCharacter().bHaveSpell[spell] || engine->config->debug.AllMagic.value()) {
             int index = spellIndexInMagicSchool(spell);
+            int spellNum = pSpellbookSpellIndices[page][index + 1];
             std::string pContainer;
 
-            pContainer = fmt::format("SB{}S{:02}", spellbook_texture_filename_suffices[page], pSpellbookSpellIndices[page][index + 1]);
-            SBPageSSpellsTextureList[index + 1] = assets->getIcon(pContainer);
+            if (gameType() == GAME_TYPE_MM8) {
+                // MM8's spell-icon assets in icons.lod are "sb{school}{NN}{a|b}" (lowercase, number
+                // BEFORE the state letter), a
+                // different naming scheme from MM7's "SB{school}{S|C}{NN}". Every school letter
+                // matches MM7's table below except DARK, whose MM8 prefix is "dk" not "d"
+                // ("sbd01a"/"sbde01a" are unrelated 4-frame assets, not the 11-spell DARK set -
+                // "sbdk01a".."sbdk11b" is the real one).
+                const char *suffix = (page == MAGIC_SCHOOL_DARK) ? "dk" : spellbook_texture_filename_suffices[page];
+                pContainer = fmt::format("sb{}{:02}a", suffix, spellNum);
+                SBPageSSpellsTextureList[index + 1] = assets->getImage_Solid(pContainer);
 
-            pContainer = fmt::format("SB{}C{:02}", spellbook_texture_filename_suffices[page], pSpellbookSpellIndices[page][index + 1]);
-            SBPageCSpellsTextureList[index + 1] = assets->getIcon(pContainer);
+                pContainer = fmt::format("sb{}{:02}b", suffix, spellNum);
+                SBPageCSpellsTextureList[index + 1] = assets->getImage_Solid(pContainer);
+            } else {
+                pContainer = fmt::format("SB{}S{:02}", spellbook_texture_filename_suffices[page], spellNum);
+                SBPageSSpellsTextureList[index + 1] = assets->getImage_Solid(pContainer);
+
+                pContainer = fmt::format("SB{}C{:02}", spellbook_texture_filename_suffices[page], spellNum);
+                SBPageCSpellsTextureList[index + 1] = assets->getImage_Solid(pContainer);
+            }
         }
     }
 }
@@ -232,6 +286,41 @@ void GUIWindow_Spellbook::drawCurrentSchoolBackground() {
     MagicSchool page = MAGIC_SCHOOL_FIRE;
     if (pParty->hasActiveCharacter())
         page = pParty->activeCharacter().lastOpenedSpellbookPage;
+
+    if (gameType() == GAME_TYPE_MM8) {
+        // MM8 ships no per-school page background image, so the page is filled flat with the page and
+        // spine colours of the original.
+        static constexpr Color kMm8PageColor{228, 200, 135};
+        static constexpr Color kMm8SpineColor{90, 50, 10};
+        static constexpr Color kMm8EdgeColor{40, 20, 0};
+        render->FillRect({0, 0, 640, 480}, kMm8PageColor);
+        render->FillRect({0, 0, 16, 480}, kMm8EdgeColor);
+        render->FillRect({624, 0, 16, 480}, kMm8EdgeColor);
+        render->FillRect({312, 0, 16, 480}, kMm8SpineColor);
+
+        // School emblem: no large badge asset exists. The school's medallion ("st{suffix}u", 48x39)
+        // is upscaled to about 115x100, the size the original shows.
+        if (ui_spellbook_school_tabs[page][1]) {
+            std::shared_ptr<GraphicsImage> emblem = ui_spellbook_school_tabs[page][1];
+            render->DrawQuad2D(emblem, {0, 0, emblem->width(), emblem->height()}, {45, 45, 115, 100});
+        }
+        DrawTitleText(assets->pFontBookTitle.get(), 0, 30, colorTable.Black,
+                               localization->spellSchoolName(page), 0, Recti(45, 0, 115, 480));
+
+        if (pParty->hasActiveCharacter()) {
+            DrawTitleText(assets->pFontBookTitle.get(), 0, 17, colorTable.Black,
+                                   pParty->activeCharacter().name, 0, Recti(380, 0, 240, 480));
+        }
+
+        // ui_spellbook_btn_quckspell is null on MM8 (see kMm8QuickSpellSize's own
+        // comment above), and DrawQuad2D is a no-op on a null texture.
+        render->DrawQuad2D(ui_spellbook_btn_quckspell, kMm8QuickSpellPos);
+        if (ui_spellbook_unconfirmed_icon)
+            render->DrawQuad2D(ui_spellbook_unconfirmed_icon, {kMm8ClosePos.x, kMm8QuickSpellPos.y + kMm8QuickSpellSize.h});
+        render->DrawQuad2D(ui_spellbook_btn_close, kMm8ClosePos);
+        return;
+    }
+
     render->DrawQuad2D(ui_spellbook_school_backgrounds[page], {8, 8});
 
     render->DrawQuad2D(ui_spellbook_btn_quckspell, {476, 450});
@@ -241,10 +330,34 @@ void GUIWindow_Spellbook::drawCurrentSchoolBackground() {
 void GUIWindow_Spellbook::initializeTextures() {
     pAudioPlayer->playUISound(SOUND_openbook);
 
-    ui_spellbook_btn_close = assets->getIcon("ib-m5-u");
-    ui_spellbook_btn_close_click = assets->getIcon("ib-m5-d");
-    ui_spellbook_btn_quckspell = assets->getIcon("ib-m6-u");
-    ui_spellbook_btn_quckspell_click = assets->getIcon("ib-m6-d");
+    if (gameType() == GAME_TYPE_MM8) {
+        // MM8's spellbook assets:
+        //   Close              -> "stxtu"/"stxtd" (icons.lod)
+        //   Quick Spell        -> "gf-aspell"/"gf-aspelld", in "00 add.icons.lod", which the engine does not open
+        //   3rd left-edge icon -> "stssu"/"stssd" (icons.lod), role unknown, drawn with no click handler
+        //   School tabs (9)    -> "st{suffix}d"/"st{suffix}u" (icons.lod), "u" is also the page emblem
+        //   Page background    -> no image asset, see drawCurrentSchoolBackground()
+        ui_spellbook_btn_close = assets->getImage_Solid("stxtu");
+        ui_spellbook_btn_close_click = assets->getImage_Solid("stxtd");
+        ui_spellbook_btn_quckspell = nullptr;
+        ui_spellbook_btn_quckspell_click = nullptr;
+        ui_spellbook_unconfirmed_icon = assets->getImage_Solid("stssu");
+        // Same title font UIBooks.cpp's Calendar/Autonotes screens already load ("book2.fnt").
+        if (!assets->pFontBookTitle)
+            assets->pFontBookTitle = GUIFont::LoadFont("book2.fnt");
+
+        for (MagicSchool page : allMagicSchools()) {
+            const char *suffix = spellbook_texture_filename_suffices[page];
+            ui_spellbook_school_tabs[page][0] = assets->getImage_Solid(fmt::format("st{}d", suffix));
+            ui_spellbook_school_tabs[page][1] = assets->getImage_Solid(fmt::format("st{}u", suffix));
+        }
+        return;
+    }
+
+    ui_spellbook_btn_close = assets->getImage_Solid("ib-m5-u");
+    ui_spellbook_btn_close_click = assets->getImage_Solid("ib-m5-d");
+    ui_spellbook_btn_quckspell = assets->getImage_Solid("ib-m6-u");
+    ui_spellbook_btn_quckspell_click = assets->getImage_Solid("ib-m6-d");
 
     for (MagicSchool page : allMagicSchools()) {
         ui_spellbook_school_backgrounds[page] = assets->getIcon(texNames[page]);

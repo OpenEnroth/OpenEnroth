@@ -6,6 +6,7 @@
 #include "Engine/Timer.h"
 #include "Engine/Party.h"
 #include "Engine/AssetsManager.h"
+#include "Engine/GameType.h"
 
 #include "Engine/Graphics/Camera.h"
 #include "Engine/Graphics/Indoor.h"
@@ -19,8 +20,11 @@
 #include "Engine/Objects/SpriteObject.h"
 
 #include "Engine/Random/Random.h"
+#include "Engine/Spells/Spells.h"
 
 #include "Engine/Tables/IconFrameTable.h"
+
+#include "GUI/UI/UIGame.h"
 
 static constexpr std::array<Vec3f, 66> sphereVertPos = {  // vertices for spheres
     {Vec3f(0.0000000f, 0.0000000f, 1.0000000f),
@@ -1136,7 +1140,7 @@ void SpellFxRenderer::SetPlayerBuffAnim(SpellId uSpellID,
     pBuffAnim->uSpellAnimTimeElapsed = 0_ticks;
     pBuffAnim->bRender = uSpellID != SPELL_NONE;
 
-    switch (uSpellID) {
+    switch (spellEffect(uSpellID)) {
         case SPELL_DISEASE:
             iconName = "zapp";
             break;
@@ -1243,7 +1247,7 @@ void SpellFxRenderer::SetPlayerBuffAnim(SpellId uSpellID,
 }
 
 void SpellFxRenderer::SetPartyBuffAnim(SpellId uSpellID) {
-    for (int i = 0; i < pParty->pCharacters.size(); i++)
+    for (int i = 0; i < pParty->activeCharacterCount(); i++)
         SetPlayerBuffAnim(uSpellID, i);
 }
 
@@ -1297,7 +1301,8 @@ void SpellFxRenderer::RenderSpecialEffects() {
 
 //----- (004A902A) --------------------------------------------------------
 void SpellFxRenderer::DrawPlayerBuffAnims() {
-    for (unsigned i = 0; i < 4; ++i) {
+    const bool isMm8 = gameType() == GAME_TYPE_MM8;
+    for (unsigned i = 0; i < (isMm8 ? 5 : 4); ++i) {
         PlayerBuffAnim *buff = &pCharacterBuffs[i];
         if (!buff->bRender) continue;
 
@@ -1308,7 +1313,8 @@ void SpellFxRenderer::DrawPlayerBuffAnims() {
         }
 
         std::shared_ptr<GraphicsImage> icon = pIconsFrameTable->animationFrame(buff->uSpellIconID, buff->uSpellAnimTimeElapsed);
-        render->DrawQuad2D(icon, {pPlayerPortraitsXCoords_For_PlayerBuffAnimsDrawing[i], 385});
+        int x = isMm8 ? pPlayerPortraitsXCoords_For_PlayerBuffAnimsDrawing[0] + mm8PortraitSlotShift(i) : pPlayerPortraitsXCoords_For_PlayerBuffAnimsDrawing[i];
+        render->DrawQuad2D(icon, {x, 385});
     }
 }
 

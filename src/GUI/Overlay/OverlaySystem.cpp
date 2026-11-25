@@ -6,6 +6,7 @@
 #include <imgui/imgui.h> // NOLINT: not a C system header.
 
 #include "Application/GameConfig.h"
+#include "Engine/Components/Control/WatchControl.h"
 #include "Engine/EngineGlobals.h"
 #include "Engine/Graphics/Renderer/Renderer.h"
 #include "Library/Platform/Application/PlatformApplication.h"
@@ -46,6 +47,14 @@ void OverlaySystem::drawOverlays() {
         platform->setCursorShown(true);
         for (auto &&[name, overlay] : _overlays)
             overlay->update();
+    }
+    if (g_watch.enabled) { // Watch-mode HUD, drawn whether or not the debug overlays are open.
+        ImGui::SetNextWindowPos(ImVec2(4, 4));
+        ImGui::SetNextWindowBgAlpha(0.6f);
+        ImGui::Begin("##watch", nullptr, ImGuiWindowFlags_NoDecoration | ImGuiWindowFlags_AlwaysAutoResize |
+                     ImGuiWindowFlags_NoInputs | ImGuiWindowFlags_NoSavedSettings | ImGuiWindowFlags_NoNav);
+        ImGui::TextUnformatted(watchOverlayText().c_str());
+        ImGui::End();
     }
     _renderer.endOverlays();
 }

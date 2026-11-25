@@ -7,6 +7,7 @@
 
 #include "Library/Geometry/Rect.h"
 
+#include "GUI/GUIButtonFrames.h"
 #include "GUI/GUIWindow.h"
 
 class GraphicsImage;
@@ -41,6 +42,10 @@ class GUIButton {
     bool field_2C_is_pushed = false;
     GUIWindow *pParent = nullptr;
     std::vector<std::shared_ptr<GraphicsImage>> vTextures;
+    // MM8 up/hover/down frame triple - unset (all null) for buttons not wired onto
+    // this mechanism, in which case `select()` always returns null and callers fall back to
+    // vTextures[0] as before.
+    GUIButtonFrameSet frames;
     InputAction action = INPUT_ACTION_INVALID;
     std::string label = ""; // Shown in the status bar on hover. Dialogue options draw it as the option text.
     std::string field_75 = "";
@@ -78,9 +83,14 @@ extern GUIButton *pCharacterScreen_DetalizBtn;
 
 extern GUIButton *pBtn_NPCRight;
 extern GUIButton *pBtn_NPCLeft;
+extern GUIButton *pBtn_Skull;  // MM8 top-bar right bookend, opens the spellbook.
 extern GUIButton *pBtn_GameSettings;
 extern GUIButton *pBtn_QuickReference;
-extern GUIButton *pBtn_CastSpell;
+// MM8's top-bar scroll icon ("butn1u", x=380) - opens the map/book screen. MM7 has no
+// such button (its map book is reached from the bottom-right tome row, pBtn_Maps), so this stays
+// null on the MM7 path.
+extern GUIButton *pBtn_MapBook;
+extern GUIButton *pBtn_CastSpell;  // MM7-only since MM8's scroll/tent icons are not cast-spell art.
 extern GUIButton *pBtn_Rest;
 extern GUIButton *pBtn_History;
 extern GUIButton *pBtn_Calendar;

@@ -8,11 +8,16 @@
 #include <memory>
 #include <vector>
 
+
+#include "GUI/GUIMessageQueue.h"
 #include "GUI/GUIProgressBar.h"
 #include "GUI/GUIWindow.h"
 #include "GUI/GUIButton.h"
+#include "GUI/UI/UISpell.h"
+#include "GUI/UI/UIStatusBar.h"
 
 #include "Engine/Engine.h"
+#include "Engine/GameType.h"
 #include "Engine/Graphics/Renderer/Renderer.h"
 #include "Engine/PartyPlacement.h"
 #include "Engine/SaveLoad.h"
@@ -20,15 +25,20 @@
 #include "Engine/EngineGlobals.h"
 #include "Engine/mm7_data.h"
 #include "Engine/Party.h"
+#include "Engine/Random/Random.h"
 #include "Engine/Evt/Processor.h"
 #include "Engine/Graphics/Indoor.h"
 #include "Engine/Graphics/Outdoor.h"
 #include "Engine/Objects/Actor.h"
-#include "Engine/Objects/Decoration.h"
+#include "Engine/Objects/Item.h"
 #include "Engine/Objects/SpriteObject.h"
+#include "Engine/Objects/Decoration.h"
 #include "Engine/Tables/DecorationTable.h"
 #include "Engine/Tables/ObjectTable.h"
 #include "Engine/Objects/MonsterEnumFunctions.h"
+#include "Engine/Snapshots/EntitySnapshots.h"
+#include "Engine/Timer.h"
+#include "Engine/Spells/CastSpellInfo.h"
 #include "Engine/Graphics/Camera.h"
 #include "Engine/Graphics/Vis.h"
 
@@ -40,6 +50,7 @@
 #include "Library/Platform/Application/PlatformApplication.h"
 #include "Library/Platform/Interface/PlatformEnumFunctions.h"
 #include "Library/Platform/Interface/PlatformEvents.h"
+#include "Library/Snapshots/CommonSnapshots.h"
 
 #include "Utility/Exception.h"
 #include "Utility/ScopedRollback.h"
@@ -69,6 +80,8 @@ EngineController::EngineController(EngineControlStateHandle state): _state(std::
 
 EngineController::~EngineController() = default;
 
+void (*g_engineTickObserver)() = nullptr;
+
 void EngineController::tick(int count) {
     for (int i = 0; i < count; i++) {
         _state.yieldExecution();
@@ -77,6 +90,9 @@ void EngineController::tick(int count) {
         // the only place it's set is the main thread, and main thread wasn't running before the call.
         if (_state->terminating)
             throw EngineControlState::TerminationException();
+
+        if (g_engineTickObserver)
+            g_engineTickObserver();
     }
 }
 
@@ -172,12 +188,11 @@ void EngineController::pressAndReleaseButton(PlatformMouseButton button) {
 }
 
 void EngineController::pressGuiButton(std::string_view buttonId, PlatformMouseButton button) {
-    pressAndReleaseButton(button, existingButton(buttonId)->rect.center());
+    pressAndReleaseButton(button, clickPointOf(existingButton(buttonId)));
 }
 
 void EngineController::doubleClickGuiButton(std::string_view buttonId) {
-    GUIButton *button = existingButton(buttonId);
-    Pointi center = button->rect.center();
+    Pointi center = clickPointOf(existingButton(buttonId));
     pressAndReleaseButton(BUTTON_LEFT, center.x, center.y);
     tick(1);
     pressButton(BUTTON_LEFT, center.x, center.y, true);
@@ -185,7 +200,7 @@ void EngineController::doubleClickGuiButton(std::string_view buttonId) {
 }
 
 void EngineController::hoverGuiButton(std::string_view buttonId) {
-    moveMouse(existingButton(buttonId)->rect.center());
+    moveMouse(clickPointOf(existingButton(buttonId)));
 }
 
 void EngineController::goToGame() {
@@ -234,9 +249,21 @@ void EngineController::startNewGame() {
     goToMainMenu();
     pressGuiButton("MainMenu_NewGame");
     tick(2);
+    // The map event variables are an engine-global that nothing clears on a new game (a real new game is a
+    // fresh process), so one test's event side effects would leak into the next test.
+    engine->_persistentVariables = {};
+    // ...and the same for the two timers (their totals drive actor/sprite animation phase) and the visual RNG (actor
+    // AI draws from it): a test must start from the same clock/RNG regardless of what ran before it in the process.
+    for (Timer *timer : {animTimer, gameTimer}) {
+        Timer_MM7 snap;
+        snapshot(*timer, &snap);
+        snap.totalGameTimeElapsed = 0;
+        reconstruct(snap, timer);
+    }
     pressGuiButton("PartyCreation_OK");
     skipLoadingScreen();
     tick(2);
+    vrng->seed(20260926);
 }
 
 void EngineController::skipLoadingScreen() {
@@ -247,7 +274,9 @@ void EngineController::skipLoadingScreen() {
     ThrowingTicker ticker2(this, "Couldn't skip a loading screen");
     while (pGameLoadingUI_ProgressBar->IsActive())
         ticker2.tick();
-    while (engineFlags & ENGINE_SKIP_NEXT_USER_INPUT)
+    // The flag only clears while the event timer runs. A map-reload greet that opens a real dialogue (an NPC
+    // in MM8's Abandoned Temple) pauses it for the player to answer, so don't wait on it then.
+    while ((engineFlags & ENGINE_SKIP_NEXT_USER_INPUT) && !gameTimer->isPaused())
         ticker2.tick();
 }
 
@@ -260,7 +289,7 @@ Blob EngineController::saveGame() {
     return result;
 }
 
-void EngineController::loadGame(const Blob &savedGame) {
+void EngineController::loadGame(const Blob &savedGame, bool paused) {
     MemoryFileSystem ramFs("ramfs");
     ramFs.write("saves/!!!save.mm7", savedGame);
 
@@ -271,8 +300,27 @@ void EngineController::loadGame(const Blob &savedGame) {
     tick(4);
     pressGuiButton("LoadMenu_Slot0");
     tick(2);
+    engine->_pauseAfterNextWorldLoad = paused;
     pressGuiButton("LoadMenu_Load");
     skipLoadingScreen();
+
+    // Restores the actor list createSaveData stores for MM8 saves, see kMm8LiveActorsKey in SaveLoad.h. Absent in older saves.
+    if (gameType() == GAME_TYPE_MM8) {
+        auto it = pMapDeltas.find(std::string(kMm8LiveActorsKey));
+        if (it != pMapDeltas.end()) {
+            std::vector<Actor_MM8> actorsMm8;
+            deserialize(it->second, &actorsMm8);
+            reconstruct(actorsMm8, &pActors);
+            nextActorReuseScanStart = 0;
+            for (size_t i = 0; i < pActors.size(); i++)
+                pActors[i].id = i;
+        }
+        if (auto sprites = pMapDeltas.find(std::string(kMm8LiveSpritesKey)); sprites != pMapDeltas.end()) {
+            std::vector<SpriteObject_MM7> spritesMm8;
+            deserialize(sprites->second, &spritesMm8);
+            reconstruct(spritesMm8, &pSpriteObjects);
+        }
+    }
 }
 
 void EngineController::runGameRoutine(GameRoutine routine) {
@@ -323,7 +371,7 @@ Actor *EngineController::spawnMonster(Vec3f position, MonsterId id, SpawnFlags f
     actor->sectorId = uCurrentlyLoadedLevelType == LEVEL_INDOOR ? pIndoor->GetSector(position) : 0;
     actor->PrepareSprites(0);
     actor->monsterInfo.hostilityType = HOSTILITY_LONG;
-    actor->hostilityGroup = monsterTypeForMonsterId(actor->monsterInfo.id);
+    actor->hostilityGroup = hostilityMonsterTypeForMonsterId(actor->monsterInfo.id);
     actor->group = 0;
     actor->currentActionTime = 0_ticks;
     actor->aiState = Standing;
@@ -352,13 +400,15 @@ Actor *EngineController::spawnMonster(Vec3f position, MonsterId id, SpawnFlags f
     if (flags & SPAWN_LEVEL_1)
         actor->monsterInfo.level = 1;
 
-    tick(1); // Wands and quick spells can't target a monster until a frame has drawn it.
     return actor;
 }
 
 void EngineController::teleportTo(MapId map, Vec3f position, int viewYaw, int viewPitch) {
     if (engine->_currentLoadedMapId != map) {
-        engine->_pendingTransition = MapDestination(map, PartyPlacement(position, viewYaw * 512 / 90, viewPitch * 512 / 90, 0));
+        if (position.lengthSqr() < 1.0f)
+            engine->_pendingTransition = MapDestination(map, MAP_START_POINT_PARTY);
+        else
+            engine->_pendingTransition = MapDestination(map, PartyPlacement(position, viewYaw * 512 / 90, viewPitch * 512 / 90, 0));
         engineFlags |= ENGINE_SKIP_NEXT_WORLD_UPDATE;
         uGameState = GAME_STATE_CHANGE_LOCATION;
         onMapLeave();
@@ -373,20 +423,93 @@ void EngineController::teleportTo(MapId map, Vec3f position, int viewYaw, int vi
     }
 }
 
-void EngineController::castSpell(int characterIndex, SpellId spell) {
-    activateCharacter(characterIndex);
+void EngineController::resolveTargetedSpell(Pid pid, int charIndex) {
+    spellTargetPicked(pid, charIndex);
+    pGUIWindow_CastTargetedSpell = nullptr;
+    mouse->SetCursorImage("MICON1");
+    engine->_statusBar->clearEvent();
+    IsEnchantingInProgress = false;
+    back_to_game();
+    tick(2); // let CastSpellInfoHelpers::castSpell() process the now-unblocked queued spell.
+}
+
+void EngineController::castSpell(int characterIndex, SpellId spell, Actor *target, ItemId itemTarget, int targetCharacter) {
+    assert(characterIndex >= 1 && characterIndex <= std::ssize(pParty->pCharacters));
+    activateCharacter(characterIndex - 1);
+
+    if (spell == SPELL_VAMPIRE_LEVITATE) {
+        // A racial ability has no spellbook page, it is cast straight from the character.
+        pushSpellOrRangedAttack(spell, characterIndex - 1, CombinedSkillValue::none(), 0);
+        tick(1);
+        return;
+    }
 
     MagicSchool school = magicSchoolForSpell(spell);
     int index = spellIndexInMagicSchool(spell);
 
-    pressGuiButton("Game_CastSpell");
+    // MM8 has no Game_CastSpell top-bar button - its spellbook opens from the skull
+    // bookend (pBtn_Skull), created with the id "Game_Spellbook". Same UIMSG_SpellBookWindow
+    // destination either way.
+    pressGuiButton(gameType() == GAME_TYPE_MM8 ? "Game_Spellbook" : "Game_CastSpell");
     tick(1);
-    pressGuiButton(fmt::format("SpellBook_School{}", std::to_underlying(school)));
-    tick(1);
+    // The book opens on the caster's last page, where that school's own tab sits under a spell icon in MM8 and is a no-op anyway.
+    if (pParty->activeCharacter().lastOpenedSpellbookPage != school) {
+        pressGuiButton(fmt::format("SpellBook_School{}", std::to_underlying(school)));
+        tick(1);
+    }
     pressGuiButton(fmt::format("SpellBook_Spell{}", index));
     tick(1);
     pressGuiButton(fmt::format("SpellBook_Spell{}", index)); // Confirm.
     tick(1);
+    // The confirm click closes the spellbook and defers the actual cast to the NEXT frame
+    // (`UIMSG_SelectSpell`'s handler posts `UIMSG_CastSpellFromBook` via `addMessageNextFrame`,
+    // Game.cpp) - one more tick so a targeted spell's `pGUIWindow_CastTargetedSpell` is open by
+    // the time the check below runs.
+    tick(1);
+
+    // A spell that needs a target (e.g. `ON_CAST_TargetedActor` for a damage spell) leaves
+    // `pGUIWindow_CastTargetedSpell` open at this point, waiting for a click on an actor in the
+    // 3D viewport - `UIMSG_CastSpell_TargetActor`'s handler resolves that via a real mouse
+    // raycast (`Engine::PickMouseTarget`), which a headless run can't reproduce
+    // deterministically. Resolve it directly against `target` instead - the same
+    // `spellTargetPicked`/cleanup sequence that handler runs once its own raycast lands on an
+    // actor (`Game::closeTargetedSpellWindow`).
+    //
+    // `ON_CAST_TargetedCharacter`/
+    // `ON_CAST_TargetedActorOrCharacter` spells (e.g. heal, cure) instead wait for a click on a
+    // character portrait - `UIMSG_CastSpell_TargetCharacter`'s handler resolves that via
+    // `spellTargetPicked(Pid(), uMessageParam)` (`Game.cpp`), an EMPTY pid plus the 0-based
+    // character index. Mirror that exact call plus the same cleanup sequence, resolved against
+    // `targetCharacter` instead of a raycast pick.
+    if (pGUIWindow_CastTargetedSpell && target) {
+        resolveTargetedSpell(Pid::actor(target->id), -1);
+    } else if (pGUIWindow_CastTargetedSpell && targetCharacter != -1) {
+        resolveTargetedSpell(Pid(), targetCharacter);
+    }
+
+    // `ON_CAST_TargetedEnchantment` spells (e.g. Enchant Item) open an inventory window and wait for a
+    // click on an item (`UICharacter.cpp`'s `IsEnchantingInProgress` branch), which a headless
+    // run can't reproduce via a real pixel-precise click either. Resolve it directly against
+    // `itemTarget` instead - the exact same field-assignment sequence that click handler runs
+    // once a real click lands on an item, minus the purely cosmetic `AfterEnchClick*` auto-close
+    // timer (real elapsed seconds, irrelevant to the spell's own effect - clearing `ON_CAST_
+    // TargetedEnchantment` from the queued `CastSpellInfo`'s flags is what unblocks `CastSpellInfoHelpers::
+    // castSpell()`'s own `ON_CAST_CastingInProgress` guard, the cumulative flag `ON_CAST_TargetedEnchantment`
+    // is part of).
+    if (IsEnchantingInProgress && itemTarget != ITEM_NULL) {
+        InventoryEntry entry = pParty->pCharacters[characterIndex - 1].inventory.find(itemTarget);
+        if (!entry)
+            throw Exception("Couldn't find item {} to enchant", std::to_underlying(itemTarget));
+        CastSpellInfo *pSpellInfo = pGUIWindow_CastTargetedSpell->spellInfo();
+        pSpellInfo->flags &= ~ON_CAST_TargetedEnchantment;
+        pSpellInfo->targetCharacterIndex = characterIndex - 1;
+        pSpellInfo->targetInventoryIndex = entry.index();
+        ptr_50C9A4_ItemToEnchant = entry.get();
+        IsEnchantingInProgress = false;
+        engine->_messageQueue->clear();
+        mouse->SetCursorImage("MICON1");
+        tick(2); // let CastSpellInfoHelpers::castSpell() process the now-unblocked queued spell.
+    }
 }
 
 void EngineController::castQuickSpell(int characterIndex, SpellId spell) {
@@ -490,35 +613,33 @@ void EngineController::pressOrReleaseButton(PlatformEventType type, PlatformMous
 }
 
 GUIButton *EngineController::existingButton(std::string_view buttonId) {
-    auto findButton = [](std::string_view buttonId) -> GUIButton * {
-        for (GUIWindow *window : lWindowList)
-            for (GUIButton *button : window->vButtons)
-                if (button->id == buttonId)
-                    return button;
-        return nullptr;
-    };
+    for (GUIWindow *window : lWindowList)
+        for (GUIButton *button : window->vButtons)
+            if (button->id == buttonId)
+                return button;
+    throw Exception("GUI button '{}' not found", buttonId);
+}
 
-    GUIButton *result = findButton(buttonId);
-    if (!result)
-        throw Exception("GUI button '{}' not found", buttonId);
+// The first button containing `point`, in the order the windows and their buttons are listed.
+static GUIButton *buttonReachedAt(Pointi point) {
+    for (GUIWindow *window : lWindowList)
+        for (GUIButton *button : window->vButtons)
+            if (button->Contains(point))
+                return button;
+    return nullptr;
+}
 
-    auto checkButton = [](GUIButton *button) {
-        Pointi point = button->rect.center();
+Pointi EngineController::clickPointOf(GUIButton *button) {
+    Pointi center = button->rect.center();
+    if (buttonReachedAt(center) == button)
+        return center;
 
-        for (GUIWindow *window : lWindowList) {
-            for (GUIButton *otherButton : window->vButtons) {
-                if (otherButton->Contains(point)) {
-                    if (button != otherButton)
-                        throw Exception("Coundn't press GUI button '{}' because it's overlapping with another GUI button", button->id);
-                    return;
-                }
-            }
-        }
-    };
+    for (int y = button->rect.y; y < button->rect.y + button->rect.h; y++)
+        for (int x = button->rect.x; x < button->rect.x + button->rect.w; x++)
+            if (buttonReachedAt({x, y}) == button)
+                return {x, y};
 
-    checkButton(result);
-
-    return result;
+    throw Exception("Couldn't press GUI button '{}': every point of it is covered by another GUI button", button->id);
 }
 
 void EngineController::pointMouseAt(Pid target) {

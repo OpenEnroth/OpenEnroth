@@ -105,6 +105,22 @@ class ResourceManager {
     LodImage rawBitmap(std::string_view filename);
 
     /**
+     * Lookups for the MM8 LODs (`EnglishD.lod`, `icons.UI.lod`), which are not opened for other games, and for
+     * `icons.lod` entries that might not be shipped for the current game. The `raw*` getters return an empty image
+     * for a missing entry without logging, and `iconData()` and `englishDData()` return the entry's decompressed bytes.
+     */
+    bool hasIcon(std::string_view filename) const;
+    bool hasBitmap(std::string_view filename) const;
+    bool hasSprite(std::string_view filename) const;
+    bool isEnglishDOpen() const { return _englishDLodReader.isOpen(); }
+    bool hasEnglishD(std::string_view filename) const;
+    bool hasIconsUi(std::string_view filename) const;
+    Blob iconData(std::string_view filename);
+    Blob englishDData(std::string_view filename);
+    LodImage rawEnglishD(std::string_view filename);
+    LodImage rawIconsUi(std::string_view filename);
+
+    /**
      * @param filename                  Name of a font in `icons.lod`, case-insensitive.
      * @return                          The font.
      * @throws Exception                If there is no such font.
@@ -141,6 +157,8 @@ class ResourceManager {
     LodReader _iconsLodReader;
     LodReader _bitmapsLodReader;
     LodReader _spritesLodReader;
+    LodReader _englishDLodReader;
+    LodReader _iconsUiLodReader;
     ResourceMaskTable _masks;
     float _saturation = 1.0f;
     float _lightness = 1.0f;

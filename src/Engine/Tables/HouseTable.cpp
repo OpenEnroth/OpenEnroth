@@ -73,18 +73,30 @@ void initializeHouses(const Blob &houses) {
         {"Light Guild", HOUSE_TYPE_LIGHT_GUILD},
         {"Dark Guild", HOUSE_TYPE_DARK_GUILD},
         {"Element Guild", HOUSE_TYPE_ELEMENTAL_GUILD}, // This is MM6 only.
+        {"Elemental Guild", HOUSE_TYPE_ELEMENTAL_GUILD}, // This is MM8's string.
         {"Self Guild", HOUSE_TYPE_SELF_GUILD},
         {"Mirrored Path Guild", HOUSE_TYPE_MIRRORED_PATH_GUILD},
         {"Mercenary Guild", HOUSE_TYPE_TOWN_HALL}, // This is MM6 only. TODO(captainurist): Is this right and not Merc Guild (18)?
+        {"The Adventurer's Inn", HOUSE_TYPE_TAVERN}, // MM8 houses 185/186/188/189/190 carry this in the Type column instead of "Tavern".
     };
 
     for (std::string_view line : split(houses.str()).by("\r\n").drop(2).skip("")) {
         std::array<std::string_view, 24> tokens = split(line).by('\t').resize(24, ""); // Some lines have only ~12 cols.
 
+        // MM8's 2dEvents.txt also has cells that are whitespace-only
+        // instead of being truly empty (e.g. house #173's Open/Closed columns) -
+        // treat those the same as empty cells.
+        for (std::string_view &token : tokens)
+            if (trim(token).empty())
+                token = "0";
+
         // TODO(captainurist): We don't check if int is in range. A better way would be to deal away with enums
         //                     entirely, and just use typed ids. Do this once we iron out the details of how #mm6
         //                     enums will be handled by the engine. Also apply to other table parsers.
         HouseId houseId = static_cast<HouseId>(fromString<int>(tokens[0]));
+        // MM8 rows carry this exact display name in the Type column instead of
+        // "Tavern", detected from the data, not a per-house-id list.
+        houseTable[houseId].isGenericAdventurersInn = ascii::noCaseEquals(tokens[2], "The Adventurer's Inn");
         houseTable[houseId].uType = tokens[2].empty() ? HOUSE_TYPE_INVALID : valueOr(houseTypeMap, tokens[2], HOUSE_TYPE_MERCENARY_GUILD);
         houseTable[houseId].uAnimationID = intOrZero(tokens[4]);
         houseTable[houseId].name = unquote(tokens[5]);

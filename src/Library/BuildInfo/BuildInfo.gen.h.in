@@ -1,0 +1,6 @@
+// Auto-generated at build time by CMakeModules/GenerateBuildInfo.cmake.
+// Do not edit directly, it is overwritten on every build.
+#pragma once
+
+#define MM_GIT_REVISION "@MM_GIT_REVISION@"
+#define MM_BUILD_TIME "@MM_BUILD_TIME@"

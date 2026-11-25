@@ -7,6 +7,7 @@
 
 #include "Engine/Engine.h"
 #include "Engine/EngineGlobals.h"
+#include "Engine/GameType.h"
 #include "Engine/Data/AwardEnums.h"
 #include "Engine/Data/HouseEnumFunctions.h"
 #include "Engine/Graphics/Renderer/Renderer.h"
@@ -76,21 +77,22 @@ struct ArcomageStartConditions {
     int mastery_lvl;
 };
 
-IndexedArray<ArcomageStartConditions, HOUSE_FIRST_ARCOMAGE_TAVERN, HOUSE_LAST_ARCOMAGE_TAVERN> start_conditions = {
-    {HOUSE_TAVERN_HARMONDALE,       {30, 100, 15, 5, 2, 2, 2, 10, 10, 10, 0}},
-    {HOUSE_TAVERN_ERATHIA,          {50, 150, 20, 5, 2, 2, 2, 5, 5, 5, 1}},
-    {HOUSE_TAVERN_TULAREAN_FOREST,  {50, 150, 20, 5, 2, 2, 2, 5, 5, 5, 2}},
-    {HOUSE_TAVERN_DEYJA,            {75, 200, 25, 10, 3, 3, 3, 5, 5, 5, 2}},
-    {HOUSE_TAVERN_BRACADA_DESERT,   {75, 200, 20, 10, 3, 3, 3, 5, 5, 5, 1}},
-    {HOUSE_TAVERN_CELESTE,          {100, 300, 30, 15, 4, 4, 4, 10, 10, 10, 1}},
-    {HOUSE_TAVERN_PIT,              {100, 300, 30, 15, 4, 4, 4, 10, 10, 10, 2}},
-    {HOUSE_TAVERN_EVENMORN_ISLAND,  {150, 400, 20, 10, 5, 5, 5, 25, 25, 25, 0}},
-    {HOUSE_TAVERN_MOUNT_NIGHON,     {200, 500, 20, 10, 1, 1, 1, 15, 15, 15, 2}},
-    {HOUSE_TAVERN_BARROW_DOWNS,     {100, 300, 20, 50, 1, 1, 5, 5, 5, 25, 0}},
-    {HOUSE_TAVERN_TATALIA,          {125, 350, 10, 20, 3, 1, 2, 15, 5, 10, 2}},
-    {HOUSE_TAVERN_AVLEE,            {125, 350, 10, 20, 3, 1, 2, 15, 5, 10, 1}},
-    {HOUSE_TAVERN_STONE_CITY,       {100, 300, 50, 50, 5, 3, 5, 20, 10, 20, 0}}
-};
+// Indexed by arcomageTavernIndex() (position in the game's tavern set), not by raw house id.
+std::array<ArcomageStartConditions, 13> start_conditions = {{
+    {30, 100, 15, 5, 2, 2, 2, 10, 10, 10, 0},  // HOUSE_TAVERN_HARMONDALE
+    {50, 150, 20, 5, 2, 2, 2, 5, 5, 5, 1},  // HOUSE_TAVERN_ERATHIA
+    {50, 150, 20, 5, 2, 2, 2, 5, 5, 5, 2},  // HOUSE_TAVERN_TULAREAN_FOREST
+    {75, 200, 25, 10, 3, 3, 3, 5, 5, 5, 2},  // HOUSE_TAVERN_DEYJA
+    {75, 200, 20, 10, 3, 3, 3, 5, 5, 5, 1},  // HOUSE_TAVERN_BRACADA_DESERT
+    {100, 300, 30, 15, 4, 4, 4, 10, 10, 10, 1},  // HOUSE_TAVERN_CELESTE
+    {100, 300, 30, 15, 4, 4, 4, 10, 10, 10, 2},  // HOUSE_TAVERN_PIT
+    {150, 400, 20, 10, 5, 5, 5, 25, 25, 25, 0},  // HOUSE_TAVERN_EVENMORN_ISLAND
+    {200, 500, 20, 10, 1, 1, 1, 15, 15, 15, 2},  // HOUSE_TAVERN_MOUNT_NIGHON
+    {100, 300, 20, 50, 1, 1, 5, 5, 5, 25, 0},  // HOUSE_TAVERN_BARROW_DOWNS
+    {125, 350, 10, 20, 3, 1, 2, 15, 5, 10, 2},  // HOUSE_TAVERN_TATALIA
+    {125, 350, 10, 20, 3, 1, 2, 15, 5, 10, 1},  // HOUSE_TAVERN_AVLEE
+    {100, 300, 50, 50, 5, 3, 5, 20, 10, 20, 0}  // HOUSE_TAVERN_STONE_CITY
+}};
 
 constexpr auto SIG_MEMALOC = 0x67707274;  // memory allocated;
 constexpr auto SIG_MEMFREE = 0x78787878;  // memory free;
@@ -529,7 +531,12 @@ bool ArcomageGame::MsgLoop(int a1, ArcomageGame_InputMSG *a2) {
 
 bool ArcomageGame::LoadSprites() {
     // load layout sprite
-    pArcomageGame->pSprites = assets->getIcon("sprites.pcx");
+    // MM8 ships sprites.pcx under EnglishD.lod, not icons.lod, like title.pcx and lsave640.
+    if (gameType() == GAME_TYPE_MM8) {
+        pArcomageGame->pSprites = assets->getImage_PCXFromEnglishDLOD("sprites.pcx", colorTable.Blue);
+    } else {
+        pArcomageGame->pSprites = assets->getIcon("sprites.pcx");
+    }
     return true;
 }
 
@@ -2662,12 +2669,30 @@ int ApplyDamageToBuildings(int player_num, int damage) {
     return result;
 }
 
+void RecordArcomageTavernWin(HouseId houseId) {
+    if (isArcomageTavern(houseId)) {
+        bool &won = pParty->pArcomageWins[arcomageTavernIndex(houseId)];
+        if (!won) {
+            won = true;
+            pParty->partyFindsGold(houseTable[houseId].fPriceMultiplier * 100, GOLD_RECEIVE_SHARE);
+        }
+    }
+
+    // arcomage quest test
+    bool wonAll = true;
+    for (HouseId i : allArcomageTaverns())
+        wonAll &= pParty->pArcomageWins[arcomageTavernIndex(i)];
+    if (wonAll) {
+        // MM8's "Won all Arcomage games" is QBits[174] (ev597 reads it); 238 is MM7's number.
+        pParty->_questBits.set(gameType() == GAME_TYPE_MM8 ? static_cast<QuestBit>(174) : QBIT_ARCOMAGE_CHAMPION);
+    }
+}
+
 void GameResultsApply() {
     int winner;               // esi@1
     int victory_type;         // edi@1
     int pl_resource;          // edx@25
     int en_resource;          // eax@28
-    int tavern_num;  // eax@54
 
     winner = -1;
     victory_type = -1;
@@ -2798,31 +2823,18 @@ void GameResultsApply() {
     pArcomageGame->_victoryType = victory_type;
     pArcomageGame->_gameWinner = winner;
     if (winner == 1) {
-        HouseId houseId = window_SpeakInHouse->houseId();
-        if (isArcomageTavern(houseId)) {
-            if (!pParty->pArcomageWins[houseId]) {
-                pParty->pArcomageWins[houseId] = 1;
-                pParty->partyFindsGold(houseTable[houseId].fPriceMultiplier * 100, GOLD_RECEIVE_SHARE);
-            }
-        }
+        RecordArcomageTavernWin(window_SpeakInHouse->houseId());
 
-        // arcomage quest test
-        tavern_num = 0;
-        for (HouseId i : allArcomageTaverns()) {
-            if (!pParty->pArcomageWins[i]) break;
-            tavern_num++;
-        }
-        if (tavern_num == allArcomageTaverns().size())
-            pParty->_questBits.set(QBIT_ARCOMAGE_CHAMPION);
-
-        for (int i = 0; i < 4; ++i)
+        // Bounded to activeCharacterCount(), not a literal 4 - a real 5-member MM8
+        // party must have its 5th recruit's award bits set too, not just the first 4 raw slots.
+        for (int i = 0; i < pParty->activeCharacterCount(); ++i)
             if (!pParty->pCharacters[i]._achievedAwardsBits[AWARD_FINE])
                 pParty->pCharacters[i]._achievedAwardsBits.set(AWARD_ARCOMAGE_WINS);
         ++pParty->uNumArcomageWins;
         if (pParty->uNumArcomageWins > 1000000)
             pParty->uNumArcomageWins = 1000000;
     } else {  // loss or draw
-        for (int i = 0; i < 4; ++i)
+        for (int i = 0; i < pParty->activeCharacterCount(); ++i)
             if (!pParty->pCharacters[i]._achievedAwardsBits[AWARD_FINE])
                 pParty->pCharacters[i]._achievedAwardsBits.set(AWARD_ARCOMAGE_LOSES);
         ++pParty->uNumArcomageLoses;
@@ -2837,7 +2849,12 @@ void ArcomageGame::PrepareArcomage() {
 
     // load in background pic and render
     render->BeginScene2D();
-    pArcomageGame->pGameBackground = assets->getIcon("layout.pcx");
+    // MM8 ships layout.pcx under EnglishD.lod, not icons.lod, like sprites.pcx.
+    if (gameType() == GAME_TYPE_MM8) {
+        pArcomageGame->pGameBackground = assets->getImage_PCXFromEnglishDLOD("layout.pcx");
+    } else {
+        pArcomageGame->pGameBackground = assets->getIcon("layout.pcx");
+    }
     render->DrawQuad2D(pArcomageGame->pGameBackground, {0, 0});
     render->Present();
 
@@ -2883,7 +2900,7 @@ void ArcomageGame::PrepareArcomage() {
 
 void SetStartConditions() {
     const ArcomageStartConditions *st_cond;
-    st_cond = &start_conditions[window_SpeakInHouse->houseId()];
+    st_cond = &start_conditions[arcomageTavernIndex(window_SpeakInHouse->houseId())];
 
     // set start conditions
     start_tower_height = st_cond->tower_height;

@@ -9,6 +9,7 @@
 
 struct TileData;
 struct OutdoorLocation_MM7;
+struct OutdoorLocation_MM8;
 
 /**
  * A note on grid coordinates. In grid coordinates Y-axis points south (down on the minimap), X-axis points east (right
@@ -126,6 +127,7 @@ class OutdoorTerrain {
     [[nodiscard]] bool isSlopeTooHighByPos(const Vec3f &pos) const;
 
     friend void reconstruct(const OutdoorLocation_MM7 &src, OutdoorTerrain *dst); // In CompositeSnapshots.cpp.
+    friend void reconstruct(const OutdoorLocation_MM8 &src, OutdoorTerrain *dst); // In CompositeSnapshots.cpp.
 
  private:
     struct TileGeometry {

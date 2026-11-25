@@ -10,12 +10,14 @@
 #include "Engine/Objects/Decoration.h"
 #include "Engine/Graphics/Outdoor.h"
 #include "Engine/Graphics/Indoor.h"
+#include "Engine/PartyStep.h"
 #include "Engine/Objects/Actor.h"
 #include "Engine/Tables/ObjectTable.h"
 #include "Engine/Objects/SpriteObject.h"
 #include "Engine/TurnEngine/TurnEngine.h"
 #include "Engine/Party.h"
 #include "Engine/Engine.h"
+#include "Library/Logger/Logger.h"
 #include "Engine/Random/Random.h"
 
 #include "Utility/Math/Float.h"
@@ -410,6 +412,25 @@ bool CollisionState::PrepareAndCheckIfStationary(Duration dt) {
     return false;
 }
 
+// STOPGAP: Dragon Cave (d17) face 242 is a 45-degree exit ramp (normal.z 0.70711, polygonType InBetweenFloorAndWall)
+// that misses the 0.70767 (46378 fixpoint) threshold by 0.0006. Abandoned Temple (d05) faces 1460-1462 are the
+// middle of the 45-degree ramp (normal.z 0.70-0.7071, its end faces 1459/1463 are 0.72 and walk) that lifts the pit floor (z -896)
+// to the dais with Prophecies of the Sun (z -640). How the original climbs these is unknown, so the exemptions are per face.
+bool IsIndoorFaceSlopeExempt(MapId map, int faceId, const BLVFace &face) {
+    if (map == MAP_MM8_DRAGON_CAVE) return faceId == 242;
+    // Castle of Fire face 598 is the 45-degree ramp (normal.z 0.70711, InBetweenFloorAndWall) from the pit floor (z 0) up to the z 69
+    // platform west of the ev13 button. The original climbs it, the 0.70767 threshold refuses it. Face 596 is its mirror.
+    if (map == MAP_MM8_CASTLE_OF_FIRE) return faceId == 596 || faceId == 598;
+    // The whole pit ring (faces 1446-1468), not just the dais ramp - the pit is entered by descending its west ramps and left
+    // by climbing them. Their faces are 0.58-0.72 (1467/1469 are the corner facets joining a ramp to the west landing).
+    if (map == MAP_MM8_ABANDONED_TEMPLE)
+        return faceId >= 1446 && faceId <= 1469 && face.polygonType == POLYGON_InBetweenFloorAndWall && face.facePlane.normal.z >= 0.58f;
+    // Ogre Fortress face 319 is the ramp under the keep's bars (normal.z 0.43, InBetweenFloorAndWall) from the cave's
+    // landing (z -896) up to the keep's floor (z 0) - the only way out of the prison caves. The original walks back up it.
+    if (map == MAP_MM8_OGRE_FORTRESS) return faceId == 319;
+    return false;
+}
+
 void CollideIndoorWithGeometry(bool ignore_ethereal) {
     std::array<int, 10> pSectorsArray;
     pSectorsArray[0] = collision_state.uSectorID;
@@ -534,6 +555,8 @@ bool CollideIndoorWithPortals() {
 }
 
 bool CollideWithActor(int actor_idx, int override_radius) {
+    if (partyMotionDryRunIgnoresActors())  // a dry run of the party's tick asked for the geometry alone (Engine/PartyStep.h)
+        return false;
     Actor *actor = &pActors[actor_idx];
     if (actor->aiState == Removed || actor->aiState == Dying || actor->aiState == Disabled ||
         actor->aiState == Dead || actor->aiState == Summoned)
@@ -684,15 +707,23 @@ void ProcessActorCollisionsBLV(Actor &actor, bool isAboveGround, bool isFlying) 
                 actor.velocity.y = 0;
                 actor.velocity.x = 0;
 
-                if (pParty->pPartyBuffs[PARTY_BUFF_INVISIBILITY].Active())
+                // A body is not a monster that found the party. The party's own side of this rule
+                // (`CollideWithActor`) already walks through the dying and the dead. A corpse still settling on the
+                // floor must not end Invisibility either.
+                if (pParty->pPartyBuffs[PARTY_BUFF_INVISIBILITY].Active() && actor.aiState != Dying && actor.aiState != Dead) {
+                    MM_LOG(LOG_INFO, "Invisibility ends: actor #{} {} (state {}, hp {}) at ({:.0f},{:.0f},{:.0f}) ran into the party at ({:.0f},{:.0f},{:.0f})",
+                                 actor.id, actor.GetDisplayName(), std::to_underlying(actor.aiState), actor.hp, actor.pos.x, actor.pos.y, actor.pos.z,
+                                 pParty->pos.x, pParty->pos.y, pParty->pos.z);
                     pParty->pPartyBuffs[PARTY_BUFF_INVISIBILITY].Reset();
+                }
             } else {
                 Actor::AI_FaceObject(actor.id, collision_state.pid, nullptr);
             }
         }
 
         if (type == OBJECT_Decoration) {
-            int speed = actor.velocity.xy().length();
+            // TODO(captainurist): use length() here and retrace
+            int speed = std::sqrt(static_cast<int>(actor.velocity.xy().lengthSqr()));
             int angle = TrigLUT.atan2(actor.pos.x - pLevelDecorations[id].vPosition.x, actor.pos.y - pLevelDecorations[id].vPosition.y); // Face away from the decoration.
             actor.velocity.x = TrigLUT.cos(angle) * speed;
             actor.velocity.y = TrigLUT.sin(angle) * speed;
@@ -729,8 +760,9 @@ void ProcessActorCollisionsBLV(Actor &actor, bool isAboveGround, bool isFlying) 
             // set movement speed along sliding plane
             actor.velocity = newDirection * dot(newDirection, actor.velocity);
 
-            if (pIndoor->faces[id].attributes & FACE_TriggerByMonster)
-                runEvent(EvtContext(EVT_SOURCE_MAP, pIndoor->faces[id].eventId));
+            // No FACE_TriggerByMonster event here: the original MM8's indoor actor collision loop (mm8.exe 0x46e40a-0x46efc9, face case at
+            // 0x46ebda) never reads face attributes or runs an event. Firing ev451 for every actor on the Church of Eep trap tiles
+            // teleported the party to the spawn each frame.
 
             if (pIndoor->faces[id].polygonType == POLYGON_Floor) {
                 float new_floor_z_tmp = pIndoor->vertices[face->vertexIds[0]].z;
@@ -823,15 +855,23 @@ void ProcessActorCollisionsODM(Actor &actor, bool isFlying) {
                 actor.velocity.y = 0;
                 actor.velocity.x = 0;
 
-                if (pParty->pPartyBuffs[PARTY_BUFF_INVISIBILITY].Active())
+                // A body is not a monster that found the party. The party's own side of this rule
+                // (`CollideWithActor`) already walks through the dying and the dead. A corpse still settling on the
+                // floor must not end Invisibility either.
+                if (pParty->pPartyBuffs[PARTY_BUFF_INVISIBILITY].Active() && actor.aiState != Dying && actor.aiState != Dead) {
+                    MM_LOG(LOG_INFO, "Invisibility ends: actor #{} {} (state {}, hp {}) at ({:.0f},{:.0f},{:.0f}) ran into the party at ({:.0f},{:.0f},{:.0f})",
+                                 actor.id, actor.GetDisplayName(), std::to_underlying(actor.aiState), actor.hp, actor.pos.x, actor.pos.y, actor.pos.z,
+                                 pParty->pos.x, pParty->pos.y, pParty->pos.z);
                     pParty->pPartyBuffs[PARTY_BUFF_INVISIBILITY].Reset();
+                }
             } else {
                 Actor::AI_FaceObject(actor.id, collision_state.pid, nullptr);
             }
         }
 
         if (type == OBJECT_Decoration) {
-            int speed = actor.velocity.xy().length();
+            // TODO(captainurist): use length() here and retrace
+            int speed = std::sqrt(static_cast<int>(actor.velocity.xy().lengthSqr()));
             int angle = TrigLUT.atan2(actor.pos.x - pLevelDecorations[id].vPosition.x, actor.pos.y - pLevelDecorations[id].vPosition.y);
             actor.velocity.x = TrigLUT.cos(angle) * speed;
             actor.velocity.y = TrigLUT.sin(angle) * speed;
@@ -935,8 +975,22 @@ void ProcessPartyCollisionsBLV(int sectorId, int min_party_move_delta_sqr, int *
         collision_state.collisionPos -= closestdist * collision_state.direction;
 
         float adjusted_floor_z = GetIndoorFloorZ(adjusted_pos + Vec3f(0, 0, collision_state.radius_lo), &collision_state.uSectorID, faceId);
-        if (adjusted_floor_z == -30000 || adjusted_floor_z - pParty->pos.z > 128)
+        // Dragon Cave's (d17.blv) door-crossing arrival (223,-8,170) sits under ledge
+        // face#363 (z~349) - the ONLY Floor/InBetweenFloorAndWall polygon registered at that XY
+        // anywhere in the level.
+        // GetIndoorFloorZ has no other candidate to resolve to, so it reports the ledge above as
+        // "the floor" and freezes the party under it forever (the >128 cap below never lets go).
+        // There's no floor geometry directly under this spot either, so excusing the cap here
+        // would let gravity carry the party into freefall. While this one face is what resolves,
+        // pin Z at the party's current height and let only horizontal movement proceed.
+        if (engine->_currentLoadedMapId == MAP_MM8_DRAGON_CAVE && faceId && *faceId == 363) {
+            adjusted_floor_z = pParty->pos.z;
+            adjusted_pos.z = pParty->pos.z;
+            pParty->velocity.z = 0;
+        }
+        if (adjusted_floor_z == -30000 || adjusted_floor_z - pParty->pos.z > 128) {
             break; // New pos is out of bounds, running more iterations won't help.
+        }
 
         collision_state.total_move_distance += collision_state.adjusted_move_distance;
         pParty->pos = adjusted_pos;
@@ -944,8 +998,17 @@ void ProcessPartyCollisionsBLV(int sectorId, int min_party_move_delta_sqr, int *
         if (collision_state.adjusted_move_distance >= collision_state.move_distance)
             break; // And we're done with collisions.
 
-        if (collision_state.pid.type() == OBJECT_Actor && pParty->pPartyBuffs[PARTY_BUFF_INVISIBILITY].Active())
-            pParty->pPartyBuffs[PARTY_BUFF_INVISIBILITY].Reset(); // Break invisibility when running into a monster.
+        // A dry run of the party's tick (Engine/PartyStep.h) walks a pose of the planner's choosing, not the
+        // party: what it bumps into there must not end the real party's Invisibility.
+        if (collision_state.pid.type() == OBJECT_Actor && !partyMotionDryRun()) {
+            if (pParty->pPartyBuffs[PARTY_BUFF_INVISIBILITY].Active()) {
+                const Actor &hit = pActors[collision_state.pid.id()];
+                MM_LOG(LOG_INFO, "Invisibility ends: the party ran into actor #{} {} (state {}, hp {}) at ({:.0f},{:.0f},{:.0f}) r {} h {}; party at ({:.0f},{:.0f},{:.0f})",
+                             collision_state.pid.id(), hit.GetDisplayName(), std::to_underlying(hit.aiState), hit.hp, hit.pos.x, hit.pos.y, hit.pos.z,
+                             hit.radius, hit.height, pParty->pos.x, pParty->pos.y, pParty->pos.z);
+                pParty->pPartyBuffs[PARTY_BUFF_INVISIBILITY].Reset(); // Break invisibility when running into a monster.
+            }
+        }
 
         if (collision_state.pid.type() == OBJECT_Decoration) {
             Vec3f newDirection = decorationSlideDirection();
@@ -968,6 +1031,9 @@ void ProcessPartyCollisionsBLV(int sectorId, int min_party_move_delta_sqr, int *
             if (engine->_currentLoadedMapId == MAP_CASTLE_HARMONDALE && collision_state.pid.id() == 398) // Secret tunnel under prison bed
                 bFaceSlopeTooSteep = false;
             if (engine->_currentLoadedMapId == MapId::MAP_HALL_OF_THE_PIT && (collision_state.pid.id() == 787 || collision_state.pid.id() == 832 || collision_state.pid.id() == 790))
+                bFaceSlopeTooSteep = false;
+            // Per-face ramp stopgaps (Dragon Cave 242, Abandoned Temple 1460-1462), see the predicate.
+            if (IsIndoorFaceSlopeExempt(engine->_currentLoadedMapId, collision_state.pid.id(), *pFace))
                 bFaceSlopeTooSteep = false;
             if (engine->_currentLoadedMapId == MAP_CASTLE_GLOAMING &&
                 (collision_state.pid.id() == 2439 || collision_state.pid.id() == 2438 || collision_state.pid.id() == 2437 || collision_state.pid.id() == 2436)) // gloaming
@@ -1104,8 +1170,15 @@ void ProcessPartyCollisionsODM(Vec3f *partyNewPos, Vec3f *partyInputSpeed, int *
         collision_state.total_move_distance += collision_state.adjusted_move_distance;
         *partyNewPos = newPosLow;
 
-        if (collision_state.pid.type() == OBJECT_Actor && pParty->Invisible())
-            pParty->pPartyBuffs[PARTY_BUFF_INVISIBILITY].Reset();
+        if (collision_state.pid.type() == OBJECT_Actor && !partyMotionDryRun()) {  // As indoors.
+            if (pParty->Invisible()) {
+                const Actor &hit = pActors[collision_state.pid.id()];
+                MM_LOG(LOG_INFO, "Invisibility ends: the party ran into actor #{} '{}' (state {}, hp {}) at ({:.0f},{:.0f},{:.0f}) r {} h {}; party at ({:.0f},{:.0f},{:.0f})",
+                       collision_state.pid.id(), hit.GetDisplayName(), std::to_underlying(hit.aiState), hit.hp, hit.pos.x, hit.pos.y, hit.pos.z,
+                       hit.radius, hit.height, pParty->pos.x, pParty->pos.y, pParty->pos.z);
+                pParty->pPartyBuffs[PARTY_BUFF_INVISIBILITY].Reset();
+            }
+        }
 
         if (collision_state.pid.type() == OBJECT_Decoration) {
             Vec3f newDirection = decorationSlideDirection();

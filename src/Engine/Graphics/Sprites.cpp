@@ -3,6 +3,7 @@
 #include <cstdlib>
 #include <cstring>
 #include <algorithm>
+#include <set>
 #include <string>
 #include <memory>
 
@@ -15,6 +16,13 @@
 #include "Utility/String/Ascii.h"
 
 SpriteFrameTable *pSpriteFrameTable;
+
+// A missing sprite is requested again on every sprite-frame reload, so log each name once.
+static void warnSpriteNotLoaded(const std::string &name) {
+    static std::set<std::string> reported;
+    if (reported.insert(name).second)
+        MM_WARNING("Sprite {} not loaded!", name);
+}
 
 //----- (0044D4F6) --------------------------------------------------------
 void SpriteFrameTable::resetLoadedSprites() {
@@ -42,7 +50,7 @@ void SpriteFrameTable::InitializeSprite(signed int uSpriteID) {
                     if (uFlags & SPRITE_FRAME_IMAGE1) {
                         std::shared_ptr<GraphicsImage> sprite = assets->getSprite(pSpriteSFrames[iter_uSpriteID].textureName);
                         if (sprite == nullptr)
-                            MM_WARNING("Sprite {} not loaded!", pSpriteSFrames[iter_uSpriteID].textureName);
+                            warnSpriteNotLoaded(pSpriteSFrames[iter_uSpriteID].textureName);
                         for (unsigned i = 0; i < 8; ++i)
                             pSpriteSFrames[iter_uSpriteID].sprites[i] = sprite;
                     } else if (uFlags & SPRITE_FRAME_IMAGES3) {
@@ -64,7 +72,10 @@ void SpriteFrameTable::InitializeSprite(signed int uSpriteID) {
                                     break;
                             }
                             std::shared_ptr<GraphicsImage> sprite = assets->getSprite(spriteName);
-                            assert(sprite);
+                            // MM8 lacks some directional-variant sprites that MM7 always
+                            // shipped, so a missing one is tolerated here, as in the SPRITE_FRAME_IMAGE1 case above.
+                            if (sprite == nullptr)
+                                warnSpriteNotLoaded(spriteName);
                             pSpriteSFrames[iter_uSpriteID].sprites[i] = sprite;
                         }
 
@@ -95,7 +106,10 @@ void SpriteFrameTable::InitializeSprite(signed int uSpriteID) {
                                     break;
                             }
                             std::shared_ptr<GraphicsImage> sprite = assets->getSprite(spriteName);
-                            assert(sprite);
+                            // MM8 lacks some directional-variant sprites that MM7 always
+                            // shipped, so a missing one is tolerated here, as in the SPRITE_FRAME_IMAGE1 case above.
+                            if (sprite == nullptr)
+                                warnSpriteNotLoaded(spriteName);
                             pSpriteSFrames[iter_uSpriteID].sprites[i] = sprite;
                         }
                     } else {
@@ -135,7 +149,10 @@ void SpriteFrameTable::InitializeSprite(signed int uSpriteID) {
                             }
 
                             std::shared_ptr<GraphicsImage> sprite = assets->getSprite(spriteName);
-                            assert(sprite);
+                            // MM8 lacks some directional-variant sprites that MM7 always
+                            // shipped, so a missing one is tolerated here, as in the SPRITE_FRAME_IMAGE1 case above.
+                            if (sprite == nullptr)
+                                warnSpriteNotLoaded(spriteName);
                             pSpriteSFrames[iter_uSpriteID].sprites[i] = sprite;
                         }
                     }

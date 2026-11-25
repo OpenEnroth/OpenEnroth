@@ -30,6 +30,14 @@ class Timer {
         return _dt;
     }
 
+    /**
+     * Overrides the dt reported until the next `tick()`. Used by the party's movement dry run (`simulatePartySteps`,
+     * Engine/PartyStep.h) to run ordinary frames after a time skip; restored by it afterwards.
+     */
+    void setDt(Duration dt) {
+        _dt = dt;
+    }
+
     Duration time() const {
         return _time;
     }

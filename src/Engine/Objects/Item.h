@@ -72,7 +72,7 @@ struct Item {
     bool canSellRepairIdentifyAt(HouseId houseId);
 
     bool isGold() const {
-        return type() == ITEM_TYPE_GOLD;
+        return ::isGold(itemId);  // By id, not by the table's type: MM8's rows 197-199 are untyped placeholders (its own piles are 187-189).
     }
     bool isShield() const {
         return type() == ITEM_TYPE_SHIELD;

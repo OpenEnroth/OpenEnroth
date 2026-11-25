@@ -11,7 +11,9 @@
 
 #include "Engine/Localization.h"
 #include "Engine/PriceCalculator.h"
+#include "Engine/GameType.h"
 #include "Engine/Graphics/Outdoor.h"
+#include "Engine/Objects/CharacterEnums.h"
 #include "Engine/Party.h"
 #include "Engine/Engine.h"
 
@@ -28,6 +30,10 @@ static constexpr IndexedArray<int, HOUSE_FIRST_TRAINING_HALL, HOUSE_LAST_TRAININ
     {HOUSE_TRAINING_HALL_STONE_CITY, 100},
 };
 
+int trainingHallMaxLevel(HouseId hall) {
+    return trainingHallMaxLevels[hall];
+}
+
 void GUIWindow_Training::mainDialogue() {
     if (!checkIfPlayerCanInteract())
         return;
@@ -36,7 +42,12 @@ void GUIWindow_Training::mainDialogue() {
     uint64_t expForNextLevel = 1000ull * pParty->activeCharacter().uLevel * (pParty->activeCharacter().uLevel + 1) / 2;
     std::string trainText = "";
 
-    if (pParty->activeCharacter().uLevel >= trainingHallMaxLevels[houseId()]) {
+    // MM8 Dragons don't level through normal XP + gold training - they level via quest hooks
+    // instead (a quest-completion `.evt` script calling `SetVar`/`AddVar` on `VAR_BaseLevel`).
+    // They get the "can't train you" text below. In MM7 `GetRace()` can never return `RACE_MM8_DRAGON`.
+    bool isUntrainableDragon = gameType() == GAME_TYPE_MM8 && pParty->activeCharacter().GetRace() == RACE_MM8_DRAGON;
+
+    if (isUntrainableDragon || pParty->activeCharacter().uLevel >= trainingHallMaxLevels[houseId()]) {
         trainText = fmt::format("{}\n \n{}", localization->str(LSTR_WITH_YOUR_SKILLS_YOU_SHOULD_BE_WORKING), localization->str(LSTR_SORRY_BUT_WE_ARE_UNABLE_TO_TRAIN_YOU));
     } else if (pParty->activeCharacter().experience < expForNextLevel) {
         uint64_t expDelta = expForNextLevel - pParty->activeCharacter().experience;
@@ -55,6 +66,13 @@ void GUIWindow_Training::trainDialogue() {
     uint64_t expForNextLevel = 1000ull * pParty->activeCharacter().uLevel * (pParty->activeCharacter().uLevel + 1) / 2;
 
     if (!checkIfPlayerCanInteract()) {
+        engine->_messageQueue->addMessageCurrentFrame(UIMSG_Escape, 1, 0);
+        return;
+    }
+
+    // See the comment in `mainDialogue` - Dragons don't train via gold + XP, only via quest hooks.
+    if (gameType() == GAME_TYPE_MM8 && pParty->activeCharacter().GetRace() == RACE_MM8_DRAGON) {
+        playHouseSound(houseId(), HOUSE_SOUND_TRAINING_CANT_TRAIN);
         engine->_messageQueue->addMessageCurrentFrame(UIMSG_Escape, 1, 0);
         return;
     }

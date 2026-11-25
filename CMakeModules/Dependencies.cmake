@@ -2,21 +2,42 @@
 function(download_prebuilt_dependencies TAG FILE_NAME TARGET_DIR OUT_STATUS_VAR)
     set(SOURCE_URL "https://github.com/OpenEnroth/OpenEnroth_Dependencies/releases/download/${TAG}/${FILE_NAME}")
     set(TARGET_PATH "${TARGET_DIR}/${FILE_NAME}")
-    message(STATUS "Downloading ${SOURCE_URL} to ${TARGET_PATH}...")
-    file(DOWNLOAD
-            "${SOURCE_URL}"
-            "${TARGET_PATH}"
-            SHOW_PROGRESS
-            STATUS DOWNLOAD_STATUS
-            TIMEOUT 60)  # seconds
 
-    list(GET DOWNLOAD_STATUS 0 STATUS_CODE)
-    list(GET DOWNLOAD_STATUS 1 ERROR_MESSAGE)
-    if(STATUS_CODE EQUAL 0)
-        message(STATUS "Downloaded ${SOURCE_URL}!")
-    else()
+    # file(DOWNLOAD) has no built-in retry, and this asset is prone to short-lived
+    # transient failures in the CI runner's own job environment (measured: the same URL served
+    # fine via curl from outside the job while the job's own file(DOWNLOAD) failed in ~45ms —
+    # not an upstream rate limit). Retry with backoff instead of failing configure outright.
+    set(MAX_ATTEMPTS 5)
+    set(RETRY_DELAY_SECONDS 5)
+    set(ATTEMPT 1)
+    set(STATUS_CODE 1)
+    while(ATTEMPT LESS_EQUAL MAX_ATTEMPTS)
+        message(STATUS "Downloading ${SOURCE_URL} to ${TARGET_PATH} (attempt ${ATTEMPT}/${MAX_ATTEMPTS})...")
+        file(DOWNLOAD
+                "${SOURCE_URL}"
+                "${TARGET_PATH}"
+                SHOW_PROGRESS
+                STATUS DOWNLOAD_STATUS
+                TIMEOUT 60)  # seconds
+
+        list(GET DOWNLOAD_STATUS 0 STATUS_CODE)
+        list(GET DOWNLOAD_STATUS 1 ERROR_MESSAGE)
+        if(STATUS_CODE EQUAL 0)
+            message(STATUS "Downloaded ${SOURCE_URL}!")
+            break()
+        endif()
+
         file(REMOVE "${TARGET_PATH}")
-        message(WARNING "Could not download ${SOURCE_URL}: ${ERROR_MESSAGE}")
+        message(WARNING "Could not download ${SOURCE_URL} (attempt ${ATTEMPT}/${MAX_ATTEMPTS}): ${ERROR_MESSAGE}")
+        if(ATTEMPT EQUAL MAX_ATTEMPTS)
+            break()
+        endif()
+        execute_process(COMMAND "${CMAKE_COMMAND}" -E sleep ${RETRY_DELAY_SECONDS})
+        math(EXPR RETRY_DELAY_SECONDS "${RETRY_DELAY_SECONDS} * 2")
+        math(EXPR ATTEMPT "${ATTEMPT} + 1")
+    endwhile()
+
+    if(NOT STATUS_CODE EQUAL 0)
         set(${OUT_STATUS_VAR} 1 PARENT_SCOPE)
         return()
     endif()

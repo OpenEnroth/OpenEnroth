@@ -3,6 +3,7 @@
 #include <array>
 #include <cctype>
 #include <cstdlib>
+#include <limits>
 #include <map>
 #include <vector>
 #include <string>
@@ -140,6 +141,8 @@ void ItemTable::LoadItems(const Blob &itemsBlob) {
     for (std::string_view line : split(itemsBlob.str()).by("\r\n").drop(2).skip("")) {
         std::array<std::string_view, 17> tokens = split(line).by('\t');
         ItemId item_counter = ItemId(fromString<int>(tokens[0]));
+        if (item_counter < ITEM_FIRST_VALID || item_counter > ITEM_LAST_VALID)
+            continue; // Row 0 is a blank placeholder in the real file (matches the ITEM_NULL sentinel, not a real item).
         items[item_counter].iconName = unquote(tokens[1]);
         items[item_counter].name = unquote(tokens[2]);
         items[item_counter].baseValue = fromString<int>(tokens[3]);
@@ -470,4 +473,36 @@ void ItemTable::generateItem(ItemTreasureLevel treasureLevel, RandomItemType uTr
     auto foundWeight = std::lower_bound(cumulativeWeights.begin(), cumulativeWeights.end(), pickedWeight);
     assert(foundWeight != cumulativeWeights.end());
     outItem->specialEnchantment = possibleEnchantments[std::distance(cumulativeWeights.begin(), foundWeight)];
+}
+
+ItemId ItemTable::startingItemForSkill(Skill skill) const {
+    // Boots/gauntlets aren't tagged with `SKILL_DODGE`/`SKILL_UNARMED` in their own `skill` field (they're
+    // `SKILL_MISC`, same as any other generic wearable) - same split as `RANDOM_ITEM_BOOTS`/`RANDOM_ITEM_GAUNTLETS`
+    // in `itemTypeOrSkillForRandomItemType`, so look those two up by item type instead.
+    ItemType requestedType = ITEM_TYPE_INVALID;
+    Skill requestedSkill = skill;
+    if (skill == SKILL_DODGE) {
+        requestedType = ITEM_TYPE_BOOTS;
+        requestedSkill = SKILL_INVALID;
+    } else if (skill == SKILL_UNARMED) {
+        requestedType = ITEM_TYPE_GAUNTLETS;
+        requestedSkill = SKILL_INVALID;
+    }
+
+    ItemId result = ITEM_NULL;
+    int bestValue = std::numeric_limits<int>::max();
+    for (ItemId itemId : items.indices()) {
+        const ItemData &data = items[itemId];
+        if (data.rarity != RARITY_COMMON)
+            continue;
+        if (requestedType != ITEM_TYPE_INVALID && data.type != requestedType)
+            continue;
+        if (requestedSkill != SKILL_INVALID && data.skill != requestedSkill)
+            continue;
+        if (data.baseValue < bestValue) {
+            bestValue = data.baseValue;
+            result = itemId;
+        }
+    }
+    return result;
 }

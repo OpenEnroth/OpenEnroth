@@ -37,6 +37,12 @@ class EvtInterpreter {
      void prepare(EvtContext context);
 
      /**
+      * @param program                  Program to take the event from, in place of the one `context.source` names.
+      * @param context                  Event to run, and what it runs for.
+      */
+     void prepare(const EvtProgram &program, EvtContext context);
+
+     /**
       * @param startStep                Step to start from.
       * @return                         Whether the event started a map transition. If it did, the caller has to
       *                                 run the map's leave events.
@@ -59,13 +65,14 @@ class EvtInterpreter {
       */
      [[nodiscard]] EvtFlow executeInstruction(EvtInstruction ir);
 
- private:
+ protected:
      /**
       * @param step                     Step to run.
       * @return                         Step to run next, or -1 when the event is done.
       */
      [[nodiscard]] int executeStep(int step);
 
+ private:
      /**
       * @param step                     Step to check.
       * @return                         Step to check next, or -1 once the script has decided.

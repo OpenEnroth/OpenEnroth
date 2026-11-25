@@ -1,3 +1,4 @@
+#include <set>
 #include <string>
 
 #include "Testing/Unit/UnitTest.h"
@@ -171,4 +172,44 @@ UNIT_TEST(BlobOutputStream, PositionResetsOnReopen) {
     output.open(&blob);
     EXPECT_EQ(output.position(), 0u);
     output.close();
+}
+
+UNIT_TEST(BlobOutputStream, FlushDoesNotCopy) {
+    // `StreamLogSink` flushes after every line. A flush used to copy the whole blob, which made logging
+    // into a memory file system O(n^2) and pushed long-logging game tests past their time cap. Flushes must share
+    // the stream's memory, so the published data only moves when the buffer grows - O(log n) times.
+    Blob blob;
+    BlobOutputStream output(&blob);
+
+    std::string line(100, 'x');
+    std::string expected;
+    std::set<const void *> addresses;
+    for (int i = 0; i < 20000; i++) {
+        line[0] = static_cast<char>('a' + (i % 26));
+        output.write(line);
+        expected += line;
+        output.flush();
+        addresses.insert(blob.data());
+        ASSERT_EQ(blob.size(), expected.size());
+    }
+    EXPECT_EQ(blob.str(), expected);
+    EXPECT_LE(addresses.size(), 30u); // 2MB in a buffer that starts at 1KB and doubles: ~12 moves.
+
+    output.close();
+    EXPECT_EQ(blob.str(), expected);
+}
+
+UNIT_TEST(BlobOutputStream, FlushedBlobSurvivesFurtherWrites) {
+    Blob blob;
+    BlobOutputStream output(&blob);
+    output.write("hello");
+    output.flush();
+    Blob flushed = Blob::share(blob);
+
+    std::string large(1024 * 1024, 'y'); // Forces the buffer to move.
+    output.write(large);
+    output.close();
+
+    EXPECT_EQ(flushed.str(), "hello");
+    EXPECT_EQ(blob.str(), "hello" + large);
 }

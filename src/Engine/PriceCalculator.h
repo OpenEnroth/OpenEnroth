@@ -151,6 +151,15 @@ class PriceCalculator {
     static int tavernFoodCostForPlayer(const Character *player, const HouseData &house);
 
     /**
+     * @param house                     Tavern in which player tries to buy food.
+     * @returns                         Number of days of food the tavern fills the party's packs
+     *                                  to (floored to a usable amount for MM8's generic
+     *                                  "The Adventurer's Inn" houses, whose real data reuses the
+     *                                  transport-fare multiplier scale instead of a tavern one).
+     */
+    static int tavernFoodDaysForHouse(const HouseData &house);
+
+    /**
      * @param player                    Character to calculate cost for.
      * @param house                     Training hall in which player tries to train.
      * @returns                         Training cost for character.

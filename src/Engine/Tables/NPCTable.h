@@ -87,6 +87,7 @@ struct NPCGreeting {
 struct NPCStats {
     void Initialize(ResourceManager *resourceManager);
     void InitializeNPCNames(const Blob &npcNames);
+    void InitializeNPCNamesMM8(const Blob &pcNames);
     void InitializeNPCProfs(const Blob &npcProfs);
     void InitializeNPCText(const Blob &npcText);
     void InitializeNPCTopics(const Blob &npcTopics);
@@ -115,14 +116,24 @@ struct NPCStats {
      */
     const std::string &sub_495366_MispronounceName(char firstLetter, Sex gender);
 
-    std::array<NPCData, 501> pOriginalNPCData; // NPC data as read from npcdata.txt.
-    std::array<NPCData, 501> pNPCData; // NPC data used during the game.
+    // Sized to fit MM8's npcdata.txt, which has real (non-filler) NPCs up to index 527. MM7's table has 501 slots.
+    // This is also the npcdata.bin save-game format (`SaveGame::npcData` in SaveLoad.h, `SaveGame_MM7::npcData` in
+    // CompositeSnapshots.h) - all three must stay in lockstep. An MM7 npcdata.bin (501 entries) fails to
+    // deserialize against this size with a BinarySerializationError.
+    // MM8's npcdata.txt lists indices up to 1000, but every row from 528-1000 has the literal name
+    // "Boob" and every other field zeroed - a dev placeholder, not real NPC content. `InitializeNPCData` only
+    // warns when dropping a row that isn't this placeholder.
+    std::array<NPCData, 528> pOriginalNPCData; // NPC data as read from npcdata.txt.
+    std::array<NPCData, 528> pNPCData; // NPC data used during the game.
     IndexedArray<std::vector<std::string>, SEX_FIRST, SEX_LAST> pNPCNames = {};
     IndexedArray<NPCProfession, NPC_PROFESSION_FIRST, NPC_PROFESSION_LAST> pProfessions = {};
     std::array<NPCData, 100> pAdditionalNPC = {{}};
     std::array<std::string, 52> pCatchPhrases{};   // 15CA4h
-    std::array<std::string, 501> pNPCUnicNames{};  // NPC names from npcdata.txt, 1-based like the data above.
-    IndexedArray<NPCProfessionChance, MAP_FIRST, MAP_LAST> pProfessionChance;
+    std::array<std::string, 528> pNPCUnicNames{};  // NPC names from npcdata.txt, 1-based like the data above, kept in sync with pOriginalNPCData's size above.
+    // Spans `MAP_FIRST`..`MAP_LAST_MM8` (not the MM7-only `MAP_LAST`), like
+    // `MapTable::pInfos` - `InitializeAdditionalNPCs` indexes this by the currently loaded map's `MapId`, which
+    // is in the MM8 range for MM8 maps.
+    IndexedArray<NPCProfessionChance, MAP_FIRST, MAP_LAST_MM8> pProfessionChance;
     int field_17884 = 0;
     int field_17888 = 0;
     std::array<NPCGreeting, 206> pNPCGreetings;
@@ -137,5 +148,9 @@ struct NPCStats {
     static int dword_AE3370_LastMispronouncedNameResult;
 };
 
-extern std::array<NPCTopic, 789> pNPCTopics;
+// MM8's npctext.txt has non-empty text rows up to index 942 (npctopic.txt only up to 750).
+// It lists indices up to 1047, but rows 943-1047 are all empty placeholders (index
+// column only, no text). Sized to 1048 so the loader never has to drop a row. Not part of the save-game
+// snapshot format, unlike `pOriginalNPCData` above.
+extern std::array<NPCTopic, 1048> pNPCTopics;
 extern NPCStats *pNPCStats;

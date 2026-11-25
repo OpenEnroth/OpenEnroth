@@ -7,6 +7,7 @@
 #include <utility>
 
 #include "Engine/Evt/EvtEnums.h"
+#include "Engine/GameType.h"
 #include "Engine/Tables/HouseTable.h"
 #include "Engine/Tables/NPCTable.h"
 #include "Engine/Engine.h"
@@ -20,6 +21,23 @@
 #include "Utility/Exception.h"
 
 #include "EvtEnumFunctions.h"
+
+/**
+ * @param raw                           The "which member" byte of a script instruction.
+ * @return                              The member it names. MM6 and MM7 write 0-3 for a member, 4 for the active one,
+ *                                      5 for the whole party and 6 for a random one. MM8 has five members, so its
+ *                                      scripts write 0-4 for a member, 5 for the party, 6 for a random one and 7 for
+ *                                      the active one (the same table MMExtension's evt.lua uses).
+ */
+static EvtTargetCharacter evtTargetCharacterFromByte(uint8_t raw) {
+    if (gameType() == GAME_TYPE_MM8) {
+        if (raw == 4)
+            return CHOOSE_PLAYER5;
+        if (raw == 7)
+            return CHOOSE_ACTIVE;
+    }
+    return static_cast<EvtTargetCharacter>(raw);
+}
 
 static std::string getVariableSetStr(EvtVariable type, int value) {
     if (type >= VAR_MapPersistentVariable_0 && type <= VAR_MapPersistentVariable_74)
@@ -334,6 +352,9 @@ static std::string getVariableSetStr(EvtVariable type, int value) {
             return fmt::format("ERROR: Invisible, value");
         case VAR_ItemEquipped:
             return fmt::format("ERROR: ItemEquipped, value");
+        case VAR_NPCIsPartyMember_H1:
+            // Named for completeness only.
+            return fmt::format("ERROR: NPCIsPartyMember_H1, {}", value);
         default:
             return fmt::format("UNPROCESSED: [{}], {}", std::to_underlying(type), value);
     }
@@ -652,6 +673,8 @@ static std::string getVariableCompareStr(EvtVariable type, int value) {
             return fmt::format("Invisible");
         case VAR_ItemEquipped:
             return fmt::format("ItemEquipped({})", value);
+        case VAR_NPCIsPartyMember_H1:
+            return fmt::format("NPCIsPartyMember_H1({})", value);
         default:
             return fmt::format("UNPROCESSED: [{}] ? {}", std::to_underlying(type), value);
     }
@@ -678,10 +701,19 @@ std::string EvtInstruction::toString(EvtSource source) const {
         case EVENT_LocationName:
             return fmt::format("{}: LocationName", step);
         case EVENT_MoveToMap:
-            return fmt::format("{}: MoveToMap(({}, {}, {}), {}, {}, {}, {}, {}, \"{}\")", step,
-                               data.move_map_descr.x, data.move_map_descr.y, data.move_map_descr.z,
-                               data.move_map_descr.yaw, data.move_map_descr.pitch, data.move_map_descr.zspeed,
-                               std::to_underlying(data.move_map_descr.house_id), data.move_map_descr.exit_pic_id, str);
+            return fmt::format(
+                "{}: MoveToMap(({}, {}, {}), {}, {}, {}, {}, {}, {}, \"{}\")",
+                step,
+                data.move_map_descr.x,
+                data.move_map_descr.y,
+                data.move_map_descr.z,
+                data.move_map_descr.yaw,
+                data.move_map_descr.pitch,
+                data.move_map_descr.zspeed,
+                std::to_underlying(data.move_map_descr.house_id),
+                data.move_map_descr.exit_pic_id,
+                data.move_map_descr.mm8_exit_pic_id,
+                str);
         case EVENT_OpenChest:
             return fmt::format("{}: OpenChest({})", step, data.chest_id);
         case EVENT_ShowFace:
@@ -727,6 +759,25 @@ std::string EvtInstruction::toString(EvtSource source) const {
             return fmt::format("{}: RandomJmp -> ({})", step,
                                fmt::join(std::span(data.random_goto_descr.random_goto).subspan(0, data.random_goto_descr.random_goto_len), ", "));
         case EVENT_InputString:
+            if (gameType() == GAME_TYPE_MM8) {
+                if (data.input_string_descr.text_id < engine->_levelStrings.size()) {
+                    return fmt::format(
+                        "{}: InputString(\"{}\", [{}, {}]) -> {}",
+                        step,
+                        engine->_levelStrings[data.input_string_descr.text_id],
+                        data.input_string_descr.answer_id_a,
+                        data.input_string_descr.answer_id_b,
+                        target_step);
+                } else {
+                    return fmt::format(
+                        "{}: InputString({}, [{}, {}]) -> {}",
+                        step,
+                        data.input_string_descr.text_id,
+                        data.input_string_descr.answer_id_a,
+                        data.input_string_descr.answer_id_b,
+                        target_step);
+                }
+            }
             if (data.text_id < engine->_levelStrings.size()) {
                  return fmt::format("{}: InputString(\"{}\")", step, engine->_levelStrings[data.text_id]);
             } else {
@@ -836,20 +887,27 @@ std::string EvtInstruction::toString(EvtSource source) const {
             // TODO
             break;
         case EVENT_CheckItemsCount:
-            // TODO
-            break;
+            return fmt::format(
+                "{}: CheckItemsCount({}-{}, {}) -> {}",
+                step,
+                std::to_underlying(data.check_items_count_descr.item_id_low),
+                std::to_underlying(data.check_items_count_descr.item_id_high),
+                data.check_items_count_descr.count,
+                target_step);
         case EVENT_RemoveItems:
-            // TODO
-            break;
+            return fmt::format(
+                "{}: RemoveItems({}-{}, {})",
+                step,
+                std::to_underlying(data.check_items_count_descr.item_id_low),
+                std::to_underlying(data.check_items_count_descr.item_id_high),
+                data.check_items_count_descr.count);
         case EVENT_SpecialJump:
             // TODO
             break;
         case EVENT_IsTotalBountyHuntingAwardInRange:
-            // TODO
-            break;
+            return fmt::format("{}: IsTotalBountyHuntingAwardInRange({}, {}) -> {}", step, data.bounty_award_range_descr.min_award, data.bounty_award_range_descr.max_award, target_step);
         case EVENT_IsNPCInParty:
-            // TODO
-            break;
+            return fmt::format("{}: IsNPCInParty({}) -> {}", step, data.npc_in_party_descr.npc_id, target_step);
         default:
             break;
     }
@@ -917,16 +975,34 @@ EvtInstruction EvtInstruction::parse(InputStream &stream, size_t size) {
             ir.step = -1; // A hint, same as EVENT_MouseOver.
             break;
         case EVENT_MoveToMap:
-            requireSize(32);
             ir.data.move_map_descr.x = fromStream<uint32_t>(stream);
             ir.data.move_map_descr.y = fromStream<uint32_t>(stream);
             ir.data.move_map_descr.z = fromStream<uint32_t>(stream);
             ir.data.move_map_descr.yaw = fromStream<uint32_t>(stream);
             ir.data.move_map_descr.pitch = fromStream<uint32_t>(stream);
             ir.data.move_map_descr.zspeed = fromStream<uint32_t>(stream);
-            ir.data.move_map_descr.house_id = static_cast<HouseId>(fromStream<uint8_t>(stream)); // TODO(captainurist): Is this correct? Houses can have ids > 255.
-            ir.data.move_map_descr.exit_pic_id = fromStream<uint8_t>(stream);
+            if (gameType() == GAME_TYPE_MM8) {
+                requireSize(33);
+                ir.data.move_map_descr.house_id = static_cast<HouseId>(fromStream<uint16_t>(stream)); // MM8 has doors above 255, e.g. 455 "Prison of the Lord of Fire".
+                ir.data.move_map_descr.exit_pic_id = 0;
+                ir.data.move_map_descr.mm8_exit_pic_id = fromStream<uint8_t>(stream);
+            } else {
+                ir.data.move_map_descr.house_id = static_cast<HouseId>(fromStream<uint8_t>(stream));
+                ir.data.move_map_descr.exit_pic_id = fromStream<uint8_t>(stream);
+                requireSize(32);
+                ir.data.move_map_descr.mm8_exit_pic_id = 0;
+            }
             ir.str = fromStream<std::string>(stream, tags::nullTerminated);
+            if (gameType() == GAME_TYPE_MM8) {
+                // MM8 sometimes has a few extra trailing bytes here whose meaning/presence we
+                // haven't reverse-engineered yet - consume whatever is left rather than guess a fixed
+                // count, so boot doesn't crash on it.
+                size_t trailing = stream.size() - stream.position();
+                if (trailing > 0) {
+                    std::string discard(trailing, '\0');
+                    (void) stream.read(discard.data(), trailing);
+                }
+            }
             break;
         case EVENT_OpenChest:
             requireSize(6);
@@ -934,12 +1010,12 @@ EvtInstruction EvtInstruction::parse(InputStream &stream, size_t size) {
             break;
         case EVENT_ShowFace:  // TODO(yoctozepto): not present in used MM7 data
             requireSize(7);
-            ir.who = static_cast<EvtTargetCharacter>(fromStream<uint8_t>(stream));
+            ir.who = evtTargetCharacterFromByte(fromStream<uint8_t>(stream));
             ir.data.portrait_id = static_cast<PortraitId>(fromStream<uint8_t>(stream));
             break;
         case EVENT_ReceiveDamage:
             requireSize(11);
-            ir.who = static_cast<EvtTargetCharacter>(fromStream<uint8_t>(stream));
+            ir.who = evtTargetCharacterFromByte(fromStream<uint8_t>(stream));
             ir.data.damage_descr.damage_type = static_cast<DamageType>(fromStream<uint8_t>(stream));
             ir.data.damage_descr.damage = fromStream<uint32_t>(stream);
             break;
@@ -1036,9 +1112,19 @@ EvtInstruction EvtInstruction::parse(InputStream &stream, size_t size) {
                     throw Exception("RandomGoTo event has 0 targets");
             }
             break;
-        case EVENT_InputString:  // TODO(yoctozepto): not present in used MM7 data; likely present in MM8 (e.g., Escaton's riddles)
-            requireSize(9);
-            ir.data.text_id = fromStream<uint32_t>(stream);
+        case EVENT_InputString:  // TODO(yoctozepto): not present in used MM7 data
+            if (gameType() == GAME_TYPE_MM8) {
+                // MM8's EVENT_InputString (e.g. riddles) carries a numeric answer
+                // range plus a target_step, unlike MM7's plain text_id-only encoding.
+                requireSize(18);
+                ir.data.input_string_descr.text_id = fromStream<uint32_t>(stream);
+                ir.data.input_string_descr.answer_id_a = fromStream<uint32_t>(stream);
+                ir.data.input_string_descr.answer_id_b = fromStream<uint32_t>(stream);
+                ir.target_step = fromStream<uint8_t>(stream);
+            } else {
+                requireSize(9);
+                ir.data.text_id = fromStream<uint32_t>(stream);
+            }
             break;
         case EVENT_StatusText:
             requireSize(9);
@@ -1081,7 +1167,7 @@ EvtInstruction EvtInstruction::parse(InputStream &stream, size_t size) {
             break;
         case EVENT_ForPartyMember:
             requireSize(6);
-            ir.who = static_cast<EvtTargetCharacter>(fromStream<uint8_t>(stream));
+            ir.who = evtTargetCharacterFromByte(fromStream<uint8_t>(stream));
             break;
         case EVENT_Jmp:
             requireSize(6);
@@ -1156,21 +1242,31 @@ EvtInstruction EvtInstruction::parse(InputStream &stream, size_t size) {
             ir.data.npc_descr.greeting = fromStream<uint32_t>(stream);
             break;
         case EVENT_IsActorKilled:
-            requireSize(12);
             ir.data.actor_descr.policy = static_cast<ActorKillCheckPolicy>(fromStream<uint8_t>(stream));
             ir.data.actor_descr.param = fromStream<uint32_t>(stream);
-            if (ir.data.actor_descr.policy == KILL_CHECK_MONSTERID)
-                ir.data.actor_descr.param++; // Evt scripts count monster ids from 0.
-            ir.data.actor_descr.num = fromStream<uint8_t>(stream);
+            if (gameType() == GAME_TYPE_MM8) {
+                // MM8 has one extra byte after the u8 count: the InvisibleAsDead flag
+                // (not the high byte of a u16 count - that made every flagged row demand >= 256 kills).
+                requireSize(13);
+                ir.data.actor_descr.num = fromStream<uint8_t>(stream);
+                ir.data.actor_descr.invisibleAsDead = fromStream<uint8_t>(stream) != 0;
+            } else {
+                requireSize(12);
+                if (ir.data.actor_descr.policy == KILL_CHECK_MONSTERID)
+                    ir.data.actor_descr.param++; // Evt scripts count monster ids from 0.
+                ir.data.actor_descr.num = fromStream<uint8_t>(stream);
+                ir.data.actor_descr.invisibleAsDead = true;
+            }
             ir.target_step = fromStream<uint8_t>(stream);
             break;
         case EVENT_CanShowTopic_IsActorKilled:  // TODO(yoctozepto): not present in used MM7 data
             requireSize(12);
             ir.data.actor_descr.policy = static_cast<ActorKillCheckPolicy>(fromStream<uint8_t>(stream));
             ir.data.actor_descr.param = fromStream<uint32_t>(stream);
-            if (ir.data.actor_descr.policy == KILL_CHECK_MONSTERID)
+            if (ir.data.actor_descr.policy == KILL_CHECK_MONSTERID && gameType() != GAME_TYPE_MM8)
                 ir.data.actor_descr.param++; // Evt scripts count monster ids from 0.
             ir.data.actor_descr.num = fromStream<uint8_t>(stream);
+            ir.data.actor_descr.invisibleAsDead = true;
             ir.target_step = fromStream<uint8_t>(stream);
             break;
         case EVENT_OnMapLeave:
@@ -1202,7 +1298,7 @@ EvtInstruction EvtInstruction::parse(InputStream &stream, size_t size) {
             break;
         case EVENT_CharacterAnimation:
             requireSize(7);
-            ir.who = static_cast<EvtTargetCharacter>(fromStream<uint8_t>(stream));
+            ir.who = evtTargetCharacterFromByte(fromStream<uint8_t>(stream));
             ir.data.speech_id = static_cast<SpeechId>(fromStream<uint8_t>(stream));
             break;
         case EVENT_OnDateTimer:  // TODO(yoctozepto): not present in used MM7 data
@@ -1211,23 +1307,57 @@ EvtInstruction EvtInstruction::parse(InputStream &stream, size_t size) {
         case EVENT_EnableDateTimer:  // TODO(yoctozepto): not present in used MM7 data
             // TODO
             break;
-        case EVENT_StopAnimation:  // TODO(yoctozepto): not present in used MM7 data
-            // TODO
+        case EVENT_StopAnimation:
+            // Present in MM8's per-map .evt data - format not reverse-engineered yet, so
+            // just consume the record's full payload rather than guess a layout, same tolerant pattern as
+            // EVENT_SpecialJump/EVENT_MoveToMap.
+            requireSize(5);
+            if (size_t remaining = stream.size() - stream.position(); remaining > 0) {
+                std::string discard(remaining, '\0');
+                (void) stream.read(discard.data(), remaining);
+            }
             break;
-        case EVENT_CheckItemsCount:  // TODO(yoctozepto): not present in used MM7 data
-            // TODO
+        case EVENT_CheckItemsCount:
+            // MM8-only opcode - checks whether the party holds at least `count` items in the
+            // [item_id_low, item_id_high] range (e.g. an alchemy reagent range), then jumps to target_step.
+            requireSize(12);
+            ir.data.check_items_count_descr.item_id_low = static_cast<ItemId>(fromStream<uint16_t>(stream));
+            ir.data.check_items_count_descr.item_id_high = static_cast<ItemId>(fromStream<uint16_t>(stream));
+            ir.data.check_items_count_descr.count = fromStream<uint16_t>(stream);
+            ir.target_step = fromStream<uint8_t>(stream);
             break;
-        case EVENT_RemoveItems:  // TODO(yoctozepto): not present in used MM7 data
-            // TODO
+        case EVENT_RemoveItems:
+            // MM8-only opcode - removes `count` items in the [item_id_low, item_id_high] range
+            // from the party's inventory. Same range/count encoding as EVENT_CheckItemsCount, but no target_step.
+            requireSize(11);
+            ir.data.check_items_count_descr.item_id_low = static_cast<ItemId>(fromStream<uint16_t>(stream));
+            ir.data.check_items_count_descr.item_id_high = static_cast<ItemId>(fromStream<uint16_t>(stream));
+            ir.data.check_items_count_descr.count = fromStream<uint16_t>(stream);
             break;
-        case EVENT_SpecialJump:  // TODO(yoctozepto): not present in used MM7 data
-            // TODO
+        case EVENT_SpecialJump:
+            // Present in MM8's per-map .evt data (e.g. Ravenshore's out02.evt), unlike
+            // MM7's - format not reverse-engineered yet, so just consume the record's full payload rather
+            // than guess a layout, same tolerant pattern as EVENT_MoveToMap's trailing bytes.
+            requireSize(5);
+            if (size_t remaining = stream.size() - stream.position(); remaining > 0) {
+                std::string discard(remaining, '\0');
+                (void) stream.read(discard.data(), remaining);
+            }
             break;
-        case EVENT_IsTotalBountyHuntingAwardInRange:  // TODO(yoctozepto): not present in used MM7 data
-            // TODO
+        case EVENT_IsTotalBountyHuntingAwardInRange:
+            // MM8-only opcode - checks whether the party's total bounty-hunting award falls in
+            // [min_award, max_award), then jumps to target_step.
+            requireSize(14);
+            ir.data.bounty_award_range_descr.min_award = fromStream<uint32_t>(stream);
+            ir.data.bounty_award_range_descr.max_award = fromStream<uint32_t>(stream);
+            ir.target_step = fromStream<uint8_t>(stream);
             break;
-        case EVENT_IsNPCInParty:  // TODO(yoctozepto): not present in used MM7 data
-            // TODO
+        case EVENT_IsNPCInParty:
+            // MM8-only opcode - checks whether NPC `npc_id` is currently hired in the party, then
+            // jumps to target_step. Confirmed against real MM8 per-map .evt data (Ravenshore's out02.evt).
+            requireSize(10);
+            ir.data.npc_in_party_descr.npc_id = fromStream<uint32_t>(stream);
+            ir.target_step = fromStream<uint8_t>(stream);
             break;
         default:
             throw Exception("Unknown evt type: {}", static_cast<uint8_t>(ir.opcode));

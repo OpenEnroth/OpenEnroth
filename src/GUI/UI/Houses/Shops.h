@@ -89,5 +89,16 @@ class GUIWindow_AlchemyShop : public GUIWindow_MagicAlchemyShop {
     virtual std::vector<DialogueId> listShopLearnableSkills() override;
 };
 
+/**
+ * @param house                         A shop.
+ * @param item                          An item.
+ * @return                              Whether a restock of this shop can ever put the item on one of its two shelves: the
+ *                                      shop's own rows (item class and treasure level, standard and special) and the item's
+ *                                      chance at that level. `false` for a house that is not a shop.
+ */
+bool shopCanEverStock(HouseId house, ItemId item);
+
+extern std::shared_ptr<GraphicsImage> shop_ui_background;
+
 extern std::array<std::shared_ptr<GraphicsImage>, 12> shop_ui_items_in_store;
 extern std::array<int, 6> weaponYPos;

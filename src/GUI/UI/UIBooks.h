@@ -36,6 +36,12 @@ class GUIWindow_Book : public GUIWindow {
     void bookButtonClicked(BookButtonAction action);
 
  protected:
+    // MM8's right-hand wooden tab column, shared by the Quest, Autonotes, Map and Journal screens.
+    // Lloyd's Beacon and Town Portal don't draw it.
+    // Call from the ctor/Update() of exactly those 4 subclasses.
+    void CreateMm8BookTabColumn();
+    void DrawMm8BookTabColumn();
+
     std::unique_ptr<GUIWindow> pChildBooksOverlay;
 
     std::shared_ptr<GraphicsImage> ui_book_button8_off;

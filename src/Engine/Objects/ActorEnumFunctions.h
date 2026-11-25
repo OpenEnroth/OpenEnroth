@@ -32,5 +32,7 @@ inline SpellId spellForActorBuff(ActorBuff buff) {
     case ACTOR_BUFF_HASTE:                      return SPELL_FIRE_HASTE;
     case ACTOR_BUFF_PAIN_REFLECTION:            return SPELL_DARK_PAIN_REFLECTION;
     case ACTOR_BUFF_HAMMERHANDS:                return SPELL_BODY_HAMMERHANDS;
+    case ACTOR_BUFF_MELEE_ONLY:                 return SPELL_DARK_SACRIFICE; // Dark Grasp, MM8's spell of the Sacrifice slot.
+    case ACTOR_BUFF_DAMAGE_HALVED:              return SPELL_DARK_SACRIFICE;
     }
 }

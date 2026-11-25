@@ -4,9 +4,15 @@
 
 /**
  * Is map an outdoor map?
+ *
+ * MM8's outdoor maps (`MAP_MM8_DAGGER_WOUND_ISLAND`..`MAP_MM8_RAVAGE_ROAMING`, plus the isolated
+ * `MAP_MM8_REGNA`) count too. Its four plane maps (85-88) sit in the same id range but are not
+ * outdoor maps.
  */
 inline bool isMapOutdoor(MapId mapid) {
-    return mapid >= MAP_EMERALD_ISLAND && mapid <= MAP_SHOALS && mapid != MAP_PIT && mapid != MAP_CELESTE;
+    if (mapid >= MAP_EMERALD_ISLAND && mapid <= MAP_SHOALS && mapid != MAP_PIT && mapid != MAP_CELESTE)
+        return true;
+    return (mapid >= MAP_MM8_DAGGER_WOUND_ISLAND && mapid <= MAP_MM8_RAVAGE_ROAMING) || mapid == MAP_MM8_REGNA;
 }
 
 /**

@@ -4,6 +4,7 @@
 #include <memory>
 #include <string>
 
+#include "Engine/Data/HouseEnums.h"
 #include "Engine/Graphics/FrameLimiter.h"
 
 #include "Library/Geometry/Point.h"
@@ -194,6 +195,9 @@ struct ArcomageGame {
 
 extern ArcomageGame *pArcomageGame;
 extern ArcomageCard pCards[87];
+
+// Records a won Arcomage game at a tavern (first-win gold) and sets the "won all taverns" quest bit.
+void RecordArcomageTavernWin(HouseId houseId);
 
 struct spark_point_struct {
     int spark_remaining_life = 0;

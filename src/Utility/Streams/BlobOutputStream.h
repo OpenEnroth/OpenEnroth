@@ -6,16 +6,15 @@
 #include <string_view>
 
 #include "Utility/Memory/Blob.h"
-#include "Utility/Memory/MemoryScratchpad.h"
 
 #include "OutputStream.h"
 
 /**
  * Output stream that writes into a `Blob`.
  *
- * Data is accumulated in geometrically growing internal chunks (1KB up to 1MB) and transferred to the target `Blob`
- * when `close()` is called. Calling `flush()` also transfers data but always makes a copy. `close()` can avoid the
- * copy when all data fits in a single chunk.
+ * Data is accumulated in a single geometrically growing buffer and transferred to the target `Blob` when `close()`
+ * is called. Calling `flush()` also transfers data, without copying: the target blob shares the buffer's memory, so
+ * flushing after every write stays O(1).
  */
 class BlobOutputStream : public OutputStream {
     using base_type = OutputStream;
@@ -45,6 +44,11 @@ class BlobOutputStream : public OutputStream {
     virtual void _close(Buffer *buffer, bool canThrow) override;
 
  private:
+    struct Storage;
+
+    Blob publish(Buffer *buffer);
+
+ private:
     Blob *_target = nullptr;
-    MemoryScratchpad _scratchpad;
+    std::shared_ptr<Storage> _storage;
 };

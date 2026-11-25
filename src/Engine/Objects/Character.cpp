@@ -11,6 +11,7 @@
 #include "Engine/EngineCallObserver.h"
 #include "Engine/AssetsManager.h"
 #include "Engine/Data/AwardEnums.h"
+#include "Engine/GameType.h"
 #include "Engine/Spells/CastSpellInfo.h"
 #include "Engine/Spells/Spells.h"
 #include "Engine/Spells/SpellEnumFunctions.h"
@@ -25,6 +26,7 @@
 #include "Engine/Objects/SpriteObject.h"
 #include "Engine/Objects/NPC.h"
 #include "Engine/Objects/CharacterEnumFunctions.h"
+#include "Engine/Objects/CharacterMM8Abilities.h"
 #include "Engine/Objects/MonsterEnumFunctions.h"
 #include "Engine/Objects/SpriteEnumFunctions.h"
 #include "Engine/Party.h"
@@ -105,6 +107,39 @@ static constexpr IndexedArray<IndexedArray<CharacterCreationAttributeProps, ATTR
         {ATTRIBUTE_LUCK,          {9, 20, 1, 1}}
     }}
 };
+
+/**
+ * `StatTable` is bounded to MM7's 4 races (`RACE_FIRST`..`RACE_LAST`), so it can't be indexed directly with an
+ * MM8 race. This is the GameType-aware wrapper that every char-creation stat read should go through instead:
+ * MM8 races are routed to `mm8StartingStats()`, MM7 races keep reading `StatTable` unchanged.
+ */
+static CharacterCreationAttributeProps characterCreationAttributeProps(Race race, Attribute attribute) {
+    if (isMm8Race(race)) {
+        Mm8StartingStatRange range = mm8StartingStats(mm8BaseClassForRace(race), attribute);
+        return {range.base, range.max, range.stepBelowBase, range.stepAtOrAboveBase};
+    }
+    return StatTable[race][attribute];
+}
+
+/**
+ * `pSkillAvailabilityPerClass` (declared in mm7_data.h) only has entries for MM7's 9 base classes, so MM8
+ * classes are routed to `mm8StartingSkillAffinity()` instead, keyed off the class' race via
+ * `mm8RaceForClass`.
+ */
+static SkillAffinity skillAffinityForClass(Class classType, Skill skill) {
+    if (isMm8Class(classType)) {
+        return mm8StartingSkillAffinity(mm8RaceForClass(classType), skill);
+    }
+    return pSkillAvailabilityPerClass[std::to_underlying(classType) / 4][skill];
+}
+
+/**
+ * `pBaseHealthPerLevelByClass` & `pBaseManaPerLevelByClass` (defined below) are bounded to MM7's 9 base
+ * classes, so MM8 classes are routed to `mm8BaseHpSpPerLevel()` instead. Used by both `GetMaxHealth`/
+ * `GetMaxMana` and `GetSkillBonus`.
+ */
+static int healthPerLevelForClass(Class classType);
+static int manaPerLevelForClass(Class classType);
 
 static constexpr IndexedArray<int, MASTERY_FIRST, MASTERY_LAST> StealingMasteryBonuses = {
     // {CHARACTER_SKILL_MASTERY_NONE, 0},
@@ -281,6 +316,20 @@ static constexpr IndexedArray<int, CLASS_FIRST, CLASS_LAST> pBaseManaPerLevelByC
     {CLASS_LICH,              6}
 };
 
+static int healthPerLevelForClass(Class classType) {
+    if (isMm8Class(classType)) {
+        return mm8BaseHpSpPerLevel(classType).hpFactor;
+    }
+    return pBaseHealthPerLevelByClass[classType];
+}
+
+static int manaPerLevelForClass(Class classType) {
+    if (isMm8Class(classType)) {
+        return mm8BaseHpSpPerLevel(classType).spFactor;
+    }
+    return pBaseManaPerLevelByClass[classType];
+}
+
 static constexpr IndexedArray<std::array<int, 19>, ATTRIBUTE_FIRST_STAT, ATTRIBUTE_LAST_STAT> pConditionAttributeModifier = {
     {ATTRIBUTE_MIGHT,         {100, 100, 100, 120, 50, 200, 75, 60, 50, 30, 25, 10, 100, 100, 100, 100, 100, 100, 100}},
     {ATTRIBUTE_INTELLIGENCE,  {100, 100, 100, 50, 25, 10, 100, 100, 75, 60, 50, 30, 100, 100, 100, 100, 100, 1, 100}},
@@ -318,19 +367,23 @@ int CharacterCreation_GetUnspentAttributePointCount() {
     int PenaltyMult;
     int BonusMult;
 
-    for (Character &character : pParty->pCharacters) {
+    // Party creation shares its points across the 4 slots `Party::Reset()` pre-populates.
+    // `activeCharacterCount()` is still 1 in MM8 at this point, and the 5th slot of `pCharacters`
+    // is never populated here.
+    for (int i = 0; i < 4; i++) {
+        Character &character = pParty->pCharacters[i];
         Race raceId = character.GetRace();
 
         for (Attribute statNum : allStatAttributes()) {
             CurrentStatValue = character._stats[statNum];
-            StatBaseValue = StatTable[raceId][statNum].uBaseValue;
+            StatBaseValue = characterCreationAttributeProps(raceId, statNum).uBaseValue;
 
             if (CurrentStatValue >= StatBaseValue) {  // bonus or penalty increase
-                PenaltyMult = StatTable[raceId][statNum].uDroppedStep;
-                BonusMult = StatTable[raceId][statNum].uBaseStep;
+                PenaltyMult = characterCreationAttributeProps(raceId, statNum).uDroppedStep;
+                BonusMult = characterCreationAttributeProps(raceId, statNum).uBaseStep;
             } else {  // less than base
-                PenaltyMult = StatTable[raceId][statNum].uBaseStep;
-                BonusMult = StatTable[raceId][statNum].uDroppedStep;
+                PenaltyMult = characterCreationAttributeProps(raceId, statNum).uBaseStep;
+                BonusMult = characterCreationAttributeProps(raceId, statNum).uDroppedStep;
             }
 
             RemainingStatPoints +=
@@ -432,54 +485,87 @@ bool Character::CanSteal() const {
 
 //----- (00492C4E) --------------------------------------------------------
 bool Character::CanEquip_RaceAndAlignmentCheck(ItemId uItemID) const {
-    switch (uItemID) {
-        case ITEM_RELIC_ETHRICS_STAFF:
-        case ITEM_RELIC_OLD_NICK:
-        case ITEM_RELIC_TWILIGHT:
-            return pParty->isPartyEvil();
-            break;
-
-        case ITEM_RELIC_TALEDONS_HELM:
-        case ITEM_RELIC_JUSTICE:
-            return pParty->isPartyGood();
-            break;
-
-        case ITEM_ARTIFACT_ELFBANE:
-            return IsRaceGoblin();
-            break;
-
-        case ITEM_ARTIFACT_MINDS_EYE:
-            return IsRaceHuman();
-            break;
-
-        case ITEM_ARTIFACT_ELVEN_CHAINMAIL:
-            return IsRaceElf();
-            break;
-
-        case ITEM_ARTIFACT_FORGE_GAUNTLETS:
-            return IsRaceDwarf();
-            break;
-
-        case ITEM_ARTIFACT_HEROS_BELT:
-            return IsMale();
-            break;
-
-        case ITEM_ARTIFACT_LADYS_ESCORT:
-            return IsFemale();
-            break;
-
-        case ITEM_QUEST_WETSUIT:
-            return NothingOrJustBlastersEquipped();
-            break;
-
-        default:
-            return 1;
-            break;
+    // MM8 Dragons wear no equipment. Every paperdoll equip attempt runs through here (`OnPaperdollLeftClick`),
+    // regardless of item type.
+    if (gameType() == GAME_TYPE_MM8 && GetRace() == RACE_MM8_DRAGON) {
+        return false;
     }
+
+    // Every case below names an MM7 artifact/relic/quest-item id. Post the MM8
+    // items.txt block-shift those ids all resolve to real, unrelated, equippable
+    // MM8 items (e.g. ITEM_RELIC_TALEDONS_HELM/521 is really "Crown of Final Dominion",
+    // ITEM_QUEST_WETSUIT/604 is really "Nightshade Brazier" armor) - gated to MM7 so an MM8
+    // item at one of these ids doesn't inherit an unrelated race/alignment/gender restriction.
+    if (gameType() == GAME_TYPE_MM7) {
+        switch (uItemID) {
+            case ITEM_RELIC_ETHRICS_STAFF:
+            case ITEM_RELIC_OLD_NICK:
+            case ITEM_RELIC_TWILIGHT:
+                return pParty->isPartyEvil();
+                break;
+
+            case ITEM_RELIC_TALEDONS_HELM:
+            case ITEM_RELIC_JUSTICE:
+                return pParty->isPartyGood();
+                break;
+
+            case ITEM_ARTIFACT_ELFBANE:
+                return IsRaceGoblin();
+                break;
+
+            case ITEM_ARTIFACT_MINDS_EYE:
+                return IsRaceHuman();
+                break;
+
+            case ITEM_ARTIFACT_ELVEN_CHAINMAIL:
+                return IsRaceElf();
+                break;
+
+            case ITEM_ARTIFACT_FORGE_GAUNTLETS:
+                return IsRaceDwarf();
+                break;
+
+            case ITEM_ARTIFACT_HEROS_BELT:
+                return IsMale();
+                break;
+
+            case ITEM_ARTIFACT_LADYS_ESCORT:
+                return IsFemale();
+                break;
+
+            case ITEM_QUEST_WETSUIT:
+                return NothingOrJustBlastersEquipped();
+                break;
+
+            default:
+                return 1;
+                break;
+        }
+    }
+
+    return 1;
 }
 
 //----- (00492D65) --------------------------------------------------------
+// Conditions that disable or end the party - `CanAct()`'s own set (asleep, paralyzed,
+// unconscious, dead, petrified, eradicated) plus weak (halves stats) / insane / zombie.
+bool Character::isSurvivableBlocked(Condition condition) {
+    switch (condition) {
+        case CONDITION_WEAK: case CONDITION_SLEEP: case CONDITION_INSANE: case CONDITION_PARALYZED:
+        case CONDITION_UNCONSCIOUS: case CONDITION_DEAD: case CONDITION_PETRIFIED:
+        case CONDITION_ERADICATED: case CONDITION_ZOMBIE:
+            return true;
+        default:
+            return false;
+    }
+}
+
 void Character::SetCondition(Condition condition, int blockable) {
+    if (_survivableConditions && isSurvivableBlocked(condition)) {  // before `blockable`: covers SetCondition(c, 0) too
+        _blockedConditionCounts[static_cast<int>(condition)]++;
+        return;
+    }
+
     if (conditions.has(condition))  // cant get the same condition twice
         return;
 
@@ -958,20 +1044,37 @@ int Character::CalculateMeleeDmgToEnemyWithWeapon(Item *weapon,
         ItemEnchantment enchType =
             weapon->specialEnchantment;  // check against enchantments
 
-        if (supertypeForMonsterId(uTargetActorID) == MONSTER_SUPERTYPE_UNDEAD &&
-            (enchType == ITEM_ENCHANTMENT_UNDEAD_SLAYING || itemId == ITEM_ARTIFACT_GHOULSBANE ||
-             itemId == ITEM_ARTIFACT_GIBBET || itemId == ITEM_RELIC_JUSTICE)) {
+        MonsterSupertype targetSupertype = supertypeForMonsterId(uTargetActorID);
+
+        // Under MM8, `spcitems.txt` gives the same two enchantment ordinals different flavor text
+        // and target creatures - ordinal 39 (`ITEM_ENCHANTMENT_DEMON_SLAYING`) is "Ogre Slaying" (vs the
+        // MONSTER_SUPERTYPE_MM8_OGRE kind: Ogre/Ogre Magi/Troll/Troll Peasant/Cyclops) rather than MM7's
+        // "Demon Slaying", and ordinal 63 (`ITEM_ENCHANTMENT_ELF_SLAYING`) is "Elemental Slaying" (vs the
+        // MONSTER_SUPERTYPE_MM8_ELEMENTAL kind) rather than MM7's "Elf Slaying". `supertypeForMonsterId`
+        // already resolves to the MM8-correct supertype; only the enchantment-to-supertype pairing below
+        // needs to be game-aware.
+        MonsterSupertype demonSlayingTargetSupertype = gameType() == GAME_TYPE_MM8 ? MONSTER_SUPERTYPE_MM8_OGRE : MONSTER_SUPERTYPE_KREEGAN;
+        MonsterSupertype elfSlayingTargetSupertype = gameType() == GAME_TYPE_MM8 ? MONSTER_SUPERTYPE_MM8_ELEMENTAL : MONSTER_SUPERTYPE_ELF;
+
+        // ITEM_ARTIFACT_GHOULSBANE/GIBBET/RELIC_JUSTICE/RELIC_OLD_NICK's real ids
+        // (507/508/527/517) are unrelated MM8 artifacts/relics post the items.txt block-shift -
+        // only meaningful as an MM7 named-artifact bonus.
+        bool mm7NamedArtifactBonus = gameType() == GAME_TYPE_MM7;
+
+        if (targetSupertype == MONSTER_SUPERTYPE_UNDEAD &&
+            (enchType == ITEM_ENCHANTMENT_UNDEAD_SLAYING || (mm7NamedArtifactBonus &&
+             (itemId == ITEM_ARTIFACT_GHOULSBANE || itemId == ITEM_ARTIFACT_GIBBET || itemId == ITEM_RELIC_JUSTICE)))) {
             totalDmg *= 2;  // double damage vs undead
-        } else if (supertypeForMonsterId(uTargetActorID) == MONSTER_SUPERTYPE_KREEGAN &&
-                   (enchType == ITEM_ENCHANTMENT_DEMON_SLAYING || itemId == ITEM_ARTIFACT_GIBBET)) {
-            totalDmg *= 2;  // double damage vs devils
-        } else if (supertypeForMonsterId(uTargetActorID) == MONSTER_SUPERTYPE_DRAGON &&
-                   (enchType == ITEM_ENCHANTMENT_DRAGON_SLAYING || itemId == ITEM_ARTIFACT_GIBBET)) {
+        } else if (targetSupertype == demonSlayingTargetSupertype &&
+                   (enchType == ITEM_ENCHANTMENT_DEMON_SLAYING || (mm7NamedArtifactBonus && itemId == ITEM_ARTIFACT_GIBBET))) {
+            totalDmg *= 2;  // double damage vs devils (MM7) / ogre kind (MM8)
+        } else if (targetSupertype == MONSTER_SUPERTYPE_DRAGON &&
+                   (enchType == ITEM_ENCHANTMENT_DRAGON_SLAYING || (mm7NamedArtifactBonus && itemId == ITEM_ARTIFACT_GIBBET))) {
             totalDmg *= 2;  // double damage vs dragons
-        } else if (supertypeForMonsterId(uTargetActorID) == MONSTER_SUPERTYPE_ELF &&
-                   (enchType == ITEM_ENCHANTMENT_ELF_SLAYING || itemId == ITEM_RELIC_OLD_NICK)) {
-            totalDmg *= 2;  // double damage vs elf
-        } else if (supertypeForMonsterId(uTargetActorID) == MONSTER_SUPERTYPE_TITAN &&
+        } else if (targetSupertype == elfSlayingTargetSupertype &&
+                   (enchType == ITEM_ENCHANTMENT_ELF_SLAYING || (mm7NamedArtifactBonus && itemId == ITEM_RELIC_OLD_NICK))) {
+            totalDmg *= 2;  // double damage vs elf (MM7) / elemental kind (MM8)
+        } else if (targetSupertype == MONSTER_SUPERTYPE_TITAN &&
                    (enchType == ITEM_ENCHANTMENT_TITAN_SLAYING)) {
             totalDmg *= 2;  // double damage vs titan
         }
@@ -1057,20 +1160,27 @@ int Character::CalculateRangedDamageTo(MonsterId uMonsterInfoID) {
              damagefromroll;  // total damage
 
     if (uMonsterInfoID != MONSTER_INVALID) {  // check against bow enchantments
+        MonsterSupertype targetSupertype = supertypeForMonsterId(uMonsterInfoID);
+
+        // See the comment in `CalculateMeleeDmgToEnemyWithWeapon` - MM8 renames ordinals 39/63 to
+        // "Ogre Slaying"/"Elemental Slaying", targeting `MONSTER_SUPERTYPE_MM8_OGRE`/`MONSTER_SUPERTYPE_MM8_ELEMENTAL`.
+        MonsterSupertype demonSlayingTargetSupertype = gameType() == GAME_TYPE_MM8 ? MONSTER_SUPERTYPE_MM8_OGRE : MONSTER_SUPERTYPE_KREEGAN;
+        MonsterSupertype elfSlayingTargetSupertype = gameType() == GAME_TYPE_MM8 ? MONSTER_SUPERTYPE_MM8_ELEMENTAL : MONSTER_SUPERTYPE_ELF;
+
         if (itemenchant == ITEM_ENCHANTMENT_UNDEAD_SLAYING &&
-            supertypeForMonsterId(uMonsterInfoID) == MONSTER_SUPERTYPE_UNDEAD) {  // double damage vs undead
+            targetSupertype == MONSTER_SUPERTYPE_UNDEAD) {  // double damage vs undead
             damage *= 2;
         } else if (itemenchant == ITEM_ENCHANTMENT_DEMON_SLAYING &&
-                   supertypeForMonsterId(uMonsterInfoID) == MONSTER_SUPERTYPE_KREEGAN) {  // double vs devils
+                   targetSupertype == demonSlayingTargetSupertype) {  // double vs devils (MM7) / ogre kind (MM8)
             damage *= 2;
         } else if (itemenchant == ITEM_ENCHANTMENT_DRAGON_SLAYING &&
-                   supertypeForMonsterId(uMonsterInfoID) == MONSTER_SUPERTYPE_DRAGON) {  // double vs dragons
+                   targetSupertype == MONSTER_SUPERTYPE_DRAGON) {  // double vs dragons
             damage *= 2;
         } else if (itemenchant == ITEM_ENCHANTMENT_ELF_SLAYING &&
-                   supertypeForMonsterId(uMonsterInfoID) == MONSTER_SUPERTYPE_ELF) {  // double vs elf
+                   targetSupertype == elfSlayingTargetSupertype) {  // double vs elf (MM7) / elemental kind (MM8)
             damage *= 2;
         } else if (itemenchant == ITEM_ENCHANTMENT_TITAN_SLAYING &&
-                   supertypeForMonsterId(uMonsterInfoID) == MONSTER_SUPERTYPE_TITAN) { // double vs titans
+                   targetSupertype == MONSTER_SUPERTYPE_TITAN) { // double vs titans
             damage *= 2;
         }
     }
@@ -1126,7 +1236,8 @@ std::string Character::GetRangedDamageString() {
             return fmt::format("{} - {}", min_damage, max_damage);
         }
     } else {
-        return std::string("N/A");  // no bow equipped
+        // The original prints a localized string for a character with no ranged weapon.
+        return std::string(localization->str(LSTR_NONE));  // no bow equipped
     }
 }
 
@@ -1383,8 +1494,15 @@ int Character::receiveDamage(signed int amount, DamageType dmg_type) {
     conditions.reset(CONDITION_SLEEP);  // wake up if asleep
     signed int recieved_dmg = CalculateIncommingDamage(dmg_type, amount);  // get damage
     // for no damage cheat - moved from elsewhere
-    if (!engine->config->debug.NoDamage.value())
+    if (!engine->config->debug.NoDamage.value()) {
         health -= recieved_dmg;     // reduce health
+        _hpLost += recieved_dmg;
+    }
+
+    if (health < 1 && _survivableConditions) {
+        _wouldHaveEnded++;
+        _lastWouldHaveEndedHealth = health;
+    }
 
     if (health < 1) {  // character unconscious or if too hurt - dead
         if ((health + GetBaseEndurance() >= 1) ||
@@ -1399,6 +1517,11 @@ int Character::receiveDamage(signed int amount, DamageType dmg_type) {
             if (InventoryEntry armor = inventory.entry(ITEM_SLOT_ARMOUR); armor && !(armor->flags & ITEM_HARDENED))
                 armor->SetBroken();
         }
+
+        // Test-only survivable mode keeps health at 1 or above, so repeated damage cannot wrap int32.
+        // The unfloored value is kept in `_lastWouldHaveEndedHealth`.
+        if (_survivableConditions)
+            health = 1;
     }
 
     if (recieved_dmg && CanAct())
@@ -1500,7 +1623,7 @@ int Character::ReceiveSpecialAttackEffect(MonsterSpecialAttack attType, Actor *p
                 if (!entry->IsBroken() && (entry->type() == ITEM_TYPE_BOW || entry->type() == ITEM_TYPE_SINGLE_HANDED || entry->type() == ITEM_TYPE_TWO_HANDED))
                     itemstobreaklist.push_back(entry);
 
-            if (!itemstobreaklist.empty()) return 0;
+            if (itemstobreaklist.empty()) return 0;
 
             itemtobreak = grng->randomSample(itemstobreaklist);
             statcheckbonus =
@@ -1761,7 +1884,10 @@ Duration Character::GetAttackRecoveryTime(bool attackUsesBow) const {
         } else if (armour_skill_type == SKILL_PLATE) {
             multiplier = GetArmorRecoveryMultiplierFromSkillLevel(armour_skill_type, 1.0f, 0.5f, 0.5f, 0);
         } else {
-            assert(armour_skill_type == SKILL_MISC && armor->itemId == ITEM_QUEST_WETSUIT);
+            // ITEM_QUEST_WETSUIT's real id (604) is an unrelated MM8 armour item post
+            // the items.txt block-shift (not a wetsuit) - only assert the specific-item identity
+            // for MM7.
+            assert(armour_skill_type == SKILL_MISC && (gameType() == GAME_TYPE_MM8 || armor->itemId == ITEM_QUEST_WETSUIT));
             multiplier = GetArmorRecoveryMultiplierFromSkillLevel(armour_skill_type, 1.0f, 1.0f, 1.0f, 1.0f);
         }
 
@@ -1803,8 +1929,14 @@ Duration Character::GetAttackRecoveryTime(bool attackUsesBow) const {
         hasteRecoveryReduction = 25_ticks;
 
     Duration weapon_enchantment_recovery_reduction;
-    if (weapon && (weapon->specialEnchantment == ITEM_ENCHANTMENT_SWIFT || weapon->specialEnchantment == ITEM_ENCHANTMENT_OF_DARKNESS || weapon->itemId == ITEM_ARTIFACT_PUCK))
-        weapon_enchantment_recovery_reduction = 20_ticks;
+    if (weapon) {
+        // ITEM_ARTIFACT_PUCK's real id (500) is an unrelated MM8 artifact post the
+        // items.txt block-shift - only meaningful as an MM7 named-artifact bonus.
+        if (weapon->specialEnchantment == ITEM_ENCHANTMENT_SWIFT ||
+            weapon->specialEnchantment == ITEM_ENCHANTMENT_OF_DARKNESS ||
+            (gameType() == GAME_TYPE_MM7 && weapon->itemId == ITEM_ARTIFACT_PUCK))
+            weapon_enchantment_recovery_reduction = 20_ticks;
+    }
 
     Duration recovery = weapon_recovery + armour_recovery + shield_recovery -
                    armsmaster_recovery_reduction -
@@ -1849,11 +1981,13 @@ float Character::GetArmorRecoveryMultiplierFromSkillLevel(Skill armour_skill_typ
 //----- (0048E4F8) --------------------------------------------------------
 int Character::GetMaxHealth() const {
     int endbonus = GetParameterBonus(GetActualEndurance());
-    int healthbylevel =
-        pBaseHealthPerLevelByClass[classType] * (GetActualLevel() + endbonus);
+
+    // `pBaseHealthByClass` is bounded to MM7's 9 base classes, so MM8 classes are routed to
+    // `mm8BaseHpSpPerLevel()` instead.
+    int healthbylevel = healthPerLevelForClass(classType) * (GetActualLevel() + endbonus);
+    int baseHealth = isMm8Class(classType) ? mm8BaseHpSpPerLevel(classType).hpBase : pBaseHealthByClass[classType];
     int itembonus = GetItemsBonus(ATTRIBUTE_HEALTH) + healthbylevel;
-    int maxhealth = uFullHealthBonus + pBaseHealthByClass[classType] +
-                    GetSkillBonus(ATTRIBUTE_HEALTH) + itembonus;
+    int maxhealth = uFullHealthBonus + _survivableHealthBonus + baseHealth + GetSkillBonus(ATTRIBUTE_HEALTH) + itembonus;
 
     if (maxhealth < 0)  // min zero
         maxhealth = 0;
@@ -1863,6 +1997,24 @@ int Character::GetMaxHealth() const {
 
 //----- (0048E565) --------------------------------------------------------
 int Character::GetMaxMana() const {
+    // `pBaseManaPerLevelByClass` & `pBaseManaByClass` below are bounded to MM7's 9 base classes, so MM8 classes
+    // are routed to `mm8BaseHpSpPerLevel()` instead.
+    if (isMm8Class(classType)) {
+        Mm8HpSpPerLevel hpSp = mm8BaseHpSpPerLevel(classType);
+        if (!hpSp.spAttribute)
+            return 0;  // no magic, e.g. Knight/Champion/Troll/WarTroll
+
+        int statbonus = GetParameterBonus(GetActualStat(*hpSp.spAttribute));
+        int manabylevel = hpSp.spFactor * (GetActualLevel() + statbonus);
+        int itembonus = GetItemsBonus(ATTRIBUTE_MANA) + manabylevel;
+        int maxmana = uFullManaBonus + hpSp.spBase + GetSkillBonus(ATTRIBUTE_MANA) + itembonus;
+
+        if (maxmana < 0)  // min of 0
+            maxmana = 0;
+
+        return maxmana;
+    }
+
     int mainmanastat;
     int statbonus;
     int addmanastat;
@@ -2006,6 +2158,13 @@ int Character::GetBaseResistance(Attribute a2) const {
             assert(false);
             return 0;
     }
+
+    // MM8 race innate starting resistances, see CharacterMM8Abilities.h. The MM7 racialBonus
+    // logic above is bounded to `IsRaceGoblin`/`IsRaceDwarf`/`IsRaceElf`/`IsRaceHuman`, which are always false
+    // for MM8 characters.
+    if (gameType() == GAME_TYPE_MM8)
+        racialBonus = mm8RaceStartingResistanceBonus(GetRace(), a2);
+
     v7 = GetItemsBonus(a2) + racialBonus;
     result = v7 + *resStat;
     if (classType == CLASS_LICH && result > 200)
@@ -2121,8 +2280,13 @@ int Character::GetParameterBonus(int player_parameter) const {
 //----- (0048EA46) --------------------------------------------------------
 int Character::GetSpecialItemBonus(ItemEnchantment enchantment) const {
     for (InventoryConstEntry entry : inventory.functionalEquipment()) {
-        if (enchantment == ITEM_ENCHANTMENT_OF_RECOVERY && (entry->specialEnchantment == ITEM_ENCHANTMENT_OF_RECOVERY || entry->itemId == ITEM_ARTIFACT_ELVEN_CHAINMAIL))
-            return 50;
+        if (enchantment == ITEM_ENCHANTMENT_OF_RECOVERY) {
+            // ITEM_ARTIFACT_ELVEN_CHAINMAIL's real id (533) is an unrelated MM8 armour
+            // post the items.txt block-shift - only meaningful as an MM7 named-artifact bonus.
+            if (entry->specialEnchantment == ITEM_ENCHANTMENT_OF_RECOVERY ||
+                (gameType() == GAME_TYPE_MM7 && entry->itemId == ITEM_ARTIFACT_ELVEN_CHAINMAIL))
+                return 50;
+        }
 
         if (enchantment == ITEM_ENCHANTMENT_OF_FORCE && entry->specialEnchantment == ITEM_ENCHANTMENT_OF_FORCE)
             return 5;
@@ -2656,13 +2820,13 @@ int Character::GetSkillBonus(Attribute inSkill) const {
             return 0;
 
         case ATTRIBUTE_HEALTH: {
-            int base_value = pBaseHealthPerLevelByClass[classType];
+            int base_value = healthPerLevelForClass(classType);
             int attrib_modif = GetBodybuilding();
             return base_value * attrib_modif;
         }
 
         case ATTRIBUTE_MANA: {
-            int base_value = pBaseManaPerLevelByClass[classType];
+            int base_value = manaPerLevelForClass(classType);
             int attrib_modif = GetMeditation();
             return base_value * attrib_modif;
         }
@@ -2848,6 +3012,12 @@ int Character::GetMultiplierForSkillLevel(Skill uSkillType, int mult1, int mult2
 //                     23   zombie male
 //                     24   zombie female
 enum Race Character::GetRace() const {
+    // MM8 race-classes aren't derived from the portrait (unlike MM7's 4 races / 20 faces below) - `classType`
+    // already uniquely identifies the race, see `mm8RaceForClass`.
+    if (isMm8Class(classType)) {
+        return mm8RaceForClass(classType);
+    }
+
     if (uCurrentFace <= 7) {
         return RACE_HUMAN;
     } else if (uCurrentFace <= 11) {
@@ -2862,7 +3032,12 @@ enum Race Character::GetRace() const {
 }
 
 std::string Character::GetRaceName() const {
-    switch (GetRace()) {
+    Race race = GetRace();
+    if (isMm8Race(race)) {
+        return mm8RaceName(race);
+    }
+
+    switch (race) {
         case RACE_HUMAN: return localization->str(LSTR_RACE_HUMAN);
         case RACE_ELF: return localization->str(LSTR_RACE_ELF);
         case RACE_GOBLIN: return localization->str(LSTR_RACE_GOBLIN);
@@ -2921,7 +3096,7 @@ BodyType Character::bodyType() const {
 void Character::SetInitialStats() {
     Race race = GetRace();
     for (Attribute stat : allStatAttributes())
-        _stats[stat] = StatTable[race][stat].uBaseValue;
+        _stats[stat] = characterCreationAttributeProps(race, stat).uBaseValue;
 }
 
 //----- (004901FC) --------------------------------------------------------
@@ -2969,7 +3144,7 @@ void Character::ChangeClass(Class cls) {
     uBirthYear = 1147 - grng->random(6);
 
     for (Skill i : allVisibleSkills()) {
-        if (pSkillAvailabilityPerClass[std::to_underlying(classType) / 4][i] != SKILL_AFFINITY_PRIMARY) {
+        if (skillAffinityForClass(classType, i) != SKILL_AFFINITY_PRIMARY) {
             setSkillValue(i, CombinedSkillValue());
         } else {
             setSkillValue(i, CombinedSkillValue::novice());
@@ -3005,7 +3180,7 @@ Skill Character::GetSkillIdxByOrder(signed int order) {
     counter = 0;
     for (Skill i : allVisibleSkills()) {
         if ((this->pActiveSkills[i] || canBeInactive) &&
-            pSkillAvailabilityPerClass[std::to_underlying(classType) / 4][i] == requiredValue) {
+            skillAffinityForClass(classType, i) == requiredValue) {
             if (counter == order - offset) return i;
             ++counter;
         }
@@ -3023,10 +3198,10 @@ void Character::DecreaseAttribute(Attribute eAttribute) {
     int uMinValue;     // [sp+Ch] [bp-4h]@1
 
     Race raceId = GetRace();
-    pBaseValue = StatTable[raceId][eAttribute].uBaseValue;
-    pDroppedStep = StatTable[raceId][eAttribute].uDroppedStep;
+    pBaseValue = characterCreationAttributeProps(raceId, eAttribute).uBaseValue;
+    pDroppedStep = characterCreationAttributeProps(raceId, eAttribute).uDroppedStep;
     uMinValue = pBaseValue - 2;
-    pStep = StatTable[raceId][eAttribute].uBaseStep;
+    pStep = characterCreationAttributeProps(raceId, eAttribute).uBaseStep;
     int *AttrToChange = &this->_stats[eAttribute];
     if (*AttrToChange <= pBaseValue) pStep = pDroppedStep;
     if (*AttrToChange - pStep >= uMinValue) *AttrToChange -= pStep;
@@ -3043,10 +3218,10 @@ void Character::IncreaseAttribute(Attribute eAttribute) {
     signed int droppedStep;  // [sp+10h] [bp-4h]@1
 
     Race raceId = GetRace();
-    maxValue = StatTable[raceId][eAttribute].uMaxValue;
-    baseStep = StatTable[raceId][eAttribute].uBaseStep;
-    baseValue = StatTable[raceId][eAttribute].uBaseValue;
-    droppedStep = StatTable[raceId][eAttribute].uDroppedStep;
+    maxValue = characterCreationAttributeProps(raceId, eAttribute).uMaxValue;
+    baseStep = characterCreationAttributeProps(raceId, eAttribute).uBaseStep;
+    baseValue = characterCreationAttributeProps(raceId, eAttribute).uBaseValue;
+    droppedStep = characterCreationAttributeProps(raceId, eAttribute).uDroppedStep;
     CharacterCreation_GetUnspentAttributePointCount();
     int *statToChange = &this->_stats[eAttribute];
     if (*statToChange < baseValue) {
@@ -3089,7 +3264,7 @@ void Character::resetTempBonuses() {
 
 //----- (004907E7) --------------------------------------------------------
 Color Character::GetStatColor(Attribute uStat) const {
-    int base_attribute_value = StatTable[GetRace()][uStat].uBaseValue;
+    int base_attribute_value = characterCreationAttributeProps(GetRace(), uStat).uBaseValue;
 
     int attribute_value = _stats[uStat];
     if (attribute_value == base_attribute_value)
@@ -3490,6 +3665,16 @@ void Character::useItem(int targetCharacter, bool isPortraitClick) {
 
     // Everything else
     {
+        // These are MM7-only unique quest items (Genie Lamp, Red Apple, quest
+        // Lute/Faerie Pipes/Gryphonheart's Trumpet, Horseshoe, Temple-in-a-Bottle) with no MM8
+        // equivalent - after the items.txt block-shift their ids collide with unrelated real
+        // MM8 quest items (e.g. id 616 is "Anointed Herb Potion", not a genie lamp).
+        if (gameType() == GAME_TYPE_MM8) {
+            engine->_statusBar->setEvent(LSTR_S_CAN_NOT_BE_USED_THAT_WAY, pParty->pPickedItem.GetDisplayName());
+            pAudioPlayer->playUISound(SOUND_error);
+            return;
+        }
+
         if (pParty->pPickedItem.itemId == ITEM_GENIE_LAMP) {
             int value = pParty->uCurrentMonthWeek + 1;
 
@@ -3726,12 +3911,12 @@ void Character::SubtractSkillByEvent(Skill skill, int level) {
 int cycleCharacter(bool backwards) {
     int currentId = pParty->activeCharacterIndex();
 
-    for (int i = 0; i < pParty->pCharacters.size(); i++) {
+    for (int i = 0; i < pParty->activeCharacterCount(); i++) {
         currentId += (backwards ? -1 : 1);
 
         if (currentId < 0) {
-            currentId = pParty->pCharacters.size() - 1;
-        } else if (currentId >= pParty->pCharacters.size()) {
+            currentId = pParty->activeCharacterCount() - 1;
+        } else if (currentId >= pParty->activeCharacterCount()) {
             currentId = 0;
         }
         if (!pParty->pCharacters[currentId].timeToRecovery)
@@ -3742,6 +3927,10 @@ int cycleCharacter(bool backwards) {
 }
 
 bool Character::hasUnderwaterSuitEquipped() const {
+    // ITEM_QUEST_WETSUIT's real id (604) is an unrelated MM8 armour item post the
+    // items.txt block-shift (not a wetsuit) - MM8 has no underwater-suit mechanic at this id.
+    if (gameType() == GAME_TYPE_MM8)
+        return false;
     InventoryConstEntry armor = inventory.entry(ITEM_SLOT_ARMOUR);
     return armor && armor->itemId == ITEM_QUEST_WETSUIT;
 }
@@ -4238,6 +4427,7 @@ int Character::characterIndex() {
 
 //----- (004272F5) --------------------------------------------------------
 bool Character::characterHitOrMiss(Actor *pActor, int distancemod, int skillmod) {  // PS - RETURN IF ATTACK WILL HIT
+    if (pParty->survivableDamage > 0) return true;  // Test-only: always hit.
     int naturalArmor = pActor->monsterInfo.ac;  // actor usual armour
     int armorBuff = 0;
 
@@ -4310,7 +4500,7 @@ void Character::_42ECB5_CharacterAttacksActor() {
         }
     }
 
-    Pid target_pid = engine->PickMouseForTargeting().pid;
+    Pid target_pid = attackTargetOverride ? attackTargetOverride : engine->PickMouseForTargeting().pid;
     ObjectType target_type = target_pid.type();
     int target_id = target_pid.id();
     if (target_type != OBJECT_Actor || !pActors[target_id].CanBeDamaged()) {
@@ -4357,9 +4547,7 @@ void Character::_42ECB5_CharacterAttacksActor() {
             _42FA66_do_explosive_impact(actor->pos + Vec3f(0, 0, actor->height / 2), 0, 512, pParty->activeCharacterIndex());
     } else if (bow) {
         shooting_bow = true;
-        // TODO(captainurist): target_pid is ignored here - the arrow re-resolves its target in castSpell() with a
-        //                     different fallback, so it can fly at a different actor than the one checked above.
-        pushSpellOrRangedAttack(SPELL_BOW_ARROW, pParty->activeCharacterIndex(), CombinedSkillValue::none(), 0);
+        pushSpellOrRangedAttack(SPELL_BOW_ARROW, pParty->activeCharacterIndex(), CombinedSkillValue::none(), 0, target_pid);
     } else {
         melee_attack = true;
         // actor out of range or no actor; no ranged weapon so melee attacking air
@@ -4661,6 +4849,7 @@ void Character::Zero() {
     name = std::string();
     uSex = SEX_MALE;
     classType = CLASS_KNIGHT;
+    rosterId = 0;
     uCurrentFace = uPrevFace = 0;
     uVoiceID = uPrevVoiceID = 0;
     uSkillPoints = 0;

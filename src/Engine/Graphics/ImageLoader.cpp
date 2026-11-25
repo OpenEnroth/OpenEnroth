@@ -1,9 +1,15 @@
 #include "ImageLoader.h"
 
+#include <cassert>
+#include <utility>
+
 #include "Engine/Graphics/AtlasLayout.h"
 #include "Engine/Resources/ResourceManager.h"
 
+#include "Library/Image/ImageFunctions.h"
+#include "Library/Image/Pcx.h"
 #include "Library/LodFormats/LodImage.h"
+#include "Library/Logger/Logger.h"
 
 RgbaImage Icon_LOD_Loader::loadRgba() {
     RgbaImage result = resources()->icon(name());
@@ -102,4 +108,75 @@ RgbaImage Sprites_LOD_Loader::loadRgba() {
 
 Sizei Sprites_LOD_Loader::loadSize() {
     return resources()->spriteSize(name());
+}
+
+static Palette alphaPalette(const Palette &palette) {
+    Palette result = palette;
+    result.colors[0] = Color();
+    return result;
+}
+
+static Palette colorKeyPalette(const Palette &palette, Color key) {
+    Palette result = palette;
+    for (Color &color : result.colors)
+        if (color == key)
+            color = Color(); // Repeated appearances of the same color do happen.
+    return result;
+}
+
+RgbaImage LegacyLod_Loader::loadRgba() {
+    ResourceManager *res = resources();
+
+    if (_mode == Mode::PCX) {
+        Blob data;
+        if (_source == Source::ENGLISH_D) {
+            if (res->hasEnglishD(name()))
+                data = res->englishDData(name());
+        } else if (res->hasIcon(name())) {
+            data = res->iconData(name());
+        }
+        if (!data) {
+            MM_WARNING("Unable to load {}: entry doesn't exist", name());
+            return {};
+        }
+
+        RgbaImage result = pcx::decode(data);
+        for (Color &pixel : result.pixels())
+            if (pixel == _colorKey)
+                pixel = Color();
+        return result;
+    }
+
+    LodImage image;
+    switch (_source) {
+    case Source::ENGLISH_D:
+        image = res->rawEnglishD(name());
+        break;
+    case Source::ICONS_UI:
+        image = res->rawIconsUi(name());
+        break;
+    case Source::ICONS:
+        image = res->rawIcon(res->hasIcon(name()) ? name() : "pending");
+        break;
+    }
+    if (!image.image)
+        return {};
+
+    switch (_mode) {
+    default:
+        assert(false);
+        [[fallthrough]];
+    case Mode::PALETTED:
+        return makeRgbaImage(image.image, image.palette);
+    case Mode::COLOR_KEY:
+        return makeRgbaImage(image.image, image.zeroIsTransparent ? alphaPalette(image.palette) : colorKeyPalette(image.palette, _colorKey));
+    case Mode::SOLID:
+        return makeRgbaImage(image.image, image.zeroIsTransparent ? alphaPalette(image.palette) : image.palette);
+    case Mode::ALPHA:
+        return makeRgbaImage(image.image, alphaPalette(image.palette));
+    }
+}
+
+Sizei LegacyLod_Loader::loadSize() {
+    return loadRgba().size();
 }

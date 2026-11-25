@@ -7,6 +7,7 @@
 #include "Testing/Game/GameTest.h"
 
 #include "Engine/Engine.h"
+#include "Engine/GameType.h"
 #include "Engine/MapEnumFunctions.h"
 #include "Engine/mm7_data.h"
 #include "Engine/MapEnums.h"
@@ -399,6 +400,14 @@ GAME_TEST(Issues, Issue2109) {
 
 GAME_TEST(Issues, Issue2116) {
     // Resuscitating a character in turn based mode does not give them a turn.
+
+    // This test assumes MM6/7's fixed 4-character party (`pCharacters[3]` is the 4th character) and waits in a loop
+    // for `pParty->hasActiveCharacter()` to become true after passing that character's turn. MM8's real party is
+    // Solo, so that turn-queue state never arrives and the loop spins forever. Skip outright rather than
+    // hang when run against MM8 data, matching the reverse-gated pattern `MM8`-prefixed tests already use.
+    if (gameType() == GAME_TYPE_MM8)
+        GTEST_SKIP() << "Assumes MM6/7's 4-character party; not applicable to MM8's solo party.";
+
     auto activeCharacterTape = tapes.activeCharacterIndex();
 
     game.startNewGame();

@@ -282,13 +282,16 @@ void Chest::GrabItem(bool all) {  // new function to grab items from chest using
             pParty->partyFindsGold(entry->goldAmount, GOLD_RECEIVE_SHARE);
             goldamount += entry->goldAmount;
             goldcount++;
-        } else {  // this should add item to invetory of active char - if that fails set as holding item and break
+        } else {  // active member first, then the rest of the party in turn
+            Character *receiver = nullptr;
             std::optional<Pointi> pos;
-            if (pParty->hasActiveCharacter())
-                pos = pParty->activeCharacter().inventory.findSpace(*entry);
+            for (int i = 0; i < pParty->activeCharacterCount() && !pos; i++) {
+                receiver = &pParty->pCharacters[(pParty->activeCharacterIndex() + i) % pParty->activeCharacterCount()];
+                pos = receiver->inventory.findSpace(*entry);
+            }
 
             if (pos) {  // can place
-                pParty->activeCharacter().inventory.add(*pos, *entry);
+                receiver->inventory.add(*pos, *entry);
                 grabcount++;
                 engine->_statusBar->setEvent(LSTR_YOU_FOUND_AN_ITEM_S, pItemTable->items[entry->itemId].unidentifiedName);
             } else {  // no room so set as holding item
@@ -360,6 +363,10 @@ void GenerateItemsInChest() {
 }
 
 void UpdateChestPositions() {
+    // A slot this map's faces do not place kept the position the map before gave it.
+    for (Chest &chest : vChests)
+        chest.position = {};
+
     std::unordered_map<int, std::vector<Vec3f>> pointsByChestId;
 
     auto processEvent = [&](int eventId, const Vec3f &position) {

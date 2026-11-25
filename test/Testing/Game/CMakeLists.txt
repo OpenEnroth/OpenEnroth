@@ -6,7 +6,8 @@ if(OE_BUILD_TESTS)
             CharacterTapeRecorder.cpp
             CommonTapeRecorder.cpp
             GameTest.cpp
-            TestController.cpp)
+            TestController.cpp
+            TraceGenerator.cpp)
 
     set(TESTING_GAME_HEADERS
             ActorTapeRecorder.h
@@ -16,7 +17,8 @@ if(OE_BUILD_TESTS)
             TestTape.h
             TestCallObserver.h
             TestController.h
-            AccessibleVector.h)
+            AccessibleVector.h
+            TraceGenerator.h)
 
     add_library(testing_game ${TESTING_GAME_SOURCES} ${TESTING_GAME_HEADERS})
     target_link_libraries(testing_game PUBLIC application testing_extensions GTest::gtest)

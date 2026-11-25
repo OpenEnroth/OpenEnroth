@@ -13,6 +13,13 @@ class StatusBar {
     static const int EVENT_DURATION_SHORT = 500; // 0.5s
 
     const std::string &get();
+    // The most recent event line, kept past its on-screen expiry, so a test can read it.
+    const std::string &lastEvent() const { return _lastEvent; }
+    // Bumps on every event line set, so a headless reader can tell "the game said this
+    // just now" from "this is still the line from ten rounds ago" (`lastEvent` keeps the text forever).
+    int lastEventSeq() const { return _lastEventSeq; }
+    // Restores a captured (text, seq) pair. For tests.
+    void restoreLastEvent(std::string_view text, int seq) { _lastEvent = text; _lastEventSeq = seq; }
     void draw();
     void drawForced(std::string_view str, Color color);
     void update();
@@ -44,5 +51,7 @@ class StatusBar {
  private:
     std::string _statusString = "";
     std::string _eventStatusString = "";
+    std::string _lastEvent = "";
+    int _lastEventSeq = 0;
     int _eventStatusExpireTime = 0;
 };

@@ -1,14 +1,17 @@
 #include "MagicGuild.h"
 
+#include <array>
 #include <string>
 #include <vector>
 
 #include "Engine/Engine.h"
 #include "Engine/EngineIocContainer.h"
+#include "Engine/GameType.h"
 #include "Engine/Tables/HouseTable.h"
 #include "Engine/Graphics/Renderer/Renderer.h"
 #include "Engine/Graphics/Image.h"
 #include "Engine/Localization.h"
+#include "Engine/Objects/CharacterEnumFunctions.h"
 #include "Engine/Objects/Item.h"
 #include "Engine/Tables/ItemTable.h"
 #include "Engine/Tables/MerchantTable.h"
@@ -65,6 +68,42 @@ static constexpr IndexedArray<DialogueId, HOUSE_TYPE_FIRE_GUILD, HOUSE_TYPE_DARK
     {HOUSE_TYPE_DARK_GUILD,   DIALOGUE_NULL}
 };
 
+// "combined guilds exist only in MM6/MM8" (see `generateSpellBooksForGuild()` below) -
+// HOUSE_TYPE_ELEMENTAL_GUILD teaches all 4 elemental schools, HOUSE_TYPE_SELF_GUILD all 5 self
+// schools, matching the split MM6/7/8 already use elsewhere for these exact categories (see
+// `GuildId::GUILD_OF_ELEMENTS`/`GUILD_OF_SELF` and their own `AWARD_MEMBERSHIP_ELEMENTAL_GUILD`/
+// `AWARD_MEMBERSHIP_SELF_GUILD`, both already wired up for the NPC-dialogue guild-membership flow
+// in NPCTopics.cpp, just never connected to this house-driven screen before).
+static constexpr std::array<MagicSchool, 4> elementalGuildSchools = {
+    MAGIC_SCHOOL_FIRE, MAGIC_SCHOOL_AIR, MAGIC_SCHOOL_WATER, MAGIC_SCHOOL_EARTH
+};
+static constexpr std::array<MagicSchool, 5> selfGuildSchools = {
+    MAGIC_SCHOOL_SPIRIT, MAGIC_SCHOOL_MIND, MAGIC_SCHOOL_BODY, MAGIC_SCHOOL_LIGHT, MAGIC_SCHOOL_DARK
+};
+// MM8 sells Light and Dark only in its Guild of Light and Guild of Dark.
+static constexpr std::array<MagicSchool, 3> mm8SelfGuildSchools = {
+    MAGIC_SCHOOL_SPIRIT, MAGIC_SCHOOL_MIND, MAGIC_SCHOOL_BODY
+};
+
+/**
+ * MM8's combined guilds come in three tiers, by the highest spell of a school they sell: 4, 7 or 11.
+ *
+ * @param house                         A combined guild of MM8.
+ * @return                              The highest mastery whose books the guild stocks.
+ */
+static Mastery mm8CombinedGuildMaxMastery(HouseId house) {
+    switch (std::to_underlying(house)) {
+    case 139: // Cures and Curses, Dagger Wound Island.
+    case 141: // Self Study, Alvar.
+        return MASTERY_NOVICE;
+    case 140: // Vexation's Hexes, Ravenshore.
+    case 145: // Guild of Mind, Balthazar Lair.
+        return MASTERY_EXPERT;
+    default:
+        return MASTERY_GRANDMASTER;
+    }
+}
+
 static constexpr IndexedArray<Mastery, HOUSE_FIRST_MAGIC_GUILD, HOUSE_LAST_MAGIC_GUILD> guildSpellsMastery = {
     {HOUSE_FIRE_GUILD_EMERALD_ISLAND,   MASTERY_NOVICE},
     {HOUSE_FIRE_GUILD_HARMONDALE,       MASTERY_EXPERT},
@@ -100,12 +139,29 @@ static constexpr IndexedArray<Mastery, HOUSE_FIRST_MAGIC_GUILD, HOUSE_LAST_MAGIC
     {HOUSE_DARK_GUILD_PIT,              MASTERY_GRANDMASTER}
 };
 
+Mastery magicGuildMaxMastery(HouseId house, HouseType guildType) {
+    // The table above is MM7's, keyed by MM7's house ids. MM8 has one Guild of Light (Murmurwoods) and one Guild of Dark
+    // (Shadowspire) and no tiers of them; its Guild of Dark fell on a Novice row and stocked four books, so a Lich had nowhere to
+    // buy the spells of his own school. Both sell their whole school, as the one guild of a school does.
+    if (gameType() == GAME_TYPE_MM8 && (guildType == HOUSE_TYPE_LIGHT_GUILD || guildType == HOUSE_TYPE_DARK_GUILD))
+        return MASTERY_GRANDMASTER;
+    return guildSpellsMastery[house];
+}
+
 void GUIWindow_MagicGuild::mainDialogue() {
     Recti working_window = this->frameRect;
     working_window.x = SIDE_TEXT_BOX_POS_X;
     working_window.w = SIDE_TEXT_BOX_WIDTH;
 
-    if (!pParty->activeCharacter()._achievedAwardsBits[membershipAwardForGuild(houseId())]) {
+    // Combined guilds (see `generateSpellBooksForGuild()`) sit outside the classic
+    // HOUSE_FIRST_MAGIC_GUILD..HOUSE_LAST_MAGIC_GUILD house-id range `membershipAwardForGuild
+    // (HouseId)` is keyed on, so they need the `GuildId`-based overload instead.
+    HouseType guildType = buildingType();
+    AwardId membershipAward = isCombinedMagicGuild(guildType)
+        ? membershipAwardForGuild(guildType == HOUSE_TYPE_ELEMENTAL_GUILD ? GUILD_OF_ELEMENTS : GUILD_OF_SELF)
+        : membershipAwardForGuild(houseId());
+    // MM8 awards.txt has no guild membership award, so MM8 guilds are open to any party.
+    if (gameType() != GAME_TYPE_MM8 && !pParty->activeCharacter()._achievedAwardsBits[membershipAward]) {
         // you must be a member
         int textHeight = assets->pFontArrus->CalcTextHeight(pNPCTopics[121].pText, working_window.w, 0);
         DrawTitleText(assets->pFontArrus.get(), 0, (212 - textHeight) / 2 + 101, colorTable.PaleCanary, pNPCTopics[121].pText, 3, working_window);
@@ -125,7 +181,7 @@ void GUIWindow_MagicGuild::mainDialogue() {
             optionsText.push_back(localization->str(LSTR_BUY_SPELLS));
         } else {
             Skill skill = GetLearningDialogueSkill((DialogueId)pDialogueWindow->GetControl(i)->msg_param);
-            if (skillMaxMasteryPerClass[pParty->activeCharacter().classType][skill] != MASTERY_NONE &&
+            if (skillMaxMasteryForClass(pParty->activeCharacter().classType, skill) != MASTERY_NONE &&
                 !pParty->activeCharacter().pActiveSkills[skill]) {
                 optionsText.push_back(localization->skillName(skill));
                 haveLearnableSkills = true;
@@ -243,7 +299,11 @@ std::vector<DialogueId> GUIWindow_MagicGuild::listDialogueOptions() {
 
     switch (_currentDialogue) {
       case DIALOGUE_MAIN:
-        if (learnableAdditionalSkillDialogue[guildType] != DIALOGUE_NULL) {
+        if (guildType == HOUSE_TYPE_ELEMENTAL_GUILD) {
+            return {DIALOGUE_GUILD_BUY_BOOKS, DIALOGUE_LEARN_FIRE, DIALOGUE_LEARN_AIR, DIALOGUE_LEARN_WATER, DIALOGUE_LEARN_EARTH, DIALOGUE_LEARN_LEARNING};
+        } else if (guildType == HOUSE_TYPE_SELF_GUILD) {
+            return {DIALOGUE_GUILD_BUY_BOOKS, DIALOGUE_LEARN_SPIRIT, DIALOGUE_LEARN_MIND, DIALOGUE_LEARN_BODY, DIALOGUE_LEARN_LIGHT, DIALOGUE_LEARN_DARK, DIALOGUE_LEARN_MEDITATION};
+        } else if (learnableAdditionalSkillDialogue[guildType] != DIALOGUE_NULL) {
             return {DIALOGUE_GUILD_BUY_BOOKS, learnableMagicSkillDialogue[guildType], learnableAdditionalSkillDialogue[guildType]};
         } else {
             return {DIALOGUE_GUILD_BUY_BOOKS, learnableMagicSkillDialogue[guildType]};
@@ -309,15 +369,24 @@ void GUIWindow_MagicGuild::houseScreenClick() {
 void GUIWindow_MagicGuild::generateSpellBooksForGuild() {
     HouseType guildType = buildingType();
 
-    // Combined guilds exist only in MM6/MM8 and need to be processed separately
-    assert(guildType >= HOUSE_TYPE_FIRE_GUILD && guildType <= HOUSE_TYPE_DARK_GUILD);
-
-    MagicSchool schoolType = guildSpellsSchool[guildType];
-    Mastery maxMastery = guildSpellsMastery[houseId()];
-    Segment<ItemId> spellbooksForGuild = spellbooksForSchool(schoolType, maxMastery);
-
     for (int i = 0; i < itemAmountInShop[guildType]; ++i) {
-        ItemId pItemNum = grng->randomSample(spellbooksForGuild);
+        ItemId pItemNum;
+        if (isCombinedMagicGuild(guildType)) {
+            // A combined guild teaches every school in its category (see the
+            // `elementalGuildSchools`/`selfGuildSchools` comment above) - each shelf slot
+            // independently rolls a school, then a spellbook within that school. MM6 and MM7 roll
+            // the full (grandmaster) range, MM8 the guild's own tier.
+            const bool mm8 = gameType() == GAME_TYPE_MM8;
+            MagicSchool schoolType = guildType == HOUSE_TYPE_ELEMENTAL_GUILD ? grng->randomSample(elementalGuildSchools)
+                                     : mm8                                    ? grng->randomSample(mm8SelfGuildSchools)
+                                                                              : grng->randomSample(selfGuildSchools);
+            pItemNum = grng->randomSample(spellbooksForSchool(schoolType, mm8 ? mm8CombinedGuildMaxMastery(houseId()) : MASTERY_GRANDMASTER));
+        } else {
+            assert(guildType >= HOUSE_TYPE_FIRE_GUILD && guildType <= HOUSE_TYPE_DARK_GUILD);
+            MagicSchool schoolType = guildSpellsSchool[guildType];
+            Mastery maxMastery = magicGuildMaxMastery(houseId(), guildType);
+            pItemNum = grng->randomSample(spellbooksForSchool(schoolType, maxMastery));
+        }
 
         if (pItemNum == ITEM_SPELLBOOK_DIVINE_INTERVENTION && !pParty->_questBits[QBIT_DIVINE_INTERVENTION_RETRIEVED])
             pItemNum = ITEM_SPELLBOOK_SUNRAY;

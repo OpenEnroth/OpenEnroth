@@ -38,8 +38,10 @@ GUIButton *pCharacterScreen_DetalizBtn;
 
 GUIButton *pBtn_NPCRight;
 GUIButton *pBtn_NPCLeft;
+GUIButton *pBtn_Skull;
 GUIButton *pBtn_GameSettings;
 GUIButton *pBtn_QuickReference;
+GUIButton *pBtn_MapBook;  // MM8-only top-bar scroll button, opens the map/book screen.
 GUIButton *pBtn_CastSpell;
 GUIButton *pBtn_Rest;
 GUIButton *pBtn_History;

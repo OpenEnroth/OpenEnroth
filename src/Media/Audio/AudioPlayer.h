@@ -42,6 +42,11 @@ class AudioPlayer {
     void resumeSounds();
     void stopSounds();
     void stopVoiceSounds();
+
+    /**
+     * Blocks until the voice and regular sounds that are playing have finished, for 10 seconds at most.
+     */
+    void soundDrain();
     void stopWalkingSounds();
     bool isWalkingSoundPlays();
 

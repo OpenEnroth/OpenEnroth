@@ -115,7 +115,7 @@ std::tuple<int, Pointi, Sizei> GameWindowHandler::GetWindowRelativePosition(Poin
     return std::make_tuple(display, relativePos, size);
 }
 
-void GameWindowHandler::UpdateWindowFromConfig(const GameConfig *config) {
+void GameWindowHandler::UpdateWindowFromConfig(const GameConfig *config, bool visible) {
     assert(config);
 
     Sizei size = {config->window.Width.value(), config->window.Height.value()};
@@ -128,7 +128,10 @@ void GameWindowHandler::UpdateWindowFromConfig(const GameConfig *config) {
     window->setGrabsMouse(config->window.MouseGrab.value());
     window->setWindowMode(mode);
     window->setResizable(config->window.Resizable.value());
-    window->setVisible(true);
+    // The offscreen render path never calls this with `visible=false` - the window (already
+    // created SDL_WINDOW_HIDDEN, see SdlPlatform::createWindow) simply stays hidden.
+    if (visible)
+        window->setVisible(true);
 }
 
 void GameWindowHandler::UpdateConfigFromWindow(GameConfig *config) {

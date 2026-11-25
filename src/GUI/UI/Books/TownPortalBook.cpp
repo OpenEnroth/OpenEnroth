@@ -5,6 +5,7 @@
 #include "Engine/AssetsManager.h"
 #include "Engine/Engine.h"
 #include "Engine/EngineGlobals.h"
+#include "Engine/GameType.h"
 #include "Engine/Graphics/Renderer/Renderer.h"
 #include "Engine/Localization.h"
 #include "Engine/Party.h"
@@ -18,6 +19,7 @@
 #include "Engine/Tables/MapTable.h"
 #include "Engine/Graphics/Viewport.h"
 
+#include "GUI/GUIButton.h"
 #include "GUI/GUIMessageQueue.h"
 #include "GUI/UI/UIStatusBar.h"
 #include "GUI/UI/UIGame.h"
@@ -94,6 +96,10 @@ static std::array<std::shared_ptr<GraphicsImage>, TOWN_PORTAL_DESTINATION_COUNT_
 std::shared_ptr<GraphicsImage> ui_book_townportal_background;
 std::shared_ptr<GraphicsImage> ui_townportal_cheat_destination_icon;
 
+// MM8's Close button sits at (553,448) here, not at the other books' (555,445). This screen has
+// its own "townport" background.
+static const Pointi kMm8TownPortalCloseButtonPos = {553, 448};
+
 GUIWindow_TownPortalBook::GUIWindow_TownPortalBook(Pid casterPid, SpellCastFlags castFlags)
         : _casterPid(casterPid), _castFlags(castFlags) {
     this->eWindowType = WINDOW_TOWN_PORTAL;
@@ -107,27 +113,45 @@ GUIWindow_TownPortalBook::GUIWindow_TownPortalBook(Pid casterPid, SpellCastFlags
     ui_book_townportal_icons[4] = assets->getIcon("tpheaven");
     ui_book_townportal_icons[5] = assets->getIcon("tphell");
 
-    // cheat locations
-    ui_townportal_cheat_destination_icon = assets->getIcon("tab-an-2a");
-    for (int i = TOWN_PORTAL_DESTINATION_COUNT; i < TOWN_PORTAL_DESTINATION_COUNT_WITH_CHEATS; ++i)
-        ui_book_townportal_icons[i] = assets->getIcon("tab-an-2b");
+    // cheat locations (debug.TownPortal-only). MM8 ships no equivalent for
+    // "tab-an-2a"/"tab-an-2b", the debug-only draw call is a no-op on the null texture.
+    if (gameType() != GAME_TYPE_MM8) {
+        ui_townportal_cheat_destination_icon = assets->getImage_ColorKey("tab-an-2a");
+        for (int i = TOWN_PORTAL_DESTINATION_COUNT; i < TOWN_PORTAL_DESTINATION_COUNT_WITH_CHEATS; ++i) {
+            ui_book_townportal_icons[i] = assets->getImage_ColorKey("tab-an-2b");
+        }
+    }
 
     int count = TOWN_PORTAL_DESTINATION_COUNT;
     if (engine->config->debug.TownPortal.value())
         count = TOWN_PORTAL_DESTINATION_COUNT_WITH_CHEATS;
     for (int i = 0; i < count; ++i)
         CreateButton(fmt::format("TownPortalBook_Marker{}", i), townPortalButtonsPos[i].topLeft(), townPortalButtonsPos[i].size(), BUTTON_TYPE_NORMAL, UIMSG_HintTownPortal, UIMSG_ClickTownInTP, i);
+
+    if (gameType() == GAME_TYPE_MM8) {
+        // Real MM8 Close button position/size (see kMm8TownPortalCloseButtonPos above) -
+        // re-positions the clickable rect the base ctor already created at MM7's slot.
+        for (GUIButton *button : vButtons) {
+            if (button->id == "Book_Close") {
+                button->rect = Recti(kMm8TownPortalCloseButtonPos, ui_exit_cancel_button_background->size());
+                break;
+            }
+        }
+    }
 }
 
 void GUIWindow_TownPortalBook::Update() {
-    render->DrawQuad2D(ui_exit_cancel_button_background, {471, 445});
+    bool isMm8 = gameType() == GAME_TYPE_MM8;
+    if (!isMm8)
+        render->DrawQuad2D(ui_exit_cancel_button_background, {471, 445});
 
     Pointi cursorPos = mouse->position();
     bool townPortalCheats = engine->config->debug.TownPortal.value();
     int count = townPortalCheats ? TOWN_PORTAL_DESTINATION_COUNT_WITH_CHEATS : TOWN_PORTAL_DESTINATION_COUNT;
 
     render->DrawQuad2D(ui_book_townportal_background, {8, 8});
-    render->DrawQuad2D(ui_exit_cancel_button_background, {471, 445});
+    if (!isMm8)
+        render->DrawQuad2D(ui_exit_cancel_button_background, {471, 445});
 
     if (townPortalCheats) {
         // draw grey icons for cheat locations
@@ -142,6 +166,11 @@ void GUIWindow_TownPortalBook::Update() {
             render->DrawQuad2D(ui_book_townportal_icons[i], townPortalButtonsPos[i].topLeft());
 
     DrawTitleText(assets->pFontBookTitle.get(), 0, 22, colorTable.White, localization->str(LSTR_TOWN_PORTAL), 3, pViewport);
+
+    // Drawn last (not at the top of Update() like MM7's line above) so the background fill above
+    // doesn't paint over it - see kMm8TownPortalCloseButtonPos's own comment.
+    if (isMm8)
+        render->DrawQuad2D(ui_exit_cancel_button_background, kMm8TownPortalCloseButtonPos);
 }
 
 void GUIWindow_TownPortalBook::clickTown(int townId) {

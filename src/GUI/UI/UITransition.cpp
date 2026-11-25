@@ -137,7 +137,7 @@ GUIWindow_IndoorEntryExit::GUIWindow_IndoorEntryExit(HouseId transitionHouse, un
     if (transitionHouse != HOUSE_INVALID || getSpecialTransferMessageIndex(locationName)) {
         // TODO(Nik-RE-dev): if message is special then no video when entering indoor?
         if (!getSpecialTransferMessageIndex(locationName))
-            pMediaPlayer->OpenHouseMovie(pAnimatedRooms[houseTable[transitionHouse].uAnimationID].video_name, 1);
+            pMediaPlayer->OpenHouseMovie(animatedRoom(houseTable[transitionHouse].uAnimationID).video_name, 1);
 
         std::string destMap = std::string(locationName);
         if (locationName[0] == '0')
@@ -146,7 +146,8 @@ GUIWindow_IndoorEntryExit::GUIWindow_IndoorEntryExit(HouseId transitionHouse, un
             hint = localization->format(LSTR_ENTER_S, pMapTable->pInfos[pMapTable->GetMapInfo(destMap)].name);
         } else {
             hint = localization->str(LSTR_EXIT_DIALOGUE);
-            playHouseSound(transitionHouse, HOUSE_SOUND_GENERAL_GREETING);
+            if (transitionHouse != HOUSE_INVALID && animatedRoom(houseTable[transitionHouse].uAnimationID).uRoomSoundId)
+                playHouseSound(transitionHouse, HOUSE_SOUND_GENERAL_GREETING);
         }
         if (uCurrentlyLoadedLevelType == LEVEL_INDOOR && pParty->hasActiveCharacter() && pParty->GetRedOrYellowAlert())
             pParty->activeCharacter().playReaction(SPEECH_LEAVE_DUNGEON);
@@ -158,7 +159,8 @@ GUIWindow_IndoorEntryExit::GUIWindow_IndoorEntryExit(HouseId transitionHouse, un
         } else {
             hint = localization->str(LSTR_EXIT_DIALOGUE);
         }
-        playHouseSound(transitionHouse, HOUSE_SOUND_GENERAL_GREETING);
+        if (transitionHouse != HOUSE_INVALID && animatedRoom(houseTable[transitionHouse].uAnimationID).uRoomSoundId)
+            playHouseSound(transitionHouse, HOUSE_SOUND_GENERAL_GREETING);
         if (uCurrentlyLoadedLevelType == LEVEL_INDOOR && pParty->hasActiveCharacter() && pParty->GetRedOrYellowAlert())
             pParty->activeCharacter().playReaction(SPEECH_LEAVE_DUNGEON);
     }

@@ -28,6 +28,9 @@ class GUIWindow_Spellbook : public GUIWindow {
     std::shared_ptr<GraphicsImage> ui_spellbook_btn_quckspell_click;
     std::shared_ptr<GraphicsImage> ui_spellbook_btn_close;
     std::shared_ptr<GraphicsImage> ui_spellbook_btn_close_click;
+    // Real MM8 art ("stssu", icons.lod) for the 3rd left-edge icon slot between Quick
+    // Spell and Close - drawn decoratively only, its function is unconfirmed (see initializeTextures()).
+    std::shared_ptr<GraphicsImage> ui_spellbook_unconfirmed_icon;
 
     IndexedArray<std::shared_ptr<GraphicsImage>, MAGIC_SCHOOL_FIRST, MAGIC_SCHOOL_LAST> ui_spellbook_school_backgrounds;
     IndexedArray<std::array<std::shared_ptr<GraphicsImage>, 2>, MAGIC_SCHOOL_FIRST, MAGIC_SCHOOL_LAST> ui_spellbook_school_tabs;

@@ -32,4 +32,5 @@ std::string getEventHintString(int eventId);
 
 void onMapLoad();
 void onMapLeave();
+void clearMapTimers();
 void onTimer();

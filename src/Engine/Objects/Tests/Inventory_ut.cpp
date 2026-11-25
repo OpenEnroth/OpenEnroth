@@ -32,36 +32,39 @@ GAME_TEST(Inventory, StorageCells) {
     Inventory inventory(Sizei(9, 9), Inventory::MAX_ITEMS);
 
     Item helm;
-    helm.itemId = ITEM_FULL_HELM; // Size = 2x2.
+    helm.itemId = ITEM_FULL_HELM;
     inventory.add(Pointi(2, 2), helm);
 
+    Recti helmRect(Pointi(2, 2), helm.inventorySize());
     for (int x = 0; x < 9; x++) {
         for (int y = 0; y < 9; y++) {
             Pointi pos(x, y);
-            EXPECT_EQ(inventory.canAdd(pos, Sizei(1, 1)), !Recti(Pointi(2, 2), Sizei(2, 2)).contains(pos));
+            EXPECT_EQ(inventory.canAdd(pos, Sizei(1, 1)), !helmRect.contains(pos));
         }
     }
 }
 
 GAME_TEST(Inventory, CrazyBigItem) {
     // Checking that we can add an item with size == inventory size.
-    Inventory inventory(Sizei(2, 2), Inventory::MAX_ITEMS);
-
     Item helm;
-    helm.itemId = ITEM_FULL_HELM; // Size = 2x2, fills whole inventory.
-    inventory.add(Pointi(0, 0), helm);
+    helm.itemId = ITEM_FULL_HELM;
+    Sizei helmSize = helm.inventorySize();
 
-    for (int x = 0; x < 2; x++)
-        for (int y = 0; y < 2; y++)
+    Inventory inventory(helmSize, Inventory::MAX_ITEMS);
+    inventory.add(Pointi(0, 0), helm); // Fills the whole inventory.
+
+    for (int x = 0; x < helmSize.w; x++)
+        for (int y = 0; y < helmSize.h; y++)
             EXPECT_EQ(inventory.canAdd(Pointi(x, y), Sizei(1, 1)), false);
 }
 
 GAME_TEST(Inventory, StorageFull) {
     // Checking that we can't add items to an inventory that's full.
-    Inventory inventory(Sizei(1, 1), 1);
-
     Item ring;
     ring.itemId = ITEM_BRASS_RING;
+
+    // Grid sized to exactly fit one ring, so that adding it fills the inventory to capacity.
+    Inventory inventory(ring.inventorySize(), 1);
 
     InventoryEntry storedRing = inventory.add(Pointi(0, 0), ring);
     EXPECT_EQ(storedRing->itemId, ITEM_BRASS_RING);
@@ -122,21 +125,31 @@ GAME_TEST(Inventory, AddOrder) {
     // MM7 adds items to inventory by columns, so we check that our code does the same.
     Inventory inventory(Sizei(5, 5), Inventory::MAX_ITEMS);
 
-    InventoryEntry ring0 = inventory.add(Item(ITEM_BRASS_RING));
-    InventoryEntry ring1 = inventory.add(Item(ITEM_ANGELS_RING));
-    InventoryEntry dagger = inventory.add(Item(ITEM_DAGGER));
-    InventoryEntry sword = inventory.add(Item(ITEM_CRUDE_LONGSWORD));
+    Item ring0Item(ITEM_BRASS_RING);
+    Item ring1Item(ITEM_ANGELS_RING);
+    Item daggerItem(ITEM_DAGGER);
+    Item swordItem(ITEM_CRUDE_LONGSWORD);
 
-    EXPECT_EQ(ring0.geometry(), Recti(0, 0, 1, 1));
-    EXPECT_EQ(ring1.geometry(), Recti(0, 1, 1, 1));
-    EXPECT_EQ(dagger.geometry(), Recti(0, 2, 1, 3));
-    EXPECT_EQ(sword.geometry(), Recti(1, 0, 1, 5));
+    InventoryEntry ring0 = inventory.add(ring0Item);
+    InventoryEntry ring1 = inventory.add(ring1Item);
+    InventoryEntry dagger = inventory.add(daggerItem);
+    InventoryEntry sword = inventory.add(swordItem);
+
+    // Column-first placement: ring0 goes into column 0, row 0. ring1 doesn't fit there anymore, so it goes
+    // right below ring0, still in column 0. dagger doesn't fit column 0 (occupied) and, since ring0 is more
+    // than 1 cell wide, doesn't fit column 1 either (blocked by ring0's overflow into that column) - so it
+    // lands in column 2. sword then lands in column 3, the next free one.
+    EXPECT_EQ(ring0.geometry(), Recti(Pointi(0, 0), ring0Item.inventorySize()));
+    EXPECT_EQ(ring1.geometry(), Recti(Pointi(0, ring0Item.inventorySize().h), ring1Item.inventorySize()));
+    EXPECT_EQ(dagger.geometry(), Recti(Pointi(2, 0), daggerItem.inventorySize()));
+    EXPECT_EQ(sword.geometry(), Recti(Pointi(3, 0), swordItem.inventorySize()));
 }
 
 GAME_TEST(Inventory, EntryInvalidation) {
     // Checking that taking out an item from under an `InventoryEntry` invalidates the entry.
-    Inventory inventory;
-    InventoryEntry entry = inventory.add(Pointi(0, 0), Item(ITEM_BRASS_RING));
+    Item ring(ITEM_BRASS_RING);
+    Inventory inventory(ring.inventorySize(), Inventory::MAX_ITEMS);
+    InventoryEntry entry = inventory.add(Pointi(0, 0), ring);
 
     Item item = inventory.take(entry);
     EXPECT_EQ(item.itemId, ITEM_BRASS_RING);

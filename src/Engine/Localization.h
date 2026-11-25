@@ -6,11 +6,12 @@
 
 #include "Engine/Objects/ActorEnums.h"
 #include "Engine/Objects/CharacterEnums.h"
+#include "Engine/Objects/CharacterEnumFunctions.h"
+#include "Engine/Spells/SpellEnums.h"
 #include "Engine/Objects/CombinedSkillValue.h"
 #include "Engine/Objects/MonsterEnums.h"
 #include "Engine/Objects/NPCEnums.h"
 #include "Engine/PartyEnums.h"
-#include "Engine/Spells/SpellEnums.h"
 
 #include "Utility/IndexedArray.h"
 #include "Utility/String/Format.h"
@@ -71,6 +72,12 @@ class Localization {
     }
 
     const std::string &className(Class index) const {
+        // `_classNames` only has entries for MM7's 9 base classes (see `initialize()`), so MM8 classes are
+        // routed to `_mm8ClassNames` instead, which is a stand-in until proper MM8 localization strings are
+        // added (see `mm8RaceName`).
+        if (isMm8Class(index)) {
+            return _mm8ClassNames[index];
+        }
         return _classNames[index];
     }
 
@@ -269,10 +276,11 @@ class Localization {
     IndexedArray<std::string, CHARACTER_BUFF_FIRST, CHARACTER_BUFF_LAST> _characterBuffNames;
     IndexedArray<std::string, ACTOR_BUFF_FIRST, ACTOR_BUFF_LAST> _actorBuffNames;
     IndexedArray<std::string, CLASS_FIRST, CLASS_LAST> _classNames;
+    IndexedArray<std::string, CLASS_MM8_FIRST, CLASS_MM8_LAST> _mm8ClassNames;
     IndexedArray<std::string, CLASS_FIRST, CLASS_LAST> _classDescriptions;
     IndexedArray<std::string, ATTRIBUTE_FIRST_STAT, ATTRIBUTE_LAST_STAT> _attributeNames;
     IndexedArray<std::string, ATTRIBUTE_FIRST_STAT, ATTRIBUTE_LAST_STAT> _attributeDescriptions;
-    IndexedArray<std::string, SKILL_INVALID, SKILL_LAST_VISIBLE> _skillNames;
+    IndexedArray<std::string, SKILL_INVALID, SKILL_LAST> _skillNames;
     IndexedArray<std::string, SKILL_INVALID, SKILL_LAST_VISIBLE> _skillDescriptions;
     IndexedArray<std::string, SKILL_INVALID, SKILL_LAST_VISIBLE> _skillDescriptionsNormal;
     IndexedArray<std::string, SKILL_INVALID, SKILL_LAST_VISIBLE> _skillDescriptionsExpert;

@@ -5,6 +5,7 @@
 #include <initializer_list>
 #include <utility>
 
+#include "Engine/GameType.h"
 #include "Engine/Objects/CharacterEnums.h"
 #include "Engine/Spells/SpellEnums.h"
 
@@ -80,7 +81,12 @@ inline bool isSpawnableArtifact(ItemId type) {
 }
 
 inline bool isGold(ItemId type) {
-    return type >= ITEM_FIRST_GOLD && type <= ITEM_LAST_GOLD;
+    if (type >= ITEM_FIRST_GOLD && type <= ITEM_LAST_GOLD)
+        return true;
+    // MM8's own gold piles are items 187-189 (items.txt: 'Gold', equip stat Gold); its maps place those in
+    // chests and on the ground. 197-199 are what this engine's own generators make. Both are gold: a pile goes to the
+    // purse, never to a pack.
+    return gameType() == GAME_TYPE_MM8 && std::to_underlying(type) >= 187 && std::to_underlying(type) <= 189;
 }
 
 inline bool isRandomItem(ItemId type) {
@@ -96,6 +102,11 @@ inline bool isQuestItem(ItemId item) {
 }
 
 inline bool isAncientWeapon(ItemId item) {
+    // ITEM_BLASTER/ITEM_BLASTER_RIFLE's real ids (64/65) are unrelated common MM8
+    // crossbows post the items.txt block-shift, not ancient laser weapons - MM8 has no
+    // ancient-weapon mechanic at these ids.
+    if (gameType() == GAME_TYPE_MM8)
+        return false;
     return item == ITEM_BLASTER || item == ITEM_BLASTER_RIFLE;
 }
 

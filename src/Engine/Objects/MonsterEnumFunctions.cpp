@@ -315,6 +315,104 @@ MonsterSupertype supertypeForMonsterType(MonsterType monsterType) {
     }
 }
 
+// MM8's `monsters.txt` (`data/EnglishT.lod`) keeps MM7's 3-tier-per-species
+// chunking (ids 1..198, 66 species in a row), but completely reshuffles which species sits at which id, so
+// `monsterTypeForMonsterId`'s MM7 row-position arithmetic doesn't carry over. This table gives the
+// `MonsterType` only for the MM8 species that have an MM7 counterpart of the same name. Every other MM8
+// species (e.g. Lizardman, Couatl, Ogre, Cyclops, Pirate - none of which exist as an MM7 `MonsterType`) is
+// `MONSTER_TYPE_UNUSED_RAT`, an inert placeholder with no bounty/drop/arena behavior.
+//
+// This is a semantic classification only (item drop / sex / race / bounty-hunt / arena / peasant).
+// Do NOT use it for hostility resolution - `hostile.txt`'s row/column position for a species
+// is unrelated to its MM7 `MonsterType` ordinal. See `mm8HostilityMonsterTypeForMonsterId` below.
+MonsterType mm8MonsterTypeForMonsterId(MonsterId monsterId) {
+    int id = std::to_underlying(monsterId);
+    if (id >= 46 && id <= 48) return MONSTER_TYPE_CLERIC_SUN;        // Acolyte/Cleric/Priest of the Sun
+    if (id >= 52 && id <= 54) return MONSTER_TYPE_VAMPIRE;           // Vampire Minion/Vampire/Greater Vampire
+    if (id >= 55 && id <= 57) return MONSTER_TYPE_NECROMANCER;       // Dark Path Journeyman/Necromancer/Master Necromancer
+    if (id >= 58 && id <= 60) return MONSTER_TYPE_TROLL;             // Troll Clubman/Warrior/Chieftain
+    if (id >= 64 && id <= 66) return MONSTER_TYPE_MINOTAUR;          // Minotaur Guard/Warrior/Battleleader
+    if (id >= 70 && id <= 72) return MONSTER_TYPE_DRAGON;            // Dragon/Dragon Flightleader/Great Wyrm
+    if (id >= 73 && id <= 75) return MONSTER_TYPE_ELEMENTAL_FIRE;    // Lesser/regular/Greater Fire Elemental
+    if (id >= 76 && id <= 78) return MONSTER_TYPE_ELEMENTAL_WATER;   // Lesser/regular/Greater Water Elemental
+    if (id >= 79 && id <= 81) return MONSTER_TYPE_ELEMENTAL_EARTH;   // Lesser/regular/Greater Earth Elemental
+    if (id >= 82 && id <= 84) return MONSTER_TYPE_ELEMENTAL_AIR;     // Lesser/regular/Greater Air Elemental
+    if (id >= 121 && id <= 123) return MONSTER_TYPE_WYVERN;          // Wyvern/Horned Wyvern/Ancient Wyvern
+    if (id >= 160 && id <= 162) return MONSTER_TYPE_GOG;             // Smoke/Ember/Fire Gog
+    return MONSTER_TYPE_UNUSED_RAT;
+}
+
+// MM8 `hostile.txt` (`data/EnglishT.lod`) column index per species, in its header row's order.
+// This is the value `HostilityTable::Initialize` keys `relations[col][row]` by, and is
+// independent of `mm8MonsterTypeForMonsterId`'s MM7-semantic value above - use this function ONLY for
+// `Actor::hostilityGroup` / `HostilityTable::relations` lookups.
+MonsterType mm8HostilityMonsterTypeForMonsterId(MonsterId monsterId) {
+    // MM8's hostile.txt has 66 species rows in exactly the order of monsters.txt's 66 species
+    // (3 tiers each, ids 1..198), so the row is (id-1)/3+1.
+    int id = std::to_underlying(monsterId);
+    if (id >= 1 && id <= 198)
+        return static_cast<MonsterType>((id - 1) / 3 + 1);
+    return MONSTER_TYPE_UNUSED_RAT;
+}
+
+// `spcitems.txt` ordinal 39 ("Ogre Slaying" under MM8, "Demon Slaying" under MM7) and ordinal 63
+// ("Elemental Slaying" under MM8, "Elf Slaying" under MM7) need a classification of which MM8 monsters
+// they double-damage against. From the same `monsters.txt` as `mm8MonsterTypeForMonsterId`:
+// "Ogre Slaying" covers the Ogre Peasant/Warrior, Troll, Troll Peasant, Cyclops and Ogre Mage kinds;
+// "Elemental Slaying" covers the four classic elementals plus Efreeti/Thunderbird/Salamander/Phoenix/
+// Juggernaut (none of which contain "Elemental" in their name, so name-substring matching would miss them).
+MonsterSupertype mm8SupertypeForMonsterId(MonsterId monsterId) {
+    static constexpr std::pair<int, int> ogreKindIdRanges[] = {
+        {28, 30},   // Ogre Peasant
+        {31, 33},   // Ogre Brawler/Warrior/Warleader
+        {58, 60},   // Troll Clubman/Warrior/Chieftain
+        {61, 63},   // Troll Peasant
+        {91, 93},   // Cyclops/Cyclops Hunter/Cyclops Warrior
+        {106, 108}, // Ogre Mage Apprentice/Ogre Mage/Ogre Magi
+    };
+    static constexpr std::pair<int, int> elementalKindIdRanges[] = {
+        {73, 75},   // Fire Elemental
+        {76, 78},   // Water Elemental
+        {79, 81},   // Earth Elemental
+        {82, 84},   // Air Elemental
+        {103, 105}, // Efreeti Soldier/Knight/Lord
+        {115, 117}, // Thunderbird (Mist Hawk/Storm Eagle/Thunderbird)
+        {127, 129}, // Salamander (Fire Newt/Fire Lizard/Salamander)
+        {130, 132}, // Phoenix (Fire Bird/Phoenix/Grand Phoenix)
+        {157, 159}, // Juggernaut (Charger/Juggernaut/Demolisher)
+    };
+
+    int id = std::to_underlying(monsterId);
+    for (const auto &[first, last] : ogreKindIdRanges)
+        if (id >= first && id <= last)
+            return MONSTER_SUPERTYPE_MM8_OGRE;
+    for (const auto &[first, last] : elementalKindIdRanges)
+        if (id >= first && id <= last)
+            return MONSTER_SUPERTYPE_MM8_ELEMENTAL;
+    return MONSTER_SUPERTYPE_NONE;
+}
+
+// See the header comment on `isMm8PeasantMonsterId`. These are the id ranges of
+// each species' "peasant" tier in MM8's `monsters.txt`. Human Peasant (166-168) is included here too even
+// though it already resolves via `isPeasant(MonsterType)`.
+bool isMm8PeasantMonsterId(MonsterId monsterId) {
+    static constexpr std::pair<int, int> peasantIdRanges[] = {
+        {1, 3},     // Lizardman Peasant/Farmer/Villager
+        {19, 24},   // Dark Elf Peasant (Male A/B/C, Female A/B/C)
+        {28, 30},   // Ogre Peasant
+        {49, 51},   // Peasant (Vampire Female Peasant)
+        {61, 63},   // Troll Peasant
+        {67, 69},   // Minotaur Peasant
+        {166, 168}, // Human Peasant
+    };
+
+    int id = std::to_underlying(monsterId);
+    for (const auto &[first, last] : peasantIdRanges)
+        if (id >= first && id <= last)
+            return true;
+    return false;
+}
+
 std::span<const MonsterAttackPreference> allMonsterAttackPreferences() {
     static constexpr std::initializer_list<MonsterAttackPreference> result = {
         ATTACK_PREFERENCE_KNIGHT,

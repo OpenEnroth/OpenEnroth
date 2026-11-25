@@ -7,12 +7,15 @@ set(ENGINE_SOURCES
         Engine.cpp
         EngineGlobals.cpp
         EngineIocContainer.cpp
+        GameType.cpp
         GpuHints.cpp
         Interaction.cpp
         Localization.cpp
         MapEnums.cpp
         Party.cpp
         PartyEnums.cpp
+        PartyMM8Roster.cpp
+        PartyStep.cpp
         PartyPlacement.cpp
         PriceCalculator.cpp
         SaveLoad.cpp
@@ -34,6 +37,7 @@ set(ENGINE_HEADERS
         EngineEnums.h
         EngineGlobals.h
         EngineIocContainer.h
+        GameType.h
         HitMap.h
         Interaction.h
         Localization.h
@@ -43,6 +47,8 @@ set(ENGINE_HEADERS
         MapEnums.h
         Party.h
         PartyEnums.h
+        PartyMM8Roster.h
+        PartyStep.h
         PartyPlacement.h
         Pid.h
         PriceCalculator.h
@@ -93,6 +99,27 @@ target_compile_definitions(engine PRIVATE
         OE_BUILD_PLATFORM="${OE_BUILD_PLATFORM}"
         OE_BUILD_ARCHITECTURE="${OE_BUILD_ARCHITECTURE}")
 
+if(OE_BUILD_TESTS)
+    set(TEST_ENGINE_SOURCES
+            Tests/GameType_ut.cpp
+            Tests/ItemIdIdentityCheckAllowlist_ut.cpp
+            Tests/MapInfo_ut.cpp
+            Tests/Mm7TextRu_ut.cpp
+            Tests/Seasons_ut.cpp)
+
+    add_library(test_engine OBJECT ${TEST_ENGINE_SOURCES})
+    target_link_libraries(test_engine PUBLIC testing_unit engine)
+
+    # Lets ItemIdIdentityCheckAllowlist_ut.cpp (a source-scanning test) find repo files
+    # by path without a --test-path-style CLI flag, mirroring OpenEnroth_GameTest's own
+    # MM8_REPO_ROOT_DIR.
+    target_compile_definitions(test_engine PRIVATE MM8_REPO_ROOT_DIR="${CMAKE_SOURCE_DIR}")
+
+    target_check_style(test_engine)
+
+    target_link_libraries(OpenEnroth_UnitTest PUBLIC test_engine)
+endif()
+
 add_subdirectory(Data)
 add_subdirectory(Components)
 add_subdirectory(Evt)
@@ -104,15 +131,3 @@ add_subdirectory(Snapshots)
 add_subdirectory(Spells)
 add_subdirectory(Tables)
 add_subdirectory(TurnEngine)
-
-if(OE_BUILD_TESTS)
-    set(TEST_ENGINE_SOURCES
-            Tests/Mm7TextRu_ut.cpp)
-
-    add_library(test_engine OBJECT ${TEST_ENGINE_SOURCES})
-    target_link_libraries(test_engine PUBLIC testing_unit engine)
-
-    target_check_style(test_engine)
-
-    target_link_libraries(OpenEnroth_GameTest PUBLIC test_engine)
-endif()

@@ -42,6 +42,26 @@ std::shared_ptr<GraphicsImage> saveload_ui_x_d;
 
 static std::shared_ptr<GraphicsImage> scrollstop;
 
+// The in-game Save/Load screens' MM8 layout, measured on the "lsave640" background (EnglishD.lod).
+// In-game path only, the main-menu Load screen has its own layout.
+constexpr int kMm8SaveLoadVisibleSlots = kMm8SaveLoadVisibleSlotsInGame;
+constexpr int kMm8SaveLoadListX = 78;
+constexpr int kMm8SaveLoadRowWidth = 190;
+constexpr int kMm8SaveLoadRowHeight = 21;
+constexpr std::array<int, kMm8SaveLoadVisibleSlots> kMm8SaveLoadRowTops = {
+    204, 228, 251, 275, 298, 322, 346, 369, 393, 416};
+constexpr Pointi kMm8SaveLoadHeaderPos = {77, 139};
+constexpr Pointi kMm8SaveLoadButtonPos = {343, 380};
+constexpr Pointi kMm8SaveLoadCancelPos = {457, 380};
+constexpr Pointi kMm8SaveLoadArrowUpPos = {281, 208};
+constexpr Pointi kMm8SaveLoadArrowDownPos = {281, 418};
+constexpr Sizei kMm8SaveLoadArrowSize = {18, 18};
+constexpr Pointi kMm8SaveLoadTrackPos = {276, 225};
+constexpr Sizei kMm8SaveLoadTrackSize = {29, 194};
+constexpr Recti kMm8SaveLoadLocationRect = {339, 155, 225, 25};
+constexpr Recti kMm8SaveLoadThumbnailRect = {317, 194, 274, 169};
+constexpr Recti kMm8SaveLoadDateRect = {325, 296, 250, 60};
+
 /**
  * @return                          Slots to show in the load menu - all saves from the saves folder, sorted by
  *                                  display name with file name as a tie-breaker.
@@ -133,7 +153,7 @@ void GUIWindow_SaveLoad::preselectSlot(std::string_view fileName) {
     if (pos == _slots.end())
         return;
     _selectedSlot = pos - _slots.begin();
-    _scrollPosition = std::min(_selectedSlot, std::max<int>(0, std::ssize(_slots) - 7));
+    _scrollPosition = std::min(_selectedSlot, std::max<int>(0, std::ssize(_slots) - _visibleSlots));
 }
 
 void GUIWindow_SaveLoad::scrollUp() {
@@ -141,19 +161,18 @@ void GUIWindow_SaveLoad::scrollUp() {
 }
 
 void GUIWindow_SaveLoad::scrollDown() {
-    if (_scrollPosition + 7 < std::ssize(_slots))
+    if (_scrollPosition + _visibleSlots < std::ssize(_slots))
         ++_scrollPosition;
 }
 
 void GUIWindow_SaveLoad::scrollWithMouse(Pointi mousePos) {
     int slotCount = std::ssize(_slots);
-    if (slotCount < 7)
+    if (slotCount < _visibleSlots)
         return; // Too few saves to scroll yet.
-    // 216 is the scroll bar offset from the top of the dialog, 107 is its total height.
-    int my = mousePos.y - frameRect.y - 216;
-    float fmy = static_cast<float>(my) / 107.0f;
-    int newPosition = std::round((slotCount - 7) * fmy);
-    _scrollPosition = std::clamp(newPosition, 0, slotCount - 7);
+    int my = mousePos.y - frameRect.y - _scrollTrackTop;
+    float fmy = static_cast<float>(my) / _scrollTrackHeight;
+    int newPosition = std::round((slotCount - _visibleSlots) * fmy);
+    _scrollPosition = std::clamp(newPosition, 0, slotCount - _visibleSlots);
     pAudioPlayer->playUISound(SOUND_StartMainChoice02);
 }
 
@@ -162,8 +181,16 @@ void GUIWindow_SaveLoad::drawSaveLoad() {
         const SavegameSlot &slot = selectedSlot();
         Recti titleRect(frameRect.x + 240, (frameRect.y - assets->pFontSmallnum->GetHeight()) + 157,
                         220, assets->pFontSmallnum->GetHeight());
-        if (slot.thumbnail)
-            render->DrawQuad2D(slot.thumbnail, {frameRect.x + 276, frameRect.y + 171});
+        if (_mm8IngameLayout) {
+            // MM8's background has a thumbnail panel much larger than the 150x112 thumbnail
+            // (SaveLoad.cpp's `MakeViewportScreenshot(150, 112)`). The original
+            // stretches the thumbnail to fill the whole framed box.
+            if (slot.thumbnail)
+                render->DrawQuad2D(slot.thumbnail.get(), Recti(0, 0, slot.thumbnail->width(), slot.thumbnail->height()), kMm8SaveLoadThumbnailRect);
+            titleRect = kMm8SaveLoadLocationRect;
+        } else if (slot.thumbnail) {
+            render->DrawQuad2D(slot.thumbnail.get(), {frameRect.x + 276, frameRect.y + 171});
+        }
 
         // Draw map name
         GUIWindow::DrawTitleText(assets->pFontSmallnum.get(), 0, 0, colorTable.White,
@@ -171,7 +198,7 @@ void GUIWindow_SaveLoad::drawSaveLoad() {
 
         // Draw date
         CivilTime time = slot.header.playingTime.toCivilTime();
-        titleRect.y = frameRect.y + 261;
+        titleRect = _mm8IngameLayout ? kMm8SaveLoadDateRect : Recti(titleRect.x, frameRect.y + 261, titleRect.w, titleRect.h);
         std::string str = fmt::format(
             "{} {}:{:02} {}\n{} {} {}",
             localization->dayName(time.dayOfWeek - 1),
@@ -205,6 +232,23 @@ void GUIWindow_SaveLoad::drawSaveLoad() {
         GUIWindow::DrawText(assets->pFontSmallnum.get(),
             {assets->pFontSmallnum->AlignText_Center(186, localization->str(LSTR_PLEASE_WAIT)) + 25, 304}, colorTable.White,
             localization->str(LSTR_PLEASE_WAIT), frameRect);
+    } else if (_mm8IngameLayout) {
+        // MM8's in-game background bakes a 10-row list, with its own up/down
+        // arrow icons and track already baked into the art (see kMm8SaveLoad* constants above).
+        // No scrollbar thumb is drawn, MM8 has no "con_x".
+        int visibleRows = std::min<int>(_visibleSlots, std::ssize(_slots) - _scrollPosition);
+        for (int row = 0; row < visibleRows; ++row) {
+            int i = _scrollPosition + row;
+            int slot_Y = kMm8SaveLoadRowTops[row];
+            bool isNewSaveSlot = _slots[i].fileName.empty();
+            if (keyboard_input_status != WINDOW_INPUT_IN_PROGRESS || i != _selectedSlot) {
+                DrawTextInRect(assets->pFontSmallnum.get(), {kMm8SaveLoadListX, slot_Y}, i == _selectedSlot ? colorTable.LaserLemon : colorTable.White,
+                               isNewSaveSlot ? localization->str(LSTR_NEW_SAVE) : _slots[i].header.name, kMm8SaveLoadRowWidth, 0);
+            } else {
+                GUIWindow::DrawFlashingInputCursor(DrawTextInRect(assets->pFontSmallnum.get(), {kMm8SaveLoadListX, slot_Y},
+                    colorTable.LaserLemon, keyboardInputHandler->GetTextInput(), kMm8SaveLoadRowWidth - 10, 1) + kMm8SaveLoadListX, slot_Y, assets->pFontSmallnum.get(), frameRect);
+            }
+        }
     } else {
         int slotCount = std::ssize(_slots);
         int stopPos = 0;
@@ -213,7 +257,9 @@ void GUIWindow_SaveLoad::drawSaveLoad() {
             if (_scrollPosition > slotCount - 7)
                 stopPos = 89;
         }
-        render->DrawQuad2D(scrollstop, {216 + frameRect.x, static_cast<int>(217 + frameRect.y + stopPos)});
+        // "con_x" (scrollbar thumb) doesn't exist under MM8's icons.lod.
+        if (assets->hasIconsLodEntry("con_x"))
+            render->DrawQuad2D(scrollstop, {216 + frameRect.x, static_cast<int>(217 + frameRect.y + stopPos)});
 
         int slot_Y = 199;
         for (int i = _scrollPosition; i < slotCount; ++i) {
@@ -233,10 +279,31 @@ void GUIWindow_SaveLoad::drawSaveLoad() {
 }
 
 GUIWindow_Save::GUIWindow_Save() : GUIWindow_SaveLoad(WINDOW_SAVE, {0, 0}, render->GetRenderDimensions()) {
-    saveload_ui_loadsave = assets->getIcon("loadsave");
-    saveload_ui_save_up = assets->getIcon("save_up");
-    saveload_ui_saveu = assets->getIcon("LS_saveU");
-    saveload_ui_x_u = assets->getIcon("x_u");
+    if (gameType() == GAME_TYPE_MM8) {
+        _mm8IngameLayout = true;
+        _visibleSlots = kMm8SaveLoadVisibleSlots;
+        _scrollTrackTop = kMm8SaveLoadTrackPos.y;
+        _scrollTrackHeight = kMm8SaveLoadTrackSize.h;
+    }
+
+    // "save_up"/"LS_saveU"/"x_u" don't exist in MM8's icons.lod. MM8 ships the Save Game screen's
+    // art under different names in EnglishD.lod instead: "bu_saveu" is the "SAVE GAME" header graphic,
+    // "bt_saveu"/"bt_cnclu" are the SAVE/CANCEL buttons' up-state art (down-state below). "loadsave" (the small
+    // floating panel background) has no known MM8 replacement, same as GUIWindow_Load's in-game path.
+    saveload_ui_loadsave = assets->getImage_ColorKey("loadsave");
+    if (gameType() == GAME_TYPE_MM8) {
+        saveload_ui_save_up = assets->getImage_ColorKeyFromEnglishDLOD("bu_saveu");
+        saveload_ui_saveu = assets->getImage_ColorKeyFromEnglishDLOD("bt_saveu");
+        saveload_ui_x_u = assets->getImage_ColorKeyFromEnglishDLOD("bt_cnclu");
+        saveload_ui_x_d = assets->getImage_ColorKeyFromEnglishDLOD("bt_cncld");
+        saveload_ui_ls_saved = assets->getImage_ColorKeyFromEnglishDLOD("bt_saved");
+    } else {
+        saveload_ui_save_up = assets->getImage_ColorKey("save_up");
+        saveload_ui_saveu = assets->getImage_ColorKey("LS_saveU");
+        saveload_ui_x_u = assets->getImage_ColorKey("x_u");
+        saveload_ui_x_d = assets->getImage_ColorKey("x_d");
+        saveload_ui_ls_saved = assets->getImage_ColorKey("LS_saveD");
+    }
 
     _slots = saveMenuSlots(); // New save slot is shown first.
 
@@ -244,31 +311,52 @@ GUIWindow_Save::GUIWindow_Save() : GUIWindow_SaveLoad(WINDOW_SAVE, {0, 0}, rende
     // none, e.g. when playing a new game - then the new save slot stays selected.
     preselectSlot(engine->_lastLoadedSaveFileName);
 
-    saveload_ui_x_d = assets->getIcon("x_d");
-    saveload_ui_ls_saved = assets->getIcon("LS_saveD");
-    ui_ar_up_dn = assets->getIcon("ar_up_dn");
-    ui_ar_dn_dn = assets->getIcon("ar_dn_dn");
+    ui_ar_up_dn = assets->getImage_ColorKey("ar_up_dn");
+    ui_ar_dn_dn = assets->getImage_ColorKey("ar_dn_dn");
 
     scrollstop = assets->getIcon("con_x");
 
-    CreateButton("SaveMenu_Slot0", {21, 198}, {191, 18}, BUTTON_TYPE_NORMAL, 0, UIMSG_SelectLoadSlot, 0);
-    CreateButton("SaveMenu_Slot1", {21, 218}, {191, 18}, BUTTON_TYPE_NORMAL, 0, UIMSG_SelectLoadSlot, 1);
-    CreateButton("SaveMenu_Slot2", {21, 238}, {191, 18}, BUTTON_TYPE_NORMAL, 0, UIMSG_SelectLoadSlot, 2);
-    CreateButton("SaveMenu_Slot3", {21, 258}, {191, 18}, BUTTON_TYPE_NORMAL, 0, UIMSG_SelectLoadSlot, 3);
-    CreateButton("SaveMenu_Slot4", {21, 278}, {191, 18}, BUTTON_TYPE_NORMAL, 0, UIMSG_SelectLoadSlot, 4);
-    CreateButton("SaveMenu_Slot5", {21, 298}, {191, 18}, BUTTON_TYPE_NORMAL, 0, UIMSG_SelectLoadSlot, 5);
-    CreateButton("SaveMenu_Slot6", {21, 318}, {191, 18}, BUTTON_TYPE_NORMAL, 0, UIMSG_SelectLoadSlot, 6);
+    if (gameType() == GAME_TYPE_MM8) {
+        // MM8's in-game background bakes a 10-row list at different coordinates
+        // than MM7's 7-row floating panel - see the kMm8SaveLoad* constants above.
+        for (int i = 0; i < kMm8SaveLoadVisibleSlots; ++i) {
+            CreateButton(fmt::format("SaveMenu_Slot{}", i), {kMm8SaveLoadListX, kMm8SaveLoadRowTops[i]},
+                         {kMm8SaveLoadRowWidth, kMm8SaveLoadRowHeight}, BUTTON_TYPE_NORMAL, 0, UIMSG_SelectLoadSlot, i);
+        }
+        pBtnLoadSlot = CreateButton("SaveMenu_Save", kMm8SaveLoadButtonPos, {saveload_ui_ls_saved->width(), saveload_ui_ls_saved->height()},
+                BUTTON_TYPE_NORMAL, 0, UIMSG_SaveLoadBtn, 0, INPUT_ACTION_INVALID, "", {saveload_ui_ls_saved});
+        pBtnCancel = CreateButton(kMm8SaveLoadCancelPos, {saveload_ui_x_d->width(), saveload_ui_x_d->height()}, BUTTON_TYPE_NORMAL, 0, UIMSG_Cancel, 0, INPUT_ACTION_INVALID, "", {saveload_ui_x_d});
+        pBtnArrowUp = CreateButton(kMm8SaveLoadArrowUpPos, kMm8SaveLoadArrowSize, BUTTON_TYPE_NORMAL, 0, UIMSG_ArrowUp, 0, INPUT_ACTION_INVALID, "", {ui_ar_up_dn});
+        pBtnDownArrow = CreateButton(kMm8SaveLoadArrowDownPos, kMm8SaveLoadArrowSize, BUTTON_TYPE_NORMAL, 0, UIMSG_DownArrow, 0, INPUT_ACTION_INVALID, "", {ui_ar_dn_dn});
+        CreateButton(kMm8SaveLoadTrackPos, kMm8SaveLoadTrackSize, BUTTON_TYPE_NORMAL, 0, UIMSG_SaveLoadScroll, 0);
+    } else {
+        CreateButton("SaveMenu_Slot0", {21, 198}, {191, 18}, BUTTON_TYPE_NORMAL, 0, UIMSG_SelectLoadSlot, 0);
+        CreateButton("SaveMenu_Slot1", {21, 218}, {191, 18}, BUTTON_TYPE_NORMAL, 0, UIMSG_SelectLoadSlot, 1);
+        CreateButton("SaveMenu_Slot2", {21, 238}, {191, 18}, BUTTON_TYPE_NORMAL, 0, UIMSG_SelectLoadSlot, 2);
+        CreateButton("SaveMenu_Slot3", {21, 258}, {191, 18}, BUTTON_TYPE_NORMAL, 0, UIMSG_SelectLoadSlot, 3);
+        CreateButton("SaveMenu_Slot4", {21, 278}, {191, 18}, BUTTON_TYPE_NORMAL, 0, UIMSG_SelectLoadSlot, 4);
+        CreateButton("SaveMenu_Slot5", {21, 298}, {191, 18}, BUTTON_TYPE_NORMAL, 0, UIMSG_SelectLoadSlot, 5);
+        CreateButton("SaveMenu_Slot6", {21, 318}, {191, 18}, BUTTON_TYPE_NORMAL, 0, UIMSG_SelectLoadSlot, 6);
 
-    pBtnLoadSlot = CreateButton("SaveMenu_Save", {241, 302}, {105, 40}, BUTTON_TYPE_NORMAL, 0, UIMSG_SaveLoadBtn, 0, INPUT_ACTION_INVALID, "", {saveload_ui_ls_saved});
-    pBtnCancel = CreateButton({350, 302}, {105, 40}, BUTTON_TYPE_NORMAL, 0, UIMSG_Cancel, 0, INPUT_ACTION_INVALID, "", {saveload_ui_x_d});
-    pBtnArrowUp = CreateButton({215, 199}, {17, 17}, BUTTON_TYPE_NORMAL, 0, UIMSG_ArrowUp, 0, INPUT_ACTION_INVALID, "", {ui_ar_up_dn});
-    pBtnDownArrow = CreateButton({215, 323}, {17, 17}, BUTTON_TYPE_NORMAL, 0, UIMSG_DownArrow, 0, INPUT_ACTION_INVALID, "", {ui_ar_dn_dn});
+        pBtnLoadSlot = CreateButton("SaveMenu_Save", {241, 302}, {105, 40}, BUTTON_TYPE_NORMAL, 0, UIMSG_SaveLoadBtn, 0, INPUT_ACTION_INVALID, "", {saveload_ui_ls_saved});
+        pBtnCancel = CreateButton({350, 302}, {105, 40}, BUTTON_TYPE_NORMAL, 0, UIMSG_Cancel, 0, INPUT_ACTION_INVALID, "", {saveload_ui_x_d});
+        pBtnArrowUp = CreateButton({215, 199}, {17, 17}, BUTTON_TYPE_NORMAL, 0, UIMSG_ArrowUp, 0, INPUT_ACTION_INVALID, "", {ui_ar_up_dn});
+        pBtnDownArrow = CreateButton({215, 323}, {17, 17}, BUTTON_TYPE_NORMAL, 0, UIMSG_DownArrow, 0, INPUT_ACTION_INVALID, "", {ui_ar_dn_dn});
 
-    CreateButton({215, 216}, {17, 107}, BUTTON_TYPE_NORMAL, 0, UIMSG_SaveLoadScroll, 0);
+        CreateButton({215, 216}, {17, 107}, BUTTON_TYPE_NORMAL, 0, UIMSG_SaveLoadScroll, 0);
+    }
 }
 
 void GUIWindow_Save::Update() {
-    if (GetCurrentMenuID() != MENU_SAVELOAD && GetCurrentMenuID() != MENU_LoadingProcInMainMenu) {
+    if (gameType() == GAME_TYPE_MM8) {
+        // Full-screen MM8 background (same "lsave640" asset the main-menu Load screen
+        // uses) instead of the small MM7 floating panel. It covers the ESC
+        // menu/world HUD behind this screen. This in-game path never sets MENU_SAVELOAD.
+        render->DrawQuad2D(assets->getImage_ColorKeyFromEnglishDLOD("lsave640"), {0, 0});
+        render->DrawQuad2D(saveload_ui_save_up, kMm8SaveLoadHeaderPos);
+        render->DrawQuad2D(saveload_ui_saveu, kMm8SaveLoadButtonPos);
+        render->DrawQuad2D(saveload_ui_x_u, kMm8SaveLoadCancelPos);
+    } else if (GetCurrentMenuID() != MENU_SAVELOAD && GetCurrentMenuID() != MENU_LoadingProcInMainMenu) {
         render->DrawQuad2D(saveload_ui_loadsave, {8, 8});
         render->DrawQuad2D(saveload_ui_saveu, {241, 302});
         render->DrawQuad2D(saveload_ui_save_up, {18, 139});
@@ -293,17 +381,43 @@ void GUIWindow_Save::slotClicked(int slotIndex, bool isDoubleClick) {
 
 GUIWindow_Load::GUIWindow_Load(bool ingame) : GUIWindow_SaveLoad(WINDOW_LOAD, {0, 0}, {0, 0}) {
     current_screen_type = SCREEN_LOADGAME;
+    this->ingame = ingame;
+    if (gameType() == GAME_TYPE_MM8 && ingame) {
+        _mm8IngameLayout = true;
+        _visibleSlots = kMm8SaveLoadVisibleSlots;
+        _scrollTrackTop = kMm8SaveLoadTrackPos.y;
+        _scrollTrackHeight = kMm8SaveLoadTrackSize.h;
+    }
 
-    saveload_ui_loadsave = assets->getIcon("loadsave");
-    saveload_ui_load_up = assets->getIcon("load_up");
-    saveload_ui_loadu = assets->getIcon("LS_loadU");
-    saveload_ui_x_u = assets->getIcon("x_u");
+    // MM8 doesn't ship "loadsave"/"load_up"/"LS_loadU"/"x_u" under their MM7 names in
+    // icons.lod. It ships the Load Game screen's
+    // art under different names in EnglishD.lod instead: "bu_loadu" is the "LOAD GAME" header
+    // graphic, "bt_loadu"/"bt_cnclu" are the LOAD/CANCEL buttons' up-state art (down-state below).
+    // Without this the LOAD button gets the "pending" placeholder texture, and the
+    // full-screen background falls back to icons.lod's "lsave640.pcx" entry, an MM7
+    // leftover asset (the "Might and Magic VII" banner).
+    if (gameType() == GAME_TYPE_MM8) {
+        saveload_ui_load_up = assets->getImage_ColorKeyFromEnglishDLOD("bu_loadu");
+        saveload_ui_loadu = assets->getImage_ColorKeyFromEnglishDLOD("bt_loadu");
+        saveload_ui_x_u = assets->getImage_ColorKeyFromEnglishDLOD("bt_cnclu");
+    } else {
+        saveload_ui_loadsave = assets->getImage_ColorKey("loadsave");
+        saveload_ui_load_up = assets->getImage_ColorKey("load_up");
+        saveload_ui_loadu = assets->getImage_ColorKey("LS_loadU");
+        saveload_ui_x_u = assets->getImage_ColorKey("x_u");
+    }
 
     main_menu_background = nullptr;
     if (!ingame) {
-        main_menu_background = assets->getIcon("lsave640.pcx");
+        main_menu_background = gameType() == GAME_TYPE_MM8
+            ? assets->getImage_ColorKeyFromEnglishDLOD("lsave640")
+            : assets->getImage_PCXFromIconsLOD("lsave640.pcx");
         render->DrawQuad2D(main_menu_background, {0, 0});
     } else {
+        // The in-game (Escape-menu) Load screen's own small floating panel background
+        // ("loadsave") has no known MM8 replacement.
+        if (gameType() == GAME_TYPE_MM8)
+            saveload_ui_loadsave = assets->getImage_ColorKey("loadsave");
         render->DrawQuad2D(saveload_ui_loadsave, {8, 8});
         render->DrawQuad2D(saveload_ui_loadu, {241, 302});
         render->DrawQuad2D(saveload_ui_load_up, {18, 139});
@@ -313,6 +427,17 @@ GUIWindow_Load::GUIWindow_Load(bool ingame) : GUIWindow_SaveLoad(WINDOW_LOAD, {0
     this->frameRect = Recti(saveload_dlg_xs[ingame ? 1 : 0], saveload_dlg_ys[ingame ? 1 : 0],
                             saveload_dlg_zs[ingame ? 1 : 0], saveload_dlg_ws[ingame ? 1 : 0]);
 
+    // `GUIWindow::Contains` (the outer click-routing check `Mouse::UI_OnMouseLeftClick`
+    // runs BEFORE it ever looks at individual button rects) gates on this same `frameRect`, which is
+    // sized for MM7's narrower floating dialog (right/bottom edge at (542,404) - origin
+    // (82,60), size (460,344)). MM8's LOAD/CANCEL button art draws as far as (563,421), so the frame
+    // is widened to the screen edge, keeping the origin every other position in this file
+    // is relative to. MM8's background bakes in the whole dialog frame.
+    if (gameType() == GAME_TYPE_MM8 && !ingame) {
+        this->frameRect.w = render->GetRenderDimensions().w - this->frameRect.x;
+        this->frameRect.h = render->GetRenderDimensions().h - this->frameRect.y;
+    }
+
     DrawText(assets->pFontSmallnum.get(), {25, 199}, colorTable.White, localization->str(LSTR_READING), this->frameRect);
     render->Present();
 
@@ -321,33 +446,94 @@ GUIWindow_Load::GUIWindow_Load(bool ingame) : GUIWindow_SaveLoad(WINDOW_LOAD, {0
     // Pre-select the last loaded save.
     preselectSlot(engine->_lastLoadedSaveFileName);
 
-    saveload_ui_x_d = assets->getIcon("x_d");
-    saveload_ui_ls_saved = assets->getIcon("LS_loadD");
-    ui_ar_up_dn = assets->getIcon("AR_UP_DN");
-    ui_ar_dn_dn = assets->getIcon("AR_DN_DN");
+    if (gameType() == GAME_TYPE_MM8) {
+        saveload_ui_x_d = assets->getImage_ColorKeyFromEnglishDLOD("bt_cncld");
+        saveload_ui_ls_saved = assets->getImage_ColorKeyFromEnglishDLOD("bt_loadd");
+    } else {
+        saveload_ui_x_d = assets->getImage_ColorKey("x_d");
+        saveload_ui_ls_saved = assets->getImage_ColorKey("LS_loadD");
+    }
+    ui_ar_up_dn = assets->getImage_ColorKey("AR_UP_DN");
+    ui_ar_dn_dn = assets->getImage_ColorKey("AR_DN_DN");
 
-    scrollstop = assets->getIcon("con_x");
+    // "con_x" (scrollbar thumb) has no known MM8 replacement in EnglishD.lod
+    // either - the draw call itself is guarded (skipped when missing) in UI_DrawSaveLoad below.
+    scrollstop = assets->getImage_ColorKey("con_x");
 
-    CreateButton("LoadMenu_Slot0", {21, 198}, {191, 18}, BUTTON_TYPE_NORMAL, 0, UIMSG_SelectLoadSlot, 0);
-    CreateButton("LoadMenu_Slot1", {21, 219}, {191, 18}, BUTTON_TYPE_NORMAL, 0, UIMSG_SelectLoadSlot, 1);
-    CreateButton("LoadMenu_Slot2", {21, 240}, {191, 18}, BUTTON_TYPE_NORMAL, 0, UIMSG_SelectLoadSlot, 2);
-    CreateButton("LoadMenu_Slot3", {21, 261}, {191, 18}, BUTTON_TYPE_NORMAL, 0, UIMSG_SelectLoadSlot, 3);
-    CreateButton("LoadMenu_Slot4", {21, 282}, {191, 18}, BUTTON_TYPE_NORMAL, 0, UIMSG_SelectLoadSlot, 4);
-    CreateButton("LoadMenu_Slot5", {21, 303}, {191, 18}, BUTTON_TYPE_NORMAL, 0, UIMSG_SelectLoadSlot, 5);
-    CreateButton("LoadMenu_Slot6", {21, 324}, {191, 18}, BUTTON_TYPE_NORMAL, 0, UIMSG_SelectLoadSlot, 6);
+    if (gameType() == GAME_TYPE_MM8 && ingame) {
+        // The in-game (Escape-menu) Load screen uses the same MM8 layout
+        // as GUIWindow_Save - see the kMm8SaveLoad* constants above. The
+        // main-menu Load screen has its own layout.
+        for (int i = 0; i < kMm8SaveLoadVisibleSlots; ++i) {
+            CreateButton(fmt::format("LoadMenu_Slot{}", i), {kMm8SaveLoadListX, kMm8SaveLoadRowTops[i]},
+                         {kMm8SaveLoadRowWidth, kMm8SaveLoadRowHeight}, BUTTON_TYPE_NORMAL, 0, UIMSG_SelectLoadSlot, i);
+        }
+        pBtnLoadSlot = CreateButton("LoadMenu_Load", kMm8SaveLoadButtonPos, {saveload_ui_ls_saved->width(), saveload_ui_ls_saved->height()},
+                BUTTON_TYPE_NORMAL, 0, UIMSG_SaveLoadBtn, 0, INPUT_ACTION_INVALID, "", {saveload_ui_ls_saved});
+        pBtnCancel = CreateButton(kMm8SaveLoadCancelPos, {saveload_ui_x_d->width(), saveload_ui_x_d->height()}, BUTTON_TYPE_NORMAL, 0, UIMSG_Cancel, 0, INPUT_ACTION_INVALID, "", {saveload_ui_x_d});
+        pBtnArrowUp = CreateButton(kMm8SaveLoadArrowUpPos, kMm8SaveLoadArrowSize, BUTTON_TYPE_NORMAL, 0, UIMSG_ArrowUp, 0, INPUT_ACTION_INVALID, "", {ui_ar_up_dn});
+        pBtnDownArrow = CreateButton(kMm8SaveLoadArrowDownPos, kMm8SaveLoadArrowSize, BUTTON_TYPE_NORMAL, 0, UIMSG_DownArrow, 0, INPUT_ACTION_INVALID, "", {ui_ar_dn_dn});
+        CreateButton("LoadMenu_Scroll", kMm8SaveLoadTrackPos, kMm8SaveLoadTrackSize, BUTTON_TYPE_NORMAL, 0, UIMSG_SaveLoadScroll, 0);
+    } else {
+        CreateButton("LoadMenu_Slot0", {21, 198}, {191, 18}, BUTTON_TYPE_NORMAL, 0, UIMSG_SelectLoadSlot, 0);
+        CreateButton("LoadMenu_Slot1", {21, 219}, {191, 18}, BUTTON_TYPE_NORMAL, 0, UIMSG_SelectLoadSlot, 1);
+        CreateButton("LoadMenu_Slot2", {21, 240}, {191, 18}, BUTTON_TYPE_NORMAL, 0, UIMSG_SelectLoadSlot, 2);
+        CreateButton("LoadMenu_Slot3", {21, 261}, {191, 18}, BUTTON_TYPE_NORMAL, 0, UIMSG_SelectLoadSlot, 3);
+        CreateButton("LoadMenu_Slot4", {21, 282}, {191, 18}, BUTTON_TYPE_NORMAL, 0, UIMSG_SelectLoadSlot, 4);
+        CreateButton("LoadMenu_Slot5", {21, 303}, {191, 18}, BUTTON_TYPE_NORMAL, 0, UIMSG_SelectLoadSlot, 5);
+        CreateButton("LoadMenu_Slot6", {21, 324}, {191, 18}, BUTTON_TYPE_NORMAL, 0, UIMSG_SelectLoadSlot, 6);
 
-    pBtnLoadSlot = CreateButton("LoadMenu_Load", {241, 302}, {105, 40}, BUTTON_TYPE_NORMAL, 0, UIMSG_SaveLoadBtn, 0, INPUT_ACTION_INVALID, "", {saveload_ui_ls_saved});
-    pBtnCancel = CreateButton({350, 302}, {105, 40}, BUTTON_TYPE_NORMAL, 0, UIMSG_Cancel, 0, INPUT_ACTION_INVALID, "", {saveload_ui_x_d});
-    pBtnArrowUp = CreateButton({215, 199}, {17, 17}, BUTTON_TYPE_NORMAL, 0, UIMSG_ArrowUp, 0, INPUT_ACTION_INVALID, "", {ui_ar_up_dn});
-    pBtnDownArrow = CreateButton({215, 323}, {17, 17}, BUTTON_TYPE_NORMAL, 0, UIMSG_DownArrow, 0, INPUT_ACTION_INVALID, "", {ui_ar_dn_dn});
+        // MM8's Load Game screen (main-menu path only, ingame == false) lays the
+        // LOAD/CANCEL buttons out at different coordinates than MM7's. The click hitbox matches
+        // the art the Update() override below draws at absolute {343,380}/{457,380} (measured
+        // on the background art).
+        // Relative to this constructor's own frameRect origin ({82,60} when !ingame, see saveload_dlg_xs/ys
+        // above) that's {261,320}/{375,320}. The in-game (Escape-menu) Load screen's
+        // MM8 layout is handled by the branch above instead.
+        Pointi loadBtnPos = {241, 302};
+        Pointi cancelBtnPos = {350, 302};
+        if (gameType() == GAME_TYPE_MM8 && !ingame) {
+            loadBtnPos = {261, 320};
+            cancelBtnPos = {375, 320};
+        }
+        pBtnLoadSlot = CreateButton("LoadMenu_Load", loadBtnPos, {105, 40}, BUTTON_TYPE_NORMAL, 0, UIMSG_SaveLoadBtn, 0, INPUT_ACTION_INVALID, "", {saveload_ui_ls_saved});
+        pBtnCancel = CreateButton(cancelBtnPos, {105, 40}, BUTTON_TYPE_NORMAL, 0, UIMSG_Cancel, 0, INPUT_ACTION_INVALID, "", {saveload_ui_x_d});
+        pBtnArrowUp = CreateButton({215, 199}, {17, 17}, BUTTON_TYPE_NORMAL, 0, UIMSG_ArrowUp, 0, INPUT_ACTION_INVALID, "", {ui_ar_up_dn});
+        pBtnDownArrow = CreateButton({215, 323}, {17, 17}, BUTTON_TYPE_NORMAL, 0, UIMSG_DownArrow, 0, INPUT_ACTION_INVALID, "", {ui_ar_dn_dn});
 
-    CreateButton("LoadMenu_Scroll", {215, 216}, {17, 107}, BUTTON_TYPE_NORMAL, 0, UIMSG_SaveLoadScroll, 0);
+        CreateButton("LoadMenu_Scroll", {215, 216}, {17, 107}, BUTTON_TYPE_NORMAL, 0, UIMSG_SaveLoadScroll, 0);
+    }
 }
 
 void GUIWindow_Load::Update() {
-    if (main_menu_background != nullptr)
+    if (gameType() == GAME_TYPE_MM8 && ingame) {
+        // Full-screen MM8 background for the in-game (Escape-menu) path too - same
+        // asset/positions as GUIWindow_Save::Update(), see the kMm8SaveLoad* constants above.
+        render->DrawQuad2D(assets->getImage_ColorKeyFromEnglishDLOD("lsave640"), {0, 0});
+        render->DrawQuad2D(saveload_ui_load_up, kMm8SaveLoadHeaderPos);
+        render->DrawQuad2D(saveload_ui_loadu, kMm8SaveLoadButtonPos);
+        render->DrawQuad2D(saveload_ui_x_u, kMm8SaveLoadCancelPos);
+        drawSaveLoad();
+        return;
+    }
+    if (main_menu_background != nullptr) {
         render->DrawQuad2D(main_menu_background, {0, 0});
-    if (GetCurrentMenuID() != MENU_SAVELOAD && GetCurrentMenuID() != MENU_LoadingProcInMainMenu) {
+    }
+    if (gameType() == GAME_TYPE_MM8 && main_menu_background != nullptr) {
+        // `MainMenuState` keeps MENU_SAVELOAD set while this screen is shown, so MM8's header and
+        // button labels, which its background does not bake in, are drawn in that state too.
+        // Not during MENU_LoadingProcInMainMenu.
+        //
+        // MM8's own "lsave640" background already bakes in the dialog frame/panels (unlike MM7's,
+        // where "loadsave" draws that frame as a separate overlay) - only the header/button art needs
+        // to be drawn on top, at the MM8 layout's own coordinates (measured on the
+        // background art, not MM7's (18,139)/(241,302)/(351,302)).
+        if (GetCurrentMenuID() != MENU_LoadingProcInMainMenu) {
+            render->DrawQuad2D(saveload_ui_load_up, {77, 139});
+            render->DrawQuad2D(saveload_ui_loadu, {343, 380});
+            render->DrawQuad2D(saveload_ui_x_u, {457, 380});
+        }
+    } else if (GetCurrentMenuID() != MENU_SAVELOAD && GetCurrentMenuID() != MENU_LoadingProcInMainMenu) {
         render->DrawQuad2D(saveload_ui_loadsave, {8, 8});
         render->DrawQuad2D(saveload_ui_loadu, {241, 302});
         render->DrawQuad2D(saveload_ui_load_up, {18, 139});

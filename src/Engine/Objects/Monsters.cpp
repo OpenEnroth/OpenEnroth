@@ -10,6 +10,8 @@
 #include "Library/Logger/Logger.h"
 #include "Library/Serialization/Serialization.h"
 
+#include "Engine/Spells/Spells.h"
+
 #include "Utility/MapAccess.h"
 #include "Utility/Memory/Blob.h"
 #include "Utility/String/Ascii.h"
@@ -32,37 +34,45 @@ SpellId ParseSpellType(std::string_view name) {
         {"Blades",             SPELL_EARTH_BLADES},
         {"Bless",              SPELL_SPIRIT_BLESS},
         {"Day of Protection",  SPELL_LIGHT_DAY_OF_PROTECTION},
+        {"Day of the Gods",    SPELL_LIGHT_DAY_OF_THE_GODS},
         {"Dispel Magic",       SPELL_LIGHT_DISPEL_MAGIC},
         {"Dragon Breath",      SPELL_DARK_DRAGON_BREATH},
         {"Fate",               SPELL_SPIRIT_FATE},
         {"Fire Bolt",          SPELL_FIRE_FIRE_BOLT},
+        {"Firebolt",           SPELL_FIRE_FIRE_BOLT}, // MM8 monsters.txt spells this without a space, unlike MM7's "Fire Bolt".
         {"Fireball",           SPELL_FIRE_FIREBALL},
         {"Hammerhands",        SPELL_BODY_HAMMERHANDS},
         {"Harm",               SPELL_BODY_HARM},
         {"Haste",              SPELL_FIRE_HASTE},
+        {"Heal",               SPELL_BODY_FIRST_AID}, // MM8's own spells.txt names spell #68 "Heal", not "First Aid" like the enum constant.
         {"Heroism",            SPELL_SPIRIT_HEROISM},
         {"Hour of Power",      SPELL_LIGHT_HOUR_OF_POWER},
         {"Ice Blast",          SPELL_WATER_ICE_BLAST},
         {"Ice Bolt",           SPELL_WATER_ICE_BOLT},
+        {"Implosion",          SPELL_AIR_IMPLOSION},
         {"Incinerate",         SPELL_FIRE_INCINERATE},
         {"Light Bolt",         SPELL_LIGHT_LIGHT_BOLT},
         {"Lightning Bolt",     SPELL_AIR_LIGHTNING_BOLT},
+        {"Mass Distortion",    SPELL_EARTH_MASS_DISTORTION},
         {"Meteor Shower",      SPELL_FIRE_METEOR_SHOWER},
         {"Mind Blast",         SPELL_MIND_MIND_BLAST},
         {"Pain Reflection",    SPELL_DARK_PAIN_REFLECTION},
+        {"Paralyze",           SPELL_LIGHT_PARALYZE},
+        {"Poison Spray",       SPELL_WATER_POISON_SPRAY},
         {"Power Cure",         SPELL_BODY_POWER_CURE},
         {"Psychic Shock",      SPELL_MIND_PSYCHIC_SHOCK},
         {"Rock Blast",         SPELL_EARTH_ROCK_BLAST},
         {"Shield",             SPELL_AIR_SHIELD},
         {"Shrapmetal",         SPELL_DARK_SHARPMETAL},
         {"Sparks",             SPELL_AIR_SPARKS},
+        {"Spirit Lash",        SPELL_SPIRIT_SPIRIT_LASH},
         {"Stone Skin",         SPELL_EARTH_STONESKIN},
         {"Toxic Cloud",        SPELL_DARK_TOXIC_CLOUD},
     };
 
     auto it = monsterSpellMap.find(name);
     if (it != monsterSpellMap.end())
-        return it->second;
+        return spellWithEffect(it->second);
     MM_WARNING("Unknown monster spell {}", name);
     return SPELL_NONE;
 }
@@ -79,7 +89,8 @@ CombinedSkillValue ParseSkillValue(std::string_view skillString, std::string_vie
         mastery = MASTERY_EXPERT;
     } else if (masteryString == "M") {
         mastery = MASTERY_MASTER;
-    } else if (masteryString == "G") {
+    } else if (masteryString == "G" || masteryString == "GM") {
+        // MM8's monsters.txt spells out grandmaster as "GM" rather than MM7's single-letter "G".
         mastery = MASTERY_GRANDMASTER;
     } else {
         throw Exception("Invalid character skill mastery string '{}'", masteryString);
@@ -329,9 +340,11 @@ void MonsterStats::Initialize(const Blob &monsters) {
     };
 
     auto parseYesNo = [](std::string_view s) -> bool {
-        if (ascii::noCaseEquals(s, "Y"))
+        if (ascii::noCaseEquals(s, "Y") || s == "1")
             return true;
-        if (ascii::noCaseEquals(s, "N"))
+        // MM8's monsters.txt has at least one row (Efreeti Soldier's
+        // "Fly" column) using "0" instead of "N".
+        if (ascii::noCaseEquals(s, "N") || s == "0")
             return false;
         throw Exception("Expected 'Y' or 'N', got '{}'", s);
     };

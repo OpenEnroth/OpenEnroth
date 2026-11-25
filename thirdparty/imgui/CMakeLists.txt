@@ -46,3 +46,9 @@ set(IMGUI_HEADERS
 add_library(imgui STATIC ${IMGUI_SOURCES} ${IMGUI_HEADERS})
 target_link_libraries(imgui PUBLIC imgui_backends)
 target_include_directories(imgui PUBLIC ${IMGUI_BACKENDS_SOURCE_DIR} ${CMAKE_CURRENT_SOURCE_DIR})
+if(CMAKE_CXX_COMPILER_ID STREQUAL "Clang" OR CMAKE_CXX_COMPILER_ID STREQUAL "AppleClang")
+    # Newer Clang flags stb_textedit_replace(..., &empty_string, 0) in imgui_widgets.cpp as using an
+    # uninitialized pointee, even though the passed length of 0 means it's never read. False positive
+    # in vendored code we don't control; downgrade to non-fatal for this target only.
+    target_compile_options(imgui PRIVATE -Wno-error=uninitialized-const-pointer)
+endif()

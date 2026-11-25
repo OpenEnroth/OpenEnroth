@@ -220,6 +220,9 @@ class GameConfig : public Config {
         Int NewGameGold = {this, "new_game_gold", 200,
             "Starting gold."};
 
+        String StartingMap = String(this, "starting_map", "out01.odm",
+            "New Game starting map.");
+
         Int PartyEyeLevel = {this, "party_eye_level", 160,
             "Party eye level."};
 
@@ -403,6 +406,7 @@ class GameConfig : public Config {
         Key SelectChar2 = {this, INPUT_ACTION_SELECT_CHAR_2, "select_char_2", PlatformKey::KEY_NONE, "Select 2 character key."};
         Key SelectChar3 = {this, INPUT_ACTION_SELECT_CHAR_3, "select_char_3", PlatformKey::KEY_NONE, "Select 3 character key."};
         Key SelectChar4 = {this, INPUT_ACTION_SELECT_CHAR_4, "select_char_4", PlatformKey::KEY_NONE, "Select 4 character key."};
+        Key SelectChar5 = {this, INPUT_ACTION_SELECT_CHAR_5, "select_char_5", PlatformKey::KEY_NONE, "Select 5 character key."};
         Key SelectNPC1 = {this, INPUT_ACTION_SELECT_NPC_1, "select_npc_1", PlatformKey::KEY_NONE, "Select 1 hireling key."};
         Key SelectNPC2 = {this, INPUT_ACTION_SELECT_NPC_2, "select_npc_2", PlatformKey::KEY_NONE, "Select 2 hireling key."};
         Key DialogUp = {this, INPUT_ACTION_DIALOG_UP, "dialog_up", PlatformKey::KEY_GAMEPAD_UP, "Dialog up key."};
@@ -593,6 +597,7 @@ class GameConfig : public Config {
         Key SelectChar2 = {this, INPUT_ACTION_SELECT_CHAR_2, "select_char_2", PlatformKey::KEY_DIGIT_2, "Select 2 character key."};
         Key SelectChar3 = {this, INPUT_ACTION_SELECT_CHAR_3, "select_char_3", PlatformKey::KEY_DIGIT_3, "Select 3 character key."};
         Key SelectChar4 = {this, INPUT_ACTION_SELECT_CHAR_4, "select_char_4", PlatformKey::KEY_DIGIT_4, "Select 4 character key."};
+        Key SelectChar5 = {this, INPUT_ACTION_SELECT_CHAR_5, "select_char_5", PlatformKey::KEY_DIGIT_5, "Select 5 character key."};
         Key SelectNPC1 = {this, INPUT_ACTION_SELECT_NPC_1, "select_npc_1", PlatformKey::KEY_DIGIT_5, "Select 1 hireling key."};
         Key SelectNPC2 = {this, INPUT_ACTION_SELECT_NPC_2, "select_npc_2", PlatformKey::KEY_DIGIT_6, "Select 2 hireling key."};
         Key DialogUp = {this, INPUT_ACTION_DIALOG_UP, "dialog_up", PlatformKey::KEY_UP, "Dialog up key."};

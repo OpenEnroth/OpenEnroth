@@ -128,6 +128,33 @@ class Engine {
     void toggleOverlays();
     void disableOverlays();
 
+    /**
+     * Makes `drawWorld` draw the level even on a screen that normally doesn't re-draw it
+     * - `PauseGameDrawing()` (house / spellbook / character screens) or a playing `pMovie_Track`
+     * (which is what a house screen sets). On those screens the engine leaves the last drawn world
+     * sitting in the framebuffer, so it stays visible around the UI panel. Tests set this to re-draw such a frame.
+     * Default off.
+     *
+     * `createHouseUI()` (UIHouses.cpp) is the one production call site: right as a house
+     * screen opens (current_screen_type already flipped, so every HUD element's screen gate
+     * already reflects it), it forces two full `Engine::Draw()` passes so the frame that
+     * freezes going forward is a clean composite instead of whatever exploration-only HUD chrome
+     * (compass/bookends/top-bar icons) happened to be baked into the last pre-transition frame.
+     * Two passes, not one: double-buffering means a single forced draw only cleans whichever
+     * buffer is currently back.
+     *
+     * @param forced                    Whether to draw the level regardless of the above.
+     */
+    void setWorldDrawForced(bool forced) { _forceWorldDraw = forced; }
+
+    /**
+     * Test-only: skips the 3D scene draw in `drawWorld`, so a fast-forward run that reads no pixels does not pay
+     * for the world's GL work. Camera setup still runs, so mouse picking and the HUD keep working, and each frame still swaps.
+     *
+     * @param skipped                   Whether to skip the 3D scene draw.
+     */
+    void setWorldDrawSkipped(bool skipped) { _skipWorldDraw = skipped; }
+
     bool is_underwater = false;
     bool is_saturate_faces = false;
     bool is_fog = false; // keeps track of whether fog enabled in d3d
@@ -152,6 +179,7 @@ class Engine {
     std::optional<MapDestination> _pendingTransition; // Set while a map change is in flight, consumed by the loaders.
     std::string _lastLoadedSaveFileName; // File name of the last loaded savegame, pre-selected in the save & load menus.
     std::string _pendingLoadFileName; // Savegame to load when the main menu FSM exits into the game loop.
+    bool _pauseAfterNextWorldLoad = false; // The next world load leaves the game timer paused, and the caller resumes it.
     OverlaySystem &_overlaySystem;
 
     std::unique_ptr<GUIMessageQueue> _messageQueue;
@@ -162,6 +190,8 @@ class Engine {
     std::unique_ptr<LightsStack_MobileLight_> _mobileLights;
 
  private:
+    bool _forceWorldDraw = false; // See setWorldDrawForced().
+    bool _skipWorldDraw = false; // See setWorldDrawSkipped().
     std::unique_ptr<ResourceManager> _resourceManager;
 };
 

@@ -2,13 +2,15 @@ cmake_minimum_required(VERSION 3.27 FATAL_ERROR)
 
 set(ENGINE_COMPONENTS_CONTROL_SOURCES
         EngineControlComponent.cpp
-        EngineController.cpp)
+        EngineController.cpp
+        WatchControl.cpp)
 
 set(ENGINE_COMPONENTS_CONTROL_HEADERS
         EngineControlComponent.h
         EngineControlState.h
         EngineControlStateHandle.h
-        EngineController.h)
+        EngineController.h
+        WatchControl.h)
 
 add_library(engine_components_control STATIC ${ENGINE_COMPONENTS_CONTROL_SOURCES} ${ENGINE_COMPONENTS_CONTROL_HEADERS})
 target_check_style(engine_components_control)

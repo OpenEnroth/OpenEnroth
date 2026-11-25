@@ -3,6 +3,7 @@
 #include <string>
 
 #include "Engine/Engine.h"
+#include "Engine/GameType.h"
 #include "Engine/Graphics/Indoor.h"
 #include "Engine/Graphics/Renderer/Renderer.h"
 #include "Engine/Localization.h"
@@ -30,7 +31,7 @@ static const Segment<Condition> standardConditionsIncludeDead = {CONDITION_CURSE
 NPCData *getNPCData(int npcId) {
     if (npcId >= 0) {
         if (npcId < 5000) {
-            if (npcId >= 501)
+            if (static_cast<size_t>(npcId) >= pNPCStats->pNPCData.size())
                 MM_WARNING("NPC id exceeds MAX_DATA!");
             return &pNPCStats->pNPCData[npcId];
         } else {
@@ -74,6 +75,11 @@ NpcType getNPCType(int npcId) {
     buf.Prepare();
 
     return buf.IsFollower(std::abs(npcId) - 1) ? NPC_TYPE_QUEST : NPC_TYPE_HIREABLE;
+}
+
+std::string npcPortraitTextureName(int portraitId) {
+    // MM8's icons.lod ships "npc0800".."npc0884" etc (4-digit-padded), MM7 ships 3-digit "npc800".
+    return gameType() == GAME_TYPE_MM8 ? fmt::format("npc{:04}", portraitId) : fmt::format("npc{:03}", portraitId);
 }
 
 //----- (00445308) --------------------------------------------------------

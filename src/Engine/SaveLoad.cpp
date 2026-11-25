@@ -1,5 +1,6 @@
 #include "SaveLoad.h"
 
+#include <algorithm>
 #include <cassert>
 #include <unordered_map>
 #include <string>
@@ -10,6 +11,7 @@
 
 #include "Engine/Engine.h"
 #include "Engine/EngineGlobals.h"
+#include "Engine/GameType.h"
 #include "Engine/PartyPlacement.h"
 #include "Engine/Resources/EngineFileSystem.h"
 #include "Engine/Resources/LOD.h"
@@ -24,10 +26,12 @@
 #include "Engine/Graphics/Image.h"
 #include "Engine/Graphics/Renderer/Renderer.h"
 
+#include "Engine/Objects/Actor.h"
 #include "Engine/Objects/SpriteObject.h"
 
 #include "Engine/Snapshots/CompositeSnapshots.h"
 
+#include "Library/Snapshots/CommonSnapshots.h"
 #include "Engine/Spells/CastSpellInfo.h"
 
 #include "GUI/GUIWindow.h"
@@ -66,9 +70,15 @@ void loadGame(std::string_view fileName) {
 
     // Move loaded state to global variables.
     *pParty = std::move(state.party);
+    // An older save, or one taken mid-recruit, can carry non-recruited members (rosterId==0
+    // beyond the champion) that are not marked inert.
+    pParty->enforcePlaceholderInertness();
     *gameTimer = std::move(state.eventTimer);
     *pActiveOverlayList = std::move(state.overlays);
-    pNPCStats->pNPCData = std::move(state.npcData);
+    // `state.npcData` is wider than `pNPCStats->pNPCData` (551 vs 528) to match an MM8 save's
+    // npcdata.bin size - the extra slots are pure filler (see `SaveLoad.h`), so only copy the
+    // ones gameplay indexes into.
+    std::copy_n(state.npcData.begin(), pNPCStats->pNPCData.size(), pNPCStats->pNPCData.begin());
     pNPCStats->pGroups = std::move(state.npcGroups);
     pMapDeltas = std::move(state.mapDeltas);
 
@@ -92,7 +102,10 @@ void loadGame(std::string_view fileName) {
     }
 
     pParty->setActiveCharacterIndex(-1);
-    pParty->setActiveToFirstCanAct();
+    // A save written while every member is down (the moment before the game revives the party) has nobody to
+    // make active. The party-death state takes over on the next frame, as when the party dies in play.
+    if (pParty->canActCount() > 0)
+        pParty->setActiveToFirstCanAct();
 
 /*
     for (int i = 0; i < 4; ++i) {
@@ -142,6 +155,13 @@ void loadGame(std::string_view fileName) {
     bFlashHistoryBook = false;
 }
 
+static std::string mapDeltaFileName(std::string_view mapFileName) {
+    std::string deltaName(mapFileName);
+    size_t pos = deltaName.find_last_of('.');
+    deltaName[pos + 1] = 'd';
+    return deltaName;
+}
+
 std::pair<SaveGameHeader, Blob> createSaveData(bool resetWorld, std::string_view title) {
     std::string currentMapName = pMapTable->pInfos[engine->_currentLoadedMapId].fileName;
 
@@ -153,7 +173,9 @@ std::pair<SaveGameHeader, Blob> createSaveData(bool resetWorld, std::string_view
     state.party = *pParty;
     state.eventTimer = *gameTimer;
     state.overlays = *pActiveOverlayList;
-    state.npcData = pNPCStats->pNPCData;
+    // Pad the trailing (filler-only) slots with defaults - see the `state.npcData` comment above.
+    state.npcData.fill(NPCData());
+    std::copy(pNPCStats->pNPCData.begin(), pNPCStats->pNPCData.end(), state.npcData.begin());
     state.npcGroups = pNPCStats->pGroups;
 
     // Populate map deltas.
@@ -176,17 +198,39 @@ std::pair<SaveGameHeader, Blob> createSaveData(bool resetWorld, std::string_view
         CompactLayingItemsList();
 
         Blob uncompressed;
+        bool isMm8 = gameType() == GAME_TYPE_MM8;
         if (uCurrentlyLoadedLevelType == LEVEL_INDOOR) {
-            serialize(*pIndoor, &uncompressed, tags::via<IndoorDelta_MM7>);
+            if (isMm8) {
+                serialize(*pIndoor, &uncompressed, tags::via<IndoorDelta_MM8>);
+            } else {
+                serialize(*pIndoor, &uncompressed, tags::via<IndoorDelta_MM7>);
+            }
         } else {
             assert(uCurrentlyLoadedLevelType == LEVEL_OUTDOOR);
-            serialize(*pOutdoor, &uncompressed, tags::via<OutdoorDelta_MM7>);
+            if (isMm8) {
+                serialize(*pOutdoor, &uncompressed, tags::via<OutdoorDelta_MM8>);
+            } else {
+                serialize(*pOutdoor, &uncompressed, tags::via<OutdoorDelta_MM7>);
+            }
         }
 
-        std::string deltaName = currentMapName;
-        size_t pos = deltaName.find_last_of('.');
-        deltaName[pos + 1] = 'd';
+        std::string deltaName = mapDeltaFileName(currentMapName);
         state.mapDeltas[deltaName] = lod::encodeCompressed(uncompressed);
+
+        // See `kMm8LiveActorsKey`'s comment in `SaveLoad.h`.
+        if (isMm8) {
+            std::vector<Actor_MM8> actorsMm8;
+            snapshot(pActors, &actorsMm8);
+            Blob actorsBlob;
+            serialize(actorsMm8, &actorsBlob);
+            state.mapDeltas[std::string(kMm8LiveActorsKey)] = std::move(actorsBlob);
+
+            std::vector<SpriteObject_MM7> spritesMm8;
+            snapshot(pSpriteObjects, &spritesMm8);
+            Blob spritesBlob;
+            serialize(spritesMm8, &spritesBlob);
+            state.mapDeltas[std::string(kMm8LiveSpritesKey)] = std::move(spritesBlob);
+        }
     }
 
     // Capture thumbnail.

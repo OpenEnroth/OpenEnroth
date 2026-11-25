@@ -48,6 +48,14 @@ void setNPCNamesOnLoad();
  */
 NpcType getNPCType(int npcId);
 
+/**
+ * @param portraitId                    NPC portrait id (`NPCData::portraitId`).
+ * @return                               Name of the `icons.lod` texture holding this NPC's
+ *                                       portrait. MM8 renamed these assets to a 4-digit-padded
+ *                                       "npcNNNN" (e.g. "npc0816"), MM7 uses 3-digit "npcNNN".
+ */
+std::string npcPortraitTextureName(int portraitId);
+
 class FlatHirelings {
  public:
     /**

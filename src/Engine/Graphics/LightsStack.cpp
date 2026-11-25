@@ -29,6 +29,10 @@ bool LightsStack_MobileLight_::AddLight(const Vec3f &pos, int uSectorID, int uRa
 }
 
 bool LightsStack_StationaryLight_::AddLight(const Vec3f &pos, int16_t radius, Color color, char uLightType) {
+    return AddLight(pos, radius, color, uLightType, pos);
+}
+
+bool LightsStack_StationaryLight_::AddLight(const Vec3f &pos, int16_t radius, Color color, char uLightType, const Vec3f &sectorLookupPos) {
     if (uNumLightsActive >= 400) {
         MM_WARNING("Too many stationary lights!");
         return false;
@@ -39,5 +43,6 @@ bool LightsStack_StationaryLight_::AddLight(const Vec3f &pos, int16_t radius, Co
     pLight->uRadius = radius;
     pLight->uLightColor = color;
     pLight->uLightType = uLightType;
+    pLight->vSectorLookupPosition = sectorLookupPos;
     return true;
 }

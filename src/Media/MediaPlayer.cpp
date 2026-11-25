@@ -26,6 +26,7 @@ extern "C" {
 
 #include "Engine/Engine.h"
 #include "Engine/EngineCallObserver.h"
+#include "Engine/GameType.h"
 #include "Engine/Resources/EngineFileSystem.h"
 #include "Engine/EngineGlobals.h"
 #include "Engine/Graphics/Renderer/Renderer.h"
@@ -460,7 +461,10 @@ class Movie : public IMovie {
               // video packet - decode & maybe show
               video.decode_frame(avpacket);
             } else {
-                assert(false);  // unknown stream
+                // MM8 intro/logo videos carry extra streams (e.g. a second
+                // audio track) that MM7 videos never had; skip unknown-stream
+                // packets instead of asserting. Mirrors PlayBink() below, which
+                // already ignores non-audio/video packets.
             }
         } while (avpacket->stream_index != video.stream_idx ||
                  avpacket->pts <= desired_frame_number);
@@ -729,8 +733,14 @@ class Movie : public IMovie {
 };
 
 void MPlayer::Initialize() {
-    might_list.open(dfs->read("anims/might7.vid"));
-    magic_list.open(dfs->read("anims/magic7.vid"));
+    // MM8 installs ship these under different names (see PathResolver.cpp's `mm8ValidateList`).
+    if (gameType() == GAME_TYPE_MM8) {
+        might_list.open(dfs->read("anims/mightdod.vid"));
+        magic_list.open(dfs->read("anims/magicdod.vid"));
+    } else {
+        might_list.open(dfs->read("anims/might7.vid"));
+        magic_list.open(dfs->read("anims/magic7.vid"));
+    }
 }
 
 void MPlayer::OpenHouseMovie(std::string_view pMovieName, bool bLoop) {

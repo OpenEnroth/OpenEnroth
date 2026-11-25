@@ -697,8 +697,23 @@ enum class LstrId {
     LSTR_ARMOR_HALVED                   = 691,  // "Armor Halved"
     LSTR_S_HALVES_ARMOR_OF_S            = 692,  // "%s halves armor of %s"
 
+    // MM8's global.txt has rows past LSTR_PLAYER_IS_NOT_ACTIVE, up to index 757 (race/ability names, keybinding
+    // labels, misc UI strings). Most have no named LstrId yet, the range is reserved so the loader keeps them.
+    // TODO(#mm8): add named entries once these strings are actually needed somewhere.
+    // Indices 677-687 above ("OpenEnroth string IDs") collide with MM8 global.txt content at the same indices
+    // (e.g. race names Troll/Vampire/Dragon). The hardcoded literals in Localization::initialize() overwrite
+    // whatever MM8's file loaded there.
+
+    // The Inn screen's dismiss confirmation, shown on the first click.
+    LSTR_CLICK_THE_DISMISS_BUTTON_AGAIN_TO_DISMISS_THIS_CHARACTER = 738, // Dismiss confirmation prompt.
+
+    // The Adventurer's Inn refuses a dismiss in turn-based mode with this row.
+    LSTR_YOU_CANNOT_DISMISS_A_CHARACTER_IN_TURN_BASED_MODE = 740,
+
+    LSTR_MM8_RESERVED_END = 757,
+
     LSTR_FIRST = LSTR_AC,
-    LSTR_LAST = LSTR_S_HALVES_ARMOR_OF_S,
+    LSTR_LAST = LSTR_MM8_RESERVED_END,
 
     LSTR_FIRST_MM7 = LSTR_AC,
     LSTR_LAST_MM7 = LSTR_EVIL_ENDING,

@@ -183,8 +183,27 @@ int PriceCalculator::tavernRoomCostForPlayer(const Character *player, const Hous
     return roomPrice;
 }
 
+namespace {
+// Real MM8 taverns ("Type" == "Tavern") carry a 6-60 `fPriceMultiplier` "quality tier" -
+// e.g. Pirate's Rest's 60 reproduces its documented 360-gold room exactly via the formula below.
+// MM8's generic "The Adventurer's Inn" houses instead carry 1.5, the small scale MM8 uses for ship
+// fares on this same shared column - below every real tavern's tier (minimum 6, "The Grog and
+// Grub"), it rounds down to a single day of food, which the default new-game party (7 food) is
+// already past, so the purchase is permanently a no-op. No MM8 source gives this house type its
+// own tavern-quality tier, so this floor is a documented approximation, not a decompiled retail
+// value: round enough above default starting food to be observably useful, and to price cleanly
+// (10^3/100 = 10 gold flat) via the same formula real taverns already use unmodified.
+constexpr float kGenericAdventurersInnFoodMultiplier = 10.0f;
+
+float tavernFoodMultiplier(const HouseData &house) {
+    return house.isGenericAdventurersInn
+        ? std::max(house.fPriceMultiplier, kGenericAdventurersInnFoodMultiplier)
+        : house.fPriceMultiplier;
+}
+} // namespace
+
 int PriceCalculator::tavernFoodCostForPlayer(const Character *player, const HouseData &house) {
-    float houseMult = house.fPriceMultiplier;
+    float houseMult = tavernFoodMultiplier(house);
 
     int foodPrice = applyMerchantDiscount(player, static_cast<float>(std::pow(houseMult, 3) / 100)), minFoodPrice = std::pow(houseMult, 3) / 300;
     if (foodPrice < minFoodPrice)
@@ -195,11 +214,15 @@ int PriceCalculator::tavernFoodCostForPlayer(const Character *player, const Hous
     return foodPrice;
 }
 
+int PriceCalculator::tavernFoodDaysForHouse(const HouseData &house) {
+    return static_cast<int>(tavernFoodMultiplier(house));
+}
+
 int PriceCalculator::trainingCostForPlayer(const Character *player, const HouseData &house) {
     int trainPrice = 0;
     uint64_t expForNextLevel = 1000ull * player->uLevel * (player->uLevel + 1) / 2;
     if (player->experience >= expForNextLevel) { // can train
-        int playerClassTier = getClassTier(player->classType);
+        int playerClassTier = classTierForClass(player->classType);
         int baseTrainPrice = player->uLevel * house.fPriceMultiplier * (double)playerClassTier;
         trainPrice = applyMerchantDiscount(player, baseTrainPrice);
         if (trainPrice < baseTrainPrice / 3)

@@ -83,6 +83,8 @@ PlatformKey translateSdlKey(SDL_Keycode key) {
 
     case SDLK_KP_MINUS:         return PlatformKey::KEY_SUBTRACT;
     case SDLK_KP_PLUS:          return PlatformKey::KEY_ADD;
+    case SDLK_MINUS:            return PlatformKey::KEY_SUBTRACT; // Watch mode speed keys.
+    case SDLK_EQUALS:           return PlatformKey::KEY_ADD;
     case SDLK_COMMA:            return PlatformKey::KEY_COMMA;
     case SDLK_LEFTBRACKET:      return PlatformKey::KEY_LEFTBRACKET;
     case SDLK_RIGHTBRACKET:     return PlatformKey::KEY_RIGHTBRACKET;

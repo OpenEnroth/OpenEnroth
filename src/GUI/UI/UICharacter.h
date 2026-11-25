@@ -1,11 +1,13 @@
 #pragma once
 
+#include <unordered_map>
 #include <vector>
 #include <string>
 #include <memory>
 
 #include "Engine/HitMap.h"
 #include "Engine/Data/AwardEnums.h"
+#include "Engine/Objects/ItemEnums.h"
 
 #include "GUI/GUIWindow.h"
 
@@ -28,6 +30,10 @@ class GUIWindow_CharacterRecord : public GUIWindow {
 
     void createAwardsScrollBar();
     void releaseAwardsScrollBar();
+
+    // Test accessors for the awards list's scroll position.
+    int startAwardElem() const { return _startAwardElem; }
+    int scrollableAwardSteps() const { return _scrollableAwardSteps; }
 
  protected:
     void CharacterUI_StatsTab_Draw(Character *);
@@ -69,3 +75,16 @@ extern std::shared_ptr<GraphicsImage> ui_character_inventory_paperdoll_backgroun
 extern std::array<std::shared_ptr<GraphicsImage>, 16> paperdoll_dbrds;
 
 extern HitMap<int> equipmentHitMap;
+
+/**
+ * Builds a paperdoll tier-index lookup for a given equipment slot's `ItemType`, ranking every real
+ * `RARITY_COMMON` item of that type by `baseValue` (ties broken by id) and assigning it index
+ * 0, 1, 2, ... MM8's `items.txt` orders its rows differently from MM7's, so a hardcoded `ItemId` table
+ * doesn't work. Declared here for tests.
+ */
+std::unordered_map<ItemId, int> buildPaperdollIndexByType(ItemType type);
+
+/**
+ * Declared here for tests.
+ */
+void CharacterUI_LoadPaperdollTextures();

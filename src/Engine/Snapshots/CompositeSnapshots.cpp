@@ -317,6 +317,168 @@ void deserialize(InputStream &src, IndoorLocation_MM7 *dst) {
     deserialize(src, &dst->mapOutlines);
 }
 
+void reconstruct(const IndoorLocation_MM8 &src, IndoorLocation *dst) {
+    reconstruct(src.vertices, &dst->vertices);
+    reconstruct(src.faces, &dst->faces);
+
+    // reconstruct temp face data locally and insert into faces
+    std::vector<int16_t> faceData;
+    reconstruct(src.faceData, &faceData);
+
+    for (size_t i = 0, j = 0; i < dst->faces.size(); ++i) {
+        const int vertexCount = src.faces[i].numVertices;
+        BLVFace *pFace = &dst->faces[i];
+
+        pFace->vertexIds.assign(faceData.data() + j, faceData.data() + j + vertexCount);
+        j += vertexCount + 1; // +1 to skip closing vertex in source data.
+
+        // Skipping pXInterceptDisplacements.
+        j += vertexCount + 1;
+
+        // Skipping pYInterceptDisplacements.
+        j += vertexCount + 1;
+
+        // Skipping pZInterceptDisplacements.
+        j += vertexCount + 1;
+
+        pFace->textureUs = std::vector<int16_t>(faceData.data() + j, faceData.data() + j + vertexCount);
+        j += vertexCount + 1;
+
+        pFace->textureVs = std::vector<int16_t>(faceData.data() + j, faceData.data() + j + vertexCount);
+        j += vertexCount + 1;
+
+        if (j > faceData.size())
+            throw Exception("BLV face data overflow: offset {} exceeds size {}", j, faceData.size());
+    }
+
+    for (BLVFace &face : dst->faces) {
+        dropDuplicateFaceVertices(&face);
+        repairFaceNormal(&face, dst->vertices, {});
+    }
+
+    for (size_t i = 0; i < dst->faces.size(); ++i) {
+        BLVFace *pFace = &dst->faces[i];
+
+        std::string texName;
+        reconstruct(src.faceTextures[i], &texName);
+        pFace->SetTexture(texName);
+    }
+
+    // Reconstruct temp face extras locally and insert into faces
+    std::vector<BLVFaceExtra> faceExtras;
+    reconstruct(src.faceExtras, &faceExtras);
+
+    std::string textureName;
+    for (unsigned i = 0; i < faceExtras.size(); ++i) {
+        reconstruct(src.faceExtraTextures[i], &textureName);
+
+        if (textureName.empty())
+            faceExtras[i].additionalBitmapId = -1;
+        else
+            faceExtras[i].additionalBitmapId = -1; //pBitmaps_LOD->loadTexture(textureName); // TODO(captainurist): unused for some reason.
+    }
+
+    for (size_t i = 0; i < dst->faces.size(); ++i) {
+        BLVFace *pFace = &dst->faces[i];
+        BLVFaceExtra *pFaceExtra = &faceExtras[src.faces[i].faceExtraId];
+        pFace->faceId = pFaceExtra->faceId;
+        pFace->additionalBitmapId = pFaceExtra->additionalBitmapId;
+        pFace->textureDeltaU = pFaceExtra->textureDeltaU;
+        pFace->textureDeltaV = pFaceExtra->textureDeltaV;
+        pFace->cogNumber = pFaceExtra->cogNumber;
+        pFace->eventId = pFaceExtra->eventId;
+
+        if (pFace->eventId) {
+            if (pFace->HasEventHint())
+                pFace->attributes |= FACE_EVENT_IS_HINT;
+            else
+                pFace->attributes &= ~FACE_EVENT_IS_HINT;
+        }
+    }
+
+    reconstruct(src.sectors, &dst->sectors);
+    reconstruct(src.sectorData, &dst->sectorData);
+
+    for (size_t i = 0, j = 0; i < dst->sectors.size(); ++i) {
+        BLVSector *dstSector = &dst->sectors[i];
+        const BLVSector_MM8 &srcSector = src.sectors[i];
+
+        dstSector->floorIds = std::span(dst->sectorData.data() + j, srcSector.numFloors);
+        j += srcSector.numFloors;
+
+        dstSector->wallIds = std::span(dst->sectorData.data() + j, srcSector.numWalls);
+        j += srcSector.numWalls;
+
+        dstSector->ceilingIds = std::span(dst->sectorData.data() + j, srcSector.numCeilings);
+        j += srcSector.numCeilings;
+
+        j += srcSector.numFluids; // Fluids not used in OE, skip.
+
+        dstSector->portalIds = std::span(dst->sectorData.data() + j, srcSector.numPortals);
+        j += srcSector.numPortals;
+
+        dstSector->faceIds = std::span(dst->sectorData.data() + j, srcSector.numFaces);
+        dstSector->nonBspFaceIds = dstSector->faceIds.subspan(0, srcSector.numNonBspFaces);
+        j += srcSector.numFaces;
+
+        j += srcSector.numCogs; // Cogs not used in OE, skip.
+
+        dstSector->decorationIds = std::span(dst->sectorData.data() + j, srcSector.numDecorations);
+        j += srcSector.numDecorations;
+
+        j += srcSector.numMarkers; // Markers not used in OE, skip.
+
+        if (j > dst->sectorData.size())
+            throw Exception("BLV sector data overflow: offset {} exceeds size {}", j, dst->sectorData.size());
+    }
+
+    reconstruct(src.sectorLightData, &dst->sectorLightData);
+
+    for (size_t i = 0, j = 0; i < dst->sectors.size(); ++i) {
+        BLVSector *dstSector = &dst->sectors[i];
+        const BLVSector_MM8 &srcSector = src.sectors[i];
+
+        dstSector->lightIds = std::span(dst->sectorLightData.data() + j, srcSector.numLights);
+        j += srcSector.numLights;
+
+        if (j > dst->sectorLightData.size())
+            throw Exception("BLV sector light data overflow: offset {} exceeds size {}", j, dst->sectorLightData.size());
+    }
+
+    reconstruct(src.decorations, &pLevelDecorations);
+
+    std::string decorationName;
+    for (size_t i = 0; i < pLevelDecorations.size(); ++i) {
+        reconstruct(src.decorationNames[i], &decorationName);
+        pLevelDecorations[i].uDecorationDescID = pDecorationTable->decorationId(decorationName);
+    }
+
+    reconstruct(src.lights, &dst->lights);
+    reconstruct(src.bspNodes, &dst->nodes);
+    reconstruct(src.spawnPoints, &dst->pSpawnPoints);
+    reconstruct(src.mapOutlines, &dst->mapOutlines);
+}
+
+void deserialize(InputStream &src, IndoorLocation_MM8 *dst) {
+    deserialize(src, &dst->header);
+    deserialize(src, &dst->vertices);
+    deserialize(src, &dst->faces);
+    deserialize(src, &dst->faceData, tags::presized(dst->header.faceDataSizeBytes / sizeof(uint16_t)));
+    deserialize(src, &dst->faceTextures, tags::presized(dst->faces.size()));
+    deserialize(src, &dst->faceExtras);
+    deserialize(src, &dst->faceExtraTextures, tags::presized(dst->faceExtras.size()));
+    deserialize(src, &dst->sectors);
+    deserialize(src, &dst->sectorData, tags::presized(dst->header.sectorDataSizeBytes / sizeof(uint16_t)));
+    deserialize(src, &dst->sectorLightData, tags::presized(dst->header.sectorLightDataSizeBytes / sizeof(uint16_t)));
+    deserialize(src, &dst->doorCount);
+    deserialize(src, &dst->decorations);
+    deserialize(src, &dst->decorationNames, tags::presized(dst->decorations.size()));
+    deserialize(src, &dst->lights);
+    deserialize(src, &dst->bspNodes);
+    deserialize(src, &dst->spawnPoints);
+    deserialize(src, &dst->mapOutlines);
+}
+
 void snapshot(const IndoorLocation &src, IndoorDelta_MM7 *dst) {
     snapshot(src.dlv, &dst->header.info);
     dst->header.totalFacesCount = src.faces.size();
@@ -475,6 +637,163 @@ void deserialize(InputStream &src, IndoorDelta_MM7 *dst, ContextTag<IndoorLocati
     deserialize(src, &dst->eventVariables);
     deserialize(src, &dst->lastVisitTime);
     deserialize(src, &dst->weather);
+}
+
+// Mirrors `snapshot(const IndoorLocation &, IndoorDelta_MM7 *)` field-for-field - the only
+// differences are the wider `Actor_MM8` (see `IndoorDelta_MM8`'s struct comment) and the trailing
+// `mapNotes` block, which is zero-filled since OpenEnroth has no runtime automap-note state to
+// snapshot from yet (see `MapNote_MM8`).
+void snapshot(const IndoorLocation &src, IndoorDelta_MM8 *dst) {
+    snapshot(src.dlv, &dst->header.info);
+    dst->header.totalFacesCount = src.faces.size();
+    dst->header.bmodelCount = 0;
+    dst->header.decorationCount = pLevelDecorations.size();
+
+    snapshot(src._visible_outlines, &dst->visibleOutlines);
+
+    // Symmetric to what's happening in reconstruct - not all of the attributes need to be saved in a delta.
+    dst->faceAttributes.clear();
+    for (const BLVFace &pFace : pIndoor->faces)
+        dst->faceAttributes.push_back(std::to_underlying(pFace.attributes & ~(FACE_EVENT_IS_HINT | FACE_ANIMATED)));
+
+    dst->decorationFlags.clear();
+    for (const LevelDecoration &decoration : pLevelDecorations)
+        dst->decorationFlags.push_back(std::to_underlying(decoration.uFlags));
+
+    snapshot(pActors, &dst->actors);
+    snapshot(pSpriteObjects, &dst->spriteObjects);
+    snapshot(vChests, &dst->chests);
+    snapshot(src.doors, &dst->doors);
+    snapshot(src.doorsData, &dst->doorsData);
+    snapshot(engine->_persistentVariables, &dst->eventVariables);
+    memzero(&dst->weather); // Indoor maps have no weather.
+    dst->lastVisitTime = src.lastVisitTime.ticks();
+    dst->mapNotes = {};
+}
+
+void reconstruct(const IndoorDelta_MM8 &src, IndoorLocation *dst) {
+    reconstruct(src.header.info, &dst->dlv); // XXX
+    reconstruct(src.visibleOutlines, &dst->_visible_outlines);
+
+    for (size_t i = 0; i < dst->mapOutlines.size(); ++i) {
+        BLVMapOutline *pVertex = &dst->mapOutlines[i];
+        if ((uint8_t)(1 << (7 - i % 8)) & dst->_visible_outlines[i / 8])
+            pVertex->uFlags |= 1;
+    }
+
+    // Not all of the attributes need to be restored.
+    size_t attributeIndex = 0;
+    for (BLVFace &face : dst->faces) {
+        face.attributes &= FACE_ANIMATED | FACE_EVENT_IS_HINT;
+        face.attributes |= FaceAttributes(src.faceAttributes[attributeIndex++]) & ~(FACE_EVENT_IS_HINT | FACE_ANIMATED);
+    }
+
+    for (size_t i = 0; i < pLevelDecorations.size(); ++i)
+        pLevelDecorations[i].uFlags = LevelDecorationFlags(src.decorationFlags[i]);
+
+    reconstruct(src.actors, &pActors);
+    nextActorReuseScanStart = 0;
+    for (size_t i = 0; i < pActors.size(); i++)
+        pActors[i].id = i;
+
+    reconstruct(src.spriteObjects, &pSpriteObjects);
+
+    for (size_t i = 0; i < pSpriteObjects.size(); ++i) {
+        if (pSpriteObjects[i].containing_item.itemId != ITEM_NULL && !(pSpriteObjects[i].uAttributes & SPRITE_MISSILE)) {
+            pSpriteObjects[i].spriteId = static_cast<SpriteId>(pItemTable->items[pSpriteObjects[i].containing_item.itemId].spriteId);
+            pSpriteObjects[i].uObjectDescID = pObjectTable->ObjectIDByItemID(pSpriteObjects[i].spriteId);
+        }
+    }
+
+    vChests.resize(src.chests.size());
+    for (size_t i = 0; i < src.chests.size(); ++i)
+        reconstruct(src.chests[i], &vChests[i], tags::context<int>(i));
+
+    reconstruct(src.doors, &dst->doors);
+    reconstruct(src.doorsData, &dst->doorsData);
+
+    for (unsigned i = 0, j = 0; i < dst->doors.size(); ++i) {
+        BLVDoor *pDoor = &dst->doors[i];
+
+        pDoor->pVertexIDs = dst->doorsData.data() + j;
+        j += pDoor->numVertices;
+
+        pDoor->pFaceIDs = dst->doorsData.data() + j;
+        j += pDoor->numFaces;
+
+        pDoor->pSectorIDs = dst->doorsData.data() + j;
+        j += pDoor->numSectors;
+
+        pDoor->pDeltaUs = dst->doorsData.data() + j;
+        j += pDoor->numFaces;
+
+        pDoor->pDeltaVs = dst->doorsData.data() + j;
+        j += pDoor->numFaces;
+
+        size_t xOffsetsStart = j;
+        j += pDoor->numOffsets;
+
+        size_t yOffsetsStart = j;
+        j += pDoor->numOffsets;
+
+        size_t zOffsetsStart = j;
+        j += pDoor->numOffsets;
+
+        if (j > dst->doorsData.size())
+            throw Exception("BLV door data overflow: offset {} exceeds size {}", j, dst->doorsData.size());
+
+        pDoor->offsets.resize(pDoor->numOffsets);
+        for (size_t k = 0; k < pDoor->numOffsets; ++k)
+            pDoor->offsets[k] = Vec3f(dst->doorsData[xOffsetsStart + k], dst->doorsData[yOffsetsStart + k], dst->doorsData[zOffsetsStart + k]);
+    }
+
+    for (size_t i = 0; i < dst->doors.size(); ++i) {
+        BLVDoor *pDoor = &dst->doors[i];
+
+        for (unsigned j = 0; j < pDoor->numFaces; ++j) {
+            BLVFace *pFace = &dst->faces[pDoor->pFaceIDs[j]];
+            pDoor->pDeltaUs[j] = pFace->textureDeltaU;
+            pDoor->pDeltaVs[j] = pFace->textureDeltaV;
+        }
+    }
+
+    reconstruct(src.eventVariables, &engine->_persistentVariables);
+    dst->lastVisitTime = Time::fromTicks(src.lastVisitTime);
+
+    // `src.mapNotes` is intentionally not reconstructed - MM8's automap notes have no runtime equivalent in
+    // OpenEnroth yet, see `MapNote_MM8`.
+}
+
+void serialize(const IndoorDelta_MM8 &src, OutputStream *dst) {
+    serialize(src.header, dst);
+    serialize(src.visibleOutlines, dst);
+    serialize(src.faceAttributes, dst, tags::unsized);
+    serialize(src.decorationFlags, dst, tags::unsized);
+    serialize(src.actors, dst);
+    serialize(src.spriteObjects, dst);
+    serialize(src.chests, dst);
+    serialize(src.doors, dst, tags::unsized);
+    serialize(src.doorsData, dst, tags::unsized);
+    serialize(src.eventVariables, dst);
+    serialize(src.lastVisitTime, dst);
+    serialize(src.weather, dst);
+    serialize(src.mapNotes, dst);
+}
+
+void deserialize(InputStream &src, IndoorDelta_MM8 *dst, ContextTag<IndoorLocation_MM8> ctx) {
+    deserialize(src, &dst->header);
+    deserialize(src, &dst->visibleOutlines);
+    deserialize(src, &dst->faceAttributes, tags::presized(ctx->faces.size()));
+    deserialize(src, &dst->decorationFlags, tags::presized(ctx->decorations.size()));
+    deserialize(src, &dst->actors);
+    deserialize(src, &dst->spriteObjects);
+    deserialize(src, &dst->chests);
+    deserialize(src, &dst->doors, tags::presized(ctx->doorCount));
+    deserialize(src, &dst->doorsData, tags::presized(ctx->header.doorsDataSizeBytes / sizeof(int16_t)));
+    deserialize(src, &dst->eventVariables);
+    deserialize(src, &dst->lastVisitTime);
+    deserialize(src, &dst->weather);
+    deserialize(src, &dst->mapNotes);
 }
 
 void reconstruct(std::tuple<const BSPModelData_MM7 &, const BSPModelExtras_MM7 &> src, BSPModel *dst,
@@ -643,6 +962,99 @@ void deserialize(InputStream &src, OutdoorLocation_MM7 *dst) {
     deserialize(src, &dst->spawnPoints);
 }
 
+void reconstruct(const OutdoorLocation_MM8 &src, OutdoorTerrain *dst) {
+    std::array<int, 4> baseTileIds;
+    for (int i = 0; i < 4; i++) {
+        reconstruct(src.tileTypes[i].tileset, &dst->_tilesets[i]);
+        baseTileIds[i] = pTileTable->tileId(dst->_tilesets[i], isRoad(dst->_tilesets[i]) ? TILE_VARIANT_ROAD_N_S_E_W : TILE_VARIANT_BASE1);
+    }
+
+    for (int y = 0; y < 128; y++)
+        for (int x = 0; x < 128; x++)
+            dst->_heightMap[y][x] = src.heightMap[y * 128 + x];
+
+    for (int y = 0; y < 127; y++)
+        for (int x = 0; x < 127; x++)
+            dst->_originalTileMap[y][x] = mapToGlobalTileId(baseTileIds, src.tileMap[y * 128 + x]);
+
+    dst->recalculateNormals();
+    dst->recalculateTransitions(&dst->_tileMap);
+
+    dst->_tileMap = Image<int16_t>::copy(dst->_originalTileMap);
+}
+
+void reconstruct(const OutdoorLocation_MM8 &src, OutdoorLocation *dst) {
+    reconstruct(src.skyTexture, &dst->sky_texture_filename);
+    reconstruct(src, &dst->pTerrain);
+
+    dst->pBModels.clear();
+    dst->vertices.clear();
+    dst->faces.clear();
+    size_t totalVertices = 0;
+    size_t totalFaces = 0;
+    for (const BSPModelExtras_MM7 &extras : src.modelExtras) {
+        totalVertices += extras.vertices.size();
+        totalFaces += extras.faces.size();
+    }
+    dst->vertices.reserve(totalVertices);
+    dst->faces.reserve(totalFaces);
+    for (size_t i = 0; i < src.models.size(); i++) {
+        BSPModel &model = dst->pBModels.emplace_back();
+        model.index = i;
+        reconstruct(std::forward_as_tuple(src.models[i], src.modelExtras[i]), &model, &dst->vertices, &dst->faces);
+
+        // Recalculate bounding spheres, the ones stored in data files are borked.
+        model.boundingCenter = model.boundingBox.center().toFloat();
+        model.boundingRadius = model.boundingBox.size().toFloat().length() / 2.0f;
+    }
+
+    reconstruct(src.decorations, &pLevelDecorations);
+
+    std::string decorationName;
+    for (size_t i = 0; i < pLevelDecorations.size(); ++i) {
+        reconstruct(src.decorationNames[i], &decorationName);
+        pLevelDecorations[i].uDecorationDescID = pDecorationTable->decorationId(decorationName);
+    }
+
+    reconstruct(src.decorationPidList, &dst->pFaceIDLIST);
+    reconstruct(src.decorationMap, &dst->pOMAP);
+    reconstruct(src.spawnPoints, &dst->pSpawnPoints);
+}
+
+void deserialize(InputStream &src, OutdoorLocation_MM8 *dst) {
+    deserialize(src, &dst->name);
+    deserialize(src, &dst->fileName);
+    deserialize(src, &dst->description);
+    deserialize(src, &dst->skyTexture);
+    deserialize(src, &dst->groundTilesetUnused);
+    deserialize(src, &dst->tileTypes);
+    deserialize(src, &dst->attributes);
+    deserialize(src, &dst->heightMap);
+    deserialize(src, &dst->tileMap);
+    deserialize(src, &dst->attributeMap);
+    deserialize(src, &dst->normalCount);
+    deserialize(src, &dst->someOtherMap);
+    deserialize(src, &dst->normalMap);
+    deserialize(src, &dst->normals, tags::presized(dst->normalCount));
+    deserialize(src, &dst->models);
+
+    dst->modelExtras.clear();
+    for (const BSPModelData_MM7 &model : dst->models) {
+        BSPModelExtras_MM7 &extra = dst->modelExtras.emplace_back();
+        deserialize(src, &extra.vertices, tags::presized(model.numVertices));
+        deserialize(src, &extra.faces, tags::presized(model.numFaces));
+        deserialize(src, &extra.facesOrdering, tags::presized(model.numFaces));
+        deserialize(src, &extra.bspNodes, tags::presized(model.numNodes));
+        deserialize(src, &extra.faceTextures, tags::presized(model.numFaces));
+    }
+
+    deserialize(src, &dst->decorations);
+    deserialize(src, &dst->decorationNames, tags::presized(dst->decorations.size()));
+    deserialize(src, &dst->decorationPidList);
+    deserialize(src, &dst->decorationMap);
+    deserialize(src, &dst->spawnPoints);
+}
+
 void snapshot(const OutdoorLocation &src, OutdoorDelta_MM7 *dst) {
     snapshot(src.ddm, &dst->header.info);
     dst->header.totalFacesCount = src.faces.size();
@@ -734,9 +1146,156 @@ void deserialize(InputStream &src, OutdoorDelta_MM7 *dst, ContextTag<OutdoorLoca
     deserialize(src, &dst->weather);
 }
 
+// Mirrors `snapshot(const OutdoorLocation &, OutdoorDelta_MM7 *)` field-for-field - the only
+// differences are the wider `Actor_MM8` (see `OutdoorDelta_MM8`'s struct comment) and the trailing
+// `mapNotes`/`mapNotesTrailer` tail. `mapNotes` is zero-filled since OpenEnroth has no runtime
+// automap-note state to snapshot from yet (see `MapNote_MM8`). `mapNotesTrailer` is always written as
+// 0, as in every `.ddm` saved by the original game that was examined (see the struct comment).
+void snapshot(const OutdoorLocation &src, OutdoorDelta_MM8 *dst) {
+    snapshot(src.ddm, &dst->header.info);
+    dst->header.totalFacesCount = src.faces.size();
+    dst->header.bmodelCount = src.pBModels.size();
+    dst->header.decorationCount = pLevelDecorations.size();
+
+    snapshot(src.uFullyRevealedCellOnMap, &dst->fullyRevealedCells);
+    snapshot(src.uPartiallyRevealedCellOnMap, &dst->partiallyRevealedCells);
+
+    // Symmetric to what's happening in reconstruct - no all attributes need to be saved in a delta.
+    dst->faceAttributes.clear();
+    for (const BLVFace &face : src.faces)
+        dst->faceAttributes.push_back(std::to_underlying(face.attributes & ~(FACE_EVENT_IS_HINT | FACE_ANIMATED)));
+
+    dst->decorationFlags.clear();
+    for (const LevelDecoration &decoration : pLevelDecorations)
+        dst->decorationFlags.push_back(std::to_underlying(decoration.uFlags));
+
+    snapshot(pActors, &dst->actors);
+    snapshot(pSpriteObjects, &dst->spriteObjects);
+    snapshot(vChests, &dst->chests);
+    snapshot(engine->_persistentVariables, &dst->eventVariables);
+    snapshot(src.weather, &dst->weather);
+    dst->lastVisitTime = src.lastVisitTime.ticks();
+    dst->mapNotes = {};
+    dst->mapNotesTrailer = 0;
+}
+
+void reconstruct(const OutdoorDelta_MM8 &src, OutdoorLocation *dst) {
+    reconstruct(src.header.info, &dst->ddm);
+    reconstruct(src.fullyRevealedCells, &dst->uFullyRevealedCellOnMap);
+    reconstruct(src.partiallyRevealedCells, &dst->uPartiallyRevealedCellOnMap);
+
+    // Not all of the attributes need to be restored.
+    for (size_t i = 0; i < dst->faces.size(); ++i) {
+        BLVFace &face = dst->faces[i];
+        face.attributes &= FACE_ANIMATED | FACE_EVENT_IS_HINT;
+        face.attributes |= FaceAttributes(src.faceAttributes[i]) & ~(FACE_EVENT_IS_HINT | FACE_ANIMATED);
+    }
+
+    for (size_t i = 0; i < pLevelDecorations.size(); ++i)
+        pLevelDecorations[i].uFlags = LevelDecorationFlags(src.decorationFlags[i]);
+
+    reconstruct(src.actors, &pActors);
+    nextActorReuseScanStart = 0;
+    for (size_t i = 0; i < pActors.size(); i++)
+        pActors[i].id = i;
+
+    reconstruct(src.spriteObjects, &pSpriteObjects);
+
+    vChests.resize(src.chests.size());
+    for (size_t i = 0; i < src.chests.size(); ++i)
+        reconstruct(src.chests[i], &vChests[i], tags::context<int>(i));
+
+    reconstruct(src.eventVariables, &engine->_persistentVariables);
+    reconstruct(src.weather, &dst->weather);
+    dst->lastVisitTime = Time::fromTicks(src.lastVisitTime);
+
+    // `src.mapNotes`/`src.mapNotesTrailer` are intentionally not reconstructed - MM8's automap notes have no
+    // runtime equivalent in OpenEnroth yet, see `MapNote_MM8`.
+}
+
+void serialize(const OutdoorDelta_MM8 &src, OutputStream *dst) {
+    serialize(src.header, dst);
+    serialize(src.fullyRevealedCells, dst);
+    serialize(src.partiallyRevealedCells, dst);
+    serialize(src.faceAttributes, dst, tags::unsized);
+    serialize(src.decorationFlags, dst, tags::unsized);
+    serialize(src.actors, dst);
+    serialize(src.spriteObjects, dst);
+    serialize(src.chests, dst);
+    serialize(src.eventVariables, dst);
+    serialize(src.lastVisitTime, dst);
+    serialize(src.weather, dst);
+    serialize(src.mapNotes, dst);
+    serialize(src.mapNotesTrailer, dst);
+}
+
+void deserialize(InputStream &src, OutdoorDelta_MM8 *dst, ContextTag<OutdoorLocation_MM8> ctx) {
+    size_t totalFaces = 0;
+    for (const BSPModelData_MM7 &model : ctx->models)
+        totalFaces += model.numFaces;
+
+    deserialize(src, &dst->header);
+    deserialize(src, &dst->fullyRevealedCells);
+    deserialize(src, &dst->partiallyRevealedCells);
+    deserialize(src, &dst->faceAttributes, tags::presized(totalFaces));
+    deserialize(src, &dst->decorationFlags, tags::presized(ctx->decorations.size()));
+    deserialize(src, &dst->actors);
+    deserialize(src, &dst->spriteObjects);
+    deserialize(src, &dst->chests);
+    deserialize(src, &dst->eventVariables);
+    deserialize(src, &dst->lastVisitTime);
+    deserialize(src, &dst->weather);
+    deserialize(src, &dst->mapNotes);
+
+    // Only a `.ddm` saved by the original game carries this trailing dword, the `games.lod` template doesn't.
+    if (src.position() < src.size())
+        deserialize(src, &dst->mapNotesTrailer);
+}
+
+void snapshot(const Party &src, MM8PartyExtra_MM7 *dst) {
+    for (size_t i = 0; i < dst->rosterIds.size(); i++)
+        dst->rosterIds[i] = src.pCharacters[i].rosterId;
+
+    snapshot(src.pCharacters[4], &dst->fifthCharacter);
+
+    dst->innMembers.clear();
+    for (const Character &character : src.mm8Roster.members()) {
+        MM8PartyExtraMember_MM7 member = {};
+        member.rosterId = character.rosterId;
+        snapshot(character, &member.character);
+        dst->innMembers.push_back(member);
+    }
+}
+
+void reconstruct(const MM8PartyExtra_MM7 &src, Party *dst) {
+    reconstruct(src.fifthCharacter, &dst->pCharacters[4], tags::context(4));
+    for (size_t i = 0; i < src.rosterIds.size(); i++)
+        dst->pCharacters[i].rosterId = src.rosterIds[i];
+
+    for (const MM8PartyExtraMember_MM7 &member : src.innMembers) {
+        Character character;
+        reconstruct(member.character, &character, tags::context(-1));
+        character.rosterId = member.rosterId;
+        dst->mm8Roster.addToInn(std::move(character));
+    }
+}
+
+void serialize(const MM8PartyExtra_MM7 &src, OutputStream *dst) {
+    serialize(src.rosterIds, dst);
+    serialize(src.fifthCharacter, dst);
+    serialize(src.innMembers, dst);
+}
+
+void deserialize(InputStream &src, MM8PartyExtra_MM7 *dst) {
+    deserialize(src, &dst->rosterIds);
+    deserialize(src, &dst->fifthCharacter);
+    deserialize(src, &dst->innMembers);
+}
+
 void snapshot(const SaveGame &src, SaveGame_MM7 *dst) {
     snapshot(src.header, &dst->header);
     snapshot(src.party, &dst->party);
+    snapshot(src.party, &dst->mm8PartyExtra);
     snapshot(src.eventTimer, &dst->eventTimer);
     snapshot(src.overlays, &dst->overlays);
     snapshot(src.npcData, &dst->npcData);
@@ -765,6 +1324,7 @@ void snapshot(const SaveGame &src, SaveGame_MM7 *dst) {
 void reconstruct(const SaveGame_MM7 &src, SaveGame *dst) {
     reconstruct(src.header, &dst->header);
     reconstruct(src.party, &dst->party);
+    reconstruct(src.mm8PartyExtra, &dst->party);
     reconstruct(src.eventTimer, &dst->eventTimer);
     reconstruct(src.overlays, &dst->overlays);
     reconstruct(src.npcData, &dst->npcData);
@@ -812,6 +1372,11 @@ void serialize(const SaveGame_MM7 &src, Blob *dst) {
 
     lodWriter.write("image.pcx", src.thumbnail);
 
+    // MM8-only, optional on read - see `MM8PartyExtra_MM7`'s struct comment. Always
+    // written (even for MM7 saves, where it round-trips as all-zero/empty) so the writer stays one
+    // code path rather than branching on game type.
+    lodWriter.write("mm8party.bin", toBlob(src.mm8PartyExtra));
+
     // Apparently vanilla had two bugs canceling each other out:
     // 1. Broken binary search implementation when looking up LOD entries.
     // 2. Writing additional duplicate entry at the end of a saves LOD file.
@@ -826,7 +1391,22 @@ void deserialize(const Blob &src, SaveGame_MM7 *dst) {
     LodReader lodReader(Blob::share(src), LOD_ALLOW_DUPLICATES);
 
     deserialize(lodReader.read("header.bin"), &dst->header);
-    deserialize(lodReader.read("party.bin"), &dst->party);
+    Blob partyBlob = lodReader.read("party.bin");
+    if (partyBlob.size() == sizeof(Party_MM8)) {
+        // An MM8 `.dod` written by the original game has a party.bin of this (much larger) size that
+        // isn't `Party_MM7`-shaped at all (see `Party_MM8`'s struct-level comment) - decode it via
+        // its own snapshot type and round-trip through the runtime `Party` to land in `dst->party`,
+        // same as every other MM7-format-only field in `SaveGame_MM7`. Branching on the actual blob
+        // size rather than `gameType()` matters here: OpenEnroth's writer always emits
+        // the smaller `Party_MM7`-shaped party.bin, so both formats can appear under `GAME_TYPE_MM8`.
+        Party_MM8 partyMM8;
+        deserialize(partyBlob, &partyMM8);
+        Party party;
+        reconstruct(partyMM8, &party);
+        snapshot(party, &dst->party);
+    } else {
+        deserialize(partyBlob, &dst->party);
+    }
     deserialize(lodReader.read("clock.bin"), &dst->eventTimer);
     deserialize(lodReader.read("overlay.bin"), &dst->overlays);
     deserialize(lodReader.read("npcdata.bin"), &dst->npcData);
@@ -847,6 +1427,12 @@ void deserialize(const Blob &src, SaveGame_MM7 *dst) {
     }
 
     dst->thumbnail = lodReader.read("image.pcx");
+
+    // Absent in MM7 saves, original MM8 `.dod` files and older OpenEnroth MM8 saves. Reset to empty,
+    // so `reconstruct()` sees "no 5th character, no bench".
+    dst->mm8PartyExtra = MM8PartyExtra_MM7{};
+    if (lodReader.exists("mm8party.bin"))
+        deserialize(lodReader.read("mm8party.bin"), &dst->mm8PartyExtra);
 }
 
 void reconstruct(const SaveGameLite_MM7 &src, SaveGameLite *dst) {

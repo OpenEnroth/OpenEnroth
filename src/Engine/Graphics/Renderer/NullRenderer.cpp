@@ -58,8 +58,7 @@ void NullRenderer::SetUIClipRect(const Recti &rect) {}
 void NullRenderer::ResetUIClipRect() {}
 
 void NullRenderer::DrawQuad2D(Ptr<GraphicsImage> texture, const Recti &srcRect, const Recti &dstRect, Color color) {
-    assert(texture);
-    if (engine->callObserver)
+    if (texture && engine->callObserver) // A null texture is skipped, as in OpenGLRenderer.
         engine->callObserver->notify(CALL_DRAW_2D_TEXTURE, texture->name());
 }
 

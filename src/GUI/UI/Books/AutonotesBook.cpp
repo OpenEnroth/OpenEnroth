@@ -1,6 +1,7 @@
 #include <memory>
 
 #include "Engine/AssetsManager.h"
+#include "Engine/GameType.h"
 #include "Engine/Localization.h"
 #include "Engine/Party.h"
 
@@ -19,6 +20,9 @@ std::shared_ptr<GraphicsImage> ui_book_autonotes_background;
 
 AutonoteType autonoteBookDisplayType;
 
+// MM8's Close button position, measured from the original game's screen.
+static const Pointi kMm8AutonotesCloseButtonPos = {555, 445};
+
 void GUIWindow_AutonotesBook::recalculateCurrentNotesTypePages() {
     _startingNotesIdx = 0;
     _currentPage = 0;
@@ -35,25 +39,47 @@ GUIWindow_AutonotesBook::GUIWindow_AutonotesBook() : GUIWindow_Book() {
     pChildBooksOverlay = std::make_unique<GUIWindow_BooksButtonOverlay>(Pointi{527, 353}, Sizei{0, 0}, pBtn_Autonotes);
     bFlashAutonotesBook = false;
 
-    ui_book_autonotes_background = assets->getIcon("sbautnot");
-    ui_book_quest_div_bar = assets->getIcon("divbar");
-
-    ui_book_button1_on = assets->getIcon("tab-an-6b");
-    ui_book_button2_on = assets->getIcon("tab-an-7b");
-    ui_book_button3_on = assets->getIcon("tab-an-1b");
-    ui_book_button4_on = assets->getIcon("tab-an-2b");
-    ui_book_button5_on = assets->getIcon("tab-an-3b");
-    ui_book_button6_on = assets->getIcon("tab-an-5b");
-    ui_book_button7_on = assets->getIcon("tab-an-4b");
-    ui_book_button8_on = assets->getIcon("tab-an-8b");
-    ui_book_button1_off = assets->getIcon("tab-an-6a");
-    ui_book_button2_off = assets->getIcon("tab-an-7a");
-    ui_book_button3_off = assets->getIcon("tab-an-1a");
-    ui_book_button4_off = assets->getIcon("tab-an-2a");
-    ui_book_button5_off = assets->getIcon("tab-an-3a");
-    ui_book_button6_off = assets->getIcon("tab-an-5a");
-    ui_book_button7_off = assets->getIcon("tab-an-4a");
-    ui_book_button8_off = assets->getIcon("tab-an-8a");
+    // MM8's equivalents of "sbautnot" and the 8 "tab-an-N" tab icons. "irbgrnd" is the shared book
+    // background, "irt01".."irt08" are ribbon icons in this screen's top-to-bottom button order
+    // (prev/next/Potion/Fountain/Obelisk/Seer/Misc/Instructors, "r" = on, "b" = off).
+    if (gameType() == GAME_TYPE_MM8) {
+        ui_book_autonotes_background = assets->getImage_ColorKey("irbgrnd");
+        ui_book_button1_on = assets->getImage_Alpha("irt01r");
+        ui_book_button2_on = assets->getImage_Alpha("irt02r");
+        ui_book_button3_on = assets->getImage_Alpha("irt03r");
+        ui_book_button4_on = assets->getImage_Alpha("irt04r");
+        ui_book_button5_on = assets->getImage_Alpha("irt05r");
+        ui_book_button6_on = assets->getImage_Alpha("irt06r");
+        ui_book_button7_on = assets->getImage_Alpha("irt07r");
+        ui_book_button8_on = assets->getImage_Alpha("irt08r");
+        ui_book_button1_off = assets->getImage_Alpha("irt01b");
+        ui_book_button2_off = assets->getImage_Alpha("irt02b");
+        ui_book_button3_off = assets->getImage_Alpha("irt03b");
+        ui_book_button4_off = assets->getImage_Alpha("irt04b");
+        ui_book_button5_off = assets->getImage_Alpha("irt05b");
+        ui_book_button6_off = assets->getImage_Alpha("irt06b");
+        ui_book_button7_off = assets->getImage_Alpha("irt07b");
+        ui_book_button8_off = assets->getImage_Alpha("irt08b");
+    } else {
+        ui_book_autonotes_background = assets->getImage_ColorKey("sbautnot");
+        ui_book_button1_on = assets->getImage_Alpha("tab-an-6b");
+        ui_book_button2_on = assets->getImage_Alpha("tab-an-7b");
+        ui_book_button3_on = assets->getImage_Alpha("tab-an-1b");
+        ui_book_button4_on = assets->getImage_Alpha("tab-an-2b");
+        ui_book_button5_on = assets->getImage_Alpha("tab-an-3b");
+        ui_book_button6_on = assets->getImage_Alpha("tab-an-5b");
+        ui_book_button7_on = assets->getImage_Alpha("tab-an-4b");
+        ui_book_button8_on = assets->getImage_Alpha("tab-an-8b");
+        ui_book_button1_off = assets->getImage_Alpha("tab-an-6a");
+        ui_book_button2_off = assets->getImage_Alpha("tab-an-7a");
+        ui_book_button3_off = assets->getImage_Alpha("tab-an-1a");
+        ui_book_button4_off = assets->getImage_Alpha("tab-an-2a");
+        ui_book_button5_off = assets->getImage_Alpha("tab-an-3a");
+        ui_book_button6_off = assets->getImage_Alpha("tab-an-5a");
+        ui_book_button7_off = assets->getImage_Alpha("tab-an-4a");
+        ui_book_button8_off = assets->getImage_Alpha("tab-an-8a");
+    }
+    ui_book_quest_div_bar = assets->getImage_Alpha("divbar");
 
     pBtn_Book_1 = CreateButton(pViewport.topLeft() + Pointi(398, 1), {50, 34}, BUTTON_TYPE_NORMAL, 0,
         UIMSG_ClickBooksBtn, std::to_underlying(BOOK_PREV_PAGE), INPUT_ACTION_DIALOG_LEFT, localization->str(LSTR_SCROLL_DOWN), {ui_book_button1_on});
@@ -72,16 +98,32 @@ GUIWindow_AutonotesBook::GUIWindow_AutonotesBook() : GUIWindow_Book() {
     pBtn_Autonotes_Instructors = CreateButton(pViewport.topLeft() + Pointi(397, 302), {50, 34}, BUTTON_TYPE_NORMAL, 0,
         UIMSG_ClickBooksBtn, std::to_underlying(BOOK_NOTES_INSTRUCTORS), INPUT_ACTION_INVALID, localization->str(LSTR_INSTRUCTORS), {ui_book_button8_on});
 
+    if (gameType() == GAME_TYPE_MM8) {
+        CreateMm8BookTabColumn();
+        // Real MM8 Close button position/size (see kMm8AutonotesCloseButtonPos above) -
+        // re-positions the clickable rect the base ctor already created at MM7's slot.
+        for (GUIButton *button : vButtons) {
+            if (button->id == "Book_Close") {
+                button->rect = Recti(kMm8AutonotesCloseButtonPos, ui_exit_cancel_button_background->size());
+                break;
+            }
+        }
+    }
+
     recalculateCurrentNotesTypePages();
 }
 
 void GUIWindow_AutonotesBook::Update() {
-    render->DrawQuad2D(ui_exit_cancel_button_background, {471, 445});
+    bool isMm8 = gameType() == GAME_TYPE_MM8;
+    if (!isMm8)
+        render->DrawQuad2D(ui_exit_cancel_button_background, {471, 445});
 
     int pTextHeight;
     bool noteTypeChanged = false;
 
     render->DrawQuad2D(ui_book_autonotes_background, pViewport.topLeft());
+    if (isMm8)
+        DrawMm8BookTabColumn();
     if ((_bookButtonClicked && _bookButtonAction == BOOK_PREV_PAGE) || !_startingNotesIdx) {
         render->DrawQuad2D(ui_book_button1_off, pViewport.topLeft() + Pointi(407, 2));
     } else {
@@ -237,4 +279,9 @@ void GUIWindow_AutonotesBook::Update() {
         render->DrawQuad2D(ui_book_quest_div_bar, {100, autonotes_frameRect.y + pTextHeight + 12});
         autonotes_frameRect.y = (autonotes_frameRect.y + pTextHeight) + 24;
     }
+
+    // Drawn last (not at the top of Update() like MM7's line above) so the background fill above
+    // doesn't paint over it - see kMm8AutonotesCloseButtonPos's own comment.
+    if (isMm8)
+        render->DrawQuad2D(ui_exit_cancel_button_background, kMm8AutonotesCloseButtonPos);
 }

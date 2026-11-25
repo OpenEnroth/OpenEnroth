@@ -30,6 +30,12 @@ class AudioSamplePool {
     void stopPid(Pid pid);
     void update();
     void setVolume(float value);
+
+    /**
+     * @return                          Whether any sample of the pool is still playing.
+     */
+    [[nodiscard]] bool hasPlaying() const;
+
  private:
     std::list<AudioSamplePoolEntry> _samplePool;
     bool _looping = false;

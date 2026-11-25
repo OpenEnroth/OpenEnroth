@@ -21,6 +21,14 @@ class TestController {
     TestController(EngineController *controller, FileSystem *tfs, float playbackSpeed);
     ~TestController();
 
+    /**
+     * @return                          Filesystem backing the test data dir (`--test-path`), e.g. for
+     *                                   `generateTrace` to write a newly generated trace straight into it.
+     */
+    FileSystem *testDataFileSystem() const {
+        return _tfs;
+    }
+
     void loadGameFromTestData(std::string_view name);
     void playTraceFromTestData(std::string_view saveName, std::string_view traceName, std::function<void()> postLoadCallback = {});
     void playTraceFromTestData(std::string_view saveName, std::string_view traceName, EngineTracePlaybackFlags flags, std::function<void()> postLoadCallback = {});

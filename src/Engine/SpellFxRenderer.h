@@ -144,7 +144,9 @@ struct SpellFxRenderer {
 
     int field_204 = 0;  // fireball sphere tally
 
-    std::array<PlayerBuffAnim, 4> pCharacterBuffs;
+    // Sized to match `Party::pCharacters` (grown to 5 for MM8's up-to-5-member
+    // party) - `SetPartyBuffAnim()` indexes this per active character, so it must never be smaller.
+    std::array<PlayerBuffAnim, 5> pCharacterBuffs;
     std::array<ProjectileAnim, 32> pProjectiles;
     int uNumProjectiles = 0;
     SpellFX_Billboard *_spellFXSphereInstance = nullptr;

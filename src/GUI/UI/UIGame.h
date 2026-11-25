@@ -12,6 +12,15 @@ void GameUI_OnPlayerPortraitLeftClick(int uPlayerID);  // idb
 void buttonbox(int x, int y, std::string_view text, int col);
 void GameUI_handleHintMessage(UIMessageType type, int param);
 
+// The Controls (options) screen's volume-slider track geometry (screen space) -
+// GameMenu.cpp's UIMSG_Change{Sound,Music,Voice}Volume handlers need this to resolve a track
+// click to the right level under MM8 (its track sits at different x/width than MM7's), same
+// cross-TU sharing convention as UISaveLoad.h's own kMm8SaveLoadVisibleSlotsInGame. Full
+// measurement/derivation comment lives with the rest of this screen's layout constants
+// (UIGame.cpp, next to kMm8VolumeMarkerX).
+inline constexpr int kMm8VolumeTrackX = 363;
+inline constexpr int kMm8VolumeTrackWidth = 194;
+
 class GUIWindow_GameMenu : public GUIWindow {
  public:
     GUIWindow_GameMenu();
@@ -64,12 +73,23 @@ extern std::shared_ptr<GraphicsImage> game_ui_minimap_frame;    // 5079D8
 extern std::shared_ptr<GraphicsImage> game_ui_minimap_compass;  // 5079B4
 extern std::array<std::shared_ptr<GraphicsImage>, 8> game_ui_minimap_dirs;
 
-extern std::shared_ptr<GraphicsImage> game_ui_menu_quit;
-extern std::shared_ptr<GraphicsImage> game_ui_menu_resume;
-extern std::shared_ptr<GraphicsImage> game_ui_menu_controls;
-extern std::shared_ptr<GraphicsImage> game_ui_menu_save;
-extern std::shared_ptr<GraphicsImage> game_ui_menu_load;
-extern std::shared_ptr<GraphicsImage> game_ui_menu_new;
+// MM8's top-bar compass cartouche - a horizontally-scrolled direction-letter strip
+// ("ib-comp-a", MM8's alignment-invariant copy of MM7's "IB-COMP-A/B/C") behind a gold cover
+// frame, relocated from MM7's minimap-adjacent slot to its own top-bar box. See GameUI_DrawCompass
+// in UIGame.cpp. game_ui_compass_strip is deliberately its own pointer, not a reuse of
+// game_ui_minimap_compass just above - see that pointer's own declaration comment for why.
+extern std::shared_ptr<GraphicsImage> game_ui_compass_frame;    // icons.UI.lod "compcovr"
+extern std::shared_ptr<GraphicsImage> game_ui_compass_strip;    // icons.lod "ib-comp-a"
+
+// MM8's portrait-adjacent HP/SP bar (icons.lod "mana*" family - not the
+// "statbl"/"statg"/"staty"/"statr" gem icons UI_Create() loads into game_ui_bar_*, which are a
+// different, small, unrelated status gem). See GameUI_DrawLifeManaBars in UIGame.cpp.
+extern std::shared_ptr<GraphicsImage> game_ui_mm8_bar_frame;    // icons.lod "manafrm"
+extern std::shared_ptr<GraphicsImage> game_ui_mm8_bar_green;    // icons.lod "manag"
+extern std::shared_ptr<GraphicsImage> game_ui_mm8_bar_yellow;   // icons.lod "manay"
+extern std::shared_ptr<GraphicsImage> game_ui_mm8_bar_red;      // icons.lod "manar"
+extern std::shared_ptr<GraphicsImage> game_ui_mm8_bar_blue;     // icons.lod "manab"
+
 extern std::shared_ptr<GraphicsImage> game_ui_menu_options;
 
 extern std::shared_ptr<GraphicsImage> game_ui_tome_storyline;
@@ -89,7 +109,17 @@ extern std::array<std::shared_ptr<GraphicsImage>, 5> game_ui_options_controls;
 
 extern std::shared_ptr<GraphicsImage> game_ui_evtnpc;  // 50795C
 
-extern std::array<std::array<std::shared_ptr<GraphicsImage>, 56>, 4> game_ui_player_faces;
+// Sized to match `Party::pCharacters` (5 for MM8's up-to-5-member
+// party) - `GameUI_DrawPortraits()` indexes this per active character, so it must never be smaller.
+extern std::array<std::array<std::shared_ptr<GraphicsImage>, 56>, 5> game_ui_player_faces;
+
+/**
+ * MM8's bottom bar holds five portrait slots. The first is under the ring, the other four are where the banners stand.
+ *
+ * @param slot                          Index of the party member, 0 to 4.
+ * @return                              How far right of the first slot this slot is drawn, in pixels.
+ */
+int mm8PortraitSlotShift(int slot);
 extern std::shared_ptr<GraphicsImage> game_ui_player_face_eradicated;
 extern std::shared_ptr<GraphicsImage> game_ui_player_face_dead;
 
@@ -97,6 +127,23 @@ extern std::shared_ptr<GraphicsImage> game_ui_player_selection_frame;  // 50C98C
 extern std::shared_ptr<GraphicsImage> game_ui_player_alert_yellow;     // 5079C8
 extern std::shared_ptr<GraphicsImage> game_ui_player_alert_red;        // 5079CC
 extern std::shared_ptr<GraphicsImage> game_ui_player_alert_green;      // 5079D0
+
+// MM8's always-on bottom-bar HUD - a portrait ring ("selring") plus 4 fixed heraldic
+// banners ("ibshield01".."04"), both from icons.lod. MM7 has no equivalent.
+extern std::shared_ptr<GraphicsImage> game_ui_scorebg;         // icons.lod "scorebg" - MM8 top-bar food/gold icon strip
+extern std::shared_ptr<GraphicsImage> game_ui_portrait_ring;   // icons.lod "selring" - MM8 bottom-bar portrait ring
+extern std::array<std::shared_ptr<GraphicsImage>, 4> game_ui_party_banners;  // icons.lod "ibshield01".."04"
+
+// The decorative full-width chrome each of the above sits on top of - a separate
+// draw call, not baked into scorebg/selring/ibshieldNN (those are colorkeyed icon-only sprites
+// with a transparent surround).
+extern std::shared_ptr<GraphicsImage> game_ui_top_bar_bg;      // icons.lod (patch) "topbar" - MM8 top-bar background strip
+extern std::shared_ptr<GraphicsImage> game_ui_bottom_bar_bg;   // icons.lod "basebar" - MM8 bottom-bar background panel
+
+// The top bar's two bookends: a decorative figure on the left that does nothing when clicked, and a skull on the
+// right that opens the spellbook. Neither varies by party alignment (no "-a"/"-b"/"-c" suffix in the archive).
+extern std::shared_ptr<GraphicsImage> game_ui_topbar_figurine; // icons.lod "asil00" - MM8 top-bar left bookend (decorative)
+extern std::shared_ptr<GraphicsImage> game_ui_topbar_skull;    // icons.lod "asir00" - MM8 top-bar right bookend (opens spellbook)
 
 extern std::shared_ptr<GraphicsImage> game_ui_bar_red;
 extern std::shared_ptr<GraphicsImage> game_ui_bar_yellow;

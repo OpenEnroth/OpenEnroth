@@ -4,6 +4,7 @@
 #include <string>
 
 #include "Engine/Engine.h"
+#include "Engine/GameType.h"
 #include "Engine/Localization.h"
 #include "Engine/mm7_data.h"
 #include "Engine/Graphics/Indoor.h"
@@ -34,6 +35,7 @@ struct EvtTimerSchedule {
 struct MapTimer {
     EvtTimerSchedule schedule;
     Time alarmTime;
+    EvtSource source = EVT_SOURCE_MAP;
     int eventId = 0;
     int eventStep = 0;
 };
@@ -110,11 +112,11 @@ static Time firstAlarm(const EvtTimerSchedule &schedule, Time levelEnterTime, Ti
     case EVT_TIMER_INTERVAL:
         return levelEnterTime + schedule.duration;
     case EVT_TIMER_DAILY: {
-        if (!levelLastVisit)
-            return levelEnterTime;
-
-        Time result = Time::fromDays(levelLastVisit.toDays()) + schedule.duration;
-        return result < levelLastVisit ? result + Duration::fromDays(1) : result;
+        // On a first visit the timer waits for its time of day too. MM8's out01.evt event 500, an NPC's greeting on
+        // Dagger Wound Island at 10:00, would otherwise fire in the first second of a new game, which starts at 9:00.
+        Time anchor = levelLastVisit ? levelLastVisit : levelEnterTime;
+        Time result = Time::fromDays(anchor.toDays()) + schedule.duration;
+        return result < anchor ? result + Duration::fromDays(1) : result;
     }
     default:
         return levelLastVisit ? levelLastVisit + periodForTimerType(schedule.type) : levelEnterTime; // Without last visit all timers must fire immediately.
@@ -129,13 +131,20 @@ static void registerTimers() {
 
     mapTimers.clear();
     for (EvtOpcode triggerType : {EVENT_OnTimer, EVENT_OnLongTimer}) { // The `OnTimer` ones are checked first.
-        for (const EventTrigger &trigger : engine->_localEventMap.enumerateTriggers(triggerType)) {
-            MapTimer timer;
-            timer.schedule = timerSchedule(engine->_localEventMap.instruction(trigger.eventId, trigger.eventStep));
-            timer.alarmTime = firstAlarm(timer.schedule, levelEnterTime, levelLastVisit);
-            timer.eventId = trigger.eventId;
-            timer.eventStep = trigger.eventStep;
-            mapTimers.push_back(timer);
+        for (EvtSource source : {EVT_SOURCE_MAP, EVT_SOURCE_GLOBAL}) {
+            if (source == EVT_SOURCE_GLOBAL && gameType() != GAME_TYPE_MM8)
+                continue; // MM8's global.evt has timers of its own, they run on every map.
+
+            EvtProgram &program = source == EVT_SOURCE_GLOBAL ? engine->_globalEventMap : engine->_localEventMap;
+            for (const EventTrigger &trigger : program.enumerateTriggers(triggerType)) {
+                MapTimer timer;
+                timer.schedule = timerSchedule(program.instruction(trigger.eventId, trigger.eventStep));
+                timer.alarmTime = firstAlarm(timer.schedule, levelEnterTime, levelLastVisit);
+                timer.source = source;
+                timer.eventId = trigger.eventId;
+                timer.eventStep = trigger.eventStep;
+                mapTimers.push_back(timer);
+            }
         }
     }
 }
@@ -200,6 +209,10 @@ void onMapLeave() {
         runEvent(EvtContext(EVT_SOURCE_MAP, triggers.eventId), triggers.eventStep + 1);
 
     // Cleanup timers to avoid firing while map transition is in process
+    clearMapTimers();
+}
+
+void clearMapTimers() {
     mapTimers.clear();
 }
 
@@ -211,7 +224,7 @@ static void checkTimers() {
         if (pParty->GetPlayingTime() < timer.alarmTime)
             continue;
 
-        if (runEvent(EvtContext(EVT_SOURCE_MAP, timer.eventId), timer.eventStep + 1) == EVT_TRANSITION_STARTED)
+        if (runEvent(EvtContext(timer.source, timer.eventId), timer.eventStep + 1) == EVT_TRANSITION_STARTED)
             return; // Leaving the map cleared the timers.
 
         Time now = pParty->GetPlayingTime();

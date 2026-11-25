@@ -2,11 +2,14 @@
 
 #include <cmath>
 #include <algorithm>
+#include <chrono>
+#include <thread>
 #include <map>
 #include <string>
 #include <utility>
 #include <memory>
 
+#include "Engine/GameType.h"
 #include "Engine/Graphics/Indoor.h"
 #include "Engine/Objects/Decoration.h"
 #include "Engine/Objects/Actor.h"
@@ -16,6 +19,7 @@
 #include "Engine/Engine.h"
 #include "Engine/Tables/MapTable.h"
 #include "Engine/Resources/EngineFileSystem.h"
+#include "Engine/Resources/ResourceManager.h"
 #include "Engine/EngineCallObserver.h"
 
 #include "GUI/GUIWindow.h"
@@ -42,13 +46,36 @@ constexpr Pid FAKE_HOUSE_SPEECH_PID = Pid::fromPacked(-6);
 
 extern OpenALSoundProvider *provider;
 
+// MM8's dsounds.bin shifts MM7's UI sound ids 200-232 down by 67 (204 TurnPage1 is 137, 232 teleport is 165)
+// and uses 205 for the quest jingle. Ids 48 and the per-monster "bored" slot have no MM8 sound.
+static SoundId mm8TranslatedSoundId(SoundId id) {
+    if (gameType() != GAME_TYPE_MM8)
+        return id;
+
+    switch (id) {
+    case SOUND_quest:              return static_cast<SoundId>(205);
+    case SOUND_EndTurnBasedMode:   return static_cast<SoundId>(139);
+    case SOUND_StartTurnBasedMode: return static_cast<SoundId>(140);
+    case SOUND_openchest0101:      return static_cast<SoundId>(141);
+    case SOUND_spellfail0201:      return static_cast<SoundId>(142);
+    case SOUND_openbook:           return static_cast<SoundId>(163);
+    case SOUND_closebook:          return static_cast<SoundId>(164);
+    case SOUND_teleport:           return static_cast<SoundId>(165);
+    default:                       return id;
+    }
+}
+
 AudioPlayer::~AudioPlayer() = default;
 
 void AudioPlayer::MusicPlayTrack(MusicId eTrack) {
     if (currentMusicTrack == eTrack)
         return;
 
-    if (!engine->config->debug.NoSound.value() && bPlayerReady) {
+    // Music (music/*.mp3) doesn't depend on sounds/audio.snd, so it must not be gated
+    // on bPlayerReady - that flag only tracks SFX sample data readiness.
+    // NoSound and the dfs->exists() check below already cover the
+    // disabled/missing-file cases correctly.
+    if (!engine->config->debug.NoSound.value()) {
         if (pCurrentMusicTrack)
             pCurrentMusicTrack->Stop();
         currentMusicTrack = MUSIC_INVALID;
@@ -181,6 +208,8 @@ void AudioPlayer::playSound(SoundId eSoundID, SoundPlaybackMode mode, Pid pid) {
     // TODO(pskelton): do we need to reinstate this optimisation? dropped to allow better sound tracing
     if (/*engine->config->settings.SoundLevel.value() < 1 ||*/ eSoundID == SOUND_Invalid)
         return;
+
+    eSoundID = mm8TranslatedSoundId(eSoundID);
 
     SoundInfo *si = pSoundList->soundInfo(eSoundID);
     if (!si) {
@@ -388,6 +417,17 @@ void AudioPlayer::pauseLooping() {
     _loopingSoundPool.pause();
 }
 
+void AudioPlayer::soundDrain() {
+    // A paused or broken source never reports that it stopped, so the wait is bounded.
+    auto deadline = std::chrono::steady_clock::now() + std::chrono::seconds(10);
+    for (AudioSamplePool *pool : {&_voiceSoundPool, &_regularSoundPool}) {
+        while (pool->hasPlaying() && std::chrono::steady_clock::now() < deadline) {
+            std::this_thread::sleep_for(std::chrono::milliseconds(1));
+            pool->update();
+        }
+    }
+}
+
 bool AudioPlayer::isWalkingSoundPlays() {
     if (_currentWalkingSample)
         return !_currentWalkingSample->IsStopped();
@@ -395,6 +435,11 @@ bool AudioPlayer::isWalkingSoundPlays() {
 }
 
 float AudioPlayer::getSoundLength(SoundId eSoundID) {
+    if (!bPlayerReady)
+        return 0.0f;
+
+    eSoundID = mm8TranslatedSoundId(eSoundID);
+
     SoundInfo* si = pSoundList->soundInfo(eSoundID);
     if (!si) {
         MM_WARNING("AudioPlayer: sound id {} not found", std::to_underlying(eSoundID));
@@ -419,6 +464,18 @@ void AudioPlayer::Initialize() {
     uMasterVolume = 127;
 
     UpdateVolumeFromConfig();
+
+    // MM8 installs don't ship `sounds/audio.snd` at all (see PathResolver.cpp's
+    // `mm8ValidateList`) - unlike MM7, its sound samples are plain .wav entries inside
+    // `data/EnglishD.lod` (see LoadSound() below), which `ResourceManager` opens.
+    // Ready as soon as that LOD is available, no `_sndReader` involved.
+    if (gameType() == GAME_TYPE_MM8) {
+        bPlayerReady = engine->resources()->isEnglishDOpen();
+        return;
+    }
+
+    if (!dfs->exists("sounds/audio.snd"))
+        return;
     _sndReader.open(dfs->read("sounds/audio.snd"));
 
     bPlayerReady = true;
@@ -436,6 +493,24 @@ void PlayLevelMusic() {
 }
 
 Blob AudioPlayer::LoadSound(std::string_view pSoundName) {
+    // MM8 keeps its sound samples as plain .wav entries in `data/EnglishD.lod` instead of MM7's
+    // `sounds/audio.snd` container, in the same
+    // LOD-compressed-entry format used there for images/text. LOD entry names are truncated to
+    // 16 bytes in the container itself,
+    // so a long name loses its ".wav" suffix there too - truncate our lookup the same way.
+    if (gameType() == GAME_TYPE_MM8) {
+        std::string wavName = fmt::format("{}.wav", pSoundName);
+        if (wavName.size() > 16)
+            wavName.resize(16);
+
+        if (!engine->resources()->hasEnglishD(wavName)) {
+            MM_WARNING("AudioPlayer: {} can't load sound header!", pSoundName);
+            return Blob();
+        }
+
+        return engine->resources()->englishDData(wavName);
+    }
+
     if (!_sndReader.exists(pSoundName)) {
         MM_WARNING("AudioPlayer: {} can't load sound header!", pSoundName);
         return Blob();
@@ -445,7 +520,13 @@ Blob AudioPlayer::LoadSound(std::string_view pSoundName) {
 }
 
 void AudioPlayer::playSpellSound(SpellId spell, bool is_impact, SoundPlaybackMode mode, Pid pid) {
-    if (spell != SPELL_NONE)
-        playSound(static_cast<SoundId>(SpellSoundIds[spell] + is_impact), mode, pid);
+    if (spell == SPELL_NONE)
+        return;
+    SoundId soundId = static_cast<SoundId>(SpellSoundIds[spell] + is_impact);
+    // Some MM8 spells have a cast sound and no impact sound: SPELL_EARTH_BLADES has 13050 and nothing
+    // at 13051. The original is silent there, so ask the table.
+    if (gameType() == GAME_TYPE_MM8 && is_impact && !pSoundList->soundInfo(soundId))
+        return;
+    playSound(soundId, mode, pid);
 }
 

@@ -293,9 +293,10 @@ void Vis::PickIndoorFaces_Mouse(float fDepth, const Vec3f &rayOrigin, const Vec3
 }
 
 bool IsBModelVisible(BSPModel *model, int reachable_depth, bool *reachable) {
+    // approx distance - for reachable checks
     float rayx = model->boundingCenter.x - pCamera3D->vCameraPos.x;
     float rayy = model->boundingCenter.y - pCamera3D->vCameraPos.y;
-    float dist = Vec2f(rayx, rayy).length();
+    int dist = Vec2i(static_cast<int>(rayx), static_cast<int>(rayy)).octagonalLength();
     *reachable = false;
     if (dist < model->boundingRadius + reachable_depth) *reachable = true;
 

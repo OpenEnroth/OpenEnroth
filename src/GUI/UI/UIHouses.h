@@ -3,6 +3,7 @@
 #include <cstdint>
 #include <memory>
 #include <string>
+#include <utility>
 #include <vector>
 
 #include "Engine/Tables/HouseTable.h"
@@ -24,6 +25,13 @@ constexpr int SIDE_TEXT_BOX_BODY_TEXT_OFFSET = 138;
 constexpr int SIDE_TEXT_BOX_MAX_SPACING = 32;
 
 void BackToHouseMenu();
+
+/**
+ * MM8 geometry for the dialogue "Close"/"Cancel" button, distinct from MM7's
+ * narrower-panel position. Shared by both house dialogue (UIHouses.cpp) and free-roam NPC
+ * dialogue (UIDialogue.cpp).
+ */
+std::pair<Pointi, Sizei> exitCancelButtonGeometry();
 
 /**
  * @offset 0x4BCACC
@@ -139,6 +147,12 @@ class GUIWindow_House : public GUIWindow {
     virtual void houseScreenClick();
     virtual void playHouseGoodbyeSpeech();
 
+    // Adventurer's Inn (screen 29) click handlers, routed from Game.cpp's message loop.
+    // No-op by default - only `GUIWindow_AdventurersInn` overrides these.
+    virtual void innClickBenchPortrait(int rosterId);
+    virtual void innClickActivePortrait(int rosterId);
+    virtual void innClickDismiss(int rosterId);
+
  private:
     void drawNpcHouseNameAndTitle(NPCData *npcData);
     void drawNpcHouseGreetingMessage(NPCData *npcData);
@@ -169,8 +183,13 @@ struct HouseAnimDescr {
 extern std::shared_ptr<GraphicsImage> _591428_endcap;
 
 extern std::array<const HouseAnimDescr, 196> pAnimatedRooms;
+extern std::array<const HouseAnimDescr, 161> pAnimatedRoomsMM8;
 
-extern const IndexedArray<int, HOUSE_TYPE_WEAPON_SHOP, HOUSE_TYPE_DARK_GUILD> itemAmountInShop;
+// Looks up `uAnimationID` (`HouseData::uAnimationID`) in whichever of the two tables above
+// matches the running game.
+const HouseAnimDescr &animatedRoom(int uAnimationID);
+
+extern const IndexedArray<int, HOUSE_TYPE_WEAPON_SHOP, HOUSE_TYPE_SELF_GUILD> itemAmountInShop;
 
 extern std::vector<HouseNpcDesc> houseNpcs;
 // TODO(captainurist): move into GUIWindow_House. Which NPC the party talks to is the house window's state.

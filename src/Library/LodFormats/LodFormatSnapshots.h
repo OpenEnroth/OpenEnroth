@@ -20,10 +20,39 @@ struct LodCompressionHeader_MM6 {
 static_assert(sizeof(LodCompressionHeader_MM6) == 16);
 MM_DECLARE_MEMCOPY_SERIALIZABLE(LodCompressionHeader_MM6)
 
+/**
+ * Unlike MM6/7, where per-entry zlib compression is optional and flagged by `LodCompressionHeader_MM6`'s "mvii"
+ * signature, every single entry in MM8's `EnglishT.lod` (text tables, `.evt` event programs, and the compiled
+ * `.bin` tables alike) is unconditionally wrapped in this header + a zlib stream. Confirmed against all 194
+ * entries of MM8's `EnglishT.lod`: the first 76 bytes duplicate the shape of this entry's own
+ * `LodFileEntry_MM8` directory record (name, 12 unknown fields, a self-referential zero offset, and the
+ * compressed size), followed by 3 more unknown fields, the decompressed size, and a trailing value that's
+ * always 256 in every sample seen.
+ */
+struct LodCompressionHeader_MM8 {
+    std::array<char, 16> name; // Duplicate of the entry's own name, unused. Overflows into `unk_0` (see below)
+                                // for names longer than 16 bytes, e.g. many of `EnglishD.lod`'s `.wav` sample
+                                // entries.
+    std::array<std::uint32_t, 12> unk_0; // Zero, except for the tail of an overflowing `name` -
+                                          // whatever follows that overflow's own zero terminator is always zero.
+    std::uint32_t unk_12; // Always zero.
+    std::uint32_t dataSize; // Size of the zlib-compressed data that follows this header.
+    std::uint32_t unk_13; // Always zero.
+    std::array<std::uint32_t, 3> unk_14; // Zero in `EnglishT.lod`'s tables/events. `EnglishD.lod`'s `.wav`
+                                          // sample entries instead consistently carry a fixed
+                                          // 0x001f0000 in `unk_14[1]` - not reliably zero, not checked by
+                                          // `detectCompressedDataMm8`.
+    std::uint32_t decompressedSize;
+    std::uint32_t unk_15; // Always 256 in every sample seen.
+};
+static_assert(sizeof(LodCompressionHeader_MM8) == 96);
+MM_DECLARE_MEMCOPY_SERIALIZABLE(LodCompressionHeader_MM8)
+
 struct LodImageHeader_MM6 {
     std::array<char, 16> name;
 
-    // Note: for a palette-only image, all the rest are zeros.
+    // Note: for a palette-only image, all the rest are zeros, except that MM8's own bare palette entries
+    // (e.g. `pal857`) self-populate `paletteId` with their own numeric id instead of leaving it at zero.
 
     uint32_t size; // Width * height, size of the first mipmap. Can be followed by smaller size bitmaps, down to 16x16.
     uint32_t dataSize; // Size of the pixel data that follows, in bytes.
@@ -45,6 +74,35 @@ struct LodImageHeader_MM6 {
 };
 static_assert(sizeof(LodImageHeader_MM6) == 48);
 MM_DECLARE_MEMCOPY_SERIALIZABLE(LodImageHeader_MM6)
+
+/**
+ * MM8's `EnglishD.lod` (localized UI art: main menu title.pcx/button textures) stores its images in
+ * this format instead of `LodImageHeader_MM6`'s. It's `LodImageHeader_MM6`'s exact same trailing fields (size
+ * through flags), just with 48 extra always-zero bytes spliced in between `name` and `size` - mirroring the
+ * padding shape already seen in `LodCompressionHeader_MM8`. Confirmed against the
+ * `t_new_up` entry: `size`/`decompressedSize` (3392) == `width` (106) * `height` (32), and
+ * `sizeof(LodImageHeader_MM8) + dataSize + 0x300` (trailing raw palette) matches the entry's exact byte size.
+ * Pixel data is always zlib-compressed here (unlike `LodImageHeader_MM6`, where compression is optional).
+ */
+struct LodImageHeader_MM8 {
+    std::array<char, 16> name;
+    std::array<std::uint32_t, 12> unk_0; // Always zero.
+
+    uint32_t size; // Width * height.
+    uint32_t dataSize; // Size of the zlib-compressed pixel data that follows the header.
+    uint16_t width;
+    uint16_t height;
+    int16_t widthLn2;
+    int16_t heightLn2;
+    int16_t widthMinus1;
+    int16_t heightMinus1;
+    int16_t paletteId;
+    int16_t anotherPaletteId;
+    uint32_t decompressedSize; // Size of the decompressed pixel data.
+    uint32_t flags;
+};
+static_assert(sizeof(LodImageHeader_MM8) == 96);
+MM_DECLARE_MEMCOPY_SERIALIZABLE(LodImageHeader_MM8)
 
 /**
  * @see https://github.com/GrayFace/MMExtension/blob/4d6600f164315f38157591d7f0307a86594c22ef/Src/RSPak/Extra/RSLod.pas#L553

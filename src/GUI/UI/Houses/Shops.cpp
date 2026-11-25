@@ -10,11 +10,13 @@
 #include "Engine/Engine.h"
 #include "Engine/EngineIocContainer.h"
 #include "Engine/AssetsManager.h"
+#include "Engine/GameType.h"
 #include "Engine/Graphics/Renderer/Renderer.h"
 #include "Engine/Graphics/Image.h"
 #include "Engine/Graphics/LocationFunctions.h"
 #include "Engine/Localization.h"
 #include "Engine/Tables/MapTable.h"
+#include "Engine/Objects/CharacterEnumFunctions.h"
 #include "Engine/Objects/Item.h"
 #include "Engine/Party.h"
 #include "Engine/PriceCalculator.h"
@@ -142,6 +144,137 @@ static constexpr IndexedArray<ITEM_VARIATION, HOUSE_FIRST_ARMOR_SHOP, HOUSE_LAST
     {HOUSE_28,                              { ITEM_TREASURE_LEVEL_5, { RANDOM_ITEM_PLATE_ARMOR,     RANDOM_ITEM_PLATE_ARMOR,    RANDOM_ITEM_PLATE_ARMOR,    RANDOM_ITEM_PLATE_ARMOR } }}
 }};
 
+// The tables above are keyed by `HouseId`, whose values follow MM7's `2dEvents.txt` house ordering. MM8's
+// `2dEvents.txt` has different shops at the same ordinals. The MM8 tables below are from MM8's
+// `Data/Tables/Shops.txt` (House/Shop/Level/1-4 columns, "Weapon"/"Armor1"/"Armor2"
+// row = standard Buy dialog, "SWeapon"/"SArmor1"/"SArmor2" = Buy Special).
+// Only houses 1-7 (weapon) and 15-21 (armor) are populated in MM8's 2dEvents.txt, the rest are placeholders.
+static constexpr IndexedArray<ITEM_VARIATION, HOUSE_FIRST_WEAPON_SHOP, HOUSE_LAST_WEAPON_SHOP> weaponShopVariationStandardMM8 = {{
+    {HOUSE_WEAPON_SHOP_EMERALD_ISLAND,      { ITEM_TREASURE_LEVEL_1, { RANDOM_ITEM_SWORD,   RANDOM_ITEM_BOW,    RANDOM_ITEM_AXE,    RANDOM_ITEM_WEAPON } }}, // 1 "True Mettle"
+    {HOUSE_WEAPON_SHOP_HARMONDALE,          { ITEM_TREASURE_LEVEL_2, { RANDOM_ITEM_SWORD,   RANDOM_ITEM_DAGGER, RANDOM_ITEM_BOW,    RANDOM_ITEM_WEAPON } }}, // 2 "Keen Edge"
+    {HOUSE_WEAPON_SHOP_ERATHIA,             { ITEM_TREASURE_LEVEL_2, { RANDOM_ITEM_SWORD,   RANDOM_ITEM_DAGGER, RANDOM_ITEM_WEAPON, RANDOM_ITEM_WEAPON } }}, // 3 "Polished Steel"
+    {HOUSE_WEAPON_SHOP_TULAREAN_FOREST,     { ITEM_TREASURE_LEVEL_3, { RANDOM_ITEM_SWORD,   RANDOM_ITEM_AXE,    RANDOM_ITEM_SPEAR,  RANDOM_ITEM_WEAPON } }}, // 4 "Lance's Spears"
+    {HOUSE_WEAPON_SHOP_CELESTE,             { ITEM_TREASURE_LEVEL_3, { RANDOM_ITEM_SWORD,   RANDOM_ITEM_MACE,   RANDOM_ITEM_WEAPON, RANDOM_ITEM_WEAPON } }}, // 5 "Blooded Daggers and Blades"
+    {HOUSE_WEAPON_SHOP_PIT,                 { ITEM_TREASURE_LEVEL_4, { RANDOM_ITEM_WEAPON,  RANDOM_ITEM_WEAPON, RANDOM_ITEM_WEAPON, RANDOM_ITEM_WEAPON } }}, // 6 "Ayzar's Axes"
+    {HOUSE_WEAPON_SHOP_MOUNT_NIGHON,        { ITEM_TREASURE_LEVEL_4, { RANDOM_ITEM_AXE,     RANDOM_ITEM_SPEAR,  RANDOM_ITEM_STAFF,  RANDOM_ITEM_WEAPON } }}, // 7 "Custom Cutlass"
+    {HOUSE_WEAPON_SHOP_TATALIA_1,           { ITEM_TREASURE_LEVEL_1, { RANDOM_ITEM_WEAPON,  RANDOM_ITEM_WEAPON, RANDOM_ITEM_WEAPON, RANDOM_ITEM_WEAPON } }}, // 8 unused (Placeholder)
+    {HOUSE_WEAPON_SHOP_AVLEE,               { ITEM_TREASURE_LEVEL_1, { RANDOM_ITEM_WEAPON,  RANDOM_ITEM_WEAPON, RANDOM_ITEM_WEAPON, RANDOM_ITEM_WEAPON } }}, // 9 unused (Placeholder)
+    {HOUSE_WEAPON_SHOP_STONE_CITY,          { ITEM_TREASURE_LEVEL_1, { RANDOM_ITEM_WEAPON,  RANDOM_ITEM_WEAPON, RANDOM_ITEM_WEAPON, RANDOM_ITEM_WEAPON } }}, // 10 unused (Placeholder)
+    {HOUSE_WEAPON_SHOP_CASTLE_HARMONDALE,   { ITEM_TREASURE_LEVEL_1, { RANDOM_ITEM_WEAPON,  RANDOM_ITEM_WEAPON, RANDOM_ITEM_WEAPON, RANDOM_ITEM_WEAPON } }}, // 11 unused (Placeholder)
+    {HOUSE_WEAPON_SHOP_TATALIA_2,           { ITEM_TREASURE_LEVEL_1, { RANDOM_ITEM_WEAPON,  RANDOM_ITEM_WEAPON, RANDOM_ITEM_WEAPON, RANDOM_ITEM_WEAPON } }}, // 12 unused (Placeholder)
+    {HOUSE_13,                              { ITEM_TREASURE_LEVEL_1, { RANDOM_ITEM_WEAPON,  RANDOM_ITEM_WEAPON, RANDOM_ITEM_WEAPON, RANDOM_ITEM_WEAPON } }}, // 13 unused (Placeholder)
+    {HOUSE_14,                              { ITEM_TREASURE_LEVEL_1, { RANDOM_ITEM_WEAPON,  RANDOM_ITEM_WEAPON, RANDOM_ITEM_WEAPON, RANDOM_ITEM_WEAPON } }}  // 14 unused (Placeholder)
+}};
+
+static constexpr IndexedArray<ITEM_VARIATION, HOUSE_FIRST_WEAPON_SHOP, HOUSE_LAST_WEAPON_SHOP> weaponShopVariationSpecialMM8 = {{
+    {HOUSE_WEAPON_SHOP_EMERALD_ISLAND,      { ITEM_TREASURE_LEVEL_2, { RANDOM_ITEM_MACE,    RANDOM_ITEM_STAFF,  RANDOM_ITEM_SPEAR,  RANDOM_ITEM_WEAPON } }}, // 1 "True Mettle"
+    {HOUSE_WEAPON_SHOP_HARMONDALE,          { ITEM_TREASURE_LEVEL_3, { RANDOM_ITEM_STAFF,   RANDOM_ITEM_SPEAR,  RANDOM_ITEM_MACE,   RANDOM_ITEM_WEAPON } }}, // 2 "Keen Edge"
+    {HOUSE_WEAPON_SHOP_ERATHIA,             { ITEM_TREASURE_LEVEL_3, { RANDOM_ITEM_BOW,     RANDOM_ITEM_BOW,    RANDOM_ITEM_SWORD,  RANDOM_ITEM_DAGGER } }}, // 3 "Polished Steel"
+    {HOUSE_WEAPON_SHOP_TULAREAN_FOREST,     { ITEM_TREASURE_LEVEL_4, { RANDOM_ITEM_SWORD,   RANDOM_ITEM_AXE,    RANDOM_ITEM_SPEAR,  RANDOM_ITEM_WEAPON } }}, // 4 "Lance's Spears"
+    {HOUSE_WEAPON_SHOP_CELESTE,             { ITEM_TREASURE_LEVEL_4, { RANDOM_ITEM_DAGGER,  RANDOM_ITEM_DAGGER, RANDOM_ITEM_STAFF,  RANDOM_ITEM_STAFF } }}, // 5 "Blooded Daggers and Blades"
+    {HOUSE_WEAPON_SHOP_PIT,                 { ITEM_TREASURE_LEVEL_5, { RANDOM_ITEM_AXE,     RANDOM_ITEM_AXE,    RANDOM_ITEM_SPEAR,  RANDOM_ITEM_STAFF } }}, // 6 "Ayzar's Axes"
+    {HOUSE_WEAPON_SHOP_MOUNT_NIGHON,        { ITEM_TREASURE_LEVEL_5, { RANDOM_ITEM_BOW,     RANDOM_ITEM_SWORD,  RANDOM_ITEM_DAGGER, RANDOM_ITEM_MACE } }}, // 7 "Custom Cutlass"
+    {HOUSE_WEAPON_SHOP_TATALIA_1,           { ITEM_TREASURE_LEVEL_1, { RANDOM_ITEM_WEAPON,  RANDOM_ITEM_WEAPON, RANDOM_ITEM_WEAPON, RANDOM_ITEM_WEAPON } }}, // 8 unused (Placeholder)
+    {HOUSE_WEAPON_SHOP_AVLEE,               { ITEM_TREASURE_LEVEL_1, { RANDOM_ITEM_WEAPON,  RANDOM_ITEM_WEAPON, RANDOM_ITEM_WEAPON, RANDOM_ITEM_WEAPON } }}, // 9 unused (Placeholder)
+    {HOUSE_WEAPON_SHOP_STONE_CITY,          { ITEM_TREASURE_LEVEL_1, { RANDOM_ITEM_WEAPON,  RANDOM_ITEM_WEAPON, RANDOM_ITEM_WEAPON, RANDOM_ITEM_WEAPON } }}, // 10 unused (Placeholder)
+    {HOUSE_WEAPON_SHOP_CASTLE_HARMONDALE,   { ITEM_TREASURE_LEVEL_1, { RANDOM_ITEM_WEAPON,  RANDOM_ITEM_WEAPON, RANDOM_ITEM_WEAPON, RANDOM_ITEM_WEAPON } }}, // 11 unused (Placeholder)
+    {HOUSE_WEAPON_SHOP_TATALIA_2,           { ITEM_TREASURE_LEVEL_1, { RANDOM_ITEM_WEAPON,  RANDOM_ITEM_WEAPON, RANDOM_ITEM_WEAPON, RANDOM_ITEM_WEAPON } }}, // 12 unused (Placeholder)
+    {HOUSE_13,                              { ITEM_TREASURE_LEVEL_1, { RANDOM_ITEM_WEAPON,  RANDOM_ITEM_WEAPON, RANDOM_ITEM_WEAPON, RANDOM_ITEM_WEAPON } }}, // 13 unused (Placeholder)
+    {HOUSE_14,                              { ITEM_TREASURE_LEVEL_1, { RANDOM_ITEM_WEAPON,  RANDOM_ITEM_WEAPON, RANDOM_ITEM_WEAPON, RANDOM_ITEM_WEAPON } }}  // 14 unused (Placeholder)
+}};
+
+static constexpr IndexedArray<ITEM_VARIATION, HOUSE_FIRST_ARMOR_SHOP, HOUSE_LAST_ARMOR_SHOP> armorShopTopRowVariationStandardMM8 = {{
+    {HOUSE_ARMOR_SHOP_EMERALD_ISLAND,       { ITEM_TREASURE_LEVEL_1, { RANDOM_ITEM_HELMET,  RANDOM_ITEM_HELMET, RANDOM_ITEM_GAUNTLETS, RANDOM_ITEM_GAUNTLETS } }}, // 15 "The Tannery"
+    {HOUSE_ARMOR_SHOP_HARMONDALE,           { ITEM_TREASURE_LEVEL_2, { RANDOM_ITEM_HELMET,  RANDOM_ITEM_HELMET, RANDOM_ITEM_GAUNTLETS, RANDOM_ITEM_GAUNTLETS } }}, // 16 "The Polished Shield"
+    {HOUSE_ARMOR_SHOP_ERATHIA,              { ITEM_TREASURE_LEVEL_2, { RANDOM_ITEM_HELMET,  RANDOM_ITEM_HELMET, RANDOM_ITEM_GAUNTLETS, RANDOM_ITEM_GAUNTLETS } }}, // 17 "Armory"
+    {HOUSE_ARMOR_SHOP_TULAREAN_FOREST,      { ITEM_TREASURE_LEVEL_3, { RANDOM_ITEM_HELMET,  RANDOM_ITEM_HELMET, RANDOM_ITEM_GAUNTLETS, RANDOM_ITEM_GAUNTLETS } }}, // 18 "Plated Protection"
+    {HOUSE_ARMOR_SHOP_CELESTE,              { ITEM_TREASURE_LEVEL_3, { RANDOM_ITEM_HELMET,  RANDOM_ITEM_HELMET, RANDOM_ITEM_GAUNTLETS, RANDOM_ITEM_GAUNTLETS } }}, // 19 "Supple Leather"
+    {HOUSE_ARMOR_SHOP_PIT,                  { ITEM_TREASURE_LEVEL_4, { RANDOM_ITEM_HELMET,  RANDOM_ITEM_HELMET, RANDOM_ITEM_GAUNTLETS, RANDOM_ITEM_GAUNTLETS } }}, // 20 "Linked Mail"
+    {HOUSE_ARMOR_SHOP_MOUNT_NIGHON,         { ITEM_TREASURE_LEVEL_4, { RANDOM_ITEM_HELMET,  RANDOM_ITEM_HELMET, RANDOM_ITEM_GAUNTLETS, RANDOM_ITEM_GAUNTLETS } }}, // 21 "Karr Battlegear"
+    {HOUSE_ARMOR_SHOP_TATALIA_1,            { ITEM_TREASURE_LEVEL_1, { RANDOM_ITEM_HELMET,  RANDOM_ITEM_HELMET, RANDOM_ITEM_GAUNTLETS, RANDOM_ITEM_GAUNTLETS } }}, // 22 unused (Placeholder)
+    {HOUSE_ARMOR_SHOP_AVLEE,                { ITEM_TREASURE_LEVEL_1, { RANDOM_ITEM_HELMET,  RANDOM_ITEM_HELMET, RANDOM_ITEM_GAUNTLETS, RANDOM_ITEM_GAUNTLETS } }}, // 23 unused (Placeholder)
+    {HOUSE_ARMOR_SHOP_STONE_CITY,           { ITEM_TREASURE_LEVEL_1, { RANDOM_ITEM_HELMET,  RANDOM_ITEM_HELMET, RANDOM_ITEM_GAUNTLETS, RANDOM_ITEM_GAUNTLETS } }}, // 24 unused (Placeholder)
+    {HOUSE_ARMOR_SHOP_CASTLE_HARMONDALE,    { ITEM_TREASURE_LEVEL_1, { RANDOM_ITEM_HELMET,  RANDOM_ITEM_HELMET, RANDOM_ITEM_GAUNTLETS, RANDOM_ITEM_GAUNTLETS } }}, // 25 unused (Placeholder)
+    {HOUSE_ARMOR_SHOP_TATALIA_2,            { ITEM_TREASURE_LEVEL_1, { RANDOM_ITEM_HELMET,  RANDOM_ITEM_HELMET, RANDOM_ITEM_GAUNTLETS, RANDOM_ITEM_GAUNTLETS } }}, // 26 unused (Placeholder)
+    {HOUSE_27,                              { ITEM_TREASURE_LEVEL_1, { RANDOM_ITEM_HELMET,  RANDOM_ITEM_HELMET, RANDOM_ITEM_GAUNTLETS, RANDOM_ITEM_GAUNTLETS } }}, // 27 unused (Placeholder)
+    {HOUSE_28,                              { ITEM_TREASURE_LEVEL_1, { RANDOM_ITEM_HELMET,  RANDOM_ITEM_HELMET, RANDOM_ITEM_GAUNTLETS, RANDOM_ITEM_GAUNTLETS } }}  // 28 unused (Placeholder)
+}};
+
+static constexpr IndexedArray<ITEM_VARIATION, HOUSE_FIRST_ARMOR_SHOP, HOUSE_LAST_ARMOR_SHOP> armorShopBottomRowVariationStandardMM8 = {{
+    {HOUSE_ARMOR_SHOP_EMERALD_ISLAND,       { ITEM_TREASURE_LEVEL_1, { RANDOM_ITEM_LEATHER_ARMOR,   RANDOM_ITEM_LEATHER_ARMOR,  RANDOM_ITEM_LEATHER_ARMOR,  RANDOM_ITEM_SHIELD } }}, // 15 "The Tannery"
+    {HOUSE_ARMOR_SHOP_HARMONDALE,           { ITEM_TREASURE_LEVEL_2, {
+        RANDOM_ITEM_LEATHER_ARMOR,   RANDOM_ITEM_LEATHER_ARMOR,  RANDOM_ITEM_CHAIN_ARMOR,    RANDOM_ITEM_CHAIN_ARMOR } }}, // 16 "The Polished Shield"
+    {HOUSE_ARMOR_SHOP_ERATHIA,              { ITEM_TREASURE_LEVEL_2, { RANDOM_ITEM_LEATHER_ARMOR,   RANDOM_ITEM_CHAIN_ARMOR,    RANDOM_ITEM_CHAIN_ARMOR,    RANDOM_ITEM_PLATE_ARMOR } }}, // 17 "Armory"
+    {HOUSE_ARMOR_SHOP_TULAREAN_FOREST,      { ITEM_TREASURE_LEVEL_3, {
+        RANDOM_ITEM_CHAIN_ARMOR,     RANDOM_ITEM_PLATE_ARMOR,    RANDOM_ITEM_PLATE_ARMOR,    RANDOM_ITEM_SHIELD } }}, // 18 "Plated Protection"
+    {HOUSE_ARMOR_SHOP_CELESTE,              { ITEM_TREASURE_LEVEL_3, {
+        RANDOM_ITEM_LEATHER_ARMOR,   RANDOM_ITEM_LEATHER_ARMOR,  RANDOM_ITEM_SHIELD,         RANDOM_ITEM_SHIELD } }}, // 19 "Supple Leather"
+    {HOUSE_ARMOR_SHOP_PIT,                  { ITEM_TREASURE_LEVEL_4, {
+        RANDOM_ITEM_CHAIN_ARMOR,     RANDOM_ITEM_CHAIN_ARMOR,    RANDOM_ITEM_PLATE_ARMOR,    RANDOM_ITEM_PLATE_ARMOR } }}, // 20 "Linked Mail"
+    {HOUSE_ARMOR_SHOP_MOUNT_NIGHON,         { ITEM_TREASURE_LEVEL_4, {
+        RANDOM_ITEM_LEATHER_ARMOR,   RANDOM_ITEM_CHAIN_ARMOR,    RANDOM_ITEM_PLATE_ARMOR,    RANDOM_ITEM_SHIELD } }}, // 21 "Karr Battlegear"
+    {HOUSE_ARMOR_SHOP_TATALIA_1,            { ITEM_TREASURE_LEVEL_1, {
+        RANDOM_ITEM_LEATHER_ARMOR,   RANDOM_ITEM_CHAIN_ARMOR,    RANDOM_ITEM_SHIELD,         RANDOM_ITEM_SHIELD } }}, // 22 unused (Placeholder)
+    {HOUSE_ARMOR_SHOP_AVLEE,                { ITEM_TREASURE_LEVEL_1, {
+        RANDOM_ITEM_LEATHER_ARMOR,   RANDOM_ITEM_LEATHER_ARMOR,  RANDOM_ITEM_CHAIN_ARMOR,    RANDOM_ITEM_CHAIN_ARMOR } }}, // 23 unused (Placeholder)
+    {HOUSE_ARMOR_SHOP_STONE_CITY,           { ITEM_TREASURE_LEVEL_1, {
+        RANDOM_ITEM_CHAIN_ARMOR,     RANDOM_ITEM_CHAIN_ARMOR,    RANDOM_ITEM_CHAIN_ARMOR,    RANDOM_ITEM_PLATE_ARMOR } }}, // 24 unused (Placeholder)
+    {HOUSE_ARMOR_SHOP_CASTLE_HARMONDALE,    { ITEM_TREASURE_LEVEL_1, {
+        RANDOM_ITEM_LEATHER_ARMOR,   RANDOM_ITEM_LEATHER_ARMOR,  RANDOM_ITEM_LEATHER_ARMOR,  RANDOM_ITEM_CHAIN_ARMOR } }}, // 25 unused (Placeholder)
+    {HOUSE_ARMOR_SHOP_TATALIA_2,            { ITEM_TREASURE_LEVEL_1, {
+        RANDOM_ITEM_PLATE_ARMOR,     RANDOM_ITEM_LEATHER_ARMOR,  RANDOM_ITEM_CHAIN_ARMOR,    RANDOM_ITEM_SHIELD } }}, // 26 unused (Placeholder)
+    {HOUSE_27,                              { ITEM_TREASURE_LEVEL_1, {
+        RANDOM_ITEM_PLATE_ARMOR,     RANDOM_ITEM_LEATHER_ARMOR,  RANDOM_ITEM_CHAIN_ARMOR,    RANDOM_ITEM_SHIELD } }}, // 27 unused (Placeholder)
+    {HOUSE_28,                              { ITEM_TREASURE_LEVEL_1, {
+        RANDOM_ITEM_PLATE_ARMOR,     RANDOM_ITEM_LEATHER_ARMOR,  RANDOM_ITEM_CHAIN_ARMOR,    RANDOM_ITEM_SHIELD } }}  // 28 unused (Placeholder)
+}};
+
+static constexpr IndexedArray<ITEM_VARIATION, HOUSE_FIRST_ARMOR_SHOP, HOUSE_LAST_ARMOR_SHOP> armorShopTopRowVariationSpecialMM8 = {{
+    {HOUSE_ARMOR_SHOP_EMERALD_ISLAND,       { ITEM_TREASURE_LEVEL_2, { RANDOM_ITEM_HELMET,  RANDOM_ITEM_HELMET, RANDOM_ITEM_GAUNTLETS, RANDOM_ITEM_GAUNTLETS } }}, // 15 "The Tannery"
+    {HOUSE_ARMOR_SHOP_HARMONDALE,           { ITEM_TREASURE_LEVEL_3, { RANDOM_ITEM_HELMET,  RANDOM_ITEM_HELMET, RANDOM_ITEM_GAUNTLETS, RANDOM_ITEM_GAUNTLETS } }}, // 16 "The Polished Shield"
+    {HOUSE_ARMOR_SHOP_ERATHIA,              { ITEM_TREASURE_LEVEL_3, { RANDOM_ITEM_HELMET,  RANDOM_ITEM_HELMET, RANDOM_ITEM_GAUNTLETS, RANDOM_ITEM_GAUNTLETS } }}, // 17 "Armory"
+    {HOUSE_ARMOR_SHOP_TULAREAN_FOREST,      { ITEM_TREASURE_LEVEL_4, { RANDOM_ITEM_HELMET,  RANDOM_ITEM_HELMET, RANDOM_ITEM_GAUNTLETS, RANDOM_ITEM_GAUNTLETS } }}, // 18 "Plated Protection"
+    {HOUSE_ARMOR_SHOP_CELESTE,              { ITEM_TREASURE_LEVEL_4, { RANDOM_ITEM_HELMET,  RANDOM_ITEM_HELMET, RANDOM_ITEM_GAUNTLETS, RANDOM_ITEM_GAUNTLETS } }}, // 19 "Supple Leather"
+    {HOUSE_ARMOR_SHOP_PIT,                  { ITEM_TREASURE_LEVEL_5, { RANDOM_ITEM_HELMET,  RANDOM_ITEM_HELMET, RANDOM_ITEM_GAUNTLETS, RANDOM_ITEM_GAUNTLETS } }}, // 20 "Linked Mail"
+    {HOUSE_ARMOR_SHOP_MOUNT_NIGHON,         { ITEM_TREASURE_LEVEL_5, { RANDOM_ITEM_HELMET,  RANDOM_ITEM_HELMET, RANDOM_ITEM_GAUNTLETS, RANDOM_ITEM_GAUNTLETS } }}, // 21 "Karr Battlegear"
+    {HOUSE_ARMOR_SHOP_TATALIA_1,            { ITEM_TREASURE_LEVEL_1, { RANDOM_ITEM_HELMET,  RANDOM_ITEM_HELMET, RANDOM_ITEM_GAUNTLETS, RANDOM_ITEM_GAUNTLETS } }}, // 22 unused (Placeholder)
+    {HOUSE_ARMOR_SHOP_AVLEE,                { ITEM_TREASURE_LEVEL_1, { RANDOM_ITEM_HELMET,  RANDOM_ITEM_HELMET, RANDOM_ITEM_GAUNTLETS, RANDOM_ITEM_GAUNTLETS } }}, // 23 unused (Placeholder)
+    {HOUSE_ARMOR_SHOP_STONE_CITY,           { ITEM_TREASURE_LEVEL_1, { RANDOM_ITEM_HELMET,  RANDOM_ITEM_HELMET, RANDOM_ITEM_GAUNTLETS, RANDOM_ITEM_GAUNTLETS } }}, // 24 unused (Placeholder)
+    {HOUSE_ARMOR_SHOP_CASTLE_HARMONDALE,    { ITEM_TREASURE_LEVEL_1, { RANDOM_ITEM_HELMET,  RANDOM_ITEM_HELMET, RANDOM_ITEM_GAUNTLETS, RANDOM_ITEM_GAUNTLETS } }}, // 25 unused (Placeholder)
+    {HOUSE_ARMOR_SHOP_TATALIA_2,            { ITEM_TREASURE_LEVEL_1, { RANDOM_ITEM_HELMET,  RANDOM_ITEM_HELMET, RANDOM_ITEM_GAUNTLETS, RANDOM_ITEM_GAUNTLETS } }}, // 26 unused (Placeholder)
+    {HOUSE_27,                              { ITEM_TREASURE_LEVEL_1, { RANDOM_ITEM_HELMET,  RANDOM_ITEM_HELMET, RANDOM_ITEM_GAUNTLETS, RANDOM_ITEM_GAUNTLETS } }}, // 27 unused (Placeholder)
+    {HOUSE_28,                              { ITEM_TREASURE_LEVEL_1, { RANDOM_ITEM_HELMET,  RANDOM_ITEM_HELMET, RANDOM_ITEM_GAUNTLETS, RANDOM_ITEM_GAUNTLETS } }}  // 28 unused (Placeholder)
+}};
+
+static constexpr IndexedArray<ITEM_VARIATION, HOUSE_FIRST_ARMOR_SHOP, HOUSE_LAST_ARMOR_SHOP> armorShopBottomRowVariationSpecialMM8 = {{
+    {HOUSE_ARMOR_SHOP_EMERALD_ISLAND,       { ITEM_TREASURE_LEVEL_2, { RANDOM_ITEM_LEATHER_ARMOR,   RANDOM_ITEM_LEATHER_ARMOR,  RANDOM_ITEM_LEATHER_ARMOR,  RANDOM_ITEM_SHIELD } }}, // 15 "The Tannery"
+    {HOUSE_ARMOR_SHOP_HARMONDALE,           { ITEM_TREASURE_LEVEL_3, {
+        RANDOM_ITEM_LEATHER_ARMOR,   RANDOM_ITEM_LEATHER_ARMOR,  RANDOM_ITEM_CHAIN_ARMOR,    RANDOM_ITEM_CHAIN_ARMOR } }}, // 16 "The Polished Shield"
+    {HOUSE_ARMOR_SHOP_ERATHIA,              { ITEM_TREASURE_LEVEL_3, { RANDOM_ITEM_LEATHER_ARMOR,   RANDOM_ITEM_CHAIN_ARMOR,    RANDOM_ITEM_CHAIN_ARMOR,    RANDOM_ITEM_SHIELD } }}, // 17 "Armory"
+    {HOUSE_ARMOR_SHOP_TULAREAN_FOREST,      { ITEM_TREASURE_LEVEL_4, {
+        RANDOM_ITEM_CHAIN_ARMOR,     RANDOM_ITEM_PLATE_ARMOR,    RANDOM_ITEM_PLATE_ARMOR,    RANDOM_ITEM_SHIELD } }}, // 18 "Plated Protection"
+    {HOUSE_ARMOR_SHOP_CELESTE,              { ITEM_TREASURE_LEVEL_4, {
+        RANDOM_ITEM_LEATHER_ARMOR,   RANDOM_ITEM_LEATHER_ARMOR,  RANDOM_ITEM_SHIELD,         RANDOM_ITEM_SHIELD } }}, // 19 "Supple Leather"
+    {HOUSE_ARMOR_SHOP_PIT,                  { ITEM_TREASURE_LEVEL_5, {
+        RANDOM_ITEM_CHAIN_ARMOR,     RANDOM_ITEM_CHAIN_ARMOR,    RANDOM_ITEM_PLATE_ARMOR,    RANDOM_ITEM_PLATE_ARMOR } }}, // 20 "Linked Mail"
+    {HOUSE_ARMOR_SHOP_MOUNT_NIGHON,         { ITEM_TREASURE_LEVEL_5, {
+        RANDOM_ITEM_LEATHER_ARMOR,   RANDOM_ITEM_CHAIN_ARMOR,    RANDOM_ITEM_PLATE_ARMOR,    RANDOM_ITEM_SHIELD } }}, // 21 "Karr Battlegear"
+    {HOUSE_ARMOR_SHOP_TATALIA_1,            { ITEM_TREASURE_LEVEL_1, {
+        RANDOM_ITEM_LEATHER_ARMOR,   RANDOM_ITEM_CHAIN_ARMOR,    RANDOM_ITEM_SHIELD,         RANDOM_ITEM_SHIELD } }}, // 22 unused (Placeholder)
+    {HOUSE_ARMOR_SHOP_AVLEE,                { ITEM_TREASURE_LEVEL_1, {
+        RANDOM_ITEM_LEATHER_ARMOR,   RANDOM_ITEM_LEATHER_ARMOR,  RANDOM_ITEM_CHAIN_ARMOR,    RANDOM_ITEM_PLATE_ARMOR } }}, // 23 unused (Placeholder)
+    {HOUSE_ARMOR_SHOP_STONE_CITY,           { ITEM_TREASURE_LEVEL_1, {
+        RANDOM_ITEM_CHAIN_ARMOR,     RANDOM_ITEM_CHAIN_ARMOR,    RANDOM_ITEM_PLATE_ARMOR,    RANDOM_ITEM_SHIELD } }}, // 24 unused (Placeholder)
+    {HOUSE_ARMOR_SHOP_CASTLE_HARMONDALE,    { ITEM_TREASURE_LEVEL_1, {
+        RANDOM_ITEM_LEATHER_ARMOR,   RANDOM_ITEM_LEATHER_ARMOR,  RANDOM_ITEM_LEATHER_ARMOR,  RANDOM_ITEM_CHAIN_ARMOR } }}, // 25 unused (Placeholder)
+    {HOUSE_ARMOR_SHOP_TATALIA_2,            { ITEM_TREASURE_LEVEL_1, {
+        RANDOM_ITEM_CHAIN_ARMOR,     RANDOM_ITEM_CHAIN_ARMOR,    RANDOM_ITEM_CHAIN_ARMOR,    RANDOM_ITEM_CHAIN_ARMOR } }}, // 26 unused (Placeholder)
+    {HOUSE_27,                              { ITEM_TREASURE_LEVEL_1, {
+        RANDOM_ITEM_SHIELD,          RANDOM_ITEM_SHIELD,         RANDOM_ITEM_SHIELD,         RANDOM_ITEM_SHIELD } }}, // 27 unused (Placeholder)
+    {HOUSE_28,                              { ITEM_TREASURE_LEVEL_1, {
+        RANDOM_ITEM_PLATE_ARMOR,     RANDOM_ITEM_PLATE_ARMOR,    RANDOM_ITEM_PLATE_ARMOR,    RANDOM_ITEM_PLATE_ARMOR } }}  // 28 unused (Placeholder)
+}};
+
 static constexpr IndexedArray<ItemTreasureLevel, HOUSE_FIRST_MAGIC_SHOP, HOUSE_LAST_MAGIC_SHOP> magicShopVariationStandard = {{
     {HOUSE_MAGIC_SHOP_EMERALD_ISLAND,       ITEM_TREASURE_LEVEL_1},
     {HOUSE_MAGIC_SHOP_HARMONDALE,           ITEM_TREASURE_LEVEL_1},
@@ -244,6 +377,18 @@ DialogueId getSkillLearnDualogueForItemClass(RandomItemType itemClass) {
       default:
         return DIALOGUE_NULL;
     }
+}
+
+// An MM8 shop's "Learn Skills" list shows only what the active character can learn now. MM6/7's
+// `GUIWindow_House::learnSkillsDialogue()` keeps a button per candidate and blanks its label.
+// MM8 weapon and armor shops list at most 3 skills. True Mettle's candidates (Standard row first, then
+// Special row, each in column order) are Axe, Mace, Staff, Spear, and the original shows the first 3.
+// No `Data/Tables/Shops.txt` column encodes this.
+constexpr size_t kMm8MaxLearnableSkillsPerShop = 3;
+
+bool isSkillLearnableNowMM8(Skill skill) {
+    Character &character = pParty->activeCharacter();
+    return skillMaxMasteryForClass(character.classType, skill) != MASTERY_NONE && !character.pActiveSkills[skill];
 }
 
 void GUIWindow_Shop::mainDialogue() {
@@ -611,7 +756,10 @@ void GUIWindow_MagicAlchemyShop::shopWaresDialogue(bool isSpecial) {
 
 void GUIWindow_WeaponShop::generateShopItems(bool isSpecial) {
     std::array<Item, 12> &itemArray = isSpecial ? pParty->specialItemsInShops[houseId()] : pParty->standartItemsInShops[houseId()];
-    const ITEM_VARIATION variation = isSpecial ? weaponShopVariationSpecial[houseId()] : weaponShopVariationStandard[houseId()];
+    bool isMm8 = gameType() == GAME_TYPE_MM8;
+    const ITEM_VARIATION variation = isSpecial ?
+        (isMm8 ? weaponShopVariationSpecialMM8[houseId()] : weaponShopVariationSpecial[houseId()]) :
+        (isMm8 ? weaponShopVariationStandardMM8[houseId()] : weaponShopVariationStandard[houseId()]);
 
     for (int i = 0; i < itemAmountInShop[buildingType()]; i++) {
         RandomItemType itemClass = variation.itemClass[grng->random(4)];
@@ -624,8 +772,13 @@ void GUIWindow_WeaponShop::generateShopItems(bool isSpecial) {
 
 void GUIWindow_ArmorShop::generateShopItems(bool isSpecial) {
     std::array<Item, 12> &itemArray = isSpecial ? pParty->specialItemsInShops[houseId()] : pParty->standartItemsInShops[houseId()];
-    const ITEM_VARIATION variationTop = isSpecial ? armorShopTopRowVariationSpecial[houseId()] : armorShopTopRowVariationStandard[houseId()];
-    const ITEM_VARIATION variationBottom = isSpecial ? armorShopBottomRowVariationSpecial[houseId()] : armorShopBottomRowVariationStandard[houseId()];
+    bool isMm8 = gameType() == GAME_TYPE_MM8;
+    const ITEM_VARIATION variationTop = isSpecial ?
+        (isMm8 ? armorShopTopRowVariationSpecialMM8[houseId()] : armorShopTopRowVariationSpecial[houseId()]) :
+        (isMm8 ? armorShopTopRowVariationStandardMM8[houseId()] : armorShopTopRowVariationStandard[houseId()]);
+    const ITEM_VARIATION variationBottom = isSpecial ?
+        (isMm8 ? armorShopBottomRowVariationSpecialMM8[houseId()] : armorShopBottomRowVariationSpecial[houseId()]) :
+        (isMm8 ? armorShopBottomRowVariationStandardMM8[houseId()] : armorShopBottomRowVariationStandard[houseId()]);
 
     for (int i = 0; i < itemAmountInShop[buildingType()]; i++) {
         RandomItemType itemClass;
@@ -683,13 +836,23 @@ std::vector<DialogueId> GUIWindow_WeaponShop::listShopLearnableSkills() {
     std::vector<RandomItemType> itemClasses;
     std::vector<DialogueId> skillsOptions;
 
-    addUniqueItemClasses(weaponShopVariationStandard[houseId()], itemClasses);
-    addUniqueItemClasses(weaponShopVariationSpecial[houseId()], itemClasses);
+    bool isMm8 = gameType() == GAME_TYPE_MM8;
+    if (isMm8) {
+        addUniqueItemClasses(weaponShopVariationStandardMM8[houseId()], itemClasses);
+        addUniqueItemClasses(weaponShopVariationSpecialMM8[houseId()], itemClasses);
+    } else {
+        addUniqueItemClasses(weaponShopVariationStandard[houseId()], itemClasses);
+        addUniqueItemClasses(weaponShopVariationSpecial[houseId()], itemClasses);
+    }
 
     for (RandomItemType itemClass : itemClasses) {
         DialogueId dialogue = getSkillLearnDualogueForItemClass(itemClass);
-        if (dialogue != DIALOGUE_NULL)
+        if (dialogue != DIALOGUE_NULL && (!isMm8 || isSkillLearnableNowMM8(GetLearningDialogueSkill(dialogue)))) {
             skillsOptions.push_back(dialogue);
+            if (isMm8 && skillsOptions.size() >= kMm8MaxLearnableSkillsPerShop) {
+                break;
+            }
+        }
     }
 
     return skillsOptions;
@@ -699,15 +862,27 @@ std::vector<DialogueId> GUIWindow_ArmorShop::listShopLearnableSkills() {
     std::vector<RandomItemType> itemClasses;
     std::vector<DialogueId> skillsOptions;
 
-    addUniqueItemClasses(armorShopTopRowVariationStandard[houseId()], itemClasses);
-    addUniqueItemClasses(armorShopBottomRowVariationStandard[houseId()], itemClasses);
-    addUniqueItemClasses(armorShopTopRowVariationSpecial[houseId()], itemClasses);
-    addUniqueItemClasses(armorShopBottomRowVariationSpecial[houseId()], itemClasses);
+    bool isMm8 = gameType() == GAME_TYPE_MM8;
+    if (isMm8) {
+        addUniqueItemClasses(armorShopTopRowVariationStandardMM8[houseId()], itemClasses);
+        addUniqueItemClasses(armorShopBottomRowVariationStandardMM8[houseId()], itemClasses);
+        addUniqueItemClasses(armorShopTopRowVariationSpecialMM8[houseId()], itemClasses);
+        addUniqueItemClasses(armorShopBottomRowVariationSpecialMM8[houseId()], itemClasses);
+    } else {
+        addUniqueItemClasses(armorShopTopRowVariationStandard[houseId()], itemClasses);
+        addUniqueItemClasses(armorShopBottomRowVariationStandard[houseId()], itemClasses);
+        addUniqueItemClasses(armorShopTopRowVariationSpecial[houseId()], itemClasses);
+        addUniqueItemClasses(armorShopBottomRowVariationSpecial[houseId()], itemClasses);
+    }
 
     for (RandomItemType itemClass : itemClasses) {
         DialogueId dialogue = getSkillLearnDualogueForItemClass(itemClass);
-        if (dialogue != DIALOGUE_NULL)
+        if (dialogue != DIALOGUE_NULL && (!isMm8 || isSkillLearnableNowMM8(GetLearningDialogueSkill(dialogue)))) {
             skillsOptions.push_back(dialogue);
+            if (isMm8 && skillsOptions.size() >= kMm8MaxLearnableSkillsPerShop) {
+                break;
+            }
+        }
     }
 
     return skillsOptions;
@@ -1140,4 +1315,41 @@ void GUIWindow_Shop::processStealingResult(int stealingResult, int fineToAdd) { 
     loc.reputation += reputationDelta;
     if (loc.reputation > 10000)
         loc.reputation = 10000;
+}
+
+// The same choice `ItemTable::generateItem` makes for a known class, asked for one item.
+static bool rowCanRoll(ItemTreasureLevel level, RandomItemType itemClass, ItemId item) {
+    bool spawnable = false;
+    for (ItemId other : allSpawnableItems()) spawnable = spawnable || other == item;
+    if (!spawnable || !pItemTable->items[item].uChanceByTreasureLvl[level]) return false;
+    auto [requestedType, requestedSkill] = itemTypeOrSkillForRandomItemType(itemClass);
+    return (requestedType == ITEM_TYPE_INVALID || pItemTable->items[item].type == requestedType) &&
+           (requestedSkill == SKILL_INVALID || pItemTable->items[item].skill == requestedSkill);
+}
+
+static bool rowCanRoll(const ITEM_VARIATION &variation, ItemId item) {
+    for (RandomItemType itemClass : variation.itemClass)
+        if (rowCanRoll(variation.treasureLevel, itemClass, item)) return true;
+    return false;
+}
+
+bool shopCanEverStock(HouseId house, ItemId item) {
+    const bool isMm8 = gameType() == GAME_TYPE_MM8;
+    if (house >= HOUSE_FIRST_WEAPON_SHOP && house <= HOUSE_LAST_WEAPON_SHOP)
+        return rowCanRoll(isMm8 ? weaponShopVariationStandardMM8[house] : weaponShopVariationStandard[house], item) ||
+               rowCanRoll(isMm8 ? weaponShopVariationSpecialMM8[house] : weaponShopVariationSpecial[house], item);
+    if (house >= HOUSE_FIRST_ARMOR_SHOP && house <= HOUSE_LAST_ARMOR_SHOP)
+        return rowCanRoll(isMm8 ? armorShopTopRowVariationStandardMM8[house] : armorShopTopRowVariationStandard[house], item) ||
+               rowCanRoll(isMm8 ? armorShopBottomRowVariationStandardMM8[house] : armorShopBottomRowVariationStandard[house], item) ||
+               rowCanRoll(isMm8 ? armorShopTopRowVariationSpecialMM8[house] : armorShopTopRowVariationSpecial[house], item) ||
+               rowCanRoll(isMm8 ? armorShopBottomRowVariationSpecialMM8[house] : armorShopBottomRowVariationSpecial[house], item);
+    if (house >= HOUSE_FIRST_MAGIC_SHOP && house <= HOUSE_LAST_MAGIC_SHOP)
+        return rowCanRoll(magicShopVariationStandard[house], RANDOM_ITEM_MICS, item) || rowCanRoll(magicShopVariationSpecial[house], RANDOM_ITEM_MICS, item);
+    if (house >= HOUSE_FIRST_ALCHEMY_SHOP && house <= HOUSE_LAST_ALCHEMY_SHOP) {
+        if (item == ITEM_POTION_BOTTLE) return true;
+        for (ItemId scroll : allRecipeScrolls())
+            if (scroll == item) return true;
+        return rowCanRoll(alchemyShopVariationStandard[house], RANDOM_ITEM_REAGENT, item) || rowCanRoll(alchemyShopVariationSpecial[house], RANDOM_ITEM_POTION, item);
+    }
+    return false;
 }

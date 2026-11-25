@@ -5,6 +5,7 @@
 #include <cstdio>
 #include <memory>
 #include <string>
+#include <tuple>
 #include <unordered_map>
 #include <utility>
 #include <vector>
@@ -12,8 +13,10 @@
 #include "Engine/AssetsManager.h"
 #include "Engine/Engine.h"
 #include "Engine/EngineGlobals.h"
+#include "Engine/GameType.h"
 #include "Engine/Objects/Character.h"
 #include "Engine/Objects/CharacterEnumFunctions.h"
+#include "Engine/Objects/ItemEnumFunctions.h"
 #include "Engine/Graphics/Renderer/Renderer.h"
 #include "Engine/Graphics/Viewport.h"
 #include "Engine/Graphics/Image.h"
@@ -32,6 +35,7 @@
 #include "GUI/GUIMessageQueue.h"
 #include "GUI/UI/ItemGrid.h"
 #include "GUI/UI/UIInventory.h"
+#include "GUI/UI/UIPartyCreation.h"
 
 #include "Io/Mouse.h"
 
@@ -61,6 +65,39 @@ static void WetsuitOn(int characterIndex);
 static void WetsuitOff(int characterIndex);
 
 HitMap<int> equipmentHitMap;
+
+// MM8's character-record doll panel is the same static `backdoll` + body/hand sprite composite as the create-character
+// screen's (`DrawMm8Doll`, UIPartyCreation.cpp), not MM7's wetsuit-paperdoll code below.
+//
+// The doll scene's box, measured from the original game's screen. x=466 is the left panel's
+// marble seam, and the doll background starts at x=467. A 1px black seam row sits at y=21-22, with content from y=23.
+// Doll content runs through y≈363, then the bottom-bar chrome resumes at y=367, so `22 + 345 = 367`. `467 + 173 = 640`
+// is flush with the screen's right edge.
+// DrawMm8Doll's one `SetUIClipRect(box)` keeps any complection's composite inside this box. The right edge sits at the
+// 640px screen width, so an overflow lands off-framebuffer whether clipped or not, and pixels alone cannot tell them apart.
+constexpr Recti kMm8CharacterRecordDollBox = {467, 22, 173, 345};
+
+// The magnifying glass: MM7's `MAGNIF-B` icon is drawn only by the MM7-only `CharacterUI_DrawPaperdoll` path. MM8's
+// icons.lod (the only LOD with it) also has `MAGNIF-B`. The original draws it at (603, 299), the position MM7 uses.
+constexpr Recti kMm8CharacterRecordMagnifierBox = {603, 299, 33, 51};
+
+// The title sits at y=25 inside the measured `fr_skill` title cell (local y 0-30, screen y 8-38). Higher up, `pFontArrus`
+// glyphs still queued when `drawSkillTable` switches to `pFontLucida` get their tops blanked: `OpenGLRenderer::EndTextNew`
+// flushes that batch with a full-screen clipRect, so this is not a clip-rect bug. y=25 is the smallest value that avoids
+// it. `CharacterUI_StatsTab_Draw` never switches fonts mid-draw and is unaffected at any y.
+constexpr Pointi kMm8SkillsTitlePos = {24, 25};
+
+// The MM8 `fr_award` background's own cell grid: title/content divider at local y=30 (screen y=38, `local+8` matching
+// the quad's `{8,8}` draw position), content/margin divider at local y=304 (screen y=312), and a scroll-track column at
+// local x=429-451 (screen x=437-459) with no internal row dividers (the arrows/thumb are drawn as separate elements).
+// `window.h` here is not a rect height: `CharacterUI_AwardsTab_Draw`'s loop compares the growing `window.y` cursor directly
+// against `window.h` as a raw absolute-Y stop line, in both the MM7 and MM8 branches. 304 keeps that stop line an 8px
+// margin above the content/margin divider at screen y=312.
+constexpr Recti kMm8AwardsWindow = {12, 48, 424, 304};
+constexpr Pointi kMm8AwardsUpBtnPos = {440, 42};
+constexpr Pointi kMm8AwardsDownBtnPos = {440, 293};
+constexpr Pointi kMm8AwardsScrollBtnPos = {440, 61};
+constexpr Sizei kMm8AwardsScrollBtnSize = {17, 230};
 
 int bRingsShownInCharScreen;  // 5118E0
 
@@ -246,16 +283,35 @@ const IndexedArray<std::array<std::array<int, 2>, 7>, BODY_TYPE_FIRST, BODY_TYPE
         {0x1F, 0x127}, {0x1F, 0x122}, {0x1B, 0x11B}, {0x1D, 0x117}, {0x1D, 0x116}, {0x1B, 0x11F}, {0x1D, 0x137},
     }}},
 };
-const std::unordered_map<ItemId, int> paperdoll_boots_indexByType = {
-    {ITEM_LEATHER_BOOTS, 0},
-    {ITEM_STEEL_PLATED_BOOTS, 1},
-    {ITEM_RANGER_BOOTS, 2},
-    {ITEM_KNIGHTS_BOOTS, 3},
-    {ITEM_PALADIN_BOOTS, 4},
-    {ITEM_ARTIFACT_SEVEN_LEAGUE_BOOTS, 5},
-    {ITEM_ARTIFACT_HERMES_SANDALS, 6},
-};
-const std::unordered_map<int, ItemId> paperdoll_boots_typeByIndex = inverted(paperdoll_boots_indexByType);
+// These 5 tables are built at runtime from each item's own `type`/`rarity`/`baseValue` data fields, not from hardcoded
+// `ItemId` constants: MM8's data reorders the equipment block, so named constants no longer match the items they name.
+// Only `RARITY_COMMON`, non-quest items are included. MM8's artifact/relic-tier items for these slots have no doll-sprite
+// texture asset in `icons.lod` under any id. The quest exclusion drops "Nightshade Brazier" (id 604), an `ITEM_TYPE_ARMOUR`
+// `RARITY_COMMON` item whose own description starts "Quest Item:", so it is not something a normal character wears.
+std::unordered_map<ItemId, int> buildPaperdollIndexByType(ItemType type) {
+    std::vector<ItemId> ids;
+    for (ItemId id : pItemTable->items.indices())
+        if (pItemTable->items[id].type == type && pItemTable->items[id].rarity == RARITY_COMMON && !isQuestItem(id))
+            ids.push_back(id);
+
+    std::ranges::sort(ids, [](ItemId a, ItemId b) {
+        return std::tuple(pItemTable->items[a].baseValue, a) < std::tuple(pItemTable->items[b].baseValue, b);
+    });
+
+    std::unordered_map<ItemId, int> result;
+    for (size_t i = 0; i < ids.size(); ++i)
+        result[ids[i]] = static_cast<int>(i);
+    return result;
+}
+
+const std::unordered_map<ItemId, int> &paperdoll_boots_indexByType() {
+    static const std::unordered_map<ItemId, int> result = buildPaperdollIndexByType(ITEM_TYPE_BOOTS);
+    return result;
+}
+const std::unordered_map<int, ItemId> &paperdoll_boots_typeByIndex() {
+    static const std::unordered_map<int, ItemId> result = inverted(paperdoll_boots_indexByType());
+    return result;
+}
 
 const IndexedArray<std::array<std::array<int, 2>, 10>, BODY_TYPE_FIRST, BODY_TYPE_LAST> paperdoll_Cloak = {  // 4E5570
     {BODY_TYPE_HUMAN_MALE, {{
@@ -275,19 +331,14 @@ const IndexedArray<std::array<std::array<int, 2>, 10>, BODY_TYPE_FIRST, BODY_TYP
         {0x03, 0x91}, {0x03, 0x90},
     }}},
 };
-const std::unordered_map<ItemId, int> paperdoll_cloak_indexByType = {
-    {ITEM_LEATHER_CLOAK, 0},
-    {ITEM_HUNTSMANS_CLOAK, 1},
-    {ITEM_RANGERS_CLOAK, 2},
-    {ITEM_ELEGANT_CLOAK, 3},
-    {ITEM_GLORIOUS_CLOAK, 4},
-    {ITEM_RELIC_TWILIGHT, 5},
-    {ITEM_ARTIFACT_CLOAK_OF_THE_SHEEP, 6},
-    {ITEM_SPECIAL_SUN_CLOAK, 7},
-    {ITEM_SPECIAL_MOON_CLOAK, 8},
-    {ITEM_SPECIAL_VAMPIRES_CAPE, 9}
-};
-const std::unordered_map<int, ItemId> paperdoll_cloak_typeByIndex = inverted(paperdoll_cloak_indexByType);
+const std::unordered_map<ItemId, int> &paperdoll_cloak_indexByType() {
+    static const std::unordered_map<ItemId, int> result = buildPaperdollIndexByType(ITEM_TYPE_CLOAK);
+    return result;
+}
+const std::unordered_map<int, ItemId> &paperdoll_cloak_typeByIndex() {
+    static const std::unordered_map<int, ItemId> result = inverted(paperdoll_cloak_indexByType());
+    return result;
+}
 
 const IndexedArray<std::array<std::array<int, 2>, 10>, BODY_TYPE_FIRST, BODY_TYPE_LAST> paperdoll_CloakCollar = {  // 4E56B0
     {BODY_TYPE_HUMAN_MALE, {{
@@ -322,16 +373,14 @@ const IndexedArray<std::array<std::array<int, 2>, 7>, BODY_TYPE_FIRST, BODY_TYPE
         {0x42, 0xD2}, {0x3F, 0xD0}, {0x3B, 0xD7}, {0x3C, 0xD5}, {0x3B, 0xD6}, {0x3E, 0xCF}, {0x36, 0xD6},
     }}},
 };
-const std::unordered_map<ItemId, int> paperdoll_belt_indexByType = {
-    {ITEM_LEATHER_BELT, 0},
-    {ITEM_FINE_BELT, 1},
-    {ITEM_STRONG_BELT, 2},
-    {ITEM_SILVER_BELT, 3},
-    {ITEM_GILDED_BELT, 4},
-    {ITEM_RELIC_TITANS_BELT, 5},
-    {ITEM_ARTIFACT_HEROS_BELT, 6}
-};
-const std::unordered_map<int, ItemId> paperdoll_belt_typeByIndex = inverted(paperdoll_belt_indexByType);
+const std::unordered_map<ItemId, int> &paperdoll_belt_indexByType() {
+    static const std::unordered_map<ItemId, int> result = buildPaperdollIndexByType(ITEM_TYPE_BELT);
+    return result;
+}
+const std::unordered_map<int, ItemId> &paperdoll_belt_typeByIndex() {
+    static const std::unordered_map<int, ItemId> result = inverted(paperdoll_belt_indexByType());
+    return result;
+}
 
 const IndexedArray<std::array<std::array<int, 2>, 16>, BODY_TYPE_FIRST, BODY_TYPE_LAST> paperdoll_Helm = {  // 4E58D0
     {BODY_TYPE_HUMAN_MALE, {{
@@ -351,25 +400,14 @@ const IndexedArray<std::array<std::array<int, 2>, 16>, BODY_TYPE_FIRST, BODY_TYP
         {0x47, 0x5C}, {0x44, 0x4B}, {0x44, 0x57}, {0x43, 0x55}, {0x44, 0x4A}, {0x3E, 0x45}, {0x3C, 0x54}, {0x47, 0x70},
     }}},
 };
-const std::unordered_map<ItemId, int> paperdoll_helm_indexByType = {
-    {ITEM_HORNED_HELM, 0},
-    {ITEM_CONSCRIPTS_HELM, 1},
-    {ITEM_FULL_HELM, 2},
-    {ITEM_PHYNAXIAN_HELM, 3},
-    {ITEM_MOGRED_HELM, 4},
-    {ITEM_PEASANT_HAT, 5},
-    {ITEM_TRAVELLERS_HAT, 6},
-    {ITEM_FANCY_HAT, 7},
-    {ITEM_CROWN, 8},
-    {ITEM_NOBLE_CROWN, 9},
-    {ITEM_REGAL_CROWN, 10},
-    {ITEM_RELIC_TALEDONS_HELM, 11},
-    {ITEM_RELIC_SCHOLARS_CAP, 12},
-    {ITEM_RELIC_PHYNAXIAN_CROWN, 13},
-    {ITEM_ARTIFACT_MINDS_EYE, 14},
-    {ITEM_SPECIAL_SHADOWS_MASK, 15}
-};
-const std::unordered_map<int, ItemId> paperdoll_helm_typeByIndex = inverted(paperdoll_helm_indexByType);
+const std::unordered_map<ItemId, int> &paperdoll_helm_indexByType() {
+    static const std::unordered_map<ItemId, int> result = buildPaperdollIndexByType(ITEM_TYPE_HELMET);
+    return result;
+}
+const std::unordered_map<int, ItemId> &paperdoll_helm_typeByIndex() {
+    static const std::unordered_map<int, ItemId> result = inverted(paperdoll_helm_indexByType());
+    return result;
+}
 
 const int pPaperdoll_Beards[4] = {  // 4E5AD0
     52,
@@ -426,26 +464,14 @@ const IndexedArray<std::array<std::array<int, 2>, 17>, BODY_TYPE_FIRST, BODY_TYP
         {0x2F, 0x8F},
     }}},
 };
-const std::unordered_map<ItemId, int> paperdoll_armor_indexByType = {
-    {ITEM_LEATHER_ARMOR, 0},
-    {ITEM_STUDDED_LEATHER, 1},
-    {ITEM_OFFICERS_LEATHER, 2},
-    {ITEM_REGNAN_LEATHER, 3},
-    {ITEM_ROYAL_LEATHER, 4},
-    {ITEM_CHAIN_MAIL, 5},
-    {ITEM_STEEL_CHAIN_MAIL, 6},
-    {ITEM_FINE_CHAIN_MAIL, 7},
-    {ITEM_RESPLENDENT_CHAIN_MAIL, 8},
-    {ITEM_GOLDEN_CHAIN_MAIL, 9},
-    {ITEM_PLATE_ARMOR, 10},
-    {ITEM_SPLENDID_PLATE_ARMOR, 11},
-    {ITEM_NOBLE_PLATE_ARMOR, 12},
-    {ITEM_RELIC_HARECKS_LEATHER, 13},
-    {ITEM_ARTIFACT_YORUBA, 14},
-    {ITEM_ARTIFACT_GOVERNORS_ARMOR, 15},
-    {ITEM_ARTIFACT_ELVEN_CHAINMAIL, 16}
-};
-const std::unordered_map<int, ItemId> paperdoll_armor_typeByIndex = inverted(paperdoll_armor_indexByType);
+const std::unordered_map<ItemId, int> &paperdoll_armor_indexByType() {
+    static const std::unordered_map<ItemId, int> result = buildPaperdollIndexByType(ITEM_TYPE_ARMOUR);
+    return result;
+}
+const std::unordered_map<int, ItemId> &paperdoll_armor_typeByIndex() {
+    static const std::unordered_map<int, ItemId> result = inverted(paperdoll_armor_indexByType());
+    return result;
+}
 
 const IndexedArray<std::array<std::array<int, 2>, 17>, BODY_TYPE_FIRST, BODY_TYPE_LAST> paperdoll_shoulder_coord = {  // 4E5050
     {BODY_TYPE_HUMAN_MALE, {{
@@ -534,6 +560,13 @@ std::shared_ptr<GraphicsImage> ui_character_inventory_paperdoll_rings_background
 
 static std::shared_ptr<GraphicsImage> scrollstop;
 
+// The real MM8 active-tab highlight art for Stats/Skills/Inventory/Awards (see the constructor's loading comment).
+// Exit never shows a highlighted state (clicking it closes the window), so it has no counterpart.
+static std::shared_ptr<GraphicsImage> mm8TabHighlight_Stats;
+static std::shared_ptr<GraphicsImage> mm8TabHighlight_Skills;
+static std::shared_ptr<GraphicsImage> mm8TabHighlight_Inventory;
+static std::shared_ptr<GraphicsImage> mm8TabHighlight_Awards;
+
 std::array<std::shared_ptr<GraphicsImage>, 16> paperdoll_dbrds;
 
 Recti savedInventoryLeftClickButtonRect;
@@ -545,30 +578,73 @@ GUIWindow_CharacterRecord::GUIWindow_CharacterRecord(ScreenType screen)
     CharacterUI_LoadPaperdollTextures();
     current_screen_type = screen;
 
-    pCharacterScreen_StatsBtn = CreateButton(pViewport.topLeft() + Pointi(12, 308),
-                                             paperdoll_dbrds[9]->size(), BUTTON_TYPE_NORMAL, 0,
+    // "ib-cd1-d".."ib-cd5-d" (paperdoll_dbrds[1,3,5,7,9], loaded below) don't exist under any name in any MM8 LOD.
+    // A differently-named generic button family does: "but20u/d/h".."but24u/d/h" (75x26 each, u/d/h = up/down/highlight).
+    // They read "Stats"/"Skills"/"Inventory"/"Awards"/"Exit" in the gothic font the original shows ("but25"/"but26" are
+    // "Hire"/"Dismiss", a different screen's buttons). The active tab's brighter-green look in the original is the "h" state, not a
+    // separate overlay sprite: the original's plate-fill colour matches but20h ((94,109,88)) and but20u/but21u ((82,98,85)).
+    // Every state already bakes its own caption, so the row's per-frame `DrawLabel` call below is MM7-only.
+    bool isMm8 = gameType() == GAME_TYPE_MM8;
+    int tabBtnY = isMm8 ? 340 : 308;
+
+    struct Mm8TabArt {
+        std::shared_ptr<GraphicsImage> up, down, highlight;
+    };
+    Mm8TabArt mm8StatsArt{}, mm8SkillsArt{}, mm8InventoryArt{}, mm8AwardsArt{}, mm8ExitArt{};
+    Sizei mm8TabBtnSize{72, 24};
+    if (isMm8) {
+        mm8StatsArt = {assets->getImage_ColorKeyFromEnglishDLOD("but20u"),
+                       assets->getImage_ColorKeyFromEnglishDLOD("but20d"),
+                       assets->getImage_ColorKeyFromEnglishDLOD("but20h")};
+        mm8SkillsArt = {assets->getImage_ColorKeyFromEnglishDLOD("but21u"),
+                        assets->getImage_ColorKeyFromEnglishDLOD("but21d"),
+                        assets->getImage_ColorKeyFromEnglishDLOD("but21h")};
+        mm8InventoryArt = {assets->getImage_ColorKeyFromEnglishDLOD("but22u"),
+                           assets->getImage_ColorKeyFromEnglishDLOD("but22d"),
+                           assets->getImage_ColorKeyFromEnglishDLOD("but22h")};
+        mm8AwardsArt = {assets->getImage_ColorKeyFromEnglishDLOD("but23u"),
+                        assets->getImage_ColorKeyFromEnglishDLOD("but23d"),
+                        assets->getImage_ColorKeyFromEnglishDLOD("but23h")};
+        mm8ExitArt = {assets->getImage_ColorKeyFromEnglishDLOD("but24u"),
+                      assets->getImage_ColorKeyFromEnglishDLOD("but24d"),
+                      assets->getImage_ColorKeyFromEnglishDLOD("but24h")};
+        mm8TabBtnSize = mm8StatsArt.up->size();
+        mm8TabHighlight_Stats = mm8StatsArt.highlight;
+        mm8TabHighlight_Skills = mm8SkillsArt.highlight;
+        mm8TabHighlight_Inventory = mm8InventoryArt.highlight;
+        mm8TabHighlight_Awards = mm8AwardsArt.highlight;
+    }
+
+    using Images = std::vector<std::shared_ptr<GraphicsImage>>;
+    pCharacterScreen_StatsBtn = CreateButton(pViewport.topLeft() + Pointi(12, tabBtnY),
+                                             isMm8 ? mm8TabBtnSize : paperdoll_dbrds[9]->size(), BUTTON_TYPE_NORMAL, 0,
                                              UIMSG_ClickStatsBtn, 0, INPUT_ACTION_OPEN_STATS, localization->str(LSTR_STATS),
-                                             {{paperdoll_dbrds[10], paperdoll_dbrds[9]}});
-    pCharacterScreen_SkillsBtn = CreateButton(pViewport.topLeft() + Pointi(102, 308),
-                                              paperdoll_dbrds[7]->size(), BUTTON_TYPE_NORMAL, 0,
+                                             isMm8 ? Images{mm8StatsArt.down, mm8StatsArt.up} : Images{paperdoll_dbrds[10], paperdoll_dbrds[9]});
+    pCharacterScreen_SkillsBtn = CreateButton(pViewport.topLeft() + Pointi(102, tabBtnY),
+                                              isMm8 ? mm8TabBtnSize : paperdoll_dbrds[7]->size(), BUTTON_TYPE_NORMAL, 0,
                                               UIMSG_ClickSkillsBtn, 0, INPUT_ACTION_OPEN_SKILLS, localization->str(LSTR_SKILLS),
-                                              {{paperdoll_dbrds[8], paperdoll_dbrds[7]}});
-    pCharacterScreen_InventoryBtn = CreateButton(pViewport.topLeft() + Pointi(192, 308),
-                                                 paperdoll_dbrds[5]->size(), BUTTON_TYPE_NORMAL, 0,
+                                              isMm8 ? Images{mm8SkillsArt.down, mm8SkillsArt.up} : Images{paperdoll_dbrds[8], paperdoll_dbrds[7]});
+    pCharacterScreen_InventoryBtn = CreateButton(pViewport.topLeft() + Pointi(192, tabBtnY),
+                                                 isMm8 ? mm8TabBtnSize : paperdoll_dbrds[5]->size(), BUTTON_TYPE_NORMAL, 0,
                                                  UIMSG_ClickInventoryBtn, 0, INPUT_ACTION_OPEN_INVENTORY,
                                                  localization->str(LSTR_INVENTORY),
-                                                 {{paperdoll_dbrds[6], paperdoll_dbrds[5]}});
-    pCharacterScreen_AwardsBtn = CreateButton(pViewport.topLeft() + Pointi(282, 308),
-                                              paperdoll_dbrds[3]->size(), BUTTON_TYPE_NORMAL, 0,
+                                                 isMm8 ? Images{mm8InventoryArt.down, mm8InventoryArt.up} : Images{paperdoll_dbrds[6], paperdoll_dbrds[5]});
+    pCharacterScreen_AwardsBtn = CreateButton(pViewport.topLeft() + Pointi(282, tabBtnY),
+                                              isMm8 ? mm8TabBtnSize : paperdoll_dbrds[3]->size(), BUTTON_TYPE_NORMAL, 0,
                                               UIMSG_ClickAwardsBtn, 0, INPUT_ACTION_OPEN_AWARDS, localization->str(LSTR_AWARDS),
-                                              {{paperdoll_dbrds[4], paperdoll_dbrds[3]}});
-    pCharacterScreen_ExitBtn = CreateButton(pViewport.topLeft() + Pointi(371, 308),
-                                            paperdoll_dbrds[1]->size(), BUTTON_TYPE_NORMAL, 0,
+                                              isMm8 ? Images{mm8AwardsArt.down, mm8AwardsArt.up} : Images{paperdoll_dbrds[4], paperdoll_dbrds[3]});
+    pCharacterScreen_ExitBtn = CreateButton(pViewport.topLeft() + Pointi(371, tabBtnY),
+                                            isMm8 ? mm8TabBtnSize : paperdoll_dbrds[1]->size(), BUTTON_TYPE_NORMAL, 0,
                                             UIMSG_ClickExitCharacterWindowBtn, 0, INPUT_ACTION_INVALID,
                                             localization->str(LSTR_EXIT_DIALOGUE),
-                                            {{paperdoll_dbrds[2], paperdoll_dbrds[1]}});
+                                            isMm8 ? Images{mm8ExitArt.down, mm8ExitArt.up} : Images{paperdoll_dbrds[2], paperdoll_dbrds[1]});
     CreateButton({0, 0}, {476, 345}, BUTTON_TYPE_NORMAL, 122, UIMSG_InventoryLeftClick, 0);
-    pCharacterScreen_DetalizBtn = CreateButton({600, 300}, {30, 30}, BUTTON_TYPE_NORMAL, 0,
+    // MM8's hitbox is the measured `kMm8CharacterRecordMagnifierBox`, which matches the icon drawn below pixel-for-pixel.
+    // MM7 keeps its own literal {600,300}/{30,30} box.
+    pCharacterScreen_DetalizBtn = CreateButton(
+        isMm8 ? kMm8CharacterRecordMagnifierBox.topLeft() : Pointi(600, 300),
+        isMm8 ? kMm8CharacterRecordMagnifierBox.size() : Sizei(30, 30),
+        BUTTON_TYPE_NORMAL, 0,
         UIMSG_ChangeDetaliz, 0, INPUT_ACTION_INVALID, localization->str(LSTR_DETAIL_TOGGLE));
     pCharacterScreen_DollBtn = CreateButton({476, 0}, {164, 345}, BUTTON_TYPE_NORMAL, 0, UIMSG_ClickPaperdoll, 0);
 
@@ -581,7 +657,15 @@ GUIWindow_CharacterRecord::GUIWindow_CharacterRecord(ScreenType screen)
     ui_character_stats_background = assets->getIcon("fr_stats");
     ui_character_inventory_background_strip = assets->getIcon("fr_strip");
 
-    scrollstop = assets->getIcon("con_x");
+    // "con_x" doesn't exist under any name in MM8's data, so it resolved to the engine's "pending" placeholder glyph.
+    // "bt_slide" (icons.lod) is a real, differently-styled scroll-thumb marker (a plain red panel on the same
+    // stone-bezel look as the rest of MM8's UI).
+    scrollstop = assets->getImage_ColorKey(isMm8 ? "bt_slide" : "con_x");
+
+    // The "<name> the <class>: <condition>" status line (StatusBar::draw()) is populated only by hovering the bottom-bar
+    // portrait (BUTTON_TYPE_CHARACTER -> UIMSG_ShowStatus_Player, UIGame.cpp). A one-time populate here does not stick: the
+    // per-frame mouse-hover dispatcher (UIGame.cpp's `GameUI_handleHintMessage` caller) clears any stale `_statusBar` text
+    // once `uLastPointedObjectID` is non-zero and the mouse is not over a matching button.
 }
 
 void GUIWindow_CharacterRecord::releaseAwardsScrollBar() {
@@ -607,11 +691,18 @@ void GUIWindow_CharacterRecord::createAwardsScrollBar() {
                 pButton->rect = {};
             }
         }
-        pBtn_Up = pGUIWindow_CurrentMenu->CreateButton({438, 46}, ui_ar_up_up->size(), BUTTON_TYPE_NORMAL, 0,
+        // MM8 button positions are measured against the real `fr_award` cell grid (see `kMm8AwardsWindow`'s own comment).
+        // MM7 keeps its original literals.
+        bool isMm8 = gameType() == GAME_TYPE_MM8;
+        Pointi upPos = isMm8 ? kMm8AwardsUpBtnPos : Pointi{438, 46};
+        Pointi downPos = isMm8 ? kMm8AwardsDownBtnPos : Pointi{438, 292};
+        Pointi scrollPos = isMm8 ? kMm8AwardsScrollBtnPos : Pointi{440, 62};
+        Sizei scrollSize = isMm8 ? kMm8AwardsScrollBtnSize : Sizei{16, 232};
+        pBtn_Up = pGUIWindow_CurrentMenu->CreateButton(upPos, ui_ar_up_up->size(), BUTTON_TYPE_NORMAL, 0,
                                                        UIMSG_ClickAwardsUpBtn, 0, INPUT_ACTION_INVALID, "", {{ui_ar_up_up, ui_ar_up_dn}});
-        pBtn_Down = pGUIWindow_CurrentMenu->CreateButton({438, 292}, ui_ar_dn_up->size(), BUTTON_TYPE_NORMAL, 0,
+        pBtn_Down = pGUIWindow_CurrentMenu->CreateButton(downPos, ui_ar_dn_up->size(), BUTTON_TYPE_NORMAL, 0,
                                                          UIMSG_ClickAwardsDownBtn, 0, INPUT_ACTION_INVALID, "", {{ui_ar_dn_up, ui_ar_dn_dn}});
-        pBtn_Scroll = pGUIWindow_CurrentMenu->CreateButton({440, 62}, {16, 232}, BUTTON_TYPE_NORMAL, 0, UIMSG_ClickAwardScrollBar, 0, INPUT_ACTION_INVALID, "");
+        pBtn_Scroll = pGUIWindow_CurrentMenu->CreateButton(scrollPos, scrollSize, BUTTON_TYPE_NORMAL, 0, UIMSG_ClickAwardScrollBar, 0, INPUT_ACTION_INVALID, "");
     }
 }
 
@@ -620,12 +711,37 @@ void GUIWindow_CharacterRecord::Update() {
         return;
     auto player = &pParty->activeCharacter();
 
+    bool isMm8 = gameType() == GAME_TYPE_MM8;
+
+    // MM7's per-active-tab highlight ("ib-cdN-d") is drawn inline below, right after that tab's own content. That is safe,
+    // since content never overlaps MM7's narrower row (y=308).
+    // MM8's resting/highlight art cannot use that placement: each tab's content background (fr_stats/fr_skill/fr_inven/
+    // fr_award, drawn inside the switch below) is ~354px tall and overlaps the top ~14px of this row's buttons (y=340-366).
+    // So the whole MM8 row (connector fill + 5 resting textures + the active tab's highlight) is drawn in one block after the switch.
+    std::shared_ptr<GraphicsImage> mm8ActiveHighlight;
+    GUIButton *mm8ActiveButton = nullptr;
+
+    if (!isMm8) {
+        // MM7 only: its row sits at y=308, clear of its narrower panel background, so it is drawn before the switch.
+        for (GUIButton *tabBtn : {pCharacterScreen_StatsBtn, pCharacterScreen_SkillsBtn, pCharacterScreen_InventoryBtn,
+                                  pCharacterScreen_AwardsBtn, pCharacterScreen_ExitBtn}) {
+            if (tabBtn->vTextures.size() > 1)
+                render->DrawQuad2D(tabBtn->vTextures[1], tabBtn->rect.topLeft());
+            tabBtn->DrawLabel(tabBtn->label, assets->pFontCreate.get(), colorTable.Diesel, colorTable.StarkWhite);
+        }
+    }
+
     switch (current_character_screen_window) {
         case WINDOW_CHARACTER_STATS: {
             CharacterUI_ReleaseButtons();
             releaseAwardsScrollBar();
             CharacterUI_StatsTab_Draw(player);
-            render->DrawQuad2D(assets->getIcon("ib-cd1-d"), pCharacterScreen_StatsBtn->rect.topLeft());
+            if (isMm8) {
+                mm8ActiveHighlight = mm8TabHighlight_Stats;
+                mm8ActiveButton = pCharacterScreen_StatsBtn;
+            } else {
+                render->DrawQuad2D(assets->getImage_ColorKey("ib-cd1-d"), pCharacterScreen_StatsBtn->rect.topLeft());
+            }
             break;
         }
         case WINDOW_CHARACTER_SKILLS: {
@@ -635,21 +751,36 @@ void GUIWindow_CharacterRecord::Update() {
             }
             releaseAwardsScrollBar();
             CharacterUI_SkillsTab_Draw(player);
-            render->DrawQuad2D(assets->getIcon("ib-cd2-d"), pCharacterScreen_SkillsBtn->rect.topLeft());
+            if (isMm8) {
+                mm8ActiveHighlight = mm8TabHighlight_Skills;
+                mm8ActiveButton = pCharacterScreen_SkillsBtn;
+            } else {
+                render->DrawQuad2D(assets->getImage_ColorKey("ib-cd2-d"), pCharacterScreen_SkillsBtn->rect.topLeft());
+            }
             break;
         }
         case WINDOW_CHARACTER_AWARDS: {
             CharacterUI_ReleaseButtons();
             createAwardsScrollBar();
             CharacterUI_AwardsTab_Draw(player);
-            render->DrawQuad2D(assets->getIcon("ib-cd4-d"), pCharacterScreen_AwardsBtn->rect.topLeft());
+            if (isMm8) {
+                mm8ActiveHighlight = mm8TabHighlight_Awards;
+                mm8ActiveButton = pCharacterScreen_AwardsBtn;
+            } else {
+                render->DrawQuad2D(assets->getImage_ColorKey("ib-cd4-d"), pCharacterScreen_AwardsBtn->rect.topLeft());
+            }
             break;
         }
         case WINDOW_CHARACTER_INVENTORY: {
             CharacterUI_ReleaseButtons();
             releaseAwardsScrollBar();
             CharacterUI_InventoryTab_Draw(player, false);
-            render->DrawQuad2D(assets->getIcon("ib-cd3-d"), pCharacterScreen_InventoryBtn->rect.topLeft());
+            if (isMm8) {
+                mm8ActiveHighlight = mm8TabHighlight_Inventory;
+                mm8ActiveButton = pCharacterScreen_InventoryBtn;
+            } else {
+                render->DrawQuad2D(assets->getImage_ColorKey("ib-cd3-d"), pCharacterScreen_InventoryBtn->rect.topLeft());
+            }
             break;
         }
         default:
@@ -657,10 +788,63 @@ void GUIWindow_CharacterRecord::Update() {
             break;
     }
 
-    if (bRingsShownInCharScreen)
+    if (isMm8) {
+        // No MM8 LOD ships a strip/backdrop asset sized to bridge the ~16px gaps between the 5 button rects. The original shows
+        // continuous marble behind them down to the bottom-bar chrome at y=366, so the gaps are filled with a colour
+        // sampled off "fr_stats"/"fr_inven"'s own bottom edge ((50,61,60)/(54,68,67)).
+        render->FillRect(Recti(8, 346, 467, 20), Color(52, 65, 63));
+
+        // CreateButton() only registers these 5 buttons' hit-test rects, so the resting-state background is drawn here every
+        // frame. Real MM8 "but2Xu" art (loaded into vTextures[1] in the constructor) already bakes its own caption, so
+        // unlike MM7 there is no separate DrawLabel call.
+        for (GUIButton *tabBtn : {pCharacterScreen_StatsBtn, pCharacterScreen_SkillsBtn, pCharacterScreen_InventoryBtn,
+                                  pCharacterScreen_AwardsBtn, pCharacterScreen_ExitBtn})
+            if (tabBtn->vTextures.size() > 1)
+                render->DrawQuad2D(tabBtn->vTextures[1], tabBtn->rect.topLeft());
+
+        if (mm8ActiveHighlight && mm8ActiveButton)
+            render->DrawQuad2D(mm8ActiveHighlight, mm8ActiveButton->rect.topLeft());
+    }
+
+    if (isMm8) {
+        DrawMm8Doll(*player, kMm8CharacterRecordDollBox);
+
+        // MM7's paperdoll fills `equipmentHitMap` itself (`CharacterUI_DrawPaperdoll`, below). `DrawMm8Doll` does not, so
+        // this fills it from the same `Mm8DollEquipmentLayer`s `DrawMm8Doll` draws from. `ComputeMm8DollBodyLayout`/
+        // `ComputeMm8DollEquipmentLayers` (UIPartyCreation.h) are the pure functions for that math, so the positions match
+        // what was drawn. Per-layer `dstRect`/texture gives pixel-perfect hit-testing (`HitMap::add` keys on alpha>0), and
+        // `itemIndex` is the same `inventory.entry(...).index()` both read sites expect. Any layer kind is covered automatically.
+        equipmentHitMap.clear();
+        Mm8DollBodyLayout dollLayout = ComputeMm8DollBodyLayout(*player, kMm8CharacterRecordDollBox);
+        if (dollLayout.body) {
+            for (const Mm8DollEquipmentLayer &layer : ComputeMm8DollEquipmentLayers(*player, dollLayout.body, dollLayout.bodyPos, dollLayout.rhand, dollLayout.rhandPos))
+                if (std::shared_ptr<GraphicsImage> layerTexture = assets->getImage_Alpha(layer.assetName))
+                    equipmentHitMap.add(layer.dstRect.topLeft(), layerTexture, layer.itemIndex);
+        }
+
+        // MM8's own "slots" mode. MM7's `CharacterUI_DrawPaperdollWithRingOverlay` uses the same background overlay approach:
+        // the normal doll stays drawn underneath, and `BACKHAND` (176x345, custom-sized to this box's height) is a
+        // mostly-transparent frame overlay (2 upper accessory slots + a 3x2 ring grid, connected-component-measured off the
+        // decoded asset) that only reveals its own opaque slot borders. It is drawn flush against the box's right edge
+        // (screen edge, 640), since the asset is 3px wider than the box and overhangs and clips, as `DrawMm8Doll`'s backdrop does.
+        // Equipped-item icons are not drawn into the slots, their positions are unknown.
+        if (bRingsShownInCharScreen && ui_character_inventory_paperdoll_rings_background) {
+            std::shared_ptr<GraphicsImage> ringsBg = ui_character_inventory_paperdoll_rings_background;
+            render->SetUIClipRect(kMm8CharacterRecordDollBox);
+            render->DrawQuad2D(ringsBg, Pointi(kMm8CharacterRecordDollBox.x + kMm8CharacterRecordDollBox.w - ringsBg->width(), kMm8CharacterRecordDollBox.y));
+            render->ResetUIClipRect();
+        }
+
+        // MM7 hides the icon while the ring overlay is shown and shows a differently-positioned "exit" button instead
+        // ({471,445}, `ui_exit_cancel_button_background`, in MM7's own differently-shaped bottom panel). MM8 keeps the same
+        // magnifier icon clickable in both states: the button's hitbox, `kMm8CharacterRecordMagnifierBox`, never moves
+        // (see `ToggleRingsOverlay`).
+        render->DrawQuad2D(ui_character_inventory_magnification_glass, kMm8CharacterRecordMagnifierBox.topLeft());
+    } else if (bRingsShownInCharScreen) {
         CharacterUI_DrawPaperdollWithRingOverlay(player);
-    else
+    } else {
         CharacterUI_DrawPaperdoll(player);
+    }
 }
 
 void GUIWindow_CharacterRecord::ShowStatsTab() {
@@ -700,11 +884,19 @@ void GUIWindow_CharacterRecord::ShowAwardsTab() {
 
 void GUIWindow_CharacterRecord::ToggleRingsOverlay() {
     int x, y, w, h;
+    bool isMm8 = gameType() == GAME_TYPE_MM8;
 
     bRingsShownInCharScreen ^= 1;
     pCharacterScreen_DetalizBtn->Release();
     pCharacterScreen_DollBtn->Release();
-    if (bRingsShownInCharScreen) {
+    if (isMm8) {
+        // See the draw-dispatch comment in `Update()`. MM8 keeps the magnifier's hitbox fixed across both states rather
+        // than inheriting MM7's `{471,445}`/exit-button layout below, which is unverified for MM8's bottom panel.
+        x = kMm8CharacterRecordMagnifierBox.x;
+        y = kMm8CharacterRecordMagnifierBox.y;
+        w = kMm8CharacterRecordMagnifierBox.w;
+        h = kMm8CharacterRecordMagnifierBox.h;
+    } else if (bRingsShownInCharScreen) {
         h = ui_exit_cancel_button_background->height();
         w = ui_exit_cancel_button_background->width();
         y = 445;
@@ -816,7 +1008,10 @@ void GUIWindow_CharacterRecord::CharacterUI_SkillsTab_Draw(Character *player) {
                      player->uSkillPoints ? ui_character_bonus_text_color.tag()
                                           : ui_character_default_text_color.tag(),
                      player->uSkillPoints);
-    GUIWindow::DrawText(assets->pFontArrus.get(), {24, 18}, colorTable.White, str, pGUIWindow_CurrentMenu->frameRect);
+    // MM8-measured position (kMm8SkillsTitlePos, see its own comment). MM7 keeps its original {24, 18}. The rest of this
+    // function's geometry (columns/right_margin/row start/step) matches the MM8 fr_skill asset as measured, so it is not forked.
+    Pointi titlePos = gameType() == GAME_TYPE_MM8 ? kMm8SkillsTitlePos : Pointi{24, 18};
+    GUIWindow::DrawText(assets->pFontArrus.get(), titlePos, colorTable.White, str, pGUIWindow_CurrentMenu->frameRect);
 
     int y = 2 * assets->pFontLucida->GetHeight() + 13;
     y = drawSkillTable(player, 24, y, allWeaponSkills(), 400, localization->str(LSTR_WEAPONS));
@@ -896,7 +1091,8 @@ void GUIWindow_CharacterRecord::clickAwardsScroll(int yPos) {
 }
 
 void GUIWindow_CharacterRecord::CharacterUI_AwardsTab_Draw(Character *player) {
-    Recti window(12, 48, 424, 290);
+    bool isMm8 = gameType() == GAME_TYPE_MM8;
+    Recti window = isMm8 ? kMm8AwardsWindow : Recti(12, 48, 424, 290);
     int stopPos = 0;
 
     render->DrawQuad2D(ui_character_awards_background, {8, 8});
@@ -905,6 +1101,13 @@ void GUIWindow_CharacterRecord::CharacterUI_AwardsTab_Draw(Character *player) {
                                   ui_character_header_text_color.tag(), NameAndTitle(player->name, player->classType));
 
     GUIWindow::DrawText(assets->pFontArrus.get(), {24, 18}, colorTable.White, str, pGUIWindow_CurrentMenu->frameRect);
+
+    // `createAwardsScrollBar()`'s buttons only register click hitboxes (`CreateButton` never draws anything itself).
+    // MM8 draws them persistently so each hitbox has a matching visible icon. MM7 is unchanged.
+    if (isMm8) {
+        render->DrawQuad2D(pBtn_Up->vTextures[0], pBtn_Up->rect.topLeft());
+        render->DrawQuad2D(pBtn_Down->vTextures[0], pBtn_Down->rect.topLeft());
+    }
 
 
     if (_awardsCharacterId != pParty->activeCharacterIndex())
@@ -923,14 +1126,18 @@ void GUIWindow_CharacterRecord::CharacterUI_AwardsTab_Draw(Character *player) {
 
     _awardLimitReached = (_startAwardElem + currentlyDisplayedElems) == _achievedAwardsList.size();
 
+    // MM8's travel distance comes from the measured track/thumb sizes (`pBtn_Scroll->rect.h - scrollstop->size().h`).
+    // MM7 keeps its `211.0f`.
+    float travel = isMm8 ? float(pBtn_Scroll->rect.h - scrollstop->size().h) : 211.0f;
     if (_startAwardElem) {
         if (!_awardLimitReached) {
-            stopPos = (float(_startAwardElem) / _scrollableAwardSteps) * 211.0f;
+            stopPos = (float(_startAwardElem) / _scrollableAwardSteps) * travel;
         } else {
-            stopPos = 211;
+            stopPos = (int)travel;
         }
     }
-    render->DrawQuad2D(scrollstop, {439, 65 + stopPos});
+    Pointi scrollStopBase = isMm8 ? kMm8AwardsScrollBtnPos : Pointi{439, 65};
+    render->DrawQuad2D(scrollstop, {scrollStopBase.x, scrollStopBase.y + stopPos});
 }
 
 //----- (0041A2C1) --------------------------------------------------------
@@ -986,8 +1193,10 @@ void CharacterUI_DrawPaperdoll(Character *player) {
             item_Y = pPaperdoll_BodyY + paperdoll_Weapon[bodyType][1][1] - pItemTable->items[itemMainHand->itemId].paperdollAnchorOffset.y;
 
             std::shared_ptr<GraphicsImage> texture;
-            if (itemMainHand->itemId == ITEM_BLASTER)
-                texture = assets->getIcon("item64v1");
+            // MM8 id 64 is "Caravaner's Crossbow", an ordinary common crossbow, not an ancient blaster (mirrors
+            // isAncientWeapon()). MM7-gated so it doesn't override the paperdoll texture for an unrelated MM8 weapon.
+            if (gameType() == GAME_TYPE_MM7 && itemMainHand->itemId == ITEM_BLASTER)
+                texture = assets->getImage_Alpha("item64v1");
 
             CharacterUI_DrawItem(item_X, item_Y, itemMainHand.get(), itemMainHand.index(), texture, !bRingsShownInCharScreen);
         }
@@ -1002,7 +1211,7 @@ void CharacterUI_DrawPaperdoll(Character *player) {
 
         // cloak
         if (InventoryEntry cloak = player->inventory.entry(ITEM_SLOT_CLOAK)) {
-            index = valueOr(paperdoll_cloak_indexByType, cloak->itemId, -1);
+            index = valueOr(paperdoll_cloak_indexByType(), cloak->itemId, -1);
             if (index != -1) {
                 item_X = pPaperdoll_BodyX + paperdoll_Cloak[bodyType][index][0];
                 item_Y = pPaperdoll_BodyY + paperdoll_Cloak[bodyType][index][1];
@@ -1017,7 +1226,7 @@ void CharacterUI_DrawPaperdoll(Character *player) {
 
         // armor
         if (InventoryEntry armor = player->inventory.entry(ITEM_SLOT_ARMOUR)) {
-            index = valueOr(paperdoll_armor_indexByType, armor->itemId, -1);
+            index = valueOr(paperdoll_armor_indexByType(), armor->itemId, -1);
             if (index != -1) {
                 item_X = pPaperdoll_BodyX + paperdoll_Armor_Coord[bodyType][index][0];
                 item_Y = pPaperdoll_BodyY + paperdoll_Armor_Coord[bodyType][index][1];
@@ -1029,7 +1238,7 @@ void CharacterUI_DrawPaperdoll(Character *player) {
 
         // boots
         if (InventoryEntry boots = player->inventory.entry(ITEM_SLOT_BOOTS)) {
-            index = valueOr(paperdoll_boots_indexByType, boots->itemId, -1);
+            index = valueOr(paperdoll_boots_indexByType(), boots->itemId, -1);
             if (index != -1) {
                 item_X = pPaperdoll_BodyX + paperdoll_Boot[bodyType][index][0];
                 item_Y = pPaperdoll_BodyY + paperdoll_Boot[bodyType][index][1];
@@ -1058,15 +1267,11 @@ void CharacterUI_DrawPaperdoll(Character *player) {
 
         // belt
         if (InventoryEntry belt = player->inventory.entry(ITEM_SLOT_BELT)) {
-            index = valueOr(paperdoll_belt_indexByType, belt->itemId, -1);
+            index = valueOr(paperdoll_belt_indexByType(), belt->itemId, -1);
             if (index != -1) {
                 item_X = pPaperdoll_BodyX + paperdoll_Belt[bodyType][index][0];
                 item_Y = pPaperdoll_BodyY + paperdoll_Belt[bodyType][index][1];
-                std::shared_ptr<GraphicsImage> texture;
-                if (index == 5) // Titan's Belt has dwarf textures.
-                    texture = paperdoll_belt_texture[bodyType][index];
-                else
-                    texture = paperdoll_belt_texture[humanBodyType(bodyType)][index];
+                std::shared_ptr<GraphicsImage> texture = paperdoll_belt_texture[humanBodyType(bodyType)][index];
 
                 CharacterUI_DrawItem(item_X, item_Y, belt.get(), belt.index(), texture, !bRingsShownInCharScreen);
             }
@@ -1074,7 +1279,7 @@ void CharacterUI_DrawPaperdoll(Character *player) {
 
         // armor's shoulders
         if (InventoryEntry armor = player->inventory.entry(ITEM_SLOT_ARMOUR)) {
-            index = valueOr(paperdoll_armor_indexByType, armor->itemId, -1);
+            index = valueOr(paperdoll_armor_indexByType(), armor->itemId, -1);
             if (index != -1) {
                 std::shared_ptr<GraphicsImage> texture;
                 // Some armors doesn't have sleeves so use normal one for two-handed or none if it also unavailable
@@ -1097,7 +1302,7 @@ void CharacterUI_DrawPaperdoll(Character *player) {
 
         // cloak's collar
         if (InventoryEntry cloak = player->inventory.entry(ITEM_SLOT_CLOAK)) {
-            index = valueOr(paperdoll_cloak_indexByType, cloak->itemId, -1);
+            index = valueOr(paperdoll_cloak_indexByType(), cloak->itemId, -1);
             if (index != -1) {
                 // leather cloak has no collar
                 if (paperdoll_CloakCollar[bodyType][index][0]) {
@@ -1120,7 +1325,7 @@ void CharacterUI_DrawPaperdoll(Character *player) {
 
         // helm
         if (InventoryEntry helm = player->inventory.entry(ITEM_SLOT_HELMET)) {
-            index = valueOr(paperdoll_helm_indexByType, helm->itemId, -1);
+            index = valueOr(paperdoll_helm_indexByType(), helm->itemId, -1);
             if (index != -1) {
                 item_X = pPaperdoll_BodyX + paperdoll_Helm[bodyType][index][0];
                 item_Y = pPaperdoll_BodyY + paperdoll_Helm[bodyType][index][1];
@@ -1141,8 +1346,10 @@ void CharacterUI_DrawPaperdoll(Character *player) {
             item_Y = pPaperdoll_BodyY + paperdoll_Weapon[bodyType][1][1] - pItemTable->items[itemMainHand->itemId].paperdollAnchorOffset.y;
 
             std::shared_ptr<GraphicsImage> texture;
-            if (itemMainHand->itemId == ITEM_BLASTER)
-                texture = assets->getIcon("item64v1");
+            // MM8 id 64 is "Caravaner's Crossbow", an ordinary common crossbow, not an ancient blaster (mirrors
+            // isAncientWeapon()). MM7-gated so it doesn't override the paperdoll texture for an unrelated MM8 weapon.
+            if (gameType() == GAME_TYPE_MM7 && itemMainHand->itemId == ITEM_BLASTER)
+                texture = assets->getImage_Alpha("item64v1");
 
             CharacterUI_DrawItem(item_X, item_Y, itemMainHand.get(), itemMainHand.index(), texture, !bRingsShownInCharScreen);
         }
@@ -1214,8 +1421,10 @@ void CharacterUI_DrawPaperdoll(Character *player) {
 void CharacterUI_InventoryTab_Draw(Character *player, bool Cover_Strip) {
     render->DrawQuad2D(ui_character_inventory_background, {8, 8});
 
-    if (Cover_Strip) {
-        ui_character_inventory_background_strip = assets->getIcon("fr_strip");
+    // "fr_strip" (the shop/chest inventory cover strip, {8,305}) doesn't exist in any MM8 LOD searched. It would resolve to
+    // the "pending" placeholder glyph on every shop/chest/enchant screen that passes Cover_Strip=true, so MM8 skips the draw.
+    if (Cover_Strip && gameType() != GAME_TYPE_MM8) {
+        ui_character_inventory_background_strip = assets->getImage_ColorKey("fr_strip");
         render->DrawQuad2D(ui_character_inventory_background_strip, {8, 305});
     }
 
@@ -1325,7 +1534,9 @@ void CharacterUI_LoadPaperdollTextures() {
     ui_character_inventory_paperdoll_background = assets->getIcon("BACKDOLL");
     ui_character_inventory_paperdoll_rings_background = assets->getIcon("BACKHAND");
 
-    for (int i = 0; i < pParty->pCharacters.size(); ++i) {
+    // Bounded to activeCharacterCount(), not raw pCharacters: an unrecruited MM8 placeholder slot has no on-screen
+    // paperdoll and must not get a wetsuit-visual toggle.
+    for (int i = 0; i < pParty->activeCharacterCount(); ++i) {
         if (pParty->pCharacters[i].hasUnderwaterSuitEquipped()) {
             WetsuitOn(i);
         } else {
@@ -1350,14 +1561,14 @@ void CharacterUI_LoadPaperdollTextures() {
     };
 
     for (BodyType bodyType : {BODY_TYPE_HUMAN_MALE, BODY_TYPE_HUMAN_FEMALE}) {
-        for (unsigned j : {0, 1, 2, 3, 4, 6}) // Belt
-            paperdoll_belt_texture[bodyType][j] = loadTexture(paperdoll_belt_typeByIndex, j, bodyType, 0);
+        // Loop bounds come from the real (common-tier-only) item count, see `buildPaperdollIndexByType`. Dwarves
+        // (dwarf body types) reuse this same human belt texture at draw time, so no separate dwarf belt load is needed
+        // (the old dedicated "relic tier" load below is gone along with it).
+        for (size_t j = 0; j < paperdoll_belt_typeByIndex().size(); ++j)  // Belt
+            paperdoll_belt_texture[bodyType][j] = loadTexture(paperdoll_belt_typeByIndex(), j, bodyType, 0);
 
-        // TODO(captainurist): MM7 ships distinct dwarf helm textures that are never loaded: item091v3, item240v3,
-        //                     item344v3 and item344v4. And item092v3, loaded for dwarves below, is a copy of item092v1.
-        //                     Check whether dwarves should use the dwarf variants.
-        for (unsigned j = 0; j < 16; ++j)  // Helm
-            paperdoll_helm_texture[bodyType][j] = loadTexture(paperdoll_helm_typeByIndex, j, bodyType, 0);
+        for (size_t j = 0; j < paperdoll_helm_typeByIndex().size(); ++j)  // Helm
+            paperdoll_helm_texture[bodyType][j] = loadTexture(paperdoll_helm_typeByIndex(), j, bodyType, 0);
 
         if (IsDwarfPresentInParty(true))
             paperdoll_dbrds[11] = assets->getIcon("item092v3");
@@ -1365,20 +1576,18 @@ void CharacterUI_LoadPaperdollTextures() {
 
     for (BodyType bodyType : allBodyTypes()) {
         if (isBodyTypeInParty(bodyType)) {
-            paperdoll_belt_texture[bodyType][5] = loadTexture(paperdoll_belt_typeByIndex, 5, bodyType, 0);  // Titan's Belt
-
-            for (int armorIndex = 0; armorIndex < 17; ++armorIndex) {
-                paperdoll_armor_texture[bodyType][armorIndex][0] = loadTexture(paperdoll_armor_typeByIndex, armorIndex, bodyType, 0);  // armor
-                paperdoll_armor_texture[bodyType][armorIndex][1] = loadTexture(paperdoll_armor_typeByIndex, armorIndex, bodyType, 1);  // shoulder 1
-                paperdoll_armor_texture[bodyType][armorIndex][2] = loadTexture(paperdoll_armor_typeByIndex, armorIndex, bodyType, 2);  // shoulder 2
+            for (size_t v32 = 0; v32 < paperdoll_armor_typeByIndex().size(); ++v32) {  // simple armor
+                paperdoll_armor_texture[bodyType][v32][0] = loadTexture(paperdoll_armor_typeByIndex(), v32, bodyType, 0);  // armor
+                paperdoll_armor_texture[bodyType][v32][1] = loadTexture(paperdoll_armor_typeByIndex(), v32, bodyType, 1);  // shoulder 1
+                paperdoll_armor_texture[bodyType][v32][2] = loadTexture(paperdoll_armor_typeByIndex(), v32, bodyType, 2);  // shoulder 2
             }
 
-            for (int bootsIndex = 0; bootsIndex < 6; ++bootsIndex)
-                paperdoll_boots_texture[bodyType][bootsIndex] = loadTexture(paperdoll_boots_typeByIndex, bootsIndex, bodyType, 0);
+            for (size_t v33 = 0; v33 < paperdoll_boots_typeByIndex().size(); ++v33)  // boots
+                paperdoll_boots_texture[bodyType][v33] = loadTexture(paperdoll_boots_typeByIndex(), v33, bodyType, 0);
 
-            for (int cloakIndex = 0; cloakIndex < 10; ++cloakIndex) {
-                paperdoll_cloak_texture[bodyType][cloakIndex] = loadTexture(paperdoll_cloak_typeByIndex, cloakIndex, bodyType, 0);
-                paperdoll_cloak_collar_texture[bodyType][cloakIndex] = loadTexture(paperdoll_cloak_typeByIndex, cloakIndex, bodyType, 1);
+            for (size_t v38 = 0; v38 < paperdoll_cloak_typeByIndex().size(); ++v38) {  // Cloak
+                paperdoll_cloak_texture[bodyType][v38] = loadTexture(paperdoll_cloak_typeByIndex(), v38, bodyType, 0);
+                paperdoll_cloak_collar_texture[bodyType][v38] = loadTexture(paperdoll_cloak_typeByIndex(), v38, bodyType, 1);
             }
         }
     }
@@ -1445,6 +1654,10 @@ void GUIWindow_CharacterRecord::CharacterUI_SkillsTab_CreateButtons() {
     }
 }
 
+// Every literal below (background offset, title pos, left/right column x, pY starts, tab-stop widths) matches the MM8
+// `fr_stats` background's own measured cell grid, and each row's text lands inside its own cell. This function never
+// switches fonts mid-draw (everything is `pFontArrus`), so it is immune to the font-switch blanking described on
+// `kMm8SkillsTitlePos`. MM7's numbers are already correct for MM8's frame, so there is no `gameType() == GAME_TYPE_MM8` fork here.
 void GUIWindow_CharacterRecord::CharacterUI_StatsTab_Draw(Character *player) {
     render->DrawQuad2D(ui_character_stats_background, {8, 8});
 
@@ -1608,7 +1821,9 @@ void GUIWindow_CharacterRecord::fillAwardsData() {
 
     std::stable_sort(_achievedAwardsList.begin(), _achievedAwardsList.end(), [&] (AwardId a, AwardId b) { return pAwards[a].uPriority < pAwards[b].uPriority; });
 
-    Recti window(12, 48, 424, 290);
+    // Must stay in lockstep with `CharacterUI_AwardsTab_Draw`'s own `window`: `_scrollableAwardSteps` (computed here) has
+    // to agree with what actually fits on screen (drawn there), or `clickAwardsScroll`'s step math breaks.
+    Recti window = gameType() == GAME_TYPE_MM8 ? kMm8AwardsWindow : Recti(12, 48, 424, 290);
     int y = 0;
 
     for (int i = (_achievedAwardsList.size() - 1); i >= 0; --i) {
@@ -1739,14 +1954,16 @@ void OnPaperdollLeftClick() {
                     return;
                 }
 
-                bool puttingWetsuitsOn = pParty->pPickedItem.itemId == ITEM_QUEST_WETSUIT;
+                // MM8 id 604 is "Nightshade Brazier" armor, not the MM7 wetsuit.
+                // MM7-gated so equipping/unequipping it doesn't misfire WetsuitOn()/WetsuitOff().
+                bool puttingWetsuitsOn = gameType() == GAME_TYPE_MM7 && pParty->pPickedItem.itemId == ITEM_QUEST_WETSUIT;
                 bool takingWetsuitsOff = false;
 
                 assert(itemSlotsForItemType(pEquipType).size() == 1);
                 ItemSlot slot = itemSlotsForItemType(pEquipType)[0];
                 if (InventoryEntry entry = pParty->activeCharacter().inventory.entry(slot)) {
                     Item tmpItem = pParty->activeCharacter().inventory.take(entry);
-                    takingWetsuitsOff = tmpItem.itemId == ITEM_QUEST_WETSUIT;
+                    takingWetsuitsOff = gameType() == GAME_TYPE_MM7 && tmpItem.itemId == ITEM_QUEST_WETSUIT;
                     pParty->activeCharacter().inventory.equip(slot, pParty->takeHoldingItem());
                     pParty->setHoldingItem(tmpItem);
                 } else {
@@ -2033,7 +2250,9 @@ void OnPaperdollLeftClick() {
 
         if (entry) {
             pEquipType = entry->type();
-            if (entry->itemId == ITEM_QUEST_WETSUIT) {
+            // MM8 id 604 is "Nightshade Brazier" armor, not the MM7 wetsuit.
+            // MM7-gated so clicking it doesn't misfire WetsuitOff().
+            if (gameType() == GAME_TYPE_MM7 && entry->itemId == ITEM_QUEST_WETSUIT) {
                 if (engine->IsUnderwater()) {
                     pAudioPlayer->playUISound(SOUND_error);
                     return;

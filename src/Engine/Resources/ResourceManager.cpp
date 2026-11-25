@@ -5,6 +5,7 @@
 #include <string>
 
 #include "Engine/Data/ResourceMask.h"
+#include "Engine/GameType.h"
 
 #include "Library/Image/ImageFunctions.h"
 #include "Library/Image/Pcx.h"
@@ -110,11 +111,23 @@ ResourceManager::~ResourceManager() = default;
 void ResourceManager::open(float saturation, float lightness) {
     _saturation = saturation;
     _lightness = lightness;
-    _eventsLodReader.open(dfs->read("data/events.lod"));
+    // MM8 installs ship no `events.lod`, the same tables and per-map scripts are in `EnglishT.lod` under the same
+    // entry names.
+    if (dfs->exists("data/events.lod"))
+        _eventsLodReader.open(dfs->read("data/events.lod"));
+    else if (dfs->exists("data/englisht.lod"))
+        _eventsLodReader.open(dfs->read("data/englisht.lod"));
     _iconsLodReader.open(dfs->read("data/icons.lod"));
     _bitmapsLodReader.open(dfs->read("data/bitmaps.lod"));
     _spritesLodReader.open(dfs->read("data/sprites.lod"));
     from_json(Json::parse(dfs->read("data/resource_mask_table.json").str()), _masks);
+
+    // MM8 keeps its localized UI art in EnglishD.lod, which has duplicate entries for some sounds.
+    if (gameType() == GAME_TYPE_MM8 && dfs->exists("data/englishd.lod"))
+        _englishDLodReader.open(dfs->read("data/englishd.lod"), LOD_ALLOW_DUPLICATES);
+    // MM8's viewport border frame and other UI chrome that isn't in icons.lod under any name.
+    if (gameType() == GAME_TYPE_MM8 && dfs->exists("data/icons.ui.lod"))
+        _iconsUiLodReader.open(dfs->read("data/icons.ui.lod"));
     // TODO(captainurist):
     //  on exception:
     //      Error(localization->str(LSTR_MIGHT_AND_MAGIC_VII_IS_HAVING_TROUBLE), localization->str(LSTR_REINSTALL_NECESSARY));
@@ -122,6 +135,13 @@ void ResourceManager::open(float saturation, float lightness) {
 }
 
 Blob ResourceManager::eventsData(std::string_view filename) {
+    if (!_eventsLodReader.isOpen())
+        return Blob();
+    // Unlike MM7's events.lod, MM8's EnglishT.lod is missing a handful of table entries MM7
+    // always shipped (e.g. `npcdist.txt`) - callers that need this data already tolerate an empty
+    // Blob (that's the same shape as "container missing" above), so return one instead of throwing.
+    if (gameType() == GAME_TYPE_MM8 && !_eventsLodReader.exists(filename))
+        return Blob();
     return lod::decodeMaybeCompressed(_eventsLodReader.read(filename));
 }
 
@@ -277,4 +297,44 @@ void ResourceManager::desaturate(std::span<Color> colors) const {
 
     for (Color &color : colors)
         color = color.toHsvColorf().adjusted(0, _saturation, _lightness).toColor();
+}
+
+bool ResourceManager::hasIcon(std::string_view filename) const {
+    return _iconsLodReader.isOpen() && _iconsLodReader.exists(ascii::toLower(filename));
+}
+
+bool ResourceManager::hasEnglishD(std::string_view filename) const {
+    return _englishDLodReader.isOpen() && _englishDLodReader.exists(ascii::toLower(filename));
+}
+
+bool ResourceManager::hasIconsUi(std::string_view filename) const {
+    return _iconsUiLodReader.isOpen() && _iconsUiLodReader.exists(ascii::toLower(filename));
+}
+
+Blob ResourceManager::iconData(std::string_view filename) {
+    return lod::decodeMaybeCompressed(_iconsLodReader.read(ascii::toLower(filename)));
+}
+
+Blob ResourceManager::englishDData(std::string_view filename) {
+    return lod::decodeMaybeCompressed(_englishDLodReader.read(ascii::toLower(filename)));
+}
+
+LodImage ResourceManager::rawEnglishD(std::string_view filename) {
+    if (!hasEnglishD(filename))
+        return {};
+    return lod::decodeImageMm8(_englishDLodReader.read(ascii::toLower(filename)));
+}
+
+LodImage ResourceManager::rawIconsUi(std::string_view filename) {
+    if (!hasIconsUi(filename))
+        return {};
+    return lod::decodeImage(_iconsUiLodReader.read(ascii::toLower(filename)));
+}
+
+bool ResourceManager::hasBitmap(std::string_view filename) const {
+    return _bitmapsLodReader.isOpen() && _bitmapsLodReader.exists(ascii::toLower(filename));
+}
+
+bool ResourceManager::hasSprite(std::string_view filename) const {
+    return _spritesLodReader.isOpen() && _spritesLodReader.exists(ascii::toLower(filename));
 }

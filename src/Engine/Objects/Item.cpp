@@ -5,6 +5,7 @@
 #include <unordered_map>
 
 #include "Engine/Engine.h"
+#include "Engine/GameType.h"
 #include "Engine/Localization.h"
 #include "Engine/Random/Random.h"
 #include "Engine/Objects/ItemEnchantment.h"
@@ -51,21 +52,24 @@ int Item::_439DF3_get_additional_damage(DamageType *damage_type,
     if (itemId == ITEM_NULL) return 0;
 
     UpdateTempBonus(pParty->GetPlayingTime());
-    if (itemId == ITEM_ARTIFACT_IRON_FEATHER) {
-        *damage_type = DAMAGE_AIR;
-        return grng->random(10) + 6;
-    }
-    if (itemId == ITEM_ARTIFACT_GHOULSBANE) {
-        *damage_type = DAMAGE_FIRE;
-        return grng->random(16) + 3;
-    }
-    if (itemId == ITEM_ARTIFACT_ULLYSES) {
-        *damage_type = DAMAGE_WATER;
-        return grng->random(4) + 9;
-    }
-    if (itemId == ITEM_RELIC_OLD_NICK) {
-        *damage_type = DAMAGE_BODY;
-        return 8;
+    // In MM8's items.txt these 4 ids are unrelated artifacts/relics, not Iron Feather/Ghoulsbane/Ullysses/Old Nick.
+    if (gameType() == GAME_TYPE_MM7) {
+        if (itemId == ITEM_ARTIFACT_IRON_FEATHER) {
+            *damage_type = DAMAGE_AIR;
+            return grng->random(10) + 6;
+        }
+        if (itemId == ITEM_ARTIFACT_GHOULSBANE) {
+            *damage_type = DAMAGE_FIRE;
+            return grng->random(16) + 3;
+        }
+        if (itemId == ITEM_ARTIFACT_ULLYSES) {
+            *damage_type = DAMAGE_WATER;
+            return grng->random(4) + 9;
+        }
+        if (itemId == ITEM_RELIC_OLD_NICK) {
+            *damage_type = DAMAGE_BODY;
+            return 8;
+        }
     }
 
     switch (specialEnchantment) {
@@ -177,13 +181,12 @@ std::string Item::GetDisplayName() const {
 //----- (004564B3) --------------------------------------------------------
 std::string Item::GetIdentifiedName() const {
     ItemType equip_type = type();
-    if ((equip_type == ITEM_TYPE_REAGENT) || (equip_type == ITEM_TYPE_POTION) ||
-        (equip_type == ITEM_TYPE_GOLD)) {
+    if ((equip_type == ITEM_TYPE_REAGENT) || (equip_type == ITEM_TYPE_POTION) || isGold()) {
         return pItemTable->items[itemId].name;
     }
 
     if (itemId == ITEM_QUEST_LICH_JAR_FULL) {  // Lich Jar
-        if (lichJarCharacterIndex >= 0 && lichJarCharacterIndex < pParty->pCharacters.size()) {
+        if (lichJarCharacterIndex >= 0 && lichJarCharacterIndex < pParty->activeCharacterCount()) {
             const std::string &player_name = pParty->pCharacters[lichJarCharacterIndex].name;
             if (player_name.back() == 's')
                 return localization->format(LSTR_S_JAR, player_name);
@@ -663,6 +666,11 @@ std::string GetItemTextureFilename(ItemId item_id, int index, int shoulder) {
 
     switch (pItemTable->items[item_id].type) {
         case ITEM_TYPE_ARMOUR:
+            // MM8's `icons.lod` has a single "a"-suffixed shoulder overlay per body variant, no `a1`/`a2` pair.
+            // `shoulder == 1` (normal grip) and `shoulder == 2` (two-handed-grip alternate position,
+            // UICharacter.cpp) are two draw positions for the same overlay sprite.
+            if (gameType() == GAME_TYPE_MM8)
+                return fmt::format("item{:03}v{}{}", texture_id, index, shoulder == 0 ? "" : "a");
             if (shoulder == 0)
                 return fmt::format("item{:03}v{}", texture_id, index);
             else if (shoulder == 1)
@@ -670,6 +678,10 @@ std::string GetItemTextureFilename(ItemId item_id, int index, int shoulder) {
             else // shoulder == 2
                 return fmt::format("item{:03}v{}a2", texture_id, index);
         case ITEM_TYPE_CLOAK:
+            // MM8's `icons.lod` names cloak-body/collar assets "item<id>v<N>a"/"b"
+            // (e.g. `item122v1a`/`item122v1b`), not the "v<N>"/"v<N>a1" suffixes below.
+            if (gameType() == GAME_TYPE_MM8)
+                return fmt::format("item{:03}v{}{}", texture_id, index, shoulder == 0 ? "a" : "b");
             if (shoulder == 0)
                 return fmt::format("item{:03}v{}", texture_id, index);
             else // shoulder == 1
@@ -684,14 +696,22 @@ bool Item::canSellRepairIdentifyAt(HouseId houseId) {
     if (this->IsStolen())
         return false;
 
-    if (isQuestItem(itemId))
-        return false; // Can't sell quest items.
+    if (gameType() == GAME_TYPE_MM8) {
+        // MM8's shops take its artifacts and relics (500-537) and nothing from 538 up: the specials, e.g. Mace of the Sun,
+        // the quest items and the scrolls. Its recipes (700-731) are not sold either, because the alchemist still asks
+        // for MM7's recipe numbers.
+        if (std::to_underlying(itemId) >= 538)
+            return false;
+    } else {
+        if (isQuestItem(itemId))
+            return false; // Can't sell quest items.
 
-    if (isArtifact(itemId) && !isSpawnableArtifact(itemId))
-        return false; // Can't sell quest artifacts, e.g. Hermes Sandals.
+        if (isArtifact(itemId) && !isSpawnableArtifact(itemId))
+            return false; // Can't sell quest artifacts, e.g. Hermes Sandals.
 
-    if (::isMessageScroll(itemId) && !isRecipe(itemId))
-        return false; // Can't sell message scrolls. Recipes are sellable at alchemy shops.
+        if (::isMessageScroll(itemId) && !isRecipe(itemId))
+            return false; // Can't sell message scrolls. Recipes are sellable at alchemy shops.
+    }
 
     switch (houseTable[houseId].uType) {
         case HOUSE_TYPE_WEAPON_SHOP:

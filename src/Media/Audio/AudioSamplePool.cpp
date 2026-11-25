@@ -88,3 +88,10 @@ void AudioSamplePool::setVolume(float value) {
     for (AudioSamplePoolEntry &entry : _samplePool)
         entry.samplePtr->SetVolume(value);
 }
+
+bool AudioSamplePool::hasPlaying() const {
+    for (const AudioSamplePoolEntry &entry : _samplePool)
+        if (!entry.samplePtr->IsStopped())
+            return true;
+    return false;
+}

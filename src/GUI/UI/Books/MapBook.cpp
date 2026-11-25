@@ -7,6 +7,7 @@
 
 #include "Engine/AssetsManager.h"
 #include "Engine/Evt/Processor.h"
+#include "Engine/GameType.h"
 #include "Engine/Graphics/Renderer/Renderer.h"
 #include "Engine/Graphics/Indoor.h"
 #include "Engine/Objects/Decoration.h"
@@ -28,6 +29,30 @@
 void DrawBook_Map_sub(int tl_x, int tl_y, int br_x, int br_y);
 
 std::shared_ptr<GraphicsImage> ui_book_map_background;
+std::shared_ptr<GraphicsImage> ui_book_map_compass_frame;
+
+// MM8's N/S/E/W scroll-compass roundel positions, measured from the original game's screen.
+// "irb-1", the shared compass medallion, sits at pViewport.topLeft().
+static const Pointi kMm8MapCompassRoundelN = {122, 14};
+static const Pointi kMm8MapCompassRoundelS = {122, 75};
+static const Pointi kMm8MapCompassRoundelE = {155, 45};
+static const Pointi kMm8MapCompassRoundelW = {90, 45};
+static const Sizei kMm8MapCompassRoundelSize = {26, 27};
+
+// MM8's zoom ribbon ("irt09"/"irt10") positions, measured from the original game's screen.
+static const Pointi kMm8MapZoomInPos = {483, 39};
+static const Pointi kMm8MapZoomOutPos = {483, 91};
+
+// MM7's (97,49)-(361,313) map-viewport rect overlaps MM8's compass frame (see kMm8MapCompassRoundel*
+// above). MM8's map viewport is (151,128)-(415,392), the same 264x264 size, clear of the compass.
+static const int kMm8MapViewportTlX = 151;
+static const int kMm8MapViewportTlY = 128;
+static const int kMm8MapViewportBrX = 415;
+static const int kMm8MapViewportBrY = 392;
+
+// MM8's Close button ("c_close_up", an 83x30 plaque with the caption baked in) sits at (555,445). The base ctor
+// draws it at MM7's slot before the map background fill, so Update() draws it again last.
+static const Pointi kMm8MapCloseButtonPos = {555, 445};
 
 GUIWindow_MapBook::GUIWindow_MapBook() {
     this->eWindowType = WINDOW_MAPS_BOOK;
@@ -36,75 +61,128 @@ GUIWindow_MapBook::GUIWindow_MapBook() {
     viewparams->ClampMapViewPosition();
     pChildBooksOverlay = std::make_unique<GUIWindow_BooksButtonOverlay>(Pointi{546, 353}, Sizei{0, 0}, pBtn_Maps);
 
-    ui_book_map_background = assets->getIcon("sbmap");
-    ui_book_button1_on = assets->getIcon("zoom-on");
-    ui_book_button2_on = assets->getIcon("zoot-on");
-    ui_book_button3_on = assets->getIcon("tabNon");
-    ui_book_button4_on = assets->getIcon("tabSon");
-    ui_book_button5_on = assets->getIcon("tabEon");
-    ui_book_button6_on = assets->getIcon("tabWon");
-    ui_book_button1_off = assets->getIcon("zoom-off");
-    ui_book_button2_off = assets->getIcon("zoot-off");
-    ui_book_button3_off = assets->getIcon("tabNoff");
-    ui_book_button4_off = assets->getIcon("tabSoff");
-    ui_book_button5_off = assets->getIcon("tabEoff");
-    ui_book_button6_off = assets->getIcon("tabWoff");
+    // MM8's icons.lod names these differently, as an "ir"-prefixed family. "irbgrnd" is the background
+    // shared by every book screen, "irt09"/"irt10" are the zoom ribbons ("r" = on, "b" = off),
+    // "irb-1_<n/s/e/w><h/d>" are the highlighted/dim letter roundels drawn over the "irb-1" frame.
+    if (gameType() == GAME_TYPE_MM8) {
+        ui_book_map_background = assets->getImage_ColorKey("irbgrnd");
+        ui_book_map_compass_frame = assets->getImage_Alpha("irb-1");
+        ui_book_button1_on = assets->getImage_Alpha("irt09r");
+        ui_book_button2_on = assets->getImage_Alpha("irt10r");
+        ui_book_button3_on = assets->getImage_Alpha("irb-1_nh");
+        ui_book_button4_on = assets->getImage_Alpha("irb-1_sh");
+        ui_book_button5_on = assets->getImage_Alpha("irb-1_eh");
+        ui_book_button6_on = assets->getImage_Alpha("irb-1_wh");
+        ui_book_button1_off = assets->getImage_Alpha("irt09b");
+        ui_book_button2_off = assets->getImage_Alpha("irt10b");
+        ui_book_button3_off = assets->getImage_Alpha("irb-1_nd");
+        ui_book_button4_off = assets->getImage_Alpha("irb-1_sd");
+        ui_book_button5_off = assets->getImage_Alpha("irb-1_ed");
+        ui_book_button6_off = assets->getImage_Alpha("irb-1_wd");
+    } else {
+        ui_book_map_background = assets->getImage_ColorKey("sbmap");
+        ui_book_button1_on = assets->getImage_Alpha("zoom-on");
+        ui_book_button2_on = assets->getImage_Alpha("zoot-on");
+        ui_book_button3_on = assets->getImage_Alpha("tabNon");
+        ui_book_button4_on = assets->getImage_Alpha("tabSon");
+        ui_book_button5_on = assets->getImage_Alpha("tabEon");
+        ui_book_button6_on = assets->getImage_Alpha("tabWon");
+        ui_book_button1_off = assets->getImage_Alpha("zoom-off");
+        ui_book_button2_off = assets->getImage_Alpha("zoot-off");
+        ui_book_button3_off = assets->getImage_Alpha("tabNoff");
+        ui_book_button4_off = assets->getImage_Alpha("tabSoff");
+        ui_book_button5_off = assets->getImage_Alpha("tabEoff");
+        ui_book_button6_off = assets->getImage_Alpha("tabWoff");
+    }
 
-    pBtn_Book_1 = CreateButton(pViewport.topLeft() + Pointi(398, 1), {50, 34}, BUTTON_TYPE_NORMAL, 0, UIMSG_ClickBooksBtn,
+    bool isMm8 = gameType() == GAME_TYPE_MM8;
+
+    pBtn_Book_1 = CreateButton(isMm8 ? kMm8MapZoomInPos : pViewport.topLeft() + Pointi(398, 1),
+         isMm8 ? ui_book_button1_on->size() : Sizei{50, 34}, BUTTON_TYPE_NORMAL, 0, UIMSG_ClickBooksBtn,
          std::to_underlying(BOOK_ZOOM_IN), INPUT_ACTION_ZOOM_IN, localization->str(LSTR_ZOOM_IN), {ui_book_button1_on});
-    pBtn_Book_2 = CreateButton(pViewport.topLeft() + Pointi(398, 38), {50, 34}, BUTTON_TYPE_NORMAL, 0, UIMSG_ClickBooksBtn,
+    pBtn_Book_2 = CreateButton(isMm8 ? kMm8MapZoomOutPos : pViewport.topLeft() + Pointi(398, 38),
+         isMm8 ? ui_book_button2_on->size() : Sizei{50, 34}, BUTTON_TYPE_NORMAL, 0, UIMSG_ClickBooksBtn,
          std::to_underlying(BOOK_ZOOM_OUT), INPUT_ACTION_ZOOM_OUT, localization->str(LSTR_ZOOM_OUT), {ui_book_button2_on});
-    pBtn_Book_3 = CreateButton(pViewport.topLeft() + Pointi(397, 113), {50, 34}, BUTTON_TYPE_NORMAL, 0, UIMSG_ClickBooksBtn,
+    pBtn_Book_3 = CreateButton(isMm8 ? pViewport.topLeft() + kMm8MapCompassRoundelN : pViewport.topLeft() + Pointi(397, 113),
+         isMm8 ? kMm8MapCompassRoundelSize : Sizei{50, 34}, BUTTON_TYPE_NORMAL, 0, UIMSG_ClickBooksBtn,
          std::to_underlying(BOOK_SCROLL_UP), INPUT_ACTION_DIALOG_UP, localization->str(LSTR_SCROLL_UP), {ui_book_button3_on});
-    pBtn_Book_4 = CreateButton(pViewport.topLeft() + Pointi(397, 150), {50, 34}, BUTTON_TYPE_NORMAL, 0, UIMSG_ClickBooksBtn,
+    pBtn_Book_4 = CreateButton(isMm8 ? pViewport.topLeft() + kMm8MapCompassRoundelS : pViewport.topLeft() + Pointi(397, 150),
+         isMm8 ? kMm8MapCompassRoundelSize : Sizei{50, 34}, BUTTON_TYPE_NORMAL, 0, UIMSG_ClickBooksBtn,
          std::to_underlying(BOOK_SCROLL_DOWN), INPUT_ACTION_DIALOG_DOWN, localization->str(LSTR_SCROLL_DOWN), {ui_book_button4_on});
-    pBtn_Book_5 = CreateButton(pViewport.topLeft() + Pointi(397, 188), {50, 34}, BUTTON_TYPE_NORMAL, 0, UIMSG_ClickBooksBtn,
+    pBtn_Book_5 = CreateButton(isMm8 ? pViewport.topLeft() + kMm8MapCompassRoundelE : pViewport.topLeft() + Pointi(397, 188),
+         isMm8 ? kMm8MapCompassRoundelSize : Sizei{50, 34}, BUTTON_TYPE_NORMAL, 0, UIMSG_ClickBooksBtn,
          std::to_underlying(BOOK_SCROLL_RIGHT), INPUT_ACTION_DIALOG_RIGHT, localization->str(LSTR_SCROLL_RIGHT), {ui_book_button5_on});
-    pBtn_Book_6 = CreateButton(pViewport.topLeft() + Pointi(397, 226), {50, 34}, BUTTON_TYPE_NORMAL, 0, UIMSG_ClickBooksBtn,
+    pBtn_Book_6 = CreateButton(isMm8 ? pViewport.topLeft() + kMm8MapCompassRoundelW : pViewport.topLeft() + Pointi(397, 226),
+         isMm8 ? kMm8MapCompassRoundelSize : Sizei{50, 34}, BUTTON_TYPE_NORMAL, 0, UIMSG_ClickBooksBtn,
          std::to_underlying(BOOK_SCROLL_LEFT), INPUT_ACTION_DIALOG_LEFT, localization->str(LSTR_SCROLL_LEFT), {ui_book_button6_on});
+
+    if (isMm8) {
+        CreateMm8BookTabColumn();
+        // Real MM8 Close button position/size (see kMm8MapCloseButtonPos above) - re-positions the
+        // clickable rect the base ctor already created at MM7's {471,445} slot.
+        for (GUIButton *button : vButtons) {
+            if (button->id == "Book_Close") {
+                button->rect = Recti(kMm8MapCloseButtonPos, ui_exit_cancel_button_background->size());
+                break;
+            }
+        }
+    }
 }
 
 void GUIWindow_MapBook::Update() {
-    render->DrawQuad2D(ui_exit_cancel_button_background, {471, 445});
+    bool isMm8 = gameType() == GAME_TYPE_MM8;
+
+    if (!isMm8)
+        render->DrawQuad2D(ui_exit_cancel_button_background, {471, 445});
     render->DrawQuad2D(ui_book_map_background, pViewport.topLeft());
+    if (isMm8) {
+        render->DrawQuad2D(ui_book_map_compass_frame, pViewport.topLeft());
+        DrawMm8BookTabColumn();
+        // Drawn last (not at the base ctor's early {471,445} call above) so the background fill
+        // two lines up doesn't paint over it - see kMm8MapCloseButtonPos's own comment.
+        render->DrawQuad2D(ui_exit_cancel_button_background, kMm8MapCloseButtonPos);
+    }
 
     auto [minX, maxX] = viewparams->GetMapViewMinMaxX();
     auto [minY, maxY] = viewparams->GetMapViewMinMaxY();
 
+    // MM8's "irt09"/"irt10" on/off ribbons are same-size pairs (unlike MM7's
+    // narrower "off" variant), so MM8 draws both states at the same position instead of MM7's
+    // +10px "off" nudge, at kMm8MapZoomInPos/kMm8MapZoomOutPos.
     if ((_bookButtonClicked && _bookButtonAction == BOOK_ZOOM_IN) || viewparams->uMapBookMapZoom / 128 >= 12) {
-        render->DrawQuad2D(ui_book_button1_off, pViewport.topLeft() + Pointi(408, 2));
+        render->DrawQuad2D(ui_book_button1_off, isMm8 ? kMm8MapZoomInPos : pViewport.topLeft() + Pointi(408, 2));
     } else {
-        render->DrawQuad2D(ui_book_button1_on, pViewport.topLeft() + Pointi(398, 1));
+        render->DrawQuad2D(ui_book_button1_on, isMm8 ? kMm8MapZoomInPos : pViewport.topLeft() + Pointi(398, 1));
     }
 
     if ((_bookButtonClicked && _bookButtonAction == BOOK_ZOOM_OUT) || viewparams->uMapBookMapZoom / 128 <= 3) {
-        render->DrawQuad2D(ui_book_button2_off, pViewport.topLeft() + Pointi(408, 38));
+        render->DrawQuad2D(ui_book_button2_off, isMm8 ? kMm8MapZoomOutPos : pViewport.topLeft() + Pointi(408, 38));
     } else {
-        render->DrawQuad2D(ui_book_button2_on, pViewport.topLeft() + Pointi(398, 38));
+        render->DrawQuad2D(ui_book_button2_on, isMm8 ? kMm8MapZoomOutPos : pViewport.topLeft() + Pointi(398, 38));
     }
 
     if (_bookButtonClicked && _bookButtonAction == BOOK_SCROLL_UP || viewparams->sViewCenterY >= maxY) {
-        render->DrawQuad2D(ui_book_button3_off, pViewport.topLeft() + Pointi(408, 113));
+        render->DrawQuad2D(ui_book_button3_off, isMm8 ? pViewport.topLeft() + kMm8MapCompassRoundelN : pViewport.topLeft() + Pointi(408, 113));
     } else {
-        render->DrawQuad2D(ui_book_button3_on, pViewport.topLeft() + Pointi(398, 113));
+        render->DrawQuad2D(ui_book_button3_on, isMm8 ? pViewport.topLeft() + kMm8MapCompassRoundelN : pViewport.topLeft() + Pointi(398, 113));
     }
 
     if (_bookButtonClicked && _bookButtonAction == BOOK_SCROLL_DOWN || viewparams->sViewCenterY <= minY) {
-        render->DrawQuad2D(ui_book_button4_off, pViewport.topLeft() + Pointi(408, 150));
+        render->DrawQuad2D(ui_book_button4_off, isMm8 ? pViewport.topLeft() + kMm8MapCompassRoundelS : pViewport.topLeft() + Pointi(408, 150));
     } else {
-        render->DrawQuad2D(ui_book_button4_on, pViewport.topLeft() + Pointi(399, 150));
+        render->DrawQuad2D(ui_book_button4_on, isMm8 ? pViewport.topLeft() + kMm8MapCompassRoundelS : pViewport.topLeft() + Pointi(399, 150));
     }
 
     if (_bookButtonClicked && _bookButtonAction == BOOK_SCROLL_RIGHT || viewparams->sViewCenterX >= maxX) {
-        render->DrawQuad2D(ui_book_button5_off, pViewport.topLeft() + Pointi(408, 188));
+        render->DrawQuad2D(ui_book_button5_off, isMm8 ? pViewport.topLeft() + kMm8MapCompassRoundelE : pViewport.topLeft() + Pointi(408, 188));
     } else {
-        render->DrawQuad2D(ui_book_button5_on, pViewport.topLeft() + Pointi(397, 188));
+        render->DrawQuad2D(ui_book_button5_on, isMm8 ? pViewport.topLeft() + kMm8MapCompassRoundelE : pViewport.topLeft() + Pointi(397, 188));
     }
 
     if (_bookButtonClicked && _bookButtonAction == BOOK_SCROLL_LEFT || viewparams->sViewCenterX <= minX) {
-        render->DrawQuad2D(ui_book_button6_off, pViewport.topLeft() + Pointi(408, 226));
+        render->DrawQuad2D(ui_book_button6_off, isMm8 ? pViewport.topLeft() + kMm8MapCompassRoundelW : pViewport.topLeft() + Pointi(408, 226));
     } else {
-        render->DrawQuad2D(ui_book_button6_on, pViewport.topLeft() + Pointi(397, 226));
+        render->DrawQuad2D(ui_book_button6_on, isMm8 ? pViewport.topLeft() + kMm8MapCompassRoundelW : pViewport.topLeft() + Pointi(397, 226));
     }
 
     if (_bookButtonClicked == BOOK_BUTTON_PRESSED_FRAMES) {
@@ -133,7 +211,10 @@ void GUIWindow_MapBook::Update() {
         _bookButtonClicked--;
 
     render->DrawQuad2D(ui_book_map_frame, {75, 22});
-    DrawBook_Map_sub(97, 49, 361, 313);
+    if (isMm8)
+        DrawBook_Map_sub(kMm8MapViewportTlX, kMm8MapViewportTlY, kMm8MapViewportBrX, kMm8MapViewportBrY);
+    else
+        DrawBook_Map_sub(97, 49, 361, 313);
     render->ResetUIClipRect();
 
 
@@ -144,7 +225,10 @@ void GUIWindow_MapBook::Update() {
     auto party_coordinates = localization->format(LSTR_X_D_Y_D, static_cast<int>(pParty->pos.x), static_cast<int>(pParty->pos.y));
 
     map_window.x = 0;
-    DrawTitleText(assets->pFontComic.get(), 0, 320, ui_book_map_coordinates_color, party_coordinates, 0, map_window);
+    // MM7's y=320 sits just below that game's viewport, which ends at y=313. MM8's viewport
+    // (kMm8MapViewportBrY) sits lower, so the coordinate readout moves down with it to stay
+    // below it.
+    DrawTitleText(assets->pFontComic.get(), 0, isMm8 ? 460 : 320, ui_book_map_coordinates_color, party_coordinates, 0, map_window);
 }
 
 //----- (00442955) --------------------------------------------------------
@@ -332,7 +416,7 @@ std::string GetMapBookHintText(int mouse_x, int mouse_y) {
         !pOutdoor->pBModels.empty()) {
         for (BSPModel &model : pOutdoor->pBModels) {
             if (Vec2i((int)model.boundingCenter.x - global_coord_X,
-                      (int)model.boundingCenter.y - global_coord_Y).length() < model.boundingRadius) {
+                      (int)model.boundingCenter.y - global_coord_Y).octagonalLength() < model.boundingRadius) {
                 for (int faceId : model.faces) {
                     BLVFace &face = pOutdoor->faces[faceId];
                     if (face.eventId) {

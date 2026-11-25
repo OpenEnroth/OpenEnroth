@@ -32,7 +32,10 @@ struct SaveGame {
     Party party;
     Timer eventTimer;
     ActiveOverlayList overlays;
-    std::array<NPCData, 501> npcData;
+    // 551 entries, the size of an MM8 save's `npcdata.bin`. Indices 528-550 are filler in `npcdata.txt`,
+    // so only the first `NPCTable::pNPCData.size()` (528) entries are copied into/out of live gameplay
+    // state, see `SaveLoad.cpp`.
+    std::array<NPCData, 551> npcData;
     std::array<uint16_t, 51> npcGroups;
     std::unordered_map<std::string, Blob> mapDeltas;
     Blob thumbnail;
@@ -45,6 +48,17 @@ struct SaveGameLite {
 
 /** Runtime storage for map deltas from the currently loaded save. */
 extern std::unordered_map<std::string, Blob> pMapDeltas;
+
+// The current map's actor list, stored by `createSaveData` under one fixed key and restored by
+// `EngineController::loadGame` after the normal load. Absent in older saves.
+// `mapDeltas` round-trips through a LOD archive whose entry names are a fixed `std::array<char, 16>`
+// (`LodFileEntry_MM7`/`_MM8`, anything longer is silently truncated) and whose read side only keeps
+// entries ending in `.ddm`/`.dlv`, so the key is short and `.ddm`-suffixed even though it isn't a map delta.
+constexpr std::string_view kMm8LiveActorsKey = "mm8actors.ddm";
+
+// The current map's sprite objects, kept the way `kMm8LiveActorsKey` keeps its actors: a spell in flight is a sprite object, and
+// a save made while it flies holds it.
+constexpr std::string_view kMm8LiveSpritesKey = "mm8sprite.ddm";
 
 void loadGame(std::string_view fileName);
 std::pair<SaveGameHeader, Blob> createSaveData(bool resetWorld, std::string_view title);

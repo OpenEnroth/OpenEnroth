@@ -15,6 +15,7 @@
 #include "Engine/Engine.h"
 #include "Engine/EngineCallObserver.h"
 #include "Engine/EngineGlobals.h"
+#include "Engine/GameType.h"
 #include "Engine/Interaction.h"
 #include "Engine/Data/AwardEnums.h"
 #include "Engine/Data/HouseEnumFunctions.h"
@@ -67,6 +68,7 @@
 #include "GUI/UI/UIBranchlessDialogue.h"
 #include "GUI/UI/UIGame.h"
 #include "GUI/UI/UIHouses.h"
+#include "GUI/UI/NPCTopics.h"
 #include "GUI/UI/UITransition.h"
 #include "GUI/UI/UIMainMenu.h"
 #include "GUI/UI/UIGameOver.h"
@@ -187,7 +189,10 @@ bool Game::loop() {
 
             pParty->pPickedItem.itemId = ITEM_NULL;
 
-            engine->_pendingTransition = MapDestination(MAP_EMERALD_ISLAND, MAP_START_POINT_PARTY);
+            engine->_pendingTransition = MapDestination(gameType() == GAME_TYPE_MM8 ? pMapTable->GetMapInfo(_config->gameplay.StartingMap.value()) : MAP_EMERALD_ISLAND, MAP_START_POINT_PARTY);
+
+            // TODO(Nik-RE-dev): should not be an assert but an exception or error message.
+            assert(engine->_pendingTransition->map() != MAP_INVALID);
 
             bFlashQuestBook = true;
             pMediaPlayer->PlayFullscreenMovie("Intro Post");
@@ -293,11 +298,33 @@ bool IsWindowSwitchable() {
     return true;
 }
 
+// A map's OnMapReload greet whose NPC has no resolvable topic and is not hireable or joinable opens no dialogue,
+// it would be an empty modal that pauses the game. A regular event with eventId == 0 is the same kind of no-op.
+static bool npcHasSpeakableDialogue(int npcId) {
+    NPCData *npcData = getNPCData(npcId);
+    if (npcData->canJoin)
+        return true;
+    if (getNPCType(npcId) != NPC_TYPE_QUEST)
+        return true;  // Hireable NPCs always have profession/hire options to show.
+    for (unsigned int eventId : {npcData->dialogue_1_evt_id, npcData->dialogue_2_evt_id,
+                                  npcData->dialogue_3_evt_id, npcData->dialogue_4_evt_id,
+                                  npcData->dialogue_5_evt_id, npcData->dialogue_6_evt_id}) {
+        if (eventId && engine->_globalEventMap.hasEvent(eventId))
+            return true;
+        // A 601-649 slot is a roster join topic, which has no event in global.evt. It has nothing
+        // left to offer once that roster member has joined.
+        if (isRosterJoinTopic(eventId) && !pParty->isRosterInParty(eventId - 600))
+            return true;
+    }
+    return false;
+}
+
 void Game::processQueuedMessages() {
     bool playButtonSoundOnEscape = true;
 
     if (bDialogueUI_InitializeActor_NPC_ID) {
-        initializeNPCDialogue(bDialogueUI_InitializeActor_NPC_ID, false);
+        if (npcHasSpeakableDialogue(bDialogueUI_InitializeActor_NPC_ID))
+            initializeNPCDialogue(bDialogueUI_InitializeActor_NPC_ID, false);
         bDialogueUI_InitializeActor_NPC_ID = 0;
     }
 
@@ -343,6 +370,21 @@ void Game::processQueuedMessages() {
                 continue;
             case UIMSG_ClickHouseNPCPortrait:
                 updateHouseNPCTopics(uMessageParam);
+                continue;
+            case UIMSG_InnClickBenchPortrait:
+                if (window_SpeakInHouse) {
+                    window_SpeakInHouse->innClickBenchPortrait(static_cast<int>(uMessageParam));
+                }
+                continue;
+            case UIMSG_InnClickActivePortrait:
+                if (window_SpeakInHouse) {
+                    window_SpeakInHouse->innClickActivePortrait(static_cast<int>(uMessageParam));
+                }
+                continue;
+            case UIMSG_InnClickDismiss:
+                if (window_SpeakInHouse) {
+                    window_SpeakInHouse->innClickDismiss(static_cast<int>(uMessageParam));
+                }
                 continue;
                 // case UIMSG_StartNewGame:
                 // Game_StartNewGameWhilePlaying(uMessageParam); continue;
@@ -482,7 +524,8 @@ void Game::processQueuedMessages() {
 
                 if (current_screen_type == SCREEN_GAME) {
                     if (!pGUIWindow_CastTargetedSpell) {  // Draw Menu
-                        new OnButtonClick({602, 450}, {0, 0}, pBtn_GameSettings, std::string(), false);
+                        // The flash plays at the button's own rect, which differs between MM7 and MM8.
+                        new OnButtonClick(pBtn_GameSettings->rect.topLeft(), {0, 0}, pBtn_GameSettings, std::string(), false);
 
                         engine->_messageQueue->clear();
                         _menu->MenuLoop();
@@ -868,6 +911,16 @@ void Game::processQueuedMessages() {
                 pAudioPlayer->stopSounds();
                 autoSave();
 
+                if (gameType() == GAME_TYPE_MM8) {
+                    // MM8's certificate opens from Ravenshore's own map event (out02 event 3, SpeakInHouse 600) once
+                    // the four Lords are free; when it closes the party stands where it stood, in Ravenshore, and plays on.
+                    // Harmondale is an MM7 map: its id names another map in MM8.
+                    uGameState = GAME_STATE_PLAYING;
+                    for (Character &character : pParty->pCharacters)
+                        character.playEmotion(PORTRAIT_WIDE_SMILE, 0_ticks);
+                    continue;
+                }
+
                 pParty->pos = Vec3f(-17331, 12547, 465); // respawn point in Harmondale
                 pParty->velocity = Vec3f();
                 pParty->_viewYaw = 0;
@@ -1023,13 +1076,17 @@ void Game::processQueuedMessages() {
                 continue;
             case UIMSG_RentRoom: {
                 HouseId tavern = static_cast<HouseId>(uMessageParam);
-                assert(isTavern(tavern));
+                // MM8's inns carry ids outside MM7's HOUSE_TAVERN_* range (The Adventurer's Inn is house
+                // 185). The type column is the fact, the id range was MM7's.
+                assert(isTavern(tavern) || houseTable[tavern].uType == HOUSE_TYPE_TAVERN);
 
                 window_SpeakInHouse.reset();
                 pGUIWindow_CurrentMenu = std::make_unique<GUIWindow_Rest>();
 
                 remainingRestTime = timeUntilDawn() + Duration::fromHours(1);
-                if (tavern == HOUSE_TAVERN_DEYJA || tavern == HOUSE_TAVERN_PIT || tavern == HOUSE_TAVERN_MOUNT_NIGHON)
+                // MM7's night taverns. In MM8 these ids are Dragon's Blood Inn, Bull's Eye Inn and The Dancing Ogre, inns that wake at dawn.
+                if (gameType() != GAME_TYPE_MM8 &&
+                    (tavern == HOUSE_TAVERN_DEYJA || tavern == HOUSE_TAVERN_PIT || tavern == HOUSE_TAVERN_MOUNT_NIGHON))
                     remainingRestTime = remainingRestTime + Duration::fromHours(12);
                 currentRestType = REST_HEAL;
                 pParty->restAndHeal();
@@ -1110,7 +1167,7 @@ void Game::processQueuedMessages() {
                     assert(mapIdx != MAP_INVALID);
                     // Was this, which made exactly zero sense:
                     // if (mapIdx == MAP_INVALID)
-                    //    mapIdx = static_cast<MAP_TYPE>(grng->random(pMapStats->uNumMaps + 1));
+                    //    mapIdx = static_cast<MAP_TYPE>(grng->random(pMapTable->uNumMaps + 1));
                     MapData *mapData = &pMapTable->pInfos[mapIdx];
 
                     // Encounters when resting
@@ -1130,7 +1187,7 @@ void Game::processQueuedMessages() {
                             encIndex = 0;
 
                         if (encIndex) {
-                            pParty->pCharacters[grng->random(pParty->pCharacters.size())].conditions.reset(CONDITION_SLEEP);
+                            pParty->pCharacters[grng->random(pParty->activeCharacterCount())].conditions.reset(CONDITION_SLEEP);
                             Rest(Duration::fromHours(1) + Duration::fromMinutes(grng->random(6)));
                             remainingRestTime = Duration();
                             currentRestType = REST_NONE;
@@ -1275,7 +1332,12 @@ void Game::processQueuedMessages() {
                                 engine->_statusBar->clearAll();
                             }
                             // open window
-                            new OnButtonClick({ 476, 450 }, { 0, 0 }, pBtn_CastSpell);
+                            // MM8 has no pBtn_CastSpell - its spellbook opens from the
+                            // skull bookend (pBtn_Skull), so that's the button whose one-frame
+                            // click flash must play here.
+                            GUIButton *spellbookButton = gameType() == GAME_TYPE_MM8 ? pBtn_Skull : pBtn_CastSpell;
+                            if (spellbookButton)
+                                new OnButtonClick(spellbookButton->rect.topLeft(), { 0, 0 }, spellbookButton);
                             pGUIWindow_CurrentMenu = std::make_unique<GUIWindow_Spellbook>();
                             continue;
                         }
@@ -1299,7 +1361,7 @@ void Game::processQueuedMessages() {
                     engine->_statusBar->clearAll();
                 }
                 // open window
-                new OnButtonClick({560, 450}, {0, 0}, pBtn_QuickReference);
+                new OnButtonClick(pBtn_QuickReference->rect.topLeft(), {0, 0}, pBtn_QuickReference);
                 pGUIWindow_CurrentMenu = std::make_unique<GUIWindow_QuickReference>();
                 continue;
             case UIMSG_GameMenuButton:
@@ -1311,7 +1373,7 @@ void Game::processQueuedMessages() {
 
                 gamma_preview_image = GraphicsImage::Create(render->MakeViewportScreenshot(155, 117));
 
-                new OnButtonClick({602, 450}, {0, 0}, pBtn_GameSettings);
+                new OnButtonClick(pBtn_GameSettings->rect.topLeft(), {0, 0}, pBtn_GameSettings);
                 engine->_messageQueue->addMessageCurrentFrame(UIMSG_Escape, 0, 0);
                 continue;
             case UIMSG_ClickAwardScrollBar:
@@ -1403,14 +1465,15 @@ void Game::processQueuedMessages() {
                 continue;
             case UIMSG_ClickZoomInBtn:
                 if (!(current_screen_type == SCREEN_GAME)) continue;
-                new OnButtonClick({519, 136}, {0, 0}, pBtn_ZoomIn);
+                // The flash must always match CreateButton's own position (MM7 and MM8 differ).
+                new OnButtonClick(pBtn_ZoomIn->rect.topLeft(), {0, 0}, pBtn_ZoomIn);
 
                 setMinimapZoom(viewparams->uMinimapZoom * 2);
 
                 break;
             case UIMSG_ClickZoomOutBtn:
                 if (!(current_screen_type == SCREEN_GAME)) continue;
-                new OnButtonClick({574, 136}, {0, 0}, pBtn_ZoomOut);
+                new OnButtonClick(pBtn_ZoomOut->rect.topLeft(), {0, 0}, pBtn_ZoomOut);
 
                 setMinimapZoom(viewparams->uMinimapZoom / 2);
 
@@ -1486,8 +1549,9 @@ void Game::gameLoop() {
         pParty->bTurnBasedModeOn = false;  // Make sure turn engine and party turn based mode flag are in sync.
 
         DoPrepareWorld(bLoading, 1);
-        gameTimer->setPaused(false);
-        engineFlags |= ENGINE_SKIP_NEXT_USER_INPUT;
+        gameTimer->setPaused(std::exchange(engine->_pauseAfterNextWorldLoad, false));
+        if (!gameTimer->isPaused())
+            engineFlags |= ENGINE_SKIP_NEXT_USER_INPUT;
         // uGame_if_0_else_ui_id__11_save__else_load__8_drawSpellInfoPopup__22_final_window__26_keymapOptions__2_options__28_videoOptions
         // = 0;
         current_screen_type = SCREEN_GAME;
@@ -1615,7 +1679,19 @@ void Game::gameLoop() {
                 }
                 pParty->setActiveCharacterIndex(0);
 
-                if (pParty->_questBits[QBIT_ESCAPED_EMERALD_ISLE]) {
+                bool respawnAtPartyStart = false;
+                if (gameType() == GAME_TYPE_MM8) {
+                    // MM8 has no MM7 two-region (Emerald Isle -> Harmondale) structure, and no MM8
+                    // quest_events row ever sets QBIT_ESCAPED_EMERALD_ISLE (an MM7-only bit, 136) -
+                    // MAP_HARMONDALE isn't even in MM8's map range. Respawn on the starting map and
+                    // let the arrival at `MAP_START_POINT_PARTY` (resolved while `PrepareWorld` below loads the map) place the
+                    // party at that map's own "Party Start" decoration - the exact entry point
+                    // `startNewGame()` uses for a fresh MM8 party - instead of guessing at a
+                    // coordinate. The MM7 Emerald Isle constant lands below MM8's floor.
+                    mapid = pMapTable->GetMapInfo(_config->gameplay.StartingMap.value());
+                    assert(mapid != MAP_INVALID);
+                    respawnAtPartyStart = true;
+                } else if (pParty->_questBits[QBIT_ESCAPED_EMERALD_ISLE]) {
                     pParty->pos = Vec3f(-17331, 12547, 465); // respawn in harmondale
                     pParty->_viewYaw = 0;
                     mapid = MAP_HARMONDALE;
@@ -1629,8 +1705,17 @@ void Game::gameLoop() {
                 pParty->velocity = Vec3f();
                 // change map
                 if (engine->_currentLoadedMapId != mapid) {
-                    engine->_pendingTransition = MapDestination(mapid, PartyPlacement(pParty->pos, pParty->_viewYaw, pParty->_viewPitch, 0));
+                    if (respawnAtPartyStart) // MM8: the map's own "Party Start" decoration, not the stale party position.
+                        engine->_pendingTransition = MapDestination(mapid, MAP_START_POINT_PARTY);
+                    else
+                        engine->_pendingTransition = MapDestination(mapid, PartyPlacement(pParty->pos, pParty->_viewYaw, pParty->_viewPitch, 0));
                     PrepareWorld(1);
+                } else if (respawnAtPartyStart) {
+                    // Already on the starting map - resolve the same "Party Start" decoration the arrival performs
+                    // during a map (re)load, without forcing a full `PrepareWorld()` reload (that clears the turn
+                    // engine's actor queue and other in-flight state that a same-map respawn has no business touching).
+                    if (std::optional<PartyPlacement> placement = MapDestination(mapid, MAP_START_POINT_PARTY).resolvePlacement())
+                        placeParty(*placement);
                 }
                 animTimer->setPaused(false);
                 gameTimer->setPaused(false);

@@ -9,6 +9,7 @@
 #include "Engine/ArenaEnumFunctions.h"
 #include "Engine/AssetsManager.h"
 #include "Engine/Engine.h"
+#include "Engine/GameType.h"
 #include "Engine/Graphics/Sprites.h"
 #include "Engine/Graphics/Outdoor.h"
 #include "Engine/Graphics/Indoor.h"
@@ -22,6 +23,7 @@
 #include "Engine/Party.h"
 #include "Engine/Data/HouseEnumFunctions.h"
 #include "Engine/Tables/ItemTable.h"
+#include "Engine/Tables/RosterTable.h"
 #include "Engine/Evt/Processor.h"
 #include "Engine/Random/Random.h"
 
@@ -39,6 +41,42 @@ int topicEventId; // event id of currently viewed scripted NPC event
 DialogueId guildMembershipNPCTopicId;
 
 int gold_transaction_amount;
+
+/**
+ * MM8 mastery-teacher topics are three ids per skill (Expert, Master, Grandmaster) starting at 300, in MM8's own skill
+ * order. That order has Dark Elf, Vampire, Dragon and Regeneration where MM7 has none of them.
+ *
+ * @param eventId                       Topic id of an NPC dialogue line.
+ * @return                              The skill the topic teaches, or `SKILL_INVALID` if it isn't a teachable mastery topic.
+ */
+static Skill mm8TeacherTopicSkill(int eventId) {
+    static constexpr int firstTopic = 300;
+    static constexpr Skill skillByIndex[] = {
+        SKILL_STAFF, SKILL_SWORD, SKILL_DAGGER, SKILL_AXE, SKILL_SPEAR, SKILL_BOW, SKILL_MACE, SKILL_BLASTER, SKILL_SHIELD,
+        SKILL_LEATHER, SKILL_CHAIN, SKILL_PLATE, SKILL_FIRE, SKILL_AIR, SKILL_WATER, SKILL_EARTH, SKILL_SPIRIT, SKILL_MIND,
+        SKILL_BODY, SKILL_LIGHT, SKILL_DARK, SKILL_DARK_ELF, SKILL_VAMPIRE, SKILL_DRAGON, SKILL_ITEM_ID, SKILL_MERCHANT,
+        SKILL_REPAIR, SKILL_BODYBUILDING, SKILL_MEDITATION, SKILL_PERCEPTION, SKILL_REGENERATION, SKILL_TRAP_DISARM, SKILL_DODGE,
+        SKILL_UNARMED, SKILL_MONSTER_ID, SKILL_ARMSMASTER, SKILL_STEALING, SKILL_ALCHEMY, SKILL_LEARNING};
+    int index = (eventId - firstTopic) / 3;
+    if (eventId < firstTopic || index >= std::ssize(skillByIndex))
+        return SKILL_INVALID;
+    return skillByIndex[index];
+}
+
+/**
+ * @return                              The skill taught by the currently viewed mastery-teacher topic.
+ */
+static Skill teacherTopicSkill() {
+    return gameType() == GAME_TYPE_MM8 ? mm8TeacherTopicSkill(topicEventId) : static_cast<Skill>((topicEventId - 200) / 3);
+}
+
+/**
+ * @return                              The mastery taught by the currently viewed mastery-teacher topic.
+ */
+static Mastery teacherTopicMastery() {
+    int firstTopic = gameType() == GAME_TYPE_MM8 ? 300 : 200;
+    return static_cast<Mastery>((topicEventId - firstTopic) % 3 + 2);
+}
 
 static constexpr std::array<Vec2f, 20> pMonsterArenaPlacements = {{
     Vec2f(1524, 8332),    Vec2f(2186, 8844),
@@ -67,6 +105,7 @@ static constexpr IndexedArray<int, GUILD_FIRST, GUILD_LAST> priceForMembership =
     {GUILD_OF_DARK,     1000}
 }};
 
+// The race skill prices below are not read from the original game's data.
 static constexpr IndexedArray<int, SKILL_FIRST, SKILL_LAST> expertSkillMasteryCost = {{
     {SKILL_STAFF,        2000},
     {SKILL_SWORD,        2000},
@@ -106,7 +145,11 @@ static constexpr IndexedArray<int, SKILL_FIRST, SKILL_LAST> expertSkillMasteryCo
     {SKILL_ALCHEMY,      500},
     {SKILL_LEARNING,     2000},
     {SKILL_CLUB,         500},
-    {SKILL_MISC,         0} // hidden, not used
+    {SKILL_MISC,         0}, // hidden, not used
+    {SKILL_DARK_ELF,    2000},
+    {SKILL_VAMPIRE,     2000},
+    {SKILL_DRAGON,      2000},
+    {SKILL_REGENERATION, 500}
 }};
 
 static constexpr IndexedArray<int, SKILL_FIRST, SKILL_LAST> masterSkillMasteryCost = {{
@@ -148,7 +191,11 @@ static constexpr IndexedArray<int, SKILL_FIRST, SKILL_LAST> masterSkillMasteryCo
     {SKILL_ALCHEMY,      2500},
     {SKILL_LEARNING,     5000},
     {SKILL_CLUB,         2500},
-    {SKILL_MISC,         0} // hidden, not used
+    {SKILL_MISC,         0}, // hidden, not used
+    {SKILL_DARK_ELF,    5000},
+    {SKILL_VAMPIRE,     5000},
+    {SKILL_DRAGON,      5000},
+    {SKILL_REGENERATION, 2500}
 }};
 
 static constexpr IndexedArray<int, SKILL_FIRST, SKILL_LAST> grandmasterSkillMasteryCost = {{
@@ -190,7 +237,11 @@ static constexpr IndexedArray<int, SKILL_FIRST, SKILL_LAST> grandmasterSkillMast
     {SKILL_ALCHEMY,      6000},
     {SKILL_LEARNING,     8000},
     {SKILL_CLUB,         6000},
-    {SKILL_MISC,         0} // hidden, not used
+    {SKILL_MISC,         0}, // hidden, not used
+    {SKILL_DARK_ELF,    8000},
+    {SKILL_VAMPIRE,     8000},
+    {SKILL_DRAGON,      8000},
+    {SKILL_REGENERATION, 6000}
 }};
 
 static constexpr std::array<std::pair<QuestBit, ItemId>, 27> _4F0882_evt_VAR_PlayerItemInHands_vals = {{
@@ -370,11 +421,14 @@ void oracleDialogue() {
     // TODO(Nik-RE-dev): this code is walking only through inventory, but item was added to hand, so it will not bind new item if it was acquired
     //                   rather this code will bind jars that already present in inventory to liches that currently do not have binded jars
     if (item_id == ITEM_QUEST_LICH_JAR_FULL) {
-        for (int i = 0; i < pParty->pCharacters.size(); i++) {
+        // Bounded to activeCharacterCount(), an unrecruited
+        // MM8 placeholder slot must never be picked as (or scanned for) a lich jar's owner.
+        for (int i = 0; i < pParty->activeCharacterCount(); i++) {
             if (pParty->pCharacters[i].classType == CLASS_LICH) {
                 bool have_vessels_soul = false;
                 InventoryEntry jar;
-                for (Character &player : pParty->pCharacters) {
+                for (int j = 0; j < pParty->activeCharacterCount(); j++) {
+                    Character &player = pParty->pCharacters[j];
                     for (InventoryEntry entry : player.inventory.entries(ITEM_QUEST_LICH_JAR_FULL)) {
                         if (entry->lichJarCharacterIndex == -1)
                             jar = entry;
@@ -425,26 +479,38 @@ const std::string &joinGuildOptionString() {
  * @offset 0x4B254D
  */
 std::string masteryTeacherOptionString() {
-    int teacherLevel = (topicEventId - 200) % 3;
-    Skill skillBeingTaught = static_cast<Skill>((topicEventId - 200) / 3);
+    Mastery masteryLevelBeingTaught = teacherTopicMastery();
+    int teacherLevel = std::to_underlying(masteryLevelBeingTaught) - 2;
+    Skill skillBeingTaught = teacherTopicSkill();
     Character *activePlayer = &pParty->activeCharacter();
     Class pClassType = activePlayer->classType;
-    Mastery currClassMaxMastery = skillMaxMasteryPerClass[pClassType][skillBeingTaught];
-    Mastery masteryLevelBeingTaught = static_cast<Mastery>(teacherLevel + 2);
+    Mastery currClassMaxMastery = skillMaxMasteryForClass(pClassType, skillBeingTaught);
 
     membershipOrTrainingApproved = false;
 
     if (currClassMaxMastery < masteryLevelBeingTaught) {
-        if (skillMaxMasteryPerClass[getTier2Class(pClassType)][skillBeingTaught] >= masteryLevelBeingTaught) {
+        // MM8 has a single (race-bound) promotion rather than MM7's light/dark tier tree, so the
+        // `getTier2Class`/`getTier3*Class` MM7 tier lookups below don't apply - check the one MM8 promotion
+        // class directly instead.
+        if (isMm8Class(pClassType)) {
+            if (isMm8BaseClass(pClassType)) {
+                Class promotedClass = mm8PromotedClassForRace(mm8RaceForClass(pClassType));
+                if (skillMaxMasteryForClass(promotedClass, skillBeingTaught) >= masteryLevelBeingTaught) {
+                    return localization->format(LSTR_YOU_HAVE_TO_BE_PROMOTED_TO_S_TO_LEARN, localization->className(promotedClass));
+                }
+            }
+            return localization->format(LSTR_THIS_SKILL_LEVEL_CAN_NOT_BE_LEARNED_BY, localization->className(pClassType));
+        }
+        if (skillMaxMasteryForClass(getTier2Class(pClassType), skillBeingTaught) >= masteryLevelBeingTaught) {
             return localization->format(LSTR_YOU_HAVE_TO_BE_PROMOTED_TO_S_TO_LEARN, localization->className(getTier2Class(pClassType)));
-        } else if (skillMaxMasteryPerClass[getTier3LightClass(pClassType)][skillBeingTaught] >= masteryLevelBeingTaught &&
-                skillMaxMasteryPerClass[getTier3DarkClass(pClassType)][skillBeingTaught] >= masteryLevelBeingTaught) {
+        } else if (skillMaxMasteryForClass(getTier3LightClass(pClassType), skillBeingTaught) >= masteryLevelBeingTaught &&
+                skillMaxMasteryForClass(getTier3DarkClass(pClassType), skillBeingTaught) >= masteryLevelBeingTaught) {
             return localization->format(LSTR_YOU_HAVE_TO_BE_PROMOTED_TO_S_OR_S_TO,
                     localization->className(getTier3LightClass(pClassType)),
                     localization->className(getTier3DarkClass(pClassType)));
-        } else if (skillMaxMasteryPerClass[getTier3LightClass(pClassType)][skillBeingTaught] >= masteryLevelBeingTaught) {
+        } else if (skillMaxMasteryForClass(getTier3LightClass(pClassType), skillBeingTaught) >= masteryLevelBeingTaught) {
             return localization->format(LSTR_YOU_HAVE_TO_BE_PROMOTED_TO_S_TO_LEARN, localization->className(getTier3LightClass(pClassType)));
-        } else if (skillMaxMasteryPerClass[getTier3DarkClass(pClassType)][skillBeingTaught] >= masteryLevelBeingTaught) {
+        } else if (skillMaxMasteryForClass(getTier3DarkClass(pClassType), skillBeingTaught) >= masteryLevelBeingTaught) {
             return localization->format(LSTR_YOU_HAVE_TO_BE_PROMOTED_TO_S_TO_LEARN, localization->className(getTier3DarkClass(pClassType)));
         } else {
             return localization->format(LSTR_THIS_SKILL_LEVEL_CAN_NOT_BE_LEARNED_BY, localization->className(pClassType));
@@ -472,13 +538,18 @@ std::string masteryTeacherOptionString() {
         gold_transaction_amount = expertSkillMasteryCost[skillBeingTaught];
     }
 
+    // MM7 gates Light and Dark by its two guild quests (quest bits 114 / 110) and by its own class ids. MM8 has neither:
+    // bit 110 is the Anointed Potion quest and 114 is Pure Speed, and its Lich and Priest of the Sun are other class ids.
+    // For an MM8 class the class table above is the whole rule.
+    const bool mm8Class = isMm8Class(pClassType);
+
     if (masteryLevelBeingTaught == MASTERY_MASTER) {
         switch (skillBeingTaught) {
           case SKILL_LIGHT:
-            canLearn = pParty->_questBits[QBIT_LIGHT_GUILD_JOINED];
+            canLearn = mm8Class || pParty->_questBits[QBIT_LIGHT_GUILD_JOINED];
             break;
           case SKILL_DARK:
-            canLearn = pParty->_questBits[QBIT_DARK_GUILD_JOINED];
+            canLearn = mm8Class || pParty->_questBits[QBIT_DARK_GUILD_JOINED];
             break;
           case SKILL_MERCHANT:
             canLearn = activePlayer->GetBasePersonality() >= 50;
@@ -499,10 +570,10 @@ std::string masteryTeacherOptionString() {
     if (masteryLevelBeingTaught == MASTERY_GRANDMASTER) {
         switch (skillBeingTaught) {
           case SKILL_LIGHT:
-            canLearn = activePlayer->isClass(CLASS_ARCHAMGE) || activePlayer->isClass(CLASS_PRIEST_OF_SUN);
+            canLearn = mm8Class || activePlayer->isClass(CLASS_ARCHAMGE) || activePlayer->isClass(CLASS_PRIEST_OF_SUN);
             break;
           case SKILL_DARK:
-            canLearn = activePlayer->isClass(CLASS_LICH) || activePlayer->isClass(CLASS_PRIEST_OF_MOON);
+            canLearn = mm8Class || activePlayer->isClass(CLASS_LICH) || activePlayer->isClass(CLASS_PRIEST_OF_MOON);
             break;
           case SKILL_DODGE:
             canLearn = activePlayer->pActiveSkills[SKILL_UNARMED].level() >= 10;
@@ -531,20 +602,36 @@ std::string masteryTeacherOptionString() {
                                       localization->skillName(skillBeingTaught), gold_transaction_amount);
 }
 
+bool isRosterJoinTopic(unsigned int eventId) {
+    return gameType() == GAME_TYPE_MM8 && eventId >= 601 && eventId <= 649;
+}
+
+// Label for a dialogue slot in the 601-649 roster join band. Its npctopic.txt text is not player-facing,
+// so the game's own join and dismiss strings are shown, the ones `DIALOGUE_13_hiring_related` uses.
+static std::string scriptedTopicOptionString(int eventId, NPCData *npcData) {
+    if (isRosterJoinTopic(eventId)) {
+        int rosterId = eventId - 600;
+        if (pParty->isRosterInParty(rosterId))
+            return localization->format(LSTR_DISMISS_S, npcData->name);
+        return localization->str(LSTR_JOIN);
+    }
+    return std::string(pNPCTopics[eventId].pTopic);
+}
+
 std::string npcDialogueOptionString(DialogueId topic, NPCData *npcData) {
     switch (topic) {
       case DIALOGUE_SCRIPTED_LINE_1:
-        return pNPCTopics[npcData->dialogue_1_evt_id].pTopic;
+        return scriptedTopicOptionString(npcData->dialogue_1_evt_id, npcData);
       case DIALOGUE_SCRIPTED_LINE_2:
-        return pNPCTopics[npcData->dialogue_2_evt_id].pTopic;
+        return scriptedTopicOptionString(npcData->dialogue_2_evt_id, npcData);
       case DIALOGUE_SCRIPTED_LINE_3:
-        return pNPCTopics[npcData->dialogue_3_evt_id].pTopic;
+        return scriptedTopicOptionString(npcData->dialogue_3_evt_id, npcData);
       case DIALOGUE_SCRIPTED_LINE_4:
-        return pNPCTopics[npcData->dialogue_4_evt_id].pTopic;
+        return scriptedTopicOptionString(npcData->dialogue_4_evt_id, npcData);
       case DIALOGUE_SCRIPTED_LINE_5:
-        return pNPCTopics[npcData->dialogue_5_evt_id].pTopic;
+        return scriptedTopicOptionString(npcData->dialogue_5_evt_id, npcData);
       case DIALOGUE_SCRIPTED_LINE_6:
-        return pNPCTopics[npcData->dialogue_6_evt_id].pTopic;
+        return scriptedTopicOptionString(npcData->dialogue_6_evt_id, npcData);
       case DIALOGUE_HIRE_FIRE:
         if (npcData->Hired()) {
             return localization->format(LSTR_DISMISS_S, npcData->name);
@@ -630,19 +717,42 @@ DialogueId handleScriptedNPCTopicSelection(DialogueId topic, NPCData *npcData) {
         return DIALOGUE_MAIN;
     }
 
+    // The [400,410]/[200,310] ranges below are an MM6/7-only convention -
+    // those games assigned trainer/guild-membership dialogue eventIds from those specific bands.
+    // MM8's own global.evt eventIds are assigned independently and can land in the same numeric
+    // ranges for completely unrelated quest/dialogue scripts (one NPC
+    // wires a quest-progress event to id 296, a hut NPC in a "Cure Disease" quest to
+    // id 290). MM8's own trainer dialogue
+    // (training-hall level-up, skill learning) is wired through Shop/Training house
+    // screens instead, never through these ranges.
     if (eventId == 139) {
         oracleDialogue();
     } else if (eventId == 399) {
         return arenaMainDialogue();
-    } else if (eventId >= 400 && eventId <= 410) {
+    } else if (gameType() != GAME_TYPE_MM8 && eventId >= 400 && eventId <= 410) {
         guildMembershipNPCTopicId = topic;
         current_npc_text = pNPCTopics[eventId - 301].pText;
         topicEventId = eventId;
         return DIALOGUE_MAGIC_GUILD_OFFER;
-    } else if (eventId >= 200 && eventId <= 310) {
+    } else if (gameType() != GAME_TYPE_MM8 && eventId >= 200 && eventId <= 310) {
         current_npc_text = pNPCTopics[eventId + 168].pText;
         topicEventId = eventId;
         return DIALOGUE_MASTERY_TEACHER_OFFER;
+    } else if (gameType() == GAME_TYPE_MM8 && mm8TeacherTopicSkill(eventId) != SKILL_INVALID) {
+        current_npc_text = pNPCTopics[eventId - 1].pText;  // The offer text sits one row above the topic's own row.
+        topicEventId = eventId;
+        return DIALOGUE_MASTERY_TEACHER_OFFER;
+    } else if (isRosterJoinTopic(eventId)) {
+        // An MM8 topic id in the 601-649 band means "recruit roster.txt row (id - 600)". npc 7 retargets
+        // here to 604 (row 4) via its quest-closing event 46, npc 11 to 634 (row 34).
+        // A join is silent. With a full party the status bar shows LSTR_I_CANNOT_JOIN_YOU_YOURE_PARTY_IS_FULL
+        // (global.txt:533) and the companion goes to the Adventurer's Inn bench.
+        int rosterId = eventId - 600;
+        bool joinedActiveParty = pParty->recruitRoster(rosterId);
+        if (rosterId >= 0 && static_cast<size_t>(rosterId) < rosterMm8.size() && rosterMm8[rosterId].questBit > 0)
+            pParty->_questBits.set(QuestBit(rosterMm8[rosterId].questBit));
+        if (!joinedActiveParty)
+            engine->_statusBar->setEvent(LSTR_I_CANNOT_JOIN_YOU_YOURE_PARTY_IS_FULL);
     } else {
         current_npc_text.clear();
         runEvent(EvtContext(EVT_SOURCE_GLOBAL, eventId));
@@ -669,9 +779,8 @@ void selectSpecialNPCTopicSelection(DialogueId topic, NPCData* npcData) {
     if (topic == DIALOGUE_MASTERY_TEACHER_LEARN) {
         if (membershipOrTrainingApproved) {
             if (pParty->hasActiveCharacter()) {
-                uint8_t teacherLevel = (topicEventId - 200) % 3;
-                Skill skillBeingTaught = static_cast<Skill>((topicEventId - 200) / 3);
-                Mastery newMastery = static_cast<Mastery>(teacherLevel + 2);
+                Skill skillBeingTaught = teacherTopicSkill();
+                Mastery newMastery = teacherTopicMastery();
                 CombinedSkillValue skillValue = CombinedSkillValue::increaseMastery(pParty->activeCharacter().getSkillValue(skillBeingTaught), newMastery);
                 pParty->activeCharacter().setSkillValue(skillBeingTaught, skillValue);
                 pParty->activeCharacter().playReaction(SPEECH_SKILL_MASTERY_INC);

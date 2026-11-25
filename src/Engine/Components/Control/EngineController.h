@@ -5,6 +5,7 @@
 
 #include "Engine/Spells/SpellEnums.h"
 #include "Engine/Objects/MonsterEnums.h"
+#include "Engine/Objects/ItemEnums.h"
 #include "Engine/MapEnums.h"
 #include "Engine/Pid.h"
 
@@ -40,6 +41,9 @@ MM_DECLARE_OPERATORS_FOR_FLAGS(SpawnFlags)
  * Most errors are reported as exceptions (derived from `std::runtime_error`) because the main way to use this class
  * is from unit tests.
  */
+// Per-tick observer for tests. Null in the game. `EngineController::tick` calls it after each tick.
+extern void (*g_engineTickObserver)();
+
 class EngineController {
  public:
     using GameRoutine = std::function<void()>;
@@ -138,8 +142,10 @@ class EngineController {
      * Loads the game by opening up the load game menu and actually clicking all the buttons.
      *
      * @param savedGame                 `Blob` containing saved game data.
+     * @param paused                    Whether the world comes up with the game timer paused, so that no game time
+     *                                  passes until the caller resumes the timer.
      */
-    void loadGame(const Blob &savedGame);
+    void loadGame(const Blob &savedGame, bool paused = false);
 
     /**
      * Runs the provided routine in game thread and returns once it's finished. This is mainly for running OpenGL code
@@ -177,7 +183,35 @@ class EngineController {
      */
     void teleportTo(MapId map, Vec3f position, int viewYaw, int viewPitch = 0);
 
-    void castSpell(int characterIndex, SpellId spell);
+    /**
+     * @param characterIndex             1-based index of the casting character.
+     * @param spell                      Spell to cast.
+     * @param target                     Actor to target, for a spell that needs one (`ON_CAST_TargetedActor`,
+     *                                    e.g. a damage spell). A real cast would resolve this via a mouse-raycast
+     *                                    click (`Engine::PickMouseTarget`) once the spellbook confirm click opens
+     *                                    the targeting UI - not reproducible deterministically in a headless
+     *                                    run, so this resolves the same targeting UI directly against the
+     *                                    given actor instead. Ignored for spells that don't open a targeting UI.
+     * @param itemTarget                 Item to target, for an `ON_CAST_TargetedEnchantment` spell (e.g. Enchant
+     *                                    Item). Ignored for spells that don't open an item-targeting UI.
+     * @param targetCharacter            0-based index of the character to target, for a spell that needs one
+     *                                    (`ON_CAST_TargetedCharacter`/`ON_CAST_TargetedActorOrCharacter`, e.g. a
+     *                                    heal/cure spell). A real cast would resolve this via a click on a
+     *                                    character portrait (`UIMSG_CastSpell_TargetCharacter`, `Game.cpp`) - this
+     *                                    resolves the same targeting UI directly against the given character
+     *                                    index instead. -1 means "no character target". Ignored for spells that
+     *                                    don't open a character-targeting UI.
+     */
+    void castSpell(int characterIndex, SpellId spell, Actor *target = nullptr, ItemId itemTarget = ITEM_NULL, int targetCharacter = -1);
+
+    /**
+     * Completes the pending targeted spell as if its target were picked. Pass an actor id or a 0-based character index,
+     * the one the pending spell wants (`spellTargetPicked`).
+     *
+     * @param pid                        Actor target, or an empty pid for a character target.
+     * @param charIndex                  0-based character index, or -1 for an actor target.
+     */
+    void resolveTargetedSpell(Pid pid, int charIndex);
 
     /**
      * Casts a spell through the quick spell key. Bolt spells go at the actor under the cursor or the closest one,
@@ -240,6 +274,7 @@ class EngineController {
     void pressOrReleaseButton(PlatformEventType type, PlatformMouseButton button, int x, int y, bool isDoubleClick);
 
     GUIButton *existingButton(std::string_view buttonId);
+    Pointi clickPointOf(GUIButton *button);
 
     void pointMouseAt(Pid target);
 

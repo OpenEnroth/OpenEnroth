@@ -5,6 +5,8 @@
 
 #include "Engine/Graphics/Image.h"
 
+#include "Library/Logger/Logger.h"
+
 Renderer *render = nullptr;
 
 Renderer::Renderer(
@@ -37,7 +39,12 @@ void Renderer::DrawQuad2D(Ptr<GraphicsImage> texture, const Recti &srcRect, Poin
 }
 
 void Renderer::DrawQuad2D(Ptr<GraphicsImage> texture, Pointi dstPoint, Color color) {
-    assert(texture);
+    // This overload takes the rectangles from the texture's own size, so it bails out on a null texture itself.
+    if (!texture) {
+        MM_TRACE("Null texture passed to DrawQuad2D");
+        return;
+    }
+
     Sizei size = texture->size();
     DrawQuad2D(texture, Recti(Pointi(), size), Recti(dstPoint, size), color);
 }

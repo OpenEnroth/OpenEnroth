@@ -18,6 +18,12 @@ set(GAME_TEST_MAIN_HEADERS
 add_executable(OpenEnroth_GameTest ${GAME_TEST_MAIN_SOURCES} ${GAME_TEST_MAIN_HEADERS})
 target_link_libraries(OpenEnroth_GameTest PUBLIC application testing_game library_cli library_platform_main library_stack_trace)
 
+# Further tests are added by dropping a *.cmake file next to this one.
+file(GLOB GAME_TEST_EXTRAS CONFIGURE_DEPENDS "${CMAKE_CURRENT_SOURCE_DIR}/*.cmake")
+foreach(GAME_TEST_EXTRA ${GAME_TEST_EXTRAS})
+    include(${GAME_TEST_EXTRA})
+endforeach()
+
 target_check_style(OpenEnroth_GameTest)
 
 add_custom_target(Run_GameTest

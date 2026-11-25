@@ -4,6 +4,7 @@
 #include <string>
 
 #include "Engine/Localization.h"
+#include "Engine/Spells/Spells.h"
 
 #include "Utility/IndexedArray.h"
 
@@ -288,5 +289,5 @@ SpellId spellForScroll(ItemId scroll) {
 }
 
 SpellId spellForWand(ItemId wand) {
-    return spellByWand[wand];
+    return spellWithEffect(spellByWand[wand]);
 }

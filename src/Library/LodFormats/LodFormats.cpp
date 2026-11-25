@@ -48,6 +48,33 @@ bool lod::detectCompressedData(const Blob &blob) {
     return header.version == 91969 && memcmp(header.signature.data(), "mvii", 4) == 0;
 }
 
+// `LodCompressionHeader_MM8::name` is only 16 bytes, but MM8's `EnglishD.lod` has
+// plenty of `.wav` sample entries whose name doesn't fit (e.g. "StartMainChoice02.wav", 21 bytes) - the tail
+// spills into the following `unk_0` field. `unk_0`'s first few bytes are then the name's overflow text,
+// zero-padded after that. So `unk_0`
+// isn't reliably all-zero - only whatever comes after its first zero byte is.
+static bool isZeroPaddedAfterFirstZero(std::span<const std::uint32_t> words) {
+    std::span<const std::byte> bytes = std::as_bytes(words);
+    auto firstZero = std::ranges::find(bytes, std::byte{0});
+    return std::all_of(firstZero, bytes.end(), [](std::byte b) { return b == std::byte{0}; });
+}
+
+bool lod::detectCompressedDataMm8(const Blob &blob) {
+    if (blob.size() < sizeof(LodCompressionHeader_MM8))
+        return false;
+
+    MemoryInputStream stream(blob.data(), blob.size());
+    LodCompressionHeader_MM8 header;
+    deserialize(stream, &header);
+
+    // Unlike `EnglishT.lod`'s tables/events (all `unk_14` zero), MM8's
+    // `EnglishD.lod` `.wav` sample entries carry a fixed 0x001f0000 in `unk_14[1]` - not checked
+    // here, `unk_15`'s sentinel plus the exact `dataSize` size match are discriminating enough on their own.
+    return isZeroPaddedAfterFirstZero(header.unk_0) && header.unk_12 == 0 && header.unk_13 == 0 &&
+        header.unk_15 == 256 && header.decompressedSize > 0 &&
+        header.dataSize == blob.size() - sizeof(LodCompressionHeader_MM8);
+}
+
 bool lod::detectCompressedPseudoImage(const Blob &blob) {
     if (blob.size() < sizeof(LodImageHeader_MM6))
         return false;
@@ -62,6 +89,21 @@ bool lod::detectCompressedPseudoImage(const Blob &blob) {
         blob.size() == sizeof(LodImageHeader_MM6) + header.dataSize;
 }
 
+bool lod::detectCompressedPseudoImageMm8(const Blob &blob) {
+    if (blob.size() < sizeof(LodImageHeader_MM8))
+        return false;
+
+    MemoryInputStream stream(blob.data(), blob.size());
+    LodImageHeader_MM8 header;
+    deserialize(stream, &header);
+
+    return std::ranges::all_of(header.unk_0, _1 == 0) &&
+        header.size == 0 && header.dataSize > 0 && header.width == 0 && header.height == 0 &&
+        header.widthLn2 == 0 && header.heightLn2 == 0 &&
+        header.paletteId == 0 && header.anotherPaletteId == 0 && (header.flags & 256) &&
+        blob.size() == sizeof(LodImageHeader_MM8) + header.dataSize;
+}
+
 bool lod::detectImage(const Blob &blob, bool *isPalette) {
     if (isPalette)
         *isPalette = false;
@@ -73,9 +115,12 @@ bool lod::detectImage(const Blob &blob, bool *isPalette) {
     LodImageHeader_MM6 header;
     deserialize(stream, &header);
 
+    // Note: MM8's own bare palette entries (e.g. `pal857`) self-populate `paletteId` with their own numeric id
+    // (857 here), unlike MM6/7 where it's always zero. That field isn't actually used to look palettes up (LOD
+    // entry names are), so it's excluded from this all-zero check.
     if (header.size == 0 && header.dataSize == 0 && header.width == 0 && header.height == 0 &&
         header.widthLn2 == 0 && header.heightLn2 == 0 && header.widthMinus1 == 0 && header.heightMinus1 == 0 &&
-        header.paletteId == 0 && header.anotherPaletteId == 0 && header.decompressedSize == 0 && header.flags == 0 &&
+        header.decompressedSize == 0 && header.flags == 0 &&
         blob.size() == sizeof(LodImageHeader_MM6) + 0x300)
         return isPalette ? *isPalette = true : true;
 
@@ -83,6 +128,35 @@ bool lod::detectImage(const Blob &blob, bool *isPalette) {
         header.size == header.width * header.height &&
         (header.decompressedSize == 0 && header.dataSize >= header.size || header.decompressedSize > 0 && header.decompressedSize >= header.size) &&
         blob.size() == sizeof(LodImageHeader_MM6) + header.dataSize + 0x300)
+        return true;
+
+    return false;
+}
+
+bool lod::detectImageMm8(const Blob &blob, bool *isPalette) {
+    if (isPalette)
+        *isPalette = false;
+
+    if (blob.size() < sizeof(LodImageHeader_MM8))
+        return false;
+
+    MemoryInputStream stream(blob.data(), blob.size());
+    LodImageHeader_MM8 header;
+    deserialize(stream, &header);
+
+    if (!std::ranges::all_of(header.unk_0, _1 == 0))
+        return false;
+
+    if (header.size == 0 && header.dataSize == 0 && header.width == 0 && header.height == 0 &&
+        header.widthLn2 == 0 && header.heightLn2 == 0 && header.widthMinus1 == 0 && header.heightMinus1 == 0 &&
+        header.decompressedSize == 0 && header.flags == 0 &&
+        blob.size() == sizeof(LodImageHeader_MM8) + 0x300)
+        return isPalette ? *isPalette = true : true;
+
+    if (header.size > 0 && header.dataSize > 0 && header.width > 0 && header.height > 0 &&
+        header.size == header.width * header.height &&
+        (header.decompressedSize == 0 && header.dataSize >= header.size || header.decompressedSize > 0 && header.decompressedSize >= header.size) &&
+        blob.size() == sizeof(LodImageHeader_MM8) + header.dataSize + 0x300)
         return true;
 
     return false;
@@ -142,6 +216,19 @@ Blob lod::decodeCompressedData(const Blob &blob) {
     return result.withDisplayPath(blob.displayPath());
 }
 
+Blob lod::decodeCompressedDataMm8(const Blob &blob) {
+    if (!detectCompressedDataMm8(blob))
+        throw Exception("Cannot decode LOD entry '{}' as MM8 LOD compressed data", blob.displayPath());
+
+    BlobInputStream stream(blob);
+    LodCompressionHeader_MM8 header;
+    deserialize(stream, &header);
+
+    Blob result = stream.readAsBlobOrFail(header.dataSize);
+    result = zlib::uncompress(result.withDisplayPath(blob.displayPath()), header.decompressedSize);
+    return result.withDisplayPath(blob.displayPath());
+}
+
 Blob lod::decodeCompressedPseudoImage(const Blob &blob) {
     if (!detectCompressedPseudoImage(blob))
         throw Exception("Cannot decode LOD entry '{}' as LOD compressed pseudo image", blob.displayPath());
@@ -156,12 +243,34 @@ Blob lod::decodeCompressedPseudoImage(const Blob &blob) {
     return result.withDisplayPath(blob.displayPath());
 }
 
+Blob lod::decodeCompressedPseudoImageMm8(const Blob &blob) {
+    if (!detectCompressedPseudoImageMm8(blob))
+        throw Exception("Cannot decode LOD entry '{}' as MM8 compressed pseudo image", blob.displayPath());
+
+    BlobInputStream stream(blob);
+    LodImageHeader_MM8 header;
+    deserialize(stream, &header);
+
+    Blob result = stream.readAsBlobOrFail(header.dataSize);
+    if (header.decompressedSize)
+        result = zlib::uncompress(result.withDisplayPath(blob.displayPath()), header.decompressedSize);
+    return result.withDisplayPath(blob.displayPath());
+}
+
 Blob lod::decodeMaybeCompressed(const Blob &blob) {
     if (detectCompressedData(blob))
         return decodeCompressedData(blob);
 
+    if (detectCompressedDataMm8(blob))
+        return decodeCompressedDataMm8(blob);
+
     if (detectCompressedPseudoImage(blob))
         return decodeCompressedPseudoImage(blob);
+
+    // MM8's `EnglishD.lod` wraps its `title.pcx` in this format (`LodImageHeader_MM8`'s wider header,
+    // as opposed to MM6/7's `LodImageHeader_MM6`-based `decodeCompressedPseudoImage` above).
+    if (detectCompressedPseudoImageMm8(blob))
+        return decodeCompressedPseudoImageMm8(blob);
 
     return Blob::share(blob); // Not compressed.
 }
@@ -212,6 +321,39 @@ LodImage lod::decodeImage(const Blob &blob) {
         // Actual stream size might be different.
         if (pixels.size() < header.width * header.height)
             throw Exception("Cannot decode image LOD entry '{}': expected {}x{}={} pixels, got {}",
+                            blob.displayPath(), header.width, header.height,
+                            header.width * header.height, pixels.size());
+    }
+
+    LodImage result;
+    deserialize(stream, &result.palette);
+    result.zeroIsTransparent = header.flags & 512;
+
+    // TODO(captainurist): just store blob in GrayscaleImage, no need to copy here.
+    if (pixels)
+        result.image = GrayscaleImage::copy(static_cast<const uint8_t *>(pixels.data()), header.width, header.height); // NOLINT: this is not std::copy.
+    return result;
+}
+
+LodImage lod::decodeImageMm8(const Blob &blob) {
+    bool isPalette = false;
+    if (!detectImageMm8(blob, &isPalette))
+        throw Exception("Cannot decode LOD entry '{}' as MM8 LOD image", blob.displayPath());
+
+    BlobInputStream stream(blob);
+    LodImageHeader_MM8 header;
+    deserialize(stream, &header);
+
+    Blob pixels;
+    if (!isPalette) {
+        pixels = stream.readAsBlobOrFail(header.dataSize);
+        if (header.decompressedSize)
+            pixels = zlib::uncompress(pixels.withDisplayPath(blob.displayPath()), header.decompressedSize);
+
+        // Note that this check isn't redundant. The checks in detectImageMm8() only check sizes as written in
+        // the header. Actual stream size might be different.
+        if (pixels.size() < header.width * header.height)
+            throw Exception("Cannot decode MM8 image LOD entry '{}': expected {}x{}={} pixels, got {}",
                             blob.displayPath(), header.width, header.height,
                             header.width * header.height, pixels.size());
     }

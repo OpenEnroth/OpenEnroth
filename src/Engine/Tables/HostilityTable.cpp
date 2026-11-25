@@ -16,7 +16,13 @@ void HostilityTable::Initialize(const Blob &factions) {
     for (auto &line : relations)
         line.fill(HOSTILITY_FRIENDLY);
 
-    for (auto [line, row] : split(factions.str()).by("\r\n").drop(1).skip("").zip(Segment(0, 88)))
-        for (auto [cell, col] : split(line).by('\t').drop(1).zip(Segment(0, 88)))
+    for (auto [line, row] : split(factions.str()).by("\r\n").drop(1).skip("").zip(Segment(0, 88))) {
+        for (auto [cell, col] : split(line).by('\t').drop(1).zip(Segment(0, 88))) {
+            // MM8's hostile.txt has rows shorter than 88 cells, ending in a
+            // trailing blank cell. Those cells keep the HOSTILITY_FRIENDLY default set above.
+            if (cell.empty())
+                continue;
             relations[static_cast<MonsterType>(col)][static_cast<MonsterType>(row)] = static_cast<MonsterHostility>(fromString<int>(cell));
+        }
+    }
 }

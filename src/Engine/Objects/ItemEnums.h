@@ -953,6 +953,16 @@ enum class ItemId : int32_t {
     ITEM_798 = 798,                                  // Unused.
     ITEM_799 = 799,                                  // Unused.
 
+    // MM8's items.txt runs past MM7's ITEM_799 ceiling (food/quest items at rows 800-802, e.g. "Ball of
+    // Dunduck" cheese). MM7 doesn't use these rows. See PathResolver.cpp's `isMm8DataPath` for how MM8 installs
+    // are detected.
+    //
+    // The names in the 0-799 block above are MM7's. MM8's items.txt shifts the whole equipment section (ids ~1-151),
+    // so under `GAME_TYPE_MM8` check `pItemTable->items[id].name` before trusting a named constant.
+    ITEM_MM8_800 = 800,
+    ITEM_MM8_801 = 801,
+    ITEM_MM8_802 = 802,
+
     // These are used in chests and are replaced with normal random-generated items in GenerateItemsInChest().
     ITEM_RANDOM_LEVEL_1 = -1,
     ITEM_RANDOM_LEVEL_2 = -2,
@@ -966,7 +976,7 @@ enum class ItemId : int32_t {
     ITEM_LAST_RANDOM = ITEM_RANDOM_LEVEL_1,
 
     ITEM_FIRST_VALID = ITEM_CRUDE_LONGSWORD,
-    ITEM_LAST_VALID = ITEM_799,
+    ITEM_LAST_VALID = ITEM_MM8_802,
 
     ITEM_FIRST_REGULAR = ITEM_CRUDE_LONGSWORD,
     ITEM_LAST_REGULAR = ITEM_SUN_AMULET,

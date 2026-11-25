@@ -1,5 +1,6 @@
 #pragma once
 
+#include "Engine/MapEnums.h"
 #include "Engine/Pid.h"
 
 #include "Core/Time/Duration.h"
@@ -41,6 +42,8 @@ struct CollisionState {
     float adjusted_move_distance = 0;  // Movement distance for current iteration, adjusted after collision checks.
     int uSectorID = 0;  // Indoor sector id.
     Pid pid;  // Pid of the object that we're collided with.
+    Pid horizontalPid;  // What the frame's HORIZONTAL move pressed against (`ODM_/BLV_ProcessPartyActions` set it after
+                        // the horizontal pass; the vertical pass that follows overwrites `pid` with the floor).
     BBoxf bbox;
     float heightOffset = 0.0f; // Height offset from low point for slide origin calc
 
@@ -48,6 +51,12 @@ struct CollisionState {
 };
 
 extern CollisionState collision_state;
+
+/**
+ * Indoor faces the engine lets the party climb although their slope is just past the "too steep" threshold - the
+ * two 45-degree ramps of the per-map stopgaps. Path planning code uses the same predicate.
+ */
+bool IsIndoorFaceSlopeExempt(MapId map, int faceId, const struct BLVFace &face);
 
 /**
  * @offset 0x0046E44E.

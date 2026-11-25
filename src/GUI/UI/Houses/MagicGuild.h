@@ -4,6 +4,13 @@
 
 #include "GUI/UI/UIHouses.h"
 
+/**
+ * @param house                         A single-school magic guild.
+ * @param guildType                     Its building type.
+ * @return                              The highest mastery whose spell books the guild stocks.
+ */
+Mastery magicGuildMaxMastery(HouseId house, HouseType guildType);
+
 class GUIWindow_MagicGuild : public GUIWindow_House {
  public:
     explicit GUIWindow_MagicGuild(HouseId houseId) : GUIWindow_House(houseId) {}

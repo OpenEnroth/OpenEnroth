@@ -119,6 +119,8 @@ enum class SpellId {
     SPELL_101 = 101, // Flaming arrow?
     SPELL_BLASTER_PROJECTILE = 102,
 
+    SPELL_VAMPIRE_LEVITATE = 112, // MM8 racial ability, row 112 of spells.txt. Outside the regular and sprite ranges.
+
     SPELL_FIRST_REGULAR = SPELL_FIRE_TORCH_LIGHT,
     SPELL_LAST_REGULAR = SPELL_DARK_SOULDRINKER,
 

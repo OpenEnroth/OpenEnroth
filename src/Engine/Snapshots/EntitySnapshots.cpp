@@ -12,6 +12,7 @@
 #include "Engine/Graphics/Indoor.h"
 #include "Engine/Objects/Decoration.h"
 #include "Engine/Objects/MonsterEnumFunctions.h"
+#include "Engine/GameType.h"
 #include "Engine/Tables/DecorationTable.h"
 #include "Engine/Graphics/Outdoor.h"
 #include "Engine/Graphics/Overlays.h"
@@ -598,8 +599,10 @@ void snapshot(const Party &src, Party_MM7 *dst) {
     if (src.alignment == PartyAlignment::PartyAlignment_Neutral) align = 1;
     dst->alignment = align;
 
-    snapshot(src.pPartyBuffs, &dst->partyBuffs);
-    snapshot(src.pCharacters, &dst->characters);
+    snapshot(src.pPartyBuffs, &dst->partyBuffs, tags::segment<PARTY_BUFF_FIRST, PARTY_BUFF_LAST_SAVED>);
+    // `pCharacters` has 5 slots, this MM7 binary field has 4, as in the save format.
+    for (size_t i = 0; i < dst->characters.size(); i++)
+        snapshot(src.pCharacters[i], &dst->characters[i]);
     snapshot(src.pHirelings, &dst->hirelings);
 
     // Vanilla stored NPC sacrifice status in NPC evt values.
@@ -627,7 +630,10 @@ void snapshot(const Party &src, Party_MM7 *dst) {
     dst->armageddonTimer = src.armageddon_timer.ticks();
     dst->armageddonDamage = src.armageddonDamage;
 
-    snapshot(src.pTurnBasedCharacterRecoveryTimes, &dst->turnBasedPlayerRecoveryTimes);
+    // `pTurnBasedCharacterRecoveryTimes` has 5 slots, this MM7 binary field has 4, as in the save format.
+    // The 5th (MM8-only) slot is not part of this struct.
+    for (size_t i = 0; i < dst->turnBasedPlayerRecoveryTimes.size(); i++)
+        snapshot(src.pTurnBasedCharacterRecoveryTimes[i], &dst->turnBasedPlayerRecoveryTimes[i]);
     snapshot(src.InTheShopFlags, &dst->inTheShopFlags);
 
     dst->fine = src.uFine;
@@ -722,7 +728,7 @@ void reconstruct(const Party_MM7 &src, Party *dst) {
             assert(false);
     }
 
-    reconstruct(src.partyBuffs, &dst->pPartyBuffs);
+    reconstruct(src.partyBuffs, &dst->pPartyBuffs, tags::segment<PARTY_BUFF_FIRST, PARTY_BUFF_LAST_SAVED>);
     for (int i = 0; i < 4; i++)
         reconstruct(src.characters[i], &dst->pCharacters[i], tags::context(i));
     reconstruct(src.hirelings, &dst->pHirelings);
@@ -753,10 +759,93 @@ void reconstruct(const Party_MM7 &src, Party *dst) {
     dst->armageddon_timer = Duration::fromTicks(src.armageddonTimer);
     dst->armageddonDamage = src.armageddonDamage;
 
-    reconstruct(src.turnBasedPlayerRecoveryTimes, &dst->pTurnBasedCharacterRecoveryTimes);
+    // See the matching snapshot() call above for why this isn't the generic array reconstruct.
+    for (size_t i = 0; i < src.turnBasedPlayerRecoveryTimes.size(); i++)
+        reconstruct(src.turnBasedPlayerRecoveryTimes[i], &dst->pTurnBasedCharacterRecoveryTimes[i]);
     reconstruct(src.inTheShopFlags, &dst->InTheShopFlags);
 
     dst->uFine = src.fine;
+}
+
+// Mirrors `reconstruct(const Party_MM7 &, Party *)` above for the fields whose layout is known
+// (see `Party_MM8`'s struct-level comment) - `unknownPrefix`/`partyTimes.unknownTail`/`unknownTail`
+// are round-tripped as opaque bytes only, so `dst->Zero()` leaves `pCharacters`/`pHirelings`/the
+// shop item tables at their default state rather than misattributing bytes to the wrong field.
+void reconstruct(const Party_MM8 &src, Party *dst) {
+    dst->Zero();
+
+    dst->height = src.partyHeight;
+    dst->eyeLevel = src.eyeLevel;
+    dst->radius = src.radius;
+    dst->_yawGranularity = src.yawGranularity;
+    dst->walkSpeed = src.walkSpeed;
+    dst->_yawRotationSpeed = src.yawRotationSpeed;
+    dst->jump_strength = src.jumpStrength;
+    reconstruct(src.timePlayed, &dst->playing_time);
+    reconstruct(src.lastRegenerationTime, &dst->last_regenerated);
+
+    reconstruct(src.partyTimes.bountyHuntingNextGenerationTime, &dst->PartyTimes.bountyHuntNextGenTime);
+    reconstruct(src.partyTimes.shopsNextGenerationTime, &dst->PartyTimes.shopNextRefreshTime);
+    reconstruct(src.partyTimes.guildsNextGenerationTime, &dst->PartyTimes.guildNextRefreshTime);
+    reconstruct(src.partyTimes.shopBanTimes, &dst->PartyTimes.shopBanTimes);
+    reconstruct(src.partyTimes.counterEventValues, &dst->PartyTimes.CounterEventValues);
+    reconstruct(src.partyTimes.historyEventTimes, &dst->PartyTimes.HistoryEventTimes);
+    reconstruct(src.partyTimes.someOtherTimes, &dst->PartyTimes._s_times);
+
+    dst->pos = src.position.toFloat();
+    dst->_viewYaw = src.viewYaw;
+    dst->_viewPitch = src.viewPitch;
+    dst->velocity = Vec3f(0, 0, src.fallSpeed);
+    dst->sPartySavedFlightZ = src.savedFlightZ;
+    dst->_6FC_water_lava_timer = Time::fromTicks(src.waterLavaTimer);
+    dst->uFallStartZ = src.fallStartZ;
+    dst->bFlying = src.flying;
+    dst->hirelingScrollPosition = src.hirelingScrollPosition;
+    dst->cNonHireFollowers = src.field_70A;
+    dst->uCurrentYear = src.currentYear;
+    dst->uCurrentMonth = src.currentMonth;
+    dst->uCurrentMonthWeek = src.currentMonthWeek;
+    dst->uCurrentDayOfMonth = src.currentDayOfMonth;
+    dst->uCurrentHour = src.currentHour;
+    dst->uCurrentMinute = src.currentMinute;
+    dst->uCurrentTimeSecond = src.currentTimeSecond;
+    dst->uNumFoodRations = src.numFoodRations;
+    dst->uNumGold = src.numGold;
+    dst->uNumGoldInBank = src.numGoldInBank;
+    dst->uNumDeaths = src.numDeaths;
+    dst->uNumPrisonTerms = src.numPrisonTerms;
+    dst->uNumBountiesCollected = src.numBountiesCollected;
+
+    reconstruct(src.monsterIdForHunting, &dst->monster_id_for_hunting);
+    reconstruct(src.monsterForHuntingKilled, &dst->monster_for_hunting_killed, tags::cast<int16_t, bool>);
+
+    dst->days_played_without_rest = src.daysPlayedWithoutRest;
+
+    reconstruct(src.questBits, &dst->_questBits, tags::reverseBits);
+    reconstruct(src.arcomageWins, &dst->pArcomageWins);
+
+    // We can't save in arena, but doing proper deserialization here anyway.
+    if (src.field_7B5_in_arena_quest == 0) {
+        dst->arenaState = ARENA_STATE_INITIAL;
+        dst->arenaLevel = ARENA_LEVEL_INVALID;
+    } else if (src.field_7B5_in_arena_quest == -1) {
+        dst->arenaState = ARENA_STATE_WON;
+        dst->arenaLevel = ARENA_LEVEL_INVALID;
+    } else {
+        dst->arenaState = ARENA_STATE_FIGHTING;
+        dst->arenaLevel = arenaLevelForDialogue(static_cast<DialogueId>(src.field_7B5_in_arena_quest));
+    }
+
+    reconstruct(src.numArenaWins, &dst->uNumArenaWins);
+
+    reconstruct(src.isArtifactFound, &dst->isArtifactGenerated);
+    reconstruct(src.autonoteBits, &dst->_autonoteBits, tags::reverseBits);
+
+    // `numArcomageWins`/`numArcomageLoses`/`turnBasedModeOn`/`flags2`/`alignment`/
+    // `partyBuffs` are NOT reconstructed, this region's MM8 layout isn't known (see
+    // `src.unknownAlignmentAndPartyBuffs`). `dst->Zero()` above leaves alignment/party buffs at defaults.
+
+    reconstruct(src.character0, &dst->pCharacters[0]);
 }
 
 void snapshot(const CharacterConditions &src, CharacterConditions_MM7 *dst) {
@@ -801,6 +890,8 @@ void snapshot(const Character &src, Character_MM7 *dst) {
     dst->ageModifier = src.sAgeModifier;
 
     snapshot(src.pActiveSkills, &dst->activeSkills, tags::segment<SKILL_FIRST_VISIBLE, SKILL_LAST_VISIBLE>);
+    for (Skill skill = SKILL_FIRST_MM8_ONLY; skill <= SKILL_LAST_MM8_ONLY; skill = Skill(std::to_underlying(skill) + 1))
+        dst->mm8RaceSkills[std::to_underlying(skill) - std::to_underlying(SKILL_FIRST_MM8_ONLY)] = src.pActiveSkills[skill].joined();
     snapshot(src._achievedAwardsBits, &dst->achievedAwardsBits, tags::reverseBits);
     snapshot(src.bHaveSpell, &dst->haveSpell);
 
@@ -883,6 +974,31 @@ void snapshot(const Character &src, Character_MM7 *dst) {
     dst->numDivineInterventionCasts = src.uNumDivineInterventionCastsThisDay;
     dst->numArmageddonCasts = src.uNumArmageddonCasts;
     dst->numFireSpikeCasts = src.uNumFireSpikeCasts;
+}
+
+// See `CharacterRecord_MM8`'s own comment for what's decoded here vs still opaque.
+void reconstruct(const CharacterRecord_MM8 &src, Character *dst) {
+    dst->Zero();
+
+    dst->experience = src.experience;
+    reconstruct(src.name, &dst->name);
+
+    dst->_stats[ATTRIBUTE_MIGHT] = src.might.base;
+    dst->_statBonuses[ATTRIBUTE_MIGHT] = src.might.bonus;
+    dst->_stats[ATTRIBUTE_INTELLIGENCE] = src.intelligence.base;
+    dst->_statBonuses[ATTRIBUTE_INTELLIGENCE] = src.intelligence.bonus;
+    dst->_stats[ATTRIBUTE_PERSONALITY] = src.personality.base;
+    dst->_statBonuses[ATTRIBUTE_PERSONALITY] = src.personality.bonus;
+    dst->_stats[ATTRIBUTE_ENDURANCE] = src.endurance.base;
+    dst->_statBonuses[ATTRIBUTE_ENDURANCE] = src.endurance.bonus;
+    dst->_stats[ATTRIBUTE_SPEED] = src.speed.base;
+    dst->_statBonuses[ATTRIBUTE_SPEED] = src.speed.bonus;
+    dst->_stats[ATTRIBUTE_ACCURACY] = src.accuracy.base;
+    dst->_statBonuses[ATTRIBUTE_ACCURACY] = src.accuracy.bonus;
+    dst->_stats[ATTRIBUTE_LUCK] = src.luck.base;
+    dst->_statBonuses[ATTRIBUTE_LUCK] = src.luck.bonus;
+
+    dst->uLevel = src.level;
 }
 
 void reconstruct(const Character_MM7 &src, Character *dst, ContextTag<int> characterIndex) {
@@ -1013,6 +1129,56 @@ void reconstruct(const Character_MM7 &src, Character *dst, ContextTag<int> chara
     case 35:
         dst->classType = CLASS_LICH;
         break;
+    // MM8's 16 race-classes (8 base + 8 promoted), appended after MM7's classes - see `Class` in
+    // CharacterEnums.h. `Character_MM7::classType` is a `uint8_t`, wide enough to round-trip these too.
+    case 36:
+        dst->classType = CLASS_MM8_NECROMANCER;
+        break;
+    case 37:
+        dst->classType = CLASS_MM8_CLERIC;
+        break;
+    case 38:
+        dst->classType = CLASS_MM8_KNIGHT;
+        break;
+    case 39:
+        dst->classType = CLASS_MM8_TROLL;
+        break;
+    case 40:
+        dst->classType = CLASS_MM8_MINOTAUR;
+        break;
+    case 41:
+        dst->classType = CLASS_MM8_DARK_ELF;
+        break;
+    case 42:
+        dst->classType = CLASS_MM8_VAMPIRE;
+        break;
+    case 43:
+        dst->classType = CLASS_MM8_DRAGON;
+        break;
+    case 44:
+        dst->classType = CLASS_MM8_LICH;
+        break;
+    case 45:
+        dst->classType = CLASS_MM8_PRIEST_OF_LIGHT;
+        break;
+    case 46:
+        dst->classType = CLASS_MM8_CHAMPION;
+        break;
+    case 47:
+        dst->classType = CLASS_MM8_WAR_TROLL;
+        break;
+    case 48:
+        dst->classType = CLASS_MM8_MINOTAUR_LORD;
+        break;
+    case 49:
+        dst->classType = CLASS_MM8_PATRIARCH;
+        break;
+    case 50:
+        dst->classType = CLASS_MM8_NOSFERATU;
+        break;
+    case 51:
+        dst->classType = CLASS_MM8_GREAT_WYRM;
+        break;
     default:
         assert(false);
     }
@@ -1038,6 +1204,10 @@ void reconstruct(const Character_MM7 &src, Character *dst, ContextTag<int> chara
     dst->sAgeModifier = src.ageModifier;
 
     reconstruct(src.activeSkills, &dst->pActiveSkills, tags::segment<SKILL_FIRST_VISIBLE, SKILL_LAST_VISIBLE>);
+    for (Skill skill = SKILL_FIRST_MM8_ONLY; skill <= SKILL_LAST_MM8_ONLY; skill = Skill(std::to_underlying(skill) + 1)) {
+        uint16_t joined = src.mm8RaceSkills[std::to_underlying(skill) - std::to_underlying(SKILL_FIRST_MM8_ONLY)];
+        dst->pActiveSkills[skill] = gameType() == GAME_TYPE_MM8 ? CombinedSkillValue::fromJoined(joined) : CombinedSkillValue();
+    }
     reconstruct(src.achievedAwardsBits, &dst->_achievedAwardsBits, tags::reverseBits);
     reconstruct(src.haveSpell, &dst->bHaveSpell);
 
@@ -1291,6 +1461,17 @@ void reconstruct(const MonsterDesc_MM7 &src, MonsterDesc *dst) {
     reconstruct(src.spriteNames, &dst->spriteNames);
 }
 
+void reconstruct(const MonsterDesc_MM8 &src, MonsterDesc *dst) {
+    dst->monsterHeight = src.monsterHeight;
+    dst->monsterRadius = src.monsterRadius;
+    dst->movementSpeed = src.movementSpeed;
+    dst->toHitRadius = src.toHitRadius;
+    dst->tintColor = Color::fromC32(src.tintColor);
+    reconstruct(src.soundSampleIds, &dst->soundSampleIds, tags::cast<uint16_t, SoundId>);
+    reconstruct(src.internalMonsterName, &dst->internalMonsterName);
+    reconstruct(src.spriteNames, &dst->spriteNames);
+}
+
 void snapshot(const ActorJob &src, ActorJob_MM7 *dst) {
     memzero(dst);
 
@@ -1395,7 +1576,7 @@ void snapshot(const Actor &src, Actor_MM7 *dst) {
 
     snapshot(src.spriteIds, &dst->spriteIds);
     snapshot(src.soundSampleIds, &dst->soundSampleIds, tags::cast<SoundId, uint16_t>);
-    snapshot(src.buffs, &dst->buffs);
+    snapshot(src.buffs, &dst->buffs, tags::segment<ACTOR_BUFF_FIRST, ACTOR_BUFF_LAST_MM7>);
     snapshot(src.items, &dst->items, tags::context(ITEM_SLOT_INVALID));
 
     dst->group = src.group;
@@ -1413,8 +1594,6 @@ void reconstruct(const Actor_MM7 &src, Actor *dst) {
     dst->attributes = ActorAttributes(src.attributes);
     dst->hp = src.hp;
 
-    dst->monsterInfo.name.clear();
-    dst->monsterInfo.internalName.clear();
     dst->monsterInfo.level = src.monsterInfo.level;
     dst->monsterInfo.treasureDropChance = src.monsterInfo.treasureDropChance;
     dst->monsterInfo.goldDiceRolls = src.monsterInfo.goldDiceRolls;
@@ -1458,6 +1637,16 @@ void reconstruct(const Actor_MM7 &src, Actor *dst) {
     dst->monsterInfo.specialAbilityDamageDiceBonus = src.monsterInfo.specialAbilityDamageDiceBonus;
     dst->monsterInfo.numCharactersAttackedPerSpecialAbility = src.monsterInfo.numCharactersAttackedPerSpecialAbility;
     dst->monsterInfo.id = static_cast<MonsterId>(src.monsterInfo.id);
+    // `name`/`internalName` aren't real on-disk data (`Actor_MM7::name`'s own comment: MM7 status-bar
+    // names come from the data tables, not the save) - look them up the same way `EngineController::
+    // spawnMonster`'s synthetic-spawn path does (`actor->monsterInfo = pMonsterStats->infos[monster_id]`),
+    // so a save/map-loaded actor's `monsterInfo.name` isn't empty. Unit tests run this with
+    // `pMonsterStats == nullptr`, and a map or save can carry `MONSTER_INVALID` for a species with no
+    // mapping. `IndexedArray::operator[]` doesn't bounds-check.
+    if (pMonsterStats && dst->monsterInfo.id >= MONSTER_FIRST && dst->monsterInfo.id <= MONSTER_LAST) {
+        dst->monsterInfo.name = pMonsterStats->infos[dst->monsterInfo.id].name;
+        dst->monsterInfo.internalName = pMonsterStats->infos[dst->monsterInfo.id].internalName;
+    }
     dst->monsterInfo.bloodSplatOnDeath = src.monsterInfo.bloodSplatOnDeath;
     reconstruct(src.monsterInfo.spell1SkillMastery, &dst->monsterInfo.spell1SkillMastery);
     reconstruct(src.monsterInfo.spell2SkillMastery, &dst->monsterInfo.spell2SkillMastery);
@@ -1489,17 +1678,231 @@ void reconstruct(const Actor_MM7 &src, Actor *dst) {
 
     reconstruct(src.spriteIds, &dst->spriteIds);
     reconstruct(src.soundSampleIds, &dst->soundSampleIds, tags::cast<uint16_t, SoundId>);
-    reconstruct(src.buffs, &dst->buffs);
+    reconstruct(src.buffs, &dst->buffs, tags::segment<ACTOR_BUFF_FIRST, ACTOR_BUFF_LAST_MM7>);
     reconstruct(src.items, &dst->items);
 
     dst->group = src.group;
     if (src.hostilityGroup == 9999) {
         dst->hostilityGroup = MONSTER_TYPE_INVALID;
-    } else if (src.hostilityGroup == 0) {
-        dst->hostilityGroup = monsterTypeForMonsterId(dst->monsterInfo.id);
+    } else if (src.hostilityGroup == 0 ||
+               (gameType() == GAME_TYPE_MM8 && src.hostilityGroup == std::to_underlying(MONSTER_TYPE_UNUSED_RAT))) {
+        // A save can carry the UNUSED_RAT placeholder as the hostility group. Recompute it from the monster id, like the 0 case.
+        dst->hostilityGroup = hostilityMonsterTypeForMonsterId(dst->monsterInfo.id);
     } else {
         dst->hostilityGroup = static_cast<MonsterType>(src.hostilityGroup);
     }
+
+    reconstruct(src.scheduledJobs, &dst->scheduledJobs);
+
+    dst->summonerId = Pid::fromPacked(src.summonerId);
+    dst->lastCharacterIdToHit = Pid::fromPacked(src.lastCharacterIdToHit);
+    dst->uniqueNameIndex = src.uniqueNameIndex;
+}
+
+void snapshot(const Actor &src, Actor_MM8 *dst) {
+    memzero(dst);
+
+    // Need to fill actor name, even though in OE we don't have this field. This is for vanilla savegame compatibility.
+    snapshot(src.GetDisplayName(), &dst->name);
+
+    dst->npcId = src.npcId;
+    dst->attributes = std::to_underlying(src.attributes);
+    dst->hp = src.hp;
+
+    dst->monsterInfo.level = src.monsterInfo.level;
+    dst->monsterInfo.treasureDropChance = src.monsterInfo.treasureDropChance;
+    dst->monsterInfo.goldDiceRolls = src.monsterInfo.goldDiceRolls;
+    dst->monsterInfo.goldDiceSides = src.monsterInfo.goldDiceSides;
+    dst->monsterInfo.treasureLevel = std::to_underlying(src.monsterInfo.treasureLevel);
+    dst->monsterInfo.treasureType = std::to_underlying(src.monsterInfo.treasureType);
+    dst->monsterInfo.flying = src.monsterInfo.flying;
+    dst->monsterInfo.movementType = std::to_underlying(src.monsterInfo.movementType);
+    dst->monsterInfo.aiType = std::to_underlying(src.monsterInfo.aiType);
+    dst->monsterInfo.hostilityType = std::to_underlying(src.monsterInfo.hostilityType);
+    dst->monsterInfo.specialAttackType = std::to_underlying(src.monsterInfo.specialAttackType);
+    dst->monsterInfo.specialAttackLevel = src.monsterInfo.specialAttackLevel;
+    dst->monsterInfo.attack1Type = std::to_underlying(src.monsterInfo.attack1Type);
+    dst->monsterInfo.attack1DamageDiceRolls = src.monsterInfo.attack1DamageDiceRolls;
+    dst->monsterInfo.attack1DamageDiceSides = src.monsterInfo.attack1DamageDiceSides;
+    dst->monsterInfo.attack1DamageBonus = src.monsterInfo.attack1DamageBonus;
+    dst->monsterInfo.attack1MissileType = std::to_underlying(src.monsterInfo.attack1MissileType);
+    dst->monsterInfo.attack2Chance = src.monsterInfo.attack2Chance;
+    dst->monsterInfo.attack2Type = std::to_underlying(src.monsterInfo.attack2Type);
+    dst->monsterInfo.attack2DamageDiceRolls = src.monsterInfo.attack2DamageDiceRolls;
+    dst->monsterInfo.attack2DamageDiceSides = src.monsterInfo.attack2DamageDiceSides;
+    dst->monsterInfo.attack2DamageBonus = src.monsterInfo.attack2DamageBonus;
+    dst->monsterInfo.attack2MissileType = std::to_underlying(src.monsterInfo.attack2MissileType);
+    dst->monsterInfo.spell1UseChance = src.monsterInfo.spell1UseChance;
+    dst->monsterInfo.spell1Id = std::to_underlying(src.monsterInfo.spell1Id);
+    dst->monsterInfo.spell2UseChance = src.monsterInfo.spell2UseChance;
+    dst->monsterInfo.spell2Id = std::to_underlying(src.monsterInfo.spell2Id);
+    // MM8 resistances are uint16_t (see `MonsterInfo_MM8`), widened here from the runtime `MonsterInfo`
+    // fields, which are still `uint8_t` - same as what `reconstruct(const Actor_MM8 &, Actor *)` narrows back.
+    dst->monsterInfo.resFire = src.monsterInfo.resFire;
+    dst->monsterInfo.resAir = src.monsterInfo.resAir;
+    dst->monsterInfo.resWater = src.monsterInfo.resWater;
+    dst->monsterInfo.resEarth = src.monsterInfo.resEarth;
+    dst->monsterInfo.resMind = src.monsterInfo.resMind;
+    dst->monsterInfo.resSpirit = src.monsterInfo.resSpirit;
+    dst->monsterInfo.resBody = src.monsterInfo.resBody;
+    dst->monsterInfo.resLight = src.monsterInfo.resLight;
+    dst->monsterInfo.resDark = src.monsterInfo.resDark;
+    dst->monsterInfo.resPhysical = src.monsterInfo.resPhysical;
+    dst->monsterInfo.specialAbilityType = std::to_underlying(src.monsterInfo.specialAbilityType);
+    dst->monsterInfo.specialAbilityDamageDiceRolls = src.monsterInfo.specialAbilityDamageDiceRolls;
+    dst->monsterInfo.specialAbilityDamageDiceSides = src.monsterInfo.specialAbilityDamageDiceSides;
+    dst->monsterInfo.specialAbilityDamageDiceBonus = src.monsterInfo.specialAbilityDamageDiceBonus;
+    dst->monsterInfo.numCharactersAttackedPerSpecialAbility = src.monsterInfo.numCharactersAttackedPerSpecialAbility;
+    dst->monsterInfo.id = std::to_underlying(src.monsterInfo.id);
+    dst->monsterInfo.bloodSplatOnDeath = src.monsterInfo.bloodSplatOnDeath;
+    snapshot(src.monsterInfo.spell1SkillMastery, &dst->monsterInfo.spell1SkillMastery);
+    snapshot(src.monsterInfo.spell2SkillMastery, &dst->monsterInfo.spell2SkillMastery);
+    dst->monsterInfo.field_3C_some_special_attack = src.monsterInfo.field_3C_some_special_attack;
+    // No `field_3E` in `MonsterInfo_MM8` - MM8 goes straight from `field_3C_some_special_attack` to `hp`.
+    dst->monsterInfo.hp = src.monsterInfo.hp;
+    dst->monsterInfo.ac = src.monsterInfo.ac;
+    dst->monsterInfo.exp = src.monsterInfo.exp;
+    dst->monsterInfo.baseSpeed = src.monsterInfo.baseSpeed;
+    dst->monsterInfo.recoveryTime = src.monsterInfo.recoveryTime.ticks();
+    dst->monsterInfo.attackPreferences = std::to_underlying(src.monsterInfo.attackPreferences);
+    dst->monsterId = std::to_underlying(src.monsterId);
+    dst->radius = src.radius;
+    dst->height = src.height;
+    dst->moveSpeed = src.moveSpeed;
+    snapshot(src.pos, &dst->pos);
+    snapshot(src.velocity, &dst->velocity);
+    dst->yawAngle = src.yawAngle;
+    dst->pitchAngle = src.pitchAngle;
+    dst->sectorId = src.sectorId;
+    dst->currentActionLength = src.currentActionLength.ticks();
+    snapshot(src.initialPosition, &dst->initialPosition);
+    snapshot(src.guardingPosition, &dst->guardingPosition);
+    dst->tetherDistance = src.tetherDistance;
+    dst->aiState = std::to_underlying(src.aiState);
+    dst->currentActionAnimation = std::to_underlying(src.currentActionAnimation);
+    dst->carriedItemId = std::to_underlying(src.carriedItemId);
+    dst->currentActionTime = src.currentActionTime.ticks();
+
+    snapshot(src.spriteIds, &dst->spriteIds);
+    snapshot(src.soundSampleIds, &dst->soundSampleIds, tags::cast<SoundId, uint16_t>);
+    snapshot(src.buffs, &dst->buffs, tags::segment<ACTOR_BUFF_FIRST, ACTOR_BUFF_LAST_MM7>);
+    for (int i = std::to_underlying(ACTOR_BUFF_FIRST_MM8_EXTRA); i <= std::to_underlying(ACTOR_BUFF_LAST); i++)
+        snapshot(src.buffs[static_cast<ActorBuff>(i)], &dst->buffsMM8Extra[i - std::to_underlying(ACTOR_BUFF_FIRST_MM8_EXTRA)]);
+    snapshot(src.items, &dst->items, tags::context(ITEM_SLOT_INVALID));
+
+    dst->group = src.group;
+    dst->hostilityGroup = src.hostilityGroup == MONSTER_TYPE_INVALID ? 9999 : std::to_underlying(src.hostilityGroup);
+
+    snapshot(src.scheduledJobs, &dst->scheduledJobs);
+
+    dst->summonerId = src.summonerId.packed();
+    dst->lastCharacterIdToHit = src.lastCharacterIdToHit.packed();
+    dst->uniqueNameIndex = src.uniqueNameIndex;
+}
+
+void reconstruct(const Actor_MM8 &src, Actor *dst) {
+    dst->npcId = src.npcId;
+    dst->attributes = ActorAttributes(src.attributes);
+    dst->hp = src.hp;
+
+    dst->monsterInfo.level = src.monsterInfo.level;
+    dst->monsterInfo.treasureDropChance = src.monsterInfo.treasureDropChance;
+    dst->monsterInfo.goldDiceRolls = src.monsterInfo.goldDiceRolls;
+    dst->monsterInfo.goldDiceSides = src.monsterInfo.goldDiceSides;
+    dst->monsterInfo.treasureLevel = static_cast<ItemTreasureLevel>(src.monsterInfo.treasureLevel);
+    dst->monsterInfo.treasureType = static_cast<RandomItemType>(src.monsterInfo.treasureType);
+    dst->monsterInfo.flying = src.monsterInfo.flying;
+    dst->monsterInfo.movementType = static_cast<MonsterMovementType>(src.monsterInfo.movementType);
+    dst->monsterInfo.aiType = static_cast<MonsterAiType>(src.monsterInfo.aiType);
+    dst->monsterInfo.hostilityType = static_cast<MonsterHostility>(src.monsterInfo.hostilityType);
+    dst->monsterInfo.specialAttackType = static_cast<MonsterSpecialAttack>(src.monsterInfo.specialAttackType);
+    dst->monsterInfo.specialAttackLevel = src.monsterInfo.specialAttackLevel;
+    dst->monsterInfo.attack1Type = static_cast<DamageType>(src.monsterInfo.attack1Type);
+    dst->monsterInfo.attack1DamageDiceRolls = src.monsterInfo.attack1DamageDiceRolls;
+    dst->monsterInfo.attack1DamageDiceSides = src.monsterInfo.attack1DamageDiceSides;
+    dst->monsterInfo.attack1DamageBonus = src.monsterInfo.attack1DamageBonus;
+    dst->monsterInfo.attack1MissileType = static_cast<MonsterProjectile>(src.monsterInfo.attack1MissileType);
+    dst->monsterInfo.attack2Chance = src.monsterInfo.attack2Chance;
+    dst->monsterInfo.attack2Type = static_cast<DamageType>(src.monsterInfo.attack2Type);
+    dst->monsterInfo.attack2DamageDiceRolls = src.monsterInfo.attack2DamageDiceRolls;
+    dst->monsterInfo.attack2DamageDiceSides = src.monsterInfo.attack2DamageDiceSides;
+    dst->monsterInfo.attack2DamageBonus = src.monsterInfo.attack2DamageBonus;
+    dst->monsterInfo.attack2MissileType = static_cast<MonsterProjectile>(src.monsterInfo.attack2MissileType);
+    dst->monsterInfo.spell1UseChance = src.monsterInfo.spell1UseChance;
+    dst->monsterInfo.spell1Id = static_cast<SpellId>(src.monsterInfo.spell1Id);
+    dst->monsterInfo.spell2UseChance = src.monsterInfo.spell2UseChance;
+    dst->monsterInfo.spell2Id = static_cast<SpellId>(src.monsterInfo.spell2Id);
+    // MM8 resistances are uint16_t (see `MonsterInfo_MM8`), narrowed here to match the runtime `MonsterInfo`
+    // fields, which are still `uint8_t` - same as what MM7 data always provided.
+    dst->monsterInfo.resFire = static_cast<uint8_t>(src.monsterInfo.resFire);
+    dst->monsterInfo.resAir = static_cast<uint8_t>(src.monsterInfo.resAir);
+    dst->monsterInfo.resWater = static_cast<uint8_t>(src.monsterInfo.resWater);
+    dst->monsterInfo.resEarth = static_cast<uint8_t>(src.monsterInfo.resEarth);
+    dst->monsterInfo.resMind = static_cast<uint8_t>(src.monsterInfo.resMind);
+    dst->monsterInfo.resSpirit = static_cast<uint8_t>(src.monsterInfo.resSpirit);
+    dst->monsterInfo.resBody = static_cast<uint8_t>(src.monsterInfo.resBody);
+    dst->monsterInfo.resLight = static_cast<uint8_t>(src.monsterInfo.resLight);
+    dst->monsterInfo.resDark = static_cast<uint8_t>(src.monsterInfo.resDark);
+    dst->monsterInfo.resPhysical = static_cast<uint8_t>(src.monsterInfo.resPhysical);
+    dst->monsterInfo.specialAbilityType = static_cast<MonsterSpecialAbility>(src.monsterInfo.specialAbilityType);
+    dst->monsterInfo.specialAbilityDamageDiceRolls = src.monsterInfo.specialAbilityDamageDiceRolls;
+    dst->monsterInfo.specialAbilityDamageDiceSides = src.monsterInfo.specialAbilityDamageDiceSides;
+    dst->monsterInfo.specialAbilityDamageDiceBonus = src.monsterInfo.specialAbilityDamageDiceBonus;
+    dst->monsterInfo.numCharactersAttackedPerSpecialAbility = src.monsterInfo.numCharactersAttackedPerSpecialAbility;
+    dst->monsterInfo.id = static_cast<MonsterId>(src.monsterInfo.id);
+    // See the identical `reconstruct(const Actor_MM7 &, Actor *)` comment: `name`/
+    // `internalName` aren't on-disk data, look them up via the bestiary the same way
+    // `EngineController::spawnMonster` does. Guarded the same way against a null `pMonsterStats`
+    // (unit tests) or an out-of-range id (`MONSTER_INVALID`).
+    if (pMonsterStats && dst->monsterInfo.id >= MONSTER_FIRST && dst->monsterInfo.id <= MONSTER_LAST) {
+        dst->monsterInfo.name = pMonsterStats->infos[dst->monsterInfo.id].name;
+        dst->monsterInfo.internalName = pMonsterStats->infos[dst->monsterInfo.id].internalName;
+    }
+    dst->monsterInfo.bloodSplatOnDeath = src.monsterInfo.bloodSplatOnDeath;
+    reconstruct(src.monsterInfo.spell1SkillMastery, &dst->monsterInfo.spell1SkillMastery);
+    reconstruct(src.monsterInfo.spell2SkillMastery, &dst->monsterInfo.spell2SkillMastery);
+    dst->monsterInfo.field_3C_some_special_attack = src.monsterInfo.field_3C_some_special_attack;
+    dst->monsterInfo.field_3E = 0; // No `field_3E` in MM8 data, see `MonsterInfo_MM8`.
+    dst->monsterInfo.hp = src.monsterInfo.hp;
+    dst->monsterInfo.ac = src.monsterInfo.ac;
+    dst->monsterInfo.exp = src.monsterInfo.exp;
+    dst->monsterInfo.baseSpeed = src.monsterInfo.baseSpeed;
+    dst->monsterInfo.recoveryTime = Duration::fromTicks(src.monsterInfo.recoveryTime);
+    dst->monsterInfo.attackPreferences = static_cast<MonsterAttackPreferences>(src.monsterInfo.attackPreferences);
+    dst->monsterId = static_cast<MonsterId>(src.monsterId);
+    dst->radius = src.radius;
+    dst->height = src.height;
+    dst->moveSpeed = src.moveSpeed;
+    reconstruct(src.pos, &dst->pos);
+    reconstruct(src.velocity, &dst->velocity);
+    dst->yawAngle = src.yawAngle;
+    dst->pitchAngle = src.pitchAngle;
+    dst->sectorId = src.sectorId;
+    dst->currentActionLength = Duration::fromTicks(src.currentActionLength);
+    reconstruct(src.initialPosition, &dst->initialPosition);
+    reconstruct(src.guardingPosition, &dst->guardingPosition);
+    dst->tetherDistance = src.tetherDistance;
+    dst->aiState = static_cast<AIState>(src.aiState);
+    dst->currentActionAnimation = static_cast<ActorAnimation>(src.currentActionAnimation);
+    dst->carriedItemId = static_cast<ItemId>(src.carriedItemId);
+    dst->currentActionTime = Duration::fromTicks(src.currentActionTime);
+
+    reconstruct(src.spriteIds, &dst->spriteIds);
+    reconstruct(src.soundSampleIds, &dst->soundSampleIds, tags::cast<uint16_t, SoundId>);
+    reconstruct(src.buffs, &dst->buffs, tags::segment<ACTOR_BUFF_FIRST, ACTOR_BUFF_LAST_MM7>);
+    for (int i = std::to_underlying(ACTOR_BUFF_FIRST_MM8_EXTRA); i <= std::to_underlying(ACTOR_BUFF_LAST); i++)
+        reconstruct(src.buffsMM8Extra[i - std::to_underlying(ACTOR_BUFF_FIRST_MM8_EXTRA)], &dst->buffs[static_cast<ActorBuff>(i)]);
+    reconstruct(src.items, &dst->items);
+
+    dst->group = src.group;
+    if (src.hostilityGroup == 9999)
+        dst->hostilityGroup = MONSTER_TYPE_INVALID;
+    else if (src.hostilityGroup == 0 ||
+             (gameType() == GAME_TYPE_MM8 && src.hostilityGroup == std::to_underlying(MONSTER_TYPE_UNUSED_RAT)))
+        // A save can carry the UNUSED_RAT placeholder as the hostility group. Recompute it from the monster id, like the 0 case.
+        dst->hostilityGroup = hostilityMonsterTypeForMonsterId(dst->monsterInfo.id);
+    else
+        dst->hostilityGroup = static_cast<MonsterType>(src.hostilityGroup);
 
     reconstruct(src.scheduledJobs, &dst->scheduledJobs);
 
@@ -1560,6 +1963,15 @@ void snapshot(const BLVSector &src, BLVSector_MM7 *dst) {
 void reconstruct(const BLVSector_MM7 &src, BLVSector *dst) {
     dst->flags = SectorFlags(src.flags);
     // Spans (floorIds, wallIds, etc.) are set up in CompositeSnapshots.cpp after sectorData is reconstructed.
+    dst->minAmbientLightLevel = src.minAmbientLightLevel;
+    dst->firstBspNode = src.firstBspNode;
+    reconstruct(src.boundingBox, &dst->boundingBox);
+}
+
+void reconstruct(const BLVSector_MM8 &src, BLVSector *dst) {
+    dst->flags = SectorFlags(src.flags);
+    // `src.eaxEnvironment` is unused in OE. Spans (floorIds, wallIds, etc.) are set up in CompositeSnapshots.cpp
+    // after sectorData is reconstructed.
     dst->minAmbientLightLevel = src.minAmbientLightLevel;
     dst->firstBspNode = src.firstBspNode;
     reconstruct(src.boundingBox, &dst->boundingBox);
@@ -1755,6 +2167,18 @@ void reconstruct(const BLVLight_MM7 &src, BLVLight *dst) {
     dst->uBrightness = src.uBrightness;
 }
 
+void reconstruct(const BLVLight_MM8 &src, BLVLight *dst) {
+    reconstruct(src.vPosition, &dst->vPosition);
+    dst->uRadius = src.uRadius;
+    dst->uRed = src.uRed;
+    dst->uGreen = src.uGreen;
+    dst->uBlue = src.uBlue;
+    dst->uType = src.uType;
+    dst->uAtributes = src.uAtributes;
+    dst->uBrightness = src.uBrightness;
+    // `src.lightId` is unused in OE.
+}
+
 void reconstruct(const OverlayData_MM7 &src, OverlayData *dst) {
     dst->uOverlayID = src.uOverlayID;
     dst->uOverlayType = src.uOverlayType;
@@ -1857,6 +2281,13 @@ void reconstruct(const SoundInfo_MM6 &src, SoundInfo *dst) {
 
 void reconstruct(const SoundInfo_MM7 &src, SoundInfo *dst) {
     reconstruct(static_cast<const SoundInfo_MM6 &>(src), dst);
+}
+
+void reconstruct(const SoundInfo_MM8 &src, SoundInfo *dst) {
+    reconstruct(src.name, &dst->name);
+    dst->soundId = static_cast<SoundId>(src.soundId);
+    dst->type = static_cast<SoundType>(src.type);
+    dst->flags = static_cast<SoundFlags>(src.flags);
 }
 
 void snapshot(const LocationInfo &src, LocationInfo_MM7 *dst) {

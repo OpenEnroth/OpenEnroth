@@ -9,6 +9,7 @@
 
 #include "Engine/Party.h"
 #include "Engine/Graphics/Renderer/Renderer.h"
+#include "Engine/Objects/CharacterEnumFunctions.h"
 #include "Engine/Tables/ItemTable.h"
 #include "Engine/Random/Random.h"
 #include "Engine/mm7_data.h"
@@ -66,7 +67,7 @@ void GameBindings::_registerMiscBindings(sol::state_view &solState, sol::table &
         SetCurrentMenuID(MenuType(screenIndex));
     }),
         "canClassLearn", sol::as_function([](Class classType, Skill skillType) {
-        return skillMaxMasteryPerClass[classType][skillType] > MASTERY_NONE;
+        return skillMaxMasteryForClass(classType, skillType) > MASTERY_NONE;
     })
     );
 }
@@ -96,7 +97,7 @@ void GameBindings::_registerPartyBindings(sol::state_view &solState, sol::table 
             pParty->GivePartyExp(amount);
         }),
         "getPartySize", sol::as_function([]() {
-            return pParty->pCharacters.size();
+            return pParty->activeCharacterCount();
         }),
         "getActiveCharacter", sol::as_function([]() {
             if (pParty->hasActiveCharacter()) {
@@ -376,10 +377,10 @@ void GameBindings::_registerFunctions(sol::state_view &solState, sol::table &tab
 }
 
 Character *getCharacterByIndex(int characterIndex) {
-    if (characterIndex >= 0 && characterIndex < pParty->pCharacters.size())
+    if (characterIndex >= 0 && characterIndex < pParty->activeCharacterCount())
         return &pParty->pCharacters[characterIndex];
 
-    MM_WARNING("Invalid character index. Asked for: {} but the party size is: {}", characterIndex, pParty->pCharacters.size());
+    MM_WARNING("Invalid character index. Asked for: {} but the party size is: {}", characterIndex, pParty->activeCharacterCount());
     return nullptr;
 }
 

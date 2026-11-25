@@ -1,6 +1,7 @@
 #include <memory>
 
 #include "Engine/AssetsManager.h"
+#include "Engine/GameType.h"
 #include "Engine/Localization.h"
 #include "Engine/Party.h"
 
@@ -19,24 +20,51 @@
 
 std::shared_ptr<GraphicsImage> ui_book_quests_background;
 
+// MM8's Close button position, measured from the original game's screen.
+static const Pointi kMm8QuestCloseButtonPos = {555, 445};
+
 GUIWindow_QuestBook::GUIWindow_QuestBook() {
     this->eWindowType = WINDOW_QUEST_BOOK;
 
     pChildBooksOverlay = std::make_unique<GUIWindow_BooksButtonOverlay>(Pointi{493, 355}, Sizei{0, 0}, pBtn_Quests);
     bFlashQuestBook = false;
 
-    ui_book_quests_background = assets->getIcon("sbquiknot");
-    ui_book_quest_div_bar = assets->getIcon("divbar");
+    // MM8's equivalents of "sbquiknot" and "tab-an-6/7". "irbgrnd" is the shared book background, "irt01"/
+    // "irt02" are the prev/next-page book-glyph ribbons ("r"=red/on, "b"=blue/off).
+    if (gameType() == GAME_TYPE_MM8) {
+        ui_book_quests_background = assets->getImage_ColorKey("irbgrnd");
+        ui_book_button1_on = assets->getImage_Alpha("irt01r");
+        ui_book_button2_on = assets->getImage_Alpha("irt02r");
+        ui_book_button1_off = assets->getImage_Alpha("irt01b");
+        ui_book_button2_off = assets->getImage_Alpha("irt02b");
+    } else {
+        ui_book_quests_background = assets->getImage_Solid("sbquiknot");
+        ui_book_button1_on = assets->getImage_Alpha("tab-an-6b");
+        ui_book_button2_on = assets->getImage_Alpha("tab-an-7b");
+        ui_book_button1_off = assets->getImage_Alpha("tab-an-6a");
+        ui_book_button2_off = assets->getImage_Alpha("tab-an-7a");
+    }
+    ui_book_quest_div_bar = assets->getImage_Alpha("divbar");
 
-    ui_book_button1_on = assets->getIcon("tab-an-6b");
-    ui_book_button2_on = assets->getIcon("tab-an-7b");
-    ui_book_button1_off = assets->getIcon("tab-an-6a");
-    ui_book_button2_off = assets->getIcon("tab-an-7a");
-
-    pBtn_Book_1 = CreateButton(pViewport.topLeft() + Pointi(398, 1), ui_book_button1_on->size(), BUTTON_TYPE_NORMAL, 0,
+    bool isMm8 = gameType() == GAME_TYPE_MM8;
+    Sizei book1Size = isMm8 ? Sizei{50, 34} : ui_book_button1_on->size();
+    Sizei book2Size = isMm8 ? Sizei{50, 34} : ui_book_button2_on->size();
+    pBtn_Book_1 = CreateButton(pViewport.topLeft() + Pointi(398, 1), book1Size, BUTTON_TYPE_NORMAL, 0,
                                UIMSG_ClickBooksBtn, std::to_underlying(BOOK_PREV_PAGE), INPUT_ACTION_DIALOG_LEFT, localization->str(LSTR_SCROLL_UP), {ui_book_button1_on});
-    pBtn_Book_2 = CreateButton(pViewport.topLeft() + Pointi(398, 38), ui_book_button2_on->size(), BUTTON_TYPE_NORMAL, 0,
+    pBtn_Book_2 = CreateButton(pViewport.topLeft() + Pointi(398, 38), book2Size, BUTTON_TYPE_NORMAL, 0,
                                UIMSG_ClickBooksBtn, std::to_underlying(BOOK_NEXT_PAGE), INPUT_ACTION_DIALOG_RIGHT, localization->str(LSTR_SCROLL_DOWN), {ui_book_button2_on});
+
+    if (isMm8) {
+        CreateMm8BookTabColumn();
+        // Real MM8 Close button position/size (see kMm8QuestCloseButtonPos above) - re-positions
+        // the clickable rect the base ctor already created at MM7's {471,445}-ish slot.
+        for (GUIButton *button : vButtons) {
+            if (button->id == "Book_Close") {
+                button->rect = Recti(kMm8QuestCloseButtonPos, ui_exit_cancel_button_background->size());
+                break;
+            }
+        }
+    }
 
     for (auto i : pQuestTable.indices())
         if (pParty->_questBits[i] && !pQuestTable[i].empty())
@@ -44,10 +72,14 @@ GUIWindow_QuestBook::GUIWindow_QuestBook() {
 }
 
 void GUIWindow_QuestBook::Update() {
-    render->DrawQuad2D(ui_exit_cancel_button_background, {471, 445});
+    bool isMm8 = gameType() == GAME_TYPE_MM8;
+    if (!isMm8)
+        render->DrawQuad2D(ui_exit_cancel_button_background, {471, 445});
 
     int pTextHeight;
     render->DrawQuad2D(ui_book_quests_background, pViewport.topLeft());
+    if (isMm8)
+        DrawMm8BookTabColumn();
 
     if ((_bookButtonClicked && _bookButtonAction == BOOK_PREV_PAGE) || !_startingQuestIdx) {
         render->DrawQuad2D(ui_book_button1_off, pViewport.topLeft() + Pointi(407, 2));
@@ -96,4 +128,9 @@ void GUIWindow_QuestBook::Update() {
         render->DrawQuad2D(ui_book_quest_div_bar, {100, (questbook_window.y + pTextHeight) + 12});
         questbook_window.y = (questbook_window.y + pTextHeight) + 24;
     }
+
+    // Drawn last (not at the top of Update() like MM7's line above) so the background fill two
+    // lines up doesn't paint over it - see kMm8QuestCloseButtonPos's own comment.
+    if (isMm8)
+        render->DrawQuad2D(ui_exit_cancel_button_background, kMm8QuestCloseButtonPos);
 }

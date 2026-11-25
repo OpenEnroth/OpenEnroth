@@ -9,6 +9,7 @@
 #include "Engine/Objects/Item.h"
 #include "Engine/Tables/NPCTable.h"
 #include "Engine/Objects/Character.h"
+#include "Engine/PartyMM8Roster.h"
 #include "Engine/Timer.h"
 
 #include "Engine/Data/SoundEnums.h"
@@ -112,6 +113,106 @@ struct Party {
     int canActCount() const;
 
     /**
+     * @return                          Number of party members that are actually part of the
+     *                                  current game, as opposed to `pCharacters.size()`, which is
+     *                                  a fixed 5 regardless of game version. Under `GAME_TYPE_MM8`
+     *                                  a fresh game is a solo (1-champion) start. Slots
+     *                                  1-4 hold real recruited companions only once `recruitRoster()`
+     *                                  fills them (unrecruited slots are inert placeholders, see
+     *                                  `Character::rosterId`) and must not be drawn/counted as
+     *                                  active party members. MM7 is unaffected: it always returns
+     *                                  the fixed 4 (index 4 is MM8-only, always inert for MM7).
+     */
+    int activeCharacterCount() const;
+
+    /**
+     * MM8 only. Puts the character built from `roster.txt` row `rosterId` into the first free
+     * active party slot (`pCharacters[1..4]`), or into the Adventurer's Inn (`mm8Roster`) if the
+     * active party is already full (5 members).
+     *
+     * @return                          Whether the character joined the active party (false means
+     *                                  it went to the Inn instead).
+     */
+    bool recruitRoster(int rosterId);
+
+    /**
+     * MM8 only. Puts the heroes the guides place at the Dagger Wound Adventurer's Inn from the
+     * start of a new game on the Inn bench (`mm8Roster`), so the active party is unchanged.
+     */
+    void seatStartingInnRecruits();
+
+    /**
+     * MM8 only. A script that sets a roster row's own "QuestBit" (400 + row, e.g. 430 for row 30,
+     * set by a statue's event in Murmurwoods) makes that hero wait at the
+     * Adventurer's Inn, as in the original game. A no-op if no row owns the bit or the
+     * hero is already in the party or at the Inn.
+     */
+    void seatRosterOfQuestBit(QuestBit bit);
+
+    /**
+     * Test-only: a party that cannot die. Members that join later (`recruitRoster`/`activateFromInn`/`swapWithInn`)
+     * get the same treatment, with counters starting at join time. 0 / false = off. Not saved.
+     */
+    int survivableHp = 0;
+    bool survivableConditions = false;
+    /** Test-only: every party melee/ranged/spell hit on an actor lands and deals exactly this much, ignoring immunity. 0 = off. Not saved. */
+    int survivableDamage = 0;
+    void armSurvivable(Character &character) const;
+
+    /**
+     * MM8 only. Moves the roster companion with the given `rosterId` from the active party to the
+     * Adventurer's Inn, compacting the remaining active slots. A no-op (returns false) if `rosterId`
+     * isn't currently in the active party, if `rosterId <= 0` (the champion, slot 0, is never
+     * roster-backed and can't be dismissed this way), or if `bTurnBasedModeOn` is set (the original refuses
+     * a dismiss in turn-based mode, showing `LSTR_YOU_CANNOT_DISMISS_A_CHARACTER_IN_TURN_BASED_MODE`).
+     *
+     * @return                          Whether a party member was actually dismissed.
+     */
+    bool dismissRoster(int rosterId);
+
+    /**
+     * MM8 only. Adventurer's Inn engine op: moves the roster companion with the given `rosterId`
+     * from the Inn bench into the first free active party slot. A no-op (returns false, changes
+     * nothing) if `rosterId` isn't currently on the bench, or if the active party is already full
+     * (5 members) - use `swapWithInn()` instead in that case.
+     *
+     * @return                          Whether the companion actually joined the active party.
+     */
+    bool activateFromInn(int rosterId);
+
+    /**
+     * MM8 only. Adventurer's Inn engine op: exchanges the bench companion `benchRosterId` with the
+     * active companion `activeRosterId` in one atomic move, so it works even with a full (5-member)
+     * party. A no-op (returns false, changes nothing) if `benchRosterId` isn't on the bench, if
+     * `activeRosterId` isn't currently in the active party, or if `activeRosterId == 0` (the original never
+     * lets the champion be swapped out via the Inn).
+     *
+     * @return                          Whether the swap actually happened.
+     */
+    bool swapWithInn(int benchRosterId, int activeRosterId);
+
+    /**
+     * MM8 only.
+     *
+     * @return                          Whether the roster companion with the given `rosterId` is
+     *                                  currently in the active party (as opposed to the Inn, or not
+     *                                  recruited at all).
+     */
+    bool isRosterInParty(int rosterId) const;
+
+    /**
+     * MM8 only. Forces every `pCharacters` slot at index >= `activeCharacterCount()` (an
+     * unrecruited roster placeholder) into `CONDITION_DEAD` - the "inert by construction"
+     * invariant: `Character::CanAct()`/`IsDead()` alone is then enough to keep a
+     * placeholder out of anything that reads raw `pCharacters` without going through
+     * `activeCharacterCount()`. A no-op under
+     * MM7 (fixed party of 4, no placeholder slots exist) and for any slot already dead. Idempotent;
+     * call after anything that can change which slots count as active or repopulate a slot:
+     * `Reset()`, `recruitRoster()`, `dismissRoster()`, and after loading a save.
+     */
+    void enforcePlaceholderInertness();
+
+    /**
      * @offset 0x48C6F6
      */
     bool addItemToParty(Item *pItem, bool isSilent = false);
@@ -187,6 +288,9 @@ struct Party {
     }
     inline Mastery ImmolationSkillLevel() const {
         return pPartyBuffs[PARTY_BUFF_IMMOLATION].skillMastery;
+    }
+    inline bool LevitateActive() const {
+        return pPartyBuffs[PARTY_BUFF_LEVITATE].Active();
     }
     inline bool FeatherFallActive() const {
         return pPartyBuffs[PARTY_BUFF_FEATHER_FALL].Active();
@@ -319,7 +423,7 @@ struct Party {
     IndexedArray<bool, HOUSE_FIRST_TOWN_HALL, HOUSE_LAST_TOWN_HALL> monster_for_hunting_killed;
     unsigned char days_played_without_rest = 0;
     IndexedBitset<QBIT_FIRST, QBIT_LAST> _questBits;
-    IndexedArray<bool, HOUSE_FIRST_ARCOMAGE_TAVERN, HOUSE_LAST_ARCOMAGE_TAVERN> pArcomageWins;
+    std::array<bool, 13> pArcomageWins; // Indexed by arcomageTavernIndex().
     ArenaState arenaState = ARENA_STATE_INITIAL;
     ArenaLevel arenaLevel = ARENA_LEVEL_INVALID;
     IndexedArray<uint8_t, ARENA_LEVEL_FIRST_VALID, ARENA_LEVEL_LAST_VALID> uNumArenaWins;
@@ -331,8 +435,13 @@ struct Party {
     PARTY_FLAGS_2 uFlags2 = {};
     PartyAlignment alignment = PartyAlignment_Neutral;
     IndexedArray<SpellBuff, PARTY_BUFF_FIRST, PARTY_BUFF_LAST> pPartyBuffs;
-    std::array<Character, 4> pCharacters;
+    // 5 slots: MM8's champion and up to 4 recruits. MM7 uses the first 4, see `activeCharacterCount()`.
+    std::array<Character, 5> pCharacters;
     std::array<NPCData, 2> pHirelings;
+    // MM8's Adventurer's Inn bench: companions recruited but not currently in the active party (see
+    // `PartyMM8Roster`), keyed by `Character::rosterId`. Unused under MM7, which keeps its fixed-4
+    // roster in `pCharacters`/`pHirelings` above untouched.
+    PartyMM8Roster mm8Roster;
     std::array<NPCSacrificeStatus, 2> pHirelingsSacrifice;
     Item pPickedItem;
     PartyFlags uFlags;
@@ -345,8 +454,8 @@ struct Party {
     int armageddonDamage = 0;
     // Keeps track of how many impulses have been applied to actors during armeggeddon
     // Stops actors being yeeted high in the air at high fps
-    int armageddonForceCount = 0;
-    std::array<Duration, 4> pTurnBasedCharacterRecoveryTimes;
+    int armageddonForceCount{ 0 };
+    std::array<Duration, 5> pTurnBasedCharacterRecoveryTimes;
     IndexedArray<int, HOUSE_FIRST_SHOP, HOUSE_LAST_SHOP> InTheShopFlags;
     int uFine = 0;
     float TorchLightLastIntensity = 0.0f;
@@ -357,7 +466,7 @@ struct Party {
     SpeechId _delayedReactionSpeech = SPEECH_NONE;
     int _delayedReactionCharacterId = -1;
 
-    std::array<bool, 4> playerAlreadyPicked = {{}};  // Was at offset 0xAE3368 in vanilla, we moved it into Party in OE.
+    std::array<bool, 5> playerAlreadyPicked = {{}};  // Was at offset 0xAE3368 in vanilla, we moved it into Party in OE.
 
     /**
      * @return                          0-based index of the active character. Asserts that there is one, so check

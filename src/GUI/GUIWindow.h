@@ -223,8 +223,30 @@ void UI_Create();
 void GameUI_DrawRightPanel();
 void GameUI_DrawRightPanelFrames();
 void GameUI_DrawRightPanelItems();
+
+/**
+ * Is MM8's full exploration HUD (opaque top-bar background, compass, command icons,
+ * both bookends, minimap frame, zoom buttons) on screen? True only in free-roam exploration -
+ * every MM8 HUD element must consult this (or mm8ScoreStripVisible() below) instead of keeping
+ * its own screen-type check. Always false for MM7: the MM7 draw paths don't route through it.
+ *
+ * The original's game menu, party stats, rest and map screens show none of this chrome.
+ */
+bool mm8HudVisible();
+
+/**
+ * Is MM8's narrow food/gold strip ("scorebg" + the two numbers) on screen? A superset
+ * of mm8HudVisible(): right-panel overlays (NPC dialogue, house interior, shop inventory,
+ * character record, ...) keep the strip but drop all other HUD chrome. The opaque "topbar" background is
+ * NOT part of the strip and only draws when mm8HudVisible() is true.
+ */
+bool mm8ScoreStripVisible();
+
 void GameUI_DrawFoodAndGold();
 void GameUI_DrawLifeManaBars();
+void GameUI_DrawCompass();
+void GameUI_DrawCommandIcons();
+void GameUI_DrawZoomButtons();
 void GameUI_DrawHiredNPCs();
 void GameUI_DrawPortraits();
 

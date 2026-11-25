@@ -196,7 +196,25 @@ enum class Race {
     RACE_DWARF = 3,
 
     RACE_FIRST = RACE_HUMAN,
-    RACE_LAST = RACE_DWARF
+    RACE_LAST = RACE_DWARF,
+
+    // MM8 does away with the MM7 race/class split: race *is* class. Each of these is a startable race-class,
+    // except for RACE_MM8_DRAGON, which is recruit-only (see `isMm8StartableRace`). Values are appended after
+    // the MM7 range above so that MM7 numbering & serialization are unaffected.
+    RACE_MM8_NECROMANCER = 4,
+    RACE_MM8_CLERIC = 5,
+    RACE_MM8_KNIGHT = 6,
+    RACE_MM8_TROLL = 7,
+    RACE_MM8_MINOTAUR = 8,
+    RACE_MM8_DARK_ELF = 9,
+    RACE_MM8_VAMPIRE = 10,
+    RACE_MM8_DRAGON = 11,
+
+    RACE_MM8_FIRST = RACE_MM8_NECROMANCER,
+    RACE_MM8_LAST = RACE_MM8_DRAGON,
+
+    RACE_MM8_STARTABLE_FIRST = RACE_MM8_NECROMANCER,
+    RACE_MM8_STARTABLE_LAST = RACE_MM8_VAMPIRE
 };
 using enum Race;
 
@@ -249,11 +267,21 @@ enum class Skill : int8_t {
     SKILL_CLUB = 37, // In vanilla clubs are using separate hidden & non-upgradable skill.
     SKILL_MISC = 38, // Hidden skill that's always 1. Used for wetsuits, for example.
 
+    // MM8-only race and regeneration skills. Retail MM8 numbers them in its own skill order (roster.txt columns),
+    // here they are appended so that MM7 numbering and savegames are unaffected.
+    SKILL_DARK_ELF = 39,
+    SKILL_VAMPIRE = 40,
+    SKILL_DRAGON = 41,
+    SKILL_REGENERATION = 42,
+
+    SKILL_FIRST_MM8_ONLY = SKILL_DARK_ELF,
+    SKILL_LAST_MM8_ONLY = SKILL_REGENERATION,
+
     SKILL_FIRST_VISIBLE = SKILL_STAFF,
     SKILL_LAST_VISIBLE = SKILL_LEARNING,
 
     SKILL_FIRST = SKILL_STAFF,
-    SKILL_LAST = SKILL_MISC,
+    SKILL_LAST = SKILL_REGENERATION,
 };
 using enum Skill;
 
@@ -296,7 +324,39 @@ enum class Class : uint8_t {
     CLASS_LICH = 35,
 
     CLASS_FIRST = CLASS_KNIGHT,
-    CLASS_LAST = CLASS_LICH
+    CLASS_LAST = CLASS_LICH,
+
+    // MM8 classes. Unlike MM7, each MM8 race-class (see `Race`) has just a single promotion, so there's no
+    // light/dark split here - `RACE_MM8_KNIGHT` promotes to `CLASS_MM8_CHAMPION`, period. Values are appended
+    // after the MM7 range above so that MM7 numbering & serialization are unaffected. Note the "MM8_" prefix:
+    // some MM8 race-classes share a name with an MM7 class (e.g. Knight, Cleric), so plain `CLASS_KNIGHT` is
+    // already taken.
+    CLASS_MM8_NECROMANCER = 36,
+    CLASS_MM8_CLERIC = 37,
+    CLASS_MM8_KNIGHT = 38,
+    CLASS_MM8_TROLL = 39,
+    CLASS_MM8_MINOTAUR = 40,
+    CLASS_MM8_DARK_ELF = 41,
+    CLASS_MM8_VAMPIRE = 42,
+    CLASS_MM8_DRAGON = 43,
+
+    CLASS_MM8_LICH = 44,             // Necromancer promotion.
+    CLASS_MM8_PRIEST_OF_LIGHT = 45,  // Cleric promotion.
+    CLASS_MM8_CHAMPION = 46,         // Knight promotion.
+    CLASS_MM8_WAR_TROLL = 47,        // Troll promotion.
+    CLASS_MM8_MINOTAUR_LORD = 48,    // Minotaur promotion.
+    CLASS_MM8_PATRIARCH = 49,        // Dark Elf promotion.
+    CLASS_MM8_NOSFERATU = 50,        // Vampire promotion.
+    CLASS_MM8_GREAT_WYRM = 51,       // Dragon promotion.
+
+    CLASS_MM8_FIRST = CLASS_MM8_NECROMANCER,
+    CLASS_MM8_LAST = CLASS_MM8_GREAT_WYRM,
+
+    CLASS_MM8_BASE_FIRST = CLASS_MM8_NECROMANCER,
+    CLASS_MM8_BASE_LAST = CLASS_MM8_DRAGON,
+
+    CLASS_MM8_PROMOTED_FIRST = CLASS_MM8_LICH,
+    CLASS_MM8_PROMOTED_LAST = CLASS_MM8_GREAT_WYRM
 };
 using enum Class;
 

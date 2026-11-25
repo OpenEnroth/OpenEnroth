@@ -8,7 +8,8 @@ enum class ActorKillCheckPolicy {
     KILL_CHECK_ANY = 0,
     KILL_CHECK_GROUPID = 1,
     KILL_CHECK_MONSTERID = 2,
-    KILL_CHECK_ACTORID = 3
+    KILL_CHECK_ACTORID = 3,
+    KILL_CHECK_UNIQUENAME = 4 // MM8: a specific placed monster by `placemon.txt` index (Actor::uniqueNameIndex).
 };
 using enum ActorKillCheckPolicy;
 
@@ -46,9 +47,13 @@ enum class ActorBuff {
     ACTOR_BUFF_HASTE = 19,
     ACTOR_BUFF_PAIN_REFLECTION = 20,
     ACTOR_BUFF_HAMMERHANDS = 21,
+    ACTOR_BUFF_MELEE_ONLY = 22, // MM8, Dark Grasp. The monster fires no missiles and casts no spells.
+    ACTOR_BUFF_DAMAGE_HALVED = 23, // MM8, Dark Grasp. The monster's melee damage is halved.
 
     ACTOR_BUFF_FIRST = ACTOR_BUFF_CHARM,
-    ACTOR_BUFF_LAST = ACTOR_BUFF_HAMMERHANDS
+    ACTOR_BUFF_LAST_MM7 = ACTOR_BUFF_HAMMERHANDS,
+    ACTOR_BUFF_FIRST_MM8_EXTRA = ACTOR_BUFF_MELEE_ONLY,
+    ACTOR_BUFF_LAST = ACTOR_BUFF_DAMAGE_HALVED
 };
 using enum ActorBuff;
 

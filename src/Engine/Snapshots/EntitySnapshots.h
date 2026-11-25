@@ -330,8 +330,10 @@ struct Character_MM7 {
     uint16_t level;
     int16_t levelModifier;
     int16_t ageModifier;
-    std::array<int32_t, 10> timers; // These look like some timers. In the original binary they were decremented by
-                                    // ticks elapsed on each frame, but weren't used anywhere. Not used in OE.
+    std::array<int32_t, 8> timers; // These look like some timers. In the original binary they were decremented by
+                                   // ticks elapsed on each frame, but weren't used anywhere. Not used in OE.
+    std::array<uint16_t, 4> mm8RaceSkills; // OE extension in the former timers: Dark Elf, Vampire, Dragon and Regeneration
+                                           // skills, only read back for MM8 (MM7 saves have leftover timers here).
     std::array<uint16_t, 37> activeSkills;
     std::array<uint8_t, 64> achievedAwardsBits;
     std::array<bool, 99> haveSpell;
@@ -551,6 +553,151 @@ MM_DECLARE_MEMCOPY_SERIALIZABLE(Party_MM7)
 void snapshot(const Party &src, Party_MM7 *dst);
 void reconstruct(const Party_MM7 &src, Party *dst);
 
+
+// MM8's save Party record (party.bin in a .dod), from an autosave written by the original game.
+// The header matches `Party_MM7` from offset 0. `partyTimes` is 16 bytes wider and `field_818` is
+// 10 bytes wider. The 510 bytes before the character array (`numArcomageWins`..`partyBuffs` in
+// MM7) are not decoded and are kept opaque. Characters are 7464 bytes apart.
+struct PartyTimeStruct_MM8 {
+    std::array<int64_t, 5> bountyHuntingNextGenerationTime;
+    std::array<int64_t, 5> bountyHuntingNextGenerationTimeUnused;
+    int64_t shopsNextGenerationTime0;
+    std::array<int64_t, 52> shopsNextGenerationTime;
+    std::array<int64_t, 32> guildsNextGenerationTime;
+    int64_t shopBanTime0;
+    std::array<int64_t, 52> shopBanTimes;
+    std::array<int64_t, 10> counterEventValues;
+    std::array<int64_t, 29> historyEventTimes;
+    std::array<int64_t, 20> someOtherTimes;
+    std::array<uint8_t, 16> unknownTail; // Not yet identified which field(s) grew - kept for round-trip fidelity only.
+};
+static_assert(sizeof(PartyTimeStruct_MM8) == 0x678 + 16);
+MM_DECLARE_MEMCOPY_SERIALIZABLE(PartyTimeStruct_MM8)
+
+
+// A base/bonus attribute pair, same encoding `Character_MM7` uses for e.g.
+// might/mightBonus - two `uint16_t`s packed into 4 bytes.
+struct CharacterAttributePair_MM8 {
+    uint16_t base;
+    uint16_t bonus;
+};
+static_assert(sizeof(CharacterAttributePair_MM8) == 4);
+MM_DECLARE_MEMCOPY_SERIALIZABLE(CharacterAttributePair_MM8)
+
+// MM8's per-character save record (stride 7464 bytes within `Party_MM8`'s character
+// array). Decoded: experience, name, attributes, level. The rest is opaque.
+// `unknownSexClassFacePad` can't be mapped to a race/class safely, the original's classType
+// encoding for MM8 races is unknown. `unknownTail` (HP/mana/skills/inventory/spells) is not
+// `Character_MM7`'s layout shifted.
+struct CharacterRecord_MM8 {
+    uint64_t experience;
+    std::array<char, 32> name;
+    std::array<uint8_t, 648> unknownBio;
+    std::array<uint8_t, 4> unknownSexClassFacePad;
+    CharacterAttributePair_MM8 might;
+    CharacterAttributePair_MM8 intelligence;
+    CharacterAttributePair_MM8 personality;
+    CharacterAttributePair_MM8 endurance;
+    CharacterAttributePair_MM8 speed;
+    CharacterAttributePair_MM8 accuracy;
+    CharacterAttributePair_MM8 luck;
+    int16_t acModifier;
+    uint16_t level;
+    int16_t levelModifier;
+    int16_t ageModifier;
+    std::array<uint8_t, 6736> unknownTail;
+};
+static_assert(sizeof(CharacterRecord_MM8) == 7464);
+MM_DECLARE_MEMCOPY_SERIALIZABLE(CharacterRecord_MM8)
+
+void reconstruct(const CharacterRecord_MM8 &src, Character *dst);
+
+
+struct Party_MM8 {
+    int32_t field_0;
+    uint32_t partyHeight;
+    uint32_t defaultPartyHeight;
+    int32_t eyeLevel;
+    uint32_t defaultEyeLevel;
+    int32_t radius;
+    int32_t yawGranularity;
+    uint32_t walkSpeed;
+    int32_t yawRotationSpeed;
+    int32_t jumpStrength;
+    int32_t field_28;
+    int64_t timePlayed;
+    int64_t lastRegenerationTime;
+    PartyTimeStruct_MM8 partyTimes;
+    Vec3i position;
+    int32_t viewYaw;
+    int32_t viewPitch;
+    Vec3i prevPosition;
+    int32_t viewPrevYaw;
+    int32_t viewPrevPitch;
+    int32_t prevEyeLevel;
+    int32_t field_6E0;
+    int32_t field_6E4;
+    int32_t fallSpeed;
+    int32_t field_6EC;
+    int32_t savedFlightZ;
+    int32_t floorFacePidUnused;
+    int32_t walkSoundTimerUnused;
+    int32_t waterLavaTimer;
+    int32_t fallStartZ;
+    uint32_t flying;
+    char field_708;
+    uint8_t hirelingScrollPosition;
+    char field_70A;
+    char field_70B;
+    uint32_t currentYear;
+    uint32_t currentMonth;
+    uint32_t currentMonthWeek;
+    uint32_t currentDayOfMonth;
+    uint32_t currentHour;
+    uint32_t currentMinute;
+    uint32_t currentTimeSecond;
+    uint32_t numFoodRations;
+    int32_t field_72C;
+    int32_t field_730;
+    uint32_t numGold;
+    uint32_t numGoldInBank;
+    uint32_t numDeaths;
+    int32_t field_740;
+    int32_t numPrisonTerms;
+    uint32_t numBountiesCollected;
+    int field_74C;
+    std::array<int16_t, 5> monsterIdForHunting;
+    std::array<int16_t, 5> monsterForHuntingKilled;
+    uint8_t daysPlayedWithoutRest;
+    std::array<uint8_t, 64> questBits;
+    std::array<bool, 13> arcomageWins;
+    std::array<bool, 3> arcomageWinsUnused;
+    int8_t field_7B5_in_arena_quest;
+    std::array<uint8_t, 4> numArenaWins;
+    std::array<bool, 29> isArtifactFound;
+    std::array<char, 39> field_7d7;
+    std::array<uint8_t, 26> autonoteBits;
+    std::array<char, 70> field_818; // 10 bytes wider than `Party_MM7`'s.
+    std::array<char, 32> randomNumbersUnused;
+
+    // `numArcomageWins`/`numArcomageLoses`/`turnBasedModeOn`/`field_880`/`flags2`/
+    // `alignment`/`partyBuffs` are 344 bytes in `Party_MM7`. This range is 510 bytes in MM8
+    // and is not decoded.
+    std::array<uint8_t, 510> unknownAlignmentAndPartyBuffs;
+
+    // The character array's index 0, the solo player character. Indices past 0 aren't reconstructed.
+    CharacterRecord_MM8 character0;
+
+    // Characters[1..]/hirelings/picked-item/shop-item tables/hireling names/etc.
+    // Kept whole, not reconstructed into runtime state.
+    std::array<uint8_t, 595304 - sizeof(CharacterRecord_MM8) + 128> unknownTail;
+};
+static_assert(sizeof(Party_MM8) == 598132);
+MM_DECLARE_MEMCOPY_SERIALIZABLE(Party_MM8)
+
+void reconstruct(const Party_MM8 &src, Party *dst);
+
+
 struct Timer_MM7 {
     /** Not used by the engine, was set to true for event timer & to false for misc timer.
      * Misc timer is never serialized, so we set it to true unconditionally. */
@@ -714,6 +861,74 @@ static_assert(sizeof(MonsterInfo_MM7) == 0x58);
 MM_DECLARE_MEMCOPY_SERIALIZABLE(MonsterInfo_MM7)
 
 
+// MM8's per-actor `MonsterInfo` (embedded in `Actor_MM8`), verified against MM8's out01.ddm
+// and cross-checked with MMExtension's struct definitions (`CommonMonsterProps`).
+// The only structural differences from `MonsterInfo_MM7` are: the 10 elemental/
+// physical resistance fields are `uint16_t` instead of `uint8_t` (+10 bytes), and the 2-byte pad between
+// `field_3C_some_special_attack` and `hp` present in MM7 (`field_3E`) is absent in MM8 (-2 bytes) - net +8 bytes.
+struct MonsterInfo_MM8 {
+    Pointer_MM7 name;
+    Pointer_MM7 internalName;
+    uint8_t level;
+    uint8_t treasureDropChance;
+    uint8_t goldDiceRolls;
+    uint8_t goldDiceSides;
+    uint8_t treasureLevel;
+    uint8_t treasureType;
+    uint8_t flying;
+    uint8_t movementType;
+    uint8_t aiType;
+    uint8_t hostilityType;
+    char field_12;
+    uint8_t specialAttackType;
+    uint8_t specialAttackLevel;
+    uint8_t attack1Type;
+    uint8_t attack1DamageDiceRolls;
+    uint8_t attack1DamageDiceSides;
+    uint8_t attack1DamageBonus;
+    uint8_t attack1MissileType;
+    uint8_t attack2Chance;
+    uint8_t attack2Type;
+    uint8_t attack2DamageDiceRolls;
+    uint8_t attack2DamageDiceSides;
+    uint8_t attack2DamageBonus;
+    uint8_t attack2MissileType;
+    uint8_t spell1UseChance;
+    uint8_t spell1Id;
+    uint8_t spell2UseChance;
+    uint8_t spell2Id;
+    uint16_t resFire; // MM8-only width: 2 bytes instead of MM7's 1.
+    uint16_t resAir;
+    uint16_t resWater;
+    uint16_t resEarth;
+    uint16_t resMind;
+    uint16_t resSpirit;
+    uint16_t resBody;
+    uint16_t resLight;
+    uint16_t resDark;
+    uint16_t resPhysical;
+    uint8_t specialAbilityType;
+    uint8_t specialAbilityDamageDiceRolls;
+    uint8_t specialAbilityDamageDiceSides;
+    uint8_t specialAbilityDamageDiceBonus;
+    uint8_t numCharactersAttackedPerSpecialAbility;
+    char _pad;
+    uint16_t id;
+    uint16_t bloodSplatOnDeath;
+    uint16_t spell1SkillMastery;
+    uint16_t spell2SkillMastery;
+    int16_t field_3C_some_special_attack;
+    uint32_t hp; // No `field_3E` pad here, unlike MM7 - MM8 goes straight from `field_3C_some_special_attack` to `hp`.
+    uint32_t ac;
+    uint32_t exp;
+    uint32_t baseSpeed;
+    int32_t recoveryTime;
+    uint32_t attackPreferences;
+};
+static_assert(sizeof(MonsterInfo_MM8) == 0x60);
+MM_DECLARE_MEMCOPY_SERIALIZABLE(MonsterInfo_MM8)
+
+
 struct MonsterDesc_MM6 {
     uint16_t monsterHeight;
     uint16_t monsterRadius;
@@ -746,6 +961,29 @@ MM_DECLARE_MEMCOPY_SERIALIZABLE(MonsterDesc_MM7)
 
 void snapshot(const MonsterDesc &src, MonsterDesc_MM7 *dst);
 void reconstruct(const MonsterDesc_MM7 &src, MonsterDesc *dst);
+
+
+// MM8's `dmonlist.bin` uses the same field layout as `MonsterDesc_MM7`, except
+// `internalMonsterName` is 64 bytes wide instead of 32 (confirmed against MM8's dmonlist.bin:
+// several MM8 monster names, e.g. "Wimpy Pirate Crossbowman (Female) A", don't fit in MM7's 32-byte
+// field and their tail overflows right into the next 32 bytes, which are otherwise all-zero padding
+// for every other monster - everything else, including the 8+2 sprite name slots right after, lines
+// up byte-for-byte with MM7).
+struct MonsterDesc_MM8 {
+    uint16_t monsterHeight;
+    uint16_t monsterRadius;
+    uint16_t movementSpeed;
+    int16_t toHitRadius;
+    uint32_t tintColor;
+    std::array<uint16_t, 4> soundSampleIds;
+    std::array<char, 64> internalMonsterName; // Internal monster name, e.g. "Lizardmen Male (Peasant) A".
+    std::array<std::array<char, 10>, 8> spriteNames; // Sprite names, to be looked up in sprite frame table.
+    std::array<std::array<char, 10>, 2> spriteNamesUnused;
+};
+static_assert(sizeof(MonsterDesc_MM8) == 184);
+MM_DECLARE_MEMCOPY_SERIALIZABLE(MonsterDesc_MM8)
+
+void reconstruct(const MonsterDesc_MM8 &src, MonsterDesc *dst);
 
 
 struct ActorJob_MM7 {
@@ -812,6 +1050,65 @@ MM_DECLARE_MEMCOPY_SERIALIZABLE(Actor_MM7)
 
 void snapshot(const Actor &src, Actor_MM7 *dst);
 void reconstruct(const Actor_MM7 &src, Actor *dst);
+
+
+// MM8's per-map creature record, verified against MM8's out01.ddm (62 actors, zero leftover bytes across the
+// whole `.ddm` once `OutdoorDelta_MM8` below is accounted for) and cross-checked with MMExtension's struct
+// definitions (`MapMonster`). Structural differences from `Actor_MM7`:
+// `monsterInfo` is the wider `MonsterInfo_MM8` (see above), and the spell buffs array is widened from 22 to 30
+// slots. MM7 uses slot 0 as an always-unused "actorBuffZeroUnused" placeholder plus 21 real buff slots
+// (matching `ActorBuff`'s `ACTOR_BUFF_FIRST..LAST` range). MM8 keeps that same 0+21 shape and
+// appends 8 more buff slots that `ActorBuff` doesn't model. They are deserialized but not reconstructed into
+// runtime state (`buffsMM8Extra` below). Every other field has an identical binary layout to `Actor_MM7`, so
+// this reuses the MM7 element types (`SpellBuff_MM7`, `Item_MM7`, `ActorJob_MM7`) directly.
+struct Actor_MM8 {
+    std::array<char, 32> name;
+    int16_t npcId;
+    int16_t field_22;
+    uint32_t attributes;
+    int16_t hp;
+    std::array<char, 2> _pad;
+    MonsterInfo_MM8 monsterInfo;
+    int16_t field_84;
+    int16_t monsterId;
+    uint16_t radius;
+    uint16_t height;
+    uint16_t moveSpeed;
+    Vec3s pos;
+    Vec3s velocity;
+    uint16_t yawAngle;
+    uint16_t pitchAngle;
+    int16_t sectorId;
+    uint16_t currentActionLength;
+    Vec3s initialPosition;
+    Vec3s guardingPosition;
+    uint16_t tetherDistance;
+    int16_t aiState;
+    uint16_t currentActionAnimation;
+    uint16_t carriedItemId;
+    std::array<char, 2> _pad2;
+    uint32_t currentActionTime;
+    std::array<uint16_t, 8> spriteIds;
+    std::array<uint16_t, 4> soundSampleIds;
+    SpellBuff_MM7 actorBuffZeroUnused; // Same MM7 artifact, zero is ACTOR_BUFF_NONE. Dropped in OE.
+    std::array<SpellBuff_MM7, 21> buffs;
+    std::array<SpellBuff_MM7, 8> buffsMM8Extra; // MM8-only buff slots 22-29. `ActorBuff` models 22 and 23, the rest is dropped.
+    std::array<Item_MM7, 4> items;
+    uint32_t group;
+    uint32_t hostilityGroup; // 0 = default (derive from monster type), 9999 = party ally, other = MonsterType value.
+    std::array<ActorJob_MM7, 8> scheduledJobs;
+    uint32_t summonerId;
+    uint32_t lastCharacterIdToHit;
+    int32_t uniqueNameIndex;
+    std::array<char, 12> field_338;
+};
+static_assert(sizeof(Actor_MM8) == 0x3CC);
+MM_DECLARE_MEMCOPY_SERIALIZABLE(Actor_MM8)
+
+// Writing side of the MM8 actor wire format, used to store the current MM8 actor list in a save
+// (see `SaveLoad.h`'s `kMm8LiveActorsKey`).
+void snapshot(const Actor &src, Actor_MM8 *dst);
+void reconstruct(const Actor_MM8 &src, Actor *dst);
 
 
 struct BLVDoor_MM7 {
@@ -890,6 +1187,58 @@ struct BLVSector_MM7 {
 };
 static_assert(sizeof(BLVSector_MM7) == 0x74);
 MM_DECLARE_MEMCOPY_SERIALIZABLE(BLVSector_MM7)
+
+// MM8's only structural difference from `BLVSector_MM7` is one extra `eaxEnvironment` field inserted
+// right after `flags`, verified against all 47 MM8 `.blv` dungeons (zero leftover bytes on every one)
+// and cross-checked with MMExtension's struct definitions (`MapRoom`).
+struct BLVSector_MM8 {
+    int32_t flags;
+    int32_t eaxEnvironment; // MM8-only; meaning unknown, unused in OE.
+    uint16_t numFloors;
+    int16_t _pad0;
+    Pointer_MM7 floors;
+    uint16_t numWalls;
+    int16_t _pad1;
+    Pointer_MM7 walls;
+    uint16_t numCeilings;
+    int16_t _pad2;
+    Pointer_MM7 ceilings;
+    uint16_t numFluids;
+    int16_t _pad3;
+    Pointer_MM7 fluids;
+    int16_t numPortals;
+    int16_t _pad4;
+    Pointer_MM7 portals;
+    uint16_t numFaces;
+    uint16_t numNonBspFaces;
+    Pointer_MM7 faceIds;
+    uint16_t numCylinderFaces;
+    int16_t _pad5;
+    Pointer_MM7 cylinderFaces;
+    uint16_t numCogs;
+    int16_t _pad6;
+    Pointer_MM7 cogs;
+    uint16_t numDecorations;
+    int16_t _pad7;
+    Pointer_MM7 decorationIds;
+    uint16_t numMarkers;
+    int16_t _pad8;
+    Pointer_MM7 markers;
+    uint16_t numLights;
+    int16_t _pad9;
+    Pointer_MM7 lights;
+    int16_t waterLevel;
+    int16_t mistLevel;
+    int16_t lightDistanceMultiplier;
+    int16_t minAmbientLightLevel;
+    int16_t firstBspNode;
+    int16_t exitTag;
+    BBoxs_MM7 boundingBox;
+};
+static_assert(sizeof(BLVSector_MM8) == 0x78);
+MM_DECLARE_MEMCOPY_SERIALIZABLE(BLVSector_MM8)
+
+void reconstruct(const BLVSector_MM8 &src, BLVSector *dst);
 
 void snapshot(const BLVSector &src, BLVSector_MM7 *dst);
 void reconstruct(const BLVSector_MM7 &src, BLVSector *dst);
@@ -1071,6 +1420,25 @@ MM_DECLARE_MEMCOPY_SERIALIZABLE(BLVLight_MM7)
 
 void reconstruct(const BLVLight_MM7 &src, BLVLight *dst);
 
+// MM8's only structural difference from `BLVLight_MM7` is one extra trailing `lightId` field, verified
+// against all 47 MM8 `.blv` dungeons (zero leftover bytes on every one) and cross-checked with
+// MMExtension's struct definitions (`MapLight`).
+struct BLVLight_MM8 {
+    Vec3s vPosition;
+    int16_t uRadius;
+    char uRed;
+    char uGreen;
+    char uBlue;
+    char uType;
+    int16_t uAtributes;
+    int16_t uBrightness;
+    int32_t lightId; // MM8-only; meaning unknown, unused in OE.
+};
+static_assert(sizeof(BLVLight_MM8) == 20);
+MM_DECLARE_MEMCOPY_SERIALIZABLE(BLVLight_MM8)
+
+void reconstruct(const BLVLight_MM8 &src, BLVLight *dst);
+
 
 struct OverlayData_MM7 {
     uint16_t uOverlayID;
@@ -1113,6 +1481,23 @@ static_assert(sizeof(LevelDecoration_MM7) == 32);
 MM_DECLARE_MEMCOPY_SERIALIZABLE(LevelDecoration_MM7)
 
 void reconstruct(const LevelDecoration_MM7 &src, LevelDecoration *dst);
+
+
+// MM8-only per-map "automap note" (player-placed pin with free text) - a feature with no MM7 equivalent
+// and no runtime counterpart in OpenEnroth yet, so there's no `reconstruct()` for it. It's deserialized purely to
+// consume the right number of bytes. Verified against MM8's out01.ddm: a 100-element array of these
+// sits right after `LocationTime_MM7` and accounts for the last 30600 bytes of the file exactly (100 * 306).
+// Cross-checked with MMExtension's struct definitions (`MapNote`).
+struct MapNote_MM8 {
+    uint8_t active;
+    char _pad;
+    int16_t x;
+    int16_t y;
+    std::array<char, 298> text;
+    int16_t id;
+};
+static_assert(sizeof(MapNote_MM8) == 0x132);
+MM_DECLARE_MEMCOPY_SERIALIZABLE(MapNote_MM8)
 
 
 struct BLVFaceExtra_MM7 {
@@ -1294,6 +1679,24 @@ MM_DECLARE_MEMCOPY_SERIALIZABLE(SoundInfo_MM7)
 
 void reconstruct(const SoundInfo_MM6 &src, SoundInfo *dst);
 void reconstruct(const SoundInfo_MM7 &src, SoundInfo *dst);
+
+
+// MM8's `dsounds.bin` uses the same field layout as `SoundInfo_MM7`, except `name` is 64 bytes
+// wide instead of 32 - same widened-name pattern as `MonsterDesc_MM8` (every sound name from
+// MM8's dsounds.bin decodes cleanly, well within the 64 bytes).
+struct SoundInfo_MM8 {
+    std::array<char, 64> name; // File name in audio.snd.
+    uint32_t soundId;
+    uint32_t type;
+    uint32_t flags;
+    std::array<uint32_t, 17> soundData; // Always 0 in MM7 data.
+    uint32_t sound3dId; // Always 0 in MM7 data.
+    uint32_t decompressed; // Always 0 in MM7 data.
+};
+static_assert(sizeof(SoundInfo_MM8) == 152);
+MM_DECLARE_MEMCOPY_SERIALIZABLE(SoundInfo_MM8)
+
+void reconstruct(const SoundInfo_MM8 &src, SoundInfo *dst);
 
 
 struct LocationInfo_MM7 {

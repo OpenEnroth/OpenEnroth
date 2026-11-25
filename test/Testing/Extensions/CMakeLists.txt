@@ -12,12 +12,13 @@ if(OE_BUILD_TESTS)
             GoogleTestHelp.h
             ThrowingAssertions.h
             ExpectExtensions.h
+            FrameAssertions.h
             ScopedTestFile.h
             ScopedTestFileSlot.h
             ScopedTestFolder.h)
 
     add_library(testing_extensions ${TESTING_EXTENSIONS_SOURCES} ${TESTING_EXTENSIONS_HEADERS})
-    target_link_libraries(testing_extensions PUBLIC GTest::gtest utility)
+    target_link_libraries(testing_extensions PUBLIC GTest::gtest utility library_image)
 
     target_check_style(testing_extensions)
 endif()

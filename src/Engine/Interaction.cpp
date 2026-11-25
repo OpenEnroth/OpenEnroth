@@ -4,6 +4,7 @@
 
 #include "Engine/Engine.h"
 #include "Engine/Evt/Processor.h"
+#include "Engine/GameType.h"
 #include "Engine/Graphics/Indoor.h"
 #include "Engine/Graphics/Outdoor.h"
 #include "Engine/Localization.h"
@@ -21,7 +22,7 @@
 #include "Library/Logger/Logger.h"
 
 void ItemInteraction(int item_id) {
-    if (pItemTable->items[pSpriteObjects[item_id].containing_item.itemId].type == ITEM_TYPE_GOLD) {
+    if (pSpriteObjects[item_id].containing_item.isGold()) {
         pParty->partyFindsGold(pSpriteObjects[item_id].containing_item.goldAmount, GOLD_RECEIVE_SHARE);
     } else {
         if (pParty->pPickedItem.itemId != ITEM_NULL)
@@ -32,10 +33,14 @@ void ItemInteraction(int item_id) {
         // TODO(captainurist): #mm6 remnant. MM6 sets bits 184 and 185 when the party picks up the Devil Plans (506) and the
         //                     Dragon Claw (455), the seer's quest items. Vanilla MM7 kept the code with MM7's items 506
         //                     and 455, while its scripts use these bits for the Harmondale raid.
-        if (pSpriteObjects[item_id].containing_item.itemId == ITEM_ARTIFACT_SPLITTER)
-            pParty->_questBits.set(QBIT_CASTLE_HARMONDALE_RAIDERS_KILLED);
-        if (pSpriteObjects[item_id].containing_item.itemId == ITEM_SPELLBOOK_REMOVE_FEAR)
-            pParty->_questBits.set(QBIT_HARMONDALE_RAIDERS_KILLED);
+        // These 2 ids resolve to unrelated real MM8 items post the items.txt block-shift (Wyrm Spitter /
+        // Telepathy, not the Splitter artifact / Remove Fear spellbook), so this only applies to MM7.
+        if (gameType() == GAME_TYPE_MM7) {
+            if (pSpriteObjects[item_id].containing_item.itemId == ITEM_ARTIFACT_SPLITTER)
+                pParty->_questBits.set(QBIT_CASTLE_HARMONDALE_RAIDERS_KILLED);
+            if (pSpriteObjects[item_id].containing_item.itemId == ITEM_SPELLBOOK_REMOVE_FEAR)
+                pParty->_questBits.set(QBIT_HARMONDALE_RAIDERS_KILLED);
+        }
         if (!pParty->addItemToParty(&pSpriteObjects[item_id].containing_item))
             pParty->setHoldingItem(pSpriteObjects[item_id].containing_item);
     }

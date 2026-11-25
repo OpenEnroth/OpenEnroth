@@ -2,6 +2,7 @@
 
 #include <optional>
 #include <string>
+#include <vector>
 
 #include "Engine/Evt/EvtContinuation.h"
 #include "Engine/Evt/EvtEnums.h"
@@ -26,6 +27,7 @@ class GUIWindow_BranchlessDialogue : public GUIWindow {
  private:
     EvtOpcode _opcode = EVENT_Invalid;
     std::optional<EvtContinuation> _continuation;
+    bool _answered = false;
 };
 
 /**
@@ -39,3 +41,10 @@ void startBranchlessDialogue(EvtOpcode opcode, std::optional<EvtContinuation> co
  * Closes the dialogue, returns to the game screen and resumes the event paused on the dialogue, if there is one.
  */
 void releaseBranchlessDialogue();
+
+/**
+ * Opens a branchless dialogue that asks a free-text question (`EVENT_InputString`, MM8 "Question"). When the typed
+ * answer matches (case-insensitively) one of `answers`, the event resumes at `matchStep`, otherwise at the step
+ * of `continuation`.
+ */
+void startBranchlessQuestion(std::optional<EvtContinuation> continuation, int matchStep, std::vector<std::string> answers);

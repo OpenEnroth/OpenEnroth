@@ -35,3 +35,14 @@ target_link_libraries(application_startup
         scripting
         utility)
 
+if(OE_BUILD_TESTS)
+    set(TEST_APPLICATION_STARTUP_SOURCES Tests/PathResolver_ut.cpp)
+
+    add_library(test_application_startup OBJECT ${TEST_APPLICATION_STARTUP_SOURCES})
+    target_link_libraries(test_application_startup PUBLIC testing_unit application_startup library_filesystem_memory)
+
+    target_check_style(test_application_startup)
+
+    target_link_libraries(OpenEnroth_UnitTest PUBLIC test_application_startup)
+endif()
+

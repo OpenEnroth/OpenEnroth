@@ -19,12 +19,15 @@
 #include "Engine/Objects/SpriteObject.h"
 #include "Engine/Objects/Chest.h"
 #include "Engine/Objects/Actor.h"
+#include "Engine/Objects/NPC.h"
 #include "Engine/PartyPlacement.h"
 #include "Engine/Random/Random.h"
 #include "Engine/Tables/ItemTable.h"
 #include "Engine/Spells/Spells.h"
 #include "Engine/Engine.h"
 #include "Engine/Tables/MapTable.h"
+
+#include "Library/Logger/Logger.h"
 
 #include "Media/Audio/AudioPlayer.h"
 #include "Media/MediaPlayer.h"
@@ -39,8 +42,6 @@
 #include "GUI/UI/UIBranchlessDialogue.h"
 #include "GUI/UI/UITransition.h"
 #include "GUI/UI/UIStatusBar.h"
-
-#include "Library/Logger/Logger.h"
 
 /**
  * @offset 0x4465DF
@@ -104,20 +105,31 @@ void spawnMonsters(int16_t typeindex, int16_t level, int count,
 }
 
 static tl::generator<Character &> iterateCharacters(EvtTargetCharacter who, RandomEngine *rng) {
+    int memberCount = pParty->activeCharacterCount(); // Seats past it hold nobody.
     if (who >= CHOOSE_PLAYER1 && who <= CHOOSE_PLAYER4) {
-        co_yield pParty->pCharacters[std::to_underlying(who)];
+        if (std::to_underlying(who) < memberCount)
+            co_yield pParty->pCharacters[std::to_underlying(who)];
+    } else if (who == CHOOSE_PLAYER5) {
+        if (memberCount > 4) // A party of fewer than five has nobody in this seat, the instruction does nothing.
+            co_yield pParty->pCharacters[4];
     } else if (who == CHOOSE_ACTIVE) {
         if (pParty->hasActiveCharacter()) {
             co_yield pParty->activeCharacter();
         } else {
-            co_yield pParty->pCharacters[rng->random(4)]; // Nobody is active while all four characters recover.
+            co_yield pParty->pCharacters[rng->random(memberCount)]; // Nobody is active while all characters recover.
         }
     } else if (who == CHOOSE_PARTY) {
         for (Character &player : pParty->pCharacters)
             co_yield player;
+    } else if (who == CHOOSE_RANDOM) {
+        co_yield pParty->pCharacters[rng->random(memberCount)];
     } else {
-        assert(who == CHOOSE_RANDOM);
-        co_yield pParty->pCharacters[rng->random(4)];
+        // A byte no game defines. Parsing casts it unchecked, so it can reach here. The whole party is the reading
+        // that keeps a quest's reward chain working.
+        MM_WARNING("EvtInterpreter: ForPartyMember with unrecognized who={} - treating as CHOOSE_PARTY.",
+                   std::to_underlying(who));
+        for (Character &player : pParty->pCharacters)
+            co_yield player;
     }
 }
 
@@ -157,9 +169,12 @@ static MapDestination moveToMapDestination(const EvtInstruction &ir) {
 }
 
 void EvtInterpreter::prepare(EvtContext context) {
+    prepare(context.source == EVT_SOURCE_GLOBAL ? engine->_globalEventMap : engine->_localEventMap, context);
+}
+
+void EvtInterpreter::prepare(const EvtProgram &program, EvtContext context) {
     _context = context;
 
-    const EvtProgram &program = context.source == EVT_SOURCE_GLOBAL ? engine->_globalEventMap : engine->_localEventMap;
     program.dump(context.eventId, context.source);
 
     _events.clear();
@@ -321,7 +336,7 @@ EvtFlow EvtInterpreter::executeInstruction(EvtInstruction ir) {
                     pGameLoadingUI_ProgressBar->Initialize(GUIProgressBar::TYPE_Fullscreen);
 
                 if (current_screen_type == SCREEN_HOUSE)
-                    pMediaPlayer->OpenHouseMovie(pAnimatedRooms[uCurrentHouse_Animation].video_name, 1);
+                    pMediaPlayer->OpenHouseMovie(animatedRoom(uCurrentHouse_Animation).video_name, 1);
             }
             break;
         }
@@ -414,16 +429,21 @@ EvtFlow EvtInterpreter::executeInstruction(EvtInstruction ir) {
         case EVENT_RandomGoTo:
             return {EVT_FLOW_JUMP, ir.data.random_goto_descr.random_goto[grng->random(ir.data.random_goto_descr.random_goto_len)]};
         case EVENT_InputString:
-            // Originally starting step was checked to ensure skipping this command when returning from dialogue.
-            // Changed to using "step + 1" to go to next event
-            //
-            // TODO(Nik-RE-dev): this event is not used in MM7. In GrayFace's data it's called "Question" and must have additional arguments
-            // that control where events executions must be continued on correct/incorrect input.
-            assert(false);
-#if 0
-            game_ui_status_bar_event_string = (ir.data.text_id < engine->_levelStrings.size()) ? engine->_levelStrings[ir.data.text_id] : "";
-            startBranchlessDialogue(EVENT_InputString, continuation(ir.step + 1));
-#endif
+            // "Question" in GrayFace's data. Not used in MM7. MM8 carries the accepted-answer level-string ids and
+            // the step to jump to on a match; a miss (or Escape) falls through to step + 1. The typed answer is
+            // compared when the dialogue is confirmed (UIBranchlessDialogue.cpp).
+            assert(gameType() == GAME_TYPE_MM8);
+            {
+                const auto &d = ir.data.input_string_descr;
+                auto levelString = [&](int id) { return (id >= 0 && id < engine->_levelStrings.size()) ? engine->_levelStrings[id] : std::string(); };
+                // Same prompt source as ShowMessage: NPC-topic text inside a dialogue, level string otherwise.
+                branchless_dialogue_str.clear();
+                if (_context.source == EVT_SOURCE_GLOBAL)
+                    current_npc_text = pNPCTopics[d.text_id - 1].pText;
+                else
+                    branchless_dialogue_str = levelString(d.text_id);
+                startBranchlessQuestion(continuation(ir.step + 1), ir.target_step, {levelString(d.answer_id_a), levelString(d.answer_id_b)});
+            }
             return {EVT_FLOW_STOP};
         case EVENT_StatusText:
             if (_context.source == EVT_SOURCE_GLOBAL) {
@@ -627,11 +647,44 @@ EvtFlow EvtInterpreter::executeInstruction(EvtInstruction ir) {
         case EVENT_EnableDateTimer:
         case EVENT_StopAnimation:
         case EVENT_CheckItemsCount:
+            // "Bring ingredients" turn-in gate (e.g. the Potion of Pure Speed quest, event 181:
+            // `CheckItemsCount(200-204, 4) -> 8; ShowMessage(684); Exit`). Checks the whole party's
+            // inventories, not just `_who`. No `ForPartyMember` precedes it in the game's scripts.
+            {
+                int totalCount = 0;
+                for (Character &character : pParty->pCharacters)
+                    for (InventoryConstEntry entry : character.inventory.entries())
+                        if (entry->itemId >= ir.data.check_items_count_descr.item_id_low && entry->itemId <= ir.data.check_items_count_descr.item_id_high)
+                            totalCount++;
+                if (totalCount >= ir.data.check_items_count_descr.count)
+                    return {EVT_FLOW_JUMP, ir.target_step};
+            }
+            break;
         case EVENT_RemoveItems:
+            // Consumes the ingredients a preceding EVENT_CheckItemsCount confirmed the party holds.
+            // The game's scripts always pair the two. Same party-wide scan.
+            {
+                int remaining = ir.data.check_items_count_descr.count;
+                for (Character &character : pParty->pCharacters) {
+                    for (InventoryEntry entry : character.inventory.entries()) {
+                        if (remaining <= 0)
+                            break;
+                        if (entry->itemId >= ir.data.check_items_count_descr.item_id_low && entry->itemId <= ir.data.check_items_count_descr.item_id_high) {
+                            character.inventory.take(entry);
+                            remaining--;
+                        }
+                    }
+                    if (remaining <= 0)
+                        break;
+                }
+            }
+            break;
         case EVENT_SpecialJump:
         case EVENT_IsTotalBountyHuntingAwardInRange:
         case EVENT_IsNPCInParty:
-            assert(false);
+            // The operand is a roster.txt row id (e.g. 34), not an npcdata id. Jumps if that companion is in the party.
+            if (pParty->isRosterInParty(ir.data.npc_in_party_descr.npc_id))
+                return {EVT_FLOW_JUMP, ir.target_step};
             break;
         default:
             break;

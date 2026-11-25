@@ -5,6 +5,7 @@
 #include <map>
 #include <string>
 
+#include "Engine/GameType.h"
 #include "Engine/Party.h"
 #include "Engine/Graphics/Indoor.h"
 #include "Engine/Graphics/Overlays.h"
@@ -16,6 +17,7 @@
 #include "Engine/TurnEngine/TurnEngine.h"
 #include "Engine/Spells/SpellEnumFunctions.h"
 
+#include "Library/Logger/Logger.h"
 #include "Library/Serialization/Serialization.h"
 
 #include "Media/Audio/AudioPlayer.h"
@@ -34,7 +36,7 @@ SpellStats *pSpellStats = nullptr;
 /**
  * @offset 0x4E3ACC
  */
-const IndexedArray<SpriteId, SPELL_FIRST_WITH_SPRITE, SPELL_LAST_WITH_SPRITE> SpellSpriteMapping = {
+IndexedArray<SpriteId, SPELL_FIRST_WITH_SPRITE, SPELL_LAST_WITH_SPRITE> SpellSpriteMapping = {
     {SPELL_FIRE_TORCH_LIGHT, SPRITE_SPELL_FIRE_TORCH_LIGHT},
     {SPELL_FIRE_FIRE_BOLT, SPRITE_SPELL_FIRE_FIRE_BOLT},
     {SPELL_FIRE_PROTECTION_FROM_FIRE, SPRITE_SPELL_FIRE_PROTECTION_FROM_FIRE},
@@ -481,7 +483,40 @@ bool SpellBuff::Apply(Time expire_time, Mastery uSkillMastery,
     return true;
 }
 
+SpellId spellEffect(SpellId spell) {
+    if (gameType() != GAME_TYPE_MM8)
+        return spell;
+    switch (std::to_underlying(spell)) {
+        case 56: return SPELL_MIND_TELEPATHY;
+        case 57: return SPELL_MIND_REMOVE_FEAR;
+        case 59: return SPELL_MIND_MIND_BLAST;
+        default: return spell;
+    }
+}
+
+SpellId spellWithEffect(SpellId effect) {
+    if (gameType() != GAME_TYPE_MM8)
+        return effect;
+    switch (effect) {
+        case SPELL_MIND_TELEPATHY: return static_cast<SpellId>(56);
+        case SPELL_MIND_REMOVE_FEAR: return static_cast<SpellId>(57);
+        case SPELL_MIND_MIND_BLAST: return static_cast<SpellId>(59);
+        default: return effect;
+    }
+}
+
 void SpellStats::Initialize(const Blob &spells) {
+    static const auto spellDatasByEffect = pSpellDatas;
+    static const auto spritesByEffect = SpellSpriteMapping;
+    for (SpellId spell : allRegularSpells()) {
+        const SpellData &data = spellDatasByEffect[spellEffect(spell)];  // the SP cost is the slot's, it rises with the slot in every school
+        pSpellDatas[spell].recovery_per_skill = data.recovery_per_skill;
+        pSpellDatas[spell].baseDamage = data.baseDamage;
+        pSpellDatas[spell].bonusSkillDamage = data.bonusSkillDamage;
+        pSpellDatas[spell].skillMastery = data.skillMastery;
+        SpellSpriteMapping[spell] = spritesByEffect[spellEffect(spell)];
+    }
+
     static const std::map<std::string, DamageType, ascii::NoCaseLess> spellSchoolMaps = { // TODO(captainurist): #enum, use enum serialization
         {"fire", DAMAGE_FIRE},
         {"air", DAMAGE_AIR},
@@ -502,7 +537,15 @@ void SpellStats::Initialize(const Blob &spells) {
         if (tokens[0].empty())
             continue; // Skip section headers.
 
-        SpellId uSpellID = static_cast<SpellId>(fromString<int>(tokens[0]));
+        int rawId = fromString<int>(tokens[0]);
+        if (rawId < std::to_underlying(SPELL_FIRST_REGULAR) || rawId > std::to_underlying(SPELL_LAST_REGULAR)) {
+            // MM8's spells.txt adds a 100th spell ("Glamour"), which collides with MM7's
+            // existing (non-regular) id 100 (`SPELL_BOW_ARROW`). It needs a `SpellId` slot of its own,
+            // until then it is skipped.
+            MM_WARNING("SpellStats: dropping spell #{}, doesn't fit in the regular spell range", rawId);
+            continue;
+        }
+        SpellId uSpellID = static_cast<SpellId>(rawId);
         pInfos[uSpellID].name = unquote(tokens[2]);
         pInfos[uSpellID].damageType = valueOr(spellSchoolMaps, tokens[3], DAMAGE_PHYSICAL);
         pInfos[uSpellID].pShortName = unquote(tokens[4]);
@@ -544,8 +587,13 @@ void SpellStats::Initialize(const Blob &spells) {
 }
 
 void eventCastSpell(SpellId uSpellID, Mastery skillMastery, int skillLevel, Vec3f from, Vec3f to) {
-    // For bug catching
-    assert(skillMastery >= MASTERY_NOVICE && skillMastery <= MASTERY_GRANDMASTER);
+    // MM8's map-timer events can encode a "mastery" byte outside the normal character-mastery range for
+    // environmental/trap casts that never consume skillMastery downstream. Dagger Wound Island's out01.evt
+    // event 456, a 19-shot Meteor Shower barrage, encodes mastery=10.
+    if (skillMastery < MASTERY_NOVICE || skillMastery > MASTERY_GRANDMASTER) {
+        MM_WARNING("eventCastSpell: skillMastery {} out of range for spell #{}, clamping", std::to_underlying(skillMastery), std::to_underlying(uSpellID));
+        skillMastery = std::clamp(skillMastery, MASTERY_NOVICE, MASTERY_GRANDMASTER);
+    }
 
     Vec3f coord_delta;
     if (to.lengthSqr() > 1.0f) {
@@ -569,7 +617,7 @@ void eventCastSpell(SpellId uSpellID, Mastery skillMastery, int skillLevel, Vec3
 
     SpriteObject spell_sprites;
 
-    switch (uSpellID) {
+    switch (spellEffect(uSpellID)) {
         case SPELL_FIRE_FIRE_BOLT:
         case SPELL_FIRE_FIREBALL:
         case SPELL_AIR_LIGHTNING_BOLT:
@@ -608,7 +656,7 @@ void eventCastSpell(SpellId uSpellID, Mastery skillMastery, int skillLevel, Vec3
     int spriteid;
     PartyBuff buff_id;
 
-    switch (uSpellID) {
+    switch (spellEffect(uSpellID)) {
         case SPELL_FIRE_FIRE_BOLT:
         case SPELL_FIRE_FIREBALL:
         case SPELL_AIR_LIGHTNING_BOLT:

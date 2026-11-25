@@ -112,8 +112,20 @@ static Blob convertToPng(const Blob &data, PathView palettesLodPath) {
     }
     case MAGIC_LOD_FONT:
         return png::encode(renderFont(lod::decodeFont(data)));
-    default:
-        throw Exception("Can't convert {} '{}' to png", formatDescription(magic(data)), data.displayPath());
+    default: {
+        bool isPalette = false;
+        if (!lod::detectImageMm8(data, &isPalette)) // MM8's image header has no signature, so magic() doesn't know it.
+            throw Exception("Can't convert {} '{}' to png", formatDescription(magic(data)), data.displayPath());
+
+        LodImage lodImage = lod::decodeImageMm8(data);
+        if (!isPalette)
+            return png::encode(makeRgbaImage(lodImage.image, lodImage.palette));
+
+        RgbaImage palImage = RgbaImage::uninitialized(256, 1);
+        for (size_t i = 0; i < 256; i++)
+            palImage[0][i] = lodImage.palette.colors[i];
+        return png::encode(palImage);
+    }
     }
 }
 

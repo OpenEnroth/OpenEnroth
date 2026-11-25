@@ -9,6 +9,7 @@
 #include "Engine/Engine.h"
 #include "Engine/SpellFxRenderer.h"
 #include "Engine/Party.h"
+#include "Engine/GameType.h"
 
 #include "Engine/Objects/Actor.h"
 #include "Engine/Objects/SpriteObject.h"
@@ -555,11 +556,22 @@ void BaseRenderer::updateRenderDimensions() {
         outputRender = outputPresent;
     }
 
-    // Set viewport from config values (inclusive TL/BR coordinates).
-    int tlX = config->graphics.ViewPortX1.value();  // 8 in vanilla
-    int tlY = config->graphics.ViewPortY1.value();  // 8 in vanilla
-    int brX = outputRender.w - config->graphics.ViewPortX2.value();  // 468 in vanilla
-    int brY = outputRender.h - config->graphics.ViewPortY2.value();  // 352 in vanilla
+    // Set viewport from config values (inclusive TL/BR coordinates). These defaults are MM6/7's
+    // real viewport geometry (narrower, to leave room for MM6/7's right-side icon panel) - MM8 has
+    // no such panel and its viewport is full-screen (the hole in its border frame "ui-frscr", icons.UI.lod, is the
+    // size of the render surface), so use the config values for MM6/7 only and go edge-to-edge for MM8.
+    int tlX, tlY, brX, brY;
+    if (gameType() == GAME_TYPE_MM8) {
+        tlX = 0;
+        tlY = 0;
+        brX = outputRender.w - 1;
+        brY = outputRender.h - 1;
+    } else {
+        tlX = config->graphics.ViewPortX1.value();  // 8 in vanilla
+        tlY = config->graphics.ViewPortY1.value();  // 8 in vanilla
+        brX = outputRender.w - config->graphics.ViewPortX2.value();  // 468 in vanilla
+        brY = outputRender.h - config->graphics.ViewPortY2.value();  // 352 in vanilla
+    }
     pViewport = Recti(tlX, tlY, brX - tlX + 1, brY - tlY + 1);
 }
 

@@ -22,7 +22,7 @@ class GameWindowHandler : public PlatformEventFilter, private PlatformApplicatio
     virtual ~GameWindowHandler();
 
     // TODO(captainurist): this probably doesn't even belong here. Find a place to move to.
-    void UpdateWindowFromConfig(const GameConfig *config);
+    void UpdateWindowFromConfig(const GameConfig *config, bool visible = true);
     void UpdateConfigFromWindow(GameConfig *config);
     std::tuple<int, Pointi, Sizei> GetWindowConfigPosition(const GameConfig *config);
     std::tuple<int, Pointi, Sizei> GetWindowRelativePosition(Pointi *position = nullptr);

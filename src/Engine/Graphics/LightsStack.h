@@ -11,6 +11,11 @@ struct StationaryLight {
     Color uLightColor;
     char uLightType = 0;
     int uSectorID = 0;
+    // Anchor used to resolve uSectorID. Decoration-driven lights raise vPosition above
+    // the decoration's own placement (e.g. torch flame height), which can push it above a low
+    // room's ceiling and out of every sector's bounding box even though the decoration itself is
+    // solidly inside the room. Defaults to vPosition for callers that don't need the distinction.
+    Vec3f vSectorLookupPosition {};
 };
 
 struct MobileLight {
@@ -44,6 +49,7 @@ struct LightsStack_StationaryLight_ {
 
     //----- (004AD3C8) --------------------------------------------------------
     bool AddLight(const Vec3f &pos, int16_t radius, Color color, char uLightType);
+    bool AddLight(const Vec3f &pos, int16_t radius, Color color, char uLightType, const Vec3f &sectorLookupPos);
 
     std::array<StationaryLight, 400> pLights;
     unsigned int uNumLightsActive = 0;

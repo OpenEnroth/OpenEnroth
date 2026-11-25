@@ -12,6 +12,7 @@ set(ENGINE_OBJECTS_SOURCES
         NPC.cpp
         Character.cpp
         CharacterEnumFunctions.cpp
+        CharacterMM8Abilities.cpp
         SpriteObject.cpp
         TalkAnimation.cpp
         Inventory.cpp)
@@ -38,6 +39,7 @@ set(ENGINE_OBJECTS_HEADERS
         CharacterConditions.h
         CharacterEnums.h
         CharacterEnumFunctions.h
+        CharacterMM8Abilities.h
         SpriteObject.h
         SpriteEnums.h
         SpriteEnumFunctions.h
@@ -60,4 +62,21 @@ if(OE_BUILD_TESTS)
     target_check_style(test_engine_objects)
 
     target_link_libraries(OpenEnroth_GameTest PUBLIC test_engine_objects)
+
+    # CharacterEnumFunctions_ut.cpp only tests pure enum/table logic, with no need for a running engine, so it's
+    # built as a plain GoogleTest and linked into OpenEnroth_UnitTest instead of OpenEnroth_GameTest.
+    set(TEST_ENGINE_OBJECTS_UNIT_SOURCES
+            Tests/Character_ut.cpp
+            Tests/CharacterEnumFunctions_ut.cpp
+            Tests/CharacterMM8Abilities_ut.cpp
+            Tests/MonsterEnumFunctionsMm8_ut.cpp
+            Tests/Monsters_ut.cpp
+            Tests/NPC_ut.cpp)
+
+    add_library(test_engine_objects_unit OBJECT ${TEST_ENGINE_OBJECTS_UNIT_SOURCES})
+    target_link_libraries(test_engine_objects_unit PUBLIC testing_unit engine_objects)
+
+    target_check_style(test_engine_objects_unit)
+
+    target_link_libraries(OpenEnroth_UnitTest PUBLIC test_engine_objects_unit)
 endif()

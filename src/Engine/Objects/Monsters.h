@@ -87,7 +87,12 @@ struct MonsterStats {
     MonsterId FindMonsterByInternalName(std::string_view internalName);
 
     IndexedArray<MonsterInfo, MONSTER_FIRST, MONSTER_LAST> infos;
-    std::array<std::string, 31> uniqueNames; // Names of unique monsters, see Actor::uniqueNameIndex. Element 0 is unused.
+    // Names of unique monsters, see Actor::uniqueNameIndex. Element 0 is unused. Sized for MM8's real
+    // placemon.txt (rows 1-109 are real unique-monster/dev-credit names, rows 110-130 are
+    // "0"-filler padding - harmless to store, so just size the array to fit the whole table rather
+    // than special-casing the padding). This is a plain runtime lookup table, not part of any save
+    // format, so widening it doesn't affect MM7 compatibility.
+    std::array<std::string, 131> uniqueNames;
 };
 
 struct MonsterDesc {

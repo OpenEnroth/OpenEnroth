@@ -11,6 +11,7 @@
 #include "Engine/Tables/NPCTable.h"
 #include "Engine/Resources/ResourceManager.h"
 
+#include "Library/Logger/Logger.h"
 #include "Library/Serialization/Serialization.h"
 
 #include "Utility/Memory/Blob.h"
@@ -49,8 +50,14 @@ bool Localization::initialize() {
     // global.txt table structure: index | text (localized).
     for (std::string_view line : split(globalBlob.str()).by("\r\n").drop(2).skip("")) {
         std::array<std::string_view, 2> tokens = split(line).by('\t');
-        LstrId i = static_cast<LstrId>(fromString<int>(tokens[0]));
-        _localizationStrings[i] = unquote(tokens[1]);
+        int i = fromString<int>(tokens[0]);
+        if (i < std::to_underlying(LSTR_FIRST) || i > std::to_underlying(LSTR_LAST)) {
+            // MM8's global.txt real rows run up to index 757 - `LSTR_LAST` (`LSTR_MM8_RESERVED_END`)
+            // covers that range, so this only fires for genuinely out-of-range/malformed rows now.
+            MM_WARNING("Localization: dropping string #{}, doesn't fit in a {}-entry table", i, std::to_underlying(LSTR_LAST) + 1);
+            continue;
+        }
+        _localizationStrings[static_cast<LstrId>(i)] = unquote(tokens[1]);
     }
 
     // Only the Russian (Buka) localization uses `^`-tokens, see `sprintfex` in `mm7text_ru.h`.
@@ -147,6 +154,7 @@ void Localization::initializeSpellNames() {
     this->_partyBuffNames[PARTY_BUFF_RESIST_WATER]             = this->_localizationStrings[LSTR_WATER_RES];
     this->_partyBuffNames[PARTY_BUFF_WATER_WALK]               = this->_localizationStrings[LSTR_WATER_WALK];
     this->_partyBuffNames[PARTY_BUFF_WIZARD_EYE]               = this->_localizationStrings[LSTR_WIZARD_EYE];
+    this->_partyBuffNames[PARTY_BUFF_LEVITATE]                 = "Levitate"; // MM8 spells.txt row 112, no LSTR entry
 
     this->_characterBuffNames[CHARACTER_BUFF_RESIST_AIR]       = this->_localizationStrings[LSTR_AIR_RES];
     this->_characterBuffNames[CHARACTER_BUFF_BLESS]            = this->_localizationStrings[LSTR_BLESS];
@@ -194,6 +202,8 @@ void Localization::initializeSpellNames() {
     this->_actorBuffNames[ACTOR_BUFF_HASTE]                    = this->_localizationStrings[LSTR_HASTE];
     this->_actorBuffNames[ACTOR_BUFF_PAIN_REFLECTION]          = this->_localizationStrings[LSTR_PAIN_REFLECTION];
     this->_actorBuffNames[ACTOR_BUFF_HAMMERHANDS]              = this->_localizationStrings[LSTR_HAMMERHANDS];
+    this->_actorBuffNames[ACTOR_BUFF_MELEE_ONLY]               = {};
+    this->_actorBuffNames[ACTOR_BUFF_DAMAGE_HALVED]            = {};
 }
 
 void Localization::initializeNpcProfessionNames() {
@@ -317,6 +327,10 @@ void Localization::initializeSkillNames() {
     this->_skillNames[SKILL_STEALING]    = this->_localizationStrings[LSTR_STEALING];
     this->_skillNames[SKILL_ALCHEMY]     = this->_localizationStrings[LSTR_ALCHEMY];
     this->_skillNames[SKILL_LEARNING]    = this->_localizationStrings[LSTR_LEARNING];
+    this->_skillNames[SKILL_DARK_ELF]    = "Dark Elf";
+    this->_skillNames[SKILL_VAMPIRE]     = "Vampire";
+    this->_skillNames[SKILL_DRAGON]      = "Dragon";
+    this->_skillNames[SKILL_REGENERATION] = this->_localizationStrings[LSTR_REGENERATION];
     this->_skillNames[SKILL_INVALID]     = this->_localizationStrings[LSTR_NONE]; // "None", used during character creation.
 
     // TODO(captainurist): Not currently used anywhere
@@ -388,6 +402,13 @@ void Localization::initializeClassNames() {
     for (auto [line, i] : split(classBlob.str()).by("\r\n").drop(1).skip("").zip(_classDescriptions.indices())) {
         std::array<std::string_view, 3> tokens = split(line).by('\t');
         _classDescriptions[i] = unquote(tokens[1]);
+    }
+
+    // MM8 has no `class.txt`-style localized class names yet, so `_mm8ClassNames` is seeded from `mm8ClassName`
+    // as a stand-in (see `Localization::className`). Promoted classes get their own promotion name (e.g. Lich),
+    // distinct from their race's base name - see `mm8ClassName`.
+    for (Class mm8Class : allMm8Classes()) {
+        _mm8ClassNames[mm8Class] = mm8ClassName(mm8Class);
     }
 }
 
@@ -779,7 +800,8 @@ unsigned char * +		[92]	0x0410338c "Full"	unsigned char *
 +		[115]	0x04103498 "Instructor"	unsigned char *
 +		[116]	0x041034a8 "Intellect"	unsigned char *
 +		[117]	0x041034b7 "Insane"	unsigned char *
-+		[118]	0x041034c3 "We hope that you've enjoyed playing Might and Magic VII as much as we did making it. We have saved this screen as MM7_WIN.PCX in your MM7 directory. You can print it out as proof of your accomplishment."	unsigned char *
++		[118]	0x041034c3 "We hope that you've enjoyed playing Might and Magic VII as much as we did making it. We have saved
+        this screen as MM7_WIN.PCX in your MM7 directory. You can print it out as proof of your accomplishment."	unsigned char *
 +		[119]	0x04103593 "Master Archer"	unsigned char *
 +		[120]	0x041035a6 "Inventory"	unsigned char *
 +		[121]	0x041035b5 "Permanent"	unsigned char *

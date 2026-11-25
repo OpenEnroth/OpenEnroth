@@ -7,6 +7,14 @@
 
 #include "Utility/IndexedArray.h"
 
+/**
+ * Level cap of a training hall, the highest level its trainer will train a member to.
+ *
+ * @param hall                          Training hall house id.
+ * @return                              Highest trainable level.
+ */
+int trainingHallMaxLevel(HouseId hall);
+
 class GUIWindow_Training : public GUIWindow_House {
  public:
     explicit GUIWindow_Training(HouseId houseId);

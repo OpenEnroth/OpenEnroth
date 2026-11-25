@@ -7,6 +7,7 @@
 #include "Engine/Graphics/Image.h"
 #include "Engine/AssetsManager.h"
 #include "Engine/Engine.h"
+#include "Engine/GameType.h"
 #include "Engine/Resources/ResourceManager.h"
 
 #include "GUI/GUIFont.h"
@@ -18,7 +19,13 @@ GUICredits::GUICredits() : GUIWindow(WINDOW_CREDITS, {0, 0}, render->GetRenderDi
     _fontQuick = GUIFont::LoadFont("quick.fnt");
     _fontCChar = GUIFont::LoadFont("cchar.fnt");
 
-    _mm6TitleTexture = assets->getIcon("mm6title.pcx");
+    // MM8 installs don't ship an `mm6title.pcx` background image in icons.lod - set to
+    // nullptr rather than show a placeholder glyph. MM7 reuses an MM6 title, so keep the load
+    // active for MM7/MM6.
+    _mm6TitleTexture = nullptr;
+    if (gameType() != GAME_TYPE_MM8) {
+        _mm6TitleTexture = assets->getImage_PCXFromIconsLOD("mm6title.pcx");
+    }
 
     std::string text{ engine->resources()->eventsText("credits.txt").str() };
 
@@ -34,7 +41,8 @@ GUICredits::~GUICredits() {
 }
 
 void GUICredits::Update() {
-    render->DrawQuad2D(_mm6TitleTexture, {0, 0});
+    if (_mm6TitleTexture)
+        render->DrawQuad2D(_mm6TitleTexture, {0, 0});
     render->SetUIClipRect(creditsRect);
     render->DrawQuad2D(_creditsTexture, {creditsRect.x, static_cast<int>(creditsRect.y - _moveY)});
     render->ResetUIClipRect();

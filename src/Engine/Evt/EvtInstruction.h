@@ -73,6 +73,7 @@ class EvtInstruction {
             ActorKillCheckPolicy policy;
             int param;
             int num;
+            bool invisibleAsDead; // MM8 only, decoded but not consumed: IsNotAlive() already counts Disabled (invisible) actors as dead, and honouring flag 0 breaks out02 ev132.
         } actor_descr;
         struct {
             int id;
@@ -139,6 +140,9 @@ class EvtInstruction {
             int zspeed;
             HouseId house_id;
             int exit_pic_id;
+            // MM8 stores the house id in two bytes, so its exit picture byte sits one byte later than MM7's. It is 0 on
+            // teleports inside a map, 1 on most doors and 3 on a few. Nothing reads it yet, `exit_pic_id` is 0 in MM8.
+            int mm8_exit_pic_id;
         } move_map_descr;
         struct {
             int cog;
@@ -177,6 +181,23 @@ class EvtInstruction {
             Mastery skill_mastery; // MASTERY_NONE matches any mastery.
             int skill_level;
         } check_skill_descr;
+        struct {
+            int text_id;
+            int answer_id_a;
+            int answer_id_b;
+        } input_string_descr; // MM8-only "Question" variant of EVENT_InputString: prompt + two accepted-answer level-string ids; target_step = jump on a match.
+        struct {
+            ItemId item_id_low;
+            ItemId item_id_high;
+            int count;
+        } check_items_count_descr; // EVENT_CheckItemsCount (+ target_step) / EVENT_RemoveItems.
+        struct {
+            int min_award;
+            int max_award;
+        } bounty_award_range_descr; // EVENT_IsTotalBountyHuntingAwardInRange (+ target_step).
+        struct {
+            int npc_id;
+        } npc_in_party_descr; // EVENT_IsNPCInParty (+ target_step).
     } data;
 };
 

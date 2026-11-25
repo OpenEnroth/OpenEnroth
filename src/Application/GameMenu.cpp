@@ -107,20 +107,32 @@ void Menu::EventLoop() {
 
             case UIMSG_ArrowUp:
                 saveLoadMenu()->scrollUp();
-                new OnButtonClick({215, 199}, {17, 17}, pBtnArrowUp);
+                if (gameType() == GAME_TYPE_MM8)
+                    new OnButtonClick({281, 208}, {18, 18}, pBtnArrowUp);
+                else
+                    new OnButtonClick({215, 199}, {17, 17}, pBtnArrowUp);
                 continue;
 
             case UIMSG_DownArrow:
                 saveLoadMenu()->scrollDown();
-                new OnButtonClick({215, 323}, {17, 17}, pBtnDownArrow);
+                if (gameType() == GAME_TYPE_MM8)
+                    new OnButtonClick({281, 418}, {18, 18}, pBtnDownArrow);
+                else
+                    new OnButtonClick({215, 323}, {17, 17}, pBtnDownArrow);
                 continue;
 
             case UIMSG_Cancel:
-                new OnCancel({350, 302}, {106, 42}, pBtnCancel);
+                if (gameType() == GAME_TYPE_MM8)
+                    new OnCancel({457, 380}, {106, 37}, pBtnCancel);
+                else
+                    new OnCancel({350, 302}, {106, 42}, pBtnCancel);
                 continue;
 
             case UIMSG_SaveLoadBtn:
-                new OnSaveLoad({241, 302}, {106, 42}, pBtnLoadSlot);
+                if (gameType() == GAME_TYPE_MM8)
+                    new OnSaveLoad({343, 380}, {106, 37}, pBtnLoadSlot);
+                else
+                    new OnSaveLoad({241, 302}, {106, 42}, pBtnLoadSlot);
                 continue;
             case UIMSG_SelectLoadSlot:
                 saveLoadMenu()->slotClicked(param, param2);
@@ -256,7 +268,12 @@ void Menu::EventLoop() {
                     new OnButtonClick({435, 216}, {0, 0}, pBtn_SliderRight, std::string(), false);
                 } else {
                     Pointi pt = mouse->position();
-                    new_level = (pt.x - 263) / 17;  // for mouse
+                    // MM8's track sits at a different x/width than MM7's
+                    // (kMm8VolumeTrackX/kMm8VolumeTrackWidth, UIGame.cpp), so the level this click
+                    // resolves to needs the matching geometry, not MM7's `(x-263)/17`.
+                    new_level = gameType() == GAME_TYPE_MM8
+                        ? (pt.x - kMm8VolumeTrackX) * 10 / kMm8VolumeTrackWidth
+                        : (pt.x - 263) / 17;  // for mouse
                 }
 
                 engine->config->settings.MusicLevel.setValue(new_level);
@@ -275,7 +292,9 @@ void Menu::EventLoop() {
                     new OnButtonClick({435, 162}, {0, 0}, pBtn_SliderRight, std::string(), false);
                 } else {
                     Pointi pt = mouse->position();
-                    new_level = (pt.x - 263) / 17;
+                    new_level = gameType() == GAME_TYPE_MM8
+                        ? (pt.x - kMm8VolumeTrackX) * 10 / kMm8VolumeTrackWidth
+                        : (pt.x - 263) / 17;
                 }
 
                 engine->config->settings.SoundLevel.setValue(new_level);
@@ -306,7 +325,9 @@ void Menu::EventLoop() {
                     new OnButtonClick({435, 270}, {0, 0}, pBtn_SliderRight, std::string(), false);
                 } else {
                     Pointi pt = mouse->position();
-                    new_level = (pt.x - 263) / 17;
+                    new_level = gameType() == GAME_TYPE_MM8
+                        ? (pt.x - kMm8VolumeTrackX) * 10 / kMm8VolumeTrackWidth
+                        : (pt.x - 263) / 17;
                 }
 
                 engine->config->settings.VoiceLevel.setValue(new_level);
@@ -345,8 +366,14 @@ void Menu::EventLoop() {
                     current_screen_type = SCREEN_MENU;
                     pGUIWindow_CurrentMenu = std::make_unique<GUIWindow_GameMenu>();
                 } else if (current_screen_type == SCREEN_VIDEO_OPTIONS) {
-                    current_screen_type = SCREEN_MENU;
-                    pGUIWindow_CurrentMenu = std::make_unique<GUIWindow_GameMenu>();
+                    // MM8's Video Options is only reached from Controls, so Escape returns there. MM7 keeps its return to the ESC menu.
+                    if (gameType() == GAME_TYPE_MM8) {
+                        current_screen_type = SCREEN_OPTIONS;
+                        pGUIWindow_CurrentMenu = std::make_unique<GUIWindow_GameOptions>();
+                    } else {
+                        current_screen_type = SCREEN_MENU;
+                        pGUIWindow_CurrentMenu = std::make_unique<GUIWindow_GameMenu>();
+                    }
                 } else if (current_screen_type == SCREEN_KEYBOARD_OPTIONS) {
                     bool hasConflicts = !key_map_conflicted.empty();
 
@@ -357,8 +384,14 @@ void Menu::EventLoop() {
                         keyboardActionMapping->applyKeybindings(curr_key_map);
                     }
 
-                    current_screen_type = SCREEN_MENU;
-                    pGUIWindow_CurrentMenu = std::make_unique<GUIWindow_GameMenu>();
+                    // Like Video Options above, MM8's keyboard screen is only reached from Controls, so Escape returns there.
+                    if (gameType() == GAME_TYPE_MM8) {
+                        current_screen_type = SCREEN_OPTIONS;
+                        pGUIWindow_CurrentMenu = std::make_unique<GUIWindow_GameOptions>();
+                    } else {
+                        current_screen_type = SCREEN_MENU;
+                        pGUIWindow_CurrentMenu = std::make_unique<GUIWindow_GameMenu>();
+                    }
                 }
                 continue;
             case UIMSG_QuickLoad:

@@ -5,6 +5,7 @@
 #include "GameOver.h"
 
 #include "Engine/EngineGlobals.h"
+#include "Engine/GameType.h"
 #include "Engine/AssetsManager.h"
 #include "Engine/Resources/EngineFileSystem.h"
 #include "Engine/Graphics/Renderer/Renderer.h"
@@ -50,6 +51,9 @@ std::unique_ptr<GraphicsImage> CreateWinnerCertificate() {
         pInString = localization->str(LSTR_GOOD_ENDING);
     } else if (pParty->isPartyEvil()) {
         pInString = localization->str(LSTR_EVIL_ENDING);
+    } else if (gameType() == GAME_TYPE_MM8) {
+        // MM8 has one ending and no alignment, its global.txt holds the same text in rows 675 and 676.
+        pInString = localization->str(LSTR_GOOD_ENDING);
     } else {
         assert(false);
     }
@@ -69,7 +73,8 @@ std::unique_ptr<GraphicsImage> CreateWinnerCertificate() {
     );
     uint64_t v23 = 0ull;
     int v20 = 0;
-    for (int i = 0; i < 4; i++) {
+    // Bounded to activeCharacterCount(), an MM8 party can have 5 members.
+    for (int i = 0; i < pParty->activeCharacterCount(); i++) {
         GUIWindow::DrawTitleText(
             pFont.get(), 1,
             i * (pFont->GetHeight() - 2) + pFont->GetHeight() + 46,
@@ -109,7 +114,8 @@ std::unique_ptr<GraphicsImage> CreateWinnerCertificate() {
     render->EndTextNew();
 
     RgbaImage pixels = render->MakeFullScreenshot();
-    ufs->write("MM7_Win.Pcx", pcx::encode(pixels));
+    // MM8's global.txt row 118 names MM8_WIN.PCX.
+    ufs->write(gameType() == GAME_TYPE_MM8 ? "MM8_Win.Pcx" : "MM7_Win.Pcx", pcx::encode(pixels));
     std::unique_ptr<GraphicsImage> result = GraphicsImage::Create(std::move(pixels));
 
     assets->evict(std::move(background));

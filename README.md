@@ -6,8 +6,9 @@
 OpenEnroth is an open-source reimplementation of the Might & Magic VI-VIII game engine, allowing you to play the
 original games on modern platforms. It uses the original game data, so you will need a copy of the game to play.
 
-Currently only MM7 is playable. MM6 and MM8 support is planned — check the
-[milestones](https://github.com/OpenEnroth/OpenEnroth/milestones) to see where we're at.
+This repository is a fork of [OpenEnroth](https://github.com/OpenEnroth/OpenEnroth) that adds Might and Magic VIII
+support: MM7 and MM8 are playable here. Upstream's progress on MM6 and MM8 is tracked in its
+[milestones](https://github.com/OpenEnroth/OpenEnroth/milestones).
 
 Supported platforms: **Windows**, **Linux**, **macOS**, and **Android** (experimental).
 
@@ -15,10 +16,11 @@ Supported platforms: **Windows**, **Linux**, **macOS**, and **Android** (experim
 
 # Download
 
-Prebuilt binaries are available from our [releases page](https://github.com/OpenEnroth/OpenEnroth/releases).
+This fork has no prebuilt binaries. To play MM8, build it from source as described under
+"Might and Magic VIII (this fork)" below.
 
-Currently only nightly builds are available, which may have bugs. A stable release is in progress — see the
-[v0.1 milestone](https://github.com/OpenEnroth/OpenEnroth/milestone/1).
+Upstream OpenEnroth publishes nightly builds on its [releases page](https://github.com/OpenEnroth/OpenEnroth/releases).
+They play MM7 but do not contain this fork's MM8 support. The installation steps below are for those upstream builds.
 
 # Discord
 
@@ -115,10 +117,51 @@ Android is not actively tested by the dev team — expect issues and be prepared
    `/sdcard/Android/data/io.github.openenroth.openenroth/files/` on your device.
 
 
+# Might and Magic VIII (this fork)
+
+This fork adds Might and Magic VIII support. It ships no game content, so you need your own copy of MM8. There are no prebuilt
+binaries, you build it yourself.
+
+1. Get the MM8 game data. Extract the installer as described under "GOG Version" above, with
+   `innoextract -e -d <mm8 data directory> <path to installer .exe>`. The directory must contain `Anims`,
+   `Data`, `Music` and `Sounds`, and OpenEnroth recognizes it as MM8 by `Anims/magicdod.vid`.
+2. Build, using the commands from [HACKING.md](HACKING.md) (CMake 3.27+, a C++ compiler new enough for it, and the
+   submodules):
+
+   ```
+   git clone --recurse-submodules --shallow-submodules https://github.com/JahJajaka/OpenEnroth OpenEnroth
+   cd OpenEnroth
+   cmake -B build -S . -DCMAKE_BUILD_TYPE=RelWithDebInfo
+   cmake --build build
+   ```
+
+3. Run it, passing the data directory. On Linux:
+
+   ```
+   ./build/src/Bin/OpenEnroth/OpenEnroth --data-path "<mm8 data directory>"
+   ```
+
+   On macOS the binary is inside the app bundle:
+
+   ```
+   ./build/src/Bin/OpenEnroth/OpenEnroth.app/Contents/MacOS/OpenEnroth --data-path "<mm8 data directory>"
+   ```
+
+4. Optionally run the unit tests, which need no game data. The game tests in this tree are upstream's own and
+   need MM7 data.
+
+   ```
+   cmake --build build --target Run_UnitTest
+   ```
+
 # Development
 
 See [HACKING.md](HACKING.md) for build instructions, code style guidelines, and contribution guidelines.
 
+
+# License
+
+OpenEnroth is licensed under the LGPL-3.0, see [LICENSE](LICENSE). Our changes to this fork are also offered under the MIT License, and upstream code stays under the LGPL-3.0.
 
 # Screenshots
 

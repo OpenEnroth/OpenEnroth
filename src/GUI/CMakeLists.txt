@@ -2,6 +2,7 @@ cmake_minimum_required(VERSION 3.27 FATAL_ERROR)
 
 set(GUI_SOURCES
         GUIButton.cpp
+        GUIButtonFrames.cpp
         GUIEnums.cpp
         GUIFont.cpp
         GUIProgressBar.cpp
@@ -10,6 +11,7 @@ set(GUI_SOURCES
 
 set(GUI_HEADERS
         GUIButton.h
+        GUIButtonFrames.h
         GUIDialogues.h
         GUIEnums.h
         GUIFont.h

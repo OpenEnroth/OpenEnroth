@@ -20,8 +20,10 @@ bool AudioBufferDataSource::Open() {
     if (pFormatContext == nullptr)
         return false;
 
-    // Seek to start if already played (e.g. looping music tracks).
-    avio_seek(_ioContext.avioContext(), 0, SEEK_SET);
+    // Give every open a fresh AVIOContext over the same blob. A reopen after avformat_close_input (e.g. a looping
+    // music track) must not reuse the old one: avio_seek keeps the closed demuxer's checksum state, and the next
+    // fill_buffer runs av_crc through a stale pointer (SIGSEGV in the mp3 id3v1 probe).
+    _ioContext.reset(Blob::share(_ioContext.blob()));
 
     pFormatContext->pb = _ioContext.avioContext();
 

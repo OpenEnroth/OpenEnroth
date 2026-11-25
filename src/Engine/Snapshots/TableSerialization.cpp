@@ -3,6 +3,7 @@
 #include <utility>
 #include <vector>
 
+#include "Engine/GameType.h"
 #include "Engine/Tables/PortraitFrameTable.h"
 #include "Engine/Tables/IconFrameTable.h"
 #include "Engine/Tables/OverlayTable.h"
@@ -49,6 +50,25 @@ void deserialize(const Blob &src, IconFrameTable *dst) {
 void deserialize(const Blob &src, MonsterList *dst) {
     std::vector<MonsterDesc> monsters;
 
+    if (gameType() == GAME_TYPE_MM8) {
+        // MM8's dmonlist.bin lists only Jadame's 198 monsters (no trailing unused entry), and uses
+        // `MonsterDesc_MM8` records (wider internalMonsterName) instead of MM7's `MonsterDesc_MM7`.
+        // 198 fits within `MONSTER_LAST`.
+        deserialize(src, &monsters, tags::append, tags::each, tags::via<MonsterDesc_MM8>);
+
+        if (monsters.size() != 198)
+            throw Exception("Invalid monster list size, expected {}, got {}", 198, monsters.size());
+
+        dst->monsters.fill(MonsterDesc());
+        size_t i = 0;
+        for (MonsterId index : dst->monsters.indices()) {
+            if (i >= monsters.size())
+                break;
+            dst->monsters[index] = monsters[i++];
+        }
+        return;
+    }
+
     deserialize(src, &monsters, tags::append, tags::each, tags::via<MonsterDesc_MM7>);
 
     if (monsters.size() != 277)
@@ -88,7 +108,12 @@ void deserialize(const Blob &src, TextureFrameTable *dst) {
 
 void deserialize(const Blob &src, SoundList *dst) {
     std::vector<SoundInfo> sounds;
-    deserialize(src, &sounds, tags::append, tags::each, tags::via<SoundInfo_MM7>);
+
+    // MM8's dsounds.bin uses `SoundInfo_MM8` (wider `name`), see EntitySnapshots.h.
+    if (gameType() == GAME_TYPE_MM8)
+        deserialize(src, &sounds, tags::append, tags::each, tags::via<SoundInfo_MM8>);
+    else
+        deserialize(src, &sounds, tags::append, tags::each, tags::via<SoundInfo_MM7>);
 
     assert(!sounds.empty());
 

@@ -1,6 +1,9 @@
 #include <cassert>
 #include <memory>
 #include <optional>
+#include <string>
+#include <utility>
+#include <vector>
 
 #include "UIBranchlessDialogue.h"
 
@@ -18,6 +21,12 @@
 #include "GUI/UI/UIGame.h"
 
 #include "Io/KeyboardInputHandler.h"
+
+#include "Utility/String/Ascii.h"
+
+// State of the pending EVENT_InputString question, set by startBranchlessQuestion.
+static std::vector<std::string> branchlessAnswers;
+static int branchlessMatchStep = 0;
 
 GUIWindow_BranchlessDialogue::GUIWindow_BranchlessDialogue(EvtOpcode opcode, std::optional<EvtContinuation> continuation)
     : GUIWindow(WINDOW_GREETING_NPC, {0, 0}, render->GetRenderDimensions()), _opcode(opcode), _continuation(continuation) {
@@ -40,27 +49,35 @@ void GUIWindow_BranchlessDialogue::Update() {
     pGUIWindow_BranchlessDialogue->DrawDialoguePanel(branchless_dialogue_str);
     render->DrawQuad2D(game_ui_statusbar, {0, 352});
 
-    // TODO(Nik-RE-dev): this code related to text input in MM6/MM8, revisit
-    // this functionality when it's time to support it.
-#if 0
-    if (pGUIWindow_BranchlessDialogue->keyboard_input_status != WINDOW_INPUT_IN_PROGRESS) {
-        if (pGUIWindow_BranchlessDialogue->keyboard_input_status == WINDOW_INPUT_CONFIRMED) {
-            pGUIWindow_BranchlessDialogue->keyboard_input_status = WINDOW_INPUT_NONE;
-            GameUI_StatusBar_OnInput(keyboardInputHandler->GetTextInput());
-        } else {
-            GameUI_StatusBar_ClearInputString();
+    if (_opcode == EVENT_InputString) {
+        if (!_answered && keyboard_input_status == WINDOW_INPUT_CONFIRMED) {
+            // Case-insensitive, whitespace-trimmed compare against each accepted answer.
+            std::string typed = ascii::toLower(keyboardInputHandler->GetTextInput());
+            while (!typed.empty() && ascii::isSpace(typed.back()))
+                typed.pop_back();
+            while (!typed.empty() && ascii::isSpace(typed.front()))
+                typed.erase(typed.begin());
+            bool matched = false;
+            for (const std::string &answer : branchlessAnswers)
+                matched |= !typed.empty() && typed == ascii::toLower(answer);
+            if (matched && _continuation)
+                _continuation->step = branchlessMatchStep;
+            _answered = true;
+            engine->_messageQueue->addMessageCurrentFrame(UIMSG_Escape, 0, 0);
+            return;
         }
-        releaseBranchlessDialogue();
+        if (!_answered && keyboard_input_status != WINDOW_INPUT_IN_PROGRESS) {
+            // Escape: no answer given, resume at the fall-through step.
+            _answered = true;
+            engine->_messageQueue->addMessageCurrentFrame(UIMSG_Escape, 0, 0);
+            return;
+        }
+        std::string str = keyboardInputHandler->GetTextInput();
+        Sizei dims = render->GetRenderDimensions();
+        DrawText(assets->pFontLucida.get(), {13, 357}, colorTable.White, str, Recti(0, 0, dims.w, dims.h));
+        DrawFlashingInputCursor(assets->pFontLucida->GetLineWidth(str) + 13, 357, assets->pFontLucida.get(), Recti(0, 0, dims.w, dims.h));
         return;
     }
-
-    if (pGUIWindow_BranchlessDialogue->opcode() == EVENT_InputString) {
-        auto str = fmt::format("{} {}", GameUI_StatusBar_GetInput(), keyboardInputHandler->GetTextInput());
-        pGUIWindow_BranchlessDialogue->DrawText(pFontLucida, {13, 357}, colorTable.White, str);
-        pGUIWindow_BranchlessDialogue->DrawFlashingInputCursor(pFontLucida->GetLineWidth(str) + 13, 357, pFontLucida);
-        return;
-    }
-#endif
 
     // Close branchless dialog on any keypress
     if (!keyboardInputHandler->GetTextInput().empty()) {
@@ -82,6 +99,12 @@ void startBranchlessDialogue(EvtOpcode opcode, std::optional<EvtContinuation> co
         gameTimer->setPaused(true);
         pGUIWindow_BranchlessDialogue = std::make_unique<GUIWindow_BranchlessDialogue>(opcode, continuation);
     }
+}
+
+void startBranchlessQuestion(std::optional<EvtContinuation> continuation, int matchStep, std::vector<std::string> answers) {
+    branchlessAnswers = std::move(answers);
+    branchlessMatchStep = matchStep;
+    startBranchlessDialogue(EVENT_InputString, continuation);
 }
 
 void releaseBranchlessDialogue() {

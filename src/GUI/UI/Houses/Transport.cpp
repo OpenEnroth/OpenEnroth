@@ -24,6 +24,8 @@
 
 #include "Media/Audio/AudioPlayer.h"
 
+#include "Engine/Tables/TransportTable.h"
+
 #include "Utility/IndexedArray.h"
 
 struct TransportInfo {
@@ -98,6 +100,28 @@ static constexpr IndexedArray<std::array<int, 4>, HOUSE_FIRST_TRANSPORT, HOUSE_L
     {HOUSE_73,                      { 255, 255, 255, 255 }}
 };
 
+// MM8 ships its transport tables as files (Transport Index.txt, Transport Locations.txt). MM7's are compiled in.
+static const std::array<int, 4> &transportRoutesFor(HouseId houseId) {
+    if (transportTableMm8Loaded)
+        return transportRoutesMm8[houseId];
+    return transportRoutes[houseId];
+}
+
+static TransportInfo transportScheduleAt(int scheduleId) {
+    if (!transportTableMm8Loaded)
+        return transportSchedule[scheduleId];
+    const TransportScheduleData &row = transportScheduleMm8[scheduleId];
+    TransportInfo out;
+    out.uMapInfoID = row.mapId;
+    for (size_t day = 0; day < out.pSchedule.size(); day++)
+        out.pSchedule[day] = row.schedule[day];
+    out.uTravelTime = row.travelTimeDays;
+    out.arrivalPos = row.arrivalPos;
+    out.arrival_view_yaw = row.arrivalViewYaw;
+    out.uQuestBit = row.questBit;
+    return out;
+}
+
 void GUIWindow_Transport::mainDialogue() {
     Recti travel_window = this->frameRect;
     travel_window.x = SIDE_TEXT_BOX_POS_X;
@@ -115,19 +139,19 @@ void GUIWindow_Transport::mainDialogue() {
     int lastsched = 255;
     bool hasActiveRoute = false;
 
-    for (int schedule_id : transportRoutes[houseId()]) {
+    for (int schedule_id : transportRoutesFor(houseId())) {
         bool routeActive = false;
 
         if (schedule_id != 255 && (lastsched != schedule_id)) {
             assert(schedule_id < transportSchedule.size());
-            routeActive = transportSchedule[schedule_id].pSchedule[pParty->uCurrentDayOfMonth % 7];
+            routeActive = transportScheduleAt(schedule_id).pSchedule[pParty->uCurrentDayOfMonth % 7];
         }
 
         lastsched = schedule_id;
 
-        if (routeActive && (transportSchedule[schedule_id].uQuestBit == QBIT_INVALID || pParty->_questBits[transportSchedule[schedule_id].uQuestBit])) {
+        if (routeActive && (transportScheduleAt(schedule_id).uQuestBit == QBIT_INVALID || pParty->_questBits[transportScheduleAt(schedule_id).uQuestBit])) {
             int travel_time = getTravelTimeTransportDays(schedule_id);
-            optionsText.push_back(localization->format(LSTR_D_DAYS_TO_S, travel_time, pMapTable->pInfos[transportSchedule[schedule_id].uMapInfoID].name));
+            optionsText.push_back(localization->format(LSTR_D_DAYS_TO_S, travel_time, pMapTable->pInfos[transportScheduleAt(schedule_id).uMapInfoID].name));
             hasActiveRoute = true;
         } else {
             optionsText.push_back("");
@@ -164,8 +188,9 @@ void GUIWindow_Transport::transportDialogue() {
     }
 
     int choice_id = std::to_underlying(_currentDialogue) - std::to_underlying(DIALOGUE_TRANSPORT_SCHEDULE_1);
-    int routeId = transportRoutes[houseId()][choice_id];
-    const TransportInfo *pTravel = &transportSchedule[routeId];
+    int routeId = transportRoutesFor(houseId())[choice_id];
+    TransportInfo travelRow = transportScheduleAt(routeId);
+    const TransportInfo *pTravel = &travelRow;
 
     if (pTravel->pSchedule[pParty->uCurrentDayOfMonth % 7]) {
         if (engine->_currentLoadedMapId != pTravel->uMapInfoID)
@@ -181,8 +206,16 @@ void GUIWindow_Transport::transportDialogue() {
             pSpeech = SPEECH_TRAVEL_HORSE;
         }
 
+        restAndHeal(Duration::fromDays(getTravelTimeTransportDays(routeId)));
         pParty->activeCharacter().playReaction(pSpeech);
         _routeId = routeId;
+        if (gameType() == GAME_TYPE_MM8) { // MM8 leaves in the frame of the purchase.
+            pAudioPlayer->soundDrain(); // The map change stops all sounds, so the travel sound and the speech play out first.
+            depart();
+            houseDialogueGoBackToTop();
+            engine->_messageQueue->addMessageCurrentFrame(UIMSG_Escape, 0, 0);
+            return;
+        }
         _departureTime = platform->tickCount() + houseSoundLengthMs(houseId(), HOUSE_SOUND_TRANSPORT_TRAVEL);
         return;
     }
@@ -192,9 +225,8 @@ void GUIWindow_Transport::transportDialogue() {
 }
 
 void GUIWindow_Transport::depart() {
-    const TransportInfo &route = transportSchedule[_routeId];
+    const TransportInfo route = transportScheduleAt(_routeId);
     _departureTime.reset();
-    restAndHeal(Duration::fromDays(getTravelTimeTransportDays(_routeId)));
 
     if (engine->_currentLoadedMapId != route.uMapInfoID) {
         engine->_pendingTransition = MapDestination(route.uMapInfoID, PartyPlacement(route.arrivalPos, route.arrival_view_yaw, 0, 0));
@@ -247,7 +279,7 @@ std::vector<DialogueId> GUIWindow_Transport::listDialogueOptions() {
 }
 
 int GUIWindow_Transport::getTravelTimeTransportDays(int schedule_id) {
-    int travel_time = transportSchedule[schedule_id].uTravelTime;
+    int travel_time = transportScheduleAt(schedule_id).uTravelTime;
     if (isBoat(houseId())) {
         if (CheckHiredNPCSpeciality(NPC_PROFESSION_SAILOR))
             travel_time -= 2;
@@ -267,9 +299,15 @@ int GUIWindow_Transport::getTravelTimeTransportDays(int schedule_id) {
 }
 
 bool isTravelAvailable(HouseId houseId) {
-    for (int schedule : transportRoutes[houseId])
-        if (transportSchedule[schedule].pSchedule[pParty->uCurrentDayOfMonth % 7] &&
-            (transportSchedule[schedule].uQuestBit == QBIT_INVALID || pParty->_questBits[transportSchedule[schedule].uQuestBit]))
-            return true;
+    for (int schedule : transportRoutesFor(houseId)) {
+        if (schedule == 255) {
+            continue; // No transport route configured for this schedule slot.
+        }
+        if (transportScheduleAt(schedule).pSchedule[pParty->uCurrentDayOfMonth % 7]) {
+            if (transportScheduleAt(schedule).uQuestBit == QBIT_INVALID || pParty->_questBits[transportScheduleAt(schedule).uQuestBit]) {
+                return true;
+            }
+        }
+    }
     return false;
 }

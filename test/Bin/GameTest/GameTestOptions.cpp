@@ -24,6 +24,11 @@ GameTestOptions GameTestOptions::parse(int argc, char **argv) {
     app->add_flag(
         "--headless", result.headless,
         "Run in headless mode.")->group(otherOptions);
+    app->add_flag(
+        "--offscreen", result.offscreen,
+        "Run with a real GL renderer but a never-shown window, forcing the FBO capture path. "
+        "Mutually exclusive with --headless in practice: --headless already forces a "
+        "NullRenderer and ignores this flag.")->group(otherOptions);
     app->add_option(
         "--speed", result.speed,
         "Playback speed, default is infinite, use '1.0' for realtime playback.")->option_text("SPEED");

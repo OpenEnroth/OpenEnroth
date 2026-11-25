@@ -5,6 +5,7 @@
 #include "Engine/AssetsManager.h"
 #include "Engine/Engine.h"
 #include "Engine/EngineGlobals.h"
+#include "Engine/GameType.h"
 #include "Engine/Localization.h"
 #include "Engine/mm7_data.h"
 #include "Engine/Graphics/Renderer/Renderer.h"
@@ -16,7 +17,10 @@ FsmAction LoadStep2State::enter() {
     // So, this assignment might be removed after the Party Creation becomes part of the FSM
     engineFlags |= ENGINE_ESCAPE_ENABLED;
 
-    _fullscreenTexture = assets->getIcon("mm6title.pcx");
+    // MM8 installs ship no mm6title.pcx equivalent in icons.lod.
+    _fullscreenTexture = nullptr;
+    if (gameType() != GAME_TYPE_MM8)
+        _fullscreenTexture = assets->getIcon("mm6title.pcx");
     _isFirstPass = true;
     return FsmAction::none();
 }
@@ -26,7 +30,8 @@ FsmAction LoadStep2State::update() {
     // We resolve this state in 2 frames. The first pass is drawing the main bkg texture and the copyrights
     // The second pass perform the loading part.
     if (_isFirstPass) {
-        render->DrawQuad2D(_fullscreenTexture, {0, 0});
+        if (_fullscreenTexture)
+            render->DrawQuad2D(_fullscreenTexture, {0, 0});
         _drawMM7CopyrightWindow();
         _isFirstPass = false;
     } else {

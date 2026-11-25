@@ -3,6 +3,7 @@
 
 #include "Engine/Engine.h"
 #include "Engine/EngineGlobals.h"
+#include "Engine/GameType.h"
 #include "Engine/Graphics/Renderer/Renderer.h"
 #include "Engine/Localization.h"
 #include "Engine/Party.h"
@@ -34,6 +35,9 @@ std::array<int, 5> lloydsBeacons_SomeYs = {{82, 82, 226, 226, 153}};
 std::shared_ptr<GraphicsImage> ui_book_lloyds_border;
 std::array<std::shared_ptr<GraphicsImage>, 2> ui_book_lloyds_backgrounds;
 
+// MM8's Close button position, measured from the original game's screen.
+static const Pointi kMm8LloydsCloseButtonPos = {555, 445};
+
 IndexedArray<int, MASTERY_NONE, MASTERY_LAST> masteryToMaxBeacons = {
         {MASTERY_NONE, 1},
         {MASTERY_NOVICE, 1},
@@ -48,19 +52,41 @@ GUIWindow_LloydsBook::GUIWindow_LloydsBook(Pid casterPid, SpellCastFlags castFla
 
     _recallingBeacon = false;
 
-    if (!ui_book_lloyds_border)
-        ui_book_lloyds_border = assets->getIcon("lb_bordr");
+    // MM8's equivalents of "sbmap" and "tab-an-6". No MM8 LOD has "lb_bordr", so it is not loaded.
+    if (gameType() == GAME_TYPE_MM8) {
+        ui_book_lloyds_backgrounds[0] = assets->getImage_ColorKey("irbgrnd");
+        ui_book_lloyds_backgrounds[1] = assets->getImage_ColorKey("irbgrnd");
+        ui_book_button1_on = assets->getImage_Alpha("irt01r");
+        ui_book_button1_off = assets->getImage_Alpha("irt01b");
+    } else {
+        if (!ui_book_lloyds_border) {
+            ui_book_lloyds_border = assets->getImage_ColorKey("lb_bordr");
+        }
 
-    ui_book_lloyds_backgrounds[0] = assets->getIcon("sbmap");
-    ui_book_lloyds_backgrounds[1] = assets->getIcon("sbmap");
-    ui_book_button1_on = assets->getIcon("tab-an-6b");
-    ui_book_button1_off = assets->getIcon("tab-an-6a");
+        ui_book_lloyds_backgrounds[0] = assets->getImage_ColorKey("sbmap");
+        ui_book_lloyds_backgrounds[1] = assets->getImage_ColorKey("sbmap");
+        ui_book_button1_on = assets->getImage_Alpha("tab-an-6b");
+        ui_book_button1_off = assets->getImage_Alpha("tab-an-6a");
+    }
 
     pBtn_Book_1 = CreateButton({415, 13}, {39, 36}, BUTTON_TYPE_NORMAL, 0, UIMSG_LloydBookFlipButton, 0, INPUT_ACTION_INVALID, localization->str(LSTR_SET_BEACON));
     pBtn_Book_2 = CreateButton({415, 48}, {39, 36}, BUTTON_TYPE_NORMAL, 0, UIMSG_LloydBookFlipButton, 1, INPUT_ACTION_INVALID, localization->str(LSTR_RECALL_BEACON));
 
+    if (gameType() == GAME_TYPE_MM8) {
+        // MM8's Close button position/size (see kMm8LloydsCloseButtonPos above) -
+        // re-positions the clickable rect the base ctor already created at MM7's slot.
+        for (GUIButton *button : vButtons) {
+            if (button->id == "Book_Close") {
+                button->rect = Recti(kMm8LloydsCloseButtonPos, ui_exit_cancel_button_background->size());
+                break;
+            }
+        }
+    }
+
     int casterId = casterPid.id();
-    assert(casterId < pParty->pCharacters.size());
+    // Bounded to activeCharacterCount(), not pCharacters.size(). Lloyd's Beacon's caster is always an
+    // acting character (no hireling id-offset encoding like Town Portal's, see TownPortalBook.cpp).
+    assert(casterId < pParty->activeCharacterCount());
     if (engine->config->debug.AllMagic.value()) {
         _maxBeacons = 5;
         _waterMastery = MASTERY_GRANDMASTER;
@@ -81,7 +107,9 @@ GUIWindow_LloydsBook::GUIWindow_LloydsBook(Pid casterPid, SpellCastFlags castFla
 }
 
 void GUIWindow_LloydsBook::Update() {
-    render->DrawQuad2D(ui_exit_cancel_button_background, {471, 445});
+    bool isMm8 = gameType() == GAME_TYPE_MM8;
+    if (!isMm8)
+        render->DrawQuad2D(ui_exit_cancel_button_background, {471, 445});
 
     Character *pPlayer = &pParty->pCharacters[_casterPid.id()];
     render->DrawQuad2D(ui_book_lloyds_backgrounds[_recallingBeacon ? 1 : 0], {8, 8});
@@ -134,6 +162,11 @@ void GUIWindow_LloydsBook::Update() {
             DrawTitleText(assets->pFontBookLloyds.get(), 0, (int)pWindow.h / 2 - pTextHeight / 2, colorTable.Black, localization->str(LSTR_AVAILABLE), 3, pWindow);
         }
     }
+
+    // Drawn last (not at the top of Update() like MM7's line above) so the background fill above
+    // doesn't paint over it - see kMm8LloydsCloseButtonPos's own comment.
+    if (isMm8)
+        render->DrawQuad2D(ui_exit_cancel_button_background, kMm8LloydsCloseButtonPos);
 }
 
 void GUIWindow_LloydsBook::flipButtonClicked(bool isRecalling) {

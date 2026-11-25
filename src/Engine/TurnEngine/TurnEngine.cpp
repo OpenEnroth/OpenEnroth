@@ -1,5 +1,6 @@
 #include <cstdlib>
 #include <utility>
+#include <vector>
 
 #include "Engine/Timer.h"
 #include "Engine/Pid.h"
@@ -103,8 +104,8 @@ void stru262_TurnBased::Start() {
     AIDirection v30;  // [sp+Ch] [bp-68h]@10
     AIDirection v31;  // [sp+28h] [bp-4Ch]@10
     AIDirection a3;   // [sp+44h] [bp-30h]@10
-    int activ_players[4] {};
-    int players_recovery_time[4] {};
+    std::vector<int> activ_players(pParty->pCharacters.size());
+    std::vector<int> players_recovery_time(pParty->pCharacters.size());
     int a_players_count;
     int i, j;
     int temp;
@@ -119,7 +120,9 @@ void stru262_TurnBased::Start() {
     this->turn_stage = TE_WAIT;
     this->pQueue.resize(0);
 
-    for (unsigned pl_id = 0; pl_id < 4; ++pl_id) {
+    // MM8's unrecruited placeholder slots (index >= activeCharacterCount(), permanently CONDITION_DEAD)
+    // must never enter the turn queue, and a 5th MM8 party member must.
+    for (int pl_id = 0; pl_id < pParty->activeCharacterCount(); ++pl_id) {
         if (pParty->pCharacters[pl_id].CanAct()) {
             TurnBased_QueueElem &element = this->pQueue.emplace_back();
             element.uPackedID = Pid(OBJECT_Character, pl_id);
@@ -311,11 +314,17 @@ void stru262_TurnBased::StartTurn() {
     int player_num, actor_num, i, j;
 
     pending_actions = 0;
-    // add player to queue if he can act
-    for (player_num = 0; player_num < 4; ++player_num) {
-        for (j = 0; j < this->pQueue.size(); ++j)
-            if (pQueue[j].uPackedID.type() == OBJECT_Character && pParty->pCharacters[pQueue[j].uPackedID.id()].CanAct() && player_num == pQueue[j].uPackedID.id())
-                break;
+    // Only a member who can act is added back. MM8's unrecruited placeholder slots can never act and
+    // must stay out of the queue.
+    for (player_num = 0; player_num < pParty->activeCharacterCount(); ++player_num) {
+        if (!pParty->pCharacters[player_num].CanAct())
+            continue;
+        for (j = 0; j < this->pQueue.size(); ++j) {
+            if (pQueue[j].uPackedID.type() == OBJECT_Character) {
+                if (player_num == pQueue[j].uPackedID.id())
+                    break;
+            }
+        }
         if (j == this->pQueue.size()) {
             TurnBased_QueueElem &element = this->pQueue.emplace_back();
             element.uPackedID = Pid(OBJECT_Character, player_num);
@@ -659,8 +668,8 @@ void stru262_TurnBased::AI_Action_(int queue_index) {
                 // (pMonsterStats->pInfos[pActors[v22.id()].pMonsterInfo.uID].uID
                 // - 1) / 3] + (v5->pMonsterInfo.uID - 1) / 3);
                 v10 = pHostilityTable->relations
-                          [monsterTypeForMonsterId(pActors[v22.id()].monsterInfo.id)] // Original binary had an off by one here, was missing the first -1.
-                          [monsterTypeForMonsterId(pActors[actor_id].monsterInfo.id)];
+                          [hostilityMonsterTypeForMonsterId(pActors[v22.id()].monsterInfo.id)] // Original binary had an off by one here, was missing the first -1.
+                          [hostilityMonsterTypeForMonsterId(pActors[actor_id].monsterInfo.id)];
             else
                 v10 = HOSTILITY_LONG;
             switch (v10) {
@@ -693,13 +702,13 @@ void stru262_TurnBased::AI_Action_(int queue_index) {
                 pQueue[queue_index].AI_action_type = TE_AI_STAND;
                 switch (v14) {
                     case ABILITY_ATTACK1:
-                        if (pActors[actor_id].monsterInfo.attack1MissileType != MONSTER_PROJECTILE_NONE) {
+                        if (pActors[actor_id].missileOfAttack1() != MONSTER_PROJECTILE_NONE) {
                             Actor::AI_MissileAttack1(actor_id, v22, &v18);
                             pQueue[queue_index].AI_action_type =
                                     TE_AI_RANGED_ATTACK;
                         }
                     case ABILITY_ATTACK2:
-                        if (pActors[actor_id].monsterInfo.attack2MissileType != MONSTER_PROJECTILE_NONE) {
+                        if (pActors[actor_id].missileOfAttack2() != MONSTER_PROJECTILE_NONE) {
                             Actor::AI_MissileAttack2(actor_id, v22, &v18);
                             pQueue[queue_index].AI_action_type =
                                 TE_AI_RANGED_ATTACK;
@@ -932,7 +941,7 @@ bool stru262_TurnBased::ActorMove(signed int queue_position) {
         }
         if ((double)(signed int)v11 < meleeRange) return 0;
         if ((signed int)v11 < 5120) {
-            if (pActors[uActorID].monsterInfo.attack1MissileType != MONSTER_PROJECTILE_NONE &&
+            if (pActors[uActorID].missileOfAttack1() != MONSTER_PROJECTILE_NONE &&
                 (signed int)v11 < 1024)
                 Actor::AI_Pursue1(uActorID, ai_near_actors_targets_pid[uActorID], uActorID, 32_ticks, &pDir);
             else

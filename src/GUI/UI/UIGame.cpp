@@ -14,6 +14,7 @@
 #include "Engine/Engine.h"
 #include "Engine/EngineGlobals.h"
 #include "Engine/Evt/Processor.h"
+#include "Engine/GameType.h"
 #include "Engine/Graphics/BSPModel.h"
 #include "Engine/Tables/DecorationTable.h"
 #include "Engine/Objects/Decoration.h"
@@ -41,6 +42,7 @@
 #include "Engine/TurnEngine/TurnEngine.h"
 
 #include "GUI/GUIButton.h"
+#include "GUI/GUIButtonFrames.h"
 #include "GUI/GUIWindow.h"
 #include "GUI/GUIMessageQueue.h"
 #include "GUI/UI/Books/LloydsBook.h"
@@ -53,6 +55,7 @@
 #include "Io/InputEnumFunctions.h"
 #include "Io/Mouse.h"
 
+#include "Media/MediaPlayer.h"
 #include "Core/Serialization/PlatformKeySerialization.h"
 
 #include "Utility/Math/TrigLut.h"
@@ -62,6 +65,36 @@
 std::array<int, 4> pHealthBarPos = {{23, 138, 251, 366}}; // was 22, 137
 std::array<int, 4> pManaBarPos = {{102, 217, 331, 447}};
 extern const int pHealthManaBarYPos = 402;
+
+// MM8's always-on HUD layout. MM8 only ever has 1 active character (Party::activeCharacterCount()), so unlike the
+// MM7 tables above this is a single position, not a 4-slot array.
+constexpr Pointi kMm8ScoreBgPos = {79, 2};   // "scorebg" (food+gold icon strip) top-left
+constexpr int kMm8ScoreTextY = 6;
+constexpr int kMm8FoodTextLeftMargin = 120;  // \t-escape left margin -> text left edge at x=132
+constexpr int kMm8GoldTextLeftMargin = 223;  // \t-escape left margin -> text left edge at x=235
+constexpr int kMm8PortraitX = 19;
+constexpr int kMm8PortraitY = 389;
+constexpr std::array<int, 4> kMm8BannerX = {{110, 208, 305, 403}};
+constexpr int kMm8SlotPitch = 98;
+
+int mm8PortraitSlotShift(int slot) {
+    return slot == 0 ? 0 : kMm8BannerX[slot - 1] - kMm8BannerX[0] + kMm8SlotPitch;
+}
+constexpr int kMm8BannerY = 387;
+
+// The decorative chrome scorebg/selring/ibshieldNN sit on top of. scorebg etc. are colorkeyed icon-only sprites with a
+// transparent surround, so without these the raw 3D scene shows through behind them instead of MM8's bar background.
+constexpr Pointi kMm8TopBarBgPos = {0, 0};      // "topbar" (icons.lod, patched)
+constexpr Pointi kMm8BottomBarBgPos = {0, 366}; // "basebar" (icons.lod)
+
+// Top-bar left bookend ("asil00", icons.lod, 64x64, opaque, flush against x=0). The right bookend ("asir00") is a real
+// GUIButton (pBtn_Skull) instead of a static draw, so its position lives at its CreateButton call site (GUIWindow.cpp).
+// "asir01" is a second, colorkeyed skull frame (same shape, desaturated) that exists in the archive but is unused,
+// since the top-bar buttons use a single-texture click-flash rather than an up/down swap.
+constexpr Pointi kMm8TopBarFigurinePos = {0, 0};
+
+// The real MM8 bottom-left-of-portrait status gem (19x23, "statg"/"staty"/"statr", see game_ui_bar_*'s own declaration comment).
+constexpr Pointi kMm8StatusGemPos = {11, 456};
 
 std::array<unsigned int, 2> pHiredNPCsIconsOffsetsX = {{489, 559}};
 std::array<unsigned int, 2> pHiredNPCsIconsOffsetsY = {{152, 152}};
@@ -96,6 +129,44 @@ std::array<PartyBuff, 14> spellBuffsAtRightPanel = {
 std::array<int, 8> BtnTurnCoord = {
     {0xA4, 0x5D, 0x16, 0xB, 0x5, 0xD, 0x7, 0x3B}};
 
+// MM8's real Controls (options) screen layout, measured against the decoded "controlbg" background (EnglishD.lod).
+// controlbg is drawn at {8,8} (GUIWindow_GameOptions::Update()). Every constant below is already in SCREEN space
+// (measured local asset coordinate + {8,8}) so it can be used directly in a CreateButton() call.
+constexpr Pointi kMm8CfgKeyboardPos = {89, 173};    // local (81,165)
+constexpr Pointi kMm8VideoOptionsPos = {89, 243};   // local (81,235)
+constexpr Pointi kMm8ReturnPos = {349, 388};        // local (341,380)
+constexpr Pointi kMm8TurnRate16xPos = {87, 349};    // local (79,341)
+constexpr Pointi kMm8TurnRate32xPos = {152, 349};   // local (144,341)
+constexpr Pointi kMm8TurnRateSmoothPos = {216, 349};  // local (208,341)
+constexpr Pointi kMm8WalkSoundPos = {87, 384};      // local (79,376)
+constexpr Pointi kMm8ShowHitsPos = {208, 384};      // local (200,376)
+constexpr Pointi kMm8AlwaysRunPos = {87, 412};      // local (79,404)
+constexpr Pointi kMm8FlipOnExitPos = {208, 412};    // local (200,404)
+
+// The 4 persistent captions controlbg bakes an empty olive slot for: "bl_turn"/"bl_sound"/"bl_music"/"bl_voice"
+// (EnglishD.lod), which read "TURN RATE"/"SOUND VOLUME"/"MUSIC VOLUME"/"VOICE VOLUME". All 4 are 227x28, centered in
+// their own ~228x30 slot.
+constexpr Pointi kMm8CaptionTurnRatePos = {90, 314};  // local (82,306)
+constexpr Pointi kMm8CaptionSoundPos = {347, 173};    // local (339,165)
+constexpr Pointi kMm8CaptionMusicPos = {347, 244};    // local (339,236)
+constexpr Pointi kMm8CaptionVoicePos = {347, 314};    // local (339,306)
+
+// Each of the 3 volume rows' left arrow / track / right arrow (screen space). The track is 10 cells between 11
+// boundaries. All 3 rows share this x layout. Only y differs (row pitch ~71px, the arrow/track row sits 38px below
+// its own caption's top edge).
+constexpr int kMm8VolumeArrowLeftX = 346;    // local 338
+// kMm8VolumeTrackX/kMm8VolumeTrackWidth (local 355, width 194) live in UIGame.h - GameMenu.cpp's
+// volume-change handlers need them too, to resolve a track click to the right level.
+constexpr int kMm8VolumeArrowRightX = 557;   // local 549
+constexpr int kMm8VolumeRowHeight = 18;
+constexpr int kMm8VolumeSoundY = 210;   // local 202
+constexpr int kMm8VolumeMusicY = 281;   // local 273
+constexpr int kMm8VolumeVoiceY = 351;   // local 343
+// Marker (convolNN, 16x18) x position per level 0..9, centered within its own cell (screen
+// space). Cell boundaries measured by the same scan: local 355,372,392,411,431,451,470,490,510,
+// 530,549.
+constexpr std::array<int, 10> kMm8VolumeMarkerX = {363, 382, 401, 421, 441, 460, 480, 500, 520, 539};
+
 std::shared_ptr<GraphicsImage> game_ui_statusbar;
 std::shared_ptr<GraphicsImage> game_ui_rightframe;
 std::shared_ptr<GraphicsImage> game_ui_topframe;
@@ -113,12 +184,26 @@ std::shared_ptr<GraphicsImage> game_ui_minimap_frame;              // 5079D8
 std::shared_ptr<GraphicsImage> game_ui_minimap_compass;            // 5079B4
 std::array<std::shared_ptr<GraphicsImage>, 8> game_ui_minimap_dirs;
 
-std::shared_ptr<GraphicsImage> game_ui_menu_quit;
-std::shared_ptr<GraphicsImage> game_ui_menu_resume;
-std::shared_ptr<GraphicsImage> game_ui_menu_controls;
-std::shared_ptr<GraphicsImage> game_ui_menu_save;
-std::shared_ptr<GraphicsImage> game_ui_menu_load;
-std::shared_ptr<GraphicsImage> game_ui_menu_new;
+std::shared_ptr<GraphicsImage> game_ui_compass_frame;
+// Kept independent of game_ui_minimap_compass (the MM7 minimap-needle asset, above), which the legacy MM7 ghost-compass
+// draw in GameUI_DrawMinimap also reads unconditionally. For MM8 that variable stays nullptr, so its DrawQuad2D(nullptr,
+// ...) call safely no-ops (checked at the top of OpenGLRenderer::DrawQuad2D).
+std::shared_ptr<GraphicsImage> game_ui_compass_strip;
+
+std::shared_ptr<GraphicsImage> game_ui_mm8_bar_frame;
+std::shared_ptr<GraphicsImage> game_ui_mm8_bar_green;
+std::shared_ptr<GraphicsImage> game_ui_mm8_bar_yellow;
+std::shared_ptr<GraphicsImage> game_ui_mm8_bar_red;
+std::shared_ptr<GraphicsImage> game_ui_mm8_bar_blue;
+
+std::shared_ptr<GraphicsImage> game_ui_scorebg;
+std::shared_ptr<GraphicsImage> game_ui_portrait_ring;
+std::array<std::shared_ptr<GraphicsImage>, 4> game_ui_party_banners;
+std::shared_ptr<GraphicsImage> game_ui_top_bar_bg;
+std::shared_ptr<GraphicsImage> game_ui_bottom_bar_bg;
+std::shared_ptr<GraphicsImage> game_ui_topbar_figurine;
+std::shared_ptr<GraphicsImage> game_ui_topbar_skull;
+
 std::shared_ptr<GraphicsImage> game_ui_menu_options;
 
 std::shared_ptr<GraphicsImage> game_ui_tome_storyline;
@@ -143,7 +228,7 @@ std::array<std::shared_ptr<GraphicsImage>, 5> game_ui_options_controls;
 
 std::shared_ptr<GraphicsImage> game_ui_evtnpc;  // 50795C
 
-std::array<std::array<std::shared_ptr<GraphicsImage>, 56>, 4> game_ui_player_faces;
+std::array<std::array<std::shared_ptr<GraphicsImage>, 56>, 5> game_ui_player_faces;
 std::shared_ptr<GraphicsImage> game_ui_player_face_eradicated;
 std::shared_ptr<GraphicsImage> game_ui_player_face_dead;
 
@@ -172,6 +257,27 @@ bool bFlashQuestBook;
 static bool bookFlashState = false;
 static Time bookFlashTimer;
 
+// The Controls (options) screen's MM8-only widgets, drawn every frame via GUIButtonFrameSet::select()
+// (GUIWindow_GameOptions::Update()), not by the generic vTextures[0] draw. Not exported: nothing outside this file
+// needs the raw pointer, GAME_TESTs drive these by their string id (game.pressGuiButton()).
+static GUIButton *pBtn_Mm8TurnRate16x = nullptr;
+static GUIButton *pBtn_Mm8TurnRate32x = nullptr;
+static GUIButton *pBtn_Mm8TurnRateSmooth = nullptr;
+static GUIButton *pBtn_Mm8WalkSound = nullptr;
+static GUIButton *pBtn_Mm8ShowHits = nullptr;
+static GUIButton *pBtn_Mm8AlwaysRun = nullptr;
+static GUIButton *pBtn_Mm8FlipOnExit = nullptr;
+static GUIButton *pBtn_Mm8ConfigureKeyboard = nullptr;
+static GUIButton *pBtn_Mm8VideoOptions = nullptr;
+static GUIButton *pBtn_Mm8Return = nullptr;
+
+// The 4 persistent captions (see kMm8Caption*Pos above), loaded once per screen construction. Like
+// GUIWindow_GameVideoOptions' own caption/toggle textures, they have no explicit Release() call.
+static std::shared_ptr<GraphicsImage> mm8_options_caption_turn_rate;
+static std::shared_ptr<GraphicsImage> mm8_options_caption_sound;
+static std::shared_ptr<GraphicsImage> mm8_options_caption_music;
+static std::shared_ptr<GraphicsImage> mm8_options_caption_voice;
+
 extern InputAction currently_selected_action_for_binding;  // 506E68
 extern std::unordered_set<InputAction> key_map_conflicted;  // 506E6C
 extern std::unordered_map<InputAction, PlatformKey> curr_key_map;
@@ -179,26 +285,71 @@ extern std::unordered_map<InputAction, PlatformKey> curr_key_map;
 
 GUIWindow_GameMenu::GUIWindow_GameMenu()
     : GUIWindow(WINDOW_GAME_MENU, {0, 0}, render->GetRenderDimensions()) {
-    game_ui_menu_options = assets->getIcon("options");
-    game_ui_menu_new = assets->getIcon("new1");
-    game_ui_menu_load = assets->getIcon("load1");
-    game_ui_menu_save = assets->getIcon("save1");
-    game_ui_menu_controls = assets->getIcon("controls1");
-    game_ui_menu_resume = assets->getIcon("resume1");
-    game_ui_menu_quit = assets->getIcon("quit1");
+    // MM8 ships this screen's background + button art under different names in EnglishD.lod, not icons.lod. The
+    // "options" background bakes 6 blank button slots with no text. Each button's own caption lives in a separate
+    // texture. "load1"'s real MM8 asset is "bt_loagd"/"bt_loagu"/"bt_loagh", a shipped retail typo ("loag" for "load"),
+    // confirmed by decoding it (reads "LOAD GAME"). "bt_loadd"/"bt_loadu" are a different, smaller asset already
+    // claimed by UISaveLoad.cpp's Load Game screen.
+    //
+    // Each button ships all 3 states: "_u" (up/idle), "_h" (hover), "_d" (down/pressed). The persistent caption is
+    // "_u", the vivid gold of the real resting screen ("_d" is a dark greyed-out pressed look). The hover frame is
+    // wired too, since the original glows gold on hover (see GUIButtonFrames.h).
+    GUIButtonFrameSet framesNew, framesSave, framesLoad, framesControls, framesQuit, framesResume;
+    if (gameType() == GAME_TYPE_MM8) {
+        game_ui_menu_options = assets->getImage_ColorKeyFromEnglishDLOD("options");
+        framesNew = loadMM8ButtonFrameSet(MM8ButtonFamily::GameMenuNew);
+        framesSave = loadMM8ButtonFrameSet(MM8ButtonFamily::GameMenuSave);
+        framesLoad = loadMM8ButtonFrameSet(MM8ButtonFamily::GameMenuLoad);
+        framesControls = loadMM8ButtonFrameSet(MM8ButtonFamily::GameMenuControls);
+        framesQuit = loadMM8ButtonFrameSet(MM8ButtonFamily::GameMenuQuit);
+        framesResume = loadMM8ButtonFrameSet(MM8ButtonFamily::GameMenuResume);
+    } else {
+        // MM7 ships one texture per button and no hover/press art - stays on the "up" slot only,
+        // drawn unconditionally every frame (see this class's own Update(), unaffected by hover).
+        game_ui_menu_options = assets->getImage_ColorKey("options");
+        framesNew.up = assets->getImage_ColorKey("new1");
+        framesLoad.up = assets->getImage_ColorKey("load1");
+        framesSave.up = assets->getImage_ColorKey("save1");
+        framesControls.up = assets->getImage_ColorKey("controls1");
+        framesResume.up = assets->getImage_ColorKey("resume1");
+        framesQuit.up = assets->getImage_ColorKey("quit1");
+    }
 
-    pBtn_NewGame = CreateButton({0x13u, 0x9Bu}, {0xD6u, 0x28u}, BUTTON_TYPE_NORMAL, 0,
-        UIMSG_StartNewGame, 0, INPUT_ACTION_NEW_GAME, localization->str(LSTR_NEW_GAME), {game_ui_menu_new});
-    pBtn_SaveGame = CreateButton("GameMenu_SaveGame", {0x13u, 0xD1u}, {0xD6u, 0x28u}, BUTTON_TYPE_NORMAL, 0,
-        UIMSG_Game_OpenSaveGameDialog, 0, INPUT_ACTION_SAVE_GAME, localization->str(LSTR_SAVE_GAME), {game_ui_menu_save});
-    pBtn_LoadGame = CreateButton("GameMenu_LoadGame", {19, 263}, {0xD6u, 0x28u}, BUTTON_TYPE_NORMAL, 0,
-        UIMSG_Game_OpenLoadGameDialog, 0, INPUT_ACTION_LOAD_GAME, localization->str(LSTR_LOAD_GAME), {game_ui_menu_load});
-    pBtn_GameControls = CreateButton({241, 155}, {214, 40}, BUTTON_TYPE_NORMAL, 0,
-        UIMSG_Game_OpenOptionsDialog, 0, INPUT_ACTION_OPEN_OPTIONS, localization->str(LSTR_SOUND_KEYBOARD_GAME_OPTIONS), {game_ui_menu_controls});
-    pBtn_QuitGame = CreateButton("GameMenu_Quit", {241, 209}, {214, 40}, BUTTON_TYPE_NORMAL, 0,
-        UIMSG_Quit, 0, INPUT_ACTION_EXIT_GAME, localization->str(LSTR_QUIT), {game_ui_menu_quit});
-    pBtn_Resume = CreateButton({241, 263}, {214, 40}, BUTTON_TYPE_NORMAL, 0,
-        UIMSG_GameMenu_ReturnToGame, 0, INPUT_ACTION_BACK_TO_GAME, localization->str(LSTR_RETURN_TO_GAME), {game_ui_menu_resume});
+    // MM8's real "options" background bakes its 6 slots at 233x78 with a 282px column pitch and ~93.5px row pitch.
+    // MM7's literals above are unrelated decompiled coordinates, so the MM8 branch below uses its own positions.
+    Pointi newGamePos{0x13u, 0x9Bu}, saveGamePos{0x13u, 0xD1u}, loadGamePos{19, 263},
+        controlsPos{241, 155}, quitPos{241, 209}, resumePos{241, 263};
+    Sizei buttonDims{0xD6u, 0x28u};  // all 6 slots share one size on both MM7 and MM8.
+    if (gameType() == GAME_TYPE_MM8) {
+        newGamePos = {64, 148};
+        saveGamePos = {64, 242};
+        loadGamePos = {64, 335};
+        controlsPos = {346, 148};
+        quitPos = {346, 242};
+        resumePos = {346, 335};
+        buttonDims = {232, 77};
+    }
+
+    // Stable ids on all 6 buttons, so a test or other control routine can drive each of them directly via
+    // pressGuiButton() instead of reading UIMSG_ constants or guessing pixel coordinates.
+    pBtn_NewGame = CreateButton("GameMenu_NewGame", newGamePos, buttonDims, BUTTON_TYPE_NORMAL, 0,
+        UIMSG_StartNewGame, 0, INPUT_ACTION_NEW_GAME, localization->str(LSTR_NEW_GAME));
+    pBtn_NewGame->frames = framesNew;
+    pBtn_SaveGame = CreateButton("GameMenu_SaveGame", saveGamePos, buttonDims, BUTTON_TYPE_NORMAL, 0,
+        UIMSG_Game_OpenSaveGameDialog, 0, INPUT_ACTION_SAVE_GAME, localization->str(LSTR_SAVE_GAME));
+    pBtn_SaveGame->frames = framesSave;
+    pBtn_LoadGame = CreateButton("GameMenu_LoadGame", loadGamePos, buttonDims, BUTTON_TYPE_NORMAL, 0,
+        UIMSG_Game_OpenLoadGameDialog, 0, INPUT_ACTION_LOAD_GAME, localization->str(LSTR_LOAD_GAME));
+    pBtn_LoadGame->frames = framesLoad;
+    pBtn_GameControls = CreateButton("GameMenu_Controls", controlsPos, buttonDims, BUTTON_TYPE_NORMAL, 0,
+        UIMSG_Game_OpenOptionsDialog, 0, INPUT_ACTION_OPEN_OPTIONS, localization->str(LSTR_SOUND_KEYBOARD_GAME_OPTIONS));
+    pBtn_GameControls->frames = framesControls;
+    pBtn_QuitGame = CreateButton("GameMenu_Quit", quitPos, buttonDims, BUTTON_TYPE_NORMAL, 0,
+        UIMSG_Quit, 0, INPUT_ACTION_EXIT_GAME, localization->str(LSTR_QUIT));
+    pBtn_QuitGame->frames = framesQuit;
+    pBtn_Resume = CreateButton("GameMenu_Resume", resumePos, buttonDims, BUTTON_TYPE_NORMAL, 0,
+        UIMSG_GameMenu_ReturnToGame, 0, INPUT_ACTION_BACK_TO_GAME, localization->str(LSTR_RETURN_TO_GAME));
+    pBtn_Resume->frames = framesResume;
 
     setKeyboardControlGroup(6, false, 0, 0);
 }
@@ -207,14 +358,36 @@ void GUIWindow_GameMenu::Update() {
     // -----------------------------------
     // 004156F0 GUI_UpdateWindows --- part
     render->DrawQuad2D(game_ui_menu_options, pViewport.topLeft());
+
+    // Each button's caption lives in its own up/hover/down frame triple (GUIButtonFrames.h), and the options background
+    // above bakes 6 blank slots with no text. None of these 6 buttons spawn an OnButtonClick click-flash, so this
+    // per-frame redraw is the caption's only draw, and `select()` both makes it visible and switches it to the hover
+    // frame while the mouse is over the button. The caption is centered within the button's rect, since the caption
+    // texture (219x64, or 221x52 for Load Game) is smaller than the slot.
+    Pointi pt = mouse->position();
+    for (GUIButton *button : {pBtn_NewGame, pBtn_SaveGame, pBtn_LoadGame, pBtn_GameControls, pBtn_QuitGame, pBtn_Resume}) {
+        if (!button)
+            continue;
+        GraphicsImage *caption = button->frames.select(button->Contains(pt.x, pt.y), false);
+        if (!caption)
+            continue;
+        Pointi captionPos = button->rect.topLeft() +
+            Pointi{(button->rect.w - caption->width()) / 2, (button->rect.h - caption->height()) / 2};
+        render->DrawQuad2D(caption, captionPos);
+    }
 }
 
 //----- (00491CB5) --------------------------------------------------------
 void GameUI_LoadPlayerPortraitsAndVoices() {
-    for (unsigned i = 0; i < 4; ++i) {
+    // Grown to 5 alongside `game_ui_player_faces`/`Party::pCharacters`, see that array's own comment.
+    for (unsigned i = 0; i < 5; ++i) {
         for (unsigned j = 0; j < 56; ++j) {
-            game_ui_player_faces[i][j] = assets->getIcon(
-                fmt::format("{}{:02}", pPlayerPortraitsNames[pParty->pCharacters[i].uCurrentFace], j + 1));
+            // MM8's icons.lod names every face frame "pcNN-FF" (a consistent dash), while the shared MM7
+            // `pPlayerPortraitsNames` table omits the dash for about half its entries, which resolves to the missing-texture placeholder.
+            std::string portraitName = gameType() == GAME_TYPE_MM8
+                ? fmt::format("pc{:02}-{:02}", pParty->pCharacters[i].uCurrentFace + 1, j + 1)
+                : fmt::format("{}{:02}", pPlayerPortraitsNames[pParty->pCharacters[i].uCurrentFace], j + 1);
+            game_ui_player_faces[i][j] = assets->getImage_ColorKey(portraitName);
         }
     }
 
@@ -237,8 +410,10 @@ void GameUI_LoadPlayerPortraitsAndVoices() {
 //----- (00491DE7) --------------------------------------------------------
 void GameUI_ReloadPlayerPortraits(int player_id, int face_id) {  // the transition from the zombies to the normal state
     for (unsigned i = 0; i <= 55; ++i) {
-        auto filename =
-            fmt::format("{}{:02}", pPlayerPortraitsNames[face_id], i + 1);
+        // See GameUI_LoadPlayerPortraitsAndVoices for why MM8 needs its own dashed name.
+        auto filename = gameType() == GAME_TYPE_MM8
+            ? fmt::format("pc{:02}-{:02}", face_id + 1, i + 1)
+            : fmt::format("{}{:02}", pPlayerPortraitsNames[face_id], i + 1);
         game_ui_player_faces[player_id][i] =
             assets->getIcon(filename);
     }
@@ -269,11 +444,23 @@ static Color GameMenuUI_GetKeyBindingColor(InputAction action) {
 
 GUIWindow_GameKeyBindings::GUIWindow_GameKeyBindings()
     : GUIWindow(WINDOW_KEY_MAPPING_OPTIONS, {0, 0}, render->GetPresentDimensions()) {
-    game_ui_options_controls[0] = assets->getIcon("optkb");
-    game_ui_options_controls[1] = assets->getIcon("optkb_h");
-    game_ui_options_controls[2] = assets->getIcon("resume1");
-    game_ui_options_controls[3] = assets->getIcon("optkb_1");
-    game_ui_options_controls[4] = assets->getIcon("optkb_2");
+    if (gameType() == GAME_TYPE_MM8) {
+        game_ui_options_controls[0] = assets->getImage_ColorKeyFromEnglishDLOD("optkb");
+        // No real MM8 asset exists for a hover-state variant of the "optkb" background (checked icons.lod,
+        // icons.UI.lod and EnglishD.lod), so it stays null. The MM7 path's use of this slot is never drawn by Update().
+        game_ui_options_controls[1] = nullptr;
+        game_ui_options_controls[2] = assets->getImage_ColorKeyFromEnglishDLOD("bu_rtrnd");
+        // The highlighted ("h") frame reads as the real MM8 "currently active page" look (lit border). The down ("d")
+        // and up ("u") frames both look like a plain idle button.
+        game_ui_options_controls[3] = assets->getImage_ColorKeyFromEnglishDLOD("bt_p1h");
+        game_ui_options_controls[4] = assets->getImage_ColorKeyFromEnglishDLOD("bt_p2h");
+    } else {
+        game_ui_options_controls[0] = assets->getImage_ColorKey("optkb");
+        game_ui_options_controls[1] = assets->getImage_ColorKey("optkb_h");
+        game_ui_options_controls[2] = assets->getImage_ColorKey("resume1");
+        game_ui_options_controls[3] = assets->getImage_ColorKey("optkb_1");
+        game_ui_options_controls[4] = assets->getImage_ColorKey("optkb_2");
+    }
 
     CreateButton({241, 302}, {214, 40}, BUTTON_TYPE_NORMAL, 0, UIMSG_Escape, 0);
 
@@ -364,10 +551,19 @@ GUIWindow_GameVideoOptions::GUIWindow_GameVideoOptions()
     : GUIWindow(WINDOW_VIDEO_OPTIONS, {0, 0}, render->GetRenderDimensions()) {
     // -------------------------------------
     // GameMenuUI_OptionsVideo_Load --- part
-    game_ui_menu_options_video_background = assets->getIcon("optvid");
-    game_ui_menu_options_video_bloodsplats = assets->getIcon("opvdH-bs");
-    game_ui_menu_options_video_coloredlights = assets->getIcon("opvdH-cl");
-    game_ui_menu_options_video_tinting = assets->getIcon("opvdH-tn");
+    // MM8's real assets live in EnglishD.lod under a "bl_*" family ("bl_blspd"/"bl_coltd"/"bl_tintd" read "BLOOD SPLATS"/
+    // "COLORED LIGHTS"/"TINTING"), not the MM7 "opvdH-*" names.
+    if (gameType() == GAME_TYPE_MM8) {
+        game_ui_menu_options_video_background = assets->getImage_ColorKeyFromEnglishDLOD("optvid");
+        game_ui_menu_options_video_bloodsplats = assets->getImage_ColorKeyFromEnglishDLOD("bl_blspd");
+        game_ui_menu_options_video_coloredlights = assets->getImage_ColorKeyFromEnglishDLOD("bl_coltd");
+        game_ui_menu_options_video_tinting = assets->getImage_ColorKeyFromEnglishDLOD("bl_tintd");
+    } else {
+        game_ui_menu_options_video_background = assets->getImage_ColorKey("optvid");
+        game_ui_menu_options_video_bloodsplats = assets->getImage_ColorKey("opvdH-bs");
+        game_ui_menu_options_video_coloredlights = assets->getImage_ColorKey("opvdH-cl");
+        game_ui_menu_options_video_tinting = assets->getImage_ColorKey("opvdH-tn");
+    }
 
     game_ui_menu_options_video_gamma_positions[0] = assets->getIcon("convol10");
     game_ui_menu_options_video_gamma_positions[1] = assets->getIcon("convol20");
@@ -437,97 +633,249 @@ OptionsMenuSkin options_menu_skin;  // 507C60
 
 GUIWindow_GameOptions::GUIWindow_GameOptions()
     : GUIWindow(WINDOW_GAME_OPTIONS, {0, 0}, render->GetRenderDimensions()) {
-    options_menu_skin.uTextureID_Background = assets->getIcon("ControlBG");
-    options_menu_skin.uTextureID_TurnSpeed[2] = assets->getIcon("con_16x");
-    options_menu_skin.uTextureID_TurnSpeed[1] = assets->getIcon("con_32x");
-    options_menu_skin.uTextureID_TurnSpeed[0] = assets->getIcon("con_Smoo");
-    options_menu_skin.uTextureID_ArrowLeft = assets->getIcon("con_ArrL");
-    options_menu_skin.uTextureID_ArrowRight = assets->getIcon("con_ArrR");
-    options_menu_skin.uTextureID_SoundLevels[0] = assets->getIcon("convol10");
-    options_menu_skin.uTextureID_SoundLevels[1] = assets->getIcon("convol20");
-    options_menu_skin.uTextureID_SoundLevels[2] = assets->getIcon("convol30");
-    options_menu_skin.uTextureID_SoundLevels[3] = assets->getIcon("convol40");
-    options_menu_skin.uTextureID_SoundLevels[4] = assets->getIcon("convol50");
-    options_menu_skin.uTextureID_SoundLevels[5] = assets->getIcon("convol60");
-    options_menu_skin.uTextureID_SoundLevels[6] = assets->getIcon("convol70");
-    options_menu_skin.uTextureID_SoundLevels[7] = assets->getIcon("convol80");
-    options_menu_skin.uTextureID_SoundLevels[8] = assets->getIcon("convol90");
-    options_menu_skin.uTextureID_SoundLevels[9] = assets->getIcon("convol00");
-    options_menu_skin.uTextureID_FlipOnExit = assets->getIcon("option04");
-    options_menu_skin.uTextureID_AlwaysRun = assets->getIcon("option03");
-    options_menu_skin.uTextureID_ShowDamage = assets->getIcon("option02");
-    options_menu_skin.uTextureID_WalkSound = assets->getIcon("option01");
+    // MM8's real background/turn-speed-icon assets live in EnglishD.lod under different names ("bt_16xd"/"bt_32xd"/
+    // "bt_smood" read "16x"/"32x"/"SMOOTH"). The slider arrows reuse "ar_lt_up"/"ar_rt_up", the same icons.lod arrow
+    // glyphs as the create-character screen, so `getImage_Alpha` (icons.lod) is the loader.
+    GUIButtonFrameSet framesTurn16x, framesTurn32x, framesTurnSmooth;
+    GUIButtonFrameSet framesWalkSound, framesShowHits, framesAlwaysRun, framesFlipOnExit;
+    GUIButtonFrameSet framesConfigureKeyboard, framesVideoOptions, framesReturn;
+    if (gameType() == GAME_TYPE_MM8) {
+        options_menu_skin.uTextureID_Background = assets->getImage_ColorKeyFromEnglishDLOD("controlbg");
+        options_menu_skin.uTextureID_ArrowLeft = assets->getImage_Alpha("ar_lt_up");
+        options_menu_skin.uTextureID_ArrowRight = assets->getImage_Alpha("ar_rt_up");
 
-    CreateButton({22, 270}, options_menu_skin.uTextureID_TurnSpeed[2]->size(), BUTTON_TYPE_NORMAL, 0,
-                 UIMSG_SetTurnSpeed, 0x80);
-    CreateButton({93, 270}, options_menu_skin.uTextureID_TurnSpeed[1]->size(), BUTTON_TYPE_NORMAL, 0,
-                 UIMSG_SetTurnSpeed, 0x40u);
-    CreateButton({164, 270}, options_menu_skin.uTextureID_TurnSpeed[0]->size(), BUTTON_TYPE_NORMAL, 0,
-                 UIMSG_SetTurnSpeed, 0);
+        // The turn-rate/toggle families each ship an "_u"/"_d" pair (no hover), and CONFIGURE KEYBOARD/VIDEO
+        // OPTIONS/RETURN ship the full "_u"/"_h"/"_d" triple. Update() selects the resting ("_u") or engaged/hovered
+        // frame instead of skipping the draw when a toggle is off.
+        framesTurn16x = loadMM8ButtonFrameSet(MM8ButtonFamily::GameOptionsTurnRate16x);
+        framesTurn32x = loadMM8ButtonFrameSet(MM8ButtonFamily::GameOptionsTurnRate32x);
+        framesTurnSmooth = loadMM8ButtonFrameSet(MM8ButtonFamily::GameOptionsTurnRateSmooth);
+        framesWalkSound = loadMM8ButtonFrameSet(MM8ButtonFamily::GameOptionsWalkSound);
+        framesShowHits = loadMM8ButtonFrameSet(MM8ButtonFamily::GameOptionsShowHits);
+        framesAlwaysRun = loadMM8ButtonFrameSet(MM8ButtonFamily::GameOptionsAlwaysRun);
+        framesFlipOnExit = loadMM8ButtonFrameSet(MM8ButtonFamily::GameOptionsFlipOnExit);
+        framesConfigureKeyboard = loadMM8ButtonFrameSet(MM8ButtonFamily::GameOptionsConfigureKeyboard);
+        framesVideoOptions = loadMM8ButtonFrameSet(MM8ButtonFamily::GameOptionsVideoOptions);
+        framesReturn = loadMM8ButtonFrameSet(MM8ButtonFamily::GameOptionsReturn);
 
-    CreateButton({20, 303}, options_menu_skin.uTextureID_WalkSound->size(), BUTTON_TYPE_NORMAL, 0,
-                 UIMSG_ToggleWalkSound, 0);
-    CreateButton({128, 303}, options_menu_skin.uTextureID_ShowDamage->size(), BUTTON_TYPE_NORMAL, 0,
-                 UIMSG_ToggleShowDamage, 0);
-    CreateButton({20, 325}, options_menu_skin.uTextureID_AlwaysRun->size(), BUTTON_TYPE_NORMAL, 0,
-                 UIMSG_ToggleAlwaysRun, 0);
-    CreateButton({128, 325}, options_menu_skin.uTextureID_FlipOnExit->size(), BUTTON_TYPE_NORMAL, 0,
-                 UIMSG_ToggleFlipOnExit, 0);
+        // The 4 persistent captions.
+        mm8_options_caption_turn_rate = assets->getImage_ColorKeyFromEnglishDLOD("bl_turn");
+        mm8_options_caption_sound = assets->getImage_ColorKeyFromEnglishDLOD("bl_sound");
+        mm8_options_caption_music = assets->getImage_ColorKeyFromEnglishDLOD("bl_music");
+        mm8_options_caption_voice = assets->getImage_ColorKeyFromEnglishDLOD("bl_voice");
+    } else {
+        options_menu_skin.uTextureID_Background = assets->getImage_ColorKey("ControlBG");
+        options_menu_skin.uTextureID_TurnSpeed[2] = assets->getImage_ColorKey("con_16x");
+        options_menu_skin.uTextureID_TurnSpeed[1] = assets->getImage_ColorKey("con_32x");
+        options_menu_skin.uTextureID_TurnSpeed[0] = assets->getImage_ColorKey("con_Smoo");
+        options_menu_skin.uTextureID_ArrowLeft = assets->getImage_Alpha("con_ArrL");
+        options_menu_skin.uTextureID_ArrowRight = assets->getImage_Alpha("con_ArrR");
+        options_menu_skin.uTextureID_FlipOnExit = assets->getImage_ColorKey("option04");
+        options_menu_skin.uTextureID_AlwaysRun = assets->getImage_ColorKey("option03");
+        options_menu_skin.uTextureID_ShowDamage = assets->getImage_ColorKey("option02");
+        options_menu_skin.uTextureID_WalkSound = assets->getImage_ColorKey("option01");
+    }
+    options_menu_skin.uTextureID_SoundLevels[0] = assets->getImage_ColorKey("convol10");
+    options_menu_skin.uTextureID_SoundLevels[1] = assets->getImage_ColorKey("convol20");
+    options_menu_skin.uTextureID_SoundLevels[2] = assets->getImage_ColorKey("convol30");
+    options_menu_skin.uTextureID_SoundLevels[3] = assets->getImage_ColorKey("convol40");
+    options_menu_skin.uTextureID_SoundLevels[4] = assets->getImage_ColorKey("convol50");
+    options_menu_skin.uTextureID_SoundLevels[5] = assets->getImage_ColorKey("convol60");
+    options_menu_skin.uTextureID_SoundLevels[6] = assets->getImage_ColorKey("convol70");
+    options_menu_skin.uTextureID_SoundLevels[7] = assets->getImage_ColorKey("convol80");
+    options_menu_skin.uTextureID_SoundLevels[8] = assets->getImage_ColorKey("convol90");
+    options_menu_skin.uTextureID_SoundLevels[9] = assets->getImage_ColorKey("convol00");
 
-    pBtn_SliderLeft = CreateButton({243, 162}, {16, 16}, BUTTON_TYPE_NORMAL, 0, UIMSG_ChangeSoundVolume, 4, INPUT_ACTION_INVALID, "",
-        {options_menu_skin.uTextureID_ArrowLeft});
-    pBtn_SliderRight = CreateButton({435, 162}, {16, 16}, BUTTON_TYPE_NORMAL, 0, UIMSG_ChangeSoundVolume, 5, INPUT_ACTION_INVALID, "",
-        {options_menu_skin.uTextureID_ArrowRight});
-    CreateButton({263, 162}, {172, 17}, BUTTON_TYPE_NORMAL, 0, UIMSG_ChangeSoundVolume, 0);
+    if (gameType() == GAME_TYPE_MM8) {
+        pBtn_Mm8TurnRate16x = CreateButton("GameOptions_TurnRate16x", kMm8TurnRate16xPos, framesTurn16x.any()->size(),
+            BUTTON_TYPE_NORMAL, 0, UIMSG_SetTurnSpeed, 0x80);
+        pBtn_Mm8TurnRate16x->frames = framesTurn16x;
+        pBtn_Mm8TurnRate32x = CreateButton("GameOptions_TurnRate32x", kMm8TurnRate32xPos, framesTurn32x.any()->size(),
+            BUTTON_TYPE_NORMAL, 0, UIMSG_SetTurnSpeed, 0x40u);
+        pBtn_Mm8TurnRate32x->frames = framesTurn32x;
+        pBtn_Mm8TurnRateSmooth = CreateButton("GameOptions_TurnRateSmooth", kMm8TurnRateSmoothPos, framesTurnSmooth.any()->size(),
+            BUTTON_TYPE_NORMAL, 0, UIMSG_SetTurnSpeed, 0);
+        pBtn_Mm8TurnRateSmooth->frames = framesTurnSmooth;
 
-    pBtn_SliderLeft = CreateButton({243, 216}, {16, 16}, BUTTON_TYPE_NORMAL, 0, UIMSG_ChangeMusicVolume, 4, INPUT_ACTION_INVALID, "",
-        {options_menu_skin.uTextureID_ArrowLeft});
-    pBtn_SliderRight = CreateButton({435, 216}, {16, 16}, BUTTON_TYPE_NORMAL, 0, UIMSG_ChangeMusicVolume, 5, INPUT_ACTION_INVALID, "",
-        {options_menu_skin.uTextureID_ArrowRight});
-    CreateButton({263, 216}, {172, 17}, BUTTON_TYPE_NORMAL, 0, UIMSG_ChangeMusicVolume, 0);
+        pBtn_Mm8WalkSound = CreateButton("GameOptions_WalkSound", kMm8WalkSoundPos, framesWalkSound.any()->size(),
+            BUTTON_TYPE_NORMAL, 0, UIMSG_ToggleWalkSound, 0);
+        pBtn_Mm8WalkSound->frames = framesWalkSound;
+        pBtn_Mm8ShowHits = CreateButton("GameOptions_ShowHits", kMm8ShowHitsPos, framesShowHits.any()->size(),
+            BUTTON_TYPE_NORMAL, 0, UIMSG_ToggleShowDamage, 0);
+        pBtn_Mm8ShowHits->frames = framesShowHits;
+        pBtn_Mm8AlwaysRun = CreateButton("GameOptions_AlwaysRun", kMm8AlwaysRunPos, framesAlwaysRun.any()->size(),
+            BUTTON_TYPE_NORMAL, 0, UIMSG_ToggleAlwaysRun, 0);
+        pBtn_Mm8AlwaysRun->frames = framesAlwaysRun;
+        pBtn_Mm8FlipOnExit = CreateButton("GameOptions_FlipOnExit", kMm8FlipOnExitPos, framesFlipOnExit.any()->size(),
+            BUTTON_TYPE_NORMAL, 0, UIMSG_ToggleFlipOnExit, 0);
+        pBtn_Mm8FlipOnExit->frames = framesFlipOnExit;
+    } else {
+        CreateButton({22, 270}, options_menu_skin.uTextureID_TurnSpeed[2]->size(), BUTTON_TYPE_NORMAL, 0,
+                     UIMSG_SetTurnSpeed, 0x80);
+        CreateButton({93, 270}, options_menu_skin.uTextureID_TurnSpeed[1]->size(), BUTTON_TYPE_NORMAL, 0,
+                     UIMSG_SetTurnSpeed, 0x40u);
+        CreateButton({164, 270}, options_menu_skin.uTextureID_TurnSpeed[0]->size(), BUTTON_TYPE_NORMAL, 0,
+                     UIMSG_SetTurnSpeed, 0);
 
-    pBtn_SliderLeft = CreateButton({243, 270}, {16, 16}, BUTTON_TYPE_NORMAL, 0, UIMSG_ChangeVoiceVolume, 4, INPUT_ACTION_INVALID, "",
-        {options_menu_skin.uTextureID_ArrowLeft});
-    pBtn_SliderRight = CreateButton({435, 270}, {16, 16}, BUTTON_TYPE_NORMAL, 0, UIMSG_ChangeVoiceVolume, 5, INPUT_ACTION_INVALID, "",
-        {options_menu_skin.uTextureID_ArrowRight});
-    CreateButton({263, 270}, {172, 17}, BUTTON_TYPE_NORMAL, 0, UIMSG_ChangeVoiceVolume, 0);
+        CreateButton({20, 303}, options_menu_skin.uTextureID_WalkSound->size(), BUTTON_TYPE_NORMAL, 0,
+                     UIMSG_ToggleWalkSound, 0);
+        CreateButton({128, 303}, options_menu_skin.uTextureID_ShowDamage->size(), BUTTON_TYPE_NORMAL, 0,
+                     UIMSG_ToggleShowDamage, 0);
+        CreateButton({20, 325}, options_menu_skin.uTextureID_AlwaysRun->size(), BUTTON_TYPE_NORMAL, 0,
+                     UIMSG_ToggleAlwaysRun, 0);
+        CreateButton({128, 325}, options_menu_skin.uTextureID_FlipOnExit->size(), BUTTON_TYPE_NORMAL, 0,
+                     UIMSG_ToggleFlipOnExit, 0);
+    }
 
-    CreateButton({241, 302}, {214, 40}, BUTTON_TYPE_NORMAL, 0, UIMSG_Escape, 0, INPUT_ACTION_INVALID, localization->str(LSTR_RETURN_TO_GAME));
-    CreateButton({19, 140}, {214, 40}, BUTTON_TYPE_NORMAL, 0, UIMSG_OpenKeyMappingOptions, 0, INPUT_ACTION_PASS);
-    CreateButton({19, 194}, {214, 40}, BUTTON_TYPE_NORMAL, 0, UIMSG_OpenVideoOptions, 0, INPUT_ACTION_OPEN_OPTIONS);
+    if (gameType() == GAME_TYPE_MM8) {
+        pBtn_SliderLeft = CreateButton("GameOptions_SoundVolumeArrowLeft", {kMm8VolumeArrowLeftX, kMm8VolumeSoundY},
+            options_menu_skin.uTextureID_ArrowLeft->size(), BUTTON_TYPE_NORMAL, 0, UIMSG_ChangeSoundVolume, 4,
+            INPUT_ACTION_INVALID, "", {options_menu_skin.uTextureID_ArrowLeft});
+        pBtn_SliderRight = CreateButton("GameOptions_SoundVolumeArrowRight", {kMm8VolumeArrowRightX, kMm8VolumeSoundY},
+            options_menu_skin.uTextureID_ArrowRight->size(), BUTTON_TYPE_NORMAL, 0, UIMSG_ChangeSoundVolume, 5,
+            INPUT_ACTION_INVALID, "", {options_menu_skin.uTextureID_ArrowRight});
+        CreateButton("GameOptions_SoundVolumeTrack", {kMm8VolumeTrackX, kMm8VolumeSoundY},
+            {kMm8VolumeTrackWidth, kMm8VolumeRowHeight}, BUTTON_TYPE_NORMAL, 0, UIMSG_ChangeSoundVolume, 0);
+
+        pBtn_SliderLeft = CreateButton("GameOptions_MusicVolumeArrowLeft", {kMm8VolumeArrowLeftX, kMm8VolumeMusicY},
+            options_menu_skin.uTextureID_ArrowLeft->size(), BUTTON_TYPE_NORMAL, 0, UIMSG_ChangeMusicVolume, 4,
+            INPUT_ACTION_INVALID, "", {options_menu_skin.uTextureID_ArrowLeft});
+        pBtn_SliderRight = CreateButton("GameOptions_MusicVolumeArrowRight", {kMm8VolumeArrowRightX, kMm8VolumeMusicY},
+            options_menu_skin.uTextureID_ArrowRight->size(), BUTTON_TYPE_NORMAL, 0, UIMSG_ChangeMusicVolume, 5,
+            INPUT_ACTION_INVALID, "", {options_menu_skin.uTextureID_ArrowRight});
+        CreateButton("GameOptions_MusicVolumeTrack", {kMm8VolumeTrackX, kMm8VolumeMusicY},
+            {kMm8VolumeTrackWidth, kMm8VolumeRowHeight}, BUTTON_TYPE_NORMAL, 0, UIMSG_ChangeMusicVolume, 0);
+
+        pBtn_SliderLeft = CreateButton("GameOptions_VoiceVolumeArrowLeft", {kMm8VolumeArrowLeftX, kMm8VolumeVoiceY},
+            options_menu_skin.uTextureID_ArrowLeft->size(), BUTTON_TYPE_NORMAL, 0, UIMSG_ChangeVoiceVolume, 4,
+            INPUT_ACTION_INVALID, "", {options_menu_skin.uTextureID_ArrowLeft});
+        pBtn_SliderRight = CreateButton("GameOptions_VoiceVolumeArrowRight", {kMm8VolumeArrowRightX, kMm8VolumeVoiceY},
+            options_menu_skin.uTextureID_ArrowRight->size(), BUTTON_TYPE_NORMAL, 0, UIMSG_ChangeVoiceVolume, 5,
+            INPUT_ACTION_INVALID, "", {options_menu_skin.uTextureID_ArrowRight});
+        CreateButton("GameOptions_VoiceVolumeTrack", {kMm8VolumeTrackX, kMm8VolumeVoiceY},
+            {kMm8VolumeTrackWidth, kMm8VolumeRowHeight}, BUTTON_TYPE_NORMAL, 0, UIMSG_ChangeVoiceVolume, 0);
+    } else {
+        pBtn_SliderLeft = CreateButton({243, 162}, {16, 16}, BUTTON_TYPE_NORMAL, 0, UIMSG_ChangeSoundVolume, 4, INPUT_ACTION_INVALID, "",
+            {options_menu_skin.uTextureID_ArrowLeft});
+        pBtn_SliderRight = CreateButton({435, 162}, {16, 16}, BUTTON_TYPE_NORMAL, 0, UIMSG_ChangeSoundVolume, 5, INPUT_ACTION_INVALID, "",
+            {options_menu_skin.uTextureID_ArrowRight});
+        CreateButton({263, 162}, {172, 17}, BUTTON_TYPE_NORMAL, 0, UIMSG_ChangeSoundVolume, 0);
+
+        pBtn_SliderLeft = CreateButton({243, 216}, {16, 16}, BUTTON_TYPE_NORMAL, 0, UIMSG_ChangeMusicVolume, 4, INPUT_ACTION_INVALID, "",
+            {options_menu_skin.uTextureID_ArrowLeft});
+        pBtn_SliderRight = CreateButton({435, 216}, {16, 16}, BUTTON_TYPE_NORMAL, 0, UIMSG_ChangeMusicVolume, 5, INPUT_ACTION_INVALID, "",
+            {options_menu_skin.uTextureID_ArrowRight});
+        CreateButton({263, 216}, {172, 17}, BUTTON_TYPE_NORMAL, 0, UIMSG_ChangeMusicVolume, 0);
+
+        pBtn_SliderLeft = CreateButton({243, 270}, {16, 16}, BUTTON_TYPE_NORMAL, 0, UIMSG_ChangeVoiceVolume, 4, INPUT_ACTION_INVALID, "",
+            {options_menu_skin.uTextureID_ArrowLeft});
+        pBtn_SliderRight = CreateButton({435, 270}, {16, 16}, BUTTON_TYPE_NORMAL, 0, UIMSG_ChangeVoiceVolume, 5, INPUT_ACTION_INVALID, "",
+            {options_menu_skin.uTextureID_ArrowRight});
+        CreateButton({263, 270}, {172, 17}, BUTTON_TYPE_NORMAL, 0, UIMSG_ChangeVoiceVolume, 0);
+    }
+
+    if (gameType() == GAME_TYPE_MM8) {
+        pBtn_Mm8Return = CreateButton("GameOptions_Return", kMm8ReturnPos, framesReturn.any()->size(), BUTTON_TYPE_NORMAL, 0,
+            UIMSG_Escape, 0, INPUT_ACTION_INVALID, localization->str(LSTR_RETURN_TO_GAME));
+        pBtn_Mm8Return->frames = framesReturn;
+        pBtn_Mm8ConfigureKeyboard = CreateButton("GameOptions_ConfigureKeyboard", kMm8CfgKeyboardPos, framesConfigureKeyboard.any()->size(),
+            BUTTON_TYPE_NORMAL, 0, UIMSG_OpenKeyMappingOptions, 0, INPUT_ACTION_PASS);
+        pBtn_Mm8ConfigureKeyboard->frames = framesConfigureKeyboard;
+        pBtn_Mm8VideoOptions = CreateButton("GameOptions_VideoOptions", kMm8VideoOptionsPos, framesVideoOptions.any()->size(),
+            BUTTON_TYPE_NORMAL, 0, UIMSG_OpenVideoOptions, 0, INPUT_ACTION_OPEN_OPTIONS);
+        pBtn_Mm8VideoOptions->frames = framesVideoOptions;
+    } else {
+        CreateButton({241, 302}, {214, 40}, BUTTON_TYPE_NORMAL, 0, UIMSG_Escape, 0, INPUT_ACTION_INVALID, localization->str(LSTR_RETURN_TO_GAME));
+        CreateButton({19, 140}, {214, 40}, BUTTON_TYPE_NORMAL, 0, UIMSG_OpenKeyMappingOptions, 0, INPUT_ACTION_PASS);
+        CreateButton({19, 194}, {214, 40}, BUTTON_TYPE_NORMAL, 0, UIMSG_OpenVideoOptions, 0, INPUT_ACTION_OPEN_OPTIONS);
+    }
 }
 
 void GUIWindow_GameOptions::Update() {
-    render->DrawQuad2D(game_ui_menu_options, {8, 8});
-    render->DrawQuad2D(options_menu_skin.uTextureID_Background, {8, 132});
-
-    switch ((int) engine->config->settings.TurnSpeed.value()) {
-        case 64:
-            render->DrawQuad2D(options_menu_skin.uTextureID_TurnSpeed[1], {BtnTurnCoord[1], 270});
-            break;
-        case 128:
-            render->DrawQuad2D(options_menu_skin.uTextureID_TurnSpeed[2], {BtnTurnCoord[2], 270});
-            break;
-        default:
-            render->DrawQuad2D(options_menu_skin.uTextureID_TurnSpeed[0], {BtnTurnCoord[0], 270});
-            break;
+    // MM8's "controlbg" (drawn below) already bakes its own "Might and Magic VIII" logo/title area, so the MM7
+    // "options" parchment is not drawn underneath it, which would repaint a second logo.
+    if (gameType() == GAME_TYPE_MM8) {
+        render->DrawQuad2D(options_menu_skin.uTextureID_Background, {8, 8});
+    } else {
+        render->DrawQuad2D(game_ui_menu_options, {8, 8});
+        render->DrawQuad2D(options_menu_skin.uTextureID_Background, {8, 132});
     }
 
-    if (engine->config->settings.WalkSound.value())
-        render->DrawQuad2D(options_menu_skin.uTextureID_WalkSound, {20, 303});
-    if (engine->config->settings.ShowHits.value())
-        render->DrawQuad2D(options_menu_skin.uTextureID_ShowDamage, {128, 303});
-    if (engine->config->settings.FlipOnExit.value())
-        render->DrawQuad2D(options_menu_skin.uTextureID_FlipOnExit, {128, 325});
-    if (engine->config->settings.AlwaysRun.value())
-        render->DrawQuad2D(options_menu_skin.uTextureID_AlwaysRun, {20, 325});
+    if (gameType() != GAME_TYPE_MM8) {
+        switch ((int) engine->config->settings.TurnSpeed.value()) {
+            case 64:
+                render->DrawQuad2D(options_menu_skin.uTextureID_TurnSpeed[1], {BtnTurnCoord[1], 270});
+                break;
+            case 128:
+                render->DrawQuad2D(options_menu_skin.uTextureID_TurnSpeed[2], {BtnTurnCoord[2], 270});
+                break;
+            default:
+                render->DrawQuad2D(options_menu_skin.uTextureID_TurnSpeed[0], {BtnTurnCoord[0], 270});
+                break;
+        }
 
+        if (engine->config->settings.WalkSound.value()) {
+            render->DrawQuad2D(options_menu_skin.uTextureID_WalkSound, {20, 303});
+        }
+        if (engine->config->settings.ShowHits.value()) {
+            render->DrawQuad2D(options_menu_skin.uTextureID_ShowDamage, {128, 303});
+        }
+        if (engine->config->settings.FlipOnExit.value()) {
+            render->DrawQuad2D(options_menu_skin.uTextureID_FlipOnExit, {128, 325});
+        }
+        if (engine->config->settings.AlwaysRun.value()) {
+            render->DrawQuad2D(options_menu_skin.uTextureID_AlwaysRun, {20, 325});
+        }
+
+        render->DrawQuad2D(options_menu_skin.uTextureID_SoundLevels[engine->config->settings.SoundLevel.value()],
+            {265 + 17 * engine->config->settings.SoundLevel.value(), 162});
+        render->DrawQuad2D(options_menu_skin.uTextureID_SoundLevels[engine->config->settings.MusicLevel.value()],
+            {265 + 17 * engine->config->settings.MusicLevel.value(), 216});
+        render->DrawQuad2D(options_menu_skin.uTextureID_SoundLevels[engine->config->settings.VoiceLevel.value()],
+            {265 + 17 * engine->config->settings.VoiceLevel.value(), 270});
+        return;
+    }
+
+    // The 4 persistent captions: controlbg bakes an empty olive slot for each.
+    render->DrawQuad2D(mm8_options_caption_turn_rate, kMm8CaptionTurnRatePos);
+    render->DrawQuad2D(mm8_options_caption_sound, kMm8CaptionSoundPos);
+    render->DrawQuad2D(mm8_options_caption_music, kMm8CaptionMusicPos);
+    render->DrawQuad2D(mm8_options_caption_voice, kMm8CaptionVoicePos);
+
+    // Every widget below is drawn every frame, not skipped when a toggle is off. `select()`'s `isPressed` slot doubles
+    // as "is this the engaged/selected state": the muted "_d" frame is the visually pressed-in look, not a resting one.
+    // The 3 families that ship an "_h" frame (CFKB/VDOP/RETURN) use the same idiom for a real mouse hover.
+    Pointi pt = mouse->position();
+    auto drawFrame = [&](GUIButton *button, bool isEngaged) {
+        if (!button)
+            return;
+        GraphicsImage *img = button->frames.select(button->Contains(pt.x, pt.y), isEngaged);
+        if (img)
+            render->DrawQuad2D(img, button->rect.topLeft());
+    };
+
+    int turnSpeed = (int) engine->config->settings.TurnSpeed.value();
+    drawFrame(pBtn_Mm8TurnRate16x, turnSpeed == 128);
+    drawFrame(pBtn_Mm8TurnRate32x, turnSpeed == 64);
+    drawFrame(pBtn_Mm8TurnRateSmooth, turnSpeed != 128 && turnSpeed != 64);
+
+    drawFrame(pBtn_Mm8WalkSound, engine->config->settings.WalkSound.value());
+    drawFrame(pBtn_Mm8ShowHits, engine->config->settings.ShowHits.value());
+    drawFrame(pBtn_Mm8AlwaysRun, engine->config->settings.AlwaysRun.value());
+    drawFrame(pBtn_Mm8FlipOnExit, engine->config->settings.FlipOnExit.value());
+
+    drawFrame(pBtn_Mm8ConfigureKeyboard, false);
+    drawFrame(pBtn_Mm8VideoOptions, false);
+    drawFrame(pBtn_Mm8Return, false);
+
+    // convolNN (icons.lod) is a real MM8 asset. Only its screen position differs from MM7, whose literal
+    // {265 + 17*level, y} would land inside the logo area.
     render->DrawQuad2D(options_menu_skin.uTextureID_SoundLevels[engine->config->settings.SoundLevel.value()],
-        {265 + 17 * engine->config->settings.SoundLevel.value(), 162});
+        {kMm8VolumeMarkerX[engine->config->settings.SoundLevel.value()], kMm8VolumeSoundY});
     render->DrawQuad2D(options_menu_skin.uTextureID_SoundLevels[engine->config->settings.MusicLevel.value()],
-        {265 + 17 * engine->config->settings.MusicLevel.value(), 216});
+        {kMm8VolumeMarkerX[engine->config->settings.MusicLevel.value()], kMm8VolumeMusicY});
     render->DrawQuad2D(options_menu_skin.uTextureID_SoundLevels[engine->config->settings.VoiceLevel.value()],
-        {265 + 17 * engine->config->settings.VoiceLevel.value(), 270});
+        {kMm8VolumeMarkerX[engine->config->settings.VoiceLevel.value()], kMm8VolumeVoiceY});
 }
 
 void GameUI_OnPlayerPortraitLeftClick(int uPlayerID) {
@@ -635,7 +983,7 @@ std::string GameUI_GetMinimapHintText() {
     } else {
         for (BSPModel &model : pOutdoor->pBModels) {
             v7 = Vec2i((int)model.boundingCenter.x - global_coord_X,
-                       (int)model.boundingCenter.y - global_coord_Y).length();
+                       (int)model.boundingCenter.y - global_coord_Y).octagonalLength();
             if (v7 < 2 * model.boundingRadius) {
                 for (int faceId : model.faces) {
                     BLVFace &face = pOutdoor->faces[faceId];
@@ -662,6 +1010,11 @@ std::string GameUI_GetMinimapHintText() {
 
 //----- (0041AD6E) --------------------------------------------------------
 void GameUI_DrawRightPanelItems() {
+    // game_ui_tome_quests/autonotes/storyline/maps/calendar all load MM7-only names ("ib-td1-A" etc), and no matching
+    // MM8 asset exists in any LOD searched (icons.lod, icons.UI.lod, both patch LODs, EnglishD.lod). The draw is skipped
+    // rather than rendering a missing-texture load. The buttons themselves (UI_Create's pBtn_Quests etc) stay live.
+    if (gameType() == GAME_TYPE_MM8) return;
+
     if (bookFlashTimer > pParty->GetPlayingTime())
         bookFlashTimer = {};
 
@@ -699,11 +1052,47 @@ static std::string toCompactString(int value) {
     return result;
 }
 
+// The two HUD-visibility predicates (see GUIWindow.h for the screen sets). These are the only screen conditions any
+// MM8 HUD element may consult.
+bool mm8HudVisible() {
+    return gameType() == GAME_TYPE_MM8 &&
+           current_screen_type == SCREEN_GAME &&
+           !pMovie_Track &&
+           uGameState != GAME_STATE_CHANGE_LOCATION;
+}
+
+bool mm8ScoreStripVisible() {
+    return mm8HudVisible() || (gameType() == GAME_TYPE_MM8 && _44100D_should_alter_right_panel());
+}
+
 //----- (0041AEBB) --------------------------------------------------------
 void GameUI_DrawFoodAndGold() {
     int text_y;  // esi@2
 
     if (uGameState != GAME_STATE_FINAL_WINDOW) {
+        // MM8 shows food/gold via a dedicated top-of-screen icon strip ("scorebg"), not MM7's bottom-of-screen
+        // right-justified text. Every MM8 screen that shows this HUD (world, house interior, character-record) uses the
+        // same position, so there's no right-panel toggle.
+        if (gameType() == GAME_TYPE_MM8) {
+            // The strip draws on exploration and right-panel screens only. Full-screen windows (game menu, rest,
+            // spellbook, books, quick reference, ...) get nothing.
+            if (!mm8ScoreStripVisible())
+                return;
+            // scorebg is a colorkeyed icon-only sprite (transparent surround), so the bar chrome is drawn underneath it
+            // first. The original paints the bar behind the strip on exploration, NPC dialogue, house/shop and the
+            // character-record screen, and only the full-screen book/menu windows lack it. So the background follows
+            // the strip's visibility, not the exploration-only predicate.
+            if (mm8ScoreStripVisible())
+                render->DrawQuad2D(game_ui_top_bar_bg, kMm8TopBarBgPos);
+            render->DrawQuad2D(game_ui_scorebg, kMm8ScoreBgPos);
+            GUIWindow::DrawText(assets->pFontSmallnum.get(), {0, kMm8ScoreTextY}, uGameUIFontMain, fmt::format("\t{:03}{}", kMm8FoodTextLeftMargin, toCompactString(pParty->GetFood())),
+                pPrimaryWindow->frameRect, 0, uGameUIFontShadow);
+            GUIWindow::DrawText(assets->pFontSmallnum.get(), {0, kMm8ScoreTextY}, uGameUIFontMain, fmt::format("\t{:03}{}", kMm8GoldTextLeftMargin, toCompactString(pParty->GetGold())),
+                pPrimaryWindow->frameRect, 0, uGameUIFontShadow);
+            render->EndTextNew();
+            return;
+        }
+
         text_y = _44100D_should_alter_right_panel() != 0 ? 381 : 322;
 
         GUIWindow::DrawText(assets->pFontSmallnum.get(), {0, text_y}, uGameUIFontMain, fmt::format("\r087{}", toCompactString(pParty->GetFood())), pPrimaryWindow->frameRect, 0, uGameUIFontShadow);
@@ -713,9 +1102,104 @@ void GameUI_DrawFoodAndGold() {
     }
 }
 
+// MM8's own top-bar direction cartouche: "ib-comp-a" (icons.lod) is the same alignment-invariant horizontally-scrolled
+// direction-letter strip that GameUI_DrawMinimap (below) scrolls for the minimap needle, at the same 0.1171875 px/yaw-unit
+// rate, relocated to its own top-bar slot and clip window. The additive offset is MM7's own (541 clip - 285 draw = 256),
+// so the same yaw maps to the same letter: 306 (this clip's x) - 256 = 50. "compcovr" (icons.UI.lod) is the gold cover
+// frame drawn on top, with a colorkeyed hole punched exactly over the clip window.
+// Called from Engine::drawHUD() after GUI_UpdateWindows(). GameUI_DrawFoodAndGold() paints an opaque 640x29 "topbar"
+// background at (0,0) over this cartouche's whole screen position, so drawing it earlier gets painted over every tick.
+void GameUI_DrawCompass() {
+    // Exploration-only: full-screen windows get no compass.
+    if (!mm8HudVisible()) return;
+
+    render->DrawQuad2D(game_ui_compass_frame, {295, 4});
+    render->SetUIClipRect(Recti(306, 10, 26, 9));
+    render->DrawQuad2D(game_ui_compass_strip, {static_cast<int>(floorf((pParty->_viewYaw * 0.1171875) + 0.5f) + 50), 10});
+    render->ResetUIClipRect();
+}
+
+// The command-icon buttons (pBtn_CastSpell/Rest/QuickReference/GameSettings) are regular GUIButton children of
+// pPrimaryWindow, drawn in GUI_UpdateWindows()'s own window-update loop. That runs before GameUI_DrawFoodAndGold()
+// paints its opaque 640x29 "topbar" background over the top strip, so their vTextures[0] are drawn again here, after
+// GUI_UpdateWindows(), and the icons end up on top.
+//
+// The top bar's left bookend ("figurine", purely decorative, no button under it) and pBtn_Skull have the same exposure.
+// Both bookends are exploration-only in the original: on dialogue and shop screens only the narrow food/gold strip
+// shows, with neither bookend, the compass, nor the 4 command buttons. So the whole function gates on mm8HudVisible().
+// The loop covers MM8's actual four top-bar buttons. pBtn_MapBook is null on the MM7 path and pBtn_CastSpell is null on
+// the MM8 path, both skipped by the null guard.
+void GameUI_DrawCommandIcons() {
+    if (!mm8HudVisible()) return;
+
+    render->DrawQuad2D(game_ui_topbar_figurine, kMm8TopBarFigurinePos);
+
+    for (GUIButton *button : {pBtn_MapBook, pBtn_Rest, pBtn_QuickReference, pBtn_GameSettings}) {
+        if (button && !button->vTextures.empty())
+            render->DrawQuad2D(button->vTextures[0], button->rect.topLeft());
+    }
+
+    if (pBtn_Skull && !pBtn_Skull->vTextures.empty())
+        render->DrawQuad2D(pBtn_Skull->vTextures[0], pBtn_Skull->rect.topLeft());
+}
+
 //----- (0041B0C9) --------------------------------------------------------
 void GameUI_DrawLifeManaBars() {
-    for (int i = 0; i < pParty->pCharacters.size(); ++i) {
+    // Real MM8 portrait-adjacent HP/SP bar. `game_ui_bar_*` above load MM7 names ("ib-statG" etc) that don't exist in
+    // MM8's LODs. The real bar assets are icons.lod's "manafrm" (enclosing frame) and "manag"/"manay"/"manar"/"manab"
+    // (3x49 fill columns), see their load site in GUIWindow.cpp's SetUserInterface. "statbl"/"statg"/"staty"/"statr"
+    // are a small 19x23 status gem (bottom-left of the portrait ring), not a bar.
+    // That gem is drawn below (kMm8StatusGemPos), reusing game_ui_bar_green/yellow/red at the same HP thresholds as the
+    // bar fill just below. game_ui_bar_blue ("statbl") has no observed trigger and is left unused.
+    if (gameType() == GAME_TYPE_MM8) {
+        // "manafrm" is 10px wide with three 1px-wide opaque vertical bars at local x=0/4/8 (left border / center divider /
+        // right border, each full-height) and transparent gaps between them. The HP fill's 3px-wide column x=83..85
+        // (local 1-3, left of the divider) and the SP fill's x=87..89 (local 5-7, right of the divider) sit between them,
+        // not on the border lines.
+        constexpr Pointi kMm8BarFramePos = {82, 428};
+        constexpr int kMm8HpBarX = 83;
+        constexpr int kMm8SpBarX = 87;
+        constexpr int kMm8BarTopY = 430;
+
+        // A lone hero's bars are drawn only while the hero can act. In a party every member has bars beside the portrait.
+        const bool alone = pParty->activeCharacterCount() == 1;
+        if (alone && !pParty->hasActiveCharacter())
+            return;
+        for (int slot = 0; slot < pParty->activeCharacterCount(); slot++) {
+            const int shift = mm8PortraitSlotShift(slot);
+            const Character &character = alone ? pParty->activeCharacter() : pParty->pCharacters[slot];
+            render->DrawQuad2D(game_ui_mm8_bar_frame, kMm8BarFramePos + Pointi(shift, 0));
+            if (character.health > 0) {
+                double hpFillRatio = (double)character.health / (double)character.GetMaxHealth();
+                auto pTextureHealth = game_ui_mm8_bar_green;
+                std::shared_ptr<GraphicsImage> gemTexture = game_ui_bar_green;
+                if (hpFillRatio > 0.5) {
+                    if (hpFillRatio > 1.0) hpFillRatio = 1.0;
+                } else if (hpFillRatio > 0.25) {
+                    pTextureHealth = game_ui_mm8_bar_yellow;
+                    gemTexture = game_ui_bar_yellow;
+                } else if (hpFillRatio > 0.0) {
+                    pTextureHealth = game_ui_mm8_bar_red;
+                    gemTexture = game_ui_bar_red;
+                }
+                render->DrawQuad2D(gemTexture, kMm8StatusGemPos + Pointi(shift, 0));
+                int height = pTextureHealth->height() * hpFillRatio;
+                render->SetUIClipRect(Recti(kMm8HpBarX + shift, kMm8BarTopY + pTextureHealth->height() - height, pTextureHealth->width(), height));
+                render->DrawQuad2D(pTextureHealth, {kMm8HpBarX + shift, kMm8BarTopY});
+                render->ResetUIClipRect();
+            }
+            if (character.mana > 0) {
+                double mpFillRatio = std::min(1.0, (double)character.mana / (double)character.GetMaxMana());
+                int height = game_ui_mm8_bar_blue->height() * mpFillRatio;
+                render->SetUIClipRect(Recti(kMm8SpBarX + shift, kMm8BarTopY + game_ui_mm8_bar_blue->height() - height, game_ui_mm8_bar_blue->width(), height));
+                render->DrawQuad2D(game_ui_mm8_bar_blue, {kMm8SpBarX + shift, kMm8BarTopY});
+                render->ResetUIClipRect();
+            }
+        }
+        return;
+    }
+
+    for (int i = 0; i < pParty->activeCharacterCount(); ++i) {
         if (pParty->pCharacters[i].health > 0) {
             int v17 = 0;
             if (i == 2 || i == 3) v17 = 2;
@@ -1097,6 +1581,11 @@ void GameUI_WritePointedObjectStatusString() {
 
 //----- (0044158F) --------------------------------------------------------
 void GameUI_DrawCharacterSelectionFrame() {
+    // MM8 always shows its portrait ring ("selring", drawn in GameUI_DrawPortraits)
+    // instead of a separate flashing active-character indicator - there's only ever 1 active
+    // character, so a distinct "selected" state doesn't apply.
+    if (gameType() == GAME_TYPE_MM8) return;
+
     if (pParty->hasActiveCharacter())
         render->DrawQuad2D(game_ui_player_selection_frame,
             {pPlayerPortraitsXCoords_For_PlayerBuffAnimsDrawing[pParty->activeCharacterIndex()] - 9, 380});
@@ -1104,12 +1593,17 @@ void GameUI_DrawCharacterSelectionFrame() {
 
 //----- (0044162D) --------------------------------------------------------
 void GameUI_DrawPartySpells() {
-    for (int i = 0; i < spellBuffsAtRightPanel.size(); ++i) {
-        if (pParty->pPartyBuffs[spellBuffsAtRightPanel[i]].Active()) {
-            std::shared_ptr<GraphicsImage> icon = party_buff_icons[i];
-            AtlasLayout layout({16, 8}, {icon->width() / 16, icon->height() / 8});
-            int frame = (animTimer->time().realtimeMilliseconds() / 20 + 20 * pPartySpellbuffsUI_smthns[i]) % 126;
-            render->DrawQuad2D(icon, layout[frame], pPartySpellbuffsUI_XYs[i]);
+    // MM8 ships no "isn-NN" party-buff icon under any name searched (icons.lod, icons.UI.lod, EnglishD.lod).
+    // `party_buff_icons[i]` is dereferenced directly below (`icon->width()`, not through the null-safe DrawQuad2D), so
+    // the whole right-panel spell-buff strip is skipped for MM8. LoadPartyBuffIcons (GUIWindow.cpp) is gated to match.
+    if (gameType() != GAME_TYPE_MM8) {
+        for (int i = 0; i < spellBuffsAtRightPanel.size(); ++i) {
+            if (pParty->pPartyBuffs[spellBuffsAtRightPanel[i]].Active()) {
+                std::shared_ptr<GraphicsImage> icon = party_buff_icons[i];
+                AtlasLayout layout({16, 8}, {icon->width() / 16, icon->height() / 8});
+                int frame = (animTimer->time().realtimeMilliseconds() / 20 + 20 * pPartySpellbuffsUI_smthns[i]) % 126;
+                render->DrawQuad2D(icon, layout[frame], pPartySpellbuffsUI_XYs[i]);
+            }
         }
     }
 
@@ -1136,15 +1630,19 @@ void GameUI_DrawPartySpells() {
         }
     }
 
-    for (int i = 0; i < pParty->pCharacters.size(); ++i) {
-        if (pParty->pCharacters[i].pCharacterBuffs[CHARACTER_BUFF_HAMMERHANDS].Active())
-            render->DrawQuad2D(game_ui_playerbuff_hammerhands, {pPlayerPortraitsXCoords_For_PlayerBuffAnimsDrawing[i] + 72, 427});
-        if (pParty->pCharacters[i].pCharacterBuffs[CHARACTER_BUFF_BLESS].Active())
-            render->DrawQuad2D(game_ui_playerbuff_bless, {pPlayerPortraitsXCoords_For_PlayerBuffAnimsDrawing[i] + 72, 393});
-        if (pParty->pCharacters[i].pCharacterBuffs[CHARACTER_BUFF_PRESERVATION].Active())
-            render->DrawQuad2D(game_ui_playerbuff_preservation, {pPlayerPortraitsXCoords_For_PlayerBuffAnimsDrawing[i] + 72, 410});
-        if (pParty->pCharacters[i].pCharacterBuffs[CHARACTER_BUFF_PAIN_REFLECTION].Active())
-            render->DrawQuad2D(game_ui_playerbuff_pain_reflection, {pPlayerPortraitsXCoords_For_PlayerBuffAnimsDrawing[i] + 72, 444});
+    // MM8 ships no "isg-NN-a/b/c" character-buff icon under any alignment suffix (checked every LOD). The loads in
+    // SetUserInterface (GUIWindow.cpp) are gated to match, so these globals stay null for MM8. DrawQuad2D is null-safe.
+    if (gameType() != GAME_TYPE_MM8) {
+        for (int i = 0; i < pParty->activeCharacterCount(); ++i) {
+            if (pParty->pCharacters[i].pCharacterBuffs[CHARACTER_BUFF_HAMMERHANDS].Active())
+                render->DrawQuad2D(game_ui_playerbuff_hammerhands, {pPlayerPortraitsXCoords_For_PlayerBuffAnimsDrawing[i] + 72, 427});
+            if (pParty->pCharacters[i].pCharacterBuffs[CHARACTER_BUFF_BLESS].Active())
+                render->DrawQuad2D(game_ui_playerbuff_bless, {pPlayerPortraitsXCoords_For_PlayerBuffAnimsDrawing[i] + 72, 393});
+            if (pParty->pCharacters[i].pCharacterBuffs[CHARACTER_BUFF_PRESERVATION].Active())
+                render->DrawQuad2D(game_ui_playerbuff_preservation, {pPlayerPortraitsXCoords_For_PlayerBuffAnimsDrawing[i] + 72, 410});
+            if (pParty->pCharacters[i].pCharacterBuffs[CHARACTER_BUFF_PAIN_REFLECTION].Active())
+                render->DrawQuad2D(game_ui_playerbuff_pain_reflection, {pPlayerPortraitsXCoords_For_PlayerBuffAnimsDrawing[i] + 72, 444});
+        }
     }
 }
 
@@ -1154,22 +1652,33 @@ void GameUI_DrawPortraits() {
 
     pParty->updateDelayedReaction();
 
-    for (int i = 0; i < pParty->pCharacters.size(); ++i) {
+    bool isMm8 = gameType() == GAME_TYPE_MM8;
+
+    // Bottom-bar chrome the portrait/ring/banners below are drawn on top of. selring is a colorkeyed icon-only sprite
+    // (transparent surround), so this has to go first or the raw 3D scene shows through around the portrait/banners.
+    if (isMm8)
+        render->DrawQuad2D(game_ui_bottom_bar_bg, kMm8BottomBarBgPos);
+
+    for (int i = 0; i < pParty->activeCharacterCount(); ++i) {
         Character *pPlayer = &pParty->pCharacters[i];
+        // MM8's first portrait sits inside its own bottom-bar ring (see kMm8PortraitX/Y), the others where the banners stand.
+        int portraitX = isMm8 ? kMm8PortraitX + mm8PortraitSlotShift(i) : pPlayerPortraitsXCoords_For_PlayerBuffAnimsDrawing[i];
+        int portraitY = isMm8 ? kMm8PortraitY : 388;
+
         if (pPlayer->IsEradicated()) {
             pPortrait = game_ui_player_face_eradicated;
             if (pParty->pPartyBuffs[PARTY_BUFF_INVISIBILITY].Active())
-                render->DrawQuad2D(pPortrait, {pPlayerPortraitsXCoords_For_PlayerBuffAnimsDrawing[i], 387}, colorTable.MediumGrey); // was 388
+                render->DrawQuad2D(pPortrait, {portraitX, isMm8 ? portraitY : 387}, colorTable.MediumGrey); // was 388
             else
-                render->DrawQuad2D(pPortrait, {pPlayerPortraitsXCoords_For_PlayerBuffAnimsDrawing[i] + 1, 387}); // was 388
+                render->DrawQuad2D(pPortrait, {portraitX + 1, isMm8 ? portraitY : 387}); // was 388
             continue;
         }
         if (pPlayer->IsDead()) {
             pPortrait = game_ui_player_face_dead;
             if (pParty->pPartyBuffs[PARTY_BUFF_INVISIBILITY].Active())
-                render->DrawQuad2D(pPortrait, {pPlayerPortraitsXCoords_For_PlayerBuffAnimsDrawing[i], 388}, colorTable.MediumGrey);
+                render->DrawQuad2D(pPortrait, {portraitX, portraitY}, colorTable.MediumGrey);
             else
-                render->DrawQuad2D(pPortrait, {pPlayerPortraitsXCoords_For_PlayerBuffAnimsDrawing[i] + 1, 388});
+                render->DrawQuad2D(pPortrait, {portraitX + 1, portraitY});
             continue;
         }
 
@@ -1183,13 +1692,25 @@ void GameUI_DrawPortraits() {
             pPlayer->portraitImageIndex = faceTextureIndex - 1;
             pPortrait = game_ui_player_faces[i][pPlayer->portraitImageIndex];  // pFace = (Texture_MM7*)game_ui_player_faces[i][pFrame->uTextureID];
             if (pParty->pPartyBuffs[PARTY_BUFF_INVISIBILITY].Active())
-                render->DrawQuad2D(pPortrait, {pPlayerPortraitsXCoords_For_PlayerBuffAnimsDrawing[i], 388}, colorTable.MediumGrey);
+                render->DrawQuad2D(pPortrait, {portraitX, portraitY}, colorTable.MediumGrey);
             else
-                render->DrawQuad2D(pPortrait, {pPlayerPortraitsXCoords_For_PlayerBuffAnimsDrawing[i] + 1, 388});
+                render->DrawQuad2D(pPortrait, {portraitX + 1, portraitY});
             continue;
         }
     }
-    if (pParty->bTurnBasedModeOn) {
+
+    if (isMm8) {
+        // The ring marks the member who acts. A banner stands in each slot no member fills.
+        int ringSlot = pParty->hasActiveCharacter() ? pParty->activeCharacterIndex() : 0;
+        render->DrawQuad2D(game_ui_portrait_ring, {kMm8PortraitX + mm8PortraitSlotShift(ringSlot), kMm8PortraitY});
+        for (int i = std::max(0, pParty->activeCharacterCount() - 1); i < kMm8BannerX.size(); ++i)
+            render->DrawQuad2D(game_ui_party_banners[i], {kMm8BannerX[i], kMm8BannerY});
+    }
+    // MM8 ships no "IB-Init*-a/b/c" alert-glow asset at all, and the original shows no such indicator over the portrait.
+    // Skipped, rather than drawing whatever a missing-texture load resolves to over the portrait.
+    if (isMm8) {
+        // no-op: MM8's always-on HUD has no per-character "ready to act" alert indicator.
+    } else if (pParty->bTurnBasedModeOn) {
         if (pTurnEngine->turn_stage != TE_WAIT) {
             if (pTurnEngine->pQueue[0].uPackedID.type() == OBJECT_Character) {
                 for (unsigned i = 0; i < pTurnEngine->pQueue.size(); ++i) {
@@ -1208,7 +1729,7 @@ void GameUI_DrawPortraits() {
             }
         }
     } else {
-        for (int i = 0; i < pParty->pCharacters.size(); ++i) {
+        for (int i = 0; i < pParty->activeCharacterCount(); ++i) {
             if (pParty->pCharacters[i].CanAct() && !pParty->pCharacters[i].timeToRecovery) {
                 std::shared_ptr<GraphicsImage> alert_texture = game_ui_player_alert_green;
                 if (pParty->GetRedAlert())
@@ -1276,7 +1797,13 @@ void GameUI_DrawMinimap(const Recti &rect, int zoom) {
             int starty16 = partyy16 - (rect.h << 16) / (2 * zoom) * imageWidth;
 
             // TODO(pskelton): could stretch texture rather than rescale
-            assert(rect.w == 137 && rect.h == 117);
+            // MM8's real minimap frame ("mapframe", icons.UI.lod) has a smaller interior content area than MM7's.
+            // See the call site in Engine.cpp.
+            if (gameType() == GAME_TYPE_MM8) {
+                assert(rect.w == 124 && rect.h == 93);
+            } else {
+                assert(rect.w == 137 && rect.h == 117);
+            }
 
             RgbaImage minimapImage = RgbaImage::solid(Color(), rect.size());
             int step16 = (1 << 16) * imageWidth / zoom;
@@ -1464,10 +1991,31 @@ void GameUI_DrawMinimap(const Recti &rect, int zoom) {
     if (rotate < 128 || rotate > 1920) arrow_idx = 7;
     render->DrawQuad2D(game_ui_minimap_dirs[arrow_idx], {center.x - 3, center.y - 3});
 
+    // game_ui_minimap_compass stays nullptr for MM8: the top-bar compass cartouche (GameUI_DrawCompass, above) uses its
+    // own game_ui_compass_strip pointer, and DrawQuad2D is null-safe, so this MM7-only needle draw is a no-op for MM8.
+    // The clip reset below must run for every game type. Without it the clip rect stays at the minimap's content rect
+    // into the next tick's drawWorld(), and GameUI_DrawFoodAndGold() (called outside DrawGUI()) is clipped to nothing.
     render->SetUIClipRect(Recti(541, 0, 26, 480));
     render->DrawQuad2D(game_ui_minimap_compass, {static_cast<int>(floorf((pParty->_viewYaw * 0.1171875) + 0.5f) + 285), 136});
     render->ResetUIClipRect();
-    render->DrawQuad2D(game_ui_minimap_frame, {468, 0});
+    // The real MM8 frame sits bottom-right, not MM7's top-right.
+    render->DrawQuad2D(game_ui_minimap_frame, gameType() == GAME_TYPE_MM8 ? Pointi(481, 367) : Pointi(468, 0));
+}
+
+// pBtn_ZoomIn/pBtn_ZoomOut's own OnButtonClick flash (Game.cpp) only draws vTextures[0] for one frame on click, so
+// they need a per-frame redraw. Not drawn from inside GameUI_DrawMinimap: that function's outdoor branch runs
+// BeginLines2D()/EndLines2D() just above, which leaves the GL blend state dirty for the next DrawQuad2D, so the
+// button's opaque pixels come out blended with the 3D world. Called from drawHUD() after GUI_UpdateWindows(), like
+// GameUI_DrawCommandIcons().
+void GameUI_DrawZoomButtons() {
+    // The zoom buttons sit on the minimap frame, so they're exploration-only with it.
+    if (!mm8HudVisible())
+        return;
+
+    if (pBtn_ZoomIn && !pBtn_ZoomIn->vTextures.empty())
+        render->DrawQuad2D(pBtn_ZoomIn->vTextures[0], pBtn_ZoomIn->rect.topLeft());
+    if (pBtn_ZoomOut && !pBtn_ZoomOut->vTextures.empty())
+        render->DrawQuad2D(pBtn_ZoomOut->vTextures[0], pBtn_ZoomOut->rect.topLeft());
 }
 
 //----- (00441498) --------------------------------------------------------
@@ -1500,7 +2048,7 @@ void GameUI_DrawHiredNPCs() {
         buf.Prepare();
 
         for (int i = pParty->hirelingScrollPosition, count = 0; i < buf.Size() && count < 2; i++, count++) {
-            std::string pContainer = fmt::format("NPC{:03}", buf.Get(i)->portraitId);
+            std::string pContainer = npcPortraitTextureName(buf.Get(i)->portraitId);
             int npcX = pHiredNPCsIconsOffsetsX[count];
             int npcY = pHiredNPCsIconsOffsetsY[count];
             render->DrawQuad2D(assets->getIcon(pContainer), {npcX, npcY});

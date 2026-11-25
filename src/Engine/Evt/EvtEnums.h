@@ -249,6 +249,8 @@ enum class EvtVariable {
     VAR_Invisible = 0x13A,
     VAR_ItemEquipped = 0x13B,
 
+    // MM8-only. True if roster.txt row `value` is in the party (Party::isRosterInParty).
+    VAR_NPCIsPartyMember_H1 = 0x13E,
     VAR_FIRST_SKILL = VAR_StaffSkill,
     VAR_LAST_SKILL = VAR_LearningSkill,
 };
@@ -271,7 +273,10 @@ enum class EvtTargetCharacter {
 
     CHOOSE_ACTIVE = 4,
     CHOOSE_PARTY = 5,
-    CHOOSE_RANDOM = 6
+    CHOOSE_RANDOM = 6,
+
+    // MM8's fifth member. Its scripts write 4 for it and 7 for the active one, see `evtTargetCharacterFromByte`.
+    CHOOSE_PLAYER5 = 7
 };
 using enum EvtTargetCharacter;
 

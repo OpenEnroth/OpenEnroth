@@ -12,7 +12,8 @@ class Blob;
 struct MapTable {
     void Initialize(const Blob &mapStats);
     MapId GetMapInfo(std::string_view fileName);
-    IndexedArray<MapData, MAP_FIRST, MAP_LAST> pInfos;
+    // Spans `MAP_FIRST`..`MAP_LAST_MM8` since this storage must hold whichever game's maps are active.
+    IndexedArray<MapData, MAP_FIRST, MAP_LAST_MM8> pInfos;
 };
 
 extern MapTable *pMapTable;

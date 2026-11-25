@@ -68,9 +68,24 @@ extern SpellStats *pSpellStats;
 
 extern IndexedArray<std::array<struct SpellBookIconPos, 12>, MAGIC_SCHOOL_FIRST, MAGIC_SCHOOL_LAST> pIconPos;
 
-extern const IndexedArray<SpriteId, SPELL_FIRST_WITH_SPRITE, SPELL_LAST_WITH_SPRITE> SpellSpriteMapping;  // 4E3ACC
+extern IndexedArray<SpriteId, SPELL_FIRST_WITH_SPRITE, SPELL_LAST_WITH_SPRITE> SpellSpriteMapping;  // 4E3ACC
 extern IndexedArray<SpellData, SPELL_FIRST_REGULAR, SPELL_LAST_REGULAR> pSpellDatas;
 extern const IndexedArray<uint16_t, SPELL_FIRST_WITH_SPRITE, SPELL_LAST_WITH_SPRITE> SpellSoundIds;
+
+/**
+ * `SpellId` is named after MM7's spell book. MM8's book holds Telepathy, Remove Fear, Mind Resistance and Mind Blast
+ * in the first four Mind slots, where MM7's holds Remove Fear, Mind Blast, Protection from Mind and Telepathy.
+ *
+ * @param spell                         A spell by its slot in the running game's spell book.
+ * @return                              The spell that `SpellId` names for what this slot casts.
+ */
+SpellId spellEffect(SpellId spell);
+
+/**
+ * @param effect                        A spell as `SpellId` names it.
+ * @return                              The slot of the running game's spell book that casts it.
+ */
+SpellId spellWithEffect(SpellId effect);
 
 /**
  * @offset 0x43AFE3

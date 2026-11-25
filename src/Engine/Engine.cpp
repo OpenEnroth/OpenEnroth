@@ -35,6 +35,7 @@
 #include "Engine/Graphics/TurnBasedOverlay.h"
 #include "Engine/Localization.h"
 #include "Engine/Objects/Actor.h"
+#include "Engine/Objects/CharacterMM8Abilities.h"
 #include "Engine/Objects/Chest.h"
 #include "Engine/Tables/ObjectTable.h"
 #include "Engine/Objects/SpriteObject.h"
@@ -51,6 +52,8 @@
 #include "Engine/Tables/AwardTable.h"
 #include "Engine/Tables/ChestTable.h"
 #include "Engine/Tables/HouseTable.h"
+#include "Engine/Tables/RosterTable.h"
+#include "Engine/Tables/TransportTable.h"
 #include "Engine/Tables/ItemTable.h"
 #include "Engine/Tables/IconFrameTable.h"
 #include "Engine/Tables/OverlayTable.h"
@@ -144,19 +147,19 @@ void Engine::drawWorld() {
     pCamera3D->CreateViewMatrixAndProjectionScale();
     pCamera3D->BuildViewFrustum();
 
-    if (pMovie_Track) {
+    if (pMovie_Track && !_forceWorldDraw) { // see Engine::setWorldDrawForced.
         /*if ( !render->pRenderD3D )
         {
         render->BeginScene3D();
         pMouse->DrawCursorToTarget();
         render->DrawBillboards_And_MaybeRenderSpecialEffects_And_EndScene();
         }*/
-    } else {
+    } else if (!_skipWorldDraw) {
         render->BeginScene3D();
 
         // if ( !render->pRenderD3D )
         // pMouse->DrawCursorToTarget();
-        if (!PauseGameDrawing()) {
+        if (!PauseGameDrawing() || _forceWorldDraw) {
             if (uCurrentlyLoadedLevelType == LEVEL_INDOOR) {
                 pIndoor->Draw();
             } else {
@@ -181,6 +184,14 @@ void Engine::drawHUD() {
 
     DrawGUI();
     GUI_UpdateWindows();
+
+    // GameUI_DrawCompass() must run after GUI_UpdateWindows(): that draws the opaque 640x29 "topbar"
+    // background (GameUI_DrawFoodAndGold(), gated on GetCurrentMenuID()==MENU_NONE) across the compass's
+    // whole screen position, and a compass drawn first is painted over every tick.
+    GameUI_DrawCompass();
+    GameUI_DrawCommandIcons();
+    // Runs after GUI_UpdateWindows() settles the GL blend state.
+    GameUI_DrawZoomButtons();
     pParty->updateCharactersAndHirelingsEmotions();
 
     // mouse->DrawPickedItem();
@@ -203,16 +214,37 @@ void Engine::DrawGUI() {
     GameUI_DrawRightPanelFrames();
     _statusBar->draw();
 
-    if (!pMovie_Track && uGameState != GAME_STATE_CHANGE_LOCATION)  // ! pVideoPlayer->pSmackerMovie)
+    // _44100D_should_alter_right_panel() is true whenever a dialogue/house/character/etc overlay owns the
+    // right-panel area instead of the normal HUD. The minimap must not draw underneath those overlays,
+    // since their panel art doesn't reliably occlude it.
+    bool canDrawMinimap = !pMovie_Track && uGameState != GAME_STATE_CHANGE_LOCATION &&
+                           !_44100D_should_alter_right_panel();  // ! pVideoPlayer->pSmackerMovie)
+
+    // MM7 draws the minimap in its own top-right corner, clear of everything else, so it can go early.
+    // MM8's minimap frame ("mapframe", icons.UI.lod) sits bottom-right, on top of the bottom-bar chrome
+    // ("basebar") that GameUI_DrawPortraits paints, so MM8 draws it again below, after that chrome is down.
+    if (canDrawMinimap && gameType() != GAME_TYPE_MM8)
         GameUI_DrawMinimap(Recti(488, 16, 137, 117), viewparams->uMinimapZoom);
 
-    GameUI_DrawPartySpells();
-    GameUI_DrawHiredNPCs();
+    // The bottom party-bar family (basebar/portraits/HP-SP bars/selection ring/hireling slots/party-spell
+    // icons) shares the food/gold strip's screen set, mm8ScoreStripVisible(): the portrait and HP/SP band
+    // stays on the right-panel screens too, so it is not the narrower mm8HudVisible() set.
+    if (gameType() != GAME_TYPE_MM8 || mm8ScoreStripVisible()) {
+        GameUI_DrawPartySpells();
+        GameUI_DrawHiredNPCs();
 
-    GameUI_DrawPortraits();
-    GameUI_DrawLifeManaBars();
-    GameUI_DrawCharacterSelectionFrame();
+        GameUI_DrawPortraits();
+        GameUI_DrawLifeManaBars();
+        GameUI_DrawCharacterSelectionFrame();
+    }
     if (_44100D_should_alter_right_panel()) GameUI_DrawRightPanel();
+
+    // The MM8 minimap (content, "mapframe", arrow) is exploration-only: canDrawMinimap excludes right-panel
+    // screens alone, so mm8HudVisible() gates the rest. Gated at the call site, not inside GameUI_DrawMinimap(),
+    // since that function sets its own UI clip rect at entry and an early return would leave it stuck.
+    if (canDrawMinimap && gameType() == GAME_TYPE_MM8 && mm8HudVisible()) {
+        GameUI_DrawMinimap(Recti(497, 378, 124, 93), viewparams->uMinimapZoom);
+    }
 
     if (!pMovie_Track) {
         spell_fx_renedrer->DrawPlayerBuffAnims();
@@ -709,14 +741,22 @@ void DoPrepareWorld(bool bLoading, int _1_fullscreen_loading_2_box) {
 
     engine->_currentLoadedMapId = transitionMapId;
 
-    if (isMapIndoor(transitionMapId)) {
+    // `isMapIndoor`'s ranges are hardcoded to MM7's map ids (see MapEnumFunctions.h), so it is always false for MM8's
+    // appended `MAP_MM8_*` ids. MM8 uses the `.blv`/`.odm` filename extension from mapstats.txt instead.
+    bool isIndoorMap = gameType() == GAME_TYPE_MM8
+        ? pMapTable->pInfos[transitionMapId].fileName.ends_with(".blv")
+        : isMapIndoor(transitionMapId);
+    if (isIndoorMap) {
         loadAndPrepareBLV(transitionMapId, bLoading);
     } else {
         loadAndPrepareODM(transitionMapId, bLoading);
     }
 
-    // After the load, because the map delta overwrites face attributes.
-    repairClickableFaces(isMapIndoor(transitionMapId) ? std::span(pIndoor->faces) : std::span(pOutdoor->faces), engine->_localEventMap);
+    // After the load, because the map delta overwrites face attributes. MM8's indoor faces keep the flags of the map data.
+    if (!isIndoorMap)
+        repairClickableFaces(pOutdoor->faces, engine->_localEventMap);
+    else if (gameType() != GAME_TYPE_MM8)
+        repairClickableFaces(pIndoor->faces, engine->_localEventMap);
 
     setNPCNamesOnLoad();
     engine->_461103_load_level_sub();
@@ -770,7 +810,11 @@ void FinalInitialization() {
 }
 
 void MM7_LoadLods() {
-    engine->resources()->open(engine->config->graphics.Saturation.value(), engine->config->graphics.Lightness.value());
+    // MM8's palettes are authored more saturated than MM6/MM7's, so the MM6/MM7-calibrated sliders would grey them out.
+    if (gameType() == GAME_TYPE_MM8)
+        engine->resources()->open();
+    else
+        engine->resources()->open(engine->config->graphics.Saturation.value(), engine->config->graphics.Lightness.value());
 
     // TODO(captainurist):
     // on error in `open` we had this:
@@ -824,6 +868,16 @@ void Engine::MM7_Initialize() {
 
     pObjectTable = new ObjectTable;
     deserialize(engine->resources()->eventsData("dobjlist.bin"), pObjectTable);
+    // MM8's dobjlist.bin files the Mind Blast bolt and its impact under ids 6030/6031, MM7's under 6010/6011.
+    // `SpriteId` is MM7's, so without this the lookup finds nothing and the spell launches no bolt.
+    if (pObjectTable->ObjectIDByItemID(SPRITE_SPELL_MIND_MIND_BLAST) == 0) {
+        for (ObjectData &object : pObjectTable->pObjects) {
+            if (object.uObjectID == SPRITE_SPELL_MIND_TELEPATHY)
+                object.uObjectID = SPRITE_SPELL_MIND_MIND_BLAST;
+            else if (std::to_underlying(object.uObjectID) == std::to_underlying(SPRITE_SPELL_MIND_TELEPATHY) + 1)
+                object.uObjectID = SPRITE_SPELL_MIND_MIND_BLAST_IMPACT;
+        }
+    }
 
     pMonsterList = new MonsterList;
     deserialize(engine->resources()->eventsData("dmonlist.bin"), pMonsterList);
@@ -870,6 +924,14 @@ void Engine::SecondaryInitialization() {
     pItemTable->Initialize(engine->resources());
 
     initializeHouses(engine->resources()->eventsText("2dEvents.txt"));
+    // MM8 ships its transport network as two loose tables under `Data/Tables` instead of compiling
+    // it into the executable the way MM7 does. Nothing read them, so every MM8 boat and caravan fell
+    // through to an MM7 row and offered no destinations at all. An MM7 install has no such files and
+    // gets empty blobs here, which leaves its own compiled-in table in charge.
+    initializeTransportMm8(dfs->exists("data/tables/transport index.txt")
+                               ? dfs->read("data/tables/transport index.txt") : Blob(),
+                           dfs->exists("data/tables/transport locations.txt")
+                               ? dfs->read("data/tables/transport locations.txt") : Blob());
 
     // TODO(captainurist): try resurrecting the food / gold animations using resource files from MM6?
     //for (unsigned i = 0; i < 4; ++i) {
@@ -889,6 +951,11 @@ void Engine::SecondaryInitialization() {
 
     pNPCStats = new NPCStats();
     pNPCStats->Initialize(engine->resources());
+
+    // MM8's own table of recruitable companions. Not shipped for MM7 (or any other game type) -
+    // `eventsText` returns an empty blob then, which `initializeRosterMm8` leaves `rosterMm8` empty
+    // for, same convention `initializeTransportMm8` above already uses.
+    initializeRosterMm8(engine->resources()->eventsText("roster.txt"));
 
     initializeQuests(engine->resources()->eventsText("quests.txt"));
     initializeAutonotes(engine->resources()->eventsText("autonote.txt"));
@@ -994,14 +1061,26 @@ void Engine::_461103_load_level_sub() {
     pNPCStats->uNewlNPCBufPos = 0;
 
     for (Actor &actor : pActors) {
-        MonsterTier tier = monsterTierForMonsterId(actor.monsterInfo.id);
-        if (tier == MONSTER_TIER_A)
+        // In MM7 the weakest tier is rats/bats that never talk. In MM8 each species' lowest tier is its
+        // "<Species> Peasant" variant (Lizardman Peasant is monsters.txt id 1), and EnglishT.lod's npcdata.txt
+        // has portrait-template rows 516-527 for these ids, so they talk like any other peasant
+        // (see mm8PeasantPortraitIdForMonsterId).
+        if (gameType() == GAME_TYPE_MM7 && monsterTierForMonsterId(actor.monsterInfo.id) == MONSTER_TIER_A)
             continue; // Weakest peasants are just peasants.
 
         if (actor.npcId && actor.npcId < 5000)
             continue;
 
         if (isPeasant(actor.monsterInfo.id)) {
+            // `pAdditionalNPC` is a fixed 100-slot buffer from MM7's save-game format (`pOriginalNPCData` has a
+            // matching 500-slot cap, see NPCTable.cpp). MM8 maps can place more than 100 peasant-tier actors,
+            // so the bounds check below is required.
+            if (pNPCStats->uNewlNPCBufPos >= static_cast<int>(pNPCStats->pAdditionalNPC.size())) {
+                MM_WARNING("Engine: dropping additional NPC for actor, doesn't fit in a {}-slot table", pNPCStats->pAdditionalNPC.size());
+                actor.npcId = 0;
+                continue;
+            }
+
             pNPCStats->InitializeAdditionalNPCs(
                 &pNPCStats->pAdditionalNPC[pNPCStats->uNewlNPCBufPos],
                 actor.monsterInfo.id, HOUSE_INVALID, engine->_currentLoadedMapId);
@@ -1143,6 +1222,22 @@ void _494035_timed_effects__water_walking_damage__etc(Duration dt) {
     pParty->uCurrentMonth = time.month - 1;
     pParty->uCurrentYear = time.year;
 
+    // MM8 Dragons fly innately at Master level of Dragon Abilities, draining 1 spell point every 5 minutes.
+    // Rather than reimplementing flight, a Dragon party member who can act keeps `PARTY_BUFF_FLY`
+    // continuously (re-)granted - the exact same buff the Air magic Fly spell applies - so ascending/
+    // descending, indoor auto-landing (`Indoor.cpp`), and the mana-drain-every-5-minutes tick below
+    // (`RegeneratePartyHealthMana`) all already work unchanged. `SpellBuff::Apply` never shortens a
+    // longer-lasting buff, so this can't clobber a stronger Grandmaster Fly the party already cast.
+    // In MM7 `GetRace()` can never return `RACE_MM8_DRAGON`.
+    if (gameType() == GAME_TYPE_MM8) {
+        for (int i = 0; i < pParty->activeCharacterCount(); i++) {
+            if (pParty->pCharacters[i].GetRace() == RACE_MM8_DRAGON && pParty->pCharacters[i].CanAct()) {
+                pParty->pPartyBuffs[PARTY_BUFF_FLY].Apply(newTime + Duration::fromMinutes(1), MASTERY_NOVICE, 0, 0, i);
+                break;
+            }
+        }
+    }
+
     // New day dawns at 3am.
     Time next3am = Time::fromDurationSinceSilence((oldTime.toDurationSinceSilence() - Duration::fromHours(3)).roundedUp(Duration::fromDays(1)) + Duration::fromHours(3));
     if (oldTime < next3am && newTime >= next3am) {
@@ -1154,20 +1249,23 @@ void _494035_timed_effects__water_walking_damage__etc(Duration dt) {
 
         ++pParty->days_played_without_rest;
         if (pParty->days_played_without_rest > 1) {
-            for (Character &character : pParty->pCharacters)
-                character.SetCondWeakWithBlockCheck(0);
+            for (int i = 0; i < pParty->activeCharacterCount(); i++)
+                pParty->pCharacters[i].SetCondWeakWithBlockCheck(0);
 
             // starving
             if (pParty->GetFood() > 0) {
                 pParty->TakeFood(1);
             } else {
-                for (Character &character : pParty->pCharacters)
+                for (int i = 0; i < pParty->activeCharacterCount(); i++) {
+                    Character &character = pParty->pCharacters[i];
                     character.health = character.health / (pParty->days_played_without_rest + 1) + 1;
+                }
             }
 
             // players go insane without rest
             if (pParty->days_played_without_rest > 3) {
-                for (Character &character : pParty->pCharacters) {
+                for (int i = 0; i < pParty->activeCharacterCount(); i++) {
+                    Character &character = pParty->pCharacters[i];
                     character.resetTempBonuses();
                     if (!character.IsPetrified() && !character.IsEradicated() && !character.IsDead()) {
                         if (grng->random(100) < 5 * pParty->days_played_without_rest)
@@ -1181,10 +1279,27 @@ void _494035_timed_effects__water_walking_damage__etc(Duration dt) {
         if (uCurrentlyLoadedLevelType == LEVEL_OUTDOOR)
             pOutdoor->SetFog();
 
-        for (Character &character : pParty->pCharacters) {
+        for (int i = 0; i < pParty->activeCharacterCount(); i++) {
+            Character &character = pParty->pCharacters[i];
             character.uNumDivineInterventionCastsThisDay = 0;
             character.uNumArmageddonCasts = 0;
             character.uNumFireSpikeCasts = 0; // TODO(pskelton): adding this here for now but behaviour around firespike permanence needs checking
+        }
+    }
+
+    // Test-only lava hp tracking. Any hp rise since the last sample counts as a heal, a fall as damage. A heal and a hit
+    // in the same sampling window net out. When the character's real max hp moves (a level-up, an item), tracking
+    // restarts at the new max, so the hp the move added is not counted as a heal.
+    for (int i = 0; i < pParty->activeCharacterCount(); i++) {
+        Character &character = pParty->pCharacters[i];
+        if (!character._survivableConditions)
+            continue;
+        if (character.GetRetailMaxHealth() != character._ledgerRetail) {
+            character._ledgerRetail = character.GetRetailMaxHealth();
+            character._lavaHp = character._ledgerRetail;
+            character._ledgerHealth = character.health;
+        } else if (character.health > character._ledgerHealth) {
+            character._lavaHp = std::min<int64_t>(character._lavaHp + (character.health - character._ledgerHealth), character.GetRetailMaxHealth());
         }
     }
 
@@ -1192,13 +1307,16 @@ void _494035_timed_effects__water_walking_damage__etc(Duration dt) {
     // water damage
     if (pParty->uFlags & PARTY_FLAG_WATER_DAMAGE && pParty->_6FC_water_lava_timer < pParty->GetPlayingTime()) {
         pParty->_6FC_water_lava_timer = pParty->GetPlayingTime() + 128_ticks;
-        for (Character &character : pParty->pCharacters) {
+        for (int i = 0; i < pParty->activeCharacterCount(); i++) {
+            Character &character = pParty->pCharacters[i];
             if (character.wearsItem(ITEM_RELIC_HARECKS_LEATHER) ||
                 character.wearsEnchantedItem(ITEM_ENCHANTMENT_OF_WATER_WALKING) ||
                 character.pCharacterBuffs[CHARACTER_BUFF_WATER_WALK].Active()) {
                 character.playEmotion(PORTRAIT_SMILE, 0_ticks);
             } else if (!character.hasUnderwaterSuitEquipped()) {
-                character.receiveDamage((int64_t)character.GetMaxHealth() * 0.1, DAMAGE_FIRE); // TODO(pskelton): fire damage?
+                int64_t lostBefore = character._hpLost;
+                character.receiveDamage((int64_t)character.GetRetailMaxHealth() * 0.1, DAMAGE_FIRE); // TODO(pskelton): fire damage?
+                character._drownDamage += character._hpLost - lostBefore;
                 engine->_statusBar->setEventShort(LSTR_YOU_ARE_DROWNING);
             } else {
                 character.playEmotion(PORTRAIT_SMILE, 0_ticks);
@@ -1210,10 +1328,20 @@ void _494035_timed_effects__water_walking_damage__etc(Duration dt) {
     if (pParty->uFlags & PARTY_FLAG_BURNING && pParty->_6FC_water_lava_timer < pParty->GetPlayingTime()) {
         pParty->_6FC_water_lava_timer = pParty->GetPlayingTime() + 128_ticks;
 
-        for (Character &character : pParty->pCharacters)
-            character.receiveDamage((int64_t)character.GetMaxHealth() * 0.1, DAMAGE_FIRE);
+        for (int i = 0; i < pParty->activeCharacterCount(); i++) {
+            Character &character = pParty->pCharacters[i];
+            int64_t lostBefore = character._hpLost;
+            character.receiveDamage((int64_t)character.GetRetailMaxHealth() * 0.1, DAMAGE_FIRE);  // the character's real max hp
+            character._burnTicks++;
+            character._lavaDamage += character._hpLost - lostBefore;
+            if (character._survivableConditions)
+                character._lavaHp -= character._hpLost - lostBefore;
+        }
         engine->_statusBar->setEventShort(LSTR_YOU_ARE_BURNING);
     }
+
+    for (int i = 0; i < pParty->activeCharacterCount(); i++)
+        pParty->pCharacters[i]._ledgerHealth = pParty->pCharacters[i].health;  // The next heal sample's baseline
 
     RegeneratePartyHealthMana();
 
@@ -1226,8 +1354,9 @@ void _494035_timed_effects__water_walking_damage__etc(Duration dt) {
         recoveryTimeDt /= 2;
     }
 
-    unsigned numPlayersCouldAct = pParty->pCharacters.size();
-    for (Character &character : pParty->pCharacters) {
+    unsigned numPlayersCouldAct = pParty->activeCharacterCount();
+    for (int i = 0; i < pParty->activeCharacterCount(); i++) {
+        Character &character = pParty->pCharacters[i];
         if (character.timeToRecovery && recoveryTimeDt > 0_ticks)
             character.Recover(recoveryTimeDt);
 
@@ -1258,8 +1387,8 @@ void _494035_timed_effects__water_walking_damage__etc(Duration dt) {
     }
 
     if (pParty->pPartyBuffs[PARTY_BUFF_HASTE].Expired()) {
-        for (Character &character : pParty->pCharacters)
-            character.SetCondition(CONDITION_WEAK, 0);
+        for (int i = 0; i < pParty->activeCharacterCount(); i++)
+            pParty->pCharacters[i].SetCondition(CONDITION_WEAK, 0);
         pParty->pPartyBuffs[PARTY_BUFF_HASTE].Reset();
     }
 
@@ -1291,7 +1420,8 @@ void maybeWakeSoloSurvivor() {
         return;
 
     // Try waking up a single character.
-    for (Character &character : pParty->pCharacters) {
+    for (int i = 0; i < pParty->activeCharacterCount(); ++i) {
+        Character &character = pParty->pCharacters[i];
         if (character.conditions.has(CONDITION_SLEEP)) {
             if (character.conditions.hasNone({ CONDITION_PARALYZED, CONDITION_UNCONSCIOUS, CONDITION_DEAD, CONDITION_PETRIFIED, CONDITION_ERADICATED })) {
                 character.conditions.reset(CONDITION_SLEEP);
@@ -1316,16 +1446,8 @@ void RegeneratePartyHealthMana() {
     Duration newTime = pParty->GetPlayingTime().toDurationSinceSilence();
     Duration oldTime = pParty->last_regenerated.toDurationSinceSilence();
 
-    // This used to trigger if:
-    // - Current time is at a 5-min mark (time.toMinutes() % 5 == 0),
-    // - Or if at least 5 mins have passed.
-    //
-    // And then there was a loop that went in 5-min increments to do regen several times if for example 15 minutes have
-    // passed.
-    //
-    // New logic is:
-    // - Calculate the number of 5-min ticks that have passed. E.g. there is only one 5-min tick between 1 and 9.
-    // - Do a single run of the logic below.
+    // Calculate the number of 5-min ticks that have passed. E.g. there is only one 5-min tick between 1 and 9.
+    // Do a single run of the logic below.
 
     auto ticksBetween = [](Duration lo, Duration hi, Duration interval) {
         // Calculate # of interval-spaced ticks in [lo, hi).
@@ -1458,19 +1580,23 @@ void RegeneratePartyHealthMana() {
         // Item regeneration
         for (InventoryEntry item : character.inventory.functionalEquipment()) {
             if (!isRegular(item->itemId)) {
-                if (item->itemId == ITEM_RELIC_ETHRICS_STAFF) {
-                    bool undead = character.classType == CLASS_LICH || character.conditions.has(CONDITION_ZOMBIE);
-                    if (!undead) // Vanilla bug: the staff drained every wielder, while its description only has it drain mortals.
-                        character.health -= ticks5;
+                // These 4 ids resolve to unrelated real MM8 artifacts/relics after the items.txt block-shift
+                // (not Ethric's Staff/Hermes Sandals/Mind's Eye/Hero's Belt), so they only apply to MM7.
+                if (gameType() == GAME_TYPE_MM7) {
+                    if (item->itemId == ITEM_RELIC_ETHRICS_STAFF) {
+                        bool undead = character.classType == CLASS_LICH || character.conditions.has(CONDITION_ZOMBIE);
+                        if (!undead) // Vanilla bug: the staff drained every wielder, while its description only has it drain mortals.
+                            character.health -= ticks5;
+                    }
+                    if (item->itemId == ITEM_ARTIFACT_HERMES_SANDALS) {
+                        thisChar.hpRegen++;
+                        thisChar.spRegen++;
+                    }
+                    if (item->itemId == ITEM_ARTIFACT_MINDS_EYE)
+                        thisChar.spRegen++;
+                    if (item->itemId == ITEM_ARTIFACT_HEROS_BELT)
+                        thisChar.hpRegen++;
                 }
-                if (item->itemId == ITEM_ARTIFACT_HERMES_SANDALS) {
-                    thisChar.hpRegen++;
-                    thisChar.spRegen++;
-                }
-                if (item->itemId == ITEM_ARTIFACT_MINDS_EYE)
-                    thisChar.spRegen++;
-                if (item->itemId == ITEM_ARTIFACT_HEROS_BELT)
-                    thisChar.hpRegen++;
             } else {
                 ItemEnchantment special_enchantment = item->specialEnchantment;
                 if (special_enchantment == ITEM_ENCHANTMENT_OF_REGENERATION
@@ -1516,6 +1642,12 @@ void RegeneratePartyHealthMana() {
             }
         }
 
+        // MM8 Troll race innate ability (see CharacterMM8Abilities.h): Trolls start with the
+        // Regeneration skill, slowly healing hp every tick. Gated on game type and race.
+        if (gameType() == GAME_TYPE_MM8 && character.GetRace() == RACE_MM8_TROLL) {
+            thisChar.hpRegen += mm8TrollRegenerationHpPerTick();
+        }
+
         character.tickRegeneration(ticks5, thisChar);
 
         // Zombie mana/health drain.
@@ -1532,7 +1664,9 @@ void RegeneratePartyHealthMana() {
         if (character.health <= 0) {
             int enduranceCheck = character.health + character.GetBaseEndurance();
             Condition targetCondition = enduranceCheck >= 1 || character.pCharacterBuffs[CHARACTER_BUFF_PRESERVATION].Active() ? CONDITION_UNCONSCIOUS : CONDITION_DEAD;
-            if (!character.conditions.has(targetCondition))
+            if (character._survivableConditions)  // Test-only: this raw write bypasses the SetCondition guard.
+                character.SetCondition(targetCondition, 0);  // refused + counted
+            else if (!character.conditions.has(targetCondition))
                 character.conditions.set(targetCondition, pParty->GetPlayingTime());
         }
     }

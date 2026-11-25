@@ -11,6 +11,11 @@
 
 #include "GUI/GUIWindow.h"
 
+// MM8's in-game Save/Load background bakes a 10-row visible list (vs. MM7's 7) -
+// shared between UISaveLoad.cpp's drawing code and the click-routing math, both of which need to agree on the
+// same visible-row count.
+inline constexpr int kMm8SaveLoadVisibleSlotsInGame = 10;
+
 struct SavegameSlot {
     std::string fileName;
     SaveGameHeader header;
@@ -34,6 +39,10 @@ class GUIWindow_SaveLoad : public GUIWindow {
      */
     [[nodiscard]] bool hasSelectedSlot() const {
         return _selectedSlot < std::ssize(_slots);
+    }
+
+    [[nodiscard]] int selectedSlotIndex() const {
+        return _selectedSlot;
     }
 
     [[nodiscard]] const SavegameSlot &selectedSlot() const {
@@ -67,6 +76,10 @@ class GUIWindow_SaveLoad : public GUIWindow {
     std::vector<SavegameSlot> _slots;
     int _selectedSlot = 0;
     int _scrollPosition = 0;
+    int _visibleSlots = 7; // Rows shown at once, MM8's in-game layout shows more.
+    int _scrollTrackTop = 216; // Scroll bar offset from the top of the dialog.
+    int _scrollTrackHeight = 107;
+    bool _mm8IngameLayout = false; // MM8's in-game save & load screens share one full-screen layout.
 };
 
 class GUIWindow_Save : public GUIWindow_SaveLoad {
@@ -98,6 +111,7 @@ class GUIWindow_Load : public GUIWindow_SaveLoad {
     void quickLoad();
 
  protected:
+    bool ingame = false;
     std::shared_ptr<GraphicsImage> main_menu_background;
 
     std::shared_ptr<GraphicsImage> saveload_ui_load_up;

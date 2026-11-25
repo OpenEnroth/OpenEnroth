@@ -89,6 +89,9 @@ int SpriteObject::Create(int yaw, int pitch, int speed, int which_char) {
         case 4:
             vPosition += Vec3f::fromPolar(24, uFacing - TrigLUT.uIntegerHalfPi, 0);
             break;
+        case 5:  // MM8's fifth member, one more 16-unit step to the right
+            vPosition += Vec3f::fromPolar(40, uFacing - TrigLUT.uIntegerHalfPi, 0);
+            break;
         default:
             assert(false);
             return 0;
@@ -488,7 +491,7 @@ void SpriteObject::explosionTraps() {
     int dir_x = pParty->pos.x - this->vPosition.x;
     int dir_y = pParty->pos.y - this->vPosition.y;
     int dir_z = pParty->pos.z + pParty->eyeLevel - this->vPosition.z;
-    if (Vec3i(dir_x, dir_y, dir_z).length() <= 768) {
+    if (Vec3i(dir_x, dir_y, dir_z).octagonalLength() <= 768) {
         int trapDamage = 5;
         if (mapData->trapDamageD20DiceCount)
             trapDamage += grng->randomDice(mapData->trapDamageD20DiceCount, 20);
@@ -709,6 +712,7 @@ bool processSpellImpact(unsigned int uLayingItemID, Pid pid) {
             }
             if (pid.type() != OBJECT_Sprite) {
                 applySpellSpriteDamage(uLayingItemID, pid);
+                object = &pSpriteObjects[uLayingItemID]; // The hit may have killed a monster that spawns objects, and the array moves when it grows.
                 updateSpriteOnImpact(object);
                 if (object->uObjectDescID == 0)
                     SpriteObject::Remove(uLayingItemID);
@@ -735,6 +739,7 @@ bool processSpellImpact(unsigned int uLayingItemID, Pid pid) {
         case SPRITE_PROJECTILE_DARK_BOLT:
         case SPRITE_PROJECTILE_BLASTER: {
             applySpellSpriteDamage(uLayingItemID, pid);
+            object = &pSpriteObjects[uLayingItemID]; // The hit may have killed a monster that spawns objects, and the array moves when it grows.
             updateSpriteOnImpact(object);
             if (object->uObjectDescID == 0)
                 SpriteObject::Remove(uLayingItemID);
@@ -750,6 +755,7 @@ bool processSpellImpact(unsigned int uLayingItemID, Pid pid) {
                 object->containing_item.specialEnchantment != ITEM_ENCHANTMENT_OF_CARNAGE) {
                 object->spellSpriteStop();
                 applySpellSpriteDamage(uLayingItemID, pid);
+                object = &pSpriteObjects[uLayingItemID]; // The hit may have killed a monster that spawns objects, and the array moves when it grows.
                 SpriteObject::Remove(uLayingItemID);
                 pAudioPlayer->playSpellSound(object->uSpellID, true, SOUND_MODE_PID, Pid(OBJECT_Sprite, uLayingItemID));
                 return 0;
@@ -801,6 +807,7 @@ bool processSpellImpact(unsigned int uLayingItemID, Pid pid) {
         case SPRITE_SPELL_LIGHT_SUNRAY:
         case SPRITE_SPELL_DARK_SHARPMETAL: {
             applySpellSpriteDamage(uLayingItemID, pid);
+            object = &pSpriteObjects[uLayingItemID]; // The hit may have killed a monster that spawns objects, and the array moves when it grows.
             updateSpriteOnImpact(object);
             if (object->uObjectDescID == 0)
                 SpriteObject::Remove(uLayingItemID);
@@ -834,6 +841,7 @@ bool processSpellImpact(unsigned int uLayingItemID, Pid pid) {
                 SpriteObject::Remove(uLayingItemID);
             object->spellSpriteStop();
             applySpellSpriteDamage(uLayingItemID, pid);
+            object = &pSpriteObjects[uLayingItemID]; // The hit may have killed a monster that spawns objects, and the array moves when it grows.
             pAudioPlayer->playSpellSound(object->uSpellID, true, SOUND_MODE_PID, Pid(OBJECT_Sprite, uLayingItemID));
             return 0;
         }
@@ -886,6 +894,7 @@ bool processSpellImpact(unsigned int uLayingItemID, Pid pid) {
             if (pid.type() == OBJECT_Actor &&
                 supertypeForMonsterId(pActors[pid.id()].monsterInfo.id) == MONSTER_SUPERTYPE_UNDEAD) {
                 applySpellSpriteDamage(uLayingItemID, pid);
+                object = &pSpriteObjects[uLayingItemID]; // The hit may have killed a monster that spawns objects, and the array moves when it grows.
             }
             updateSpriteOnImpact(object);
             if (object->uObjectDescID == 0)

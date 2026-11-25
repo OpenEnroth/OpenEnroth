@@ -5,7 +5,9 @@
 
 #include "Engine/Engine.h"
 #include "Engine/Evt/EvtEnumFunctions.h"
+#include "Engine/GameType.h"
 #include "Engine/Graphics/Indoor.h"
+#include "Engine/Objects/CharacterEnumFunctions.h"
 #include "Engine/Objects/NPC.h"
 #include "Engine/Party.h"
 #include "Engine/Random/Random.h"
@@ -111,6 +113,10 @@ bool compareEvtVariable(Character &character, EvtVariable VarNum, int pValue) {
         case VAR_Sex:
             return pValue == std::to_underlying(character.uSex);
         case VAR_Class:
+            // MM8's evt scripts encode `pValue` as MM8's own raw class id, not the engine's `Class` ordinal -
+            // see `mm8RawIdForClass`.
+            if (gameType() == GAME_TYPE_MM8)
+                return pValue == mm8RawIdForClass(character.classType);
             return pValue == std::to_underlying(character.classType);
         case VAR_Race:
             return pValue == std::to_underlying(character.GetRace());
@@ -473,6 +479,10 @@ bool compareEvtVariable(Character &character, EvtVariable VarNum, int pValue) {
             return pParty->pPartyBuffs[PARTY_BUFF_INVISIBILITY].Active();
         case VAR_ItemEquipped:
             return character.wearsItem(static_cast<ItemId>(pValue));
+        case VAR_NPCIsPartyMember_H1:
+            // Party-wide, not per-character: roster companion `pValue` (a roster.txt row id, not an npcdata id)
+            // is in the active party.
+            return pParty->isRosterInParty(pValue);
         default:
             MM_ERROR("Comparing unsupported evt variable {}", std::to_underlying(VarNum));
             return false;
@@ -519,8 +529,11 @@ void setEvtVariable(Character &character, EvtVariable var_type, int var_value) {
             character.PlayAwardSound_Anim();
             return;
         case VAR_Class:
-            character.classType = (Class)var_value;
-            if ((Class)var_value == CLASS_LICH) {
+            // MM8's evt scripts encode `var_value` as MM8's own raw class id, not the engine's `Class` ordinal -
+            // see `mm8ClassFromRawId`. The Lich-specific undead conversion below is MM7-only: it never matches
+            // `CLASS_MM8_LICH`, which is a distinct enum value.
+            character.classType = (gameType() == GAME_TYPE_MM8) ? mm8ClassFromRawId(var_value) : (Class)var_value;
+            if (character.classType == CLASS_LICH) {
                 for (InventoryEntry entry : character.inventory.entries()) {
                     if (entry->itemId == ITEM_QUEST_LICH_JAR_EMPTY) {
                         entry->itemId = ITEM_QUEST_LICH_JAR_FULL;
@@ -593,6 +606,7 @@ void setEvtVariable(Character &character, EvtVariable var_type, int var_value) {
                 character.playReaction(SPEECH_QUEST_GOT);
             }
             pParty->_questBits.set(static_cast<QuestBit>(var_value));
+            pParty->seatRosterOfQuestBit(static_cast<QuestBit>(var_value));
             return;
         case VAR_PlayerItemInHands:
             item.Reset();
@@ -1118,7 +1132,8 @@ void addEvtVariable(Character &character, EvtVariable var_type, signed int val) 
             character.PlayAwardSound_Anim97();
             return;
         case VAR_Class:
-            character.classType = (Class)val;
+            // See the `setEvtVariable` `VAR_Class` case for why MM8 needs translating.
+            character.classType = (gameType() == GAME_TYPE_MM8) ? mm8ClassFromRawId(val) : (Class)val;
             character.PlayAwardSound_Anim97();
             return;
         case VAR_CurrentHP:
@@ -1169,6 +1184,7 @@ void addEvtVariable(Character &character, EvtVariable var_type, signed int val) 
                 character.PlayAwardSound_Anim97_Face(SPEECH_QUEST_GOT);
             }
             pParty->_questBits.set(static_cast<QuestBit>(val));
+            pParty->seatRosterOfQuestBit(static_cast<QuestBit>(val));
             return;
         case VAR_PlayerItemInHands:
             item.Reset();

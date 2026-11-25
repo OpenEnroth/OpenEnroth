@@ -11,6 +11,7 @@
 #include "Engine/Engine.h"
 #include "Engine/Data/AwardEnums.h"
 #include "Engine/Data/HouseEnumFunctions.h"
+#include "Engine/GameType.h"
 #include "Engine/Graphics/Camera.h"
 #include "Engine/Graphics/DecalBuilder.h"
 #include "Engine/Objects/Decoration.h"
@@ -20,6 +21,7 @@
 #include "Engine/Graphics/Sprites.h"
 #include "Engine/Graphics/Vis.h"
 #include "Engine/Localization.h"
+#include "Engine/Objects/CharacterMM8Abilities.h"
 #include "Engine/Objects/NPC.h"
 #include "Engine/Tables/ObjectTable.h"
 #include "Engine/Objects/SpriteObject.h"
@@ -40,6 +42,7 @@
 #include "GUI/UI/UIStatusBar.h"
 
 #include "Media/Audio/AudioPlayer.h"
+#include "Media/Audio/SoundList.h"
 
 #include "Library/Logger/Logger.h"
 
@@ -60,6 +63,10 @@ static constexpr IndexedArray<int, HOSTILITY_FIRST, HOSTILITY_LAST> _4DF380_host
     {HOSTILITY_MEDIUM, 5120},
     {HOSTILITY_LONG, 10240}
 };
+
+int Actor::hostilityAggroRange(MonsterHostility hostility) {
+    return _4DF380_hostilityRanges[hostility];
+}
 
 std::array<int16_t, 18> word_4E8152 = {{0, 0, 0, 90, 8, 2, 70, 20, 10, 50, 30, 20, 30, 40, 30, 10, 50, 40}};  // level spawn monster levels ABC
 
@@ -213,6 +220,9 @@ void Actor::AI_SpellAttack(unsigned int uActorID, AIDirection *pDir,
     Actor *actorPtr = &pActors[uActorID];
     int realPoints = uSkillMastery.level();
     Mastery masteryLevel = uSkillMastery.mastery();
+    // A monster spell cell with no mastery parses to MASTERY_NONE (Day of Protection in MM8's Murmurwoods). Cast it as Novice.
+    if (masteryLevel == MASTERY_NONE)
+        masteryLevel = MASTERY_NOVICE;
     int distancemod = 3;
     int spriteId = -1;
 
@@ -226,7 +236,7 @@ void Actor::AI_SpellAttack(unsigned int uActorID, AIDirection *pDir,
         distancemod = 2;
     }
 
-    switch (uSpellID) {
+    switch (spellEffect(uSpellID)) {
         case SPELL_FIRE_FIRE_BOLT:
         case SPELL_FIRE_FIREBALL:
         case SPELL_FIRE_INCINERATE:
@@ -534,7 +544,7 @@ void Actor::AI_SpellAttack(unsigned int uActorID, AIDirection *pDir,
         case SPELL_LIGHT_DISPEL_MAGIC:
             for (SpellBuff &buff : pParty->pPartyBuffs)
                 buff.Reset();
-            for (int i = 0; i < pParty->pCharacters.size(); i++) {
+            for (int i = 0; i < pParty->activeCharacterCount(); i++) {
                 int willCheck = pParty->pCharacters[i].GetParameterBonus(pParty->pCharacters[i].GetActualPersonality()) / 2;
                 int intCheck = pParty->pCharacters[i].GetParameterBonus(pParty->pCharacters[i].GetActualIntelligence()) / 2;
                 int luckCheck = pParty->pCharacters[i].GetParameterBonus(pParty->pCharacters[i].GetActualLuck()) + 30;
@@ -666,8 +676,101 @@ void Actor::AI_SpellAttack(unsigned int uActorID, AIDirection *pDir,
             pAudioPlayer->playSound(SOUND_Sacrifice2, SOUND_MODE_PID, Pid(OBJECT_Actor, uActorID));
             break;
 
+        case SPELL_WATER_POISON_SPRAY:
+        {
+            // Shot count mirrors the party-side cast (CastSpellInfo.cpp, SPELL_WATER_POISON_SPRAY).
+            int shots;
+            switch (masteryLevel) {
+                case MASTERY_NOVICE:
+                    shots = 1;
+                    break;
+                case MASTERY_EXPERT:
+                    shots = 3;
+                    break;
+                case MASTERY_MASTER:
+                    shots = 5;
+                    break;
+                case MASTERY_GRANDMASTER:
+                    shots = 7;
+                    break;
+                default:
+                    assert(false);
+                    break;
+            }
+
+            sprite.spriteId = SpellSpriteMapping[uSpellID];
+            sprite.uObjectDescID = GetObjDescId(uSpellID);
+            sprite.containing_item.Reset();
+            sprite.uSpellID = uSpellID;
+            sprite.spell_level = uSkillMastery.level();
+            sprite.spell_skill = MASTERY_NONE; // TODO(captainurist): why do we ignore passed skill mastery?
+            sprite.vPosition = actorPtr->pos + Vec3f(0, 0, actorPtr->height / 2);
+            sprite.uFacing = pDir->uYawAngle;
+            sprite.uAttributes = 0;
+            sprite.uSectorID = pIndoor->GetSector(sprite.vPosition);
+            sprite.spell_caster_pid = Pid(OBJECT_Actor, uActorID);
+            sprite.timeSinceCreated = 0_ticks;
+            sprite.spell_target_pid = Pid();
+            sprite.field_60_distance_related_prolly_lod = distancemod;
+            sprite.spellCasterAbility = a4;
+
+            if (shots == 1) {
+                spriteId = sprite.Create(pDir->uYawAngle, pDir->uPitchAngle, pObjectTable->pObjects[sprite.uObjectDescID].uSpeed, 0);
+            } else {
+                int spell_spray_angle_start = ONE_THIRD_PI / -2;
+                int spell_spray_angle_end = ONE_THIRD_PI / 2;
+                do {
+                    sprite.uFacing = spell_spray_angle_start + pDir->uYawAngle;
+                    spriteId = sprite.Create(sprite.uFacing, pDir->uPitchAngle, pObjectTable->pObjects[sprite.uObjectDescID].uSpeed, 0);
+                    spell_spray_angle_start += ONE_THIRD_PI / (shots - 1);
+                } while (spell_spray_angle_start <= spell_spray_angle_end);
+            }
+            if (spriteId != -1) {
+                pAudioPlayer->playSpellSound(uSpellID, false, SOUND_MODE_PID, Pid(OBJECT_Sprite, spriteId));
+            }
+            break;
+        }
+
+        case SPELL_SPIRIT_SPIRIT_LASH:
+        {
+            // Melee-range only, mirroring the party-side cast (CastSpellInfo.cpp, SPELL_SPIRIT_SPIRIT_LASH):
+            // damage is applied directly to the target rather than via a travelling projectile.
+            if (pDir->uDistance >= meleeRange) {
+                break;
+            }
+
+            sprite.spriteId = SpellSpriteMapping[uSpellID];
+            sprite.uObjectDescID = GetObjDescId(uSpellID);
+            sprite.containing_item.Reset();
+            sprite.uSpellID = uSpellID;
+            sprite.spell_level = uSkillMastery.level();
+            sprite.spell_skill = MASTERY_NONE; // TODO(captainurist): why do we ignore passed skill mastery?
+            sprite.vPosition = pParty->pos + Vec3f(0, 0, pParty->height * 0.8f);
+            sprite.uFacing = pDir->uYawAngle;
+            sprite.uAttributes = 0;
+            sprite.uSectorID = pIndoor->GetSector(sprite.vPosition);
+            sprite.spell_caster_pid = Pid(OBJECT_Actor, uActorID);
+            sprite.timeSinceCreated = 0_ticks;
+            sprite.spell_target_pid = Pid();
+            sprite.field_60_distance_related_prolly_lod = distancemod;
+            sprite.spellCasterAbility = a4;
+
+            spriteId = sprite.Create(0, 0, 0, 0);
+            if (spriteId != -1) {
+                pAudioPlayer->playSpellSound(uSpellID, false, SOUND_MODE_PID, Pid(OBJECT_Sprite, spriteId));
+            }
+
+            DamageCharacterFromMonster(Pid(OBJECT_Actor, uActorID), a4, stru_50C198.which_player_to_attack(actorPtr));
+            break;
+        }
+
         default:
-            assert(false);
+            // A monster casting a spell this function does not implement casts nothing. The log names the spell.
+            // The actor's monsterId can be outside pMonsterStats->infos (MM8's Murmurwoods), so it is logged as a number.
+            MM_WARNING("AI_SpellAttack: actor {} (monster id {}) cast unimplemented spell {} at mastery {} - skipped.",
+                            uActorID, static_cast<int>(std::to_underlying(actorPtr->monsterId)),
+                            static_cast<int>(std::to_underlying(uSpellID)),
+                            static_cast<int>(std::to_underlying(masteryLevel)));
             break;
     }
 }
@@ -699,7 +802,7 @@ void Actor::AggroSurroundingPeasants(unsigned int uActorID, int a2) {
             int deltaX = actor->pos.x - victim->pos.x;
             int deltaY = actor->pos.y - victim->pos.y;
             int deltaZ = actor->pos.z - victim->pos.z;
-            if (Vec3i(deltaX, deltaY, deltaZ).length() < 4096) {
+            if (Vec3i(deltaX, deltaY, deltaZ).octagonalLength() < 4096) {
                 actor->monsterInfo.hostilityType =
                     HOSTILITY_LONG;
                 if (a2 == 1) actor->attributes |= ACTOR_AGGRESSOR;
@@ -1194,7 +1297,8 @@ int Actor::_43B3E0_CalcDamage(ActorAbility dmgSource) {
     for (int i = 0; i < damageDiceRolls; i++)
         damage += grng->random(damageDiceSides) + 1;
 
-    return damage + damageBonus + spellPower;
+    damage += damageBonus + spellPower;
+    return this->buffs[ACTOR_BUFF_DAMAGE_HALVED].Active() ? damage / 2 : damage;
 }
 
 //----- (00438B9B) --------------------------------------------------------
@@ -1771,6 +1875,13 @@ void Actor::Die(unsigned int uActorID) {
 
 void Actor::playSound(unsigned int uActorID, ActorSound uSoundID) {
     SoundId sound_sample_id = pActors[uActorID].soundSampleIds[uSoundID];
+
+    // MM8 records one block of sounds per monster family and shifts each variant's row one id into it, so later
+    // variants name sounds that were never recorded (Naga Queen reads 1562..1565, 1564 and 1565 don't exist).
+    // Those are silent in the original too. MM7's data fills every slot it names.
+    if (gameType() == GAME_TYPE_MM8 && !pSoundList->soundInfo(sound_sample_id))
+        return;
+
     if (sound_sample_id != SOUND_Invalid) {
         if (!pActors[uActorID].buffs[ACTOR_BUFF_SHRINK].Active()) {
             pAudioPlayer->playSound(sound_sample_id, SOUND_MODE_PID, Pid(OBJECT_Actor, uActorID));
@@ -1808,7 +1919,7 @@ void Actor::AI_Pursue1(unsigned int uActorID, Pid a2, signed int arg0,
     v7 = &pActors[uActorID];
     v8 = Pid(OBJECT_Actor, uActorID);
     if (v7->monsterInfo.flying && !pParty->bFlying) {
-        if (v7->monsterInfo.attack1MissileType != MONSTER_PROJECTILE_NONE)
+        if (v7->missileOfAttack1() != MONSTER_PROJECTILE_NONE)
             WantedZ = v7->radius + 512; // hovering above ground for missle
         else
             WantedZ = pParty->height; // eye height for melee
@@ -1908,7 +2019,7 @@ void Actor::AI_Pursue2(unsigned int uActorID, Pid a2,
     v7 = &pActors[uActorID];
     v8 = Pid(OBJECT_Actor, uActorID);
     if (v7->monsterInfo.flying && !pParty->bFlying) {
-        if (v7->monsterInfo.attack1MissileType != MONSTER_PROJECTILE_NONE &&
+        if (v7->missileOfAttack1() != MONSTER_PROJECTILE_NONE &&
             uCurrentlyLoadedLevelType == LEVEL_OUTDOOR)
             v6 = v7->radius + 512;
         else
@@ -1964,7 +2075,7 @@ void Actor::AI_Pursue3(unsigned int uActorID, Pid a2,
     v6 = &pActors[uActorID];
     v7 = Pid(OBJECT_Actor, uActorID);
     if (v6->monsterInfo.flying && !pParty->bFlying) {
-        if (v6->monsterInfo.attack1MissileType != MONSTER_PROJECTILE_NONE &&
+        if (v6->missileOfAttack1() != MONSTER_PROJECTILE_NONE &&
             uCurrentlyLoadedLevelType == LEVEL_OUTDOOR)
             v5 = v6->radius + 512;
         else
@@ -2586,7 +2697,7 @@ void Actor::UpdateActorAI() {
         if (pActor->monsterInfo.hostilityType == HOSTILITY_FRIENDLY ||
             pActor->monsterInfo.recoveryTime > 0_ticks ||
             radiusMultiplier * meleeRange < pDir->uDistance ||
-            uAIState != Pursuing && uAIState != Standing && uAIState != Tethered && uAIState != Fidgeting && pActor->monsterInfo.attack1MissileType == MONSTER_PROJECTILE_NONE ||
+            uAIState != Pursuing && uAIState != Standing && uAIState != Tethered && uAIState != Fidgeting && pActor->missileOfAttack1() == MONSTER_PROJECTILE_NONE ||
             uAIState != InPain) {
             if (pActor->currentActionTime < pActor->currentActionLength) {
                 continue;
@@ -2610,8 +2721,8 @@ void Actor::UpdateActorAI() {
         MonsterHostility relationToTarget;
         if (pActor->monsterInfo.hostilityType == HOSTILITY_FRIENDLY) {
             if (target_pid_type == OBJECT_Actor) {
-                relationToTarget = pHostilityTable->relations[monsterTypeForMonsterId(pActor->monsterInfo.id)]
-                                                           [monsterTypeForMonsterId(pActors[target_pid.id()].monsterInfo.id)];
+                relationToTarget = pHostilityTable->relations[hostilityMonsterTypeForMonsterId(pActor->monsterInfo.id)]
+                                                           [hostilityMonsterTypeForMonsterId(pActors[target_pid.id()].monsterInfo.id)];
             } else {
                 relationToTarget = HOSTILITY_LONG;
             }
@@ -2669,7 +2780,7 @@ void Actor::UpdateActorAI() {
             if (v81 < 5120) {
                 v45 = pActor->special_ability_use_check(actor_id);
                 if (v45 == ABILITY_ATTACK1) {
-                    if (pActor->monsterInfo.attack1MissileType != MONSTER_PROJECTILE_NONE) {
+                    if (pActor->missileOfAttack1() != MONSTER_PROJECTILE_NONE) {
                         if (pActor->monsterInfo.recoveryTime <= 0_ticks) {
                             Actor::AI_MissileAttack1(actor_id, target_pid, pDir);
                         } else if (pActor->monsterInfo.movementType == MONSTER_MOVEMENT_TYPE_STATIONARY) {
@@ -2754,7 +2865,7 @@ void Actor::UpdateActorAI() {
                 v58 = pActor->monsterInfo.recoveryTime * flt_debugrecmod3;
                 Actor::AI_Stand(actor_id, Pid::character(0), v58, &v72);
             }
-        } else if (pActor->monsterInfo.attack2MissileType == MONSTER_PROJECTILE_NONE) {
+        } else if (pActor->missileOfAttack2() == MONSTER_PROJECTILE_NONE) {
             if (v81 >= radiusMultiplier * meleeRange) {
                 if (pActor->monsterInfo.movementType == MONSTER_MOVEMENT_TYPE_STATIONARY) {
                     Actor::AI_Stand(actor_id, target_pid, v47, pDir);
@@ -2784,21 +2895,26 @@ bool Actor::isActorKilled(ActorKillCheckPolicy policy, int param, int count) {
     int deadActors = 0;
     int totalActors = 0;
 
-    switch (policy) {
-      case KILL_CHECK_ANY:
-        deadActors = Actor::searchDeadActors(&totalActors);
-        break;
-      case KILL_CHECK_GROUPID:
-        deadActors = Actor::searchDeadActorsByGroup(&totalActors, param);
-        break;
-      case KILL_CHECK_MONSTERID:
-        deadActors = Actor::searchDeadActorsByMonsterID(&totalActors, static_cast<MonsterId>(param));
-        break;
-      case KILL_CHECK_ACTORID:
-        deadActors = Actor::searchDeadActorsByID(&totalActors, param);
-        break;
-      default:
+    if (policy < KILL_CHECK_ANY || policy > KILL_CHECK_UNIQUENAME)
         return false;
+
+    bool alert = GetAlertStatus();
+    for (Actor &actor : pActors) {
+        if (!!(actor.attributes & ACTOR_UNKNOW7) != alert)
+            continue;
+        bool match = false;
+        switch (policy) {
+          case KILL_CHECK_ANY: match = true; break;
+          case KILL_CHECK_GROUPID: match = actor.group == param; break;
+          case KILL_CHECK_MONSTERID: match = actor.monsterInfo.id == static_cast<MonsterId>(param); break;
+          case KILL_CHECK_ACTORID: match = actor.id == param; break;
+          case KILL_CHECK_UNIQUENAME: match = actor.uniqueNameIndex == param; break;
+        }
+        if (!match)
+            continue;
+        totalActors++;
+        if (actor.IsNotAlive())
+            deadActors++;
     }
 
     if (count) {
@@ -2936,7 +3052,7 @@ int Actor::DamageMonsterFromParty(Pid a1, unsigned int uActorID_Monster, const V
     }
     if (a1.type() != OBJECT_Character) return 0;
 
-    assert(a1.id() < 4);
+    assert(a1.id() < std::ssize(pParty->pCharacters));
     Character *character = &pParty->pCharacters[a1.id()];
     pMonster = &pActors[uActorID_Monster];
     if (pMonster->IsNotAlive()) return 0;
@@ -2983,7 +3099,7 @@ int Actor::DamageMonsterFromParty(Pid a1, unsigned int uActorID_Monster, const V
             int d1 = pParty->pos.x - projectileSprite->vPosition.x;
             int d2 = pParty->pos.y - projectileSprite->vPosition.y;
             int d3 = pParty->pos.z - projectileSprite->vPosition.z;
-            v61 = Vec3i(d1, d2, d3).length();
+            v61 = Vec3i(d1, d2, d3).octagonalLength();
 
             if (v61 >= 5120 && !(pMonster->attributes & ACTOR_FULL_AI_STATE))  // 0x400
                 return 0;
@@ -3103,8 +3219,24 @@ int Actor::DamageMonsterFromParty(Pid a1, unsigned int uActorID_Monster, const V
                         pMonster->CalcMagicalDamageToActor(attackElement, skillLevel);
                 }
             }
+
+            // MM8 Vampire innate ability, see CharacterMM8Abilities.h: every melee hit also triggers Lifedrain,
+            // dealing bonus Dark damage and healing the Vampire for a third of it.
+            if (gameType() == GAME_TYPE_MM8 && character->GetRace() == RACE_MM8_VAMPIRE && pMonster->hp > 0) {
+                int lifedrainDamage = pMonster->CalcMagicalDamageToActor(DAMAGE_DARK, mm8VampireLifedrainDamage(*grng));
+                uDamageAmount += lifedrainDamage;
+                character->health = std::min(character->GetMaxHealth(), character->health + mm8VampireLifedrainHeal(lifedrainDamage));
+            }
+
+            // MM8 Dragon innate ability, see CharacterMM8Abilities.h: every melee hit also triggers a Flame Blast breath
+            // attack, dealing bonus Fire damage.
+            if (gameType() == GAME_TYPE_MM8 && character->GetRace() == RACE_MM8_DRAGON && pMonster->hp > 0) {
+                uDamageAmount += pMonster->CalcMagicalDamageToActor(DAMAGE_FIRE, mm8DragonBreathDamage(*grng));
+            }
         }
     }
+    const int retailDamageAmount = uDamageAmount;  // Pain Reflection bounces the real damage.
+    if (pParty->survivableDamage > 0) uDamageAmount = v61 = pParty->survivableDamage;  // Test-only fixed damage, past resistance, immunity and stoning.
     pMonster->hp -= uDamageAmount;
     if (uDamageAmount == 0 && !hit_will_stun) {
         character->playReaction(SPEECH_ATTACK_MISS);
@@ -3134,7 +3266,7 @@ int Actor::DamageMonsterFromParty(Pid a1, unsigned int uActorID_Monster, const V
             engine->_statusBar->setEvent(LSTR_S_INFLICTS_LU_POINTS_KILLING_S, character->name, uDamageAmount, pMonster->GetDisplayName());
     }
     if (pMonster->buffs[ACTOR_BUFF_PAIN_REFLECTION].Active() && uDamageAmount != 0)
-        character->receiveDamage(uDamageAmount, attackElement);
+        character->receiveDamage(retailDamageAmount, attackElement);
     int knockbackValue = 20 * v61 / (signed int)pMonster->monsterInfo.hp;
     if ((character->GetSpecialItemBonus(ITEM_ENCHANTMENT_OF_FORCE) ||
          hit_will_stun) && pMonster->DoesDmgTypeDoDamage(DAMAGE_EARTH)) {
@@ -3192,7 +3324,7 @@ void Actor::Arena_summon_actor(MonsterId monster_id, Vec3f pos) {
     actor->monsterInfo.goldDiceRolls = 0;
     actor->monsterInfo.treasureDropChance = 0;
     actor->tetherDistance = 256;
-    actor->hostilityGroup = monsterTypeForMonsterId(actor->monsterInfo.id);
+    actor->hostilityGroup = hostilityMonsterTypeForMonsterId(actor->monsterInfo.id);
     actor->sectorId = v16;
     actor->group = 1;
     actor->monsterInfo.hostilityType = HOSTILITY_LONG;
@@ -3217,7 +3349,7 @@ int stru319::which_player_to_attack(Actor *pActor) {
     if (pActor->monsterInfo.attackPreferences) {
         for (MonsterAttackPreference preference : allMonsterAttackPreferences()) {
             if (pActor->monsterInfo.attackPreferences & preference) {
-                for (int i = 0; i < pParty->pCharacters.size(); ++i) {
+                for (int i = 0; i < pParty->activeCharacterCount(); ++i) {
                     if (!pParty->pCharacters[i].matchesAttackPreference(preference))
                         continue;
 
@@ -3230,7 +3362,7 @@ int stru319::which_player_to_attack(Actor *pActor) {
         if (victimCount)
             return victims[grng->random(victimCount)];
     }
-    for (int i = 0; i < pParty->pCharacters.size(); ++i)
+    for (int i = 0; i < pParty->activeCharacterCount(); ++i)
         if (pParty->pCharacters[i].conditions.hasNone({CONDITION_PARALYZED, CONDITION_UNCONSCIOUS, CONDITION_DEAD, CONDITION_PETRIFIED, CONDITION_ERADICATED}))
             victims[victimCount++] = i;
     if (victimCount)
@@ -3421,9 +3553,17 @@ bool CheckActors_proximity() {
         for_x = actor.pos.x - pParty->pos.x;
         for_y = actor.pos.y - pParty->pos.y;
         for_z = actor.pos.z - pParty->pos.z;
-        if (Vec3i(for_x, for_y, for_z).length() < distance && actor.aiState != Dead && actor.aiState != Dying && actor.aiState != Removed &&
-            actor.aiState != Disabled && actor.aiState != Summoned && (actor.ActorEnemy() || actor.GetActorsRelation(0) != HOSTILITY_FRIENDLY))
-            return true;
+        if (Vec3i(for_x, for_y, for_z).octagonalLength() < distance) {
+            if (actor.aiState != Dead) {
+                if (actor.aiState != Dying &&
+                    actor.aiState != Removed &&
+                    actor.aiState != Disabled &&
+                    actor.aiState != Summoned &&
+                    (actor.ActorEnemy() ||
+                     actor.GetActorsRelation(0) != HOSTILITY_FRIENDLY))
+                    return true;
+            }
+        }
     }
     return false;
 }
@@ -3530,7 +3670,7 @@ void Actor::LootActor() {
 
 //----- (00427102) --------------------------------------------------------
 bool Actor::_427102_IsOkToCastSpell(SpellId spell) {
-    switch (spell) {
+    switch (spellEffect(spell)) {
         case SPELL_BODY_POWER_CURE: { // TODO(pskelton): Only cure below half health?
             if (this->hp >= this->monsterInfo.hp) return false;
             return true;
@@ -3579,8 +3719,9 @@ ActorAbility Actor::special_ability_use_check(int a2) {
     if (this->monsterInfo.specialAbilityType == MONSTER_SPECIAL_ABILITY_SUMMON && this->monsterInfo.specialAbilityDamageDiceBonus < 3 && grng->random(100) < 5)
         this->SummonMinion(a2);
 
-    bool okToCastSpell1 = this->_427102_IsOkToCastSpell(this->monsterInfo.spell1Id);
-    bool okToCastSpell2 = this->_427102_IsOkToCastSpell(this->monsterInfo.spell2Id);
+    bool meleeOnly = this->buffs[ACTOR_BUFF_MELEE_ONLY].Active();
+    bool okToCastSpell1 = !meleeOnly && this->_427102_IsOkToCastSpell(this->monsterInfo.spell1Id);
+    bool okToCastSpell2 = !meleeOnly && this->_427102_IsOkToCastSpell(this->monsterInfo.spell2Id);
     if (okToCastSpell1 && this->monsterInfo.spell1UseChance && grng->random(100) < this->monsterInfo.spell1UseChance)
         return ABILITY_SPELL1;
     if (okToCastSpell2 && this->monsterInfo.spell2UseChance && grng->random(100) < this->monsterInfo.spell2UseChance)
@@ -3796,7 +3937,7 @@ void Actor::MakeActorAIList_ODM() {
         int delta_y = pParty->pos.y - actor.pos.y;
         int delta_z = pParty->pos.z - actor.pos.z;
 
-        int distance = Vec3i(delta_x, delta_y, delta_z).length() - actor.radius;
+        int distance = Vec3i(delta_x, delta_y, delta_z).octagonalLength() - actor.radius;
         if (distance < 0)
             distance = 0;
 
@@ -3850,7 +3991,7 @@ int Actor::MakeActorAIList_BLV() {
         int delta_y = pParty->pos.y - actor.pos.y;
         int delta_z = pParty->pos.z - actor.pos.z;
 
-        int distance = Vec3i(delta_x, delta_y, delta_z).length() - actor.radius;
+        int distance = Vec3i(delta_x, delta_y, delta_z).octagonalLength() - actor.radius;
         if (distance < 0)
             distance = 0;
 
@@ -4072,13 +4213,15 @@ bool Detect_Between_Objects(Pid uObjID, Pid uObj2ID) {
 void Spawn_Light_Elemental(int spell_power, Mastery caster_skill_mastery, Duration duration) {
     // size_t uActorIndex;            // [sp+10h] [bp-10h]@6
 
+    // MM8's Summon Wisp calls a Dancing Light, a Wisp or a Will O' Wisp, its monster list has no light elementals.
+    const bool mm8 = gameType() == GAME_TYPE_MM8;
     const char *cMonsterName;       // [sp-4h] [bp-24h]@2
     if (caster_skill_mastery == MASTERY_GRANDMASTER)
-        cMonsterName = "Elemental Light C";
+        cMonsterName = mm8 ? "Will ' O Wisp C" : "Elemental Light C";
     else if (caster_skill_mastery == MASTERY_MASTER)
-        cMonsterName = "Elemental Light B";
+        cMonsterName = mm8 ? "Will ' O Wisp B" : "Elemental Light B";
     else
-        cMonsterName = "Elemental Light A";
+        cMonsterName = mm8 ? "Will ' O Wisp A" : "Elemental Light A";
     MonsterId uMonsterID = pMonsterList->GetMonsterIDByName(cMonsterName);
 
     Actor *actor = AllocateActor();
@@ -4257,7 +4400,7 @@ void SpawnEncounter(MapData *mapData, SpawnPoint *spawn, int monsterCatMod, int 
         pMonster->pos = spawn->position;
         pMonster->tetherDistance = 256;
         pMonster->sectorId = pSector;
-        pMonster->hostilityGroup = monsterTypeForMonsterId(pMonster->monsterInfo.id);
+        pMonster->hostilityGroup = hostilityMonsterTypeForMonsterId(pMonster->monsterInfo.id);
         pMonster->group = spawn->group;
         pMonster->PrepareSprites(0);
         pMonster->monsterInfo.hostilityType = HOSTILITY_FRIENDLY;
@@ -4357,7 +4500,7 @@ void evaluateAoeDamage() {
             if (distanceSq < attackRangeSq) {  // party damage
                 // check line of sight to party
                 if (Check_LineOfSight(pParty->pos + Vec3f(0, 0, pParty->eyeLevel), attack.pos)) {
-                    for (int i = 0; i < pParty->pCharacters.size(); i++)
+                    for (int i = 0; i < pParty->activeCharacterCount(); i++)
                         if (pParty->pCharacters[i].conditions.hasNone({CONDITION_DEAD, CONDITION_PETRIFIED, CONDITION_ERADICATED}))
                             DamageCharacterFromMonster(attack.pid, attack.attackSpecial, i);
                 }

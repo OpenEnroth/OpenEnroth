@@ -220,6 +220,28 @@ enum UIMessageType : uint32_t {
     UIMSG_CreditsFinished = 2002,
     UIMSG_CastQuickSpellAtActor = 2003, // Shift-click on an actor, param is its id. No picker opens.
 
+    // MM8's single-champion char-create draws a visible [-]/[+] spinner icon pair per attribute
+    // row (see `UIPartyCreation.cpp`), each acting directly on its own row - unlike
+    // UIMSG_PlayerCreationClickPlus/Minus, which act on whichever row `pCurrentPosActiveItem` currently
+    // points at. No original id to borrow, since MM7 never had per-row spinners.
+    UIMSG_PlayerCreationClickPlusMm8 = 2003,
+    UIMSG_PlayerCreationClickMinusMm8 = 2004,
+
+    // The "Default" button next to MM8's Voice arrows, reverts to the portrait's default voice.
+    // No MM7 equivalent.
+    UIMSG_PlayerCreationVoiceDefaultMm8 = 2005,
+
+    // MM8's char-create has a real 3rd "Cancel" bottom button (`c_cncl_*` in EnglishD.lod)
+    // next to Clear/OK - MM7's screen only ever had 2. Behaves like Escape (abandon character
+    // creation, back to main menu), not like Reset/Clear (which just re-rolls the current character).
+    UIMSG_PlayerCreationClickCancelMm8 = 2006,
+
+    // The original's Adventurer's Inn is a screen of its own (id 29), not a
+    // Tavern dialogue option - no original id to borrow. Each carries a roster id as msg_param.
+    UIMSG_InnClickBenchPortrait = 2007,
+    UIMSG_InnClickActivePortrait = 2008,
+    UIMSG_InnClickDismiss = 2009,
+
     UIMSG_Invalid = 0xffffffff
 };
 

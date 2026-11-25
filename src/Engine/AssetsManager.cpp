@@ -6,6 +6,7 @@
 
 #include "Engine/Engine.h"
 #include "Engine/Graphics/ImageLoader.h"
+#include "Engine/Resources/ResourceManager.h"
 #include "Engine/Graphics/Image.h"
 
 #include "GUI/GUIFont.h"
@@ -85,6 +86,63 @@ const std::shared_ptr<GraphicsImage> &AssetsManager::getImage_Buff(std::string_v
         i = images.emplace(filename, GraphicsImage::Create(std::make_unique<Buff_LOD_Loader>(engine->resources(), filename))).first;
 
     return i->second;
+}
+
+const std::shared_ptr<GraphicsImage> &AssetsManager::getLegacyImage(std::string_view name, LegacyLod_Loader::Source source,
+                                             LegacyLod_Loader::Mode mode, Color colorkey) {
+    std::string filename = ascii::toLower(name);
+
+    auto i = images.find(filename);
+    if (i == images.end())
+        i = images.emplace(filename, GraphicsImage::Create(std::make_unique<LegacyLod_Loader>(engine->resources(), filename, source, mode, colorkey))).first;
+
+    return i->second;
+}
+
+const std::shared_ptr<GraphicsImage> &AssetsManager::getImage_ColorKey(std::string_view name, Color colorkey) {
+    return getLegacyImage(name, LegacyLod_Loader::Source::ICONS, LegacyLod_Loader::Mode::COLOR_KEY, colorkey);
+}
+
+const std::shared_ptr<GraphicsImage> &AssetsManager::getImage_Paletted(std::string_view name) {
+    return getLegacyImage(name, LegacyLod_Loader::Source::ICONS, LegacyLod_Loader::Mode::PALETTED, Color());
+}
+
+const std::shared_ptr<GraphicsImage> &AssetsManager::getImage_Solid(std::string_view name) {
+    return getLegacyImage(name, LegacyLod_Loader::Source::ICONS, LegacyLod_Loader::Mode::SOLID, Color());
+}
+
+const std::shared_ptr<GraphicsImage> &AssetsManager::getImage_Alpha(std::string_view name) {
+    return getLegacyImage(name, LegacyLod_Loader::Source::ICONS, LegacyLod_Loader::Mode::ALPHA, Color());
+}
+
+const std::shared_ptr<GraphicsImage> &AssetsManager::getImage_PCXFromIconsLOD(std::string_view name, Color colorkey) {
+    return getLegacyImage(name, LegacyLod_Loader::Source::ICONS, LegacyLod_Loader::Mode::PCX, colorkey);
+}
+
+bool AssetsManager::hasIconsLodEntry(std::string_view name) const {
+    return engine->resources()->hasIcon(name);
+}
+
+const std::shared_ptr<GraphicsImage> &AssetsManager::getImage_ColorKeyFromEnglishDLOD(std::string_view name, Color colorkey) {
+    if (!engine->resources()->hasEnglishD(name))
+        return noImage;
+    return getLegacyImage(name, LegacyLod_Loader::Source::ENGLISH_D, LegacyLod_Loader::Mode::COLOR_KEY, colorkey);
+}
+
+const std::shared_ptr<GraphicsImage> &AssetsManager::getImage_PCXFromEnglishDLOD(std::string_view name, Color colorkey) {
+    if (!engine->resources()->hasEnglishD(name))
+        return noImage;
+    return getLegacyImage(name, LegacyLod_Loader::Source::ENGLISH_D, LegacyLod_Loader::Mode::PCX, colorkey);
+}
+
+bool AssetsManager::hasEnglishDLodEntry(std::string_view name) const {
+    return engine->resources()->hasEnglishD(name);
+}
+
+const std::shared_ptr<GraphicsImage> &AssetsManager::getImage_ColorKeyFromIconsUILOD(std::string_view name, Color colorkey) {
+    if (!engine->resources()->hasIconsUi(name))
+        return noImage;
+    return getLegacyImage(name, LegacyLod_Loader::Source::ICONS_UI, LegacyLod_Loader::Mode::COLOR_KEY, colorkey);
 }
 
 const std::shared_ptr<GraphicsImage> &AssetsManager::getBitmap(std::string_view name, bool generated) {

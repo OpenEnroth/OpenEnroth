@@ -6,13 +6,16 @@
 #include <memory>
 #include <optional>
 #include <ranges>
+#include <set>
 #include <string>
+#include <tuple>
 #include <utility>
 
 #include "Engine/Engine.h"
 #include "Engine/EngineGlobals.h"
 #include "Engine/AssetsManager.h"
 #include "Engine/Evt/Processor.h"
+#include "Engine/GameType.h"
 #include "Engine/Graphics/BspRenderer.h"
 #include "Engine/Graphics/Collisions.h"
 #include "Engine/Graphics/DecalBuilder.h"
@@ -34,6 +37,7 @@
 #include "Engine/Tables/ItemTable.h"
 #include "Engine/Party.h"
 #include "Engine/PartyPlacement.h"
+#include "Engine/PartyStep.h"
 #include "Engine/Snapshots/CompositeSnapshots.h"
 #include "Engine/SpellFxRenderer.h"
 #include "Engine/Timer.h"
@@ -271,65 +275,97 @@ void IndoorLocation::Load(std::string_view filename, int num_days_played, int re
 
     bLoaded = true;
 
-    IndoorLocation_MM7 location;
-    deserialize(lod::decodeMaybeCompressed(pGames_LOD->read(blv_filename)), &location); // read throws if file doesn't exist.
-    reconstruct(location, this);
-
-    // TODO(captainurist): this should be a data patch.
-    if (pMapTable->GetMapInfo(filename) == MAP_TEMPLE_OF_BAA && faces.size() > 406)
-        faces[406].SetTexture("T6s1bs"); // The wall beside a doorway, "T1S2B" in the 1.0 games.lod. The Millennium Edition's games.lod retextures it to match the rest of the room.
-
     std::string dlv_filename = fmt::format("{}.dlv", filename.substr(0, filename.size() - 4));
 
-    bool respawnInitial = false; // Perform initial location respawn?
-    bool respawnTimed = false; // Perform timed location respawn?
-    IndoorDelta_MM7 delta;
-    if (Blob blob = lod::decodeMaybeCompressed(pMapDeltas.at(dlv_filename))) {
-        try {
-            deserialize(blob, &delta, tags::context(location));
+    if (gameType() == GAME_TYPE_MM8) {
+        // MM8's indoor terrain snapshot (`.blv`) has two extra fields vs MM7's, see `IndoorLocation_MM8`.
+        IndoorLocation_MM8 location;
+        deserialize(lod::decodeMaybeCompressed(pGames_LOD->read(blv_filename)), &location); // read throws.
+        reconstruct(location, this);
 
-            // Level was changed externally and we have a save there? Don't crash, just respawn.
-            if (delta.header.totalFacesCount > 0 && delta.header.decorationCount > 0 &&
-                (delta.header.totalFacesCount != faces.size() || delta.header.decorationCount != pLevelDecorations.size()))
-                respawnInitial = true;
-
-            // Entering the level for the 1st time?
-            if (delta.header.info.lastRespawnDay == 0)
-                respawnInitial = true;
-
-            if (engineFlags & ENGINE_LOADING_SAVEGAME)
-                respawn_interval_days = 0x1BAF800;
-
-            if (!respawnInitial && num_days_played - delta.header.info.lastRespawnDay >= respawn_interval_days && pMapTable->GetMapInfo(filename) != MAP_CASTLE_HARMONDALE)
-                respawnTimed = true;
-        } catch (const Exception &e) {
-            MM_ERROR("Failed to load '{}', respawning location: {}", dlv_filename, e.what());
-            respawnInitial = true;
+        // MM8's indoor delta (.dlv), see IndoorDelta_MM8. A new game pre-seeds pMapDeltas with an unspawned copy of
+        // every map (lastRespawnDay == 0), so the delta is trusted only after one real respawn.
+        IndoorDelta_MM8 delta;
+        auto it = pMapDeltas.find(dlv_filename);
+        bool usedPersistedDelta = false;
+        if (it != pMapDeltas.end()) {
+            try {
+                deserialize(lod::decodeMaybeCompressed(it->second), &delta, tags::context(location));
+                usedPersistedDelta = delta.header.info.lastRespawnDay != 0;
+            } catch (const Exception &e) {
+                MM_ERROR("Failed to load '{}', respawning location: {}", dlv_filename, e.what());
+            }
         }
-    }
+        if (usedPersistedDelta) {
+            *indoor_was_respawned = false;
+        } else {
+            deserialize(lod::decodeMaybeCompressed(pGames_LOD->read(dlv_filename)), &delta, tags::context(location));
+            *indoor_was_respawned = true;
+        }
+        reconstruct(delta, this);
 
-    assert(respawnInitial + respawnTimed <= 1);
-
-    if (respawnInitial) {
-        deserialize(lod::decodeMaybeCompressed(pGames_LOD->read(dlv_filename)), &delta, tags::context(location));
-        *indoor_was_respawned = true;
-    } else if (respawnTimed) {
-        auto header = delta.header;
-        auto visibleOutlines = delta.visibleOutlines;
-        deserialize(lod::decodeMaybeCompressed(pGames_LOD->read(dlv_filename)), &delta, tags::context(location));
-        delta.header = header;
-        delta.visibleOutlines = visibleOutlines;
-        *indoor_was_respawned = true;
+        // A delta with lastRespawnDay == 0 is never trusted on reload, see above.
+        if (*indoor_was_respawned)
+            dlv.lastRespawnDay = num_days_played;
     } else {
-        *indoor_was_respawned = false;
+        IndoorLocation_MM7 location;
+        deserialize(lod::decodeMaybeCompressed(pGames_LOD->read(blv_filename)), &location); // read throws if file doesn't exist.
+        reconstruct(location, this);
+
+        // TODO(captainurist): this should be a data patch.
+        if (pMapTable->GetMapInfo(filename) == MAP_TEMPLE_OF_BAA && faces.size() > 406)
+            faces[406].SetTexture("T6s1bs"); // The wall beside a doorway, "T1S2B" in the 1.0 games.lod. The Millennium Edition's games.lod retextures it to match the rest of the room.
+
+        bool respawnInitial = false; // Perform initial location respawn?
+        bool respawnTimed = false; // Perform timed location respawn?
+        IndoorDelta_MM7 delta;
+        if (Blob blob = lod::decodeMaybeCompressed(pMapDeltas.at(dlv_filename))) {
+            try {
+                deserialize(blob, &delta, tags::context(location));
+
+                // Level was changed externally and we have a save there? Don't crash, just respawn.
+                if (delta.header.totalFacesCount > 0 && delta.header.decorationCount > 0 &&
+                    (delta.header.totalFacesCount != faces.size() || delta.header.decorationCount != pLevelDecorations.size()))
+                    respawnInitial = true;
+
+                // Entering the level for the 1st time?
+                if (delta.header.info.lastRespawnDay == 0)
+                    respawnInitial = true;
+
+                if (engineFlags & ENGINE_LOADING_SAVEGAME)
+                    respawn_interval_days = 0x1BAF800;
+
+                if (!respawnInitial && num_days_played - delta.header.info.lastRespawnDay >= respawn_interval_days && pMapTable->GetMapInfo(filename) != MAP_CASTLE_HARMONDALE)
+                    respawnTimed = true;
+            } catch (const Exception &e) {
+                MM_ERROR("Failed to load '{}', respawning location: {}", dlv_filename, e.what());
+                respawnInitial = true;
+            }
+        }
+
+        assert(respawnInitial + respawnTimed <= 1);
+
+        if (respawnInitial) {
+            deserialize(lod::decodeMaybeCompressed(pGames_LOD->read(dlv_filename)), &delta, tags::context(location));
+            *indoor_was_respawned = true;
+        } else if (respawnTimed) {
+            auto header = delta.header;
+            auto visibleOutlines = delta.visibleOutlines;
+            deserialize(lod::decodeMaybeCompressed(pGames_LOD->read(dlv_filename)), &delta, tags::context(location));
+            delta.header = header;
+            delta.visibleOutlines = visibleOutlines;
+            *indoor_was_respawned = true;
+        } else {
+            *indoor_was_respawned = false;
+        }
+
+        reconstruct(delta, this);
+
+        if (respawnTimed || respawnInitial)
+            dlv.lastRespawnDay = num_days_played;
+        if (respawnTimed)
+            dlv.respawnCount++;
     }
-
-    reconstruct(delta, this);
-
-    if (respawnTimed || respawnInitial)
-        dlv.lastRespawnDay = num_days_played;
-    if (respawnTimed)
-        dlv.respawnCount++;
 }
 
 //----- (0049AC17) --------------------------------------------------------
@@ -387,11 +423,15 @@ int IndoorLocation::GetSector(float sX, float sY, float sZ) {
 
     // No face found - outside of level
     if (foundFaces.empty()) {
+        static std::set<std::tuple<int, int, int>> reported;  // one line per distinct whole-unit position
+        const bool isNew = reported.insert({static_cast<int>(sX), static_cast<int>(sY), static_cast<int>(sZ)}).second;
         if (!backupboundingsector) {
-            MM_WARNING("GetSector fail: {}, {}, {}", sX, sY, sZ);
+            if (isNew)
+                MM_WARNING("GetSector fail: {}, {}, {}", sX, sY, sZ);
             return 0;
         } else {
-            MM_WARNING("GetSector fail: {}, {}, {}  Returning backup sector bounding!", sX, sY, sZ);
+            if (isNew)
+                MM_WARNING("GetSector fail: {}, {}, {}  Returning backup sector bounding!", sX, sY, sZ);
             return backupboundingsector;
         }
     }
@@ -617,7 +657,8 @@ void BLV_InitialiseDoors() {
 
 void BLV_UpdateDoors() {
     SoundId eDoorSoundID = SOUND_wood_door0101;
-    if (engine->_currentLoadedMapId != MAP_INVALID)
+    // pDoorSoundIDsByLocationID covers MM7's maps only. MM8 maps have no door sounds catalogued, fall back to the default.
+    if (engine->_currentLoadedMapId != MAP_INVALID && pDoorSoundIDsByLocationID.indices().contains(engine->_currentLoadedMapId))
         eDoorSoundID = pDoorSoundIDsByLocationID[engine->_currentLoadedMapId];
 
     // loop over all doors
@@ -872,7 +913,7 @@ void BLV_UpdateActors() {
 }
 
 void loadAndPrepareBLV(MapId mapid, bool bLoading) {
-    assert(isMapIndoor(mapid));
+    assert(gameType() == GAME_TYPE_MM8 || isMapIndoor(mapid)); // MM8 map ids are outside the MM7 ranges, see DoPrepareWorld.
 
     unsigned int respawn_interval;  // ebx@1
     MapData *mapData;              // edi@9
@@ -933,9 +974,13 @@ void loadAndPrepareBLV(MapId mapid, bool bLoading) {
             if (!decoration->dontDraw()) {
                 if (decoration->uLightRadius) {
                     Color color = render->config->graphics.ColoredLights.value() ? decoration->uColoredLight : colorTable.White;
+                    // Resolve the light's sector from the decoration's own (un-raised)
+                    // placement, not the raised light position - raising by uDecorationHeight can
+                    // push the light above a low room's ceiling and out of every sector's bounds.
                     pStationaryLightsStack->AddLight(pLevelDecorations[i].vPosition +
                         Vec3f(0, 0, decoration->uDecorationHeight),
-                        decoration->uLightRadius, color, _4E94D0_light_type);
+                        decoration->uLightRadius, color, _4E94D0_light_type,
+                        pLevelDecorations[i].vPosition);
                 }
             }
         }
@@ -1092,6 +1137,25 @@ float BLV_GetFloorLevel(const Vec3f &pos, int uSectorID, int *pFaceID) {
         }
     }
 
+    // A floor further above the actor than it can step up is unreachable (CollideIndoorWithGeometry rejects
+    // the move with its `> 128` cap), so when a floor at or below that reach exists it wins. d22's star alcove is
+    // floorless: the star top 383 above beat the chamber floor 513 below and walled the party out.
+    constexpr float maxStepUp = 128.0f;
+    if (gameType() == GAME_TYPE_MM8 && result > pos.z + maxStepUp) {
+        float best = -20000; // above the -29000 portal sentinel, so only real floors qualify
+        int bestId = -1;
+        for (unsigned i = 0; i < FacesFound; ++i) {
+            if (blv_floor_z[i] <= pos.z + maxStepUp && blv_floor_z[i] > best) {
+                best = blv_floor_z[i];
+                bestId = blv_floor_id[i];
+            }
+        }
+        if (bestId != -1) {
+            result = best;
+            faceId = bestId;
+        }
+    }
+
     if (pFaceID)
         *pFaceID = faceId;
     return result;
@@ -1129,7 +1193,12 @@ void IndoorLocation::PrepareDecorationsRenderList_BLV(unsigned int uDecorationID
     v11 = pSpriteFrameTable->GetFrame(decoration->uSpriteID, v37 + Duration::fromTicks(v10));
 
     // error catching
-    if (v11->spriteName == "null") assert(false);
+    // MM8's `ddeclist.bin` (286 entries) doesn't catalogue every decoration internal name referenced by
+    // its indoor `.blv` dungeons, e.g. "torch01" resolves to no decoration. Skip drawing it.
+    if (v11->spriteName == "null") {
+        MM_WARNING("Decoration #{} has no sprite (decDescId={}), skipping.", uDecorationID, std::to_underlying(pLevelDecorations[uDecorationID].uDecorationDescID));
+        return;
+    }
 
     v30 = billboardFlagsForSprite(v11->flags, v9);
 
@@ -1305,6 +1374,17 @@ void BLV_UpdateUserInputAndOther() {
     BLV_UpdateDoors();
 }
 
+// True iff a BLVDoor moves faceId. Diagnostic only.
+static bool BLV_FaceBelongsToDoor(int faceId) {
+    if (faceId < 0 || !pIndoor)
+        return false;
+    for (const BLVDoor &door : pIndoor->doors)
+        for (int j = 0; j < door.numFaces; j++)
+            if (door.pFaceIDs[j] == faceId)
+                return true;
+    return false;
+}
+
 //----- (00472866) --------------------------------------------------------
 void BLV_ProcessPartyActions() {  // could this be combined with odm process actions?
     int faceEvent = 0;
@@ -1328,12 +1408,30 @@ void BLV_ProcessPartyActions() {  // could this be combined with odm process act
         }
     }
 
+    // uFallStartZ only carries a Z value, so the fall's origin is tracked here for the log line. The origin is
+    // unknown when something else (a teleport, a save load) has overwritten uFallStartZ since the last tick.
+    // A dry run (partyMotionDryRun) restores uFallStartZ afterwards but not this file-local state, so it must not touch it.
+    bool isLive = !partyMotionDryRun();
+    static int s_trackedFallStartZ = std::numeric_limits<int>::min();
+    static Vec3f s_lastGroundedPos;
+    static int s_lastGroundedFaceId = -1;
+    static int s_lastGroundedSector = -1;
+    static bool s_lastGroundedKnown = false;
+    bool fallOriginKnown = s_lastGroundedKnown && pParty->uFallStartZ == s_trackedFallStartZ;
+
     int fall_start;
     if (pParty->FeatherFallActive() || pParty->wearsItem(ITEM_ARTIFACT_LADYS_ESCORT)
         || pParty->uFlags & (PARTY_FLAG_LANDING | PARTY_FLAG_JUMPING)) {
         fall_start = floorZ;
         bFeatherFall = true;
         pParty->uFallStartZ = floorZ;
+        if (isLive) {
+            s_lastGroundedPos = Vec3f(pParty->pos.x, pParty->pos.y, floorZ);
+            s_lastGroundedFaceId = faceId;
+            s_lastGroundedSector = pBLVRenderParams->uPartySectorID;
+            s_trackedFallStartZ = pParty->uFallStartZ;
+            s_lastGroundedKnown = true;
+        }
     } else {
         bFeatherFall = false;
         fall_start = pParty->uFallStartZ;
@@ -1344,7 +1442,29 @@ void BLV_ProcessPartyActions() {  // could this be combined with odm process act
             // flying was previously used to prevent fall damage from jump spell
             pParty->uFlags &= ~(PARTY_FLAG_LANDING | PARTY_FLAG_JUMPING);
         } else if (!engine->config->gameplay.NoIndoorFallDamage.value()) {
-            pParty->giveFallDamage(pParty->uFallStartZ - pParty->pos.z);
+            int distance = pParty->uFallStartZ - pParty->pos.z;
+            int hpBefore = 0;
+            if (isLive) {
+                for (int i = 0; i < pParty->activeCharacterCount(); i++)
+                    hpBefore += pParty->pCharacters[i].GetHealth();
+            }
+            bool originIsDoor = fallOriginKnown && BLV_FaceBelongsToDoor(s_lastGroundedFaceId);
+            bool landingIsDoor = BLV_FaceBelongsToDoor(faceId);
+            partyMotionFallDamage(distance);
+            if (isLive) {
+                int hpAfter = 0;
+                for (int i = 0; i < pParty->activeCharacterCount(); i++)
+                    hpAfter += pParty->pCharacters[i].GetHealth();
+                MM_INFO("[FallEvent] origin_known={} origin_pos=({:.0f},{:.0f},{:.0f}) origin_face={} "
+                             "origin_sector={} origin_is_door={} fall_start_z={} landing_pos=({:.0f},{:.0f},{:.0f}) "
+                             "floor_z={:.0f} landing_face={} landing_sector={} landing_is_door={} distance={} "
+                             "hp_before={} hp_after={} hp_delta={}",
+                             fallOriginKnown, s_lastGroundedPos.x, s_lastGroundedPos.y, s_lastGroundedPos.z,
+                             s_lastGroundedFaceId, s_lastGroundedSector, originIsDoor, pParty->uFallStartZ,
+                             pParty->pos.x, pParty->pos.y, pParty->pos.z, floorZ, faceId,
+                             pBLVRenderParams->uPartySectorID, landingIsDoor, distance, hpBefore, hpAfter,
+                             hpBefore - hpAfter);
+            }
         }
     }
 
@@ -1352,12 +1472,20 @@ void BLV_ProcessPartyActions() {  // could this be combined with odm process act
 
     if (!isAboveGround) {
         pParty->uFallStartZ = pParty->pos.z;
+        if (isLive) {
+            s_lastGroundedPos = pParty->pos;
+            s_lastGroundedFaceId = faceId;
+            s_lastGroundedSector = pBLVRenderParams->uPartySectorID;
+            s_trackedFallStartZ = pParty->uFallStartZ;
+            s_lastGroundedKnown = true;
+        }
     } else if (pParty->pos.z <= floorZ + 32) {
         not_high_fall = true;
     }
 
-    // not hovering & stepped onto a new face => activate potential pressure plate.
-    if (!isAboveGround && pParty->floor_face_id != -1 && pParty->floor_face_id != faceId && (pIndoor->faces[faceId].attributes & FACE_PRESSURE_PLATE))
+    // not hovering & stepped onto a new face => activate potential pressure plate, unless levitating.
+    if (!isAboveGround && !pParty->LevitateActive() && pParty->floor_face_id != -1 && pParty->floor_face_id != faceId &&
+        (pIndoor->faces[faceId].attributes & FACE_PRESSURE_PLATE))
         faceEvent = pIndoor->faces[faceId].eventId;
 
     if (!isAboveGround)
@@ -1477,15 +1605,8 @@ void BLV_ProcessPartyActions() {  // could this be combined with odm process act
     pParty->velocity.z += -2.0f * gameTimer->dt().ticks() * GetGravityStrength();
 
     if (isAboveGround) {
-        if (pParty->velocity.z < -500 && !bFeatherFall && pParty->pos.z - floorZ > 1000) {
-            for (Character &character : pParty->pCharacters) {
-                if (!character.wearsEnchantedItem(ITEM_ENCHANTMENT_OF_FEATHER_FALLING) &&
-                    !character.wearsItem(ITEM_ARTIFACT_HERMES_SANDALS) &&
-                    character.CanAct()) {  // was 8
-                    character.playReaction(SPEECH_FALLING);
-                }
-            }
-        }
+        if (pParty->velocity.z < -500 && !bFeatherFall && pParty->pos.z - floorZ > 1000)
+            partyMotionFallingScream();
     }
 
     if (!isAboveGround || pParty->velocity.z > 0)
@@ -1507,6 +1628,7 @@ void BLV_ProcessPartyActions() {  // could this be combined with odm process act
     // horizontal
     pParty->velocity.z = 0;
     ProcessPartyCollisionsBLV(pBLVRenderParams->uPartySectorID, min_party_move_delta_sqr, &faceId, &faceEvent2);
+    collision_state.horizontalPid = collision_state.pid;
     // vertical -  only when horizonal motion hasnt caused height gain
     if (pParty->pos.z <= oldPos.z) {
         pParty->velocity = Vec3f(0, 0, savedspeed.z);
@@ -1514,7 +1636,7 @@ void BLV_ProcessPartyActions() {  // could this be combined with odm process act
     }
 
     // walking / running sounds ------------------------
-    if (engine->config->settings.WalkSound.value()) {
+    if (engine->config->settings.WalkSound.value() && !partyMotionDryRun()) {
         bool canStartNewSound = !pAudioPlayer->isWalkingSoundPlays();
 
         // Start sound processing only when actual movement is performed to avoid stopping sounds on high FPS
@@ -1581,11 +1703,11 @@ void BLV_ProcessPartyActions() {  // could this be combined with odm process act
     pParty->uFlags &= ~(PARTY_FLAG_BURNING | PARTY_FLAG_WATER_DAMAGE);
 
     if (faceId >= 0) // TODO(pskelton): investigate why this happens
-        if (!isAboveGround && pIndoor->faces[faceId].attributes & FACE_IsLava)
+        if (!isAboveGround && !pParty->LevitateActive() && pIndoor->faces[faceId].attributes & FACE_IsLava)
             pParty->uFlags |= PARTY_FLAG_BURNING;
 
     if (faceEvent)
-        runEvent(EvtContext(EVT_SOURCE_MAP, faceEvent));
+        partyMotionFaceEvent(faceEvent);
 }
 
 //----- (004088E9) --------------------------------------------------------
@@ -1639,7 +1761,7 @@ int SpawnEncounterMonsters(MapData *mapData, int enc_index) {
             for (BSPModel &model : pOutdoor->pBModels) {
                 dist_y = enc_spawn_point.position.y - model.boundingCenter.y;
                 dist_x = enc_spawn_point.position.x - model.boundingCenter.x;
-                if (Vec2i(dist_x, dist_y).length() < model.boundingRadius + 256) {
+                if (Vec2i(dist_x, dist_y).octagonalLength() < model.boundingRadius + 256) {
                     not_in_model = 1;
                     break;
                 }
@@ -1767,8 +1889,28 @@ void FindBillboardsLightLevels_BLV() {
 float GetIndoorFloorZ(const Vec3f &pos, int *pSectorID, int *pFaceID) {
     if (*pSectorID != 0) {
         int result = BLV_GetFloorLevel(pos, *pSectorID, pFaceID);
-        if (result != -30000 && result != -29000 && result <= pos.z + 50)
+        if (result != -30000 && result != -29000 && result <= pos.z + 50) {
+            // The remembered sector is sticky and `CollideIndoorWithPortals` is disabled, so a level floor that
+            // continues into the neighbouring sector is invisible while the remembered one has a floor far below the same
+            // XY - d19's lift-top platform (sector 19 -> sector 10 at x=251, z 512) with sector 19's pit bottom (-864)
+            // under it read as a 1375-unit drop. Only when the remembered floor is a long way below the feet and the
+            // party is not already falling is the sector the position actually lies in asked, and only a floor right
+            // under the feet (a step, not a floor passed on the way down) wins.
+            if (seamFloorResolve() && gameType() == GAME_TYPE_MM8 && result < pos.z - 128 && !pParty->isAirborne()) {
+                int sector = pIndoor->GetSector(pos);
+                int faceId = -1;
+                if (sector > 0 && sector != *pSectorID) {
+                    float other = BLV_GetFloorLevel(pos, sector, &faceId);
+                    if (other != -30000 && other != -29000 && other <= pos.z + 50 && other >= pos.z - 80) {
+                        *pSectorID = sector;
+                        if (pFaceID)
+                            *pFaceID = faceId;
+                        return other;
+                    }
+                }
+            }
             return result;
+        }
     }
 
     *pSectorID = pIndoor->GetSector(pos);

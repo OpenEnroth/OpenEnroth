@@ -127,6 +127,10 @@ void GameStarter::initialize() {
     // Can validate the resolved data path now.
     failOnInvalidPath(_options.dataPath, _platform.get());
 
+    // Set the engine-wide game-version seam from the now-validated data path. Must happen once, here, at boot -
+    // see `GameType.h`.
+    setGameType(detectGameType(_options.dataPath));
+
     // Create application.
     _application = std::make_unique<PlatformApplication>(_platform.get());
     ::application = _application.get();
@@ -165,8 +169,17 @@ void GameStarter::initialize() {
     _application->installComponent(std::make_unique<GameTraceHandler>());
     _application->component<EngineRandomComponent>()->setTracing(_options.tracingRng);
 
+    // Offscreen render probe. Force the present size to differ from the render size
+    // so `OpenGLRenderer::ReadScreenPixels` takes its FBO-bound capture path (`outputRender !=
+    // outputPresent`, see `BaseRenderer::updateRenderDimensions`) instead of reading straight off the
+    // (never-shown) window's backbuffer.
+    if (_options.offscreen) {
+        _config->window.Width.setValue(_config->graphics.RenderWidth.value() + 1);
+        _config->window.Height.setValue(_config->graphics.RenderHeight.value() + 1);
+    }
+
     // Init main window. Should happen before the renderer init, which depends on window dimensions & mode.
-    _application->component<GameWindowHandler>()->UpdateWindowFromConfig(_config.get());
+    _application->component<GameWindowHandler>()->UpdateWindowFromConfig(_config.get(), /*visible=*/ !_options.offscreen);
 
     // Init renderer.
     RendererType rendererType = _options.headless ? RENDERER_NULL : _config->graphics.Renderer.value();
@@ -242,7 +255,7 @@ void GameStarter::resolveDataPath(Environment *environment, GameStarterOptions *
         std::string missingFile;
         if (!fs::exists(candidates[i])) {
             MM_INFO("Data path #{} ('{}') doesn't exist.", i + 1, candidates[i]);
-        } else if (!validateMm7Path(candidates[i], &missingFile)) {
+        } else if (!validateDataPath(candidates[i], &missingFile)) {
             MM_INFO("Data path #{} ('{}') is missing file '{}'.", i + 1, candidates[i], missingFile);
         } else {
             MM_INFO("Data path #{} ('{}') is OK!", i + 1, candidates[i]);
@@ -258,13 +271,13 @@ void GameStarter::resolveDataPath(Environment *environment, GameStarterOptions *
 
 void GameStarter::failOnInvalidPath(PathView dataPath, Platform *platform) {
     std::string missingFile;
-    if (validateMm7Path(dataPath, &missingFile))
+    if (validateDataPath(dataPath, &missingFile))
         return;
 
     std::string message = fmt::format(
         "Required file '{}' not found.\n"
         "\n"
-        "You should acquire licensed copy of M&M VII and copy its resources to {}.",
+        "You should acquire a licensed copy of M&M VII or M&M VIII and copy its resources to {}.",
         missingFile,
         dataPath
     );

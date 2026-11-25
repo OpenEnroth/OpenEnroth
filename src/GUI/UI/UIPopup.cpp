@@ -94,7 +94,9 @@ std::array<int16_t, 4> RightClickPortraitXmax = {{83, 198, 312, 423}};
 bool tryUseItemOnPortrait(Pointi mousePos) {
     if (pParty->pPickedItem.itemId == ITEM_NULL)
         return false;
-    for (int i = 0; i < pParty->pCharacters.size(); ++i) {
+    // RightClickPortraitXmin/Xmax have 4 entries, pCharacters has 5. Bound to the smaller of the table and the active party.
+    int slotCount = std::min<int>(pParty->activeCharacterCount(), static_cast<int>(RightClickPortraitXmin.size()));
+    for (int i = 0; i < slotCount; ++i) {
         if (mousePos.x > RightClickPortraitXmin[i] && mousePos.x < RightClickPortraitXmax[i] &&
             mousePos.y > 375 && mousePos.y < 466) {
             pParty->activeCharacter().useItem(i, true);
@@ -1344,7 +1346,8 @@ static void drawBuffPopupWindow() {
         {PARTY_BUFF_TORCHLIGHT,             colorTable.DarkOrange},
         {PARTY_BUFF_RESIST_WATER,           colorTable.AzureRadiance},
         {PARTY_BUFF_WATER_WALK,             colorTable.AzureRadiance},
-        {PARTY_BUFF_WIZARD_EYE,             colorTable.Anakiwa}
+        {PARTY_BUFF_WIZARD_EYE,             colorTable.Anakiwa},
+        {PARTY_BUFF_LEVITATE,               colorTable.Anakiwa}
     };
 
     Recti frameRect(38, 60, 400, 0);
@@ -1431,7 +1434,7 @@ void ShowPopupShopSkills() {
             if (pButton->Contains(pX, pY)) {
                 if (IsSkillLearningDialogue((DialogueId)pButton->msg_param)) {
                     auto skill_id = GetLearningDialogueSkill((DialogueId)pButton->msg_param);
-                    if (skillMaxMasteryPerClass[pParty->activeCharacter().classType][skill_id] != MASTERY_NONE &&
+                    if (skillMaxMasteryForClass(pParty->activeCharacter().classType, skill_id) != MASTERY_NONE &&
                         !pParty->activeCharacter().pActiveSkills[skill_id]) {
                         // is this skill visible
                         std::string pSkillDescText = CharacterUI_GetSkillDescText(pParty->activeCharacterIndex(), skill_id);
@@ -1708,8 +1711,8 @@ void GameUI_DrawNPCPopup(int _this) {  // PopupWindowForBenefitAndJoinText
                     popup_window.h = 130;
                 popup_window.w = 400;
                 GUIWindow::DrawMessageBox(popup_window, "");
-                auto tex_name = fmt::format("NPC{:03}", pNPC->portraitId);
-                render->DrawQuad2D(assets->getIcon(tex_name),
+                auto tex_name = npcPortraitTextureName(pNPC->portraitId);
+                render->DrawQuad2D(assets->getImage_ColorKey(tex_name),
                                    {popup_window.x + 22, popup_window.y + 36});
 
                 GUIWindow::DrawTitleText(assets->pFontArrus.get(), 0, 12, colorTable.PaleCanary, NameAndTitle(pNPC), 3, popup_window);

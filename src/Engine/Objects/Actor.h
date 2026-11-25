@@ -76,6 +76,14 @@ class Actor {
      * @return                          Hostility level (aggro range) between the two.
      */
     MonsterHostility GetActorsRelation(Actor *otherActPtr);
+
+    /**
+     * Aggro radius of a hostility level, the range `GetActorsRelation` results are measured against.
+     *
+     * @param hostility                 Hostility level, e.g. `monsterInfo.hostilityType`.
+     * @return                          Radius in world units, 0 for HOSTILITY_FRIENDLY.
+     */
+    static int hostilityAggroRange(MonsterHostility hostility);
     void SetRandomGoldIfTheresNoItem();
     bool CanAct() const;
     bool CanBeDamaged() const;
@@ -219,6 +227,21 @@ class Actor {
     void LootActor();
     bool _427102_IsOkToCastSpell(SpellId spell);
     ActorAbility special_ability_use_check(int a2);
+
+    /**
+     * @return                          Missile of the monster's first attack, `MONSTER_PROJECTILE_NONE` for a melee
+     *                                  attack and for a monster that Dark Grasp holds to melee.
+     */
+    MonsterProjectile missileOfAttack1() const {
+        return buffs[ACTOR_BUFF_MELEE_ONLY].Active() ? MONSTER_PROJECTILE_NONE : monsterInfo.attack1MissileType;
+    }
+
+    /**
+     * @return                          Missile of the monster's second attack, same rules as `missileOfAttack1`.
+     */
+    MonsterProjectile missileOfAttack2() const {
+        return buffs[ACTOR_BUFF_MELEE_ONLY].Active() ? MONSTER_PROJECTILE_NONE : monsterInfo.attack2MissileType;
+    }
     bool _4273BB_DoesHitOtherActor(Actor *defender, int a3, int a4);
     bool ActorHitOrMiss(Character *pPlayer);
     int CalcMagicalDamageToActor(DamageType dmgType, int incomingDmg);

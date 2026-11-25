@@ -293,23 +293,16 @@ std::string cleanupMonsterIdEnumName(std::string enumName) {
 }
 
 int runMonsterIdCodeGen(const CodeGenOptions &options, ResourceManager *resourceManager) {
-    MonsterStats monsterStats = loadMonsterStats(resourceManager);
+    loadMonsterStats(resourceManager); // Fills pMonsterList, which the ids are read from.
 
     CodeGenMap map;
     map.insert(static_cast<MonsterId>(0), "INVALID", "");
 
     for (const MonsterId i : allMonsters()) {
         const MonsterDesc &desc = pMonsterList->monsters[i];
-        const MonsterInfo &info = monsterStats.infos[i];
         std::string enumName = cleanupMonsterIdEnumName(toUpperCaseEnum(desc.internalMonsterName));
 
-        std::string comment = info.name;
-        if (comment == "peasant")
-            comment = "Peasant";
-        if (!comment.empty())
-            comment = fmt::format("\"{}\".", trim(comment));
-
-        map.insert(i, enumName, comment);
+        map.insert(i, enumName, "");
     }
 
     map.dump(stdout, "MONSTER_");

@@ -6,6 +6,7 @@
 #include "Engine/Localization.h"
 #include "Engine/Party.h"
 #include "Engine/AssetsManager.h"
+#include "Engine/GameType.h"
 #include "Engine/Tables/MapTable.h"
 #include "Engine/Engine.h"
 #include "Engine/mm7_data.h"
@@ -41,12 +42,16 @@ GUIWindow_CalendarBook::GUIWindow_CalendarBook() : GUIWindow_Book() {
 
     pChildBooksOverlay = std::make_unique<GUIWindow_BooksButtonOverlay>(Pointi{570, 354}, Sizei{0, 0}, pBtn_Calendar);
 
-    ui_book_calendar_background = assets->getIcon("sbdate-time");
-    ui_book_calendar_moon_new = assets->getIcon("moon_new");
-    ui_book_calendar_moon_4 = assets->getIcon("moon_4");
-    ui_book_calendar_moon_2 = assets->getIcon("moon_2");
-    ui_book_calendar_moon_2_2 = assets->getIcon("moon_2");
-    ui_book_calendar_moon_full = assets->getIcon("moon_ful");
+    // MM8 ships no equivalent for "sbdate-time" or any of the "moon_*" phase icons. The background
+    // draw call is a no-op on the null texture.
+    if (gameType() != GAME_TYPE_MM8) {
+        ui_book_calendar_background = assets->getImage_ColorKey("sbdate-time");
+        ui_book_calendar_moon_new = assets->getImage_ColorKey("moon_new");
+        ui_book_calendar_moon_4 = assets->getImage_ColorKey("moon_4");
+        ui_book_calendar_moon_2 = assets->getImage_ColorKey("moon_2");
+        ui_book_calendar_moon_2_2 = assets->getImage_ColorKey("moon_2");
+        ui_book_calendar_moon_full = assets->getImage_ColorKey("moon_ful");
+    }
 }
 
 /**
@@ -67,6 +72,7 @@ static std::string getDayPart(int hour) {
 }
 
 void GUIWindow_CalendarBook::Update() {
+    // MM8 has no calendar screen and no background for it, so the Close button keeps MM7's position.
     render->DrawQuad2D(ui_exit_cancel_button_background, {471, 445});
 
     render->DrawQuad2D(ui_book_calendar_background, pViewport.topLeft());

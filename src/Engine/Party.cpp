@@ -4,9 +4,11 @@
 #include <climits>
 #include <algorithm>
 #include <string>
+#include <utility>
 #include <vector>
 
 #include "Engine/Engine.h"
+#include "Engine/GameType.h"
 #include "Engine/Graphics/Outdoor.h"
 #include "Engine/Graphics/Indoor.h"
 #include "Engine/Graphics/Image.h"
@@ -17,10 +19,12 @@
 #include "Engine/Objects/NPC.h"
 #include "Engine/Objects/CharacterEnumFunctions.h"
 #include "Engine/Random/Random.h"
+#include "Engine/SpellFxRenderer.h"
 #include "Engine/Spells/SpellEnumFunctions.h"
 #include "Engine/Tables/ItemTable.h"
 #include "Engine/Tables/IconFrameTable.h"
 #include "Engine/Tables/PortraitFrameTable.h"
+#include "Engine/Tables/RosterTable.h"
 #include "Engine/TurnEngine/TurnEngine.h"
 #include "Engine/AssetsManager.h"
 #include "Engine/Tables/MapTable.h"
@@ -152,6 +156,9 @@ void Party::Zero() {
     pHirelings.fill(NPCData());
     pHirelingsSacrifice.fill(NPCSacrificeStatus());
 
+    // MM8's dynamic roster (no-op under MM7, which doesn't use it).
+    mm8Roster = PartyMM8Roster();
+
     playerAlreadyPicked.fill(false);
 }
 
@@ -178,9 +185,164 @@ bool Party::checkPartyPerceptionAgainstCurrentMap() {
 
 int Party::canActCount() const {
     int result = 0;
-    for (const Character &character : pCharacters)
-        result += character.CanAct();
+    for (int i = 0; i < activeCharacterCount(); i++)
+        result += pCharacters[i].CanAct();
     return result;
+}
+
+int Party::activeCharacterCount() const {
+    if (gameType() == GAME_TYPE_MM8) {
+        // Slot 0 (the champion) is always active. Slots 1-4 are active iff they hold a recruited
+        // roster companion (`rosterId != 0`) - see `recruitRoster()`/`dismissRoster()`, which keep
+        // recruited members packed contiguously from slot 1, so this always equals the real count.
+        int count = 1;
+        for (size_t i = 1; i < pCharacters.size(); i++) {
+            if (pCharacters[i].rosterId != 0)
+                count++;
+        }
+        return count;
+    }
+    return 4; // MM7's fixed party size, pCharacters has a fifth slot for MM8.
+}
+
+void Party::armSurvivable(Character &character) const {
+    if (survivableHp > 0 && character._survivableHealthBonus == 0) {
+        character._survivableHealthBonus = survivableHp - character.GetMaxHealth();
+        character.health = character.GetMaxHealth();
+    }
+    if (survivableConditions)
+        character._survivableConditions = true;  // counters are fresh on a new member, so they start at join time
+}
+
+// Roster rows 1 and 7 wait at The Adventurer's Inn from the start. No game table says so,
+// community walkthroughs do.
+constexpr int kStartingInnRosterIds[] = {1, 7};
+
+void Party::seatStartingInnRecruits() {
+    assert(gameType() == GAME_TYPE_MM8);
+    for (int rosterId : kStartingInnRosterIds)
+        mm8Roster.addToInn(seatedCharacterFromRosterRow(rosterId));
+}
+
+void Party::seatRosterOfQuestBit(QuestBit bit) {
+    if (gameType() != GAME_TYPE_MM8)
+        return;
+    for (size_t rosterId = 1; rosterId < rosterMm8.size(); rosterId++) {
+        if (rosterMm8[rosterId].questBit <= 0 || rosterMm8[rosterId].questBit != static_cast<int>(bit))
+            continue;
+        if (!isRosterInParty(static_cast<int>(rosterId)) && !mm8Roster.isInInn(static_cast<int>(rosterId)))
+            mm8Roster.addToInn(seatedCharacterFromRosterRow(static_cast<int>(rosterId)));
+        return;
+    }
+}
+
+bool Party::recruitRoster(int rosterId) {
+    assert(rosterId > 0);
+    if (isRosterInParty(rosterId) || mm8Roster.isInInn(rosterId))
+        return isRosterInParty(rosterId); // Already recruited - no-op.
+
+    Character character = characterFromRosterRow(rosterId);
+    int count = activeCharacterCount();
+    if (count < static_cast<int>(pCharacters.size())) {
+        pCharacters[count] = std::move(character);
+        armSurvivable(pCharacters[count]);
+        enforcePlaceholderInertness();
+        return true;
+    }
+
+    mm8Roster.addToInn(std::move(character));
+    return false;
+}
+
+bool Party::dismissRoster(int rosterId) {
+    if (rosterId <= 0)
+        return false; // The champion (slot 0) isn't roster-backed and can't be dismissed this way.
+
+    if (bTurnBasedModeOn) {
+        // The original refuses a dismiss while turn-based mode is on (global.txt row 740).
+        engine->_statusBar->setEvent(LSTR_YOU_CANNOT_DISMISS_A_CHARACTER_IN_TURN_BASED_MODE);
+        return false;
+    }
+
+    for (size_t slot = 1; slot < pCharacters.size(); slot++) {
+        if (pCharacters[slot].rosterId != rosterId)
+            continue;
+
+        mm8Roster.addToInn(pCharacters[slot]);
+
+        // Compact: shift every later slot down by one so recruited members stay packed from slot
+        // 1, which is what `activeCharacterCount()` and `recruitRoster()`'s "first free slot" both
+        // rely on.
+        for (size_t i = slot; i + 1 < pCharacters.size(); i++)
+            pCharacters[i] = pCharacters[i + 1];
+        pCharacters[pCharacters.size() - 1] = Character();
+        enforcePlaceholderInertness(); // the freshly-default-constructed trailing slot starts alive.
+
+        return true;
+    }
+    return false;
+}
+
+bool Party::activateFromInn(int rosterId) {
+    if (rosterId <= 0 || !mm8Roster.isInInn(rosterId))
+        return false;
+
+    int count = activeCharacterCount();
+    if (count >= static_cast<int>(pCharacters.size()))
+        return false; // Active party already full - use swapWithInn() instead.
+
+    pCharacters[count] = mm8Roster.takeFromInn(rosterId);
+    armSurvivable(pCharacters[count]);
+    enforcePlaceholderInertness();
+    return true;
+}
+
+bool Party::swapWithInn(int benchRosterId, int activeRosterId) {
+    // `activeRosterId <= 0` covers the champion (slot 0, rosterId == 0) - the original never lets the
+    // champion be swapped out via the Inn.
+    if (benchRosterId <= 0 || activeRosterId <= 0 || !mm8Roster.isInInn(benchRosterId))
+        return false;
+
+    for (size_t slot = 1; slot < pCharacters.size(); slot++) {
+        if (pCharacters[slot].rosterId != activeRosterId)
+            continue;
+
+        Character activated = mm8Roster.takeFromInn(benchRosterId);
+        mm8Roster.addToInn(pCharacters[slot]);
+        pCharacters[slot] = std::move(activated);
+        armSurvivable(pCharacters[slot]);
+        enforcePlaceholderInertness(); // Active count is unchanged, but keep this call idiomatic.
+
+        return true;
+    }
+    return false;
+}
+
+bool Party::isRosterInParty(int rosterId) const {
+    if (rosterId == 0)
+        return false;
+    for (size_t i = 1; i < pCharacters.size(); i++) {
+        if (pCharacters[i].rosterId == rosterId)
+            return true;
+    }
+    return false;
+}
+
+void Party::enforcePlaceholderInertness() {
+    if (gameType() != GAME_TYPE_MM8)
+        return; // MM7 has no placeholder slots - activeCharacterCount() there is the fixed 4.
+
+    for (size_t i = static_cast<size_t>(activeCharacterCount()); i < pCharacters.size(); i++) {
+        Character &character = pCharacters[i];
+        // Unconditional, not `if (!character.IsDead())`: something else may have already marked the
+        // slot dead (e.g. a prior call to this same function) while leaving health/mana nonzero -
+        // e.g. `createDefaultParty()`'s own trailing "heal everyone to full" loop runs between
+        // `Reset()`'s call to this and its own, and never touches `conditions` at all. A guard here
+        // would then skip re-zeroing exactly the case this function exists to catch.
+        character.conditions.set(CONDITION_DEAD, GetPlayingTime());
+        character.health = 0;
+        character.mana = 0;
+    }
 }
 
 void Party::setHoldingItem(const Item &item, Pointi offset) {
@@ -202,7 +364,7 @@ Item Party::takeHoldingItem() {
 }
 
 void Party::setActiveToFirstCanAct() {  // added to fix some nzi problems entering shops
-    for (int i = 0; i < this->pCharacters.size(); ++i) {
+    for (int i = 0; i < this->activeCharacterCount(); ++i) {
         if (this->pCharacters[i].CanAct()) {
             _activeCharacterIndex = i;
             return;
@@ -230,11 +392,11 @@ void Party::switchToNextActiveCharacter() {
         return;
     }
 
-    if (playerAlreadyPicked[0] && playerAlreadyPicked[1] &&
-        playerAlreadyPicked[2] && playerAlreadyPicked[3])
+    if (std::all_of(playerAlreadyPicked.begin(), playerAlreadyPicked.begin() + activeCharacterCount(),
+                     [](bool picked) { return picked; }))
         playerAlreadyPicked.fill(false);
 
-    for (int i = 0; i < this->pCharacters.size(); i++) {
+    for (int i = 0; i < this->activeCharacterCount(); i++) {
         if (!this->pCharacters[i].CanAct() ||
             this->pCharacters[i].timeToRecovery > 0_ticks) {
             playerAlreadyPicked[i] = true;
@@ -251,7 +413,7 @@ void Party::switchToNextActiveCharacter() {
 
     int selectedChar = -1;
     int highestSpeed = 0;
-    for (int i = 0; i < this->pCharacters.size(); i++) {
+    for (int i = 0; i < this->activeCharacterCount(); i++) {
         if (this->pCharacters[i].CanAct() && !this->pCharacters[i].timeToRecovery) {
             if (selectedChar == -1 || this->pCharacters[i]._statBonuses[ATTRIBUTE_SPEED] > highestSpeed) {
                 highestSpeed = this->pCharacters[i]._statBonuses[ATTRIBUTE_SPEED];
@@ -259,7 +421,10 @@ void Party::switchToNextActiveCharacter() {
             }
         }
     }
-    _activeCharacterIndex = selectedChar;
+    // Keep the previous selection if nobody currently qualifies: MM8's solo-champion start makes "the only active
+    // member is recovering" a routine state, and blanking the selection crashes callers that assume hasActiveCharacter().
+    if (selectedChar != -1)
+        _activeCharacterIndex = selectedChar;
     return;
 }
 
@@ -382,73 +547,79 @@ void Party::createDefaultParty() {
     pHirelings.fill(NPCData());
     pHirelingsSacrifice.fill(NPCSacrificeStatus());
 
-    this->pCharacters[0].name = localization->str(LSTR_NAME_ZOLTAN);
-    this->pCharacters[0].uPrevFace = 17;
-    this->pCharacters[0].uCurrentFace = 17;
-    this->pCharacters[0].uPrevVoiceID = 17;
-    this->pCharacters[0].uVoiceID = 17;
-    this->pCharacters[0]._stats[ATTRIBUTE_MIGHT] = 30;
-    this->pCharacters[0]._stats[ATTRIBUTE_INTELLIGENCE] = 5;
-    this->pCharacters[0]._stats[ATTRIBUTE_PERSONALITY] = 5;
-    this->pCharacters[0]._stats[ATTRIBUTE_ENDURANCE] = 13;
-    this->pCharacters[0]._stats[ATTRIBUTE_ACCURACY] = 13;
-    this->pCharacters[0]._stats[ATTRIBUTE_SPEED] = 14;
-    this->pCharacters[0]._stats[ATTRIBUTE_LUCK] = 7;
-    this->pCharacters[0].pActiveSkills[SKILL_LEATHER] = CombinedSkillValue::novice();
-    this->pCharacters[0].pActiveSkills[SKILL_ARMSMASTER] = CombinedSkillValue::novice();
-    this->pCharacters[0].pActiveSkills[SKILL_BOW] = CombinedSkillValue::novice();
-    this->pCharacters[0].pActiveSkills[SKILL_SWORD] = CombinedSkillValue::novice();
+    // This preset hardcodes MM7's Zoltan/Roderick/Serena/Alexis stats & skills, overwriting whatever
+    // `Party::Reset()` (which runs right before this, see `PartyCreationUI_Loop`) just set up. Under MM8, skip
+    // it and keep Reset()'s MM8 defaults - `ChangeClass()` there already activated the right starting
+    // skills from MM8's skill-affinity table, and `SetInitialStats()` already used MM8's stat ranges.
+    if (gameType() != GAME_TYPE_MM8) {
+        this->pCharacters[0].name = localization->str(LSTR_NAME_ZOLTAN);
+        this->pCharacters[0].uPrevFace = 17;
+        this->pCharacters[0].uCurrentFace = 17;
+        this->pCharacters[0].uPrevVoiceID = 17;
+        this->pCharacters[0].uVoiceID = 17;
+        this->pCharacters[0]._stats[ATTRIBUTE_MIGHT] = 30;
+        this->pCharacters[0]._stats[ATTRIBUTE_INTELLIGENCE] = 5;
+        this->pCharacters[0]._stats[ATTRIBUTE_PERSONALITY] = 5;
+        this->pCharacters[0]._stats[ATTRIBUTE_ENDURANCE] = 13;
+        this->pCharacters[0]._stats[ATTRIBUTE_ACCURACY] = 13;
+        this->pCharacters[0]._stats[ATTRIBUTE_SPEED] = 14;
+        this->pCharacters[0]._stats[ATTRIBUTE_LUCK] = 7;
+        this->pCharacters[0].pActiveSkills[SKILL_LEATHER] = CombinedSkillValue::novice();
+        this->pCharacters[0].pActiveSkills[SKILL_ARMSMASTER] = CombinedSkillValue::novice();
+        this->pCharacters[0].pActiveSkills[SKILL_BOW] = CombinedSkillValue::novice();
+        this->pCharacters[0].pActiveSkills[SKILL_SWORD] = CombinedSkillValue::novice();
 
-    this->pCharacters[1].name = localization->str(LSTR_NAME_RODERICK);
-    this->pCharacters[1].uPrevFace = 3;
-    this->pCharacters[1].uCurrentFace = 3;
-    this->pCharacters[1].uPrevVoiceID = 3;
-    this->pCharacters[1].uVoiceID = 3;
-    this->pCharacters[1]._stats[ATTRIBUTE_MIGHT] = 13;
-    this->pCharacters[1]._stats[ATTRIBUTE_INTELLIGENCE] = 9;
-    this->pCharacters[1]._stats[ATTRIBUTE_PERSONALITY] = 9;
-    this->pCharacters[1]._stats[ATTRIBUTE_ENDURANCE] = 13;
-    this->pCharacters[1]._stats[ATTRIBUTE_ACCURACY] = 13;
-    this->pCharacters[1]._stats[ATTRIBUTE_SPEED] = 13;
-    this->pCharacters[1]._stats[ATTRIBUTE_LUCK] = 13;
-    this->pCharacters[1].pActiveSkills[SKILL_LEATHER] = CombinedSkillValue::novice();
-    this->pCharacters[1].pActiveSkills[SKILL_STEALING] = CombinedSkillValue::novice();
-    this->pCharacters[1].pActiveSkills[SKILL_DAGGER] = CombinedSkillValue::novice();
-    this->pCharacters[1].pActiveSkills[SKILL_TRAP_DISARM] = CombinedSkillValue::novice();
+        this->pCharacters[1].name = localization->str(LSTR_NAME_RODERICK);
+        this->pCharacters[1].uPrevFace = 3;
+        this->pCharacters[1].uCurrentFace = 3;
+        this->pCharacters[1].uPrevVoiceID = 3;
+        this->pCharacters[1].uVoiceID = 3;
+        this->pCharacters[1]._stats[ATTRIBUTE_MIGHT] = 13;
+        this->pCharacters[1]._stats[ATTRIBUTE_INTELLIGENCE] = 9;
+        this->pCharacters[1]._stats[ATTRIBUTE_PERSONALITY] = 9;
+        this->pCharacters[1]._stats[ATTRIBUTE_ENDURANCE] = 13;
+        this->pCharacters[1]._stats[ATTRIBUTE_ACCURACY] = 13;
+        this->pCharacters[1]._stats[ATTRIBUTE_SPEED] = 13;
+        this->pCharacters[1]._stats[ATTRIBUTE_LUCK] = 13;
+        this->pCharacters[1].pActiveSkills[SKILL_LEATHER] = CombinedSkillValue::novice();
+        this->pCharacters[1].pActiveSkills[SKILL_STEALING] = CombinedSkillValue::novice();
+        this->pCharacters[1].pActiveSkills[SKILL_DAGGER] = CombinedSkillValue::novice();
+        this->pCharacters[1].pActiveSkills[SKILL_TRAP_DISARM] = CombinedSkillValue::novice();
 
-    this->pCharacters[2].name = localization->str(LSTR_NAME_SERENA);
-    this->pCharacters[2].uPrevFace = 14;
-    this->pCharacters[2].uCurrentFace = 14;
-    this->pCharacters[2].uPrevVoiceID = 14;
-    this->pCharacters[2].uVoiceID = 14;
-    this->pCharacters[2]._stats[ATTRIBUTE_MIGHT] = 12;
-    this->pCharacters[2]._stats[ATTRIBUTE_INTELLIGENCE] = 9;
-    this->pCharacters[2]._stats[ATTRIBUTE_PERSONALITY] = 20;
-    this->pCharacters[2]._stats[ATTRIBUTE_ENDURANCE] = 22;
-    this->pCharacters[2]._stats[ATTRIBUTE_ACCURACY] = 7;
-    this->pCharacters[2]._stats[ATTRIBUTE_SPEED] = 13;
-    this->pCharacters[2]._stats[ATTRIBUTE_LUCK] = 7;
-    this->pCharacters[2].pActiveSkills[SKILL_ALCHEMY] = CombinedSkillValue::novice();
-    this->pCharacters[2].pActiveSkills[SKILL_LEATHER] = CombinedSkillValue::novice();
-    this->pCharacters[2].pActiveSkills[SKILL_BODY] = CombinedSkillValue::novice();
-    this->pCharacters[2].pActiveSkills[SKILL_MACE] = CombinedSkillValue::novice();
+        this->pCharacters[2].name = localization->str(LSTR_NAME_SERENA);
+        this->pCharacters[2].uPrevFace = 14;
+        this->pCharacters[2].uCurrentFace = 14;
+        this->pCharacters[2].uPrevVoiceID = 14;
+        this->pCharacters[2].uVoiceID = 14;
+        this->pCharacters[2]._stats[ATTRIBUTE_MIGHT] = 12;
+        this->pCharacters[2]._stats[ATTRIBUTE_INTELLIGENCE] = 9;
+        this->pCharacters[2]._stats[ATTRIBUTE_PERSONALITY] = 20;
+        this->pCharacters[2]._stats[ATTRIBUTE_ENDURANCE] = 22;
+        this->pCharacters[2]._stats[ATTRIBUTE_ACCURACY] = 7;
+        this->pCharacters[2]._stats[ATTRIBUTE_SPEED] = 13;
+        this->pCharacters[2]._stats[ATTRIBUTE_LUCK] = 7;
+        this->pCharacters[2].pActiveSkills[SKILL_ALCHEMY] = CombinedSkillValue::novice();
+        this->pCharacters[2].pActiveSkills[SKILL_LEATHER] = CombinedSkillValue::novice();
+        this->pCharacters[2].pActiveSkills[SKILL_BODY] = CombinedSkillValue::novice();
+        this->pCharacters[2].pActiveSkills[SKILL_MACE] = CombinedSkillValue::novice();
 
-    this->pCharacters[3].name = localization->str(LSTR_NAME_ALEXIS);
-    this->pCharacters[3].uPrevFace = 10;
-    this->pCharacters[3].uCurrentFace = 10;
-    this->pCharacters[3].uPrevVoiceID = 10;
-    this->pCharacters[3].uVoiceID = 10;
-    this->pCharacters[3]._stats[ATTRIBUTE_MIGHT] = 5;
-    this->pCharacters[3]._stats[ATTRIBUTE_INTELLIGENCE] = 30;
-    this->pCharacters[3]._stats[ATTRIBUTE_PERSONALITY] = 9;
-    this->pCharacters[3]._stats[ATTRIBUTE_ENDURANCE] = 13;
-    this->pCharacters[3]._stats[ATTRIBUTE_ACCURACY] = 13;
-    this->pCharacters[3]._stats[ATTRIBUTE_SPEED] = 13;
-    this->pCharacters[3]._stats[ATTRIBUTE_LUCK] = 7;
-    this->pCharacters[3].pActiveSkills[SKILL_LEATHER] = CombinedSkillValue::novice();
-    this->pCharacters[3].pActiveSkills[SKILL_AIR] = CombinedSkillValue::novice();
-    this->pCharacters[3].pActiveSkills[SKILL_FIRE] = CombinedSkillValue::novice();
-    this->pCharacters[3].pActiveSkills[SKILL_STAFF] = CombinedSkillValue::novice();
+        this->pCharacters[3].name = localization->str(LSTR_NAME_ALEXIS);
+        this->pCharacters[3].uPrevFace = 10;
+        this->pCharacters[3].uCurrentFace = 10;
+        this->pCharacters[3].uPrevVoiceID = 10;
+        this->pCharacters[3].uVoiceID = 10;
+        this->pCharacters[3]._stats[ATTRIBUTE_MIGHT] = 5;
+        this->pCharacters[3]._stats[ATTRIBUTE_INTELLIGENCE] = 30;
+        this->pCharacters[3]._stats[ATTRIBUTE_PERSONALITY] = 9;
+        this->pCharacters[3]._stats[ATTRIBUTE_ENDURANCE] = 13;
+        this->pCharacters[3]._stats[ATTRIBUTE_ACCURACY] = 13;
+        this->pCharacters[3]._stats[ATTRIBUTE_SPEED] = 13;
+        this->pCharacters[3]._stats[ATTRIBUTE_LUCK] = 7;
+        this->pCharacters[3].pActiveSkills[SKILL_LEATHER] = CombinedSkillValue::novice();
+        this->pCharacters[3].pActiveSkills[SKILL_AIR] = CombinedSkillValue::novice();
+        this->pCharacters[3].pActiveSkills[SKILL_FIRE] = CombinedSkillValue::novice();
+        this->pCharacters[3].pActiveSkills[SKILL_STAFF] = CombinedSkillValue::novice();
+    }
 
     for (Character &pCharacter : pCharacters) {
         if (pCharacter.classType == CLASS_KNIGHT)
@@ -466,11 +637,33 @@ void Party::createDefaultParty() {
         pCharacter.health = pCharacter.GetMaxHealth();
         pCharacter.mana = pCharacter.GetMaxMana();
     }
+
+    // The loop above heals every raw slot to full, including MM8's unrecruited placeholders.
+    enforcePlaceholderInertness();
 }
 
 //----- (004917CE) --------------------------------------------------------
 void Party::Reset() {
     Zero();
+    survivableHp = 0;
+    survivableConditions = false;
+    survivableDamage = 0;
+    // Per-portrait buff animation (e.g. the level-up sparkle from PlayAwardSound_Anim) lives in the renderer, not on Character,
+    // and only expires while frames are drawn.
+    if (engine->spell_fx_renedrer) {
+        for (PlayerBuffAnim &anim : engine->spell_fx_renedrer->pCharacterBuffs)
+            anim.bRender = false;
+    }
+    // Test-only per-character state, Party::Zero doesn't reset it.
+    for (Character &character : pCharacters) {
+        character._survivableHealthBonus = 0;
+        character._survivableConditions = false;
+        std::ranges::fill(character._blockedConditionCounts, 0);
+        character._wouldHaveEnded = 0;
+        character._lastWouldHaveEndedHealth = 0;
+        character._hpLost = 0;
+        character._burnTicks = 0;
+    }
 
     eyeLevel = engine->config->gameplay.PartyEyeLevel.value();
     uNumGold = engine->config->gameplay.NewGameGold.value();
@@ -487,37 +680,118 @@ void Party::Reset() {
 
     _activeCharacterIndex = 0;
 
-    pCharacters[0].ChangeClass(CLASS_KNIGHT);
-    pCharacters[0].uCurrentFace = 17;
-    pCharacters[0].uPrevVoiceID = 17;
-    pCharacters[0].uVoiceID = 17;
-    pCharacters[0].SetInitialStats();
-    pCharacters[0].uSex = pCharacters[0].GetSexByVoice();
-    pCharacters[0].name = localization->str(LSTR_NAME_ZOLTAN);
+    if (gameType() == GAME_TYPE_MM8) {
+        // Default the party to a spread of 4 of the 7 startable MM8 race-classes, so that every read
+        // the char-create screen performs each frame - StatTable/skill-availability/HP-SP/class-name lookups -
+        // goes through the MM8 tables. Portraits reuse MM7 face assets as placeholders.
+        static constexpr std::array<Race, 4> defaultRaces = {RACE_MM8_KNIGHT, RACE_MM8_NECROMANCER, RACE_MM8_CLERIC, RACE_MM8_TROLL};
+        static constexpr std::array<LstrId, 4> defaultNames = {LSTR_NAME_ZOLTAN, LSTR_NAME_RODERICK, LSTR_NAME_SERENA, LSTR_NAME_ALEXIS};
+        // The original's default Knight is female, only the name is randomized each time the screen opens.
+        // Character 0 is the only one shown on the single-champion char-create screen (see `UpdateMm8()`).
+        // The other slots are invisible, unrecruited placeholders (see `activeCharacterCount()`).
+        // Face 1 is a placeholder from the MM7 set. `GetSexByVoice(1)` reads male, so `uSex` is set directly below.
+        static constexpr std::array<int, 4> defaultFaces = {1, 3, 14, 10};
+        for (int i = 0; i < 4; i++) {
+            pCharacters[i].ChangeClass(mm8BaseClassForRace(defaultRaces[i]));
+            // `ChangeClass()` is MM7's decompiled "guild Change Class" promotion function - it
+            // unconditionally grants a random 251-350 catch-up XP so a freshly-promoted character isn't below
+            // the new class' promotion threshold. Here it only picks MM8's starting race-class, and a level-1
+            // starting character begins at 0 experience, matching the original's default.
+            pCharacters[i].experience = 0;
+            pCharacters[i].uCurrentFace = defaultFaces[i];
+            pCharacters[i].uPrevVoiceID = defaultFaces[i];
+            pCharacters[i].uVoiceID = defaultFaces[i];
+            pCharacters[i].SetInitialStats();
+            pCharacters[i].uSex = (i == 0) ? SEX_FEMALE : pCharacters[i].GetSexByVoice();
+            // The original randomizes character 0's name every time the screen opens.
+            if (i == 0)
+                pCharacters[i].RandomizeName();
+            else
+                pCharacters[i].name = localization->str(defaultNames[i]);
 
-    pCharacters[1].ChangeClass(CLASS_THIEF);
-    pCharacters[1].uCurrentFace = 3;
-    pCharacters[1].uPrevVoiceID = 3;
-    pCharacters[1].uVoiceID = 3;
-    pCharacters[1].SetInitialStats();
-    pCharacters[1].uSex = pCharacters[1].GetSexByVoice();
-    pCharacters[1].name = localization->str(LSTR_NAME_RODERICK);
+            // `ChangeClass` only auto-activates the race's SKILL_AFFINITY_PRIMARY skills (1 for Troll, 2 for the
+            // others), but the char-create screen requires exactly 4 active skills before it lets a party
+            // through (`PlayerCreation_Choose4Skills`), so top up with SKILL_AFFINITY_AVAILABLE ones too -
+            // mirroring what the MM7 preset below does by hand.
+            int activeSkillCount = 0;
+            for (Skill skill : allVisibleSkills()) {
+                if (pCharacters[i].pActiveSkills[skill])
+                    ++activeSkillCount;
+            }
+            int extraSkillsToActivate = 4 - activeSkillCount;
+            // The original's default Knight starts with Bow and Repair Item active. The generic scan below
+            // fills the rest, and all of the other 3 invisible characters' skills.
+            if (i == 0) {
+                for (Skill skill : {SKILL_BOW, SKILL_REPAIR}) {
+                    if (extraSkillsToActivate == 0)
+                        break;
+                    if (!pCharacters[i].pActiveSkills[skill] && mm8StartingSkillAffinity(defaultRaces[i], skill) == SKILL_AFFINITY_AVAILABLE) {
+                        pCharacters[i].pActiveSkills[skill] = CombinedSkillValue::novice();
+                        --extraSkillsToActivate;
+                    }
+                }
+            }
+            for (Skill skill : allVisibleSkills()) {
+                if (extraSkillsToActivate == 0)
+                    break;
+                if (mm8StartingSkillAffinity(defaultRaces[i], skill) == SKILL_AFFINITY_AVAILABLE) {
+                    pCharacters[i].pActiveSkills[skill] = CombinedSkillValue::novice();
+                    --extraSkillsToActivate;
+                }
+            }
+        }
 
-    pCharacters[2].ChangeClass(CLASS_CLERIC);
-    pCharacters[2].uCurrentFace = 14;
-    pCharacters[2].uPrevVoiceID = 14;
-    pCharacters[2].uVoiceID = 14;
-    pCharacters[2].SetInitialStats();
-    pCharacters[2].uSex = pCharacters[3].GetSexByVoice();
-    pCharacters[2].name = localization->str(LSTR_NAME_SERENA);
+        // The original's default Knight: Might 18, Intellect 9, Personality 9, Endurance 15, Accuracy 15, Speed 15,
+        // Luck 11. A Knight's base is 11 for every attribute, see `mm8StartingStats`.
+        pCharacters[0]._stats[ATTRIBUTE_MIGHT] = 18;
+        pCharacters[0]._stats[ATTRIBUTE_INTELLIGENCE] = 9;
+        pCharacters[0]._stats[ATTRIBUTE_PERSONALITY] = 9;
+        pCharacters[0]._stats[ATTRIBUTE_ENDURANCE] = 15;
+        pCharacters[0]._stats[ATTRIBUTE_ACCURACY] = 15;
+        pCharacters[0]._stats[ATTRIBUTE_SPEED] = 15;
+        pCharacters[0]._stats[ATTRIBUTE_LUCK] = 11;
 
-    pCharacters[3].ChangeClass(CLASS_SORCERER);
-    pCharacters[3].uCurrentFace = 10;
-    pCharacters[3].uPrevVoiceID = 10;
-    pCharacters[3].uVoiceID = 10;
-    pCharacters[3].SetInitialStats();
-    pCharacters[3].uSex = pCharacters[3].GetSexByVoice();
-    pCharacters[3].name = localization->str(LSTR_NAME_ALEXIS);
+        // The char-create screen also requires all 50 starting attribute points (shared across all 4 party
+        // slots, see `CharacterCreation_GetUnspentAttributePointCount`) to be spent before it lets a party
+        // through. Character 0 already has its exact spread set above, so only spend the remainder via
+        // characters 1-3 (same `IncreaseAttribute` a player would click) - the MM7 preset below achieves the
+        // same end (0 unspent points) by hardcoding pre-spent stat values instead.
+        for (int pass = 0; pass < 200 && CharacterCreation_GetUnspentAttributePointCount() > 0; pass++) {
+            pCharacters[1 + pass % 3].IncreaseAttribute(allStatAttributes()[(pass / 3) % 7]);
+        }
+    } else {
+        pCharacters[0].ChangeClass(CLASS_KNIGHT);
+        pCharacters[0].uCurrentFace = 17;
+        pCharacters[0].uPrevVoiceID = 17;
+        pCharacters[0].uVoiceID = 17;
+        pCharacters[0].SetInitialStats();
+        pCharacters[0].uSex = pCharacters[0].GetSexByVoice();
+        pCharacters[0].name = localization->str(LSTR_NAME_ZOLTAN);
+
+        pCharacters[1].ChangeClass(CLASS_THIEF);
+        pCharacters[1].uCurrentFace = 3;
+        pCharacters[1].uPrevVoiceID = 3;
+        pCharacters[1].uVoiceID = 3;
+        pCharacters[1].SetInitialStats();
+        pCharacters[1].uSex = pCharacters[1].GetSexByVoice();
+        pCharacters[1].name = localization->str(LSTR_NAME_RODERICK);
+
+        pCharacters[2].ChangeClass(CLASS_CLERIC);
+        pCharacters[2].uCurrentFace = 14;
+        pCharacters[2].uPrevVoiceID = 14;
+        pCharacters[2].uVoiceID = 14;
+        pCharacters[2].SetInitialStats();
+        pCharacters[2].uSex = pCharacters[3].GetSexByVoice();
+        pCharacters[2].name = localization->str(LSTR_NAME_SERENA);
+
+        pCharacters[3].ChangeClass(CLASS_SORCERER);
+        pCharacters[3].uCurrentFace = 10;
+        pCharacters[3].uPrevVoiceID = 10;
+        pCharacters[3].uVoiceID = 10;
+        pCharacters[3].SetInitialStats();
+        pCharacters[3].uSex = pCharacters[3].GetSexByVoice();
+        pCharacters[3].name = localization->str(LSTR_NAME_ALEXIS);
+    }
 
     for (Character &player : this->pCharacters) {
         player.timeToRecovery = 0_ticks;
@@ -539,18 +813,28 @@ void Party::Reset() {
     _autonoteBits.reset();
 
     _questBits.reset();
-    _questBits.set(QBIT_EMERALD_ISLAND_RED_POTION_ACTIVE);
-    _questBits.set(QBIT_EMERALD_ISLAND_SEASHELL_ACTIVE);
-    _questBits.set(QBIT_EMERALD_ISLAND_LONGBOW_ACTIVE);
-    _questBits.set(QBIT_EMERALD_ISLAND_FLOOR_TILE_ACTIVE);
-    _questBits.set(QBIT_EMERALD_ISLAND_LUTE_ACTIVE);
-    _questBits.set(QBIT_EMERALD_ISLAND_HAT_ACTIVE);
+    if (gameType() != GAME_TYPE_MM8) {
+        // MM8 has no Emerald Isle - these are MM6/7-only starting-item-active flags. Their bit
+        // numbers (1-6) collide with MM8's own quest-bit numbering (e.g. bit 6 gates out01.evt's
+        // Dagger Wound pirate raid recurrence), so they are not set for MM8.
+        _questBits.set(QBIT_EMERALD_ISLAND_RED_POTION_ACTIVE);
+        _questBits.set(QBIT_EMERALD_ISLAND_SEASHELL_ACTIVE);
+        _questBits.set(QBIT_EMERALD_ISLAND_LONGBOW_ACTIVE);
+        _questBits.set(QBIT_EMERALD_ISLAND_FLOOR_TILE_ACTIVE);
+        _questBits.set(QBIT_EMERALD_ISLAND_LUTE_ACTIVE);
+        _questBits.set(QBIT_EMERALD_ISLAND_HAT_ACTIVE);
+    }
 
     isArtifactGenerated.fill(false);
 
     PartyTimes.shopBanTimes.fill(Time());
 
     pPickedItem.itemId = ITEM_NULL;
+
+    // The MM8 branch above (like MM7's) populates every pCharacters slot with
+    // race/class/stat data (only slot 0 is ever shown at char-create) - mark the ones that aren't
+    // the champion inert now, so they can't be mistaken for real party members until recruited.
+    enforcePlaceholderInertness();
 }
 
 void Party::yell() {
@@ -693,7 +977,7 @@ void Party::restAndHeal() {
     for (SpellBuff &buff : pParty->pPartyBuffs)
         buff.Reset();
 
-    for (int pPlayerID = 0; pPlayerID < this->pCharacters.size(); ++pPlayerID) {
+    for (int pPlayerID = 0; pPlayerID < this->activeCharacterCount(); ++pPlayerID) {
         pPlayer = &pParty->pCharacters[pPlayerID];
         for (SpellBuff &buff : pPlayer->pCharacterBuffs)
             buff.Reset();
@@ -914,8 +1198,8 @@ bool Party::addItemToParty(Item *pItem, bool isSilent) {
 
     if (!pItemTable->items[pItem->itemId].iconName.empty()) {
         int playerId = hasActiveCharacter() ? pParty->_activeCharacterIndex : 0;
-        for (int i = 0; i < pCharacters.size(); i++, playerId++) {
-            if (playerId >= pCharacters.size())
+        for (int i = 0; i < activeCharacterCount(); i++, playerId++) {
+            if (playerId >= activeCharacterCount())
                 playerId = 0;
             if (pCharacters[playerId].inventory.tryAdd(*pItem)) {
                 pItem->Reset();
@@ -935,7 +1219,7 @@ bool Party::addItemToParty(Item *pItem, bool isSilent) {
 
 int Party::getRandomActiveCharacterId(RandomEngine *rng) const {
     std::vector<int> activeCharacters = {};
-    for (int i = 0; i < pCharacters.size(); i++)
+    for (int i = 0; i < activeCharacterCount(); i++)
         if (pCharacters[i].CanAct())
             activeCharacters.push_back(i);
     if (!activeCharacters.empty())
@@ -954,7 +1238,7 @@ size_t Party::immolationAffectedActors(int *affected, size_t affectedArrSize, si
         int x = pActors[i].pos.x - this->pos.x;
         int y = pActors[i].pos.y - this->pos.y;
         int z = pActors[i].pos.z - this->pos.z;
-        if (Vec3i(x, y, z).length() <= effectRange) {
+        if (Vec3i(x, y, z).octagonalLength() <= effectRange) {
             if (pActors[i].aiState != Dead && pActors[i].aiState != Dying &&
                 pActors[i].aiState != Removed &&
                 pActors[i].aiState != Disabled &&

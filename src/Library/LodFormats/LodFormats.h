@@ -13,8 +13,11 @@ class Blob;
 namespace lod {
 
 bool detectCompressedData(const Blob &blob);
+bool detectCompressedDataMm8(const Blob &blob);
 bool detectCompressedPseudoImage(const Blob &blob);
+bool detectCompressedPseudoImageMm8(const Blob &blob);
 bool detectImage(const Blob &blob, bool *isPalette = nullptr);
+bool detectImageMm8(const Blob &blob, bool *isPalette = nullptr);
 bool detectSprite(const Blob &blob);
 bool detectFont(const Blob &blob);
 
@@ -28,6 +31,15 @@ bool detectFont(const Blob &blob);
 Blob decodeCompressedData(const Blob &blob);
 
 /**
+ * This function processes MM8's `EnglishT.lod` entry format, see `LodCompressionHeader_MM8`.
+ *
+ * @param blob                          `Blob` from a LOD file.
+ * @return                              Uncompressed data.
+ * @throw Exception                     If the format is not recognized.
+ */
+Blob decodeCompressedDataMm8(const Blob &blob);
+
+/**
  * This function processes compressed lod pseudo-images.
  *
  * @param blob                          `Blob` from a LOD file.
@@ -35,6 +47,17 @@ Blob decodeCompressedData(const Blob &blob);
  * @throw Exception                     If the format is not recognized.
  */
 Blob decodeCompressedPseudoImage(const Blob &blob);
+
+/**
+ * This function processes MM8's `EnglishD.lod` compressed pseudo-image entry format - same shape as
+ * `decodeCompressedPseudoImage`, but using the wider `LodImageHeader_MM8` header (see `title.pcx`, whose
+ * content is a raw PCX file wrapped this way rather than a `LodImage`).
+ *
+ * @param blob                          `Blob` from a LOD file.
+ * @return                              Uncompressed data.
+ * @throw Exception                     If the format is not recognized.
+ */
+Blob decodeCompressedPseudoImageMm8(const Blob &blob);
 
 /**
  * This functions processes compressed lod data, and compressed lod pseudo-images.
@@ -72,6 +95,15 @@ Palette decodePalette(const Blob &blob);
  * @throw Exception                     If the format is not recognized.
  */
 LodImage decodeImage(const Blob &blob);
+
+/**
+ * This function processes MM8's `EnglishD.lod` image entry format, see `LodImageHeader_MM8`.
+ *
+ * @param blob                          Image `Blob`, as read from a LOD file.
+ * @return                              Decoded `LodImage`.
+ * @throw Exception                     If the format is not recognized.
+ */
+LodImage decodeImageMm8(const Blob &blob);
 
 /**
  * This function processes lod images and lod palettes. It reads the image header and returns image size w/o

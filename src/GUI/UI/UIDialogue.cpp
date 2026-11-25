@@ -44,6 +44,20 @@ const std::shared_ptr<GraphicsImage> &dialogueBackground(PartyAlignment alignmen
 }
 
 void initializeNPCDialogue(int npcId, int bPlayerSaysHello, Actor *actor) {
+    // A free-roam dialogue and a house dialogue share houseNpcs / currentHouseNpc / game_ui_dialogue_background.
+    // A script (EVENT_SpeakNPC) can open this one while a house window is open. Close the house window first,
+    // so its portraits are not freed under it.
+    if (window_SpeakInHouse) {
+        window_SpeakInHouse = nullptr;
+        current_screen_type = SCREEN_GAME;
+    }
+
+    // A dialogue can already be open when a script opens another (EVENT_SpeakNPC). Close it first, as Escape
+    // does, or its destructor clears the houseNpcs entry pushed below.
+    if (pDialogueWindow) {
+        pDialogueWindow = nullptr;
+    }
+
     pNPCStats->dword_AE336C_LastMispronouncedNameFirstLetter = -1;
     gameTimer->setPaused(true);
     animTimer->setPaused(true);
@@ -64,7 +78,7 @@ void initializeNPCDialogue(int npcId, int bPlayerSaysHello, Actor *actor) {
     HouseNpcDesc desc;
     desc.type = HOUSE_NPC;
     desc.label = localization->format(LSTR_CONVERSE_WITH_S, pNPCInfo->name);
-    desc.icon = assets->getIcon(fmt::format("npc{:03}", pNPCInfo->portraitId));
+    desc.icon = assets->getImage_ColorKey(npcPortraitTextureName(pNPCInfo->portraitId));
     desc.npc = pNPCInfo;
 
     houseNpcs.push_back(desc);
@@ -109,7 +123,8 @@ GUIWindow_Dialogue::GUIWindow_Dialogue(DialogWindowType type) : GUIWindow(WINDOW
     prev_screen_type = current_screen_type;
     current_screen_type = SCREEN_NPC_DIALOGUE;
     _dialogueBackground = dialogueBackground(pParty->alignment);
-    pBtn_ExitCancel = CreateButton("NpcDialogue_Exit", {0x1D7u, 0x1BDu}, {0xA9u, 0x23u}, BUTTON_TYPE_NORMAL, 0, UIMSG_Escape, 0, INPUT_ACTION_INVALID,
+    auto [exitCancelPos, exitCancelSize] = exitCancelButtonGeometry();
+    pBtn_ExitCancel = CreateButton("NpcDialogue_Exit", exitCancelPos, exitCancelSize, BUTTON_TYPE_NORMAL, 0, UIMSG_Escape, 0, INPUT_ACTION_INVALID,
                                    localization->str(LSTR_EXIT_DIALOGUE), {ui_exit_cancel_button_background});
 
     int text_line_height = assets->pFontArrus->GetHeight() - 3;
@@ -231,6 +246,17 @@ void GUIWindow_Dialogue::Update() {
             break;
     }
 
+    // MM8 peasants resolve none of the strings above - they have no
+    // profession row (EnglishT.lod ships no npcdist.txt, so generated NPCs keep
+    // NPC_PROFESSION_LAST with empty JoinText) and no quest greeting. In the original they speak
+    // their monster group's catch-phrase in this panel.
+    if (dialogue_string.empty() && currentSpeakingActor &&
+        currentSpeakingActor->group < pNPCStats->pGroups.size()) {
+        unsigned groupIdx = pNPCStats->pGroups[currentSpeakingActor->group];
+        if (groupIdx < pNPCStats->pCatchPhrases.size() && !pNPCStats->pCatchPhrases[groupIdx].empty())
+            dialogue_string = pNPCStats->pCatchPhrases[groupIdx];
+    }
+
     // Message window
     pDialogueWindow->DrawDialoguePanel(dialogue_string);
 
@@ -294,11 +320,20 @@ void GUIWindow_Dialogue::Update() {
             DrawTitleText(assets->pFontArrus.get(), 0, pButton->rect.y, pTextColor, pButton->label, 3, window);
         }
     }
-    render->DrawQuad2D(ui_exit_cancel_button_background, {471, 445});
+    render->DrawQuad2D(ui_exit_cancel_button_background, exitCancelButtonGeometry().first);
 }
 
 void BuildHireableNpcDialogue() {
     pDialogueWindow = std::make_unique<GUIWindow_Dialogue>(DIALOG_WINDOW_HIRE_FIRE_SHORT);
+
+    // The outgoing window's destructor clears `houseNpcs`. Repopulate it for the same NPC.
+    NPCData *pNPCInfo = getNPCData(speakingNpcId);
+    HouseNpcDesc desc;
+    desc.type = HOUSE_NPC;
+    desc.label = localization->format(LSTR_CONVERSE_WITH_S, pNPCInfo->name);
+    desc.icon = assets->getImage_ColorKey(npcPortraitTextureName(pNPCInfo->portraitId));
+    desc.npc = pNPCInfo;
+    houseNpcs.push_back(desc);
 }
 
 void selectNPCDialogueOption(DialogueId option) {
@@ -316,7 +351,8 @@ void selectNPCDialogueOption(DialogueId option) {
             std::vector<DialogueId> topics = listNPCDialogueOptions(newTopic);
             ((GUIWindow_Dialogue*)pDialogueWindow.get())->setDisplayedDialogueType(newTopic);
             pDialogueWindow->DeleteButtons();
-            pBtn_ExitCancel = pDialogueWindow->CreateButton("NpcDialogue_Exit", {471, 445}, {0xA9u, 0x23u}, BUTTON_TYPE_NORMAL, 0, UIMSG_Escape, 0, INPUT_ACTION_INVALID,
+            auto [exitCancelPos, exitCancelSize] = exitCancelButtonGeometry();
+            pBtn_ExitCancel = pDialogueWindow->CreateButton("NpcDialogue_Exit", exitCancelPos, exitCancelSize, BUTTON_TYPE_NORMAL, 0, UIMSG_Escape, 0, INPUT_ACTION_INVALID,
                                                             localization->str(LSTR_EXIT_DIALOGUE), {ui_exit_cancel_button_background});
 
             for (int i = 0; i < topics.size(); i++) {

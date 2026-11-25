@@ -7,6 +7,7 @@
 #include <algorithm>
 #include <iterator>
 #include <memory>
+#include <fstream>
 #include <utility>
 #include <map>
 #include <string>
@@ -22,6 +23,7 @@
 #include <imgui/backends/imgui_impl_sdl3.h> // NOLINT: not a C system header.
 
 #include "Engine/Engine.h"
+#include "Engine/GameType.h"
 #include "Engine/Resources/EngineFileSystem.h"
 #include "Engine/EngineGlobals.h"
 #include "Engine/Graphics/BspRenderer.h"
@@ -52,6 +54,8 @@
 #include "Library/Geometry/Size.h"
 #include "Library/Geometry/Vec.h"
 #include "Library/Image/ImageFunctions.h"
+#include "Library/Image/Png.h"
+#include "Engine/Components/Control/WatchControl.h"
 
 #include "Utility/Exception.h"
 #include "Utility/String/Format.h"
@@ -206,6 +210,19 @@ OpenGLRenderer::OpenGLRenderer(
     Vis *vis
 ) : BaseRenderer(config, decal_builder, spellfx, particle_engine, vis) {}
 
+// Watch-mode screenshot. `MakeFullScreenshot` reads the render FBO, which has no overlay on it when
+// the present size differs (offscreen). The overlay lands on framebuffer 0.
+void watchWritePresentPng(const std::string &path, int width, int height) {
+    RgbaImage frame = RgbaImage::uninitialized(width, height);
+    glBindFramebuffer(GL_READ_FRAMEBUFFER, 0);
+    glReadPixels(0, 0, width, height, GL_RGBA, GL_UNSIGNED_BYTE, frame.pixels().data());
+    for (int y = 0; y < height / 2; y++)
+        for (int x = 0; x < width; x++)
+            std::swap(frame[y][x], frame[height - 1 - y][x]);
+    Blob png = png::encode(frame);
+    std::ofstream(path, std::ios::binary).write(reinterpret_cast<const char *>(png.data()), static_cast<std::streamsize>(png.size()));
+}
+
 OpenGLRenderer::~OpenGLRenderer() {
     MM_INFO("RenderGl - Destructor");
     releaseSolidFillTexture();
@@ -312,7 +329,7 @@ void OpenGLRenderer::DrawProjectile(float srcX, float srcY, float srcworldview, 
 
     int xDifference = static_cast<int>(std::round(dstX - srcX));
     int yDifference = static_cast<int>(std::round(dstY - srcY));
-    int distapprox = Vec2i(xDifference, yDifference).length();
+    int distapprox = Vec2i(xDifference, yDifference).octagonalLength();
 
     float v16 = 1.0f / (float)distapprox;
     float srcxmod = (float)yDifference * v16 * srcfovoworldview;
@@ -966,6 +983,9 @@ void OpenGLRenderer::_set_ortho_modelview() {
 
 // ---------------------- terrain -----------------------
 void OpenGLRenderer::DrawOutdoorTerrain() {
+    if (isSurfaceSuppressed(RENDER_SURFACE_OUTDOOR_TERRAIN))
+        return; // Differential attribution, off in production - see `RenderSurface`.
+
     // shader version
     // draws entire terrain in one go at the moment
     // textures must all be square and same size
@@ -1025,8 +1045,14 @@ void OpenGLRenderer::DrawOutdoorTerrain() {
                     std::shared_ptr<GraphicsImage> thistexture = assets->getBitmap(tile.textureName, tile.flags & TILE_GENERATED_TRANSITION);
                     int width = thistexture->width();
                     // check size to see what unit it needs
+                    // Unit 0 is reserved for water tiles (see terraintexturesizes[0] init above,
+                    // and glterrain.frag's textureArray0/waterframe vs textureArray1/olayer split) - regular
+                    // terrain textures must never be bucketed into it even if their width happens to match
+                    // the water texture's own width (as MM8's real "grastyl" terrain assets do, unlike MM7's).
+                    // Landing there silently leaves unit 1 with zero textures, so glterrain.frag's unconditional
+                    // textureArray1 sample reads an unbound/unloadable texture unit and renders solid black.
                     int i;
-                    for (i = 0; i < 8; i++)
+                    for (i = 1; i < 8; i++)
                         if (terraintexturesizes[i] == width || terraintexturesizes[i] == 0)
                             break;
 
@@ -1403,7 +1429,15 @@ void OpenGLRenderer::DrawOutdoorSky() {
         pOutdoor->sky_texture = assets->getBitmap("plansky3"); // TODO(pskelton): do we need this?
 
     if (pOutdoor->sky_texture) {
-        int dimming_level = (uCurrentlyLoadedLevelType == LEVEL_OUTDOOR)? 31 : 0;
+        int dimming_level = (uCurrentlyLoadedLevelType == LEVEL_OUTDOOR) ? 31 : 0;
+        // Unmodified, `dimming_level` dims the sky toward grey via the same
+        // day/night terrain-dimming curve (`max_terrain_dimming_level`, tuned for foreground
+        // geometry) as everything else outdoors. A skybox is an infinite backdrop, not a piece of
+        // terrain at a particular distance, so it shouldn't share that treatment - 0 leaves
+        // GetActorTintColor's own night-time/fog-density dimming (both independent of this value
+        // here) as the only remaining source of tint. MM8 only.
+        if (gameType() == GAME_TYPE_MM8)
+            dimming_level = 0;
         int uNumVertices = 4;
 
         // plane of sky polygon rotation vector - pitch rotation around y
@@ -1534,7 +1568,10 @@ void OpenGLRenderer::DrawOutdoorSkyPolygon(int numVertices, Ptr<GraphicsImage> t
         }
     }
 
-    if (config->graphics.Fog.value()) {
+    // The "fade sky" and "sub sky" quads below (VertexRenderList[4..11]) are flat, textureless fills of the grey uTint.
+    // The first alpha-blends over almost the whole visible sky, the second solid-fills the region under it.
+    // They wash out MM8's saturated sunsetclouds sky, so they are skipped for MM8 only.
+    if (config->graphics.Fog.value() && gameType() != GAME_TYPE_MM8) {
         // draw blend sky
         // load up poly
         for (int z = 4; z < 6; z++) {
@@ -1851,6 +1888,14 @@ void OpenGLRenderer::ensurePaletteTexture() {
 
 // name better
 void OpenGLRenderer::DrawBillboards() {
+    if (isSurfaceSuppressed(RENDER_SURFACE_SPRITE_LAYER)) {
+        // Diagnostic surface suppression, off in production - see `RenderSurface`. Still
+        // consumes the batch, exactly like the real path below: leaving it queued would hand the
+        // NEXT frame this frame's billboards on top of its own.
+        _billboardVertices.clear();
+        return;
+    }
+
     if (_billboardVertices.empty()) return;
 
     if (!_billboardBuffer) {
@@ -1964,7 +2009,10 @@ void OpenGLRenderer::BeginScene2D() {
 }
 
 void OpenGLRenderer::DrawQuad2D(Ptr<GraphicsImage> texture, const Recti &srcRect, const Recti &dstRect, Color color) {
-    assert(texture);
+    if (!texture) { // MM8 leaves the images it has no counterpart for unloaded, and their draw calls stay in place.
+        MM_TRACE("Null texture passed to DrawQuad2D");
+        return;
+    }
 
     if (engine->callObserver)
         engine->callObserver->notify(CALL_DRAW_2D_TEXTURE, texture->name());
@@ -2239,7 +2287,7 @@ void OpenGLRenderer::DrawOutdoorBuildings() {
 
     if (!_outbuildBuffers[0]) {
         // initialize vertex vectors
-        for (int i = 0; i < 16; i++)
+        for (int i = 0; i < 32; i++)
             _outbuildVertices[i].clear();
 
         // reserve first 7 layers for water tiles in unit 0
@@ -2329,12 +2377,12 @@ void OpenGLRenderer::DrawOutdoorBuildings() {
                                 int height = thistexture->height();
                                 // check size to see what unit it needs
                                 int i;
-                                for (i = 0; i < 16; i++)
+                                for (i = 0; i < 32; i++)
                                     if ((outbuildtexturewidths[i] == width && outbuildtextureheights[i] == height) || outbuildtexturewidths[i] == 0)
                                         break;
 
-                                if (i == 16) {
-                                    MM_WARNING("Texture unit full - draw building!");
+                                if (i == 32) {
+                                    MM_WARNING("Texture unit full - draw building! tex={} {}x{}", texname, width, height);
                                     texunit = 0;
                                     texlayer = 0;
                                 } else {
@@ -2378,7 +2426,7 @@ void OpenGLRenderer::DrawOutdoorBuildings() {
             //}
         }
 
-        for (int l = 0; l < 16; l++) {
+        for (int l = 0; l < 32; l++) {
             _outbuildBuffers[l].reset(GL_DYNAMIC_DRAW,
                 &ShaderVertex::pos, &ShaderVertex::texuv, &ShaderVertex::texturelayer,
                 &ShaderVertex::normal, &ShaderVertex::attribs);
@@ -2387,7 +2435,7 @@ void OpenGLRenderer::DrawOutdoorBuildings() {
         // texture set up
 
         // loop over all units
-        for (int unit = 0; unit < 16; unit++) {
+        for (int unit = 0; unit < 32; unit++) {
             assert(numoutbuildtexloaded[unit] <= 256);
             // skip if textures are empty
             if (numoutbuildtexloaded[unit] == 0) continue;
@@ -2445,7 +2493,7 @@ void OpenGLRenderer::DrawOutdoorBuildings() {
     }
 
         // else update verts - blank store
-        for (int i = 0; i < 16; i++)
+        for (int i = 0; i < 32; i++)
             _outbuildVertices[i].clear();
 
         for (BSPModel &model : pOutdoor->pBModels) {
@@ -2543,7 +2591,7 @@ void OpenGLRenderer::DrawOutdoorBuildings() {
             }
         }
 
-        for (int l = 0; l < 16; l++)
+        for (int l = 0; l < 32; l++)
             if (!_outbuildVertices[l].empty())
                 _outbuildBuffers[l].update(_outbuildVertices[l]);
 
@@ -2642,7 +2690,7 @@ void OpenGLRenderer::DrawOutdoorBuildings() {
 
     glActiveTexture(GL_TEXTURE0);
 
-    for (int unit = 0; unit < 16; unit++) {
+    for (int unit = 0; unit < 32; unit++) {
         // skip if textures are empty
         //if (numoutbuildtexloaded[unit] > 0) {
             if (unit == 1)
@@ -2742,7 +2790,7 @@ void OpenGLRenderer::DrawIndoorFaces() {
 
 
                 // kludge for getting lights in  visible sectors
-                pStationaryLightsStack->pLights[lightscnt].uSectorID = pIndoor->GetSector(test.vPosition);
+                pStationaryLightsStack->pLights[lightscnt].uSectorID = pIndoor->GetSector(test.vSectorLookupPosition);
 
                 if (pStationaryLightsStack->pLights[lightscnt].uSectorID == 0) cntnosect++;
             }
@@ -3566,7 +3614,7 @@ void OpenGLRenderer::ReleaseTerrain() {
 
     outbuildtexmap.clear();
 
-    for (int i = 0; i < 16; i++) {
+    for (int i = 0; i < 32; i++) {
         glDeleteTextures(1, &outbuildtextures[i]);
         outbuildtextures[i] = 0;
         numoutbuildtexloaded[i] = 0;

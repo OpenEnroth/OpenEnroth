@@ -15,6 +15,8 @@
 #include "Engine/Graphics/ParticleEngine.h"
 #include "Engine/Graphics/RenderEntities.h"
 
+#include "Utility/Flags.h"
+
 class Actor;
 class GraphicsImage;
 class GameConfig;
@@ -28,6 +30,18 @@ struct Decal;
 struct nk_context;
 
 bool PauseGameDrawing();
+
+/**
+ * Render surfaces whose draw call can be suppressed for one frame. Rendering a frame twice, with and
+ * without a surface, gives that surface's pixels. The mask is empty outside tests.
+ */
+enum class RenderSurface {
+    RENDER_SURFACE_OUTDOOR_TERRAIN = 0x1,
+    RENDER_SURFACE_SPRITE_LAYER = 0x2,
+};
+using enum RenderSurface;
+MM_DECLARE_FLAGS(RenderSurfaces, RenderSurface)
+MM_DECLARE_OPERATORS_FOR_FLAGS(RenderSurfaces)
 
 /**
  * Colors for the up to four color channels of a font texture. Unused channels default to transparent black.
@@ -180,7 +194,24 @@ class Renderer {
      */
     const std::unique_ptr<GraphicsImage> &solidFillTexture();
 
+    /**
+     * Suppresses the listed surfaces' draw calls until the mask is cleared again. Default is an
+     * empty mask, i.e. no suppression - see `RenderSurface` for what this is for.
+     *
+     * @param surfaces                  Surfaces to skip drawing.
+     */
+    void setSurfaceSuppression(RenderSurfaces surfaces) {
+        _suppressedSurfaces = surfaces;
+    }
+
+    [[nodiscard]] RenderSurfaces surfaceSuppression() const {
+        return _suppressedSurfaces;
+    }
+
  protected:
+    [[nodiscard]] bool isSurfaceSuppressed(RenderSurface surface) const {
+        return !!(_suppressedSurfaces & surface);
+    }
     void releaseSolidFillTexture();
 
     DecalBuilder *decal_builder = nullptr;
@@ -190,6 +221,7 @@ class Renderer {
 
  private:
     std::unique_ptr<GraphicsImage> _solidFillTexture;
+    RenderSurfaces _suppressedSurfaces;
 };
 
 extern Renderer *render;

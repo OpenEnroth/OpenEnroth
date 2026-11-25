@@ -11,7 +11,9 @@
 
 #include "Utility/System/Fs.h"
 
-static const std::vector<std::string_view> globalValidateList = {
+// MM7's data folder layout. Also used as the default for any data path that isn't detected as MM8, see
+// `detectGameType` below.
+static const std::vector<std::string_view> mm7ValidateList = {
     {"anims/magic7.vid"},
     {"anims/might7.vid"},
     {"data/bitmaps.lod"},
@@ -22,6 +24,17 @@ static const std::vector<std::string_view> globalValidateList = {
     {"data/icons.lod"},
     {"data/sprites.lod"},
     {"sounds/audio.snd"}
+};
+
+// MM8's data folder layout differs from MM7's: videos are named differently, and there's no `events.lod` /
+// `sounds` dir in a vanilla install.
+static const std::vector<std::string_view> mm8ValidateList = {
+    {"anims/magicdod.vid"},
+    {"anims/mightdod.vid"},
+    {"data/bitmaps.lod"},
+    {"data/games.lod"},
+    {"data/icons.lod"},
+    {"data/sprites.lod"}
 };
 
 struct PathResolutionConfig {
@@ -123,11 +136,27 @@ std::vector<Path> resolveMm8Paths(Environment *environment) {
     return resolvePaths(environment, mm8Config);
 }
 
-bool validateMm7Path(PathView dataPath, std::string *missingFile) {
+// Note: `data/games.lod` is not a useful signal here, even though it's present in every MM6/7/8 install and its
+// LOD header carries a version tag (see `LodVersion`) - that tag identifies the "default new game" save-state
+// format, which is `LOD_VERSION_MM6_GAME` for all three games, not the content format of the install. Detect
+// the game version from a file that's actually unique to each game's layout instead.
+GameType detectGameType(FileSystem &fs) {
+    return fs.exists("anims/magicdod.vid") ? GAME_TYPE_MM8 : GAME_TYPE_MM7;
+}
+
+GameType detectGameType(PathView dataPath) {
+    NativeFileSystem dirFs(dataPath);
+    LowercaseFileSystem lowerFs(&dirFs);
+    return detectGameType(lowerFs);
+}
+
+bool validateDataPath(PathView dataPath, std::string *missingFile) {
     NativeFileSystem dirFs(dataPath);
     LowercaseFileSystem lowerFs(&dirFs);
 
-    for (std::string_view entry : globalValidateList) {
+    const std::vector<std::string_view> &validateList = detectGameType(lowerFs) == GAME_TYPE_MM8 ? mm8ValidateList : mm7ValidateList;
+
+    for (std::string_view entry : validateList) {
         if (!lowerFs.exists(entry)) {
             *missingFile = entry;
             return false;

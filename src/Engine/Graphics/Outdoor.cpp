@@ -10,6 +10,7 @@
 #include "Engine/Engine.h"
 #include "Engine/EngineGlobals.h"
 #include "Engine/AssetsManager.h"
+#include "Engine/GameType.h"
 #include "Engine/Evt/Processor.h"
 #include "Engine/Graphics/Camera.h"
 #include "Engine/Graphics/Collisions.h"
@@ -31,6 +32,7 @@
 #include "Engine/Objects/MonsterEnumFunctions.h"
 #include "Engine/Party.h"
 #include "Engine/PartyPlacement.h"
+#include "Engine/PartyStep.h"
 #include "Engine/Snapshots/CompositeSnapshots.h"
 #include "Engine/SpellFxRenderer.h"
 #include "Engine/Tables/ItemTable.h"
@@ -121,6 +123,39 @@ static constexpr IndexedArray<std::array<MapStartPoint, 4>, MAP_EMERALD_ISLAND, 
     {MAP_TATALIA,               {MAP_START_POINT_PARTY, MAP_START_POINT_PARTY, MAP_START_POINT_WEST,  MAP_START_POINT_PARTY}},
     {MAP_AVLEE,                 {MAP_START_POINT_PARTY, MAP_START_POINT_NORTH, MAP_START_POINT_NORTH, MAP_START_POINT_PARTY}},
     {MAP_SHOALS,                {MAP_START_POINT_PARTY, MAP_START_POINT_PARTY, MAP_START_POINT_PARTY, MAP_START_POINT_PARTY}},
+};
+
+// MM8's map-edge foot-travel table. The adjacency is from community wikis. The day count and the
+// arrival corners are unverified conventions:
+//   - `kMm8FootTravelDaysUnsourced`: one flat day-count for every MM8 edge crossing.
+//   - `kMm8FootTravelArrivalByDirection`: the destination's start point on the OPPOSITE edge from
+//     the one the party left by (e.g. leaving a map's east edge arrives at the destination's west
+//     start point) - the same shape MM7's own `footTravelArrivalPoints` rows show throughout.
+// MM8's "plane of X" maps (85-88) sit inside this IndexedArray's contiguous id range but aren't
+// real outdoor maps (see `isMapOutdoor`, `MapEnumFunctions.h`) - every direction is MAP_INVALID for
+// them, so they're unreachable by construction even though the array must name them.
+inline constexpr int kMm8FootTravelDaysUnsourced = 1;
+
+static constexpr std::array<MapStartPoint, 4> kMm8FootTravelArrivalByDirection = {
+    // north      south      east       west   <- edge the party LEFT by
+    MAP_START_POINT_SOUTH, MAP_START_POINT_NORTH, MAP_START_POINT_WEST, MAP_START_POINT_EAST,
+};
+
+static constexpr IndexedArray<std::array<MapId, 4>, MAP_MM8_DAGGER_WOUND_ISLAND, MAP_MM8_REGNA> footTravelDestinationsMm8 = {
+    // from                              north                    south                     east                      west
+    {MAP_MM8_DAGGER_WOUND_ISLAND,       {MAP_INVALID,             MAP_INVALID,              MAP_INVALID,              MAP_INVALID}},
+    {MAP_MM8_RAVENSHORE,                {MAP_MM8_ALVAR,           MAP_INVALID,              MAP_MM8_SHADOWSPIRE,      MAP_MM8_GARROTE_GORGE}},
+    {MAP_MM8_ALVAR,                     {MAP_INVALID,             MAP_MM8_RAVENSHORE,       MAP_MM8_IRONSAND_DESERT,  MAP_MM8_MURMURWOODS}},
+    {MAP_MM8_IRONSAND_DESERT,           {MAP_INVALID,             MAP_MM8_SHADOWSPIRE,      MAP_INVALID,              MAP_MM8_ALVAR}},
+    {MAP_MM8_GARROTE_GORGE,             {MAP_MM8_MURMURWOODS,     MAP_MM8_RAVAGE_ROAMING,   MAP_MM8_RAVENSHORE,       MAP_INVALID}},
+    {MAP_MM8_SHADOWSPIRE,               {MAP_MM8_IRONSAND_DESERT, MAP_INVALID,              MAP_INVALID,              MAP_MM8_RAVENSHORE}},
+    {MAP_MM8_MURMURWOODS,               {MAP_INVALID,             MAP_MM8_GARROTE_GORGE,    MAP_MM8_ALVAR,            MAP_INVALID}},
+    {MAP_MM8_RAVAGE_ROAMING,            {MAP_MM8_GARROTE_GORGE,   MAP_INVALID,              MAP_INVALID,              MAP_INVALID}},
+    {MAP_MM8_PLANE_OF_AIR,              {MAP_INVALID,             MAP_INVALID,              MAP_INVALID,              MAP_INVALID}},
+    {MAP_MM8_PLANE_OF_EARTH,            {MAP_INVALID,             MAP_INVALID,              MAP_INVALID,              MAP_INVALID}},
+    {MAP_MM8_PLANE_OF_FIRE,             {MAP_INVALID,             MAP_INVALID,              MAP_INVALID,              MAP_INVALID}},
+    {MAP_MM8_PLANE_OF_WATER,            {MAP_INVALID,             MAP_INVALID,              MAP_INVALID,              MAP_INVALID}},
+    {MAP_MM8_REGNA,                     {MAP_INVALID,             MAP_INVALID,              MAP_INVALID,              MAP_INVALID}},
 };
 
 struct FogProbabilityTableEntry {
@@ -314,6 +349,16 @@ MapDestination OutdoorLocation::getTravelDestination(int partyX, int partyY) {
         pParty->uFlags &= ~(PARTY_FLAG_BURNING | PARTY_FLAG_STANDING_ON_WATER | PARTY_FLAG_WATER_DAMAGE);
         return MapDestination(MAP_AVLEE, MAP_START_POINT_WEST);
     }
+
+    if (currentMap >= MAP_MM8_DAGGER_WOUND_ISLAND && currentMap <= MAP_MM8_REGNA) {
+        destinationMap = footTravelDestinationsMm8[currentMap][direction];
+        if (destinationMap == MAP_INVALID)
+            return {};
+
+        uDefaultTravelTime_ByFoot = kMm8FootTravelDaysUnsourced;
+        return MapDestination(destinationMap, kMm8FootTravelArrivalByDirection[direction]);
+    }
+
     destinationMap = footTravelDestinations[currentMap][direction];
     if (destinationMap == MAP_INVALID)
         return {};
@@ -322,6 +367,23 @@ MapDestination OutdoorLocation::getTravelDestination(int partyX, int partyY) {
 
     uDefaultTravelTime_ByFoot = footTravelTimes[currentMap][direction];
     return MapDestination(destinationMap, footTravelArrivalPoints[currentMap][direction]);
+}
+
+int OutdoorLocation::footTravelEdgeDirectionTo(MapId fromMap, MapId toMap) {
+    if (!isMapOutdoor(fromMap))
+        return -1;
+
+    if (fromMap >= MAP_MM8_DAGGER_WOUND_ISLAND && fromMap <= MAP_MM8_REGNA) {
+        for (int direction = 0; direction < 4; direction++)
+            if (footTravelDestinationsMm8[fromMap][direction] == toMap)
+                return direction;
+        return -1;
+    }
+
+    for (int direction = 0; direction < 4; direction++)
+        if (footTravelDestinations[fromMap][direction] == toMap)
+            return direction;
+    return -1;
 }
 
 //----- (004892E6) --------------------------------------------------------
@@ -452,72 +514,109 @@ void OutdoorLocation::Load(std::string_view filename, int days_played, int respa
     std::string odm_filename = std::string(filename);
     odm_filename.replace(odm_filename.length() - 4, 4, ".odm");
 
-    OutdoorLocation_MM7 location;
-    deserialize(lod::decodeMaybeCompressed(pGames_LOD->read(odm_filename)), &location); // read throws.
-    reconstruct(location, this);
-
-    // ****************.ddm file*********************//
-
     std::string ddm_filename = fmt::format("{}.ddm", filename.substr(0, filename.length() - 4));
 
-    bool respawnInitial = false; // Perform initial location respawn?
-    bool respawnTimed = false; // Perform timed location respawn?
-    OutdoorDelta_MM7 delta;
-    if (Blob blob = lod::decodeMaybeCompressed(pMapDeltas.at(ddm_filename))) {
-        try {
-            deserialize(blob, &delta, tags::context(location));
+    if (gameType() == GAME_TYPE_MM8) {
+        // MM8's outdoor terrain snapshot (`.odm`) has an extra `attributes` field vs MM7's, see
+        // `OutdoorLocation_MM8`.
+        OutdoorLocation_MM8 location;
+        deserialize(lod::decodeMaybeCompressed(pGames_LOD->read(odm_filename)), &location); // read throws.
+        reconstruct(location, this);
 
-            size_t totalFaces = 0;
-            for (BSPModel &model : pBModels)
-                totalFaces += model.faces.size();
-
-            // Level was changed externally and we have a save there? Don't crash, just respawn.
-            if (delta.header.totalFacesCount && delta.header.bmodelCount && delta.header.decorationCount &&
-                (delta.header.totalFacesCount != totalFaces || delta.header.bmodelCount != pBModels.size() || delta.header.decorationCount != pLevelDecorations.size()))
-                respawnInitial = true;
-
-            // Entering the level for the 1st time?
-            if (delta.header.info.lastRespawnDay == 0)
-                respawnInitial = true;
-
-            if (engineFlags & ENGINE_LOADING_SAVEGAME)
-                respawn_interval_days = 0x1BAF800;
-
-            if (!respawnInitial && days_played - delta.header.info.lastRespawnDay >= respawn_interval_days)
-                respawnTimed = true;
-        } catch (const Exception &e) {
-            MM_ERROR("Failed to load '{}', respawning location: {}", ddm_filename, e.what());
-            respawnInitial = true;
+        // MM8's outdoor delta (.ddm), see OutdoorDelta_MM8. A new game pre-seeds pMapDeltas with an unspawned copy of
+        // every map (lastRespawnDay == 0), so the delta is trusted only after one real respawn.
+        // A played .ddm can carry trailing bytes past mapNotes that OutdoorDelta_MM8 doesn't model. Fall back to a
+        // fresh respawn instead of crashing.
+        OutdoorDelta_MM8 delta;
+        auto it = pMapDeltas.find(ddm_filename);
+        bool usedPersistedDelta = false;
+        if (it != pMapDeltas.end()) {
+            try {
+                deserialize(lod::decodeMaybeCompressed(it->second), &delta, tags::context(location));
+                usedPersistedDelta = delta.header.info.lastRespawnDay != 0;
+            } catch (const Exception &e) {
+                MM_ERROR("Failed to load '{}', respawning location: {}", ddm_filename, e.what());
+            }
         }
-    }
+        if (usedPersistedDelta) {
+            *outdoors_was_respawned = false;
+        } else {
+            deserialize(lod::decodeMaybeCompressed(pGames_LOD->read(ddm_filename)), &delta, tags::context(location));
+            *outdoors_was_respawned = true;
+        }
+        reconstruct(delta, this);
 
-    assert(respawnInitial + respawnTimed <= 1);
-
-    if (respawnInitial) {
-        deserialize(lod::decodeMaybeCompressed(pGames_LOD->read(ddm_filename)), &delta, tags::context(location));
-        *outdoors_was_respawned = true;
-    } else if (respawnTimed) {
-        auto header = delta.header;
-        auto fullyRevealedCells = delta.fullyRevealedCells;
-        auto partiallyRevealedCells = delta.partiallyRevealedCells;
-        deserialize(lod::decodeMaybeCompressed(pGames_LOD->read(ddm_filename)), &delta, tags::context(location));
-        delta.header = header;
-        delta.fullyRevealedCells = fullyRevealedCells;
-        delta.partiallyRevealedCells = partiallyRevealedCells;
-        *outdoors_was_respawned = true;
+        // Original .ddm files carry a non-zero lastRespawnDay. Set it here too, so a delta written by this engine is trusted on reload.
+        if (*outdoors_was_respawned)
+            ddm.lastRespawnDay = days_played;
     } else {
-        *outdoors_was_respawned = false;
+        OutdoorLocation_MM7 location;
+        deserialize(lod::decodeMaybeCompressed(pGames_LOD->read(odm_filename)), &location); // read throws.
+        reconstruct(location, this);
+
+        bool respawnInitial = false; // Perform initial location respawn?
+        bool respawnTimed = false; // Perform timed location respawn?
+        OutdoorDelta_MM7 delta;
+        if (Blob blob = lod::decodeMaybeCompressed(pMapDeltas.at(ddm_filename))) {
+            try {
+                deserialize(blob, &delta, tags::context(location));
+
+                size_t totalFaces = 0;
+                for (BSPModel &model : pBModels)
+                    totalFaces += model.faces.size();
+
+                // Level was changed externally and we have a save there? Don't crash, just respawn.
+                if (delta.header.totalFacesCount && delta.header.bmodelCount && delta.header.decorationCount &&
+                    (delta.header.totalFacesCount != totalFaces || delta.header.bmodelCount != pBModels.size() || delta.header.decorationCount != pLevelDecorations.size()))
+                    respawnInitial = true;
+
+                // Entering the level for the 1st time?
+                if (delta.header.info.lastRespawnDay == 0)
+                    respawnInitial = true;
+
+                if (engineFlags & ENGINE_LOADING_SAVEGAME)
+                    respawn_interval_days = 0x1BAF800;
+
+                if (!respawnInitial && days_played - delta.header.info.lastRespawnDay >= respawn_interval_days)
+                    respawnTimed = true;
+            } catch (const Exception &e) {
+                MM_ERROR("Failed to load '{}', respawning location: {}", ddm_filename, e.what());
+                respawnInitial = true;
+            }
+        }
+
+        assert(respawnInitial + respawnTimed <= 1);
+
+        if (respawnInitial) {
+            deserialize(lod::decodeMaybeCompressed(pGames_LOD->read(ddm_filename)), &delta, tags::context(location));
+            *outdoors_was_respawned = true;
+        } else if (respawnTimed) {
+            auto header = delta.header;
+            auto fullyRevealedCells = delta.fullyRevealedCells;
+            auto partiallyRevealedCells = delta.partiallyRevealedCells;
+            deserialize(lod::decodeMaybeCompressed(pGames_LOD->read(ddm_filename)), &delta, tags::context(location));
+            delta.header = header;
+            delta.fullyRevealedCells = fullyRevealedCells;
+            delta.partiallyRevealedCells = partiallyRevealedCells;
+            *outdoors_was_respawned = true;
+        } else {
+            *outdoors_was_respawned = false;
+        }
+
+        reconstruct(delta, this);
+
+        if (respawnTimed || respawnInitial)
+            ddm.lastRespawnDay = days_played;
+        if (respawnTimed)
+            ddm.respawnCount++;
     }
-
-    reconstruct(delta, this);
-
-    if (respawnTimed || respawnInitial)
-        ddm.lastRespawnDay = days_played;
-    if (respawnTimed)
-        ddm.respawnCount++;
 
     // LABEL_150:
-    if (pWeather->bRenderSnow) {  // Ritor1: it's include for snow
+    if (gameType() == GAME_TYPE_MM8) {
+        // MM8's outdoor maps name no sky texture, and its bitmaps.lod lacks most of the MM7 names cycled below.
+        // MM8's world is permanently under a crimson sky, sunsetclouds is the shipped texture matching it.
+        weather.skyTextureName = "sunsetclouds";
+    } else if (pWeather->bRenderSnow) {  // Ritor1: it's include for snow
         weather.skyTextureName = "sky19";
     } else if (lastVisitTime) {
         if (lastVisitTime.toDays() % 28 != pParty->uCurrentDayOfMonth) {
@@ -867,8 +966,12 @@ void ODM_UpdateUserInputAndOther() {
 void OutdoorLocation::LoadActualSkyFrame() {
     assets->evict(std::move(rest_ui_sky_frame_current));
 
-    rest_ui_sky_frame_current = assets->getIcon(
-        fmt::format("TERRA{:03}", pParty->uCurrentMinute / 6 + 10 * pParty->uCurrentHour));
+    // The sky-frame names differ per game - MM7's icons.lod pads the index to three
+    // digits ("terra099"), MM8's to four ("terra0091", 244 frames terra0000..terra0243).
+    int skyFrameIndex = pParty->uCurrentMinute / 6 + 10 * pParty->uCurrentHour;
+    rest_ui_sky_frame_current = assets->getImage_ColorKey(
+        gameType() == GAME_TYPE_MM8 ? fmt::format("TERRA{:04}", skyFrameIndex)
+                                    : fmt::format("TERRA{:03}", skyFrameIndex));
 }
 
 OutdoorLocation::OutdoorLocation() {
@@ -902,6 +1005,8 @@ void ODM_ProcessPartyActions() {
             pParty->pCharacters[pParty->pPartyBuffs[PARTY_BUFF_WATER_WALK].caster].mana <= 0)
             waterWalkActive = false;
     }
+    if (pParty->LevitateActive())
+        waterWalkActive = true; // hovers over water like Water Walk, and the mana drain keys off the Water Walk buff alone
 
     int floorFaceId = -1;
     bool partyIsOnWater = false;
@@ -948,7 +1053,7 @@ void ODM_ProcessPartyActions() {
     if (!partyNotTouchingFloor) {
         if (pParty->floor_face_id != floorFaceId && floorFaceId != -1) {
             const BLVFace &face = pOutdoor->faces[floorFaceId];
-            if (face.attributes & FACE_PRESSURE_PLATE)
+            if (face.attributes & FACE_PRESSURE_PLATE && !pParty->LevitateActive())
                 triggerID = face.eventId;
         }
         pParty->floor_face_id = floorFaceId;
@@ -1164,7 +1269,8 @@ void ODM_ProcessPartyActions() {
                     // to avoid jump hesitancy when moving downhill
                     (!partyNotTouchingFloor || (partyCloseToGround && partyInputSpeed.z <= 0)) &&
                     pParty->jump_strength &&
-                    !(partyIsOnWater && partyNotOnModel && !waterWalkActive) &&
+                    !(gameType() == GAME_TYPE_MM8 ? bool(pParty->uFlags & PARTY_FLAG_WATER_DAMAGE) :
+                                                    (partyIsOnWater && partyNotOnModel && !waterWalkActive)) &&
                     !(pParty->uFlags & PARTY_FLAG_BURNING)) {
                     partyNotTouchingFloor = true;
                     partyInputSpeed.z += pParty->jump_strength * 96.0f;
@@ -1258,11 +1364,7 @@ void ODM_ProcessPartyActions() {
                 pParty->pos.z - currentGroundLevel > 1000 &&
                 !pParty->FeatherFallActive() &&
                 !(pParty->uFlags & (PARTY_FLAG_LANDING | PARTY_FLAG_JUMPING))) {  // falling scream
-                for (int i = 0; i < 4; ++i)
-                    if (!pParty->pCharacters[i].wearsEnchantedItem(ITEM_ENCHANTMENT_OF_FEATHER_FALLING) &&
-                        !pParty->pCharacters[i].wearsItem(ITEM_ARTIFACT_HERMES_SANDALS) &&
-                        pParty->pCharacters[i].CanAct())
-                        pParty->pCharacters[i].playReaction(SPEECH_FALLING);
+                partyMotionFallingScream();
             }
         }
     } else {
@@ -1276,6 +1378,7 @@ void ODM_ProcessPartyActions() {
     // horizontal
     partyInputSpeed.z = 0;
     ProcessPartyCollisionsODM(&partyNewPos, &partyInputSpeed, &floorFaceId, &partyNotOnModel, &partyHasHitModel, &triggerID);
+    collision_state.horizontalPid = collision_state.pid;
     // vertical - only when horizonal motion hasnt caused height gain
     if (partyNewPos.z <= pParty->pos.z) {
         partyInputSpeed = Vec3f(0, 0, savedZSpeed);
@@ -1343,11 +1446,13 @@ void ODM_ProcessPartyActions() {
         if (waterMoveY || waterMoveX) {
             if (waterWalkActive) {
                 pParty->uFlags &= ~PARTY_FLAG_STANDING_ON_WATER;
-                engine->_persistentVariables.decorVars[20 * pParty->pPartyBuffs[PARTY_BUFF_WATER_WALK].overlayId + 119] |= 1;
+                if (pParty->WaterWalkActive())  // the overlay belongs to the Water Walk buff, a levitating party has none
+                    engine->_persistentVariables.decorVars[20 * pParty->pPartyBuffs[PARTY_BUFF_WATER_WALK].overlayId + 119] |= 1;
                 if (!partyNewXOnLand || !partyNewYOnLand) {
                     if (!pParty->bFlying) {
                         pParty->uFlags |= PARTY_FLAG_STANDING_ON_WATER;
-                        engine->_persistentVariables.decorVars[20 * pParty->pPartyBuffs[PARTY_BUFF_WATER_WALK].overlayId + 119] &= 0xFFFE;
+                        if (pParty->WaterWalkActive())
+                            engine->_persistentVariables.decorVars[20 * pParty->pPartyBuffs[PARTY_BUFF_WATER_WALK].overlayId + 119] &= 0xFFFE;
                     }
                 }
             }
@@ -1359,7 +1464,7 @@ void ODM_ProcessPartyActions() {
 
         pParty->uFlags &= ~(PARTY_FLAG_BURNING | PARTY_FLAG_WATER_DAMAGE);
 
-        if (partyDrowningFlag) {
+        if (partyDrowningFlag && !pParty->LevitateActive()) {
             int pTerrainHeight = pOutdoor->pTerrain.heightByPos(pParty->pos);
             if (pParty->pos.z <= pTerrainHeight + 1)
                 pParty->uFlags |= PARTY_FLAG_WATER_DAMAGE;
@@ -1379,7 +1484,7 @@ void ODM_ProcessPartyActions() {
 
     // Falling damage
     if (!triggerID ||
-        (runEvent(EvtContext(EVT_SOURCE_MAP, triggerID)), pParty->pos.x == partyNewPos.x) &&
+        (partyMotionFaceEvent(triggerID), pParty->pos.x == partyNewPos.x) &&
         pParty->pos.y == partyNewPos.y && pParty->pos.z == partyNewPos.z) {
         if (((pParty->pos.z <= newGroundLevel || partyHasHitModel) && savedZSpeed < 0)) {
             pParty->velocity.z = 0;
@@ -1387,8 +1492,7 @@ void ODM_ProcessPartyActions() {
             if (partyIsOnWater && savedZSpeed < -400.0f) { // Require that we have a bit of impact into water surface to cause a splash
                 // -400 chosen so that it is just under z impact speed from standing jump
                 // SpriteObject::createSplashObject(partyNewPos);
-                // Party can never see its own splashes so just play the sound - only one splash at a time for party
-                pAudioPlayer->playSound(SOUND_splash, SOUND_MODE_EXCLUSIVE, Pid::character(0));
+                partyMotionSplash();
             }
 
             if (!partyHasHitModel)
@@ -1399,7 +1503,7 @@ void ODM_ProcessPartyActions() {
                 if (pParty->uFlags & (PARTY_FLAG_LANDING | PARTY_FLAG_JUMPING)) {
                     pParty->uFlags &= ~(PARTY_FLAG_LANDING | PARTY_FLAG_JUMPING);
                 } else {
-                    pParty->giveFallDamage(pParty->uFallStartZ - pParty->pos.z);
+                    partyMotionFallDamage(pParty->uFallStartZ - pParty->pos.z);
                 }
             }
             pParty->uFallStartZ = partyNewPos.z;
@@ -1411,7 +1515,7 @@ void ODM_ProcessPartyActions() {
     }
 
     // walking / running sounds ------------------------
-    if (engine->config->settings.WalkSound.value()) {
+    if (engine->config->settings.WalkSound.value() && !partyMotionDryRun()) {
         bool canStartNewSound = !pAudioPlayer->isWalkingSoundPlays();
 
         // Start sound processing only when actual movement is performed to avoid stopping sounds on high FPS
@@ -1706,7 +1810,7 @@ void UpdateActors_ODM() {
  * @offset 0x47A384
  */
 static void loadAndPrepareODMInternal(MapId mapid) {
-    assert(isMapOutdoor(mapid));
+    assert(gameType() == GAME_TYPE_MM8 || isMapOutdoor(mapid)); // MM8 map ids are outside the MM7 ranges, see DoPrepareWorld.
 
     MapData *mapData;
     bool outdoor_was_respawned;

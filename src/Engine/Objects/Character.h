@@ -146,6 +146,8 @@ class Character {
 
     int GetHealth() const { return this->health; }
     int GetMaxHealth() const;
+    // `GetMaxHealth()` without the test-only health bonus. Percent-of-max effects (lava, drowning) use this.
+    int GetRetailMaxHealth() const { return GetMaxHealth() - _survivableHealthBonus; }
     int GetMana() const { return this->mana; }
     int GetMaxMana() const;
 
@@ -314,6 +316,7 @@ class Character {
     int characterIndex();
 
     static void _42ECB5_CharacterAttacksActor();
+    static inline Pid attackTargetOverride; // Set by scripted callers to attack this pid instead of whatever is under the cursor.
     static void _42FA66_do_explosive_impact(Vec3f pos, int a4, int16_t a5, int actchar);
     void cleanupBeacons();
     bool setBeacon(int index, Duration duration);
@@ -336,6 +339,13 @@ class Character {
     CharacterConditions conditions;
     uint64_t experience = 0;
     std::string name;
+
+    /**
+     * MM8 only: the `roster.txt` row this character was recruited from (1-based, matching the
+     * file's own row index), or 0 if this character isn't roster-backed (the champion, or any MM7
+     * character). Set by `characterFromRosterRow()`.
+     */
+    int rosterId = 0;
     Sex uSex = SEX_MALE;
     Class classType = CLASS_KNIGHT;
     uint8_t uCurrentFace = 0;
@@ -389,6 +399,24 @@ class Character {
     char _ranged_atk_bonus = 0;
     char _ranged_dmg_bonus = 0;
     char uFullHealthBonus = 0;
+    int _survivableHealthBonus = 0;  // Test-only, not saved. `uFullHealthBonus` is a saved int8 and too small for it.
+    // Test-only, not saved. When `_survivableConditions` is set, `SetCondition` refuses every condition in
+    // `isSurvivableBlocked` (blockable or not) and counts it, and `receiveDamage` records each health<1 moment.
+    bool _survivableConditions = false;
+    int _blockedConditionCounts[static_cast<int>(CONDITION_LAST) + 1] = {};
+    int _wouldHaveEnded = 0;            // health<1 moments seen under `_survivableConditions`
+    int _lastWouldHaveEndedHealth = 0;  // health at the latest such moment
+    int64_t _hpLost = 0;                // sum of damage actually subtracted by `receiveDamage`
+    int _burnTicks = 0;                 // lava ticks charged to this member (test-only, not saved)
+    // Test-only, not saved. `_lavaHp` = `GetRetailMaxHealth()` - hp the lava ticks subtracted + heals received (capped
+    // at that max after each heal). Only meaningful while `_survivableConditions` is set. `_ledgerHealth` is the health
+    // at the last heal sample (`_494035_...` samples it).
+    int64_t _lavaHp = 0;
+    int64_t _lavaDamage = 0;     // hp the lava ticks actually subtracted
+    int64_t _drownDamage = 0;    // hp the drowning ticks actually subtracted (monster_damage = _hpLost - lava - drown)
+    int _ledgerHealth = 0;
+    int _ledgerRetail = 0;  // the `GetRetailMaxHealth()` value `_lavaHp` was armed at. A change of that value re-arms it.
+    static bool isSurvivableBlocked(Condition condition);
     char _health_related = 0;
     char uFullManaBonus = 0;
     char _mana_related = 0;
