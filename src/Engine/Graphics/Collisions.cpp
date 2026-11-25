@@ -109,8 +109,8 @@ static bool CollideSphereWithFace(BLVFace* face, const Vec3f& pos, float radius,
     // face normal should either be negative or close to zero. IE never collide with rear of face
     assert(dir_normal_projection < COLLISIONS_EPS);
 
-    if (dir_normal_projection > 0.0f)
-        return false; // Hitting a backface.
+    if (dir_normal_projection > 0.0f) // Hitting backface.
+        return false;
 
     float center_face_distance = face->facePlane.signedDistanceTo(pos);
     float move_distance = 0.0f;

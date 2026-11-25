@@ -3403,8 +3403,8 @@ bool OpenGLRenderer::Reinitialize(bool firstInit) {
     glEnable(GL_DEPTH_TEST);
     glDepthFunc(GL_LEQUAL);
 
-    if (firstInit)
-        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); // Clearing on window resize flashes black.
+    if (firstInit) // Clear only on first init as it will introduce brief black artifacts on window resize.
+        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
     glDeleteFramebuffers(1, &framebuffer);
     glDeleteTextures(2, framebufferTextures);

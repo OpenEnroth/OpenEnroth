@@ -1880,8 +1880,8 @@ void DrawCardAnimation(int animation_stage) {
 
         // 15 -> 6 hold and play card
         if (animation_stage > 5) {
-            if (animation_stage == 15)
-                ApplyCardToPlayer(current_player_num, played_card_id); // The card has arrived at the center.
+            if (animation_stage == 15) // Card arrived at center, execute effects.
+                ApplyCardToPlayer(current_player_num, played_card_id);
 
             // draw in centre
             pArcomageGame->GetCardRect(played_card_id, &pSrcXYZW);
