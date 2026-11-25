@@ -2070,10 +2070,8 @@ void Inventory_ItemPopupAndAlchemy() {
                     alchemySkill.mastery() <= MASTERY_EXPERT) {
                 damage_level = 3;
             }
-            if (potionID >= ITEM_POTION_STONE_TO_FLESH &&
-                    alchemySkill.mastery() <= MASTERY_MASTER) {
+            if (potionID >= ITEM_POTION_STONE_TO_FLESH && alchemySkill.mastery() <= MASTERY_MASTER)
                 damage_level = 4;
-            }
         }
 
         if (damage_level > 0) {

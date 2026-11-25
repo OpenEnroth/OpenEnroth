@@ -984,10 +984,8 @@ void CastSpellInfoHelpers::castSpell() {
                         if (pParty->bTurnBasedModeOn)
                             pSpellSprite.uAttributes |= SPRITE_HALT_TURN_BASED;
                         int spell_speed = pObjectTable->pObjects[pSpellSprite.uObjectDescID].uSpeed;
-                        if (pSpellSprite.Create(yaw, pitch, spell_speed, 0) != -1 &&
-                                pParty->bTurnBasedModeOn) {
+                        if (pSpellSprite.Create(yaw, pitch, spell_speed, 0) != -1 && pParty->bTurnBasedModeOn)
                             ++pTurnEngine->pending_actions;
-                        }
                         j = grng->random(1024) - 512;
                         k = grng->random(1024) - 512;
                     }
@@ -1180,10 +1178,8 @@ void CastSpellInfoHelpers::castSpell() {
                         if (pParty->bTurnBasedModeOn)
                             pSpellSprite.uAttributes |= SPRITE_HALT_TURN_BASED;
                         int spell_speed = pObjectTable->pObjects[pSpellSprite.uObjectDescID].uSpeed;
-                        if (pSpellSprite.Create(yaw, pitch, spell_speed, 0) != -1 &&
-                                pParty->bTurnBasedModeOn) {
+                        if (pSpellSprite.Create(yaw, pitch, spell_speed, 0) != -1 && pParty->bTurnBasedModeOn)
                             ++pTurnEngine->pending_actions;
-                        }
                         j = grng->random(1024) - 512;
                         k = grng->random(1024) - 512;
                     }
@@ -2957,12 +2953,8 @@ void pushSpellOrRangedAttack(SpellId spell,
                              CombinedSkillValue skill_value,
                              SpellCastFlags flags,
                              Pid target) {
-    if (pParty->bTurnBasedModeOn) {
-        if (pTurnEngine->turn_stage == TE_WAIT ||
-            pTurnEngine->turn_stage == TE_MOVEMENT) {
-            return;
-        }
-    }
+    if (pParty->bTurnBasedModeOn && (pTurnEngine->turn_stage == TE_WAIT || pTurnEngine->turn_stage == TE_MOVEMENT))
+        return;
 
     CombinedSkillValue checkSkill = skill_value;
     assert(casterIndex >= 0 && casterIndex < 4);

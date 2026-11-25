@@ -177,10 +177,8 @@ std::string Item::GetDisplayName() const {
 //----- (004564B3) --------------------------------------------------------
 std::string Item::GetIdentifiedName() const {
     ItemType equip_type = type();
-    if ((equip_type == ITEM_TYPE_REAGENT) || (equip_type == ITEM_TYPE_POTION) ||
-        (equip_type == ITEM_TYPE_GOLD)) {
+    if ((equip_type == ITEM_TYPE_REAGENT) || (equip_type == ITEM_TYPE_POTION) || (equip_type == ITEM_TYPE_GOLD))
         return pItemTable->items[itemId].name;
-    }
 
     if (itemId == ITEM_QUEST_LICH_JAR_FULL) {  // Lich Jar
         if (lichJarCharacterIndex >= 0 && lichJarCharacterIndex < pParty->pCharacters.size()) {

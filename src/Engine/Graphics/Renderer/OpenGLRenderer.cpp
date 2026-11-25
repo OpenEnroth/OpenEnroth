@@ -242,11 +242,8 @@ void OpenGLRenderer::BeginLines2D() {
 
     DrawTwodVerts();
 
-    if (!_lineBuffer) {
-        _lineBuffer.reset(GL_DYNAMIC_DRAW,
-            &LineVertex::pos,
-            &LineVertex::color);
-    }
+    if (!_lineBuffer)
+        _lineBuffer.reset(GL_DYNAMIC_DRAW, &LineVertex::pos, &LineVertex::color);
 }
 
 void OpenGLRenderer::EndLines2D() {

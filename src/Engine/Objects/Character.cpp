@@ -911,14 +911,10 @@ int Character::CalculateMeleeDamageTo(bool ignoreSkillBonus, bool ignoreOffhand,
                 mainHandItem.get(), uTargetActorID, addOneDice);
         }
 
-        if (!ignoreOffhand) {
-            if (InventoryEntry offHandItem = inventory.functionalEntry(ITEM_SLOT_OFF_HAND)) {  // has second hand got a weapon that not a shield
-                if (!offHandItem->isShield()) {
-                    offHndWpnDmg = CalculateMeleeDmgToEnemyWithWeapon(
-                        offHandItem.get(), uTargetActorID, false);
-                }
-            }
-        }
+        if (!ignoreOffhand)
+            if (InventoryEntry offHandItem = inventory.functionalEntry(ITEM_SLOT_OFF_HAND))
+                if (!offHandItem->isShield())
+                    offHndWpnDmg = CalculateMeleeDmgToEnemyWithWeapon(offHandItem.get(), uTargetActorID, false);
     }
 
     int dmgSum = mainWpnDmg + offHndWpnDmg;
@@ -3135,10 +3131,8 @@ void Character::useItem(int targetCharacter, bool isPortraitClick) {
         }
         pAudioPlayer->playUISound(SOUND_eat);
 
-        if (pGUIWindow_CurrentMenu &&
-            pGUIWindow_CurrentMenu->eWindowType != WINDOW_NULL) {
+        if (pGUIWindow_CurrentMenu && pGUIWindow_CurrentMenu->eWindowType != WINDOW_NULL)
             engine->_messageQueue->addMessageCurrentFrame(UIMSG_Escape, 0, 0);
-        }
         //if (v73) {
             if (pParty->bTurnBasedModeOn) {
                 pParty->pTurnBasedCharacterRecoveryTimes[targetCharacter] = 100_ticks;
@@ -3895,11 +3889,8 @@ void DamageCharacterFromMonster(Pid uObjID, ActorAbility dmgSource, signed int t
 
         // badly hurt speech
         int yellThreshold = playerPtr->GetMaxHealth() / 4;
-        if (yellThreshold > playerPtr->health &&
-            yellThreshold <= healthBeforeRecvdDamage &&
-            playerPtr->health > 0) {
+        if (yellThreshold > playerPtr->health && yellThreshold <= healthBeforeRecvdDamage && playerPtr->health > 0)
             playerPtr->playReaction(SPEECH_BADLY_HURT);
-        }
         return;
     } else {  // is an item
         int spriteId = uObjID.id();

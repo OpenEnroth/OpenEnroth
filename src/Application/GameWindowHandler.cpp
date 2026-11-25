@@ -325,10 +325,8 @@ void GameWindowHandler::OnKey(PlatformKey key) {
         } else if (keyboardActionMapping->isBound(INPUT_ACTION_DIALOG_LEFT, key) || keyboardActionMapping->isBound(INPUT_ACTION_DIALOG_RIGHT, key)
             || keyboardActionMapping->isBound(INPUT_ACTION_DIALOG_UP, key) || keyboardActionMapping->isBound(INPUT_ACTION_DIALOG_DOWN, key)
             || keyboardActionMapping->isBound(INPUT_ACTION_DIALOG_PRESS, key)) {
-            if (current_screen_type != SCREEN_GAME &&
-                current_screen_type != SCREEN_GAMEOVER_WINDOW) {
+            if (current_screen_type != SCREEN_GAME && current_screen_type != SCREEN_GAMEOVER_WINDOW)
                 UI_OnKeyDown(key);
-            }
         }
     }
 }
