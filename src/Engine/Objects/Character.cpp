@@ -912,7 +912,7 @@ int Character::CalculateMeleeDamageTo(bool ignoreSkillBonus, bool ignoreOffhand,
         }
 
         if (!ignoreOffhand)
-            if (InventoryEntry offHandItem = inventory.functionalEntry(ITEM_SLOT_OFF_HAND))  // has second hand got a weapon that not a shield
+            if (InventoryEntry offHandItem = inventory.functionalEntry(ITEM_SLOT_OFF_HAND))
                 if (!offHandItem->isShield())
                     offHndWpnDmg = CalculateMeleeDmgToEnemyWithWeapon(offHandItem.get(), uTargetActorID, false);
     }
