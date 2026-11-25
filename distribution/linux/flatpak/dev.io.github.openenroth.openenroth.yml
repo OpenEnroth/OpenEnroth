@@ -87,7 +87,7 @@ modules:
     post-install:
       - install -Dm755 src/Bin/OpenEnroth/OpenEnroth /app/bin/OpenEnroth
       - install -Dm755 test/Bin/UnitTest/OpenEnroth_UnitTest /app/bin/OpenEnroth_UnitTest
-      - strip --strip-debug /app/bin/OpenEnroth /app/bin/OpenEnroth_UnitTest  # Drops DWARF, keeps function names.
+      - strip --strip-debug /app/bin/OpenEnroth /app/bin/OpenEnroth_UnitTest  # Drop DWARF, keep function names.
       # launcher script
       - install -Dm755 ../distribution/linux/flatpak/${FLATPAK_ID}.sh /app/bin/${FLATPAK_ID}.sh
       # Icon
