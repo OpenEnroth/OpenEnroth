@@ -135,7 +135,7 @@ jobs:
 
       - name: '[android] Set up Java'
         if: matrix.platform == 'android'
-        uses: actions/setup-java@v6.2.0
+        uses: actions/setup-java@v6.3.0
         with:
           distribution: temurin
           java-version: ${{env.JAVA_VERSION}}
@@ -186,7 +186,7 @@ jobs:
           enableCrossOsArchive: ${{matrix.platform == 'windows'}}
 
       - name: 'Set up ccache'
-        uses: hendrikmuhs/ccache-action@v1.2.25
+        uses: hendrikmuhs/ccache-action@v1.2.26
         with:
           key: ${{matrix.platform}}-${{matrix.configuration}}-${{matrix.architecture}}
           verbose: 2

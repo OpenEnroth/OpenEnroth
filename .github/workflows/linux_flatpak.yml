@@ -75,7 +75,7 @@ jobs:
           flatpak remote-add --user --if-not-exists flathub https://dl.flathub.org/repo/flathub.flatpakrepo
 
       - name: 'Set up ccache'
-        uses: hendrikmuhs/ccache-action@v1.2.25
+        uses: hendrikmuhs/ccache-action@v1.2.26
         with:
           key: linux-flatpak-${{matrix.configuration}}-${{matrix.architecture}}
           verbose: 2
