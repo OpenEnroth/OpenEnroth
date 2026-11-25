@@ -419,7 +419,6 @@ void Character::ItemsPotionDmgBreak(int count) {
 bool Character::CanAct() const {
     if (this->IsAsleep() || this->IsParalyzed() || this->IsUnconcious() ||
         this->IsDead() || this->IsPetrified() || this->IsEradicated()) {
-
         return false;
     } else {
         return true;
