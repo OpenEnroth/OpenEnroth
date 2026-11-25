@@ -3403,10 +3403,8 @@ bool OpenGLRenderer::Reinitialize(bool firstInit) {
     glEnable(GL_DEPTH_TEST);
     glDepthFunc(GL_LEQUAL);
 
-    if (firstInit) {
-        // clear only on first init as it will introduce brief black artifacts on window resize
-        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-    }
+    if (firstInit)
+        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); // Clearing on window resize flashes black.
 
     glDeleteFramebuffers(1, &framebuffer);
     glDeleteTextures(2, framebufferTextures);
@@ -3450,11 +3448,8 @@ bool OpenGLRenderer::Reinitialize(bool firstInit) {
     glGetIntegerv(GL_MAX_COMBINED_TEXTURE_IMAGE_UNITS, &GPU_MAX_TOTAL_TEXTURES);
     assert(GPU_MAX_TOTAL_TEXTURES >= 80);
 
-    if (firstInit) {
-        // initiate shaders
-        if (!ReloadShaders())
-            return false;
-    } // else {
+    if (firstInit && !ReloadShaders())
+        return false;
 
     if (config->window.ReloadTex.value()) {
         // Added config option for this - may not always be required - #199 no longer replicates on windows??
@@ -3463,9 +3458,6 @@ bool OpenGLRenderer::Reinitialize(bool firstInit) {
         ReleaseTerrain();
         ReleaseBSP();
     }
-
-    //     ReloadShaders();
-    // }
 
     return BaseRenderer::Reinitialize(firstInit);
 }

@@ -230,10 +230,8 @@ void Io::Mouse::UI_OnMouseLeftClick(bool isDoubleClick) {
         !keyboardInputHandler->IsStealingToggled() || !pViewport.contains(Pointi(x, y))) {
         std::list<GUIWindow*> targetedSpellUI = {pGUIWindow_CastTargetedSpell.get()};
         std::list<GUIWindow*> *checkWindowList = &lWindowList;
-        if (pGUIWindow_CastTargetedSpell) {
-            // Block regular UI if targeted spell casting is active
-            checkWindowList = &targetedSpellUI;
-        }
+        if (pGUIWindow_CastTargetedSpell)
+            checkWindowList = &targetedSpellUI; // Block regular UI if targeted spell casting is active.
         for (GUIWindow *win : *checkWindowList) {
             if (win->Contains(x, y)) {
                 for (GUIButton *control : win->vButtons) {
@@ -383,14 +381,8 @@ bool UI_OnKeyDown(PlatformKey key) {
                     if (pButton->Contains(uClickX, uClickY))  // test for StatsTab in PlayerCreation Window
                         break;
                     ++v4;
-                    if (v4 >= v28) {
-                        // v1 = 0;
-                        // v2 = pCurrentFrameMessageQueue->uNumMessages;
-                        // --i;
-                        // if ( i < 0 )
+                    if (v4 >= v28)
                         return false;
-                        // continue;
-                    }
                 }
                 win->pCurrentPosActiveItem = v4;
                 return true;

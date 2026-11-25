@@ -522,10 +522,8 @@ std::vector<Actor*> BaseRenderer::getActorsInViewport(int pDepth) {
                     pActors[id].aiState != Removed &&
                     pActors[id].aiState != Disabled &&
                     pActors[id].aiState != Summoned) {
-                    if (vis->DoesRayIntersectBillboard(static_cast<float>(pDepth), i)) {
-                        // Limit for 100 actors was removed
+                    if (vis->DoesRayIntersectBillboard(static_cast<float>(pDepth), i))
                         foundActors.push_back(&pActors[id]);
-                    }
                 }
             }
         }

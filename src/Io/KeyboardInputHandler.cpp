@@ -109,10 +109,9 @@ void Io::KeyboardInputHandler::GenerateActions(bool isPaused) {
 void Io::KeyboardInputHandler::ProcessPausedAction(InputAction action) {
     switch (action) {
     case INPUT_ACTION_NEXT_CHAR:
-        if (current_screen_type != SCREEN_SPELL_BOOK) {
-            // TODO(Nik-RE-dev): why next frame?
+        // TODO(Nik-RE-dev): why next frame?
+        if (current_screen_type != SCREEN_SPELL_BOOK)
             engine->_messageQueue->addMessageNextFrame(UIMSG_CycleCharacters, 0, 0);
-        }
         break;
     case INPUT_ACTION_INTERACT:
         if (current_screen_type == SCREEN_GAME || current_screen_type == SCREEN_CHEST)
@@ -284,10 +283,9 @@ void Io::KeyboardInputHandler::ProcessGameplayAction(InputAction action) {
         break;
 
     case INPUT_ACTION_NEXT_CHAR:
-        if (current_screen_type != SCREEN_SPELL_BOOK) {
-            // TODO(Nik-RE-dev): why next frame?
+        // TODO(Nik-RE-dev): why next frame?
+        if (current_screen_type != SCREEN_SPELL_BOOK)
             engine->_messageQueue->addMessageNextFrame(UIMSG_CycleCharacters, 0, 0);
-        }
         break;
 
     case INPUT_ACTION_LOOK_UP:

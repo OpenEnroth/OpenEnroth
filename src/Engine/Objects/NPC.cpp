@@ -124,11 +124,9 @@ int UseNPCSkill(NpcProfession profession, int id) {
         case NPC_PROFESSION_MASTER_HEALER: {
             for (Character &player : pParty->pCharacters) {
                 player.health = player.GetMaxHealth();
-                for (Condition condition : standardConditionsIncludeDead) {
-                    // Master healer heals all except Eradicated and zombie
+                for (Condition condition : standardConditionsIncludeDead) // Cures all but eradicated and zombie.
                     if (condition != CONDITION_ERADICATED)
                         player.conditions.reset(condition);
-                }
                 player.playReaction(SPEECH_TEMPLE_HEAL);
             }
             pAudioPlayer->playExclusiveSound(SOUND_heal);

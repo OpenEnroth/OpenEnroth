@@ -240,10 +240,7 @@ void CreateParty_EventLoop() {
                 GetCurrentMenuID() == MENU_MMT_MAIN_MENU ||
                 GetCurrentMenuID() == MENU_CREATEPARTY ||
                 GetCurrentMenuID() == MENU_NAMEPANELESC) {
-                // if ( current_screen_type == SCREEN_VIDEO )
-                // pVideoPlayer->FastForwardToFrame(pVideoPlayer->pResetflag);
-                engine->_messageQueue->addMessageCurrentFrame(UIMSG_ChangeGameState,
-                    0, 0);
+                engine->_messageQueue->addMessageCurrentFrame(UIMSG_ChangeGameState, 0, 0);
             }
             break;
         case UIMSG_ChangeGameState:

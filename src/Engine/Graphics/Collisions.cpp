@@ -109,10 +109,8 @@ static bool CollideSphereWithFace(BLVFace* face, const Vec3f& pos, float radius,
     // face normal should either be negative or close to zero. IE never collide with rear of face
     assert(dir_normal_projection < COLLISIONS_EPS);
 
-    if (dir_normal_projection > 0.0f) {
-        // hitting backface
-        return false;
-    }
+    if (dir_normal_projection > 0.0f)
+        return false; // Hitting a backface.
 
     float center_face_distance = face->facePlane.signedDistanceTo(pos);
     float move_distance = 0.0f;
@@ -127,11 +125,10 @@ static bool CollideSphereWithFace(BLVFace* face, const Vec3f& pos, float radius,
     } else {
         // how far do we need to move the sphere to touch infinite plane
         move_distance = (center_face_distance - radius) / -dir_normal_projection;
-        if (move_distance < -radius) {
-            // this can happen when we are already closer than the radius
-            // we are interested edge collisions up to the point where the sphere center is touching the plane
+        // This happens when we are already closer than the radius.
+        // We are interested in edge collisions up to the point where the sphere center is touching the plane.
+        if (move_distance < -radius)
             return false;
-        }
         if (move_distance > 65536.0f) return false; // moving almost parallal - TODO(pskelton): should probably tweak EPS when finished moving to floats
         projected_pos += move_distance * dir - radius * face->facePlane.normal;
     }

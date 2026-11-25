@@ -769,12 +769,10 @@ void GUIWindow_Shop::houseDialogueOptionSelected(DialogueId option) {
             if (itemArray[i].itemId != ITEM_NULL)
                 shop_ui_items_in_store[i] = assets->getIcon(itemArray[i].GetIconName());
         if (shopType == HOUSE_TYPE_WEAPON_SHOP) {
-            for (int i = 0; i < itemAmountInShop[shopType]; ++i) {
-                if (itemArray[i].itemId != ITEM_NULL) {
-                    // Note that we're using grng here for a reason - we want recorded mouse clicks to work.
+            // Note that we're using grng here for a reason - we want recorded mouse clicks to work.
+            for (int i = 0; i < itemAmountInShop[shopType]; ++i)
+                if (itemArray[i].itemId != ITEM_NULL)
                     weaponYPos[i] = grng->random(300 - (shop_ui_items_in_store[i]->height()));
-                }
-            }
         }
     } else if (option == DIALOGUE_SHOP_SELL || option == DIALOGUE_SHOP_IDENTIFY || option == DIALOGUE_SHOP_REPAIR) {
         pParty->placeHeldItemInInventoryOrDrop();
@@ -1053,8 +1051,7 @@ void GUIWindow_Shop::houseScreenClick() {
                         if (pt.x >= testpos && pt.x <= testpos + (shop_ui_items_in_store[testx]->width())) {
                             if ((pt.y <= 308 && pt.y >= (308 - (shop_ui_items_in_store[testx]->height()))) ||
                                 (pt.y <= 152 && pt.y >= (152 - (shop_ui_items_in_store[testx]->height())))) {
-                                // y is 152-h to 152 or 308-height to 308
-                                break;  // good
+                                break;
                             }
                         }
                     }

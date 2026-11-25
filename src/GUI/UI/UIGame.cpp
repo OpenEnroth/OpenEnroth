@@ -990,13 +990,8 @@ void GameUI_WritePointedObjectStatusString() {
                 engine->_statusBar->clearPermanent();
             uLastPointedObjectID = Pid();
 
-            if (pWindow->frameRect.h == 480) {
-                // DebugBreak(); //Why is this condition here (in the original
-                // too)? Might check fullscreen windows. Let Silvo know if you
-                // find out
-                // this is to stop the no windows active code below runnning
-                return;
-            }
+            if (pWindow->frameRect.h == 480)
+                return; // Skips the no-windows-active code after the loop.
         }
         // The game never gets to this point even in the original. It's also
         // bugged(neither branch displays anything).
