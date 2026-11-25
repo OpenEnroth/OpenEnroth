@@ -286,8 +286,10 @@ void Game::onEscape() {
 }
 
 bool IsWindowSwitchable() {
-    if (current_screen_type == SCREEN_NPC_DIALOGUE || current_screen_type == SCREEN_HOUSE || current_screen_type == SCREEN_INPUT_BLV || current_screen_type == SCREEN_CHANGE_LOCATION)
+    if (current_screen_type == SCREEN_NPC_DIALOGUE || current_screen_type == SCREEN_HOUSE
+        || current_screen_type == SCREEN_INPUT_BLV || current_screen_type == SCREEN_CHANGE_LOCATION) {
         return false;
+    }
     return true;
 }
 
@@ -1208,8 +1210,11 @@ void Game::processQueuedMessages() {
                 continue;
             }
             case UIMSG_OpenSpellbookPage:
-                if (pTurnEngine->turn_stage == TE_MOVEMENT || !pParty->hasActiveCharacter() || static_cast<MagicSchool>(uMessageParam) == pParty->activeCharacter().lastOpenedSpellbookPage)
+                if (pTurnEngine->turn_stage == TE_MOVEMENT ||
+                    !pParty->hasActiveCharacter() ||
+                    static_cast<MagicSchool>(uMessageParam) == pParty->activeCharacter().lastOpenedSpellbookPage) {
                     continue;
+                }
                 (dynamic_cast<GUIWindow_Spellbook*>(pGUIWindow_CurrentMenu.get()))->openSpellbookPage(static_cast<MagicSchool>(uMessageParam));
                 continue;
             case UIMSG_SelectSpell: {

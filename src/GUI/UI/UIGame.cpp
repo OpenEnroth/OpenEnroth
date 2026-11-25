@@ -211,9 +211,12 @@ void GUIWindow_GameMenu::Update() {
 
 //----- (00491CB5) --------------------------------------------------------
 void GameUI_LoadPlayerPortraitsAndVoices() {
-    for (unsigned i = 0; i < 4; ++i)
-        for (unsigned j = 0; j < 56; ++j)
-            game_ui_player_faces[i][j] = assets->getIcon(fmt::format("{}{:02}", pPlayerPortraitsNames[pParty->pCharacters[i].uCurrentFace], j + 1));
+    for (unsigned i = 0; i < 4; ++i) {
+        for (unsigned j = 0; j < 56; ++j) {
+            game_ui_player_faces[i][j] = assets->getIcon(
+                fmt::format("{}{:02}", pPlayerPortraitsNames[pParty->pCharacters[i].uCurrentFace], j + 1));
+        }
+    }
 
     game_ui_player_face_eradicated =
         assets->getIcon("ERADCATE");

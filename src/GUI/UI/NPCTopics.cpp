@@ -241,9 +241,14 @@ DialogueId arenaMainDialogue() {
     assert(pParty->arenaState == ARENA_STATE_FIGHTING);
 
     int killedMonsters = 0;
-    for (Actor &actor : pActors)
-        if (actor.aiState == Dead || actor.aiState == Removed || actor.aiState == Disabled || (actor.summonerId && actor.summonerId.type() == OBJECT_Character))
+    for (Actor &actor : pActors) {
+        if (actor.aiState == Dead ||
+            actor.aiState == Removed ||
+            actor.aiState == Disabled ||
+            (actor.summonerId && actor.summonerId.type() == OBJECT_Character)) {
             killedMonsters++;
+        }
+    }
 
     if (killedMonsters >= pActors.size() || pActors.size() <= 0) {
         pParty->uNumArenaWins[pParty->arenaLevel]++;

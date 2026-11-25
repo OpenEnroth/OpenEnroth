@@ -117,8 +117,10 @@ static const PCXHeader *decodeHeader(const Blob &data) {
     unsigned int bytes_per_scanline = header->nplanes * header->bytes_per_row;
 
     //corruption check
-    if (bytes_per_scanline < (size.w * header->bpp * header->nplanes + 7) / 8 || (!header->compression && bytes_per_scanline > (data.size() - sizeof(PCXHeader)) / size.h))
+    if (bytes_per_scanline < (size.w * header->bpp * header->nplanes + 7) / 8 ||
+        (!header->compression && bytes_per_scanline > (data.size() - sizeof(PCXHeader)) / size.h)) {
         throw Exception("PCX header corrupted in '{}'", data.displayPath());
+    }
 
     if ((header->nplanes != 3 && header->nplanes != 1) || header->bpp != 8)
         throw Exception("Unsupported PCX format in '{}', only 8-bit and 24-bit PCX images are supported", data.displayPath());

@@ -1796,9 +1796,14 @@ void OnPaperdollLeftClick() {
                     return;
 
                 } else {  // rings displayed if in ring area
-                    for (int i = 0; i < 6; ++i)
-                        if (mousex >= RingsX[i] && mousex <= (RingsX[i] + cellSize) && mousey >= RingsY[i] && mousey <= (RingsY[i] + cellSize))  // check against ring slots
+                    for (int i = 0; i < 6; ++i) {
+                        if (mousex >= RingsX[i] &&
+                            mousex <= (RingsX[i] + cellSize) &&
+                            mousey >= RingsY[i] &&
+                            mousey <= (RingsY[i] + cellSize)) {  // check against ring slots
                             pos = ringSlot(i);
+                        }
+                    }
 
                     if (pos != ITEM_SLOT_INVALID) {  // we have a position to aim for
                         InventoryEntry entry = pParty->activeCharacter().inventory.entry(pos);

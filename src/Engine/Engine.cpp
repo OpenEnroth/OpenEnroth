@@ -1480,8 +1480,11 @@ void RegeneratePartyHealthMana() {
                     thisChar.hpRegen++;
                 }
 
-                if (special_enchantment == ITEM_ENCHANTMENT_OF_MANA || special_enchantment == ITEM_ENCHANTMENT_OF_ECLIPSE || special_enchantment == ITEM_ENCHANTMENT_OF_UNICORN)
+                if (special_enchantment == ITEM_ENCHANTMENT_OF_MANA
+                    || special_enchantment == ITEM_ENCHANTMENT_OF_ECLIPSE
+                    || special_enchantment == ITEM_ENCHANTMENT_OF_UNICORN) {
                     thisChar.spRegen++;
+                }
 
                 if (special_enchantment == ITEM_ENCHANTMENT_OF_PLENTY) {
                     thisChar.hpRegen++;

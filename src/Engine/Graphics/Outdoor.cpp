@@ -742,8 +742,10 @@ void OutdoorLocation::PrepareActorsDrawList() {
         if (frame->spriteName == "null") continue;
 
 
-        if (frame->glowRadius)
-            pMobileLightsStack->AddLight(posMod, pActors[i].sectorId, frame->glowRadius, colorTable.White, _4E94D3_light_type);
+        if (frame->glowRadius) {
+            pMobileLightsStack->AddLight(posMod, pActors[i].sectorId, frame->glowRadius, colorTable.White,
+                                         _4E94D3_light_type);
+        }
 
         BillboardFlags flags = billboardFlagsForSprite(frame->flags, Sprite_Octant);
         if (pActors[i].buffs[ACTOR_BUFF_STONED].Active())

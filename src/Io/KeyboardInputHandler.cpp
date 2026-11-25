@@ -197,8 +197,11 @@ void Io::KeyboardInputHandler::ProcessGameplayAction(InputAction action) {
         }
         if (pParty->hasActiveCharacter()) {
             if (!pParty->activeCharacter().timeToRecovery) {
-                if (!pParty->bTurnBasedModeOn)
-                    pParty->activeCharacter().SetRecoveryTime(debug_non_combat_recovery_mul * flt_debugrecmod3 * pParty->activeCharacter().GetAttackRecoveryTime(false));
+                if (!pParty->bTurnBasedModeOn) {
+                    pParty->activeCharacter().SetRecoveryTime(
+                        debug_non_combat_recovery_mul * flt_debugrecmod3 * pParty->activeCharacter().GetAttackRecoveryTime(false)
+                    );
+                }
                 CastSpellInfoHelpers::cancelSpellCastInProgress();
                 pTurnEngine->ApplyPlayerAction();
             }
