@@ -51,9 +51,10 @@ modules:
     build-options:
       append-path: /usr/lib/sdk/llvm20/bin
       prepend-ld-library-path: /usr/lib/sdk/llvm20/lib
-      strip: false  # Do not strip binaries to keep debug symbols.
-      no-debuginfo: false  # Ensure debug info is generated.
+      strip: false  # Skips a plain `strip`, which drops the symbol table.
+      no-debuginfo: true  # Skips moving DWARF and the symbol table into the .Debug extension, which isn't bundled.
     cleanup:
+      - /bin/OpenEnroth_UnitTest  # Installed only for the tests, see the comment above run-tests.
       - /share/cmake
       - /lib/cmake
       - /share/man
@@ -71,11 +72,20 @@ modules:
     sources:
       - type: dir
         path: ../../../
+    # The unit tests run on a binary stripped like the shipped OpenEnroth, so if stripping removes function names,
+    # the stack trace tests fail. flatpak-builder runs post-install, then the tests, then cleanup:
+    # * post-install copies OpenEnroth_UnitTest next to OpenEnroth and strips both with one command.
+    # * test-commands runs the stripped copy.
+    # * cleanup deletes the copy before export, so it doesn't ship.
     # TODO(captainurist): would be cool to run game tests here too!
     run-tests: true
-    test-rule: Run_UnitTest
+    test-rule: ''  # Skips "ninja test", which doesn't exist. Run_UnitTest would test the unstripped binary.
+    test-commands:
+      - OpenEnroth_UnitTest
     post-install:
       - install -Dm755 src/Bin/OpenEnroth/OpenEnroth /app/bin/OpenEnroth
+      - install -Dm755 test/Bin/UnitTest/OpenEnroth_UnitTest /app/bin/OpenEnroth_UnitTest
+      - strip --strip-debug /app/bin/OpenEnroth /app/bin/OpenEnroth_UnitTest  # Drop DWARF, keep function names.
       # launcher script
       - install -Dm755 ../distribution/linux/flatpak/${FLATPAK_ID}.sh /app/bin/${FLATPAK_ID}.sh
       # Icon
