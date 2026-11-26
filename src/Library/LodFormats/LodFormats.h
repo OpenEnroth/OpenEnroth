@@ -22,8 +22,10 @@ bool detectCompressedDataMm6(const Blob &blob);
 bool detectCompressedDataMm7(const Blob &blob);
 bool detectCompressedData(const Blob &blob);
 bool detectCompressedPseudoImageMm6(const Blob &blob);
+bool detectCompressedPseudoImageMm8(const Blob &blob);
 bool detectCompressedPseudoImage(const Blob &blob);
 bool detectImageMm6(const Blob &blob);
+bool detectImageMm8(const Blob &blob);
 bool detectImage(const Blob &blob);
 bool detectPaletteMm6(const Blob &blob);
 bool detectPalette(const Blob &blob);
@@ -64,6 +66,14 @@ Blob decodeCompressedData(const Blob &blob);
 Blob decodeCompressedPseudoImageMm6(const Blob &blob);
 
 /**
+ * @param blob                          MM8 compressed pseudo image, the MM6 one with a 64-byte name instead of a
+ *                                      16-byte one.
+ * @return                              Uncompressed data.
+ * @throw Exception                     If the format is not recognized.
+ */
+Blob decodeCompressedPseudoImageMm8(const Blob &blob);
+
+/**
  * @param blob                          LOD compressed pseudo image in any format.
  * @return                              Uncompressed data.
  * @throw Exception                     If the format is not recognized.
@@ -93,6 +103,14 @@ Blob encodeCompressedDataMm7(const Blob &blob);
 LodImage decodeImageMm6(const Blob &blob);
 
 /**
+ * @param blob                          MM8 image, the MM6 one with a 64-byte name instead of a 16-byte one, as read
+ *                                      from a LOD file.
+ * @return                              Decoded `LodImage`.
+ * @throw Exception                     If the format is not recognized.
+ */
+LodImage decodeImageMm8(const Blob &blob);
+
+/**
  * @param blob                          LOD image in any format, as read from a LOD file.
  * @return                              Decoded `LodImage`.
  * @throw Exception                     If the format is not recognized.
@@ -107,6 +125,15 @@ LodImage decodeImage(const Blob &blob);
  * @throw Exception                     If the format is not recognized.
  */
 Sizei decodeImageSizeMm6(const Blob &blob);
+
+/**
+ * Reads the image header and returns the image size without decompressing the pixel data.
+ *
+ * @param blob                          MM8 image, as read from a LOD file.
+ * @return                              Image size.
+ * @throw Exception                     If the format is not recognized.
+ */
+Sizei decodeImageSizeMm8(const Blob &blob);
 
 /**
  * Reads the image header and returns the image size without decompressing the pixel data.

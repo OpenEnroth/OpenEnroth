@@ -59,7 +59,7 @@ static bool isArchive(MagicFileFormat format) {
 
 static bool isCompressed(MagicFileFormat format) {
     return format == MAGIC_LOD_COMPRESSED_DATA_MM6 || format == MAGIC_LOD_COMPRESSED_DATA_MM7 ||
-           format == MAGIC_LOD_COMPRESSED_PSEUDO_IMAGE_MM6;
+           format == MAGIC_LOD_COMPRESSED_PSEUDO_IMAGE_MM6 || format == MAGIC_LOD_COMPRESSED_PSEUDO_IMAGE_MM8;
 }
 
 static Blob readFile(PathView path) {
@@ -91,7 +91,8 @@ static Blob convertToPng(const Blob &data, PathView palettesLodPath) {
         return Blob::share(data);
     case MAGIC_PCX:
         return png::encode(pcx::decode(data));
-    case MAGIC_LOD_IMAGE_MM6: {
+    case MAGIC_LOD_IMAGE_MM6:
+    case MAGIC_LOD_IMAGE_MM8: {
         LodImage lodImage = lod::decodeImage(data);
         return png::encode(makeRgbaImage(lodImage.image, lodImage.palette));
     }

@@ -16,12 +16,62 @@
 
 static const std::string testData = std::string(1000, 'x') + "map data";
 
+static std::string noise(size_t size) {
+    std::string result;
+    uint32_t state = 1;
+    for (size_t i = 0; i < size; i++) {
+        state = state * 1103515245 + 12345;
+        result += static_cast<char>(state >> 24);
+    }
+    return result;
+}
+
 static Blob compressedDataMm6(const Blob &compressed, uint32_t dataSize, uint32_t decompressedSize) {
     Blob result;
     BlobOutputStream stream(&result);
     serialize(dataSize, &stream);
     serialize(decompressedSize, &stream);
     stream.write(compressed);
+    stream.close();
+    return result;
+}
+
+template<class Header>
+static Blob compressedPseudoImage(const Blob &data) {
+    Blob compressed = zlib::compress(data);
+    Header header = Header();
+    header.dataSize = compressed.size();
+    header.decompressedSize = data.size();
+    header.flags = 256;
+
+    Blob result;
+    BlobOutputStream stream(&result);
+    serialize(header, &stream);
+    stream.write(compressed);
+    stream.close();
+    return result;
+}
+
+template<class Header>
+static Blob image(int width, int height) {
+    Header header = Header();
+    header.size = width * height;
+    header.dataSize = width * height;
+    header.width = width;
+    header.height = height;
+
+    std::string pixels;
+    for (int i = 0; i < width * height; i++)
+        pixels += static_cast<char>(i);
+    std::string palette;
+    for (int i = 0; i < 0x300; i++)
+        palette += static_cast<char>(i / 3);
+
+    Blob result;
+    BlobOutputStream stream(&result);
+    serialize(header, &stream);
+    stream.write(pixels);
+    stream.write(palette);
     stream.close();
     return result;
 }
@@ -133,6 +183,41 @@ UNIT_TEST(LodFormats, CompressedDataMm7_WrongSize) {
         memcpy(entry.data() + offsetof(LodCompressionHeader_MM7, decompressedSize), &decompressedSize, sizeof(decompressedSize));
 
         EXPECT_THROW((void) lod::decodeMaybeCompressed(Blob::fromString(entry)), Exception);
+    }
+}
+
+UNIT_TEST(LodFormats, CompressedPseudoImageMm8) {
+    // Entries of MM8's EnglishT.lod and EnglishD.lod came out of decodeMaybeCompressed still compressed.
+    std::string data = noise(1000);
+    Blob mm6 = compressedPseudoImage<LodImageHeader_MM6>(Blob::fromString(data));
+    Blob mm8 = compressedPseudoImage<LodImageHeader_MM8>(Blob::fromString(data));
+
+    EXPECT_TRUE(lod::detectCompressedPseudoImageMm6(mm6));
+    EXPECT_FALSE(lod::detectCompressedPseudoImageMm8(mm6));
+    EXPECT_FALSE(lod::detectCompressedPseudoImageMm6(mm8));
+    EXPECT_TRUE(lod::detectCompressedPseudoImageMm8(mm8));
+    EXPECT_EQ(lod::decodeMaybeCompressed(mm6).str(), data);
+    EXPECT_EQ(lod::decodeMaybeCompressed(mm8).str(), data);
+}
+
+UNIT_TEST(LodFormats, ImageMm8) {
+    // LOD images in MM8's EnglishD.lod didn't decode.
+    Blob mm6 = image<LodImageHeader_MM6>(4, 2);
+    Blob mm8 = image<LodImageHeader_MM8>(4, 2);
+
+    EXPECT_TRUE(lod::detectImageMm6(mm6));
+    EXPECT_FALSE(lod::detectImageMm8(mm6));
+    EXPECT_FALSE(lod::detectImageMm6(mm8));
+    EXPECT_TRUE(lod::detectImageMm8(mm8));
+
+    for (const Blob *entry : {&mm6, &mm8}) {
+        EXPECT_EQ(lod::decodeImageSize(*entry), Sizei(4, 2));
+
+        LodImage decoded = lod::decodeImage(*entry);
+        ASSERT_EQ(decoded.image.width(), 4);
+        ASSERT_EQ(decoded.image.height(), 2);
+        EXPECT_EQ(decoded.image[1][3], 7);
+        EXPECT_EQ(decoded.palette.colors[5].r, 5);
     }
 }
 
