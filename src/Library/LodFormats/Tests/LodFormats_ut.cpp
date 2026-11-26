@@ -6,6 +6,7 @@
 #include "Testing/Unit/UnitTest.h"
 
 #include "Library/Binary/CommonSerialization.h"
+#include "Library/Compression/Compression.h"
 #include "Library/LodFormats/LodFormats.h"
 #include "Library/LodFormats/LodFormatSnapshots.h"
 
@@ -14,6 +15,16 @@
 #include "Utility/Streams/BlobOutputStream.h"
 
 static const std::string testData = std::string(1000, 'x') + "map data";
+
+static Blob compressedDataMm6(const Blob &compressed, uint32_t dataSize, uint32_t decompressedSize) {
+    Blob result;
+    BlobOutputStream stream(&result);
+    serialize(dataSize, &stream);
+    serialize(decompressedSize, &stream);
+    stream.write(compressed);
+    stream.close();
+    return result;
+}
 
 static Blob paletteMm6(int16_t paletteId) {
     LodImageHeader_MM6 header = LodImageHeader_MM6();
@@ -74,6 +85,28 @@ static Blob fontMmz() {
     stream.write(std::string(offset, '\xFF'));
     stream.close();
     return result;
+}
+
+UNIT_TEST(LodFormats, CompressedDataMm6) {
+    // MM6 maps came out of decodeMaybeCompressed still compressed.
+    Blob compressed = zlib::compress(Blob::fromString(testData));
+    Blob entry = compressedDataMm6(compressed, compressed.size(), testData.size());
+
+    EXPECT_TRUE(lod::detectCompressedDataMm6(entry));
+    EXPECT_EQ(lod::decodeMaybeCompressed(entry).str(), testData);
+}
+
+UNIT_TEST(LodFormats, CompressedDataMm6_NearMisses) {
+    // Without a signature, the sizes and the zlib header are all that tells MM6 compressed data apart from other data.
+    Blob compressed = zlib::compress(Blob::fromString(testData));
+
+    Blob wrongDataSize = compressedDataMm6(compressed, compressed.size() + 1, testData.size());
+    EXPECT_FALSE(lod::detectCompressedData(wrongDataSize));
+    EXPECT_EQ(lod::decodeMaybeCompressed(wrongDataSize).str(), wrongDataSize.str());
+
+    Blob notZlib = compressedDataMm6(Blob::fromString(testData), testData.size(), testData.size());
+    EXPECT_FALSE(lod::detectCompressedData(notZlib));
+    EXPECT_EQ(lod::decodeMaybeCompressed(notZlib).str(), notZlib.str());
 }
 
 UNIT_TEST(LodFormats, CompressedDataMm7) {

@@ -18,6 +18,7 @@ class Blob;
  */
 namespace lod {
 
+bool detectCompressedDataMm6(const Blob &blob);
 bool detectCompressedDataMm7(const Blob &blob);
 bool detectCompressedData(const Blob &blob);
 bool detectCompressedPseudoImageMm6(const Blob &blob);
@@ -31,6 +32,13 @@ bool detectSprite(const Blob &blob);
 bool detectFontMm6(const Blob &blob);
 bool detectFontMmz(const Blob &blob);
 bool detectFont(const Blob &blob);
+
+/**
+ * @param blob                          MM6 compressed data, the packed and unpacked sizes followed by zlib data.
+ * @return                              Uncompressed data.
+ * @throw Exception                     If the format is not recognized.
+ */
+Blob decodeCompressedDataMm6(const Blob &blob);
 
 /**
  * @param blob                          MM7 compressed data, 91969 and "mvii" followed by the packed and unpacked

@@ -11,6 +11,8 @@ std::string_view formatDescription(MagicFileFormat format) {
         return "raw data";
     case MAGIC_LOD:
         return "LOD archive";
+    case MAGIC_LOD_COMPRESSED_DATA_MM6:
+        return "LOD compressed data (MM6 format)";
     case MAGIC_LOD_COMPRESSED_DATA_MM7:
         return "LOD compressed data (MM7 format)";
     case MAGIC_LOD_COMPRESSED_PSEUDO_IMAGE_MM6:

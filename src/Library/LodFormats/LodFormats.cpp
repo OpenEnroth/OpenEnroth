@@ -108,6 +108,18 @@ static void fixAndValidateFont(const Blob &blob, const LodFontHeader &header, Lo
     }
 }
 
+bool lod::detectCompressedDataMm6(const Blob &blob) {
+    if (blob.size() < sizeof(LodCompressionHeader_MM6))
+        return false;
+
+    MemoryInputStream stream(blob.data(), blob.size());
+    LodCompressionHeader_MM6 header;
+    deserialize(stream, &header);
+
+    return header.dataSize == blob.size() - sizeof(LodCompressionHeader_MM6) && header.decompressedSize > 0 &&
+        zlib::detect(blob.subBlob(sizeof(LodCompressionHeader_MM6)));
+}
+
 bool lod::detectCompressedDataMm7(const Blob &blob) {
     if (blob.size() < sizeof(LodCompressionHeader_MM7))
         return false;
@@ -120,7 +132,7 @@ bool lod::detectCompressedDataMm7(const Blob &blob) {
 }
 
 bool lod::detectCompressedData(const Blob &blob) {
-    return detectCompressedDataMm7(blob);
+    return detectCompressedDataMm7(blob) || detectCompressedDataMm6(blob);
 }
 
 bool lod::detectCompressedPseudoImageMm6(const Blob &blob) {
@@ -228,6 +240,17 @@ bool lod::detectFont(const Blob &blob) {
     return detectFontMm6(blob) || detectFontMmz(blob);
 }
 
+Blob lod::decodeCompressedDataMm6(const Blob &blob) {
+    if (!detectCompressedDataMm6(blob))
+        throw Exception("Cannot decode LOD entry '{}' as LOD compressed data (MM6 format)", blob.displayPath());
+
+    BlobInputStream stream(blob);
+    LodCompressionHeader_MM6 header;
+    deserialize(stream, &header);
+
+    return uncompressEntryData(blob, stream.readAllAsBlob(), header.decompressedSize);
+}
+
 Blob lod::decodeCompressedDataMm7(const Blob &blob) {
     if (!detectCompressedDataMm7(blob))
         throw Exception("Cannot decode LOD entry '{}' as LOD compressed data (MM7 format)", blob.displayPath());
@@ -250,7 +273,11 @@ Blob lod::decodeCompressedDataMm7(const Blob &blob) {
 }
 
 Blob lod::decodeCompressedData(const Blob &blob) {
-    return decodeCompressedDataMm7(blob);
+    if (detectCompressedDataMm7(blob))
+        return decodeCompressedDataMm7(blob);
+    if (detectCompressedDataMm6(blob))
+        return decodeCompressedDataMm6(blob);
+    throw Exception("Cannot decode LOD entry '{}' as LOD compressed data", blob.displayPath());
 }
 
 Blob lod::decodeCompressedPseudoImageMm6(const Blob &blob) {
