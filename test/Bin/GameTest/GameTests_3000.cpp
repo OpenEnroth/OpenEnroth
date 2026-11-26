@@ -4,20 +4,55 @@
 
 #include "Testing/Game/GameTest.h"
 
+#include "Engine/Engine.h"
 #include "Engine/MapEnums.h"
 #include "Engine/Party.h"
 #include "Engine/Graphics/Image.h"
 #include "Engine/Objects/Actor.h"
 #include "Engine/Objects/MonsterEnumFunctions.h"
+#include "Engine/Objects/SpriteEnums.h"
+#include "Engine/TurnEngine/TurnEngine.h"
 
 #include "GUI/UI/UIDialogue.h"
 #include "GUI/UI/UIHouses.h"
 
+#include "Library/Platform/Interface/PlatformEnums.h"
 #include "Library/Serialization/Serialization.h"
 
 #include "GameTestCommon.h"
 
 // 3000
+
+GAME_TEST(Issues, Issue3000) {
+    // In turn-based mode, a monster out of melee range that picked its first attack fired its second attack's missile.
+    // It should have fired its first attack's missile, or stood if its first attack is melee.
+    for (int attack2Chance : {0, 100}) {
+        SCOPED_TRACE(fmt::format("attack2Chance={}", attack2Chance));
+        test.prepareForNextTest();
+        engine->config->debug.NoActors.setValue(true);
+        game.startNewGame();
+        engine->config->debug.NoActors.setValue(false);
+        Actor *goblin = game.spawnMonster(pParty->pos + Vec3f(0, 1000, 0), MONSTER_GOBLIN_A, SPAWN_STATIONARY);
+        goblin->monsterInfo.attack2Chance = attack2Chance; // At 0 every turn picks the melee attack, at 100 the ranged one.
+        auto goblinTape = actorTapes.aiState(goblin->id);
+        auto spritesTape = tapes.sprites();
+        test.startTaping();
+        game.pressAndReleaseKey(PlatformKey::KEY_RETURN);
+        for (int i = 0; i < 200 && pTurnEngine->turn_stage != TE_MOVEMENT; ++i) {
+            if (pTurnEngine->turn_stage == TE_ATTACK && pParty->hasActiveCharacter() && !pParty->activeCharacter().timeToRecovery)
+                game.pressAndReleaseKey(PlatformKey::KEY_B); // Pass.
+            game.tick();
+        }
+        ASSERT_EQ(pTurnEngine->turn_stage, TE_MOVEMENT);
+
+        bool shoots = attack2Chance == 100;
+        if (shoots)
+            EXPECT_EQ(goblinTape, tape(Pursuing, Standing, AttackingRanged2, Standing));
+        else
+            EXPECT_EQ(goblinTape, tape(Pursuing, Standing, Fidgeting));
+        EXPECT_EQ(spritesTape.flatten().contains(SPRITE_PROJECTILE_ARROW), shoots);
+    }
+}
 
 GAME_TEST(Issues, Issue3002) {
     // Human peasants with a generated name and profession had elf portraits.
