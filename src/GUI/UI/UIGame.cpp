@@ -991,7 +991,7 @@ void GameUI_WritePointedObjectStatusString() {
             uLastPointedObjectID = Pid();
 
             if (pWindow->frameRect.h == 480)
-                return; // Skips the no-windows-active code after the loop.
+                return; // A full-screen window covers the ones behind it.
         }
         // The game never gets to this point even in the original. It's also
         // bugged(neither branch displays anything).
