@@ -31,7 +31,7 @@ class FileSystemPathView {
         return _path == ".." || _path.starts_with("../");
     }
 
-    [[nodiscard]] std::string_view string() const {
+    [[nodiscard]] std::string_view str() const {
         return _path;
     }
 
@@ -48,7 +48,7 @@ struct std::hash<FileSystemPathView> : std::hash<std::string_view> {
     using base_type = std::hash<std::string_view>;
 
     auto operator()(FileSystemPathView path) const {
-        return base_type::operator()(path.string()); // NOLINT: not std::string.
+        return base_type::operator()(path.str());
     }
 };
 
@@ -60,7 +60,7 @@ struct std::hash<FileSystemPathView> : std::hash<std::string_view> {
 }
 
 [[nodiscard]] inline FileSystemPathView FileSystemPathSplit::tailAfter(std::same_as<std::string_view> auto chunk) const {
-    std::string_view path = str(); // NOLINT: not std::string.
+    std::string_view path = str();
 
     if (chunk.empty())
         return FileSystemPathView::fromNormalized(path);

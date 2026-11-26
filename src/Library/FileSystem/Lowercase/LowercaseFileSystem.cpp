@@ -215,7 +215,7 @@ FileSystemPath LowercaseFileSystem::locateForReading(FileSystemPathView path) co
 }
 
 std::tuple<FileSystemPath, LowercaseFileSystem::Node *, FileSystemPathView> LowercaseFileSystem::locateForWriting(FileSystemPathView path) {
-    if (hasUpper(path.string()))
+    if (hasUpper(path.str()))
         FileSystemException::raise(this, FS_WRITE_FAILED_PATH_NOT_WRITEABLE, path);
 
     auto result = walk(path);

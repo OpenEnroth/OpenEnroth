@@ -34,7 +34,7 @@ std::unique_ptr<InputStream> NullFileSystem::_openForReading(FileSystemPathView 
 }
 
 std::string NullFileSystem::_displayPath(FileSystemPathView path) const {
-    return join("null://", txt::encodedToUtf8(path.string(), ENCODING_UTF8)); // Replaces invalid UTF8.
+    return join("null://", txt::encodedToUtf8(path.str(), ENCODING_UTF8)); // Replaces invalid UTF8.
 }
 
 [[noreturn]] void NullFileSystem::reportReadError(FileSystemPathView path) const {

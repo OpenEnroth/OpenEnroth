@@ -123,7 +123,7 @@ FileSystemPath &FileSystemPath::operator/=(std::string_view tail) {
 }
 
 FileSystemPath &FileSystemPath::operator/=(FileSystemPathView tail) {
-    std::string_view tailsTail = tail.string();
+    std::string_view tailsTail = tail.str();
 
     if (tail.isEscaping()) {
         while (true) {
