@@ -34,6 +34,7 @@ set(RESOURCE_SOURCES
         scripts/dev/commands/hp_command.lua
         scripts/dev/commands/inventory_command.lua
         scripts/dev/commands/mana_command.lua
+        scripts/dev/commands/quests_command.lua
         scripts/dev/commands/skillpoints_command.lua
         scripts/dev/commands/skills_command.lua
         scripts/dev/commands/xp_command.lua
