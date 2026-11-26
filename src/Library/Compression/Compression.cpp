@@ -3,6 +3,7 @@
 #include <zlib.h>
 
 #include <cassert>
+#include <cstdint>
 #include <cstring>
 #include <algorithm>
 #include <memory>
@@ -98,6 +99,18 @@ Blob uncompressBestEffort(const Blob &source, size_t sizeHint) {
     if (outputSize < allocatedSize)
         dest.reset(realloc(dest.release(), outputSize));
     return Blob::fromMalloc(std::move(dest), outputSize).withDisplayPath(source.displayPath());
+}
+
+bool detect(const Blob &data) {
+    if (data.size() < 2)
+        return false;
+
+    const uint8_t *header = static_cast<const uint8_t *>(data.data());
+    uint8_t cmf = header[0];
+    uint8_t flg = header[1];
+    bool isDeflate = (cmf & 0x0F) == 8 && (cmf >> 4) <= 7; // Method 8, and a window no larger than RFC 1950's 32K.
+    bool hasDictionary = flg & 0x20;
+    return isDeflate && !hasDictionary && (cmf * 256 + flg) % 31 == 0;
 }
 
 };  // namespace zlib

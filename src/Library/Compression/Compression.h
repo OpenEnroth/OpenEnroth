@@ -28,4 +28,19 @@ Blob uncompress(const Blob &source, size_t sizeHint = 0);
  *                                     bytes could be recovered at all.
  */
 Blob uncompressBestEffort(const Blob &source, size_t sizeHint = 0);
+
+/**
+ * Checks for a zlib header (RFC 1950) that zlib can decode at the start of `data`. The header has to:
+ * - Use deflate, the only compression method zlib defines.
+ * - Have a window size of at most 32K, the largest RFC 1950 allows.
+ * - Not ask for a preset dictionary, which isn't stored in the stream and which we never have.
+ * - Pass its header checksum.
+ *
+ * Only the two header bytes are checked, so random data passes about once in 2000 tries, and a caller should have
+ * other evidence too.
+ *
+ * @param data                          Data to check.
+ * @return                              Whether `data` starts with a zlib header that zlib can decode.
+ */
+bool detect(const Blob &data);
 };  // namespace zlib
