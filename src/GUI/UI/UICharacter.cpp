@@ -1952,23 +1952,17 @@ void OnPaperdollLeftClick() {
 
         if (mousex >= amuletx && mousex <= (amuletx + cellSize) &&
             mousey >= amulety && mousey <= (amulety + 2 * cellSize)) {
-            // amulet
-            // pitem = pParty->activeCharacter().GetAmuletItem(); //9
             pos = ITEM_SLOT_AMULET;
         }
 
-        if (mousex >= glovex && mousex <= (glovex + cellSize) && mousey >= glovey &&
-            mousey <= (glovey + 2 * cellSize)) {
-            // glove
-            // pitem = pParty->activeCharacter().GetGloveItem(); //7
+        if (mousex >= glovex && mousex <= (glovex + cellSize) &&
+            mousey >= glovey && mousey <= (glovey + 2 * cellSize)) {
             pos = ITEM_SLOT_GAUNTLETS;
         }
 
         for (int i = 0; i < 6; ++i) {
             if (mousex >= RingsX[i] && mousex <= (RingsX[i] + cellSize) &&
                 mousey >= RingsY[i] && mousey <= (RingsY[i] + cellSize)) {
-                // ring
-                // pitem = pParty->activeCharacter().GetNthRingItem(i); //10+i
                 pos = ringSlot(i);
             }
         }
@@ -1994,21 +1988,8 @@ void OnPaperdollLeftClick() {
             AfterEnchClickEventId = UIMSG_Escape;
             AfterEnchClickEventSecondParam = 0;
             AfterEnchClickEventTimeout = Duration::fromRealtimeSeconds(2);
-        } else {
-            if (!ptr_50C9A4_ItemToEnchant) {
-                pParty->setHoldingItem(pParty->activeCharacter().inventory.take(entry));
-
-                // pParty->setHoldingItem(&pParty->activeCharacter().pInventoryItemList[v34
-                // - 1]);
-                //  pParty->activeCharacter().pEquipment[pParty->activeCharacter().pInventoryItemList[v34
-                //  - 1].uBodyAnchor - 1] = 0;
-                //  pParty->activeCharacter().pInventoryItemList[v34 -
-                //  1].Reset();
-
-                // return
-                // &this->pInventoryItemList[this->pEquipment[index] -
-                // 1];
-            }
+        } else if (!ptr_50C9A4_ItemToEnchant) {
+            pParty->setHoldingItem(pParty->activeCharacter().inventory.take(entry));
         }
 
         // for (unsigned i = 0; i < 6; ++i)

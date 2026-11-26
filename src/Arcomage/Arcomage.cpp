@@ -1061,11 +1061,8 @@ void FillPlayerDeck() {
 }
 
 void InitalHandsFill() {
-    for (int i = 0; i < minimum_cards_at_hand; ++i) {
-        // GetNextCardFromDeck(0);
-        // GetNextCardFromDeck(1);
+    for (int i = 0; i < minimum_cards_at_hand; ++i)
         GetNextCardFromDeck(Player_Gets_First_Turn);
-    }
 }
 
 void GetNextCardFromDeck(int player_num) {
@@ -1883,10 +1880,8 @@ void DrawCardAnimation(int animation_stage) {
 
         // 15 -> 6 hold and play card
         if (animation_stage > 5) {
-            if (animation_stage == 15) {
-                // card arrived at centre - execute effects
+            if (animation_stage == 15) // Card arrived at center, execute effects.
                 ApplyCardToPlayer(current_player_num, played_card_id);
-            }
 
             // draw in centre
             pArcomageGame->GetCardRect(played_card_id, &pSrcXYZW);

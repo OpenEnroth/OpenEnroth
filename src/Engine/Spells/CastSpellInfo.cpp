@@ -127,16 +127,12 @@ void CastSpellInfoHelpers::castSpell() {
         if (pCastSpell->uSpellID == SPELL_NONE)
             continue;  // spell item blank skip to next
 
-        if (pParty->Invisible()) {
-            // casting a spell breaks invisibility
-            pParty->pPartyBuffs[PARTY_BUFF_INVISIBILITY].Reset();
-        }
+        if (pParty->Invisible())
+            pParty->pPartyBuffs[PARTY_BUFF_INVISIBILITY].Reset(); // Casting a spell breaks invisibility.
 
         if (pCastSpell->flags & ON_CAST_CastingInProgress) {
-            if (!pParty->pCharacters[pCastSpell->casterCharacterIndex].CanAct()) {
-                // this cancels the spell cast if the character can no longer act
+            if (!pParty->pCharacters[pCastSpell->casterCharacterIndex].CanAct())
                 cancelSpellCastInProgress();
-            }
             continue;
         }
 
@@ -2529,7 +2525,7 @@ void CastSpellInfoHelpers::castSpell() {
                     pParty->pPartyBuffs[PARTY_BUFF_STONE_SKIN]
                         .Apply(pParty->GetPlayingTime() + other_duration, spell_mastery, target_skill_level, 0, -1);
                     if (!player_weak) {
-                        // Spell power was changed to 0 because it is not used in Haste buff
+                        // Spell power is 0 because it is not used in Haste buff.
                         pParty->pPartyBuffs[PARTY_BUFF_HASTE]
                             .Apply(pParty->GetPlayingTime() + haste_duration, spell_mastery, 0, 0, -1);
                     }
@@ -2620,11 +2616,8 @@ void CastSpellInfoHelpers::castSpell() {
                     pSpellSprite.vPosition = pActors[monster_id].pos - Vec3f(0, 0, pActors[monster_id].height * -0.8);
                     pSpellSprite.spell_target_pid = Pid(OBJECT_Actor, monster_id);
                     pSpellSprite.Create(0, 0, 0, 0);
-                    if (pActors[monster_id].monsterInfo.level > target_monster_level) {
-                        // Spell is still considered casted successfully, only monster level
-                        // is too high to actually ressurect it.
-                        break;
-                    }
+                    if (pActors[monster_id].monsterInfo.level > target_monster_level)
+                        break; // The spell still counts as cast.
                     Actor::resurrect(monster_id);
                     if (pActors[monster_id].hp > zombie_hp_limit)
                         pActors[monster_id].hp = zombie_hp_limit;

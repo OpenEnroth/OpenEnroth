@@ -1947,10 +1947,8 @@ void UI_OnMouseRightClick(Pointi mousePos) {
 
 //----- (00416196) --------------------------------------------------------
 void Inventory_ItemPopupAndAlchemy() {
-    if (rightClickItemActionPerformed) {
-        // Forbid doing anything until right click has beed released
-        return;
-    }
+    if (rightClickItemActionPerformed)
+        return; // Forbid doing anything until the right click has been released.
 
     InventoryEntry entry;
 

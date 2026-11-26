@@ -432,10 +432,8 @@ void GameWindowHandler::OnToggleWindowMode() {
 void GameWindowHandler::handleKeyPress(PlatformKey key, PlatformModifiers mods, bool isAutoRepeat) {
     bool hotkeyHandled = OnChar(key, -1);
 
-    if (!isAutoRepeat) {
-        // Do not use autorepeat for game actions, only for text input
+    if (!isAutoRepeat) // Do not use autorepeat for game actions, only for text input.
         OnKey(key);
-    }
 
     char c = PlatformKeyToChar(key, mods);
 

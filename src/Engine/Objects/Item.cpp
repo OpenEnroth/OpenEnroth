@@ -626,10 +626,8 @@ void Item::GetItemBonusArtifact(const Character *owner,
 
 Skill Item::skill() const {
     Skill result = pItemTable->items[this->itemId].skill;
-    if (result == SKILL_CLUB && engine->config->gameplay.TreatClubAsMace.value()) {
-        // club skill not used but some items load it.
-        result = SKILL_MACE;
-    }
+    if (result == SKILL_CLUB && engine->config->gameplay.TreatClubAsMace.value())
+        result = SKILL_MACE; // Club skill isn't used, but some items have it.
     return result;
 }
 

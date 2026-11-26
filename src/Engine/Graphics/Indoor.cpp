@@ -337,10 +337,8 @@ int IndoorLocation::GetSector(float sX, float sY, float sZ) {
     if (uCurrentlyLoadedLevelType != LEVEL_INDOOR)
         return 0;
 
-    if (sectors.size() < 2) {
-        // assert(false);
+    if (sectors.size() < 2)
         return 0;
-    }
 
     gch::small_vector<uint16_t, 32> foundFaces; // Floor faces whose horizontal projection contains the point.
     int backupboundingsector = 0;
@@ -1672,10 +1670,8 @@ int SpawnEncounterMonsters(MapData *mapData, int enc_index) {
                 // check proposed floor level
                 indoor_floor_level = BLV_GetFloorLevel(enc_spawn_point.position, mon_sectorID);
                 enc_spawn_point.position.z = indoor_floor_level;
-                if (indoor_floor_level != -30000) {
-                    // break if spanwn point is okay
-                    if (std::abs(indoor_floor_level - pParty->pos.z) <= 1024) break;
-                }
+                if (indoor_floor_level != -30000 && std::abs(indoor_floor_level - pParty->pos.z) <= 1024)
+                    break; // Spawn point is okay.
             }
         }
         failed_point = loop_cnt == 100;

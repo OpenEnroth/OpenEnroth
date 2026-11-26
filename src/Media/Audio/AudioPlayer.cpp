@@ -299,11 +299,8 @@ void AudioPlayer::playSound(SoundId eSoundID, SoundPlaybackMode mode, Pid pid) {
         }
     }
 
-    if (result == SOUND_PLAYBACK_FAILED || result == SOUND_PLAYBACK_SUCCEEDED) {
-        // Only log sounds that actually play or tried to play
-        if (engine->callObserver)
-            engine->callObserver->notify(CALL_PLAY_SOUND, eSoundID);
-    }
+    if ((result == SOUND_PLAYBACK_FAILED || result == SOUND_PLAYBACK_SUCCEEDED) && engine->callObserver)
+        engine->callObserver->notify(CALL_PLAY_SOUND, eSoundID);
 
     switch (result) {
         case SOUND_PLAYBACK_FAILED:

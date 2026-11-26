@@ -1773,7 +1773,6 @@ Duration Character::GetAttackRecoveryTime(bool attackUsesBow) const {
             (weapon->skill() == SKILL_SWORD ||
              weapon->skill() == SKILL_AXE ||
              weapon->skill() == SKILL_BOW)) {
-            // Expert Sword, Axe & Bow reduce recovery
             if (weaponSkill.mastery() >= MASTERY_EXPERT)
                 sword_axe_bow_recovery_reduction = Duration::fromTicks(weaponSkill.level());
         }
@@ -2450,10 +2449,8 @@ int Character::GetMagicalBonus(Attribute a2) const {
 
 //----- (0048F882) --------------------------------------------------------
 int Character::actualSkillLevel(Skill skill) const {
-    if (skill == SKILL_CLUB && engine->config->gameplay.TreatClubAsMace.value()) {
-        // some items loaded in as clubs
-        skill = SKILL_MACE;
-    }
+    if (skill == SKILL_CLUB && engine->config->gameplay.TreatClubAsMace.value())
+        skill = SKILL_MACE; // Some items are loaded as clubs.
 
     // Vanilla returned 0 for CHARACTER_SKILL_MISC here, we return 1.
     int base = getSkillValue(skill).level();

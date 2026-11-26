@@ -2219,13 +2219,8 @@ void Actor::PrepareSprites(char load_sounds_if_bit1_set) {
 
     v3 = &pMonsterList->monsters[monsterInfo.id];
     v9 = &pMonsterStats->infos[monsterInfo.id /*- 1 + 1*/];
-    // v12 = pSpriteIDs;
-    // Source = (char *)v3->pSpriteNames;
-    // do
-    for (ActorAnimation i : spriteIds.indices()) {
-        // strcpy(pSpriteName, v3->pSpriteNames[i]);
+    for (ActorAnimation i : spriteIds.indices())
         spriteIds[i] = pSpriteFrameTable->FastFindSprite(v3->spriteNames[i]);
-    }
     height = v3->monsterHeight;
     radius = v3->monsterRadius;
     moveSpeed = v9->baseSpeed;
@@ -4320,11 +4315,9 @@ void evaluateAoeDamage() {
                     int attackRangeSq = (attack.attackRange + 32) * (attack.attackRange + 32);
 
                     // check range
-                    if (distanceSq < attackRangeSq) {
-                        // check line of sight
+                    if (distanceSq < attackRangeSq)
                         if (Check_LineOfSight(pParty->pos + Vec3f(0, 0, pParty->eyeLevel), attack.pos))
                             DamageCharacterFromMonster(attack.pid, attack.attackSpecial, stru_50C198.which_player_to_attack(&pActors[attackerId]));
-                    }
                 }
             } else {  // Actor (peasant) damage from monsters
                 if (actor->CanBeDamaged()) {
@@ -4336,11 +4329,9 @@ void evaluateAoeDamage() {
                     attackVector.normalize();
 
                     // check range
-                    if (distanceSq < attackRangeSq) {
-                        // check line of sight
+                    if (distanceSq < attackRangeSq)
                         if (Check_LineOfSight(actor->pos + Vec3f(0, 0, 50), attack.pos))
                             Actor::ActorDamageFromMonster(attack.pid, targetId, attackVector, attack.attackSpecial);
-                    }
                 }
             }
         } else {  // damage from AOE spells
@@ -4349,7 +4340,6 @@ void evaluateAoeDamage() {
 
             // check spell in range of party
             if (distanceSq < attackRangeSq) {  // party damage
-                // check line of sight to party
                 if (Check_LineOfSight(pParty->pos + Vec3f(0, 0, pParty->eyeLevel), attack.pos)) {
                     for (int i = 0; i < pParty->pCharacters.size(); i++)
                         if (pParty->pCharacters[i].conditions.hasNone({CONDITION_DEAD, CONDITION_PETRIFIED, CONDITION_ERADICATED}))

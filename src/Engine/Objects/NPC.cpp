@@ -21,6 +21,8 @@
 
 bool CheckPortretAgainstSex(int portret_num, int sex);
 
+// TODO(captainurist): move these two to CharacterEnums.h, next to Condition.
+
 // All conditions for alive character excluding zombie
 static const Segment<Condition> standardConditionsExcludeDead = {CONDITION_CURSED, CONDITION_UNCONSCIOUS};
 
@@ -121,11 +123,9 @@ int UseNPCSkill(NpcProfession profession, int id) {
         case NPC_PROFESSION_MASTER_HEALER: {
             for (Character &player : pParty->pCharacters) {
                 player.health = player.GetMaxHealth();
-                for (Condition condition : standardConditionsIncludeDead) {
-                    // Master healer heals all except Eradicated and zombie
+                for (Condition condition : standardConditionsIncludeDead) // Cures all but eradicated and zombie.
                     if (condition != CONDITION_ERADICATED)
                         player.conditions.reset(condition);
-                }
                 player.playReaction(SPEECH_TEMPLE_HEAL);
             }
             pAudioPlayer->playExclusiveSound(SOUND_heal);
