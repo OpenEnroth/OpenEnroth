@@ -13,11 +13,11 @@ EmbeddedFileSystem::EmbeddedFileSystem(cmrc::embedded_filesystem base, std::stri
 EmbeddedFileSystem::~EmbeddedFileSystem() = default;
 
 bool EmbeddedFileSystem::_exists(FileSystemPathView path) const {
-    return _base.exists(std::string(path.string()));
+    return _base.exists(std::string(path.str()));
 }
 
 FileStat EmbeddedFileSystem::_stat(FileSystemPathView path) const {
-    std::string stringPath(path.string());
+    std::string stringPath(path.str());
 
     if (!_base.exists(stringPath))
         return {};
@@ -30,20 +30,20 @@ FileStat EmbeddedFileSystem::_stat(FileSystemPathView path) const {
 }
 
 void EmbeddedFileSystem::_ls(FileSystemPathView path, std::vector<DirectoryEntry> *entries) const {
-    for (const cmrc::directory_entry &entry : _base.iterate_directory(std::string(path.string())))
+    for (const cmrc::directory_entry &entry : _base.iterate_directory(std::string(path.str())))
         entries->push_back(DirectoryEntry(entry.filename(), entry.is_file() ? FILE_REGULAR : FILE_DIRECTORY));
 }
 
 Blob EmbeddedFileSystem::_read(FileSystemPathView path) const {
-    cmrc::file file = _base.open(std::string(path.string()));
+    cmrc::file file = _base.open(std::string(path.str()));
     return Blob::view(file.begin(), file.size()).withDisplayPath(displayPath(path));
 }
 
 std::unique_ptr<InputStream> EmbeddedFileSystem::_openForReading(FileSystemPathView path) const {
-    cmrc::file file = _base.open(std::string(path.string()));
+    cmrc::file file = _base.open(std::string(path.str()));
     return std::make_unique<MemoryInputStream>(file.begin(), file.size(), displayPath(path));
 }
 
 std::string EmbeddedFileSystem::_displayPath(FileSystemPathView path) const {
-    return join(_displayName, "://", txt::encodedToUtf8(path.string(), ENCODING_UTF8)); // Replaces invalid UTF8.
+    return join(_displayName, "://", txt::encodedToUtf8(path.str(), ENCODING_UTF8)); // Replaces invalid UTF8.
 }

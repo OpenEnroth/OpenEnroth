@@ -6,47 +6,47 @@
 #include "Library/FileSystem/Interface/FileSystemPath.h"
 
 UNIT_TEST(FileSystemPath, Normalization) {
-    EXPECT_EQ(FileSystemPath("foo/bar").string(), "foo/bar");
-    EXPECT_EQ(FileSystemPath("/foo/bar").string(), "foo/bar");
-    EXPECT_EQ(FileSystemPath("foo/bar/").string(), "foo/bar");
-    EXPECT_EQ(FileSystemPath("/foo/bar/").string(), "foo/bar");
-    EXPECT_EQ(FileSystemPath("/foo//bar/").string(), "foo/bar");
-    EXPECT_EQ(FileSystemPath("//foo//bar//").string(), "foo/bar");
+    EXPECT_EQ(FileSystemPath("foo/bar").str(), "foo/bar");
+    EXPECT_EQ(FileSystemPath("/foo/bar").str(), "foo/bar");
+    EXPECT_EQ(FileSystemPath("foo/bar/").str(), "foo/bar");
+    EXPECT_EQ(FileSystemPath("/foo/bar/").str(), "foo/bar");
+    EXPECT_EQ(FileSystemPath("/foo//bar/").str(), "foo/bar");
+    EXPECT_EQ(FileSystemPath("//foo//bar//").str(), "foo/bar");
 
-    EXPECT_EQ(FileSystemPath("..").string(), "..");
-    EXPECT_EQ(FileSystemPath("../..").string(), "../..");
-    EXPECT_EQ(FileSystemPath("/../..").string(), "../..");
-    EXPECT_EQ(FileSystemPath("../../").string(), "../..");
-    EXPECT_EQ(FileSystemPath("/../../").string(), "../..");
-    EXPECT_EQ(FileSystemPath("//..//..//").string(), "../..");
+    EXPECT_EQ(FileSystemPath("..").str(), "..");
+    EXPECT_EQ(FileSystemPath("../..").str(), "../..");
+    EXPECT_EQ(FileSystemPath("/../..").str(), "../..");
+    EXPECT_EQ(FileSystemPath("../../").str(), "../..");
+    EXPECT_EQ(FileSystemPath("/../../").str(), "../..");
+    EXPECT_EQ(FileSystemPath("//..//..//").str(), "../..");
 
-    EXPECT_EQ(FileSystemPath("").string(), "");
-    EXPECT_EQ(FileSystemPath("/").string(), "");
-    EXPECT_EQ(FileSystemPath("//").string(), "");
-    EXPECT_EQ(FileSystemPath("/////////").string(), "");
-    EXPECT_EQ(FileSystemPath(".").string(), "");
-    EXPECT_EQ(FileSystemPath("/.").string(), "");
-    EXPECT_EQ(FileSystemPath("./").string(), "");
-    EXPECT_EQ(FileSystemPath("/./").string(), "");
-    EXPECT_EQ(FileSystemPath("//.//").string(), "");
+    EXPECT_EQ(FileSystemPath("").str(), "");
+    EXPECT_EQ(FileSystemPath("/").str(), "");
+    EXPECT_EQ(FileSystemPath("//").str(), "");
+    EXPECT_EQ(FileSystemPath("/////////").str(), "");
+    EXPECT_EQ(FileSystemPath(".").str(), "");
+    EXPECT_EQ(FileSystemPath("/.").str(), "");
+    EXPECT_EQ(FileSystemPath("./").str(), "");
+    EXPECT_EQ(FileSystemPath("/./").str(), "");
+    EXPECT_EQ(FileSystemPath("//.//").str(), "");
 
-    EXPECT_EQ(FileSystemPath("foo/bar/.").string(), "foo/bar");
-    EXPECT_EQ(FileSystemPath("foo/./bar").string(), "foo/bar");
-    EXPECT_EQ(FileSystemPath("./foo/bar").string(), "foo/bar");
-    EXPECT_EQ(FileSystemPath("./foo/./bar/.").string(), "foo/bar");
+    EXPECT_EQ(FileSystemPath("foo/bar/.").str(), "foo/bar");
+    EXPECT_EQ(FileSystemPath("foo/./bar").str(), "foo/bar");
+    EXPECT_EQ(FileSystemPath("./foo/bar").str(), "foo/bar");
+    EXPECT_EQ(FileSystemPath("./foo/./bar/.").str(), "foo/bar");
 
-    EXPECT_EQ(FileSystemPath("foo/bar/..").string(), "foo");
-    EXPECT_EQ(FileSystemPath("//foo//bar//..//").string(), "foo");
-    EXPECT_EQ(FileSystemPath("foo/../bar").string(), "bar");
-    EXPECT_EQ(FileSystemPath("//foo//..//bar//").string(), "bar");
-    EXPECT_EQ(FileSystemPath("../foo/bar").string(), "../foo/bar");
-    EXPECT_EQ(FileSystemPath("//..//foo//bar//").string(), "../foo/bar");
+    EXPECT_EQ(FileSystemPath("foo/bar/..").str(), "foo");
+    EXPECT_EQ(FileSystemPath("//foo//bar//..//").str(), "foo");
+    EXPECT_EQ(FileSystemPath("foo/../bar").str(), "bar");
+    EXPECT_EQ(FileSystemPath("//foo//..//bar//").str(), "bar");
+    EXPECT_EQ(FileSystemPath("../foo/bar").str(), "../foo/bar");
+    EXPECT_EQ(FileSystemPath("//..//foo//bar//").str(), "../foo/bar");
 
-    EXPECT_EQ(FileSystemPath("foo/bar/../..").string(), "");
-    EXPECT_EQ(FileSystemPath("foo/../../bar").string(), "../bar");
-    EXPECT_EQ(FileSystemPath("../../foo/bar").string(), "../../foo/bar");
+    EXPECT_EQ(FileSystemPath("foo/bar/../..").str(), "");
+    EXPECT_EQ(FileSystemPath("foo/../../bar").str(), "../bar");
+    EXPECT_EQ(FileSystemPath("../../foo/bar").str(), "../../foo/bar");
 
-    EXPECT_EQ(FileSystemPath("foo/.../bar/...").string(), "foo/.../bar/...");
+    EXPECT_EQ(FileSystemPath("foo/.../bar/...").str(), "foo/.../bar/...");
 }
 
 UNIT_TEST(FileSystemPath, EmptyChunks) {
@@ -67,20 +67,20 @@ UNIT_TEST(FileSystemPath, Tail) {
     };
 
     const auto [tail0, tail1] = tails(path, "a");
-    EXPECT_EQ(tail0.string(), "a/b/c");
-    EXPECT_EQ(tail1.string(), "b/c");
+    EXPECT_EQ(tail0.str(), "a/b/c");
+    EXPECT_EQ(tail1.str(), "b/c");
 
     const auto [tail2, tail3] = tails(path, "b");
-    EXPECT_EQ(tail2.string(), "b/c");
-    EXPECT_EQ(tail3.string(), "c");
+    EXPECT_EQ(tail2.str(), "b/c");
+    EXPECT_EQ(tail3.str(), "c");
 
     const auto [tail4, tail5] = tails(path, "c");
-    EXPECT_EQ(tail4.string(), "c");
-    EXPECT_EQ(tail5.string(), "");
+    EXPECT_EQ(tail4.str(), "c");
+    EXPECT_EQ(tail5.str(), "");
 
     const auto [tail6, tail7] = tails(path, "d");
-    EXPECT_EQ(tail6.string(), "");
-    EXPECT_EQ(tail7.string(), "");
+    EXPECT_EQ(tail6.str(), "");
+    EXPECT_EQ(tail7.str(), "");
 }
 
 UNIT_TEST(FileSystemPath, TailAfterRoot) {
@@ -92,8 +92,8 @@ UNIT_TEST(FileSystemPath, TailAfterRoot) {
 
 UNIT_TEST(FileSystemPath, Appended) {
     auto testOne = [] (std::string_view l, std::string_view r, std::string_view result) {
-        EXPECT_EQ((FileSystemPath(l) / FileSystemPath(r)).string(), result);
-        EXPECT_EQ((FileSystemPath(l) / r).string(), result);
+        EXPECT_EQ((FileSystemPath(l) / FileSystemPath(r)).str(), result);
+        EXPECT_EQ((FileSystemPath(l) / r).str(), result);
     };
 
     testOne("", "", "");
@@ -107,33 +107,33 @@ UNIT_TEST(FileSystemPath, Appended) {
 UNIT_TEST(FileSystemPath, Append) {
     FileSystemPath path0("");
     path0 /= "";
-    EXPECT_EQ(path0.string(), "");
+    EXPECT_EQ(path0.str(), "");
 
     FileSystemPath path1("");
     path1 /= "a";
-    EXPECT_EQ(path1.string(), "a");
+    EXPECT_EQ(path1.str(), "a");
 
     FileSystemPath path2("a");
     path2 /= "";
-    EXPECT_EQ(path2.string(), "a");
+    EXPECT_EQ(path2.str(), "a");
 
     FileSystemPath path3("a");
     path3 /= "b";
-    EXPECT_EQ(path3.string(), "a/b");
+    EXPECT_EQ(path3.str(), "a/b");
 
     FileSystemPath path4("a/b");
     path4 /= "c";
-    EXPECT_EQ(path4.string(), "a/b/c");
+    EXPECT_EQ(path4.str(), "a/b/c");
 
     FileSystemPath path5("a/b");
     path5 /= FileSystemPath("c/d");
-    EXPECT_EQ(path5.string(), "a/b/c/d");
+    EXPECT_EQ(path5.str(), "a/b/c/d");
 }
 
 UNIT_TEST(FileSystemPath, AppendedEscaping) {
     auto testOne = [] (std::string_view l, std::string_view r, std::string_view result) {
-        EXPECT_EQ((FileSystemPath(l) / FileSystemPath(r)).string(), result);
-        EXPECT_EQ((FileSystemPath(l) / r).string(), result);
+        EXPECT_EQ((FileSystemPath(l) / FileSystemPath(r)).str(), result);
+        EXPECT_EQ((FileSystemPath(l) / r).str(), result);
     };
 
     testOne("..", "..", "../..");
@@ -157,7 +157,7 @@ UNIT_TEST(FileSystemPath, AppendedEscaping) {
 UNIT_TEST(FileSystemPath, Decomposition) {
     auto testOne = [](std::string_view path, std::string_view parent, std::string_view name, std::string_view stem, std::string_view ext) {
         FileSystemPath fsPath(path);
-        EXPECT_EQ(fsPath.parent().string(), parent) << "for " << path;
+        EXPECT_EQ(fsPath.parent().str(), parent) << "for " << path;
         EXPECT_EQ(fsPath.name(), name) << "for " << path;
         EXPECT_EQ(fsPath.stem(), stem) << "for " << path;
         EXPECT_EQ(fsPath.extension(), ext) << "for " << path;

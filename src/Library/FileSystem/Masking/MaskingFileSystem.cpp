@@ -118,6 +118,6 @@ bool MaskingFileSystem::_remove(FileSystemPathView path) {
 
 std::string MaskingFileSystem::_displayPath(FileSystemPathView path) const {
     if (isMasked(path))
-        return join("masked://", txt::encodedToUtf8(path.string(), ENCODING_UTF8)); // Replaces invalid UTF8.
+        return join("masked://", txt::encodedToUtf8(path.str(), ENCODING_UTF8)); // Replaces invalid UTF8.
     return ProxyFileSystem::_displayPath(path);
 }

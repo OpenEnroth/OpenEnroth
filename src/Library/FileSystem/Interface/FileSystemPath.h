@@ -25,10 +25,10 @@ class FileSystemPath {
  public:
     explicit FileSystemPath(std::string_view path);
 
-    explicit FileSystemPath(FileSystemPathView path) : _path(path.string()) {}
+    explicit FileSystemPath(FileSystemPathView path) : _path(path.str()) {}
 
     static FileSystemPath fromNormalized(std::string path) {
-        assert(FileSystemPath(path).string() == path);
+        assert(FileSystemPath(path).str() == path);
 
         FileSystemPath result;
         result._path = std::move(path);
@@ -55,7 +55,7 @@ class FileSystemPath {
         return FileSystemPathView(*this).isEscaping();
     }
 
-    [[nodiscard]] const std::string &string() const {
+    [[nodiscard]] const std::string &str() const {
         return _path;
     }
 
@@ -103,14 +103,14 @@ struct std::hash<FileSystemPath> : std::hash<std::string> {
     using base_type = std::hash<std::string>;
 
     auto operator()(const FileSystemPath &path) const {
-        return base_type::operator()(path.string());
+        return base_type::operator()(path.str());
     }
 };
 
-inline FileSystemPathView::FileSystemPathView(const FileSystemPath &path) : _path(path.string()) {}
+inline FileSystemPathView::FileSystemPathView(const FileSystemPath &path) : _path(path.str()) {}
 
 inline FileSystemPathView FileSystemPathView::fromNormalized(std::string_view path) {
-    assert(FileSystemPath(path).string() == path); // Should be normalized.
+    assert(FileSystemPath(path).str() == path); // Should be normalized.
 
     FileSystemPathView result;
     result._path = path;
