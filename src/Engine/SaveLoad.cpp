@@ -186,7 +186,7 @@ std::pair<SaveGameHeader, Blob> createSaveData(bool resetWorld, std::string_view
         std::string deltaName = currentMapName;
         size_t pos = deltaName.find_last_of('.');
         deltaName[pos + 1] = 'd';
-        state.mapDeltas[deltaName] = lod::encodeCompressed(uncompressed);
+        state.mapDeltas[deltaName] = lod::encodeCompressedDataMm7(uncompressed);
     }
 
     // Capture thumbnail.

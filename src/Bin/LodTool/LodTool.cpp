@@ -58,7 +58,8 @@ static bool isArchive(MagicFileFormat format) {
 }
 
 static bool isCompressed(MagicFileFormat format) {
-    return format == MAGIC_LOD_COMPRESSED_DATA || format == MAGIC_LOD_COMPRESSED_PSEUDO_IMAGE;
+    return format == MAGIC_LOD_COMPRESSED_DATA_MM7 ||
+           format == MAGIC_LOD_COMPRESSED_PSEUDO_IMAGE_MM6;
 }
 
 static Blob readFile(PathView path) {
@@ -90,18 +91,18 @@ static Blob convertToPng(const Blob &data, PathView palettesLodPath) {
         return Blob::share(data);
     case MAGIC_PCX:
         return png::encode(pcx::decode(data));
-    case MAGIC_LOD_IMAGE: {
+    case MAGIC_LOD_IMAGE_MM6: {
         LodImage lodImage = lod::decodeImage(data);
         return png::encode(makeRgbaImage(lodImage.image, lodImage.palette));
     }
-    case MAGIC_LOD_PALETTE: {
-        LodImage lodImage = lod::decodeImage(data);
+    case MAGIC_LOD_PALETTE_MM6: {
+        Palette palette = lod::decodePalette(data);
         RgbaImage palImage = RgbaImage::uninitialized(256, 1);
         for (size_t i = 0; i < 256; i++)
-            palImage[0][i] = lodImage.palette.colors[i];
+            palImage[0][i] = palette.colors[i];
         return png::encode(palImage);
     }
-    case MAGIC_LOD_SPRITE: {
+    case MAGIC_LOD_SPRITE_MM6: {
         LodSprite lodSprite = lod::decodeSprite(data);
         if (palettesLodPath.isEmpty())
             return png::encode(lodSprite.image);
@@ -110,7 +111,8 @@ static Blob convertToPng(const Blob &data, PathView palettesLodPath) {
         Palette palette = lod::decodePalette(paletteReader->read(fmt::format("pal{:03}", lodSprite.paletteId)));
         return png::encode(makeRgbaImage(lodSprite.image, palette));
     }
-    case MAGIC_LOD_FONT:
+    case MAGIC_LOD_FONT_MM6:
+    case MAGIC_LOD_FONT_MMX:
         return png::encode(renderFont(lod::decodeFont(data)));
     default:
         throw Exception("Can't convert {} '{}' to png", formatDescription(magic(data)), data.displayPath());

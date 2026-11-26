@@ -44,13 +44,15 @@ levels. With it, it's drawn in the default palette. For monsters that palette ha
 background and magenta in the recolored parts, so it's not what the game shows. Read the resulting PNG to see the
 image.
 
-`magic` prints one line. For compressed data it names the format inside too, as in
-`LOD compressed file containing raw data` for an MM7 map.
+`magic` prints one line, naming the format inside compressed data too. Formats are named after the game that
+introduced them, so an MM7 map shows up as `LOD compressed data (MM7 format) containing raw data`, an MM7 icon as
+`LOD image (MM6 format)`, and a font as `LOD compressed pseudo image (MM6 format) containing LOD font (MM6 format)`.
+The layout of `calig.fnt` is named MMZ, since no game is known to have introduced it.
 
 ## What's where
 
-From a full `magic` scan of every archive in all three games. "Compressed" means `magic` prints
-`LOD compressed file` or `LOD compressed pseudo image`, and `cat` decompresses it.
+From a full `magic` scan of every archive in all three games. "Compressed" means the format `magic`
+prints has `LOD compressed` in its name, and `cat` decompresses it.
 
 | Data | MM6 | MM7 | MM8 |
 |---|---|---|---|

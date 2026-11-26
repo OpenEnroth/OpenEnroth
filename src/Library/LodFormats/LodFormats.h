@@ -1,6 +1,5 @@
 #pragma once
 
-#include "LodFont.h"
 #include "Library/Image/Palette.h"
 #include "Library/Geometry/Size.h"
 
@@ -10,102 +9,169 @@
 
 class Blob;
 
+/**
+ * Functions for the formats stored inside LOD archives.
+ *
+ * Each format gets its own `detectXyzMm6` and `decodeXyzMm6` pair, suffixed with the game that introduced it, and the
+ * unsuffixed `detectXyz` and `decodeXyz` take every format of their kind. Encoding writes one specific format, so
+ * encode functions are always suffixed. The `calig.fnt` font layout is named MMZ, since no game introduced it.
+ */
 namespace lod {
 
+bool detectCompressedDataMm7(const Blob &blob);
 bool detectCompressedData(const Blob &blob);
+bool detectCompressedPseudoImageMm6(const Blob &blob);
 bool detectCompressedPseudoImage(const Blob &blob);
-bool detectImage(const Blob &blob, bool *isPalette = nullptr);
+bool detectImageMm6(const Blob &blob);
+bool detectImage(const Blob &blob);
+bool detectPaletteMm6(const Blob &blob);
+bool detectPalette(const Blob &blob);
+bool detectSpriteMm6(const Blob &blob);
 bool detectSprite(const Blob &blob);
+bool detectFontMm6(const Blob &blob);
+bool detectFontMmz(const Blob &blob);
 bool detectFont(const Blob &blob);
 
 /**
- * This function processes compressed lod data.
- *
- * @param blob                          `Blob` from a LOD file.
- * @return                              Uncompressed `Palette`.
+ * @param blob                          MM7 compressed data, 91969 and "mvii" followed by the packed and unpacked
+ *                                      sizes and zlib data.
+ * @return                              Uncompressed data.
+ * @throw Exception                     If the format is not recognized.
+ */
+Blob decodeCompressedDataMm7(const Blob &blob);
+
+/**
+ * @param blob                          LOD compressed data in any format.
+ * @return                              Uncompressed data.
  * @throw Exception                     If the format is not recognized.
  */
 Blob decodeCompressedData(const Blob &blob);
 
 /**
- * This function processes compressed lod pseudo-images.
- *
- * @param blob                          `Blob` from a LOD file.
- * @return                              Uncompressed `Palette`.
+ * @param blob                          MM6 compressed pseudo image, an image header without an image, followed by
+ *                                      zlib data.
+ * @return                              Uncompressed data.
+ * @throw Exception                     If the format is not recognized.
+ */
+Blob decodeCompressedPseudoImageMm6(const Blob &blob);
+
+/**
+ * @param blob                          LOD compressed pseudo image in any format.
+ * @return                              Uncompressed data.
  * @throw Exception                     If the format is not recognized.
  */
 Blob decodeCompressedPseudoImage(const Blob &blob);
 
 /**
- * This functions processes compressed lod data, and compressed lod pseudo-images.
- *
- * For everything else it just does nothing and returns the blob as is.
+ * Decodes every compressed format above, and returns everything else as is.
  *
  * @param blob                          `Blob` from a LOD file.
  * @return                              Uncompressed `Blob`.
- * @throw Exception                     If the format is not recognized.
+ * @throw Exception                     If the data is compressed, but can't be decompressed.
  */
 Blob decodeMaybeCompressed(const Blob &blob);
 
 /**
- * This function compresses the provided `Blob` into the compressed lod data format.
- *
  * @param blob                          `Blob` to compress.
- * @return                              Compressed `Blob`.
+ * @return                              MM7 compressed data, as `decodeCompressedDataMm7` reads it.
  */
-Blob encodeCompressed(const Blob &blob);
+Blob encodeCompressedDataMm7(const Blob &blob);
 
 /**
- * This function processes lod images and lod palettes. In case of the former, the pixel data is ignored.
- *
- * @param blob                          `Blob` from a LOD file.
- * @return                              Decoded `Palette`.
+ * @param blob                          MM6 image, as read from a LOD file.
+ * @return                              Decoded `LodImage`.
  * @throw Exception                     If the format is not recognized.
  */
-Palette decodePalette(const Blob &blob);
+LodImage decodeImageMm6(const Blob &blob);
 
 /**
- * This function processes lod images and lod palettes. In case of the latter, the pixel data will be empty.
- *
- * @param blob                          Image `Blob`, as read from a LOD file.
+ * @param blob                          LOD image in any format, as read from a LOD file.
  * @return                              Decoded `LodImage`.
  * @throw Exception                     If the format is not recognized.
  */
 LodImage decodeImage(const Blob &blob);
 
 /**
- * This function processes lod images and lod palettes. It reads the image header and returns image size w/o
- * decompressing the pixel data. For lod palettes returned image size will be zero.
+ * Reads the image header and returns the image size without decompressing the pixel data.
  *
- * @param blob                          Image `Blob`, as read from a LOD file.
+ * @param blob                          MM6 image, as read from a LOD file.
+ * @return                              Image size.
+ * @throw Exception                     If the format is not recognized.
+ */
+Sizei decodeImageSizeMm6(const Blob &blob);
+
+/**
+ * Reads the image header and returns the image size without decompressing the pixel data.
+ *
+ * @param blob                          LOD image in any format, as read from a LOD file.
  * @return                              Image size.
  * @throw Exception                     If the format is not recognized.
  */
 Sizei decodeImageSize(const Blob &blob);
 
 /**
- * This function processes lod sprites.
- *
- * @param blob                          Sprite `blob`, as read from a LOD file.
+ * @param blob                          MM6 palette, an image header without an image followed by the palette, as
+ *                                      read from a LOD file.
+ * @return                              Decoded `Palette`.
+ * @throw Exception                     If the format is not recognized.
+ */
+Palette decodePaletteMm6(const Blob &blob);
+
+/**
+ * @param blob                          LOD palette in any format, as read from a LOD file.
+ * @return                              Decoded `Palette`.
+ * @throw Exception                     If the format is not recognized.
+ */
+Palette decodePalette(const Blob &blob);
+
+/**
+ * @param blob                          MM6 sprite, as read from a LOD file.
+ * @return                              Decoded `LodSprite`.
+ * @throw Exception                     If the format is not recognized.
+ */
+LodSprite decodeSpriteMm6(const Blob &blob);
+
+/**
+ * @param blob                          LOD sprite in any format, as read from a LOD file.
  * @return                              Decoded `LodSprite`.
  * @throw Exception                     If the format is not recognized.
  */
 LodSprite decodeSprite(const Blob &blob);
 
 /**
- * This function processes lod sprites. It reads the sprite header and returns sprite size w/o decompressing the pixel
- * data.
+ * Reads the sprite header and returns the sprite size without decompressing the pixel data.
  *
- * @param blob                          Sprite `Blob`, as read from a LOD file.
+ * @param blob                          MM6 sprite, as read from a LOD file.
+ * @return                              Sprite size.
+ * @throw Exception                     If the format is not recognized.
+ */
+Sizei decodeSpriteSizeMm6(const Blob &blob);
+
+/**
+ * Reads the sprite header and returns the sprite size without decompressing the pixel data.
+ *
+ * @param blob                          LOD sprite in any format, as read from a LOD file.
  * @return                              Sprite size.
  * @throw Exception                     If the format is not recognized.
  */
 Sizei decodeSpriteSize(const Blob &blob);
 
 /**
- * This function processes lod fonts.
- *
- * @param blob                          Font `blob`, as read from a LOD file.
+ * @param blob                          MM6 font, as read from a LOD file and decompressed.
+ * @return                              Decoded `LodFont`.
+ * @throw Exception                     If the format is not recognized.
+ */
+LodFont decodeFontMm6(const Blob &blob);
+
+/**
+ * @param blob                          MMZ font, the layout of `calig.fnt`, as read from a LOD file and decompressed.
+ * @return                              Decoded `LodFont`.
+ * @throw Exception                     If the format is not recognized.
+ */
+LodFont decodeFontMmz(const Blob &blob);
+
+/**
+ * @param blob                          LOD font in any format, as read from a LOD file and decompressed.
  * @return                              Decoded `LodFont`.
  * @throw Exception                     If the format is not recognized.
  */
