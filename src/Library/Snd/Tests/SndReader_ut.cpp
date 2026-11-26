@@ -129,7 +129,6 @@ static Blob makeSndBlobWithCorruptCompressedEntry(std::string_view content) {
 
 UNIT_TEST(SndReader, CorruptChecksumReturnsPartialData) {
     // SND entries with a corrupt zlib checksum should return recovered data, not an empty blob.
-    // This mirrors the real-world case of 02Flame01.wav in the GOG version of MM7.
     BufferLogSink sink;
     Logger testLogger(LOG_TRACE, &sink);
 
