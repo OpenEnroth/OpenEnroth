@@ -38,11 +38,11 @@ static void deserialize(InputStream &src, Palette *dst) {
 }
 
 bool lod::detectCompressedData(const Blob &blob) {
-    if (blob.size() < sizeof(LodCompressionHeader_MM6))
+    if (blob.size() < sizeof(LodCompressionHeader_MM7))
         return false;
 
     MemoryInputStream stream(blob.data(), blob.size());
-    LodCompressionHeader_MM6 header;
+    LodCompressionHeader_MM7 header;
     deserialize(stream, &header);
 
     return header.version == 91969 && memcmp(header.signature.data(), "mvii", 4) == 0;
@@ -126,7 +126,7 @@ Blob lod::decodeCompressedData(const Blob &blob) {
         throw Exception("Cannot decode LOD entry '{}' as LOD compressed data", blob.displayPath());
 
     BlobInputStream stream(blob);
-    LodCompressionHeader_MM6 header;
+    LodCompressionHeader_MM7 header;
     deserialize(stream, &header);
 
     Blob result;
@@ -169,7 +169,7 @@ Blob lod::decodeMaybeCompressed(const Blob &blob) {
 Blob lod::encodeCompressed(const Blob &blob) {
     Blob compressed = zlib::compress(blob);
 
-    LodCompressionHeader_MM6 header;
+    LodCompressionHeader_MM7 header;
     header.version = 91969;
     header.signature = {{'m', 'v', 'i', 'i'}};
     header.dataSize = compressed.size();
