@@ -1,4 +1,6 @@
+#include <cstddef>
 #include <cstdint>
+#include <cstring>
 #include <string>
 
 #include "Testing/Unit/UnitTest.h"
@@ -7,8 +9,11 @@
 #include "Library/LodFormats/LodFormats.h"
 #include "Library/LodFormats/LodFormatSnapshots.h"
 
+#include "Utility/Exception.h"
 #include "Utility/Memory/Blob.h"
 #include "Utility/Streams/BlobOutputStream.h"
+
+static const std::string testData = std::string(1000, 'x') + "map data";
 
 static Blob paletteMm6(int16_t paletteId) {
     LodImageHeader_MM6 header = LodImageHeader_MM6();
@@ -69,6 +74,33 @@ static Blob fontMmz() {
     stream.write(std::string(offset, '\xFF'));
     stream.close();
     return result;
+}
+
+UNIT_TEST(LodFormats, CompressedDataMm7) {
+    // MM7 compressed data round trips through encodeCompressedDataMm7.
+    Blob entry = lod::encodeCompressedDataMm7(Blob::fromString(testData));
+
+    EXPECT_TRUE(lod::detectCompressedDataMm7(entry));
+    EXPECT_EQ(lod::decodeMaybeCompressed(entry).str(), testData);
+}
+
+UNIT_TEST(LodFormats, CompressedDataMm7_BrokenChecksum) {
+    // Compressed data with a broken adler32 checksum after intact zlib data failed to decode.
+    std::string entry(lod::encodeCompressedDataMm7(Blob::fromString(testData)).str());
+    entry.back() ^= 0xFF;
+
+    EXPECT_EQ(lod::decodeMaybeCompressed(Blob::fromString(entry)).str(), testData);
+}
+
+UNIT_TEST(LodFormats, CompressedDataMm7_WrongSize) {
+    // Compressed data that didn't unpack into the size its header gives came back without complaint.
+    for (int delta : {-1, 1}) {
+        std::string entry(lod::encodeCompressedDataMm7(Blob::fromString(testData)).str());
+        uint32_t decompressedSize = testData.size() + delta;
+        memcpy(entry.data() + offsetof(LodCompressionHeader_MM7, decompressedSize), &decompressedSize, sizeof(decompressedSize));
+
+        EXPECT_THROW((void) lod::decodeMaybeCompressed(Blob::fromString(entry)), Exception);
+    }
 }
 
 UNIT_TEST(LodFormats, PaletteMm6) {

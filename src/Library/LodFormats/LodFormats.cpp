@@ -1,5 +1,6 @@
 #include "LodFormats.h"
 
+#include <cassert>
 #include <cstdint>
 #include <span>
 #include <vector>
@@ -35,6 +36,23 @@ static void deserialize(InputStream &src, Palette *dst) {
 
     for (size_t i = 0; i < 256; i++)
         dst->colors[i] = Color(rawPalette[i * 3], rawPalette[i * 3 + 1], rawPalette[i * 3 + 2]);
+}
+
+/**
+ * Inflates the zlib data of a LOD entry. A broken adler32 checksum is tolerated, since some entries carry one over
+ * intact data, and the unpacked size from the entry's header takes its place as the integrity check.
+ *
+ * @param blob                          LOD entry the data comes from, for error messages.
+ * @param compressed                    zlib data.
+ * @param decompressedSize              Unpacked size, as the entry's header gives it.
+ * @return                              Unpacked data.
+ * @throw Exception                     If the data doesn't unpack into exactly `decompressedSize` bytes.
+ */
+static Blob uncompressEntryData(const Blob &blob, const Blob &compressed, size_t decompressedSize) {
+    Blob result = zlib::uncompressBestEffort(compressed, decompressedSize);
+    if (result.size() != decompressedSize)
+        throw Exception("Cannot decode LOD entry '{}', its data unpacks into {} bytes instead of {}", blob.displayPath(), result.size(), decompressedSize);
+    return result.withDisplayPath(blob.displayPath());
 }
 
 /**
@@ -227,7 +245,7 @@ Blob lod::decodeCompressedDataMm7(const Blob &blob) {
         result = stream.readAsBlobOrFail(header.dataSize);
     }
     if (header.decompressedSize)
-        result = zlib::uncompress(result.withDisplayPath(blob.displayPath()), header.decompressedSize);
+        result = uncompressEntryData(blob, result, header.decompressedSize);
     return result.withDisplayPath(blob.displayPath());
 }
 
@@ -245,7 +263,7 @@ Blob lod::decodeCompressedPseudoImageMm6(const Blob &blob) {
 
     Blob result = stream.readAsBlobOrFail(header.dataSize);
     if (header.decompressedSize)
-        result = zlib::uncompress(result.withDisplayPath(blob.displayPath()), header.decompressedSize);
+        result = uncompressEntryData(blob, result, header.decompressedSize);
     return result.withDisplayPath(blob.displayPath());
 }
 
@@ -285,14 +303,9 @@ LodImage lod::decodeImageMm6(const Blob &blob) {
 
     Blob pixels = stream.readAsBlobOrFail(header.dataSize);
     if (header.decompressedSize)
-        pixels = zlib::uncompress(pixels.withDisplayPath(blob.displayPath()), header.decompressedSize);
+        pixels = uncompressEntryData(blob, pixels, header.decompressedSize);
 
-    // Note that this check isn't redundant. detectImageMm6 only checks sizes as written in the header, and the zlib
-    // data can unpack into fewer bytes.
-    if (pixels.size() < static_cast<size_t>(header.width) * header.height)
-        throw Exception("Cannot decode image LOD entry '{}': expected {}x{}={} pixels, got {}",
-                        blob.displayPath(), header.width, header.height,
-                        header.width * header.height, pixels.size());
+    assert(pixels.size() >= static_cast<size_t>(header.width) * header.height);
 
     LodImage result;
     deserialize(stream, &result.palette);
@@ -352,7 +365,7 @@ LodSprite lod::decodeSpriteMm6(const Blob &blob) {
 
     Blob pixels = stream.readAsBlobOrFail(header.dataSize);
     if (header.decompressedSize)
-        pixels = zlib::uncompress(pixels.withDisplayPath(blob.displayPath()), header.decompressedSize);
+        pixels = uncompressEntryData(blob, pixels, header.decompressedSize);
 
     LodSprite result;
     result.paletteId = header.paletteId;
