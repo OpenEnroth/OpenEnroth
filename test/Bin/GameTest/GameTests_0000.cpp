@@ -369,17 +369,18 @@ GAME_TEST(Prs, Pr314_742) {
     // Trace pretty much presses all the buttons and opens all the popups possible.
     test.playTraceFromTestData("pr_314.mm7", "pr_314.json");
 
-    for (int i = 0; i < 4; i++)
+    for (int i = 0; i < 3; i++)
         EXPECT_EQ(pParty->pCharacters[i]._stats[ATTRIBUTE_LUCK], 20);
+    EXPECT_EQ(pParty->pCharacters[3]._stats[ATTRIBUTE_LUCK], 25); // Humans can raise luck to 25, the other races to 20.
 
     EXPECT_EQ(pParty->pCharacters[0].classType, CLASS_MONK);
     EXPECT_EQ(pParty->pCharacters[1].classType, CLASS_THIEF);
     EXPECT_EQ(pParty->pCharacters[2].classType, CLASS_RANGER);
     EXPECT_EQ(pParty->pCharacters[3].classType, CLASS_CLERIC);
     EXPECT_EQ(pParty->pCharacters[0].GetRace(), RACE_ELF);
-    EXPECT_EQ(pParty->pCharacters[1].GetRace(), RACE_ELF);
+    EXPECT_EQ(pParty->pCharacters[1].GetRace(), RACE_DWARF);
     EXPECT_EQ(pParty->pCharacters[2].GetRace(), RACE_GOBLIN);
-    EXPECT_EQ(pParty->pCharacters[3].GetRace(), RACE_ELF);
+    EXPECT_EQ(pParty->pCharacters[3].GetRace(), RACE_HUMAN);
 
     // #742: Check that party qbits are set even if we press Clear when creating a party.
     EXPECT_TRUE(pParty->_questBits.test(QBIT_EMERALD_ISLAND_RED_POTION_ACTIVE));
@@ -873,6 +874,29 @@ GAME_TEST(Issues, Issue427b_528) {
 
     // #528: Check that spells that target single character or entire party depending on mastery drain mana.
     EXPECT_EQ(manaTape.delta(), -60);
+}
+
+GAME_TEST(Issues, Issue431) {
+    // The portrait arrows in party creation picked portraits that other party members already had.
+    for (Pointi arrow : {Pointi(79, 38), Pointi(15, 38)}) { // The first character's right and left portrait arrows.
+        test.prepareForNextTest();
+        auto facesTape = charTapes.faces();
+        game.goToMainMenu();
+        game.pressGuiButton("MainMenu_NewGame");
+        game.tick(2);
+        ASSERT_EQ(current_screen_type, SCREEN_PARTY_CREATION);
+        test.startTaping();
+        for (int i = 0; i < 17; i++) {
+            game.pressAndReleaseButton(BUTTON_LEFT, arrow.x, arrow.y);
+            game.tick();
+        }
+        test.stopTaping();
+
+        EXPECT_EQ(facesTape.slice(0).unique().size(), 17); // All 20 portraits but the other three.
+        for (const auto &faces : facesTape)
+            for (int i = 1; i < 4; i++)
+                EXPECT_NE(faces[0], faces[i]);
+    }
 }
 
 GAME_TEST(Issues, Issue442) {
