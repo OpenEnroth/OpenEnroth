@@ -274,6 +274,7 @@ enum class EvtTargetCharacter {
     CHOOSE_RANDOM = 6
 };
 using enum EvtTargetCharacter;
+MM_DECLARE_SERIALIZATION_FUNCTIONS(EvtTargetCharacter) // MMExtension's spellings, single players are numbers there.
 
 /**
  * Which evt file an event comes from.

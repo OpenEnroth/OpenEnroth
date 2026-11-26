@@ -1,0 +1,42 @@
+--- @meta
+
+--- What one running event handler executes its commands in.
+--- @class EvtInterpreter
+--- @field execute fun(self: EvtInterpreter, name: string, args: table, player: integer|string): boolean?, string
+--- @field isGlobal fun(self: EvtInterpreter): boolean
+--- @field takeMapExit fun(self: EvtInterpreter): boolean Whether the handler started a map transition since the last call.
+
+--- The Lua script of an evt file, in one piece for each event.
+--- @class EvtDecompiledScript
+--- @field header string
+--- @field events { id: integer, code: string }[]
+
+--- How a timer fires.
+--- @class EvtTimerOptions
+--- @field period number In ticks.
+--- @field start number? Time of day in ticks that a daily timer fires at.
+--- @field isRefill boolean
+--- @field isKeptOnMapLeave boolean
+--- @field countsFromNow boolean Whether the first alarm is counted from now, not from the last visit to the map.
+
+--- @class EvtBindings
+--- @field newInterpreter fun(frame: integer, eventId: integer, isGlobal: boolean, targetPid: integer, duringMapLoad: boolean): EvtInterpreter
+--- @field defaultPlayer fun(): integer
+--- @field commands fun(): string[]
+--- @field constants fun(): table<string, table<string, number>>
+--- @field removeEvent fun(isGlobal: boolean, eventId: integer)
+--- @field clearEvents fun(isGlobal: boolean)
+--- @field eventCount fun(isGlobal: boolean): integer
+--- @field str fun(index: integer): string?
+--- @field setStr fun(index: integer, value: string)
+--- @field houseName fun(houseId: integer): string?
+--- @field random fun(hi: integer): integer
+--- @field time fun(): number
+--- @field addTimer fun(handle: integer, options: EvtTimerOptions)
+--- @field removeTimer fun(handle: integer)
+--- @field mapScripts fun(mapName: string): string[]
+--- @field globalScripts fun(): string[]
+--- @field readScript fun(path: string): string
+--- @field decompile fun(name: string): EvtDecompiledScript
+--- @field isDecompilingEvents fun(): boolean
+--- @field mouseItem fun(): integer

@@ -10,6 +10,7 @@
 #include "Engine/Tables/HouseTable.h"
 #include "Engine/Party.h"
 #include "Engine/Engine.h"
+#include "Engine/Evt/EvtEnumFunctions.h"
 
 #include "Library/Logger/Logger.h"
 
@@ -44,8 +45,20 @@ void EvtProgram::add(int eventId, EvtInstruction ir) {
     _eventsById[eventId].push_back(std::move(ir));
 }
 
+void EvtProgram::remove(int eventId) {
+    _eventsById.erase(eventId);
+}
+
 void EvtProgram::clear() {
     _eventsById.clear();
+}
+
+std::vector<int> EvtProgram::eventIds() const {
+    std::vector<int> result;
+    for (const auto &[eventId, _] : _eventsById)
+        result.push_back(eventId);
+    std::ranges::sort(result);
+    return result;
 }
 
 const EvtInstruction &EvtProgram::instruction(int eventId, int step) const {
@@ -84,11 +97,8 @@ std::vector<EventTrigger> EvtProgram::enumerateTriggers(EvtOpcode triggerType) {
 }
 
 bool EvtProgram::hasHint(int eventId) const {
-    const auto* events = valuePtr(_eventsById, eventId);
-    if (!events || events->size() < 2)
-        return false;
-
-    return (*events)[0].opcode == EVENT_MouseOver && (*events)[1].opcode == EVENT_Exit;
+    const auto *events = valuePtr(_eventsById, eventId);
+    return events && isHintOnly(*events);
 }
 
 bool EvtProgram::isInteractive(int eventId) const {
@@ -100,13 +110,12 @@ bool EvtProgram::isInteractive(int eventId) const {
     if (ir == events->end())
         return false;
 
+    if (isEvtTrigger(ir->opcode))
+        return false;
+
     switch (ir->opcode) {
     case EVENT_Exit:
-    case EVENT_OnTimer:
-    case EVENT_OnMapReload:
-    case EVENT_OnLongTimer:
     case EVENT_OnCanShowDialogItemCmp:
-    case EVENT_OnMapLeave:
     case EVENT_OnDateTimer:
         return false;
     default:
@@ -114,28 +123,37 @@ bool EvtProgram::isInteractive(int eventId) const {
     }
 }
 
-std::string EvtProgram::hint(int eventId) const {
-    std::string result;
-    bool mouseOverFound = false;
+bool EvtProgram::isHintOnly(const std::vector<EvtInstruction> &instructions) {
+    return instructions.size() >= 2 && instructions[0].opcode == EVENT_MouseOver && instructions[1].opcode == EVENT_Exit;
+}
 
-    const auto* events = valuePtr(_eventsById, eventId);
-    if (!events) // no entry in .evt file
-        return result;
-
-    for (const EvtInstruction &ir : *events) {
+std::optional<EvtHintSource> EvtProgram::hintSource(const std::vector<EvtInstruction> &instructions) {
+    std::optional<EvtHintSource> result;
+    for (const EvtInstruction &ir : instructions) {
         if (ir.opcode == EVENT_MouseOver) {
-            mouseOverFound = true;
-            if (ir.data.text_id < engine->_levelStrings.size())
-                result = engine->_levelStrings[ir.data.text_id];
-        }
-        if (mouseOverFound && ir.opcode == EVENT_SpeakInHouse) {
-            if (houseTable.indices().contains(ir.data.house_id))
-                result = houseTable[ir.data.house_id].name;
+            result = EvtHintSource(ir.data.text_id);
+        } else if (result && ir.opcode == EVENT_SpeakInHouse) {
+            if (houseTable.indices().contains(ir.data.house_id)) // A house that doesn't exist keeps the text.
+                result->houseId = ir.data.house_id;
             break;
         }
     }
-
     return result;
+}
+
+std::string EvtProgram::hint(int eventId) const {
+    const auto *events = valuePtr(_eventsById, eventId);
+    if (!events)
+        return {};
+
+    std::optional<EvtHintSource> source = hintSource(*events);
+    if (!source)
+        return {};
+    if (source->houseId != HOUSE_INVALID)
+        return houseTable[source->houseId].name;
+    if (source->textId < engine->_levelStrings.size())
+        return engine->_levelStrings[source->textId];
+    return {};
 }
 
 void EvtProgram::dump(int eventId, EvtSource source) const {
