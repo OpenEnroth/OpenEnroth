@@ -105,11 +105,11 @@ bool lod::detectSprite(const Blob &blob) {
 }
 
 bool lod::detectFont(const Blob &blob) {
-    if (blob.size() < sizeof(LodFontHeader_MM7) + std::min(sizeof(LodFontAtlas_MM7), sizeof(LodFontAtlas_MMX)))
+    if (blob.size() < sizeof(LodFontHeader_MM6) + std::min(sizeof(LodFontAtlas_MM6), sizeof(LodFontAtlas_MMZ)))
         return {};
 
     MemoryInputStream stream(blob.data(), blob.size());
-    LodFontHeader_MM7 header;
+    LodFontHeader_MM6 header;
     deserialize(stream, &header);
 
     if (header.firstChar < header.lastChar && header.field_3 == 8 && header.field_4 == 0 && header.field_5 == 0 &&
@@ -316,15 +316,15 @@ LodFont lod::decodeFont(const Blob &blob) {
     LodFont result;
     try {
         BlobInputStream stream(blob);
-        deserialize(stream, &result._header, tags::via<LodFontHeader_MM7>);
-        deserialize(stream, &result._atlas, tags::via<LodFontAtlas_MM7>);
+        deserialize(stream, &result._header, tags::via<LodFontHeader_MM6>);
+        deserialize(stream, &result._atlas, tags::via<LodFontAtlas_MM6>);
         result._pixels = stream.readAllAsBlob();
         fixAndValidateFont(blob, result);
     } catch (const std::exception &e) {
         try {
             BlobInputStream stream(blob);
-            deserialize(stream, &result._header, tags::via<LodFontHeader_MM7>);
-            deserialize(stream, &result._atlas, tags::via<LodFontAtlas_MMX>);
+            deserialize(stream, &result._header, tags::via<LodFontHeader_MM6>);
+            deserialize(stream, &result._atlas, tags::via<LodFontAtlas_MMZ>);
             result._pixels = stream.readAllAsBlob();
             fixAndValidateFont(blob, result);
         } catch (const std::exception &) {
