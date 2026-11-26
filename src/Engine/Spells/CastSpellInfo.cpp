@@ -2529,6 +2529,7 @@ void CastSpellInfoHelpers::castSpell() {
                     pParty->pPartyBuffs[PARTY_BUFF_STONE_SKIN]
                         .Apply(pParty->GetPlayingTime() + other_duration, spell_mastery, target_skill_level, 0, -1);
                     if (!player_weak) {
+                        // Spell power is 0 because it is not used in Haste buff.
                         pParty->pPartyBuffs[PARTY_BUFF_HASTE]
                             .Apply(pParty->GetPlayingTime() + haste_duration, spell_mastery, 0, 0, -1);
                     }
