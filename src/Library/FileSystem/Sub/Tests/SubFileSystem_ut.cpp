@@ -116,15 +116,3 @@ UNIT_TEST(SubFileSystem, RootWhenBasePathIsEmpty) {
     EXPECT_EQ(sub.ls("").size(), 1);
     EXPECT_EQ(sub.read("1.txt").str(), "lol");
 }
-
-UNIT_TEST(SubFileSystem, InaccessibleBasePath) {
-    // A base path the base file system can't reach is refused up front.
-    MemoryFileSystem base("memfs");
-
-    for (std::string_view basePath : {"/", "/x", "\\x"})
-        EXPECT_ANY_THROW(SubFileSystem(basePath, &base)) << basePath;
-#ifdef _WINDOWS
-    for (std::string_view basePath : {"C:", "C:x", "./C:/x"})
-        EXPECT_ANY_THROW(SubFileSystem(basePath, &base)) << basePath;
-#endif
-}

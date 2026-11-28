@@ -24,9 +24,9 @@
 class SubFileSystem : public FileSystem {
  public:
     /**
-     * @param basePath                  Path prefix to apply to all operations.
+     * @param basePath                  Path prefix to apply to all operations, must be accessible, see
+     *                                  `NormalPathView::isAccessible`.
      * @param base                      The underlying file system.
-     * @throws Exception                If `basePath` is not accessible, see `NormalPathView::isAccessible`.
      */
     SubFileSystem(PathView basePath, FileSystem *base);
 

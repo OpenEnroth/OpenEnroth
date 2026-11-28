@@ -5,13 +5,9 @@
 #include <string>
 #include <vector>
 
-#include "Utility/Exception.h"
-
 SubFileSystem::SubFileSystem(PathView basePath, FileSystem *base) : _base(base), _basePath(basePath) {
     assert(_base);
-
-    if (!_basePath.isAccessible())
-        throw Exception("Base path '{}' of a sub file system is not accessible in '{}'", basePath.str(), _base->displayPath(""));
+    assert(_basePath.isAccessible());
 }
 
 bool SubFileSystem::_exists(NormalPathView path) const {
