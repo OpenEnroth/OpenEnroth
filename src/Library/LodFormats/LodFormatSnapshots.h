@@ -55,6 +55,8 @@ MM_DECLARE_MEMCOPY_SERIALIZABLE(LodImageHeader_MM6)
 
 /**
  * `LodImageHeader_MM6` with a 64-byte name, as MM8's `MMVIII` LODs store it, `EnglishT.lod` and `EnglishD.lod`.
+ * These hold only images and pseudo images, and MM8's other LODs use the MM6 and MM7 formats, so there are no MM8
+ * palettes or sprites.
  */
 struct LodImageHeader_MM8 {
     std::array<char, 64> name;

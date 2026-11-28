@@ -9,16 +9,6 @@
 
 class Blob;
 
-/**
- * Functions for the formats stored inside LOD archives.
- *
- * Each format gets its own `detectXyzMm6` and `decodeXyzMm6` pair, suffixed with the game that introduced it, and the
- * unsuffixed `decodeXyz` takes every format of its kind. Encoding writes one specific format, so encode functions are
- * always suffixed. MM6 already has both font layouts, so the one `calig.fnt` uses is named MMZ.
- *
- * MM8's `MMVIII` LODs, `EnglishT.lod` and `EnglishD.lod`, hold only images and pseudo images, so those are the only
- * kinds with an MM8 format. MM8's other LODs use the MM6 and MM7 formats, so there are no MM8 palettes or sprites.
- */
 namespace lod {
 
 bool detectCompressedDataMm6(const Blob &blob);
