@@ -156,6 +156,8 @@ void Engine::drawWorld() {
 
         // if ( !render->pRenderD3D )
         // pMouse->DrawCursorToTarget();
+        // TODO(captainurist): fetch the level's textures even when the world isn't drawn. Otherwise the image sweep at
+        //                     the end of Draw() frees the ones the new map shares with the old one.
         if (!PauseGameDrawing()) {
             if (uCurrentlyLoadedLevelType == LEVEL_INDOOR) {
                 pIndoor->Draw();
@@ -194,6 +196,11 @@ void Engine::Draw() {
     render->flushAndScale();
     drawOverlay();
     render->swapBuffers();
+
+    if (_releaseUnusedImagesAfterDraw) {
+        _releaseUnusedImagesAfterDraw = false;
+        assets->releaseUnusedImages(); // By now the new map holds what it draws.
+    }
 }
 
 
@@ -955,7 +962,7 @@ void Engine::ResetCursor_Palettes_LODs_Level_Audio_SFT_Windows() {
     if (mouse)
         mouse->SetCursorImage("MICON1");
 
-    // Render billboards are used in hit tests, but we're releasing textures, so can't use them anymore.
+    // Render billboards are used in hit tests and point at the old map's objects.
     render->uNumBillboardsToDraw = 0;
 
     if (uCurrentlyLoadedLevelType == LEVEL_INDOOR) {
@@ -976,7 +983,7 @@ void Engine::ResetCursor_Palettes_LODs_Level_Audio_SFT_Windows() {
     windowManager.DeleteAllVisibleWindows();
     equipmentHitMap.clear();
 
-    assets->releaseUnusedImages(); // Particles, projectiles, the hit map and windows hold images, so this comes last.
+    _releaseUnusedImagesAfterDraw = true;
 }
 
 //----- (00461103) --------------------------------------------------------
