@@ -66,12 +66,7 @@ prints has `LOD compressed` in its name, and `cat` decompresses it.
 | sounds | `Sounds/Audio.snd`, WAV | `SOUNDS/Audio.snd`, WAV | `Data/EnglishD.lod`, compressed WAV |
 | movies | `Anims/Anims1.vid`, `Anims2.vid`, Smacker | `Anims/Magic7.vid`, `Might7.vid`, Smacker and Bink | `Anims/Magicdod.vid`, `mightdod.vid`, Smacker and Bink |
 
-Entries without an extension in the image archives are LOD images, palettes or sprites, with three exceptions:
-
-- `pending` in MM7's `SPRITES.LOD` is a sprite without pixel data, and `magic` reports it as raw data.
-- Sounds in MM8's `EnglishD.lod` whose names were cut at 16 characters lost their extension.
-- Most sprites in Chinese MM6's `spriteLO.lod` have 1 in a header field that LodTool expects to be 0, so `magic`
-  reports them as raw data.
+Most entries without an extension in the image archives are LOD images, palettes or sprites.
 
 MM7's `ICONS.LOD` and MM8's `icons.lod` also hold stale copies of a few text tables. In MM7, `dsft.bin`,
 `spells.txt`, `mapstats.txt` and five more differ from the copies in `events.lod`. OpenEnroth reads `events.lod`,
