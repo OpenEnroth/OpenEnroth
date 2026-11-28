@@ -50,7 +50,7 @@ UNIT_TEST(MaskingFileSystem, PersistentMasking) {
 }
 
 UNIT_TEST(MaskingFileSystem, UnmaskInaccessiblePath) {
-    // mask asserts on an inaccessible path, so unmask finds nothing there either.
+    // Unmasking "/a" leaves "a" masked.
     MemoryFileSystem fs0("");
     fs0.write("a", Blob());
     MaskingFileSystem fs(&fs0);

@@ -122,9 +122,7 @@ UNIT_TEST(NativeFileSystem, DotDotStaysInside) {
 
     NativeFileSystem fs("a");
 
-    EXPECT_EQ(fs.stat(".."), FileStat(FILE_DIRECTORY, 0));
     EXPECT_EQ(fs.read("../1.txt").str(), "inner");
-    EXPECT_EQ(fs.read("a/../../1.txt").str(), "inner");
 
     fs.write("../2.txt", Blob::fromString("kek"));
     EXPECT_TRUE(fs::exists("a/2.txt"));

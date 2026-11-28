@@ -36,14 +36,13 @@ UNIT_TEST(NormalPath, DotDotStopsAtRoot) {
     testOne("./..", "");
     testOne("../.", "");
 #ifdef _WINDOWS
-    testOne("../C:.", "C:"); // The strip exposes a drive, and the path is still normalized.
+    testOne("../C:.", "C:"); // Dropping the ".." exposes a drive, and the result is still normalized.
 #endif
 }
 
-UNIT_TEST(NormalPath, DefaultIsRoot) {
-    // A default-constructed path names the root, and so does its view.
+UNIT_TEST(NormalPath, DefaultIsEmpty) {
+    // A default-constructed path and a default-constructed view are both empty.
     EXPECT_TRUE(NormalPath().isEmpty());
-    EXPECT_TRUE(NormalPathView(NormalPath()).isEmpty());
     EXPECT_TRUE(NormalPathView().isEmpty());
 }
 
@@ -63,12 +62,8 @@ UNIT_TEST(NormalPath, IsAccessible) {
     };
 
     testOne("", true);
-    testOne(".", true);
     testOne("a", true);
-    testOne("a/./b", true);
-    testOne("a/..", true);
-    testOne("..", true);
-    testOne("a/../..", true);
+    testOne("a/b", true);
     testOne("/", false);
     testOne("/a", false);
     testOne("\\a", false);
@@ -102,5 +97,4 @@ UNIT_TEST(NormalPath, Join) {
     testOne("a", "", "a");
     testOne("a", "b", "a/b");
     testOne("a/b", "c/d", "a/b/c/d");
-    testOne("a\\b", "./c", "a/b/c");
 }

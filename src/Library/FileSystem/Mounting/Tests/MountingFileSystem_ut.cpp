@@ -162,7 +162,7 @@ UNIT_TEST(MountingFileSystem, LsMergeWithManyVirtualDirs) {
 }
 
 UNIT_TEST(MountingFileSystem, UnmountInaccessiblePath) {
-    // mount asserts on an inaccessible path, so unmount finds nothing there either.
+    // Unmounting "/m" leaves "m" mounted.
     MemoryFileSystem mfs("");
     MountingFileSystem fs("");
     fs.mount("m", &mfs);
