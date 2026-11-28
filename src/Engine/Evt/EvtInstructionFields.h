@@ -11,11 +11,9 @@
 /**
  * Walks the fields of an instruction in the order that an evt record stores them, after the step and the opcode, and
  * calls `visitor(type, name, member, convert)` for each field:
- * - `type` is a `std::type_identity` of what the record stores: an unsigned integer, an array of them, or an
- *   `std::string` that ends with a zero.
+ * - `type` is a `std::type_identity` of what the record stores. A string ends with a zero there.
  * - `name` is the name of the field as a `const char *`, MMExtension's where a script can call the command.
- * - `member` is a pointer to the member that holds the field, which is a number, a bool, an enum, a string, or an
- *   array of numbers of the size that is stored.
+ * - `member` is a pointer to the member that holds the field.
  * - `convert` takes what the record stores and returns what goes into the member. It's `std::identity` for most
  *   fields.
  *
