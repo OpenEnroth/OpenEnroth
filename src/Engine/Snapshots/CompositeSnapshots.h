@@ -154,6 +154,7 @@ struct SaveGameLite_MM7 {
     SaveGameHeader_MM7 header;
     Blob thumbnail;
     Blob extension; // In z.json - OE extension data.
+    std::string legacyNames; // Names for detecting the encoding of a save without `z.json`, raw bytes.
 };
 
 void reconstruct(const SaveGameLite_MM7 &src, SaveGameLite *dst);

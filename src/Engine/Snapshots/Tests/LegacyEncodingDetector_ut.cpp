@@ -6,6 +6,7 @@
 #include "Engine/Snapshots/LegacyEncodingDetector.h"
 
 // Names below are raw bytes, exactly as they're stored in a savegame.
+
 static TextEncoding detect(std::string_view names) {
     return detectLegacySaveEncoding(names, ENCODING_WINDOWS_1252);
 }
@@ -23,9 +24,6 @@ UNIT_TEST(LegacyEncodingDetector, Russian) {
 }
 
 UNIT_TEST(LegacyEncodingDetector, Western) {
-    EXPECT_EQ(detect("Gareth"), ENCODING_WINDOWS_1252);
-    EXPECT_EQ(detect("Zoltan"), ENCODING_WINDOWS_1252);
-
     // "Renée", "Frédéric", "Jürgen", "Schäfer" - accented, but still mostly ASCII.
     EXPECT_EQ(detect("Ren\xE9\x65"), ENCODING_WINDOWS_1252);
     EXPECT_EQ(detect("Fr\xE9\x64\xE9ric"), ENCODING_WINDOWS_1252);
@@ -42,5 +40,10 @@ UNIT_TEST(LegacyEncodingDetector, Fallback) {
         EXPECT_EQ(detectLegacySaveEncoding("", fallback), fallback);
         EXPECT_EQ(detectLegacySaveEncoding("123", fallback), fallback);
         EXPECT_EQ(detectLegacySaveEncoding("Gareth", fallback), fallback);
+        EXPECT_EQ(detectLegacySaveEncoding("Zoltan", fallback), fallback);
     }
+
+    // Names with letters outside ASCII are detected, whatever the fallback.
+    EXPECT_EQ(detectLegacySaveEncoding("Ren\xE9\x65", ENCODING_WINDOWS_1251), ENCODING_WINDOWS_1252);
+    EXPECT_EQ(detectLegacySaveEncoding("\xC8\xE2\xE0\xED", ENCODING_WINDOWS_1252), ENCODING_WINDOWS_1251);
 }

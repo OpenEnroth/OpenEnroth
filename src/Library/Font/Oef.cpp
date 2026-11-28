@@ -58,11 +58,13 @@ Font oef::decode(const Blob &blob) {
     if (header.glyphCount > MAX_CODE_POINT)
         throw Exception("Cannot decode font '{}': invalid glyph count {}", blob.displayPath(), header.glyphCount);
 
+    Blob compressed = stream.readAllAsBlob();
     uint64_t maxPayloadSize = header.glyphCount * (sizeof(OefGlyph) + uint64_t(MAX_GLYPH_WIDTH) * header.height);
+    maxPayloadSize = std::min<uint64_t>(maxPayloadSize, compressed.size() * uint64_t(1032)); // Deflate's maximum ratio.
     if (header.decompressedSize > maxPayloadSize)
         throw Exception("Cannot decode font '{}': invalid font data size {}", blob.displayPath(), header.decompressedSize);
 
-    Blob payload = zlib::uncompress(stream.readAllAsBlob(), header.decompressedSize);
+    Blob payload = zlib::uncompress(compressed, header.decompressedSize);
     if (payload.size() != header.decompressedSize)
         throw Exception("Cannot decode font '{}': expected {} bytes of font data, got {}", blob.displayPath(),
                         header.decompressedSize, payload.size());

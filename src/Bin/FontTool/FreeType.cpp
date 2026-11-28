@@ -26,7 +26,7 @@ FreeTypeLibrary::~FreeTypeLibrary() {
 
 FreeTypeFace::FreeTypeFace(const FreeTypeLibrary &library, const std::string &path, int faceIndex) :
     _data(Blob::fromFile(path)) {
-    // Not FT_New_Face, which on Windows opens the path in the ANSI code page instead of UTF-8.
+    // FT_New_Face opens paths in the ANSI code page on Windows, so the file is read here instead.
     if (FT_Error error = FT_New_Memory_Face(library.get(), static_cast<const FT_Byte *>(_data.data()), _data.size(),
                                             faceIndex, &_face))
         throw Exception("Couldn't open font '{}': {}", path, errorString(error));

@@ -14,7 +14,7 @@
  *
  * @param names                         Names stored in the savegame, concatenated. Raw bytes, not decoded.
  * @param fallback                      Encoding to return when the names have no letters outside ASCII and so give
- *                                      nothing to go on. Strings typed in later are saved in it.
+ *                                      nothing to go on. Everything written into the save afterwards uses it.
  * @return                              `ENCODING_WINDOWS_1251`, `ENCODING_WINDOWS_1252`, or `fallback`.
  */
 TextEncoding detectLegacySaveEncoding(std::string_view names, TextEncoding fallback);

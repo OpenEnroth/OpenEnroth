@@ -1,5 +1,6 @@
 #include "CompositeSnapshots.h"
 
+#include <memory>
 #include <string>
 #include <algorithm>
 #include <numeric>
@@ -786,6 +787,22 @@ static std::string rawString(const std::array<char, N> &src) {
 }
 
 /**
+ * @param header                        Save header.
+ * @param party                         Save party.
+ * @return                              Names stored in the save, concatenated as raw bytes, for detecting the
+ *                                      encoding of a legacy save.
+ */
+static std::string legacySaveNames(const SaveGameHeader_MM7 &header, const Party_MM7 &party) {
+    // TODO(captainurist): Can also use actor names from level deltas.
+    std::string result = rawString(header.name);
+    for (int i = 0; i < 4; i++)
+        result += rawString(party.characters[i].name);
+    result += rawString(party.hireling1Name);
+    result += rawString(party.hireling2Name);
+    return result;
+}
+
+/**
  * @param extension                     Contents of the save's `z.json`, empty for a save written by the original game.
  * @param legacyNames                   Names stored in the save, raw bytes. Only used when there's no `z.json`.
  * @return                              The save's extension data, with the encoding detected for a legacy save.
@@ -801,13 +818,7 @@ static SaveGameExtension readSaveExtension(const Blob &extension, std::string_vi
 }
 
 void reconstruct(const SaveGame_MM7 &src, SaveGame *dst) {
-    // TODO(captainurist): Can also use actor names from level deltas.
-    std::string names = rawString(src.header.name);
-    for (int i = 0; i < 4; i++)
-        names += rawString(src.party.characters[i].name);
-    names += rawString(src.party.hireling1Name);
-    names += rawString(src.party.hireling2Name);
-    dst->extension = readSaveExtension(src.extension, names);
+    dst->extension = readSaveExtension(src.extension, src.extension ? std::string() : legacySaveNames(src.header, src.party));
     if (!src.extension)
         MM_INFO("Savegame encoding '{}' detected.", toString(dst->extension.encoding));
 
@@ -900,7 +911,7 @@ void deserialize(const Blob &src, SaveGame_MM7 *dst) {
 }
 
 void reconstruct(const SaveGameLite_MM7 &src, SaveGameLite *dst) {
-    SaveGameExtension extension = readSaveExtension(src.extension, rawString(src.header.name));
+    SaveGameExtension extension = readSaveExtension(src.extension, src.legacyNames);
     reconstruct(src.header, &dst->header, tags::encoding(extension.encoding));
     dst->thumbnail = Blob::share(src.thumbnail);
 }
@@ -910,6 +921,12 @@ void deserialize(const Blob &src, SaveGameLite_MM7 *dst) {
     deserialize(lodReader.read("header.bin"), &dst->header);
     dst->thumbnail = lodReader.read("image.pcx");
     dst->extension = lodReader.exists("z.json") ? lodReader.read("z.json") : Blob();
+    dst->legacyNames.clear();
+    if (!dst->extension) {
+        std::unique_ptr<Party_MM7> party = std::make_unique<Party_MM7>(); // 90KB.
+        deserialize(lodReader.read("party.bin"), party.get());
+        dst->legacyNames = legacySaveNames(dst->header, *party);
+    }
 }
 
 void reconstruct(const SpriteFrameTable_MM7 &src, SpriteFrameTable *dst) {

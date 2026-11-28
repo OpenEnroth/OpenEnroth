@@ -98,7 +98,7 @@ struct NPCStats {
     void InitializeAdditionalNPCs(NPCData *pNPCDataBuff, MonsterId npc_uid,
                                   HouseId uLocation2D, MapId uMapId);
     /**
-     * Returns a random NPC name of the given gender starting with the same letter as `name`. Backs the
+     * Returns a random NPC name of the given gender with the same first letter as `name`. Backs the
      * `%13` placeholder in `BuildDialogueString` - NPC dialogue templates that address the player by a similar-
      * sounding (mispronounced) name, e.g. "O Ho! %13! Er, %13. I think. Whatever...".
      *
