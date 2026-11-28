@@ -247,7 +247,14 @@ static Blob decodeCompressedAs(const Blob &blob) {
     Header header;
     deserialize(stream, &header);
 
-    Blob result = stream.readAsBlobOrFail(header.dataSize);
+    Blob result;
+    if (header.dataSize == blob.size()) {
+        // Workaround for a bug in the original LOD writer, where header.dataSize of MM7 compressed data was equal to
+        // LOD record size, instead of the size of the data that followed.
+        result = stream.readAllAsBlob();
+    } else {
+        result = stream.readAsBlobOrFail(header.dataSize);
+    }
     if (header.decompressedSize)
         result = uncompressEntryData(blob, result, header.decompressedSize);
     return result.withDisplayPath(blob.displayPath());
@@ -262,22 +269,7 @@ Blob lod::decodeCompressedDataMm6(const Blob &blob) {
 Blob lod::decodeCompressedDataMm7(const Blob &blob) {
     if (!detectCompressedDataMm7(blob))
         throw Exception("Cannot decode LOD entry '{}' as LOD compressed data (MM7 format)", blob.displayPath());
-
-    BlobInputStream stream(blob);
-    LodCompressionHeader_MM7 header;
-    deserialize(stream, &header);
-
-    Blob result;
-    if (header.dataSize == blob.size()) {
-        // Workaround for a bug in the original LOD writer, where header.dataSize was equal to LOD record size,
-        // instead of the size of the data that followed.
-        result = stream.readAllAsBlob();
-    } else {
-        result = stream.readAsBlobOrFail(header.dataSize);
-    }
-    if (header.decompressedSize)
-        result = uncompressEntryData(blob, result, header.decompressedSize);
-    return result.withDisplayPath(blob.displayPath());
+    return decodeCompressedAs<LodCompressionHeader_MM7>(blob);
 }
 
 Blob lod::decodeCompressedData(const Blob &blob) {
