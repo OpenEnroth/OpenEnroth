@@ -2,6 +2,7 @@
 
 #include <algorithm>
 #include <array>
+#include <bit>
 #include <functional>
 #include <string>
 #include <string_view>
@@ -21,7 +22,6 @@
 
 #include "Utility/Streams/InputStream.h"
 #include "Utility/Exception.h"
-#include "Utility/Flags.h"
 #include "Utility/Lambda.h"
 
 namespace {
@@ -58,7 +58,6 @@ MM_DEFINE_ENUM_SERIALIZATION_FUNCTIONS(FaceAttribute, CASE_SENSITIVE, {
     {FACE_IsLava,           "IsLava"},
     {FACE_IsPicked,         "HasData"}
 })
-MM_DEFINE_FLAGS_SERIALIZATION_FUNCTIONS(FaceAttributes)
 
 // TODO(captainurist): tag this as MMExtension's names once serialization functions are told apart by tags.
 MM_DEFINE_ENUM_SERIALIZATION_FUNCTIONS(ActorAttribute, CASE_SENSITIVE, {
@@ -71,7 +70,6 @@ MM_DEFINE_ENUM_SERIALIZATION_FUNCTIONS(ActorAttribute, CASE_SENSITIVE, {
     {ACTOR_HAS_ITEM,      "TreasureGenerated"},
     {ACTOR_HOSTILE,       "ShowAsHostile"}
 })
-MM_DEFINE_FLAGS_SERIALIZATION_FUNCTIONS(ActorAttributes)
 
 // TODO(captainurist): tag this as MMExtension's names once serialization functions are told apart by tags.
 MM_DEFINE_ENUM_SERIALIZATION_FUNCTIONS(ChestFlag, CASE_SENSITIVE, {
@@ -79,7 +77,22 @@ MM_DEFINE_ENUM_SERIALIZATION_FUNCTIONS(ChestFlag, CASE_SENSITIVE, {
     {CHEST_ITEMS_PLACED, "ItemsPlaced"},
     {CHEST_OPENED,       "Identified"}
 })
-MM_DEFINE_FLAGS_SERIALIZATION_FUNCTIONS(ChestFlags)
+
+/**
+ * Name of the table of constants that MMExtension keeps the flags of type `T` in, as in `const.FacetBits.Untouchable`.
+ * Null if scripts have no names for `T`.
+ */
+template<class T>
+constexpr const char *constGroup = nullptr;
+
+template<>
+constexpr const char *constGroup<FaceAttribute> = "FacetBits";
+
+template<>
+constexpr const char *constGroup<ActorAttribute> = "MonsterBits";
+
+template<>
+constexpr const char *constGroup<ChestFlag> = "ChestBits";
 
 } // namespace
 
@@ -116,25 +129,65 @@ static T fromWire(Value value, const char *name) {
 }
 
 /**
- * @param value                         Member of an instruction.
- * @return                              The member as the log shows it.
+ * @param text                          Text to quote.
+ * @return                              The text as a Lua string.
+ */
+static std::string luaString(std::string_view text) {
+    std::string result = "\"";
+    for (char c : text) {
+        if (c == '"' || c == '\\') {
+            result += '\\';
+            result += c;
+        } else if (c == '\n') {
+            result += "\\n";
+        } else if (c == '\r') {
+            result += "\\r";
+        } else if (static_cast<unsigned char>(c) < 0x20) {
+            result += fmt::format("\\{:03}", static_cast<int>(c));
+        } else {
+            result += c;
+        }
+    }
+    return result + "\"";
+}
+
+/**
+ * @param value                         Flags that scripts have names for.
+ * @return                              The flags as a script writes them, e.g. `const.FacetBits.Untouchable`. Several
+ *                                      flags are a sum, and a flag without a name is a hex number.
  */
 template<class T>
-static std::string toLogString(const T &value) {
+static std::string luaFlags(T value) {
+    auto bits = std::to_underlying(value);
+    std::string result;
+    for (auto bit = std::bit_floor(bits); bit != 0; bit >>= 1) { // From the highest flag down, like MMExtension's decompiler.
+        if (!(bits & bit))
+            continue;
+
+        std::string name;
+        std::string flag = trySerialize(static_cast<T>(bit), &name) ? fmt::format("const.{}.{}", constGroup<T>, name) : fmt::format("0x{:X}", bit);
+        result += result.empty() ? flag : " + " + flag;
+    }
+    return result.empty() ? "0" : result;
+}
+
+/**
+ * @param value                         Member of an instruction.
+ * @return                              The member as a script writes it.
+ */
+template<class T>
+static std::string toLua(const T &value) {
     if constexpr (std::is_same_v<T, std::string>) {
-        return fmt::format("\"{}\"", value);
+        return luaString(value);
     } else if constexpr (std::is_same_v<T, bool>) {
         return value ? "true" : "false";
     } else if constexpr (std::is_same_v<T, EvtVariable>) {
         std::string name;
-        return trySerialize(value, &name) ? name : fmt::format("{}", std::to_underlying(value));
+        return trySerialize(value, &name) ? luaString(name) : fmt::format("{}", std::to_underlying(value));
+    } else if constexpr (constGroup<T> != nullptr) {
+        return luaFlags(value);
     } else if constexpr (std::is_enum_v<T>) {
-        if constexpr (requires (std::string *dst) { trySerialize(Flags<T>(value), dst); }) {
-            std::string names;
-            return trySerialize(Flags<T>(value), &names) ? names : fmt::format("0x{:X}", std::to_underlying(value)); // Some bits have no name.
-        } else {
-            return fmt::format("{}", std::to_underlying(value));
-        }
+        return fmt::format("{}", std::to_underlying(value));
     } else if constexpr (std::is_arithmetic_v<T>) {
         return fmt::format("{}", value);
     } else {
@@ -175,14 +228,14 @@ std::string EvtInstruction::toString(EvtSource source) const {
     std::string fields;
     bool isKnown = visitEvtFields(*this, [&](auto, const char *fieldName, const auto *member, auto &&) {
         if constexpr (!std::is_void_v<std::remove_pointer_t<decltype(member)>>)
-            fields += fmt::format("{}{} = {}", fields.empty() ? "" : ", ", fieldName, toLogString(*member));
+            fields += fmt::format("{}{} = {}", fields.empty() ? "" : ", ", fieldName, toLua(*member));
     });
     if (!isKnown)
         return fmt::format("{}: UNPROCESSED/{}", step, name);
 
     std::string result = fmt::format("{}: {}{{{}}}", step, name, fields);
     if (std::string text = referencedText(*this, source); !text.empty())
-        result += fmt::format("  -- \"{}\"", text);
+        result += fmt::format("  -- {}", luaString(text));
     return result;
 }
 
