@@ -100,7 +100,7 @@ UNIT_TEST(EvtInstruction, ToString) {
     // The log shows an instruction as its step, its opcode and its fields by name, with variables by name too.
     EXPECT_EQ(parse(EVENT_SetSprite, {20, 0, 0, 0, 1, 'd', 'e', 'c', '0', '5', 0}, 3).toString(EVT_SOURCE_MAP),
               "3: SetSprite{SpriteId = 20, Visible = 1, Name = \"dec05\"}");
-    EXPECT_EQ(parse(EVENT_Compare, {0x10, 0, 240, 0, 0, 0, 7}).toString(EVT_SOURCE_MAP), "0: Compare{VarNum = \"QBits\", Value = 240, Jump = 7}");
+    EXPECT_EQ(parse(EVENT_Compare, {0x10, 0, 240, 0, 0, 0, 7}).toString(EVT_SOURCE_MAP), "0: Compare{VarNum = QBits, Value = 240, Jump = 7}");
     EXPECT_EQ(parse(EVENT_Exit, {0}, 9).toString(EVT_SOURCE_MAP), "9: Exit{}");
     EXPECT_EQ(parse(EVENT_SetFacesBit, {1, 0, 0, 0, 0, 0, 0, 0x20, 1}).toString(EVT_SOURCE_MAP), "0: SetFacesBit{Id = 1, Bit = Untouchable, On = 1}");
     EXPECT_EQ(parse(EVENT_SetFacesBit, {1, 0, 0, 0, 0, 0x20, 0, 0x20, 1}).toString(EVT_SOURCE_MAP), "0: SetFacesBit{Id = 1, Bit = Invisible|Untouchable, On = 1}");

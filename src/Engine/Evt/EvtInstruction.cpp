@@ -127,7 +127,7 @@ static std::string toLogString(const T &value) {
         return value ? "true" : "false";
     } else if constexpr (std::is_same_v<T, EvtVariable>) {
         std::string name;
-        return trySerialize(value, &name) ? fmt::format("\"{}\"", name) : fmt::format("{}", std::to_underlying(value));
+        return trySerialize(value, &name) ? name : fmt::format("{}", std::to_underlying(value));
     } else if constexpr (std::is_enum_v<T>) {
         if constexpr (requires (std::string *dst) { trySerialize(Flags<T>(value), dst); }) {
             std::string names;
