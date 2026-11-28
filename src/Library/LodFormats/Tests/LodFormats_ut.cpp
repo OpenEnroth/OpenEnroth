@@ -302,7 +302,7 @@ UNIT_TEST(LodFormats, FontMm6AndMmz) {
 }
 
 UNIT_TEST(LodFormats, FontMm6_TrailingData) {
-    // Some Russian MM6 and MM7 fonts have a stray byte after their glyphs. Fonts with trailing data decode all the same.
+    // Fonts with data after their glyphs, like the Russian MM6 and MM7 fonts with a stray byte, decode all the same.
     for (int trailingBytes : {1, 16}) {
         Blob entry = fontMm6(trailingBytes);
 
