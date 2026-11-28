@@ -39,7 +39,7 @@ Blob decodeCompressedDataMm6(const Blob &blob);
 
 /**
  * @param blob                          MM7 compressed data, 91969 and "mvii" followed by the packed and unpacked
- *                                      sizes and zlib data.
+ *                                      sizes and zlib data, or the data as is when the unpacked size is 0.
  * @return                              Uncompressed data.
  * @throw Exception                     If the format is not recognized or the data is corrupt.
  */
@@ -54,7 +54,7 @@ Blob decodeCompressedData(const Blob &blob);
 
 /**
  * @param blob                          MM6 compressed pseudo image, an image header without an image, followed by
- *                                      zlib data.
+ *                                      zlib data, or by the data as is when the unpacked size is 0.
  * @return                              Uncompressed data.
  * @throw Exception                     If the format is not recognized or the data is corrupt.
  */

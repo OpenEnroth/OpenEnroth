@@ -13,7 +13,7 @@ struct LodFontAtlas;
 
 struct LodCompressionHeader_MM6 {
     std::uint32_t dataSize;
-    std::uint32_t decompressedSize;
+    std::uint32_t decompressedSize; // Size of the decompressed data, 0 if data is not compressed.
 };
 static_assert(sizeof(LodCompressionHeader_MM6) == 8);
 MM_DECLARE_MEMCOPY_SERIALIZABLE(LodCompressionHeader_MM6)
@@ -141,8 +141,8 @@ MM_DECLARE_MEMCOPY_SERIALIZABLE(LodFontAtlas_MM6)
 void reconstruct(const LodFontAtlas_MM6 &src, LodFontAtlas *dst);
 
 /**
- * Atlas of `calig.fnt` in MM6, MM7 and MM8. No other font uses this layout. Russian MM8 has a second `calig.fnt` in
- * `EnglishT.lod`, and that one uses `LodFontAtlas_MM6`. The engine doesn't load this font.
+ * Atlas of `calig.fnt` in MM6, MM7 and MM8. No other font uses this layout, and the `calig.fnt` in Russian MM8's
+ * `EnglishT.lod` uses `LodFontAtlas_MM6` instead. The engine doesn't load this font.
  */
 struct LodFontAtlas_MMZ {
     std::array<uint8_t, 256> widths;
