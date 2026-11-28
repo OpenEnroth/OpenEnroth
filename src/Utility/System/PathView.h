@@ -99,13 +99,6 @@ class PathView {
     [[nodiscard]] bool isNormalized() const;
 
     /**
-     * @return                          Whether this path points above its starting point. `".."` and `"a/../.."` do,
-     *                                  `"a/../b"` doesn't. A path with a root directory never does, so `"/.."`
-     *                                  doesn't, while the drive-relative `"C:.."` does. Doesn't require normal form.
-     */
-    [[nodiscard]] bool isEscaping() const;
-
-    /**
      * @return                          What follows the last separator and the root. `"a/b.txt"` gives `"b.txt"`,
      *                                  while `"a/"` and `"/"` give an empty name.
      */

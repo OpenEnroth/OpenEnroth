@@ -14,8 +14,7 @@
  * All methods will work as if the root directory of this `FileSystem` exists, even if it doesn't exist on the
  * underlying file system.
  *
- * Files outside of the root directory are not observable through this `FileSystem` - the methods will behave as if
- * these files don't exist.
+ * Files outside of the root directory can't be reached through this `FileSystem`, because `..` stops at the root.
  *
  * When it comes to permissions, this filesystem tries its best to provide a simple guarantee that `ls` for an existing
  * folder never throws, and is in sync with what `stat` / `exists` return. This means that some files or folders that
@@ -23,21 +22,26 @@
  */
 class NativeFileSystem : public FileSystem {
  public:
+    /**
+     * @param root                      Directory to view. A relative one resolves against the current directory
+     *                                  at construction.
+     * @throws Exception                If `root` is empty.
+     */
     explicit NativeFileSystem(PathView root);
     virtual ~NativeFileSystem();
 
  private:
-    virtual bool _exists(FileSystemPathView path) const override;
-    virtual FileStat _stat(FileSystemPathView path) const override;
-    virtual void _ls(FileSystemPathView path, std::vector<DirectoryEntry> *entries) const override;
-    virtual Blob _read(FileSystemPathView path) const override;
-    virtual void _write(FileSystemPathView path, const Blob &data) override;
-    virtual std::unique_ptr<InputStream> _openForReading(FileSystemPathView path) const override;
-    virtual std::unique_ptr<OutputStream> _openForWriting(FileSystemPathView path) override;
-    virtual bool _remove(FileSystemPathView path) override;
-    virtual std::string _displayPath(FileSystemPathView path) const override;
+    virtual bool _exists(NormalPathView path) const override;
+    virtual FileStat _stat(NormalPathView path) const override;
+    virtual void _ls(NormalPathView path, std::vector<DirectoryEntry> *entries) const override;
+    virtual Blob _read(NormalPathView path) const override;
+    virtual void _write(NormalPathView path, const Blob &data) override;
+    virtual std::unique_ptr<InputStream> _openForReading(NormalPathView path) const override;
+    virtual std::unique_ptr<OutputStream> _openForWriting(NormalPathView path) override;
+    virtual bool _remove(NormalPathView path) override;
+    virtual std::string _displayPath(NormalPathView path) const override;
 
-    Path makeBasePath(FileSystemPathView path) const;
+    Path makeBasePath(NormalPathView path) const;
 
  private:
     Path _root;

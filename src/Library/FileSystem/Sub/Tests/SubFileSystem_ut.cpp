@@ -68,10 +68,8 @@ UNIT_TEST(SubFileSystem, CannotEscapeWithDotDot) {
     EXPECT_ANY_THROW((void) sub.read("../secret.txt"));
     EXPECT_ANY_THROW((void) sub.openForReading("../secret.txt"));
 
-    // Same for pathological tails that try harder.
-    EXPECT_FALSE(sub.exists("../../.."));
-    EXPECT_FALSE(sub.exists("a/../../../secret.txt"));
-    EXPECT_ANY_THROW((void) sub.read("a/../../../secret.txt"));
+    // ".." stops at the root of the sub file system, so this is the file in the sub directory.
+    EXPECT_EQ(sub.read("../test.vert").str(), "test");
 }
 
 UNIT_TEST(SubFileSystem, RootWhenBasePathDoesntExist) {

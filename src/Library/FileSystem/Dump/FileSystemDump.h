@@ -1,7 +1,5 @@
 #pragma once
 
-#include <cstdio>
-#include <cstdint>
 #include <cassert>
 #include <ostream>
 #include <vector>
@@ -44,9 +42,15 @@ struct FileSystemDumpEntry {
     }
 };
 
+/**
+ * Walks `fs` depth first in sorted order, starting with the root as `""`.
+ *
+ * @param fs                            File system to dump.
+ * @param flags                         What to include.
+ * @param maxEntries                    Stop after this many entries, root included.
+ * @return                              Dumped entries, with paths relative to the root.
+ */
 std::vector<FileSystemDumpEntry> dumpFileSystem(FileSystem *fs, FileSystemDumpFlags flags = 0, int maxEntries = 1024 * 1024);
-
-void dumpFileSystem(FILE *stream, FileSystem *fs, FileSystemDumpFlags flags = 0, int maxEntries = 1024 * 1024);
 
 // Google Test support.
 void PrintTo(const FileSystemDumpEntry &entry, std::ostream *stream);

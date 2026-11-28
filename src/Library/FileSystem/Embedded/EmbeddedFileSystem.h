@@ -8,18 +8,25 @@
 
 #include "Library/FileSystem/Interface/ReadOnlyFileSystem.h"
 
+/**
+ * Read-only view over files compiled into the binary with CMakeRC.
+ */
 class EmbeddedFileSystem : public ReadOnlyFileSystem {
  public:
+    /**
+     * @param base                      Embedded files to view.
+     * @param displayName               Shown by `displayPath` before `://`.
+     */
     explicit EmbeddedFileSystem(cmrc::embedded_filesystem base, std::string_view displayName);
     virtual ~EmbeddedFileSystem();
 
  private:
-    virtual bool _exists(FileSystemPathView path) const override;
-    virtual FileStat _stat(FileSystemPathView path) const override;
-    virtual void _ls(FileSystemPathView path, std::vector<DirectoryEntry> *entries) const override;
-    virtual Blob _read(FileSystemPathView path) const override;
-    virtual std::unique_ptr<InputStream> _openForReading(FileSystemPathView path) const override;
-    virtual std::string _displayPath(FileSystemPathView path) const override;
+    virtual bool _exists(NormalPathView path) const override;
+    virtual FileStat _stat(NormalPathView path) const override;
+    virtual void _ls(NormalPathView path, std::vector<DirectoryEntry> *entries) const override;
+    virtual Blob _read(NormalPathView path) const override;
+    virtual std::unique_ptr<InputStream> _openForReading(NormalPathView path) const override;
+    virtual std::string _displayPath(NormalPathView path) const override;
 
  private:
     cmrc::embedded_filesystem _base;
