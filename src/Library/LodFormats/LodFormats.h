@@ -38,7 +38,7 @@ bool detectFont(const Blob &blob);
 /**
  * @param blob                          MM6 compressed data, the packed and unpacked sizes followed by zlib data.
  * @return                              Uncompressed data.
- * @throw Exception                     If the format is not recognized.
+ * @throw Exception                     If the format is not recognized or the data is corrupt.
  */
 Blob decodeCompressedDataMm6(const Blob &blob);
 
@@ -46,14 +46,14 @@ Blob decodeCompressedDataMm6(const Blob &blob);
  * @param blob                          MM7 compressed data, 91969 and "mvii" followed by the packed and unpacked
  *                                      sizes and zlib data.
  * @return                              Uncompressed data.
- * @throw Exception                     If the format is not recognized.
+ * @throw Exception                     If the format is not recognized or the data is corrupt.
  */
 Blob decodeCompressedDataMm7(const Blob &blob);
 
 /**
  * @param blob                          LOD compressed data in any format.
  * @return                              Uncompressed data.
- * @throw Exception                     If the format is not recognized.
+ * @throw Exception                     If the format is not recognized or the data is corrupt.
  */
 Blob decodeCompressedData(const Blob &blob);
 
@@ -61,7 +61,7 @@ Blob decodeCompressedData(const Blob &blob);
  * @param blob                          MM6 compressed pseudo image, an image header without an image, followed by
  *                                      zlib data.
  * @return                              Uncompressed data.
- * @throw Exception                     If the format is not recognized.
+ * @throw Exception                     If the format is not recognized or the data is corrupt.
  */
 Blob decodeCompressedPseudoImageMm6(const Blob &blob);
 
@@ -69,14 +69,14 @@ Blob decodeCompressedPseudoImageMm6(const Blob &blob);
  * @param blob                          MM8 compressed pseudo image, the MM6 one with a 64-byte name instead of a
  *                                      16-byte one.
  * @return                              Uncompressed data.
- * @throw Exception                     If the format is not recognized.
+ * @throw Exception                     If the format is not recognized or the data is corrupt.
  */
 Blob decodeCompressedPseudoImageMm8(const Blob &blob);
 
 /**
  * @param blob                          LOD compressed pseudo image in any format.
  * @return                              Uncompressed data.
- * @throw Exception                     If the format is not recognized.
+ * @throw Exception                     If the format is not recognized or the data is corrupt.
  */
 Blob decodeCompressedPseudoImage(const Blob &blob);
 
@@ -98,7 +98,7 @@ Blob encodeCompressedDataMm7(const Blob &blob);
 /**
  * @param blob                          MM6 image, as read from a LOD file.
  * @return                              Decoded `LodImage`.
- * @throw Exception                     If the format is not recognized.
+ * @throw Exception                     If the format is not recognized or the data is corrupt.
  */
 LodImage decodeImageMm6(const Blob &blob);
 
@@ -106,14 +106,14 @@ LodImage decodeImageMm6(const Blob &blob);
  * @param blob                          MM8 image, the MM6 one with a 64-byte name instead of a 16-byte one, as read
  *                                      from a LOD file.
  * @return                              Decoded `LodImage`.
- * @throw Exception                     If the format is not recognized.
+ * @throw Exception                     If the format is not recognized or the data is corrupt.
  */
 LodImage decodeImageMm8(const Blob &blob);
 
 /**
  * @param blob                          LOD image in any format, as read from a LOD file.
  * @return                              Decoded `LodImage`.
- * @throw Exception                     If the format is not recognized.
+ * @throw Exception                     If the format is not recognized or the data is corrupt.
  */
 LodImage decodeImage(const Blob &blob);
 
@@ -162,14 +162,14 @@ Palette decodePalette(const Blob &blob);
 /**
  * @param blob                          MM6 sprite, as read from a LOD file.
  * @return                              Decoded `LodSprite`.
- * @throw Exception                     If the format is not recognized.
+ * @throw Exception                     If the format is not recognized or the data is corrupt.
  */
 LodSprite decodeSpriteMm6(const Blob &blob);
 
 /**
  * @param blob                          LOD sprite in any format, as read from a LOD file.
  * @return                              Decoded `LodSprite`.
- * @throw Exception                     If the format is not recognized.
+ * @throw Exception                     If the format is not recognized or the data is corrupt.
  */
 LodSprite decodeSprite(const Blob &blob);
 
@@ -194,21 +194,21 @@ Sizei decodeSpriteSize(const Blob &blob);
 /**
  * @param blob                          MM6 font, as read from a LOD file and decompressed.
  * @return                              Decoded `LodFont`.
- * @throw Exception                     If the format is not recognized.
+ * @throw Exception                     If the format is not recognized or the data is corrupt.
  */
 LodFont decodeFontMm6(const Blob &blob);
 
 /**
  * @param blob                          MMZ font, the layout of `calig.fnt`, as read from a LOD file and decompressed.
  * @return                              Decoded `LodFont`.
- * @throw Exception                     If the format is not recognized.
+ * @throw Exception                     If the format is not recognized or the data is corrupt.
  */
 LodFont decodeFontMmz(const Blob &blob);
 
 /**
  * @param blob                          LOD font in any format, as read from a LOD file and decompressed.
  * @return                              Decoded `LodFont`.
- * @throw Exception                     If the format is not recognized.
+ * @throw Exception                     If the format is not recognized or the data is corrupt.
  */
 LodFont decodeFont(const Blob &blob);
 
