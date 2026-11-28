@@ -90,6 +90,20 @@ Blob encodeCompressedDataMm6(const Blob &blob);
 Blob encodeCompressedDataMm7(const Blob &blob);
 
 /**
+ * @param blob                          `Blob` to compress.
+ * @return                              MM6 compressed pseudo image with an empty name, as
+ *                                      `decodeCompressedPseudoImageMm6` reads it.
+ */
+Blob encodeCompressedPseudoImageMm6(const Blob &blob);
+
+/**
+ * @param blob                          `Blob` to compress.
+ * @return                              MM8 compressed pseudo image with an empty name, as
+ *                                      `decodeCompressedPseudoImageMm8` reads it.
+ */
+Blob encodeCompressedPseudoImageMm8(const Blob &blob);
+
+/**
  * @param blob                          MM6 image, as read from a LOD file.
  * @return                              Decoded `LodImage`.
  * @throw Exception                     If the format is not recognized or the data is corrupt.
@@ -110,6 +124,22 @@ LodImage decodeImageMm8(const Blob &blob);
  * @throw Exception                     If the format is not recognized or the data is corrupt.
  */
 LodImage decodeImage(const Blob &blob);
+
+/**
+ * Encodes an image the way the games store their icons, with compressed pixels and no mipmaps.
+ *
+ * @param image                         Image to encode.
+ * @return                              MM6 image with an empty name, as `decodeImageMm6` reads it.
+ */
+Blob encodeImageMm6(const LodImage &image);
+
+/**
+ * Encodes an image the way the games store their icons, with compressed pixels and no mipmaps.
+ *
+ * @param image                         Image to encode.
+ * @return                              MM8 image with an empty name, as `decodeImageMm8` reads it.
+ */
+Blob encodeImageMm8(const LodImage &image);
 
 /**
  * Reads the image header and returns the image size without decompressing the pixel data.
@@ -152,6 +182,12 @@ Palette decodePaletteMm6(const Blob &blob);
  * @throw Exception                     If the format is not recognized.
  */
 Palette decodePalette(const Blob &blob);
+
+/**
+ * @param palette                       Palette to encode.
+ * @return                              MM6 palette with an empty name, as `decodePaletteMm6` reads it.
+ */
+Blob encodePaletteMm6(const Palette &palette);
 
 /**
  * @param blob                          MM6 sprite, as read from a LOD file.
@@ -205,5 +241,17 @@ LodFont decodeFontMmz(const Blob &blob);
  * @throw Exception                     If the format is not recognized or the data is corrupt.
  */
 LodFont decodeFont(const Blob &blob);
+
+/**
+ * @param font                          Font to encode.
+ * @return                              MM6 font, as `decodeFontMm6` reads it.
+ */
+Blob encodeFontMm6(const LodFont &font);
+
+/**
+ * @param font                          Font to encode. Its glyphs can't have spacing, the MMZ layout doesn't store it.
+ * @return                              MMZ font, as `decodeFontMmz` reads it.
+ */
+Blob encodeFontMmz(const LodFont &font);
 
 } // namespace lod

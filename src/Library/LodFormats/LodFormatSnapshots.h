@@ -121,6 +121,7 @@ struct LodFontHeader_MM6 {
 static_assert(sizeof(LodFontHeader_MM6) == 32);
 MM_DECLARE_MEMCOPY_SERIALIZABLE(LodFontHeader_MM6)
 
+void snapshot(const LodFontHeader &src, LodFontHeader_MM6 *dst);
 void reconstruct(const LodFontHeader_MM6 &src, LodFontHeader *dst);
 
 struct LodFontMetrics_MM6 {
@@ -131,6 +132,7 @@ struct LodFontMetrics_MM6 {
 static_assert(sizeof(LodFontMetrics_MM6) == 12);
 MM_DECLARE_MEMCOPY_SERIALIZABLE(LodFontMetrics_MM6)
 
+void snapshot(const LodFontMetrics &src, LodFontMetrics_MM6 *dst);
 void reconstruct(const LodFontMetrics_MM6 &src, LodFontMetrics *dst);
 
 struct LodFontAtlas_MM6 {
@@ -140,6 +142,7 @@ struct LodFontAtlas_MM6 {
 static_assert(sizeof(LodFontAtlas_MM6) == 4096);
 MM_DECLARE_MEMCOPY_SERIALIZABLE(LodFontAtlas_MM6)
 
+void snapshot(const LodFontAtlas &src, LodFontAtlas_MM6 *dst);
 void reconstruct(const LodFontAtlas_MM6 &src, LodFontAtlas *dst);
 
 /**
@@ -153,6 +156,7 @@ struct LodFontAtlas_MMZ {
 static_assert(sizeof(LodFontAtlas_MMZ) == 1280);
 MM_DECLARE_MEMCOPY_SERIALIZABLE(LodFontAtlas_MMZ)
 
+void snapshot(const LodFontAtlas &src, LodFontAtlas_MMZ *dst);
 void reconstruct(const LodFontAtlas_MMZ &src, LodFontAtlas *dst);
 
 #pragma pack(pop)

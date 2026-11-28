@@ -2,6 +2,7 @@
 
 #include <cassert>
 #include <array>
+#include <utility>
 
 #include "Library/Image/Image.h"
 #include "Utility/Memory/Blob.h"
@@ -9,8 +10,8 @@
 class LodFont;
 
 namespace lod {
-LodFont decodeFontMm6(const Blob &blob);
-LodFont decodeFontMmz(const Blob &blob);
+Blob encodeFontMm6(const LodFont &font);
+Blob encodeFontMmz(const LodFont &font);
 } // namespace lod
 
 struct LodFontHeader {
@@ -32,6 +33,9 @@ struct LodFontAtlas {
 
 class LodFont {
  public:
+    LodFont() = default;
+    LodFont(const LodFontHeader &header, const LodFontAtlas &atlas, Blob pixels) : _header(header), _atlas(atlas), _pixels(std::move(pixels)) {}
+
     [[nodiscard]] int height() const {
         return _header.fontHeight;
     }
@@ -61,8 +65,8 @@ class LodFont {
             _header.fontHeight);
     }
 
-    friend LodFont lod::decodeFontMm6(const Blob &blob);
-    friend LodFont lod::decodeFontMmz(const Blob &blob);
+    friend Blob lod::encodeFontMm6(const LodFont &font);
+    friend Blob lod::encodeFontMmz(const LodFont &font);
 
  private:
     LodFontHeader _header;

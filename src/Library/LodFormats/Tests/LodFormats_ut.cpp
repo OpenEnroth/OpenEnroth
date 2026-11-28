@@ -26,107 +26,37 @@ static std::string noise(size_t size) {
     return result;
 }
 
-template<class Header>
-static Blob compressedPseudoImage(const Blob &data) {
-    Blob compressed = zlib::compress(data);
-    Header header = Header();
-    header.dataSize = compressed.size();
-    header.decompressedSize = data.size();
-    header.flags = 256;
-
-    Blob result;
-    BlobOutputStream stream(&result);
-    serialize(header, &stream);
-    stream.write(compressed);
-    stream.close();
+static Palette testPalette() {
+    Palette result;
+    for (int i = 0; i < 256; i++)
+        result.colors[i] = Color(i, i, i);
     return result;
 }
 
-template<class Header>
-static Blob image(int width, int height) {
-    Header header = Header();
-    header.size = width * height;
-    header.dataSize = width * height;
-    header.width = width;
-    header.height = height;
-
-    std::string pixels;
-    for (int i = 0; i < width * height; i++)
-        pixels += static_cast<char>(i);
-    std::string palette;
-    for (int i = 0; i < 0x300; i++)
-        palette += static_cast<char>(i / 3);
-
-    Blob result;
-    BlobOutputStream stream(&result);
-    serialize(header, &stream);
-    stream.write(pixels);
-    stream.write(palette);
-    stream.close();
+static LodImage testImage() {
+    LodImage result;
+    result.image = GrayscaleImage::solid(0, 4, 2);
+    for (int i = 0; i < 8; i++)
+        result.image.pixels()[i] = i;
+    result.palette = testPalette();
     return result;
 }
 
-static Blob paletteMm6(int16_t paletteId) {
-    LodImageHeader_MM6 header = LodImageHeader_MM6();
-    header.paletteId = paletteId;
-
-    std::string palette;
-    for (int i = 0; i < 0x300; i++)
-        palette += static_cast<char>(i / 3);
-
-    Blob result;
-    BlobOutputStream stream(&result);
-    serialize(header, &stream);
-    stream.write(palette);
-    stream.close();
-    return result;
-}
-
-static LodFontHeader_MM6 fontHeader() {
-    LodFontHeader_MM6 header = LodFontHeader_MM6();
+static LodFont testFont() {
+    LodFontHeader header;
     header.firstChar = 'A';
     header.lastChar = 'C';
-    header.field_3 = 8;
-    header.height = 32; // Glyphs this big make an MMZ font larger than the smallest possible MM6 font.
-    return header;
-}
+    header.fontHeight = 32; // Glyphs this big make an MMZ font larger than the smallest possible MM6 font.
 
-static Blob fontMm6(int trailingBytes) {
-    LodFontHeader_MM6 header = fontHeader();
-    LodFontAtlas_MM6 atlas = LodFontAtlas_MM6();
+    LodFontAtlas atlas;
     int offset = 0;
     for (int c = 'A'; c <= 'C'; c++) {
         atlas.metrics[c].width = c - 'A' + 30;
         atlas.offsets[c] = offset;
-        offset += header.height * atlas.metrics[c].width;
+        offset += header.fontHeight * atlas.metrics[c].width;
     }
 
-    Blob result;
-    BlobOutputStream stream(&result);
-    serialize(header, &stream);
-    serialize(atlas, &stream);
-    stream.write(std::string(offset + trailingBytes, '\xFF'));
-    stream.close();
-    return result;
-}
-
-static Blob fontMmz() {
-    LodFontHeader_MM6 header = fontHeader();
-    LodFontAtlas_MMZ atlas = LodFontAtlas_MMZ();
-    int offset = 0;
-    for (int c = 'A'; c <= 'C'; c++) {
-        atlas.widths[c] = c - 'A' + 30;
-        atlas.offsets[c] = offset;
-        offset += header.height * atlas.widths[c];
-    }
-
-    Blob result;
-    BlobOutputStream stream(&result);
-    serialize(header, &stream);
-    serialize(atlas, &stream);
-    stream.write(std::string(offset, '\xFF'));
-    stream.close();
-    return result;
+    return LodFont(header, atlas, Blob::fromString(std::string(offset, '\xFF')));
 }
 
 UNIT_TEST(LodFormats, CompressedDataMm6) {
@@ -207,8 +137,8 @@ UNIT_TEST(LodFormats, CompressedDataMm7_WrongSize) {
 UNIT_TEST(LodFormats, CompressedPseudoImageMm8) {
     // Entries of MM8's EnglishT.lod and EnglishD.lod came out of decodeMaybeCompressed still compressed.
     std::string data = noise(1000);
-    Blob mm6 = compressedPseudoImage<LodImageHeader_MM6>(Blob::fromString(data));
-    Blob mm8 = compressedPseudoImage<LodImageHeader_MM8>(Blob::fromString(data));
+    Blob mm6 = lod::encodeCompressedPseudoImageMm6(Blob::fromString(data));
+    Blob mm8 = lod::encodeCompressedPseudoImageMm8(Blob::fromString(data));
 
     EXPECT_TRUE(lod::detectCompressedPseudoImageMm6(mm6));
     EXPECT_FALSE(lod::detectCompressedPseudoImageMm8(mm6));
@@ -253,8 +183,8 @@ UNIT_TEST(LodFormats, CompressedPseudoImageMm6_ShortName) {
 
 UNIT_TEST(LodFormats, ImageMm8) {
     // LOD images in MM8's EnglishD.lod didn't decode.
-    Blob mm6 = image<LodImageHeader_MM6>(4, 2);
-    Blob mm8 = image<LodImageHeader_MM8>(4, 2);
+    Blob mm6 = lod::encodeImageMm6(testImage());
+    Blob mm8 = lod::encodeImageMm8(testImage());
 
     EXPECT_TRUE(lod::detectImageMm6(mm6));
     EXPECT_FALSE(lod::detectImageMm8(mm6));
@@ -275,17 +205,18 @@ UNIT_TEST(LodFormats, ImageMm8) {
 UNIT_TEST(LodFormats, PaletteMm6) {
     // A palette with its own number in the header's paletteId, like MM8's pal857, wasn't recognized as a palette.
     for (int16_t paletteId : {0, 857}) {
-        Blob entry = paletteMm6(paletteId);
+        std::string entry(lod::encodePaletteMm6(testPalette()).str());
+        memcpy(entry.data() + offsetof(LodImageHeader_MM6, paletteId), &paletteId, sizeof(paletteId));
 
-        EXPECT_TRUE(lod::detectPaletteMm6(entry));
-        EXPECT_EQ(lod::decodePalette(entry).colors[5].g, 5);
+        EXPECT_TRUE(lod::detectPaletteMm6(Blob::fromString(entry)));
+        EXPECT_EQ(lod::decodePalette(Blob::fromString(entry)).colors[5].g, 5);
     }
 }
 
 UNIT_TEST(LodFormats, FontMm6AndMmz) {
     // Fonts in the MM6 layout and in the MMZ layout of calig.fnt both decode, each in its own layout.
-    Blob mm6 = fontMm6(0);
-    Blob mmz = fontMmz();
+    Blob mm6 = lod::encodeFontMm6(testFont());
+    Blob mmz = lod::encodeFontMmz(testFont());
 
     EXPECT_TRUE(lod::detectFontMm6(mm6));
     EXPECT_FALSE(lod::detectFontMmz(mm6));
@@ -302,7 +233,7 @@ UNIT_TEST(LodFormats, FontMm6AndMmz) {
 UNIT_TEST(LodFormats, FontMm6_TrailingData) {
     // Fonts with data after their glyphs, like the Russian MM6 and MM7 fonts with a stray byte, decode all the same.
     for (int trailingBytes : {1, 16}) {
-        Blob entry = fontMm6(trailingBytes);
+        Blob entry = Blob::concat(lod::encodeFontMm6(testFont()), Blob::fromString(std::string(trailingBytes, '\xFF')));
 
         EXPECT_TRUE(lod::detectFontMm6(entry));
         EXPECT_EQ(lod::decodeFont(entry).metrics('C').width, 32);
