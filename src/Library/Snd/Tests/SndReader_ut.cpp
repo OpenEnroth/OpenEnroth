@@ -127,7 +127,7 @@ static Blob makeSndBlobWithCorruptCompressedEntry(std::string_view content) {
     return result;
 }
 
-UNIT_TEST(SndReader, CorruptChecksumReturnsPartialData) {
+UNIT_TEST(SndReader, CorruptChecksumReturnsFullData) {
     // SND entries with a corrupt zlib checksum should return recovered data, not an empty blob.
     BufferLogSink sink;
     Logger testLogger(LOG_TRACE, &sink);

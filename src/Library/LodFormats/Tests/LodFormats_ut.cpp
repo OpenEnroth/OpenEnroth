@@ -157,7 +157,7 @@ UNIT_TEST(LodFormats, CompressedDataMm6_Stored) {
 }
 
 UNIT_TEST(LodFormats, CompressedDataMm6_NearMisses) {
-    // Without a signature, the sizes and the zlib header are all that tells MM6 compressed data apart from other data.
+    // Data that only looks like MM6 compressed data comes out of decodeMaybeCompressed as is.
     Blob compressed = zlib::compress(Blob::fromString(testData));
 
     Blob wrongDataSize = compressedDataMm6(compressed, compressed.size() + 1, testData.size());
