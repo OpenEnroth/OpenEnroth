@@ -14,7 +14,7 @@
  * @return                              Whether the field is padding. A visitor can check this in an `if constexpr`.
  */
 template<class Member>
-constexpr bool isEvtPadding(Member *const &) { // By reference, because a visitor's parameter is no constant to copy.
+constexpr bool isEvtPadding(Member *const &member) { // By reference, because a visitor's parameter is no constant to copy.
     return std::is_void_v<Member>;
 }
 
