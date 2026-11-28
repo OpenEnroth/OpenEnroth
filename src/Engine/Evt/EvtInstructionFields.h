@@ -21,7 +21,7 @@
  *
  * @param ir                            Instruction to walk, with its opcode set. Can be const.
  * @param visitor                       Visitor to call.
- * @return                              Whether the fields of the opcode are known.
+ * @return                              Whether the opcode is known.
  */
 template<class Instruction, class Visitor>
 bool visitEvtFields(Instruction &ir, Visitor &&visitor) {
