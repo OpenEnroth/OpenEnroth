@@ -1,10 +1,10 @@
 #pragma once
 
+#include <string_view>
+
 #include "Engine/Objects/MonsterEnums.h"
 
 #include "Utility/IndexedArray.h"
-
-class Blob;
 
 /**
  * Table of hostility levels between monster types. Indexed by two `MonsterType` values,
