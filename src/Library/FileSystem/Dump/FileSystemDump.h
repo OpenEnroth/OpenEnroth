@@ -1,6 +1,5 @@
 #pragma once
 
-#include <cstdint>
 #include <cassert>
 #include <ostream>
 #include <vector>

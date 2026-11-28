@@ -22,7 +22,7 @@ Blob ProxyFileSystem::_read(NormalPathView path) const {
 }
 
 void ProxyFileSystem::_write(NormalPathView path, const Blob &data) {
-    return nonNullBase()->write(path, data);
+    nonNullBase()->write(path, data);
 }
 
 std::unique_ptr<InputStream> ProxyFileSystem::_openForReading(NormalPathView path) const {

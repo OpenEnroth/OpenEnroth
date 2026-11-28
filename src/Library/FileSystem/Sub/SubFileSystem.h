@@ -2,7 +2,6 @@
 
 #include <memory>
 #include <string>
-#include <string_view>
 #include <vector>
 
 #include "Library/FileSystem/Interface/FileSystem.h"
@@ -43,7 +42,7 @@ class SubFileSystem : public FileSystem {
     virtual std::string _displayPath(NormalPathView path) const override;
 
  private:
-    [[nodiscard]] NormalPath basePath(NormalPathView path) const;
+    [[nodiscard]] NormalPath makeBasePath(NormalPathView path) const;
 
  private:
     FileSystem *_base = nullptr;

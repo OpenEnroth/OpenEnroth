@@ -9,11 +9,8 @@
 #include <tuple>
 
 #include "Library/FileSystem/Interface/FileSystemException.h"
-#include "Library/FileSystem/Proxy/ProxyFileSystem.h"
 
 #include "Utility/String/Ascii.h"
-#include "Utility/MapAccess.h"
-#include "Utility/Exception.h"
 
 static bool hasUpper(std::string_view s) {
     return std::ranges::any_of(s, &ascii::isUpper);
@@ -113,15 +110,15 @@ std::tuple<NormalPath, LowercaseFileSystem::Node *, NormalPathView> LowercaseFil
     Node *node = _trie.root();
 
     NormalPath basePath;
-    for (std::string_view chunk : path.split()) {
+    for (std::string_view segment : path.split()) {
         if (node->value().type != FILE_DIRECTORY)
-            return {std::move(basePath), node, path.tailAt(chunk)};
+            return {std::move(basePath), node, path.tailAt(segment)};
 
         cacheLs(node, basePath);
 
-        Node *child = node->child(chunk);
+        Node *child = node->child(segment);
         if (!child)
-            return {std::move(basePath), node, path.tailAt(chunk)};
+            return {std::move(basePath), node, path.tailAt(segment)};
 
         node = child;
         basePath /= child->value().baseName;
@@ -189,18 +186,18 @@ void LowercaseFileSystem::cacheInsert(Node *node, NormalPathView tail, FileType 
 
     assert(node->value().type == FILE_DIRECTORY);
 
-    auto chunks = tail.split();
-    auto pos = chunks.begin();
-    auto end = chunks.end();
+    auto segments = tail.split();
+    auto pos = segments.begin();
+    auto end = segments.end();
 
-    std::string_view firstChunk = *pos;
+    std::string_view firstSegment = *pos;
     ++pos;
-    assert(!node->children().contains(firstChunk));
+    assert(!node->children().contains(firstSegment));
 
     FileType nodeType = pos == end ? type : FILE_DIRECTORY;
     _trie.insertOrAssign(node,
-                         firstChunk,
-                         detail::LowercaseFileData(nodeType, NormalPath(firstChunk)));
+                         firstSegment,
+                         detail::LowercaseFileData(nodeType, NormalPath(firstSegment)));
 }
 
 NormalPath LowercaseFileSystem::locateForReading(NormalPathView path) const {

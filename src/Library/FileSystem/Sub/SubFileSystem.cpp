@@ -15,11 +15,11 @@ SubFileSystem::SubFileSystem(PathView basePath, FileSystem *base) : _base(base),
 }
 
 bool SubFileSystem::_exists(NormalPathView path) const {
-    return _base->exists(basePath(path));
+    return _base->exists(makeBasePath(path));
 }
 
 FileStat SubFileSystem::_stat(NormalPathView path) const {
-    return _base->stat(basePath(path));
+    return _base->stat(makeBasePath(path));
 }
 
 void SubFileSystem::_ls(NormalPathView path, std::vector<DirectoryEntry> *entries) const {
@@ -27,33 +27,33 @@ void SubFileSystem::_ls(NormalPathView path, std::vector<DirectoryEntry> *entrie
     if (path.isEmpty() && _base->stat(_basePath).type != FILE_DIRECTORY)
         return;
 
-    _base->ls(basePath(path), entries);
+    _base->ls(makeBasePath(path), entries);
 }
 
 Blob SubFileSystem::_read(NormalPathView path) const {
-    return _base->read(basePath(path));
+    return _base->read(makeBasePath(path));
 }
 
 void SubFileSystem::_write(NormalPathView path, const Blob &data) {
-    _base->write(basePath(path), data);
+    _base->write(makeBasePath(path), data);
 }
 
 std::unique_ptr<InputStream> SubFileSystem::_openForReading(NormalPathView path) const {
-    return _base->openForReading(basePath(path));
+    return _base->openForReading(makeBasePath(path));
 }
 
 std::unique_ptr<OutputStream> SubFileSystem::_openForWriting(NormalPathView path) {
-    return _base->openForWriting(basePath(path));
+    return _base->openForWriting(makeBasePath(path));
 }
 
 bool SubFileSystem::_remove(NormalPathView path) {
-    return _base->remove(basePath(path));
+    return _base->remove(makeBasePath(path));
 }
 
 std::string SubFileSystem::_displayPath(NormalPathView path) const {
-    return _base->displayPath(basePath(path));
+    return _base->displayPath(makeBasePath(path));
 }
 
-NormalPath SubFileSystem::basePath(NormalPathView path) const {
+NormalPath SubFileSystem::makeBasePath(NormalPathView path) const {
     return _basePath / path;
 }

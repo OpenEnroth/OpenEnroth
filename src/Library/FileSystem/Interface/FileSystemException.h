@@ -12,9 +12,9 @@ class FileSystemException : public Exception {
  public:
     /**
      * @param error                     What failed.
-     * @param arg0                      Path to show in the message.
+     * @param displayPath               Path to show in the message, as `FileSystem::displayPath` gives it.
      */
-    FileSystemException(FileSystemError error, std::string_view arg0);
+    FileSystemException(FileSystemError error, std::string_view displayPath);
 
     /**
      * @param fs                        File system that failed.
@@ -24,5 +24,5 @@ class FileSystemException : public Exception {
     [[noreturn]] static void raise(const FileSystem *fs, FileSystemError error, NormalPathView path);
 
  private:
-    std::string formatMessage(FileSystemError error, std::string_view arg0);
+    std::string formatMessage(FileSystemError error, std::string_view displayPath);
 };

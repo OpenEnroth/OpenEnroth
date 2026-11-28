@@ -131,19 +131,19 @@ MountingFileSystem::WalkResult MountingFileSystem::walk(NormalPathView path) {
     Node *node = _trie.root();
     FileSystem *mount = node->hasValue() ? node->value() : nullptr;
 
-    std::string_view mountChunk;
-    for (std::string_view chunk : path.split()) {
-        node = node->child(chunk);
+    std::string_view mountSegment;
+    for (std::string_view segment : path.split()) {
+        node = node->child(segment);
         if (!node)
             break;
         if (node->hasValue()) {
             mount = node->value();
-            mountChunk = chunk;
+            mountSegment = segment;
         }
     }
 
     if (mount) {
-        return {node, mount, path.tailAfter(mountChunk)};
+        return {node, mount, path.tailAfter(mountSegment)};
     } else {
         return {node, nullptr, {}};
     }

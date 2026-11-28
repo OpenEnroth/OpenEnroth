@@ -1,6 +1,7 @@
 #pragma once
 
 #include <concepts>
+#include <string>
 #include <string_view>
 
 #include "Utility/Attributes.h"
@@ -90,6 +91,14 @@ class NormalPath {
 
     [[nodiscard]] const Path &path() const MM_LIFETIMEBOUND {
         return _path;
+    }
+
+    [[nodiscard]] const std::string &str() const MM_LIFETIMEBOUND {
+        return _path.str();
+    }
+
+    [[nodiscard]] bool isEmpty() const {
+        return _path.isEmpty();
     }
 
     [[nodiscard]] bool isAccessible() const {

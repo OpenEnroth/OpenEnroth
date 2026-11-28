@@ -8,7 +8,7 @@
 UNIT_TEST(NormalPath, Normalizes) {
     // A backslash is a separator on every platform, then the path is brought to normal form.
     auto testOne = [] (std::string_view path, std::string_view result) {
-        EXPECT_EQ(NormalPath(path).path().str(), result) << "for '" << path << "'";
+        EXPECT_EQ(NormalPath(path).str(), result) << "for '" << path << "'";
     };
 
     testOne("", "");
@@ -24,7 +24,7 @@ UNIT_TEST(NormalPath, Normalizes) {
 UNIT_TEST(NormalPath, DotDotStopsAtRoot) {
     // ".." with nothing left to climb out of stays at the root.
     auto testOne = [] (std::string_view path, std::string_view result) {
-        EXPECT_EQ(NormalPath(path).path().str(), result) << "for '" << path << "'";
+        EXPECT_EQ(NormalPath(path).str(), result) << "for '" << path << "'";
     };
 
     testOne("..", "");
@@ -42,7 +42,7 @@ UNIT_TEST(NormalPath, DotDotStopsAtRoot) {
 
 UNIT_TEST(NormalPath, DefaultIsRoot) {
     // A default-constructed path names the root, and so does its view.
-    EXPECT_TRUE(NormalPath().path().isEmpty());
+    EXPECT_TRUE(NormalPath().isEmpty());
     EXPECT_TRUE(NormalPathView(NormalPath()).isEmpty());
     EXPECT_TRUE(NormalPathView().isEmpty());
 }
@@ -90,11 +90,11 @@ UNIT_TEST(NormalPath, IsAccessible) {
 UNIT_TEST(NormalPath, Join) {
     // Joining accessible paths gives a normal path, and an empty side adds no separator.
     auto testOne = [] (std::string_view head, std::string_view tail, std::string_view result) {
-        EXPECT_EQ((NormalPath(head) / NormalPath(tail)).path().str(), result) << "for '" << head << "' and '" << tail << "'";
+        EXPECT_EQ((NormalPath(head) / NormalPath(tail)).str(), result) << "for '" << head << "' and '" << tail << "'";
 
         NormalPath appended(head);
         appended /= NormalPath(tail);
-        EXPECT_EQ(appended.path().str(), result) << "for '" << head << "' and '" << tail << "'";
+        EXPECT_EQ(appended.str(), result) << "for '" << head << "' and '" << tail << "'";
     };
 
     testOne("", "", "");

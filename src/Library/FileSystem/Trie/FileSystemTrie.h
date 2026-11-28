@@ -75,9 +75,9 @@ class FileSystemTrieNode {
  * to a value node. This means, for example, that the following code will leave the trie empty:
  * ```
  * FileSystemTrie<bool> trie;
- * trie.insertOrAssign(Path("a/b/c"), true);
- * trie.erase(Path("a/b"));
- * // trie is now empty, trie.find(Path("a")) will return nullptr.
+ * trie.insertOrAssign("a/b/c", true);
+ * trie.erase("a/b");
+ * // trie is now empty, trie.find("a") will return nullptr.
  * ```
  * 
  * Note that the interface of `FileSystemTrie` is a bit different from what one would expect a map-like class to offer.
@@ -103,8 +103,8 @@ class FileSystemTrie {
     Node *find(Node *base, PathView relativePath) {
         assert(base);
 
-        for (std::string_view chunk : relativePath.split()) {
-            base = base->child(chunk);
+        for (std::string_view segment : relativePath.split()) {
+            base = base->child(segment);
             if (!base)
                 return base;
         }
@@ -133,12 +133,12 @@ class FileSystemTrie {
     Node *walk(Node *base, PathView relativePath, PathView *tail = nullptr) {
         assert(base);
 
-        for (std::string_view chunk : relativePath.split()) {
-            if (Node *child = base->child(chunk)) {
+        for (std::string_view segment : relativePath.split()) {
+            if (Node *child = base->child(segment)) {
                 base = child;
             } else {
                 if (tail)
-                    *tail = relativePath.tailAt(chunk);
+                    *tail = relativePath.tailAt(segment);
                 return base;
             }
         }
@@ -237,13 +237,13 @@ class FileSystemTrie {
     Node *_grow(Node *base, const PathView relativePath) {
         assert(base);
 
-        for (std::string_view chunk : relativePath.split()) {
-            if (Node *child = base->child(chunk)) {
+        for (std::string_view segment : relativePath.split()) {
+            if (Node *child = base->child(segment)) {
                 base = child;
                 continue;
             }
 
-            base = base->_children.emplace(chunk, std::make_unique<Node>(base, chunk)).first->second.get();
+            base = base->_children.emplace(segment, std::make_unique<Node>(base, segment)).first->second.get();
         }
 
         return base;

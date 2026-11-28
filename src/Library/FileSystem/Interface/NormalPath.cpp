@@ -6,15 +6,13 @@
 #include <string_view>
 #include <utility>
 
-#include "Utility/String/Ascii.h"
-
 bool NormalPathView::isAccessible() const {
     if (!_path.root().empty())
         return false;
 
 #ifdef _WINDOWS
     for (std::string_view segment : split())
-        if (segment.size() >= 2 && segment[1] == ':' && (ascii::isLower(segment[0]) || ascii::isUpper(segment[0])))
+        if (!PathView(segment).root().empty())
             return false;
 #endif
     return true;
@@ -45,33 +43,15 @@ NormalPath::NormalPath(PathView path) {
 NormalPath &NormalPath::operator/=(NormalPathView tail) {
     assert(isAccessible() && tail.isAccessible());
 
-    if (_path.isEmpty()) {
-        _path = Path(PathView(tail));
-    } else if (!tail.isEmpty()) {
+    if (!tail.isEmpty()) // Path gives "a/" for "a" / "".
         _path /= PathView(tail);
-    }
     return *this;
 }
 
 NormalPath operator/(NormalPathView head, NormalPathView tail) {
     assert(head.isAccessible() && tail.isAccessible());
 
-    if (head.isEmpty() || tail.isEmpty()) {
-        NormalPath path;
-        path._path = Path(PathView(head.isEmpty() ? tail : head));
-        return path;
-    }
-
-    std::string_view headString = head.str();
-    std::string_view tailString = tail.str();
-
-    std::string result;
-    result.reserve(headString.size() + 1 + tailString.size());
-    result += headString;
-    result += '/';
-    result += tailString;
-
     NormalPath path;
-    path._path = Path(std::move(result));
+    path._path = tail.isEmpty() ? Path(PathView(head)) : PathView(head) / PathView(tail); // Path gives "a/" for "a" / "".
     return path;
 }
