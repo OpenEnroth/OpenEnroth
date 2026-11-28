@@ -17,7 +17,8 @@ struct Overloaded : Functions... {
  * ```
  * auto print = overload(
  *     [](int value) { fmt::println("int {}", value); },
- *     [](std::string_view value) { fmt::println("string {}", value); });
+ *     [](std::string_view value) { fmt::println("string {}", value); }
+ * );
  * print(10); // Prints "int 10".
  * ```
  *

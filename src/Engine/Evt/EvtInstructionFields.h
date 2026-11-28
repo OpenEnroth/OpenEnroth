@@ -39,7 +39,8 @@ bool visitEvtFields(Instruction &ir, Visitor &&visitor) {
         },
         [&](auto type, const char *name, auto *member, auto &&convert) {
             visitor(type, name, member, convert);
-        });
+        }
+    );
     auto pad = [&](auto type) {
         visitor(type, static_cast<const char *>(nullptr), static_cast<void *>(nullptr), std::identity());
     };
