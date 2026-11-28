@@ -52,7 +52,7 @@ static void deserialize(InputStream &src, Palette *dst) {
 static Blob uncompressEntryData(const Blob &blob, const Blob &compressed, size_t decompressedSize) {
     Blob result = zlib::uncompressBestEffort(compressed, decompressedSize);
     if (result.size() != decompressedSize)
-        throw Exception("Cannot decode LOD entry '{}', its data unpacks into {} bytes instead of {}", blob.displayPath(), result.size(), decompressedSize);
+        throw Exception("Cannot decode LOD entry '{}': its data unpacks into {} bytes instead of {}", blob.displayPath(), result.size(), decompressedSize);
     return result.withDisplayPath(blob.displayPath());
 }
 
@@ -118,17 +118,13 @@ static void decodeFontAs(const Blob &blob, LodFontHeader *header, LodFontAtlas *
         }
 
         const LodFontMetrics &metrics = atlas->metrics[c];
-        if (metrics.width < MIN_GLYPH_WIDTH || metrics.width > MAX_GLYPH_WIDTH || metrics.leftSpacing > MAX_GLYPH_SPACING || metrics.rightSpacing > MAX_GLYPH_SPACING) {
-            throw Exception("Cannot decode font LOD entry '{}': invalid font metrics encountered for character #{}",
-                            blob.displayPath(), c);
-        }
+        if (metrics.width < MIN_GLYPH_WIDTH || metrics.width > MAX_GLYPH_WIDTH || metrics.leftSpacing > MAX_GLYPH_SPACING || metrics.rightSpacing > MAX_GLYPH_SPACING)
+            throw Exception("Cannot decode LOD entry '{}': invalid metrics for character #{}", blob.displayPath(), c);
 
         int offset = atlas->offsets[c];
         int size = header->fontHeight * metrics.width;
-        if (offset < 0 || size < 0 || size + offset > pixels->size()) {
-            throw Exception("Cannot decode font LOD entry '{}': invalid glyph data encountered for character #{}",
-                            blob.displayPath(), c);
-        }
+        if (offset < 0 || size < 0 || size + offset > pixels->size())
+            throw Exception("Cannot decode LOD entry '{}': invalid glyph for character #{}", blob.displayPath(), c);
     }
 }
 
@@ -440,10 +436,8 @@ LodSprite lod::decodeSpriteMm6(const Blob &blob) {
             continue; // Empty line.
 
         if (line.begin < 0 || line.end < 0 || line.begin > header.width || line.end > header.width || line.begin > line.end ||
-            line.offset > pixels.size() || line.offset + line.end - line.begin > pixels.size()) {
-            throw Exception("Cannot decode sprite LOD entry '{}': invalid sprite line encountered at y={}",
-                            blob.displayPath(), y);
-        }
+            line.offset > pixels.size() || line.offset + line.end - line.begin > pixels.size())
+            throw Exception("Cannot decode LOD entry '{}': invalid sprite line at y={}", blob.displayPath(), y);
 
         memcpy(result.image[y].data() + line.begin, static_cast<const char *>(pixels.data()) + line.offset, line.end - line.begin);
     }
