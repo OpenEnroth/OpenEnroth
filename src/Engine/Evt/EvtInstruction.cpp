@@ -7,6 +7,7 @@
 #include <string_view>
 #include <type_traits>
 #include <utility>
+#include <vector>
 
 #include "Engine/Evt/EvtEnums.h"
 #include "Engine/Evt/EvtInstructionFields.h"
@@ -85,42 +86,23 @@ MM_DEFINE_ENUM_SERIALIZATION_FUNCTIONS(Mastery, CASE_SENSITIVE, {
     {MASTERY_GRANDMASTER, "GM"}
 })
 
-/**
- * Name of the table of constants that MMExtension keeps the flags of type `T` in, as in `const.FacetBits.Untouchable`.
- * Null if scripts have no names for `T`.
- */
-template<class T>
-constexpr const char *constGroup = nullptr;
-
-template<>
-constexpr const char *constGroup<FaceAttribute> = "FacetBits";
-
-template<>
-constexpr const char *constGroup<ActorAttribute> = "MonsterBits";
-
-template<>
-constexpr const char *constGroup<ChestFlag> = "ChestBits";
-
 } // namespace
 
 /**
- * @param value                         What an evt record stores for a field, after the field's conversion.
- * @param name                          Name of the field.
- * @return                              The value as the member of type `T` that holds the field.
- * @throws Exception                    If the value doesn't fit the member.
+ * @tparam T                            Type of a member of an instruction.
+ * @return                              Name of the table of constants that MMExtension keeps the flags of type `T`
+ *                                      in, as in `const.FacetBits.Untouchable`. Null if scripts have no names for `T`.
  */
-template<class T, class Value>
-static T fromWire(Value value, const char *name) {
-    if constexpr (std::is_same_v<T, Value>) {
-        return value;
-    } else if constexpr (std::is_enum_v<T>) {
-        if (!std::in_range<std::underlying_type_t<T>>(value))
-            throw Exception("Value '{}' is out of range for evt field '{}'", value, name);
-        return static_cast<T>(value);
-    } else if constexpr (std::is_same_v<T, bool>) {
-        return value != 0;
+template<class T>
+static constexpr const char *constGroup() {
+    if constexpr (std::is_same_v<T, FaceAttribute>) {
+        return "FacetBits";
+    } else if constexpr (std::is_same_v<T, ActorAttribute>) {
+        return "MonsterBits";
+    } else if constexpr (std::is_same_v<T, ChestFlag>) {
+        return "ChestBits";
     } else {
-        return static_cast<T>(value); // An unsigned value past the range of a signed member is a negative one.
+        return nullptr;
     }
 }
 
@@ -144,7 +126,8 @@ static std::string luaString(std::string_view text) {
             result += c;
         }
     }
-    return result + "\"";
+    result += '"';
+    return result;
 }
 
 /**
@@ -155,16 +138,15 @@ static std::string luaString(std::string_view text) {
 template<class T>
 static std::string luaFlags(T value) {
     auto bits = std::to_underlying(value);
-    std::string result;
+    std::vector<std::string> flags;
     for (auto bit = std::bit_floor(bits); bit != 0; bit >>= 1) { // From the highest flag down, like MMExtension's decompiler.
         if (!(bits & bit))
             continue;
 
         std::string name;
-        std::string flag = trySerialize(static_cast<T>(bit), &name) ? fmt::format("const.{}.{}", constGroup<T>, name) : fmt::format("0x{:X}", bit);
-        result += result.empty() ? flag : " + " + flag;
+        flags.push_back(trySerialize(static_cast<T>(bit), &name) ? fmt::format("const.{}.{}", constGroup<T>(), name) : fmt::format("0x{:X}", bit));
     }
-    return result.empty() ? "0" : result;
+    return flags.empty() ? "0" : fmt::format("{}", fmt::join(flags, " + "));
 }
 
 /**
@@ -177,18 +159,24 @@ static std::string toLua(const T &value) {
         return luaString(value);
     } else if constexpr (std::is_same_v<T, bool>) {
         return value ? "true" : "false";
-    } else if constexpr (std::is_same_v<T, EvtVariable> || std::is_same_v<T, EvtTargetCharacter>) {
-        // A script passes a variable and a player by name, as a string: `evt.Cmp("QBits", 240)`, `evt.ForPlayer("All")`.
-        // So the name is in quotes. A single player has no name and is a number.
+    } else if constexpr (std::is_same_v<T, EvtVariable>) {
+        // A script passes a variable by name, as a string: `evt.Cmp("QBits", 240)`. So the name is in quotes.
         std::string name;
         return trySerialize(value, &name) ? luaString(name) : fmt::format("{}", std::to_underlying(value));
+    } else if constexpr (std::is_same_v<T, EvtTargetCharacter>) {
+        // A script passes a single player as a number and the others by name, as a string: `evt.ForPlayer(0)`,
+        // `evt.ForPlayer("All")`. So only a name is in quotes.
+        std::string name;
+        if (!trySerialize(value, &name))
+            return fmt::format("{}", std::to_underlying(value));
+        return value <= CHOOSE_PLAYER4 ? name : luaString(name);
     } else if constexpr (std::is_same_v<T, Mastery>) {
         // A script takes a mastery and a flag from MMExtension's constants: `const.Master`, `const.FacetBits.Untouchable`.
         // These name Lua values, so they have no quotes.
         Mastery mastery = value == MASTERY_NONE ? MASTERY_NOVICE : value; // A skill check takes novice for any mastery.
         std::string name;
-        return trySerialize(mastery, &name) ? "const." + name : fmt::format("{}", std::to_underlying(value));
-    } else if constexpr (constGroup<T> != nullptr) {
+        return trySerialize(mastery, &name) ? fmt::format("const.{}", name) : fmt::format("{}", std::to_underlying(value));
+    } else if constexpr (constGroup<T>() != nullptr) {
         return luaFlags(value);
     } else if constexpr (std::is_enum_v<T>) {
         return fmt::format("{}", std::to_underlying(value));
@@ -229,7 +217,7 @@ std::string EvtInstruction::toString(EvtSource source) const {
 
     std::string fields;
     bool isKnown = visitEvtFields(*this, [&](auto, const char *fieldName, const auto *member, auto &&) {
-        if constexpr (!std::is_void_v<std::remove_pointer_t<decltype(member)>>)
+        if constexpr (!isEvtPadding(member))
             fields += fmt::format("{}{} = {}", fields.empty() ? "" : ", ", fieldName, toLua(*member));
     });
     if (!isKnown)
@@ -252,15 +240,19 @@ EvtInstruction EvtInstruction::parse(InputStream &stream) {
     ir.opcode = static_cast<EvtOpcode>(opcode);
 
     // TODO(captainurist): verify enum ranges here.
-    bool isKnown = visitEvtFields(ir, [&]<class Wire>(std::type_identity<Wire>, const char *name, auto *member, auto &&convert) {
-        using Member = std::remove_pointer_t<decltype(member)>;
+    bool isKnown = visitEvtFields(ir, [&]<class Wire, class Member>(std::type_identity<Wire>, const char *name, Member *member, auto &&convert) {
         if constexpr (std::is_same_v<Wire, std::string>) {
             deserialize(stream, member, tags::nullTerminated);
         } else {
-            Wire stored = Wire();
+            Wire stored = {};
             deserialize(stream, &stored);
-            if constexpr (!std::is_void_v<Member>)
-                *member = fromWire<Member>(convert(stored), name);
+            if constexpr (!isEvtPadding(member)) {
+                auto value = convert(stored);
+                if constexpr (std::is_enum_v<Member> && std::is_integral_v<decltype(value)>)
+                    if (!std::in_range<std::underlying_type_t<Member>>(value)) // The cast below would cut the value down to the enum's size.
+                        throw Exception("Value '{}' is out of range for evt field '{}'", value, name);
+                *member = static_cast<Member>(value); // An unsigned value past the range of a signed member is a negative one.
+            }
         }
     });
     if (!isKnown)

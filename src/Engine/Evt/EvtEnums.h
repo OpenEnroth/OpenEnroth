@@ -416,7 +416,7 @@ enum class EvtTargetCharacter {
     CHOOSE_RANDOM = 6
 };
 using enum EvtTargetCharacter;
-MM_DECLARE_SERIALIZATION_FUNCTIONS(EvtTargetCharacter) // MMExtension's names. A single player has none, scripts pass a number.
+MM_DECLARE_SERIALIZATION_FUNCTIONS(EvtTargetCharacter) // What a script passes in MMExtension, a number from 0 for a single player or a name.
 
 /**
  * Which evt file an event comes from.

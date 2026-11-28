@@ -389,7 +389,11 @@ MM_DEFINE_ENUM_SERIALIZATION_FUNCTIONS(EvtVariable, CASE_SENSITIVE, {
 
 // TODO(captainurist): tag this as MMExtension's names once serialization functions are told apart by tags.
 MM_DEFINE_ENUM_SERIALIZATION_FUNCTIONS(EvtTargetCharacter, CASE_SENSITIVE, {
-    {CHOOSE_ACTIVE, "Current"},
-    {CHOOSE_PARTY,  "All"},
-    {CHOOSE_RANDOM, "Random"}
+    {CHOOSE_PLAYER1, "0"}, // MMExtension counts the players from 0.
+    {CHOOSE_PLAYER2, "1"},
+    {CHOOSE_PLAYER3, "2"},
+    {CHOOSE_PLAYER4, "3"},
+    {CHOOSE_ACTIVE,  "Current"},
+    {CHOOSE_PARTY,   "All"},
+    {CHOOSE_RANDOM,  "Random"}
 })

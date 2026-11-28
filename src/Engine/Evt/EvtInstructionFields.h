@@ -10,6 +10,15 @@
 #include "Utility/Overload.h"
 
 /**
+ * @param member                        Member that `visitEvtFields` passed to its visitor.
+ * @return                              Whether the field is padding. A visitor can check this in an `if constexpr`.
+ */
+template<class Member>
+constexpr bool isEvtPadding(Member *const &) { // By reference, because a visitor's parameter is no constant to copy.
+    return std::is_void_v<Member>;
+}
+
+/**
  * Walks the fields of an instruction in the order that an evt record stores them, after the step and the opcode, and
  * calls `visitor(type, name, member, convert)` for each field:
  * - `type` is a `std::type_identity` of what the record stores. A string ends with a zero there.
@@ -18,7 +27,8 @@
  * - `convert` takes what the record stores and returns what goes into the member. It's `std::identity` for most
  *   fields.
  *
- * A field that OpenEnroth doesn't keep is padding. Its name is `nullptr` and its member is a null `void *`.
+ * A field that OpenEnroth doesn't keep is padding. Its name is `nullptr` and its member is a null `void *`, which
+ * `isEvtPadding` tells.
  *
  * @param ir                            Instruction to walk, with its opcode set. Can be const.
  * @param visitor                       Visitor to call.
