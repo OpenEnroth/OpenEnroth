@@ -13,27 +13,21 @@ class Blob;
  * Functions for the formats stored inside LOD archives.
  *
  * Each format gets its own `detectXyzMm6` and `decodeXyzMm6` pair, suffixed with the game that introduced it, and the
- * unsuffixed `detectXyz` and `decodeXyz` take every format of their kind. Encoding writes one specific format, so
- * encode functions are always suffixed. MM6 already has both font layouts, so the one `calig.fnt` uses is named MMZ.
+ * unsuffixed `decodeXyz` takes every format of its kind. Encoding writes one specific format, so encode functions are
+ * always suffixed. MM6 already has both font layouts, so the one `calig.fnt` uses is named MMZ.
  */
 namespace lod {
 
 bool detectCompressedDataMm6(const Blob &blob);
 bool detectCompressedDataMm7(const Blob &blob);
-bool detectCompressedData(const Blob &blob);
 bool detectCompressedPseudoImageMm6(const Blob &blob);
 bool detectCompressedPseudoImageMm8(const Blob &blob);
-bool detectCompressedPseudoImage(const Blob &blob);
 bool detectImageMm6(const Blob &blob);
 bool detectImageMm8(const Blob &blob);
-bool detectImage(const Blob &blob);
 bool detectPaletteMm6(const Blob &blob);
-bool detectPalette(const Blob &blob);
 bool detectSpriteMm6(const Blob &blob);
-bool detectSprite(const Blob &blob);
 bool detectFontMm6(const Blob &blob);
 bool detectFontMmz(const Blob &blob);
-bool detectFont(const Blob &blob);
 
 /**
  * @param blob                          MM6 compressed data, the packed and unpacked sizes followed by zlib data.

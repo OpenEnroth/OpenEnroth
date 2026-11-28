@@ -153,11 +153,11 @@ UNIT_TEST(LodFormats, CompressedDataMm6_NearMisses) {
     Blob compressed = zlib::compress(Blob::fromString(testData));
 
     Blob wrongDataSize = compressedDataMm6(compressed, compressed.size() + 1, testData.size());
-    EXPECT_FALSE(lod::detectCompressedData(wrongDataSize));
+    EXPECT_FALSE(lod::detectCompressedDataMm6(wrongDataSize));
     EXPECT_EQ(lod::decodeMaybeCompressed(wrongDataSize).str(), wrongDataSize.str());
 
     Blob notZlib = compressedDataMm6(Blob::fromString(testData), testData.size(), testData.size());
-    EXPECT_FALSE(lod::detectCompressedData(notZlib));
+    EXPECT_FALSE(lod::detectCompressedDataMm6(notZlib));
     EXPECT_EQ(lod::decodeMaybeCompressed(notZlib).str(), notZlib.str());
 }
 

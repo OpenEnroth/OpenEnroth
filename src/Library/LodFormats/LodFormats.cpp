@@ -131,10 +131,6 @@ bool lod::detectCompressedDataMm7(const Blob &blob) {
     return header.version == 91969 && memcmp(header.signature.data(), "mvii", 4) == 0;
 }
 
-bool lod::detectCompressedData(const Blob &blob) {
-    return detectCompressedDataMm7(blob) || detectCompressedDataMm6(blob);
-}
-
 template<class Header>
 static bool detectCompressedPseudoImageAs(const Blob &blob) {
     if (blob.size() < sizeof(Header))
@@ -156,10 +152,6 @@ bool lod::detectCompressedPseudoImageMm6(const Blob &blob) {
 
 bool lod::detectCompressedPseudoImageMm8(const Blob &blob) {
     return detectCompressedPseudoImageAs<LodImageHeader_MM8>(blob);
-}
-
-bool lod::detectCompressedPseudoImage(const Blob &blob) {
-    return detectCompressedPseudoImageMm6(blob) || detectCompressedPseudoImageMm8(blob);
 }
 
 template<class Header>
@@ -185,10 +177,6 @@ bool lod::detectImageMm8(const Blob &blob) {
     return detectImageAs<LodImageHeader_MM8>(blob);
 }
 
-bool lod::detectImage(const Blob &blob) {
-    return detectImageMm6(blob) || detectImageMm8(blob);
-}
-
 bool lod::detectPaletteMm6(const Blob &blob) {
     if (blob.size() < sizeof(LodImageHeader_MM6))
         return false;
@@ -203,10 +191,6 @@ bool lod::detectPaletteMm6(const Blob &blob) {
         blob.size() == sizeof(LodImageHeader_MM6) + 0x300;
 }
 
-bool lod::detectPalette(const Blob &blob) {
-    return detectPaletteMm6(blob);
-}
-
 bool lod::detectSpriteMm6(const Blob &blob) {
     if (blob.size() < sizeof(LodSpriteHeader_MM6))
         return false;
@@ -218,10 +202,6 @@ bool lod::detectSpriteMm6(const Blob &blob) {
     return header.dataSize > 0 && header.width > 0 && header.height > 0 &&
         header.paletteId > 0 && header.unk_0 == 0 && header.emptyBottomLines <= header.height &&
         blob.size() == sizeof(LodSpriteHeader_MM6) + header.height * sizeof(LodSpriteLine_MM6) + header.dataSize;
-}
-
-bool lod::detectSprite(const Blob &blob) {
-    return detectSpriteMm6(blob);
 }
 
 bool lod::detectFontMm6(const Blob &blob) {
@@ -253,10 +233,6 @@ bool lod::detectFontMmz(const Blob &blob) {
     for (int c = header.firstChar; c <= header.lastChar; c++)
         pixelsSize += static_cast<size_t>(header.height) * atlas.widths[c];
     return blob.size() == sizeof(LodFontHeader_MM6) + sizeof(LodFontAtlas_MMZ) + pixelsSize;
-}
-
-bool lod::detectFont(const Blob &blob) {
-    return detectFontMm6(blob) || detectFontMmz(blob);
 }
 
 Blob lod::decodeCompressedDataMm6(const Blob &blob) {
@@ -332,12 +308,14 @@ Blob lod::decodeCompressedPseudoImage(const Blob &blob) {
 }
 
 Blob lod::decodeMaybeCompressed(const Blob &blob) {
-    if (detectCompressedData(blob))
-        return decodeCompressedData(blob);
-
-    if (detectCompressedPseudoImage(blob))
-        return decodeCompressedPseudoImage(blob);
-
+    if (detectCompressedDataMm7(blob))
+        return decodeCompressedDataMm7(blob);
+    if (detectCompressedDataMm6(blob))
+        return decodeCompressedDataMm6(blob);
+    if (detectCompressedPseudoImageMm6(blob))
+        return decodeCompressedPseudoImageMm6(blob);
+    if (detectCompressedPseudoImageMm8(blob))
+        return decodeCompressedPseudoImageMm8(blob);
     return Blob::share(blob); // Not compressed.
 }
 
