@@ -26,10 +26,11 @@ static std::string noise(size_t size) {
     return result;
 }
 
-static Blob compressedDataMm6(const Blob &compressed, uint32_t dataSize, uint32_t decompressedSize) {
+static Blob compressedDataMm6(const Blob &data) {
+    Blob compressed = zlib::compress(data);
     LodCompressionHeader_MM6 header;
-    header.dataSize = dataSize;
-    header.decompressedSize = decompressedSize;
+    header.dataSize = compressed.size();
+    header.decompressedSize = data.size();
 
     Blob result;
     BlobOutputStream stream(&result);
@@ -144,8 +145,7 @@ static Blob fontMmz() {
 
 UNIT_TEST(LodFormats, CompressedDataMm6) {
     // MM6 maps came out of decodeMaybeCompressed still compressed.
-    Blob compressed = zlib::compress(Blob::fromString(testData));
-    Blob entry = compressedDataMm6(compressed, compressed.size(), testData.size());
+    Blob entry = compressedDataMm6(Blob::fromString(testData));
 
     EXPECT_TRUE(lod::detectCompressedDataMm6(entry));
     EXPECT_EQ(lod::decodeMaybeCompressed(entry).str(), testData);
@@ -153,7 +153,10 @@ UNIT_TEST(LodFormats, CompressedDataMm6) {
 
 UNIT_TEST(LodFormats, CompressedDataMm6_Stored) {
     // MM6 compressed data stored without compression came out of decodeMaybeCompressed with its header still on.
-    Blob entry = compressedDataMm6(Blob::fromString(testData), testData.size(), 0);
+    LodCompressionHeader_MM6 header;
+    header.dataSize = testData.size();
+    header.decompressedSize = 0;
+    Blob entry = Blob::concat(Blob::view(&header, sizeof(header)), Blob::fromString(testData));
 
     EXPECT_TRUE(lod::detectCompressedDataMm6(entry));
     EXPECT_EQ(lod::decodeMaybeCompressed(entry).str(), testData);
@@ -162,16 +165,23 @@ UNIT_TEST(LodFormats, CompressedDataMm6_Stored) {
 UNIT_TEST(LodFormats, CompressedDataMm6_NearMisses) {
     // Data that only looks like MM6 compressed data comes out of decodeMaybeCompressed as is.
     Blob compressed = zlib::compress(Blob::fromString(testData));
+    LodCompressionHeader_MM6 header;
 
-    Blob wrongDataSize = compressedDataMm6(compressed, compressed.size() + 1, testData.size());
+    header.dataSize = compressed.size() + 1;
+    header.decompressedSize = testData.size();
+    Blob wrongDataSize = Blob::concat(Blob::view(&header, sizeof(header)), compressed);
     EXPECT_FALSE(lod::detectCompressedDataMm6(wrongDataSize));
     EXPECT_EQ(lod::decodeMaybeCompressed(wrongDataSize).str(), wrongDataSize.str());
 
-    Blob notZlib = compressedDataMm6(Blob::fromString(testData), testData.size(), testData.size());
+    header.dataSize = testData.size();
+    header.decompressedSize = testData.size();
+    Blob notZlib = Blob::concat(Blob::view(&header, sizeof(header)), Blob::fromString(testData));
     EXPECT_FALSE(lod::detectCompressedDataMm6(notZlib));
     EXPECT_EQ(lod::decodeMaybeCompressed(notZlib).str(), notZlib.str());
 
-    Blob storedWrongDataSize = compressedDataMm6(Blob::fromString(testData), testData.size() + 1, 0);
+    header.dataSize = testData.size() + 1;
+    header.decompressedSize = 0;
+    Blob storedWrongDataSize = Blob::concat(Blob::view(&header, sizeof(header)), Blob::fromString(testData));
     EXPECT_FALSE(lod::detectCompressedDataMm6(storedWrongDataSize));
     EXPECT_EQ(lod::decodeMaybeCompressed(storedWrongDataSize).str(), storedWrongDataSize.str());
 }
@@ -186,8 +196,7 @@ UNIT_TEST(LodFormats, CompressedDataMm7) {
 
 UNIT_TEST(LodFormats, CompressedData_BrokenChecksum) {
     // Intact zlib data with a broken adler32 checksum, like English MM6's cd3.blv, failed to decode.
-    Blob compressed = zlib::compress(Blob::fromString(testData));
-    Blob mm6 = compressedDataMm6(compressed, compressed.size(), testData.size());
+    Blob mm6 = compressedDataMm6(Blob::fromString(testData));
     Blob mm7 = lod::encodeCompressedDataMm7(Blob::fromString(testData));
 
     for (const Blob *entry : {&mm6, &mm7}) {
