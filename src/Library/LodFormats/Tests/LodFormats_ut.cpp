@@ -181,12 +181,18 @@ UNIT_TEST(LodFormats, CompressedDataMm7) {
     EXPECT_EQ(lod::decodeMaybeCompressed(entry).str(), testData);
 }
 
-UNIT_TEST(LodFormats, CompressedDataMm7_BrokenChecksum) {
-    // Compressed data with a broken adler32 checksum after intact zlib data failed to decode.
-    std::string entry(lod::encodeCompressedDataMm7(Blob::fromString(testData)).str());
-    entry.back() ^= 0xFF;
+UNIT_TEST(LodFormats, CompressedData_BrokenChecksum) {
+    // Intact zlib data with a broken adler32 checksum, like English MM6's cd3.blv, failed to decode.
+    Blob compressed = zlib::compress(Blob::fromString(testData));
+    Blob mm6 = compressedDataMm6(compressed, compressed.size(), testData.size());
+    Blob mm7 = lod::encodeCompressedDataMm7(Blob::fromString(testData));
 
-    EXPECT_EQ(lod::decodeMaybeCompressed(Blob::fromString(entry)).str(), testData);
+    for (const Blob *entry : {&mm6, &mm7}) {
+        std::string broken(entry->str());
+        broken.back() ^= 0xFF;
+
+        EXPECT_EQ(lod::decodeMaybeCompressed(Blob::fromString(broken)).str(), testData);
+    }
 }
 
 UNIT_TEST(LodFormats, CompressedDataMm7_WrongSize) {
