@@ -141,8 +141,8 @@ MM_DECLARE_MEMCOPY_SERIALIZABLE(LodFontAtlas_MM6)
 void reconstruct(const LodFontAtlas_MM6 &src, LodFontAtlas *dst);
 
 /**
- * Atlas of `calig.fnt`, the one font in MM6, MM7 and MM8 that doesn't use `LodFontAtlas_MM6`. No game is known to
- * have introduced this layout, so it's named MMZ rather than after a game. The engine doesn't load this font.
+ * Atlas of `calig.fnt` in MM6, MM7 and MM8. No other font uses this layout. Russian MM8 has a second `calig.fnt` in
+ * `EnglishT.lod`, and that one uses `LodFontAtlas_MM6`. The engine doesn't load this font.
  */
 struct LodFontAtlas_MMZ {
     std::array<uint8_t, 256> widths;

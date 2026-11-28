@@ -47,7 +47,7 @@ image.
 `magic` prints one line, naming the format inside compressed data too. Formats are named after the game that
 introduced them, so an MM7 map shows up as `LOD compressed data (MM7 format) containing raw data`, an MM7 icon as
 `LOD image (MM6 format)`, and a font as `LOD compressed pseudo image (MM6 format) containing LOD font (MM6 format)`.
-The layout of `calig.fnt` is named MMZ, since no game is known to have introduced it.
+MM6 already has both font layouts, so the one `calig.fnt` uses is named MMZ.
 
 ## What's where
 

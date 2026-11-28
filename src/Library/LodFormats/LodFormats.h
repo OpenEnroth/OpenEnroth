@@ -14,7 +14,7 @@ class Blob;
  *
  * Each format gets its own `detectXyzMm6` and `decodeXyzMm6` pair, suffixed with the game that introduced it, and the
  * unsuffixed `detectXyz` and `decodeXyz` take every format of their kind. Encoding writes one specific format, so
- * encode functions are always suffixed. The `calig.fnt` font layout is named MMZ, since no game introduced it.
+ * encode functions are always suffixed. MM6 already has both font layouts, so the one `calig.fnt` uses is named MMZ.
  */
 namespace lod {
 
