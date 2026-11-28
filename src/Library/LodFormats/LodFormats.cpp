@@ -415,7 +415,9 @@ Palette lod::decodePaletteMm6(const Blob &blob) {
 }
 
 Palette lod::decodePalette(const Blob &blob) {
-    return decodePaletteMm6(blob);
+    if (detectPaletteMm6(blob))
+        return decodePaletteMm6(blob);
+    throw Exception("Cannot decode LOD entry '{}' as LOD palette", blob.displayPath());
 }
 
 LodSprite lod::decodeSpriteMm6(const Blob &blob) {
@@ -456,7 +458,9 @@ LodSprite lod::decodeSpriteMm6(const Blob &blob) {
 }
 
 LodSprite lod::decodeSprite(const Blob &blob) {
-    return decodeSpriteMm6(blob);
+    if (detectSpriteMm6(blob))
+        return decodeSpriteMm6(blob);
+    throw Exception("Cannot decode LOD entry '{}' as LOD sprite", blob.displayPath());
 }
 
 Sizei lod::decodeSpriteSizeMm6(const Blob &blob) {
@@ -471,7 +475,9 @@ Sizei lod::decodeSpriteSizeMm6(const Blob &blob) {
 }
 
 Sizei lod::decodeSpriteSize(const Blob &blob) {
-    return decodeSpriteSizeMm6(blob);
+    if (detectSpriteMm6(blob))
+        return decodeSpriteSizeMm6(blob);
+    throw Exception("Cannot decode LOD entry '{}' as LOD sprite", blob.displayPath());
 }
 
 LodFont lod::decodeFontMm6(const Blob &blob) {
