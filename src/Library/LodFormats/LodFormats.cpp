@@ -151,7 +151,7 @@ static bool detectCompressedPseudoImageAs(const Blob &blob) {
     Header header;
     deserialize(stream, &header);
 
-    return header.size == 0 && header.dataSize > 0 && header.width == 0 && header.height == 0 &&
+    return header.size == 0 && header.width == 0 && header.height == 0 &&
         header.widthLn2 == 0 && header.heightLn2 == 0 &&
         header.paletteId == 0 && header.anotherPaletteId == 0 && (header.flags & 256) &&
         blob.size() == sizeof(Header) + header.dataSize;

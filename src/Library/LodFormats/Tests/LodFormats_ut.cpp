@@ -210,6 +210,20 @@ UNIT_TEST(LodFormats, CompressedPseudoImageMm8) {
     EXPECT_EQ(lod::decodeMaybeCompressed(mm8).str(), data);
 }
 
+UNIT_TEST(LodFormats, CompressedPseudoImageMm6_Empty) {
+    // Empty pseudo images, like MM6's d4bm.evt, came out of decodeMaybeCompressed with their header still on.
+    LodImageHeader_MM6 header = LodImageHeader_MM6();
+    header.flags = 256;
+
+    Blob entry;
+    BlobOutputStream stream(&entry);
+    serialize(header, &stream);
+    stream.close();
+
+    EXPECT_TRUE(lod::detectCompressedPseudoImageMm6(entry));
+    EXPECT_EQ(lod::decodeMaybeCompressed(entry).size(), 0);
+}
+
 UNIT_TEST(LodFormats, CompressedPseudoImageMm6_ShortName) {
     // A stored pseudo image whose name, read as a number, is its size minus 8 decodes as a pseudo image, not as MM6
     // compressed data.
