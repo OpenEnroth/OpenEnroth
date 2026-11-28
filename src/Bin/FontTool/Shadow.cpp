@@ -24,9 +24,8 @@ std::pair<GlyphMetrics, GrayscaleImage> reshadow(const GlyphMetrics &metrics, Gr
         }
     }
 
-    // A glyph with no text needs no shadow, and is taken as is. Spaces are the only such glyphs, and shrinking
-    // them to fit a shadow that isn't there would run the words together. Note that `autonote` is drawn entirely
-    // in the shadow color and reaches this function only with `SHADOW_NONE`, so its pixels are passed through.
+    // A glyph with no text needs no shadow, and is taken as is. Note that `autonote` is drawn entirely in the
+    // shadow color and reaches this function only with `SHADOW_NONE`, so its pixels are passed through.
     if (shadow == SHADOW_NONE || textRight < 0) {
         GrayscaleImage result = GrayscaleImage::solid(0, metrics.width, height);
         for (int y = 0; y < height; y++)

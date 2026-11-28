@@ -11,7 +11,6 @@
 #include "Utility/Memory/Blob.h"
 #include "Utility/Streams/BlobOutputStream.h"
 
-namespace {
 struct Glyph {
     int leftSpacing = 0;
     int width = 0;
@@ -19,8 +18,8 @@ struct Glyph {
     std::vector<uint8_t> pixels; // width * height, row-major. LOD values: 0 background, 1 shadow, 255 text.
 };
 
-// Builds an MM7-format LOD font blob. Every character in `[firstChar, lastChar]` must have a glyph.
-Blob makeFontBlob(int firstChar, int lastChar, int height, const std::map<int, Glyph> &glyphs) {
+static Blob makeFontBlob(int firstChar, int lastChar, int height, const std::map<int, Glyph> &glyphs) {
+    // Builds an MM7-format LOD font blob. Every character in `[firstChar, lastChar]` must have a glyph.
     LodFontHeader_MM7 header = {};
     header.firstChar = static_cast<uint8_t>(firstChar);
     header.lastChar = static_cast<uint8_t>(lastChar);
@@ -45,7 +44,6 @@ Blob makeFontBlob(int firstChar, int lastChar, int height, const std::map<int, G
     stream.close();
     return result;
 }
-} // namespace
 
 UNIT_TEST(DecodeFont, Basic) {
     std::map<int, Glyph> glyphs;

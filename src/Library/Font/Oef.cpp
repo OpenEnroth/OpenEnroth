@@ -1,7 +1,6 @@
 #include "Oef.h"
 
 #include <cassert>
-#include <cstdlib>
 #include <algorithm>
 #include <span>
 #include <string_view>
@@ -21,18 +20,18 @@
 #include "Utility/Streams/BlobOutputStream.h"
 #include "Utility/Streams/MemoryInputStream.h"
 
-namespace {
-
-constexpr std::string_view OEF_SIGNATURE = "OEFT";
-constexpr uint32_t OEF_VERSION = 1;
+static constexpr std::string_view OEF_SIGNATURE = "OEFT";
+static constexpr uint32_t OEF_VERSION = 1;
 
 // Sanity limits, so that malformed data is rejected instead of triggering huge allocations.
-constexpr uint32_t MAX_FONT_HEIGHT = 256;
-constexpr int32_t MAX_GLYPH_WIDTH = 256;
-constexpr int32_t MAX_GLYPH_SPACING = 256;
-constexpr uint32_t MAX_CODE_POINT = 0x110000;
+static constexpr uint32_t MAX_FONT_HEIGHT = 256;
+static constexpr int32_t MAX_GLYPH_WIDTH = 256;
+static constexpr int32_t MAX_GLYPH_SPACING = 256;
+static constexpr uint32_t MAX_CODE_POINT = 0x110000;
 
-} // namespace
+static bool isValidSpacing(int32_t spacing) {
+    return spacing >= -MAX_GLYPH_SPACING && spacing <= MAX_GLYPH_SPACING;
+}
 
 bool oef::detect(const Blob &blob) {
     if (blob.size() < sizeof(OefHeader))
@@ -59,6 +58,10 @@ Font oef::decode(const Blob &blob) {
     if (header.glyphCount > MAX_CODE_POINT)
         throw Exception("Cannot decode font '{}': invalid glyph count {}", blob.displayPath(), header.glyphCount);
 
+    uint64_t maxPayloadSize = header.glyphCount * (sizeof(OefGlyph) + uint64_t(MAX_GLYPH_WIDTH) * header.height);
+    if (header.decompressedSize > maxPayloadSize)
+        throw Exception("Cannot decode font '{}': invalid font data size {}", blob.displayPath(), header.decompressedSize);
+
     Blob payload = zlib::uncompress(stream.readAllAsBlob(), header.decompressedSize);
     if (payload.size() != header.decompressedSize)
         throw Exception("Cannot decode font '{}': expected {} bytes of font data, got {}", blob.displayPath(),
@@ -79,8 +82,8 @@ Font oef::decode(const Blob &blob) {
         if (glyph.codePoint == 0 || glyph.codePoint >= MAX_CODE_POINT || seen.value(glyph.codePoint))
             throw Exception("Cannot decode font '{}': invalid code point {} in glyph table", blob.displayPath(),
                             glyph.codePoint);
-        if (glyph.width < 0 || glyph.width > MAX_GLYPH_WIDTH ||
-            std::abs(glyph.leftSpacing) > MAX_GLYPH_SPACING || std::abs(glyph.rightSpacing) > MAX_GLYPH_SPACING)
+        if (glyph.width < 0 || glyph.width > MAX_GLYPH_WIDTH || !isValidSpacing(glyph.leftSpacing) ||
+            !isValidSpacing(glyph.rightSpacing))
             throw Exception("Cannot decode font '{}': invalid glyph metrics for code point {}", blob.displayPath(),
                             glyph.codePoint);
 
@@ -100,14 +103,14 @@ Font oef::decode(const Blob &blob) {
 }
 
 Blob oef::encode(const Font &font) {
-    assert(font); // Encoding an invalid font is a coding error.
+    assert(font);
 
     if (static_cast<uint32_t>(font.height()) > MAX_FONT_HEIGHT)
         throw Exception("Cannot encode font: height {} is over {}", font.height(), MAX_FONT_HEIGHT);
     for (int i = 0; i < font.size(); i++) {
         const GlyphMetrics &metrics = font.metrics(i);
         if (static_cast<uint32_t>(font.character(i)) >= MAX_CODE_POINT || metrics.width > MAX_GLYPH_WIDTH ||
-            std::abs(metrics.leftSpacing) > MAX_GLYPH_SPACING || std::abs(metrics.rightSpacing) > MAX_GLYPH_SPACING)
+            !isValidSpacing(metrics.leftSpacing) || !isValidSpacing(metrics.rightSpacing))
             throw Exception("Cannot encode font: code point {} or its metrics are out of range", static_cast<uint32_t>(font.character(i)));
     }
 

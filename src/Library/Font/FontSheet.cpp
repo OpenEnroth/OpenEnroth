@@ -9,7 +9,6 @@ RgbaImage renderFontSheet(const Font &font) {
     for (int i = 0; i < font.size(); i++)
         cellWidth = std::max(cellWidth, font.metrics(i).width);
 
-    // Laid out by glyph index, a sheet laid out by character would be the size of the unicode range.
     int columns = 16;
     int rows = std::max(1, (font.size() + columns - 1) / columns);
     RgbaImage image = RgbaImage::solid(Color(0, 0, 0, 255), cellWidth * columns, font.height() * rows);

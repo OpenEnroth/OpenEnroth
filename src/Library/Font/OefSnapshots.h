@@ -26,9 +26,10 @@ struct OefGlyph {
     int32_t leftSpacing; // Spacing in pixels to the left of the glyph, can be negative.
     int32_t width; // Width of the glyph image.
     int32_t rightSpacing; // Spacing in pixels to the right of the glyph, can be negative.
-    uint32_t pixelOffset; // Offset of the glyph image inside the pixel data that follows the glyph table.
-                          // The image is `width * OefHeader::height` bytes, byte per pixel, row-major.
-                          // Each pixel is a color index: `0` is background, `1`-`4` are font colors.
+    /** Offset of the glyph image inside the pixel data that follows the glyph table. The image is
+     * `width * OefHeader::height` bytes, byte per pixel, row-major. Each pixel is a color index: `0` is background,
+     * `1`-`4` are font colors. */
+    uint32_t pixelOffset;
 };
 static_assert(sizeof(OefGlyph) == 20);
 MM_DECLARE_MEMCOPY_SERIALIZABLE(OefGlyph)

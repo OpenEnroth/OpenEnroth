@@ -13,7 +13,7 @@
 #include "Shadow.h"
 
 enum class MergeMode {
-    MERGE_ENGLISH_ONLY, // Take the English font as is, ignoring the Russian one.
+    MERGE_ENGLISH_ONLY, // Take only the English font, ignoring the Russian one.
     MERGE_UNION, // English glyphs, plus the Cyrillic from the Russian font.
 };
 using enum MergeMode;

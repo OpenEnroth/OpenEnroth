@@ -1,5 +1,6 @@
 #include "LodFormats.h"
 
+#include <exception>
 #include <optional>
 #include <span>
 #include <type_traits>
@@ -316,14 +317,15 @@ Font lod::decodeFont(const Blob &blob, TextEncoding encoding) {
 
             // Check that font metrics are sane.
             if (metrics.width < MIN_GLYPH_WIDTH || metrics.width > MAX_GLYPH_WIDTH ||
-                metrics.leftSpacing > MAX_GLYPH_SPACING || metrics.rightSpacing > MAX_GLYPH_SPACING)
+                metrics.leftSpacing < -MAX_GLYPH_SPACING || metrics.leftSpacing > MAX_GLYPH_SPACING ||
+                metrics.rightSpacing < -MAX_GLYPH_SPACING || metrics.rightSpacing > MAX_GLYPH_SPACING)
                 throw Exception("Cannot decode font LOD entry '{}': invalid font metrics encountered for character #{}",
                                 blob.displayPath(), c);
 
             // Check that the glyph data points into the pixel data.
-            int offset = atlas.offsets[c];
-            int size = header.height * metrics.width;
-            if (offset < 0 || size + offset > pixels.size())
+            size_t offset = atlas.offsets[c];
+            size_t size = static_cast<size_t>(header.height) * metrics.width;
+            if (offset > pixels.size() || size > pixels.size() - offset)
                 throw Exception("Cannot decode font LOD entry '{}': invalid glyph data encountered for character #{}",
                                 blob.displayPath(), c);
 
@@ -346,7 +348,7 @@ Font lod::decodeFont(const Blob &blob, TextEncoding encoding) {
                 }
             }
 
-            // Some fonts have blank glyphs that should be treated as unsupported. Space is the only legit blank glyph.
+            // Some fonts have blank glyphs that should be treated as unsupported. Spaces are the only legit blank glyphs.
             if (blank && !unicode::isSpace(codePoint))
                 continue;
 
@@ -357,11 +359,12 @@ Font lod::decodeFont(const Blob &blob, TextEncoding encoding) {
 
     try {
         return decodeFontVia(std::type_identity<LodFontAtlas_MM7>());
-    } catch (const std::exception &e) {
+    } catch (const std::exception &) {
+        std::exception_ptr mm7Error = std::current_exception();
         try {
             return decodeFontVia(std::type_identity<LodFontAtlas_MMX>());
         } catch (const std::exception &) {
-            throw e; // Re-throw MM7 exception if trying both formats failed.
+            std::rethrow_exception(mm7Error); // Re-throw MM7 exception if trying both formats failed.
         }
     }
 }

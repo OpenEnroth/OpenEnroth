@@ -168,7 +168,8 @@ static int runSearch(const FontToolOptions &options) {
     for (const std::string &input : options.inputs)
         collectFonts(Path(PathView(input)), &paths);
     if (!options.listPath.empty()) {
-        for (std::string_view line : split(Blob::fromFile(options.listPath).str()).by('\n'))
+        Blob list = Blob::fromFile(options.listPath);
+        for (std::string_view line : split(list.str()).by('\n'))
             if (std::string_view path = trim(line); !path.empty())
                 paths.emplace_back(path);
     }

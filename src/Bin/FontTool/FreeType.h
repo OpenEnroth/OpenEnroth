@@ -8,6 +8,8 @@
 #include <string>
 #include <vector>
 
+#include "Utility/Memory/Blob.h"
+
 enum class RasterMode {
     RASTER_MONO, // `FT_LOAD_TARGET_MONO`, which also hints for whole pixels, the way Windows rendered fonts in 1999.
     RASTER_GRAY, // `FT_LOAD_TARGET_NORMAL`, anti-aliased.
@@ -98,5 +100,6 @@ class FreeTypeFace {
     [[nodiscard]] std::optional<RenderedGlyph> render(char32_t c, RasterMode mode, bool oblique);
 
  private:
+    Blob _data; // FreeType reads the face from here, so it must outlive `_face`.
     FT_Face _face = nullptr;
 };

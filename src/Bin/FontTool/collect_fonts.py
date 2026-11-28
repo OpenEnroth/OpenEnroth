@@ -4,8 +4,8 @@ Collects font files out of a pile of archives into a content-addressed store, fo
 
 Every font is written once to `STORE/<sha256[:2]>/<sha256>.<ext>`, however many archives carry it, and
 `STORE/index.tsv` maps each hash back to every place it was found. Nested zips are read in memory, other nested
-archives are unpacked into a scratch directory, rar with `unar` and the rest with `7z`. Nothing in the archives is ever executed, and
-archive member names never become paths in the store.
+archives are unpacked into a scratch directory, rar with `unar` and the rest with `7z`. Nothing in the archives is
+ever executed, and archive member names never become paths in the store.
 
 Usage: collect_fonts.py STORE ARCHIVE_OR_DIR... [--jobs N]
 """
@@ -29,7 +29,7 @@ MAX_FONT_SIZE = 64 << 20  # Bigger "fonts" are CJK monsters or garbage, neither 
 
 
 def is_later_volume(name):
-    """7z unpacks a multi-volume rar from any of its volumes to the end, so only the first one is worth opening."""
+    """Unpacking a multi-volume rar from its first volume reads all the others, so only the first one is opened."""
     match = re.search(r'\.part(\d+)\.rar$', name, re.IGNORECASE)
     return match is not None and int(match.group(1)) > 1
 
