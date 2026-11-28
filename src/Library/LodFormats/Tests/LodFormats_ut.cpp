@@ -97,22 +97,23 @@ static LodFontHeader_MM6 fontHeader() {
     header.firstChar = 'A';
     header.lastChar = 'C';
     header.field_3 = 8;
-    header.height = 4;
+    header.height = 32; // Glyphs this big make an MMZ font larger than the smallest MM6 font.
     return header;
 }
 
 static Blob fontMm6(int trailingBytes) {
+    LodFontHeader_MM6 header = fontHeader();
     LodFontAtlas_MM6 atlas = LodFontAtlas_MM6();
     int offset = 0;
     for (int c = 'A'; c <= 'C'; c++) {
-        atlas.metrics[c].width = c - 'A' + 1;
+        atlas.metrics[c].width = c - 'A' + 30;
         atlas.offsets[c] = offset;
-        offset += 4 * atlas.metrics[c].width;
+        offset += header.height * atlas.metrics[c].width;
     }
 
     Blob result;
     BlobOutputStream stream(&result);
-    serialize(fontHeader(), &stream);
+    serialize(header, &stream);
     serialize(atlas, &stream);
     stream.write(std::string(offset + trailingBytes, '\xFF'));
     stream.close();
@@ -120,17 +121,18 @@ static Blob fontMm6(int trailingBytes) {
 }
 
 static Blob fontMmz() {
+    LodFontHeader_MM6 header = fontHeader();
     LodFontAtlas_MMZ atlas = LodFontAtlas_MMZ();
     int offset = 0;
     for (int c = 'A'; c <= 'C'; c++) {
-        atlas.widths[c] = c - 'A' + 1;
+        atlas.widths[c] = c - 'A' + 30;
         atlas.offsets[c] = offset;
-        offset += 4 * atlas.widths[c];
+        offset += header.height * atlas.widths[c];
     }
 
     Blob result;
     BlobOutputStream stream(&result);
-    serialize(fontHeader(), &stream);
+    serialize(header, &stream);
     serialize(atlas, &stream);
     stream.write(std::string(offset, '\xFF'));
     stream.close();
@@ -243,15 +245,17 @@ UNIT_TEST(LodFormats, FontMm6AndMmz) {
 
     for (const Blob *entry : {&mm6, &mmz}) {
         LodFont font = lod::decodeFont(*entry);
-        EXPECT_EQ(font.height(), 4);
-        EXPECT_EQ(font.metrics('C').width, 3);
+        EXPECT_EQ(font.height(), 32);
+        EXPECT_EQ(font.metrics('C').width, 32);
     }
 }
 
 UNIT_TEST(LodFormats, FontMm6_TrailingByte) {
-    // Some Russian MM6 and MM7 fonts have a stray byte after their glyphs, and they decode all the same.
+    // Some Russian MM6 and MM7 fonts have a stray byte after their glyphs, and they decode all the same. Two stray
+    // bytes don't pass for a font.
     Blob entry = fontMm6(1);
 
     EXPECT_TRUE(lod::detectFontMm6(entry));
-    EXPECT_EQ(lod::decodeFont(entry).metrics('C').width, 3);
+    EXPECT_EQ(lod::decodeFont(entry).metrics('C').width, 32);
+    EXPECT_FALSE(lod::detectFontMm6(fontMm6(2)));
 }

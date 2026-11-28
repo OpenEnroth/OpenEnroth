@@ -236,7 +236,8 @@ bool lod::detectFontMm6(const Blob &blob) {
     int64_t pixelsSize = 0;
     for (int c = header.firstChar; c <= header.lastChar; c++)
         pixelsSize += static_cast<int64_t>(header.height) * atlas.metrics[c].width;
-    return pixelsSize >= 0 && blob.size() >= sizeof(LodFontHeader_MM6) + sizeof(LodFontAtlas_MM6) + pixelsSize; // Some Russian MM6 and MM7 fonts have a stray byte after the glyphs.
+    size_t expectedSize = sizeof(LodFontHeader_MM6) + sizeof(LodFontAtlas_MM6) + pixelsSize;
+    return pixelsSize >= 0 && (blob.size() == expectedSize || blob.size() == expectedSize + 1); // Some Russian MM6 and MM7 fonts have a stray byte after the glyphs.
 }
 
 bool lod::detectFontMmz(const Blob &blob) {
