@@ -812,7 +812,7 @@ static_assert(sizeof(Actor_MM7) == 0x344);
 MM_DECLARE_MEMCOPY_SERIALIZABLE(Actor_MM7)
 
 void snapshot(const Actor &src, Actor_MM7 *dst, EncodingTag encoding);
-void reconstruct(const Actor_MM7 &src, Actor *dst, EncodingTag encoding);
+void reconstruct(const Actor_MM7 &src, Actor *dst);
 
 
 struct BLVDoor_MM7 {

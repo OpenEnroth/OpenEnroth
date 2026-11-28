@@ -1408,7 +1408,7 @@ void snapshot(const Actor &src, Actor_MM7 *dst, EncodingTag encoding) {
     dst->uniqueNameIndex = src.uniqueNameIndex;
 }
 
-void reconstruct(const Actor_MM7 &src, Actor *dst, EncodingTag encoding) {
+void reconstruct(const Actor_MM7 &src, Actor *dst) {
     dst->npcId = src.npcId;
     dst->attributes = ActorAttributes(src.attributes);
     dst->hp = src.hp;

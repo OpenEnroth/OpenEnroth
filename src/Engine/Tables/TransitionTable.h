@@ -2,8 +2,7 @@
 
 #include <string>
 #include <array>
-
-class Blob;
+#include <string_view>
 
 /**
  * @offset 0x476682

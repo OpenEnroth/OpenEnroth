@@ -803,7 +803,7 @@ std::string BuildDialogueString(std::string_view str, int uPlayerID, NPCData *np
                 result += GetReputationString(npc->rep);
                 break;
             case 13:
-                result += pNPCStats->sub_495366_MispronounceName(pPlayer->name[0], pPlayer->uSex);
+                result += pNPCStats->sub_495366_MispronounceName(pPlayer->name, pPlayer->uSex);
                 break;
             case 14:
                 if (npc->sex == SEX_FEMALE) {

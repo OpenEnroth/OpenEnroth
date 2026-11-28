@@ -1,6 +1,7 @@
 #pragma once
 
 #include <string>
+#include <string_view>
 
 #include "Engine/Data/SpecialEnchantmentData.h"
 #include "Engine/Data/StandardEnchantmentData.h"
@@ -13,13 +14,12 @@
 #include "Utility/Segment.h"
 
 class ResourceManager;
-class Blob;
 
 struct ItemTable {
     void Initialize(ResourceManager *resourceManager);
     void LoadStandardEnchantments(std::string_view stditems);
     void LoadSpecialEnchantments(std::string_view spcitems);
-    void LoadItems(std::string_view items);
+    void LoadItems(std::string_view itemsText);
     void LoadRandomItems(std::string_view rnditems);
     void LoadPotions(std::string_view potions);
     void LoadPotionNotes(std::string_view notes);

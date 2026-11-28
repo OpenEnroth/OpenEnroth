@@ -23,6 +23,7 @@
 #include "Engine/Engine.h"
 #include "Engine/Party.h"
 #include "Engine/SaveLoad.h"
+#include "Engine/Resources/ResourceManager.h"
 #include "Engine/Data/TileEnumFunctions.h"
 #include "Engine/Tables/TileTable.h"
 
@@ -39,12 +40,13 @@
 #include "Utility/Streams/BlobOutputStream.h"
 
 #include "Engine/Graphics/Image.h"
-#include "EnumSnapshots.h"
-#include "LegacyEncodingDetector.h"
-#include "Library/LodFormats/LodFormats.h"
+
 #include "Library/Logger/Logger.h"
 
-MM_DEFINE_JSON_LEXICAL_SERIALIZATION_FUNCTIONS(TextEncoding);
+#include "EnumSnapshots.h"
+#include "LegacyEncodingDetector.h"
+
+MM_DEFINE_JSON_LEXICAL_SERIALIZATION_FUNCTIONS(TextEncoding)
 MM_DEFINE_JSON_STRUCT_SERIALIZATION_FUNCTIONS(SaveGameExtension, (
     (encoding, "encoding")
 ));
@@ -356,7 +358,7 @@ void snapshot(const IndoorLocation &src, IndoorDelta_MM7 *dst, EncodingTag encod
     dst->lastVisitTime = src.lastVisitTime.ticks();
 }
 
-void reconstruct(const IndoorDelta_MM7 &src, IndoorLocation *dst, EncodingTag encoding) {
+void reconstruct(const IndoorDelta_MM7 &src, IndoorLocation *dst) {
     reconstruct(src.header.info, &dst->dlv); // XXX
     reconstruct(src.visibleOutlines, &dst->_visible_outlines);
 
@@ -376,7 +378,7 @@ void reconstruct(const IndoorDelta_MM7 &src, IndoorLocation *dst, EncodingTag en
     for (size_t i = 0; i < pLevelDecorations.size(); ++i)
         pLevelDecorations[i].uFlags = LevelDecorationFlags(src.decorationFlags[i]);
 
-    reconstruct(src.actors, &pActors, encoding);
+    reconstruct(src.actors, &pActors);
     nextActorReuseScanStart = 0;
     for (size_t i = 0; i < pActors.size(); i++)
         pActors[i].id = i;
@@ -681,7 +683,7 @@ void snapshot(const OutdoorLocation &src, OutdoorDelta_MM7 *dst, EncodingTag enc
     dst->lastVisitTime = src.lastVisitTime.ticks();
 }
 
-void reconstruct(const OutdoorDelta_MM7 &src, OutdoorLocation *dst, EncodingTag encoding) {
+void reconstruct(const OutdoorDelta_MM7 &src, OutdoorLocation *dst) {
     reconstruct(src.header.info, &dst->ddm);
     reconstruct(src.fullyRevealedCells, &dst->uFullyRevealedCellOnMap);
     reconstruct(src.partiallyRevealedCells, &dst->uPartiallyRevealedCellOnMap);
@@ -696,7 +698,7 @@ void reconstruct(const OutdoorDelta_MM7 &src, OutdoorLocation *dst, EncodingTag 
     for (size_t i = 0; i < pLevelDecorations.size(); ++i)
         pLevelDecorations[i].uFlags = LevelDecorationFlags(src.decorationFlags[i]);
 
-    reconstruct(src.actors, &pActors, encoding);
+    reconstruct(src.actors, &pActors);
     nextActorReuseScanStart = 0;
     for (size_t i = 0; i < pActors.size(); i++)
         pActors[i].id = i;
@@ -776,28 +778,38 @@ void snapshot(const SaveGame &src, SaveGame_MM7 *dst) {
     dst->extension = Blob::fromString(json.dump(/*indent=*/4));
 }
 
-void reconstruct(const SaveGame_MM7 &src, SaveGame *dst) {
-    // Detect encoding first.
-    if (src.extension) {
-        from_json(Json::parse(src.extension.str()), dst->extension);
+template<size_t N>
+static std::string rawString(const std::array<char, N> &src) {
+    std::string result;
+    reconstruct(src, &result, tags::encoding(ENCODING_BYTES));
+    return result;
+}
+
+/**
+ * @param extension                     Contents of the save's `z.json`, empty for a save written by the original game.
+ * @param legacyNames                   Names stored in the save, raw bytes. Only used when there's no `z.json`.
+ * @return                              The save's extension data, with the encoding detected for a legacy save.
+ */
+static SaveGameExtension readSaveExtension(const Blob &extension, std::string_view legacyNames) {
+    SaveGameExtension result;
+    if (extension) {
+        from_json(Json::parse(extension.str()), result);
     } else {
-        std::string names;
-        auto push = [&]<size_t N>(const std::array<char, N> &str) {
-            std::string tmp;
-            reconstruct(str, &tmp, tags::encoding(ENCODING_BYTES));
-            names += tmp;
-        }; // NOLINT(readability/braces)
-        push(src.header.name);
-        for (int i = 0; i < 4; i++)
-            push(src.party.characters[i].name);
-        push(src.party.hireling1Name);
-        push(src.party.hireling2Name);
-
-        // TODO(captainurist): Can also use actor names from level deltas.
-
-        dst->extension.encoding = detectLegacySaveEncoding(names);
-        MM_INFO("Savegame encoding '{}' detected.", toString(dst->extension.encoding));
+        result.encoding = detectLegacySaveEncoding(legacyNames, engine->resources()->encoding());
     }
+    return result;
+}
+
+void reconstruct(const SaveGame_MM7 &src, SaveGame *dst) {
+    // TODO(captainurist): Can also use actor names from level deltas.
+    std::string names = rawString(src.header.name);
+    for (int i = 0; i < 4; i++)
+        names += rawString(src.party.characters[i].name);
+    names += rawString(src.party.hireling1Name);
+    names += rawString(src.party.hireling2Name);
+    dst->extension = readSaveExtension(src.extension, names);
+    if (!src.extension)
+        MM_INFO("Savegame encoding '{}' detected.", toString(dst->extension.encoding));
 
     reconstruct(src.header, &dst->header, tags::encoding(dst->extension.encoding));
     reconstruct(src.party, &dst->party, tags::encoding(dst->extension.encoding));
@@ -888,7 +900,8 @@ void deserialize(const Blob &src, SaveGame_MM7 *dst) {
 }
 
 void reconstruct(const SaveGameLite_MM7 &src, SaveGameLite *dst) {
-    reconstruct(src.header, &dst->header, tags::encoding(ENCODING_ASCII)); // TODO(captainurist): detect encoding.
+    SaveGameExtension extension = readSaveExtension(src.extension, rawString(src.header.name));
+    reconstruct(src.header, &dst->header, tags::encoding(extension.encoding));
     dst->thumbnail = Blob::share(src.thumbnail);
 }
 
@@ -896,6 +909,7 @@ void deserialize(const Blob &src, SaveGameLite_MM7 *dst) {
     LodReader lodReader(Blob::share(src), LOD_ALLOW_DUPLICATES);
     deserialize(lodReader.read("header.bin"), &dst->header);
     dst->thumbnail = lodReader.read("image.pcx");
+    dst->extension = lodReader.exists("z.json") ? lodReader.read("z.json") : Blob();
 }
 
 void reconstruct(const SpriteFrameTable_MM7 &src, SpriteFrameTable *dst) {

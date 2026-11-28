@@ -1,10 +1,9 @@
 #pragma once
 
 #include <array>
+#include <string_view>
 
 #include "Engine/Data/AutonoteData.h"
-
-class Blob;
 
 /**
  * @offset 0x476750

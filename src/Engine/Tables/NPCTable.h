@@ -3,6 +3,7 @@
 #include <string>
 #include <array>
 #include <vector>
+#include <string_view>
 
 #include "Engine/Data/HouseEnums.h"
 #include "Engine/Objects/NPCEnums.h"
@@ -15,7 +16,6 @@
 #include "Utility/IndexedArray.h"
 #include "Utility/Flags.h"
 
-class Blob;
 class ResourceManager;
 
 // TODO(Nik-RE-dev): It seems that two greet flags are used purely because it's modification is performed
@@ -98,22 +98,22 @@ struct NPCStats {
     void InitializeAdditionalNPCs(NPCData *pNPCDataBuff, MonsterId npc_uid,
                                   HouseId uLocation2D, MapId uMapId);
     /**
-     * Returns a random NPC name of the given gender starting with the same letter as `firstLetter`. Backs the
+     * Returns a random NPC name of the given gender starting with the same letter as `name`. Backs the
      * `%13` placeholder in `BuildDialogueString` - NPC dialogue templates that address the player by a similar-
      * sounding (mispronounced) name, e.g. "O Ho! %13! Er, %13. I think. Whatever...".
      *
-     * The picked name is cached per `firstLetter`, so within a session an NPC mispronounces the player's name
+     * The picked name is cached per first letter, so within a session an NPC mispronounces the player's name
      * the same way every time, and consecutive `%13` substitutions in the same template are consistent.
      *
      * Note: `%13` is only used by MM6's `npcbtb.txt`. MM7 has no templates that invoke this function.
      *
-     * @param firstLetter               First letter of the player's name (case-insensitive).
+     * @param name                      Player's name. Only its first letter counts, case-insensitively.
      * @param gender                    Player's gender. Determines which name pool to draw from.
-     * @return                          A name from `pNPCNames[gender]` that starts with `firstLetter`, or any
+     * @return                          A name from `pNPCNames[gender]` that starts with that letter, or any
      *                                  random name from that pool if no name with that letter exists.
      * @offset 0x00495366
      */
-    const std::string &sub_495366_MispronounceName(char firstLetter, Sex gender);
+    const std::string &sub_495366_MispronounceName(std::string_view name, Sex gender);
 
     std::array<NPCData, 501> pOriginalNPCData; // NPC data as read from npcdata.txt.
     std::array<NPCData, 501> pNPCData; // NPC data used during the game.

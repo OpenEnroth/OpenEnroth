@@ -55,7 +55,6 @@ MM_DEFINE_ENUM_SERIALIZATION_FUNCTIONS(TextEncoding, CASE_INSENSITIVE, {
     {ENCODING_KOI8_R, "KOI8-R"},
 })
 
-
 void reconstruct(const TileVariant_MM7 &src, TileVariant *dst, ContextTag<bool> isRoad, ContextTag<std::string> name) {
     if (*isRoad) {
         switch (src) {

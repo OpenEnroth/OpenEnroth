@@ -3,6 +3,7 @@
 #include <cstdint>
 #include <array>
 #include <string>
+#include <string_view>
 
 #include "Engine/Objects/ItemEnums.h"
 #include "Engine/Objects/CharacterEnums.h"
@@ -15,8 +16,6 @@
 #include "Utility/IndexedArray.h"
 
 #include "SpellEnums.h"
-
-class Blob;
 
 struct SpellInfo {
     std::string name;

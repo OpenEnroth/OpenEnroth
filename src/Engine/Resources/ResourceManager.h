@@ -8,6 +8,7 @@
 #include "Engine/Tables/ResourceMaskTable.h"
 
 #include "Utility/Memory/Blob.h"
+#include "Utility/String/Encoding.h"
 
 #include "Library/Geometry/Size.h"
 #include "Library/Image/Image.h"
@@ -18,8 +19,6 @@
 class TileGenerator;
 class TileTable;
 
-#include "Utility/String/Encoding.h"
-
 /**
  * This class provides access to everything in `/data` folder.
  */
@@ -29,7 +28,7 @@ class ResourceManager {
     ~ResourceManager();
 
     /**
-     * Opens the LODs in `data` and loads the mask table.
+     * Opens the LODs in `data`, loads the mask table, and detects the encoding of the game's texts.
      *
      * @param saturation                Saturation multiplier for the bitmaps and palettes this class returns.
      * @param lightness                 Lightness multiplier for the bitmaps and palettes this class returns.
@@ -38,7 +37,10 @@ class ResourceManager {
 
     Blob eventsData(std::string_view filename);
 
-    TextEncoding encoding() {
+    /**
+     * @return                          Encoding of the game's texts, detected in `open`.
+     */
+    [[nodiscard]] TextEncoding encoding() const {
         return _gameDataEncoding;
     }
 

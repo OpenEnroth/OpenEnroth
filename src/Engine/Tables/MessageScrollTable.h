@@ -1,11 +1,10 @@
 #pragma once
 
 #include <string>
+#include <string_view>
 
 #include "Engine/Objects/ItemEnums.h"
 #include "Utility/IndexedArray.h"
-
-class Blob;
 
 /**
  * @offset 0x4764C2

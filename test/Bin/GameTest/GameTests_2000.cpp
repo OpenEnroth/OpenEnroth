@@ -21,12 +21,10 @@
 #include "Engine/Graphics/Viewport.h"
 #include "Engine/Objects/Actor.h"
 #include "Engine/Objects/Chest.h"
-#include "Engine/Tables/NPCTable.h"
 #include "Engine/Objects/MonsterEnumFunctions.h"
 #include "Engine/Objects/SpriteObject.h"
 #include "Engine/Resources/EngineFileSystem.h"
 #include "Engine/Resources/LOD.h"
-#include "Engine/Resources/ResourceManager.h"
 #include "Engine/SaveLoad.h"
 #include "Engine/Snapshots/CompositeSnapshots.h"
 
@@ -1048,7 +1046,7 @@ GAME_TEST(Prs, Pr2354) {
             std::string dlvFilename = fmt::format("{}.dlv", baseName);
             IndoorDelta_MM7 rawDelta;
             deserialize(lod::decodeMaybeCompressed(pGames_LOD->read(dlvFilename)), &rawDelta, tags::context(rawLocation));
-            reconstruct(rawDelta, &location, tags::encoding(engine->resources()->encoding()));
+            reconstruct(rawDelta, &location);
         } else if (isMapOutdoor(mapId)) {
             // Deserialize and reconstruct the base outdoor location (.odm).
             // These two take ~380KB, and test bodies run on a thread that gets 512KB on macOS.
@@ -1081,7 +1079,7 @@ GAME_TEST(Prs, Pr2354) {
             std::string ddmFilename = fmt::format("{}.ddm", baseName);
             OutdoorDelta_MM7 rawDelta;
             deserialize(lod::decodeMaybeCompressed(pGames_LOD->read(ddmFilename)), &rawDelta, tags::context(*rawLocation));
-            reconstruct(rawDelta, location.get(), tags::encoding(engine->resources()->encoding()));
+            reconstruct(rawDelta, location.get());
         }
     }
 }

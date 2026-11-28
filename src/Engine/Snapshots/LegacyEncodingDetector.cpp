@@ -4,7 +4,7 @@
 
 #include "Utility/String/Ascii.h"
 
-TextEncoding detectLegacySaveEncoding(std::string_view names) {
+TextEncoding detectLegacySaveEncoding(std::string_view names, TextEncoding fallback) {
     int letters = 0;
     int nonAsciiLetters = 0;
 
@@ -17,8 +17,9 @@ TextEncoding detectLegacySaveEncoding(std::string_view names) {
         }
     }
 
-    // Cyrillic names are all non-ASCII, western ones are ASCII with the odd accented letter, so anything above a
-    // handful of non-ASCII letters means Cyrillic. Names with no letters at all end up as windows-1252, which is
-    // fine - it agrees with windows-1251 on everything they can possibly contain.
+    if (nonAsciiLetters == 0)
+        return fallback;
+
+    // Cyrillic names are all non-ASCII, western ones are ASCII with the odd accented letter.
     return nonAsciiLetters * 2 > letters ? ENCODING_WINDOWS_1251 : ENCODING_WINDOWS_1252;
 }

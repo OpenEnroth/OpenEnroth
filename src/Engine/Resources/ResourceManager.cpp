@@ -104,8 +104,6 @@ static Palette grayscalePalette() {
     return result;
 }
 
-namespace {
-
 struct EncodingMarker {
     TextEncoding encoding;
     std::string_view word; // Word for "sword", spelled & encoded the way `encoding`'s localization spells it.
@@ -115,13 +113,12 @@ struct EncodingMarker {
  * Every localization ships the same `items.txt`, and every one of them has swords in it. So the word for "sword",
  * in the localization's own encoding, identifies the encoding.
  *
- * Charset detection doesn't work here. English game data is 99.98% ASCII, and the handful of non-ASCII bytes it
- * does have are punctuation that windows-1251 and windows-1252 map the same way - there's simply nothing to detect.
+ * English game data is 99.98% ASCII, so charset detection has nothing to go on.
  *
- * Note that the English word can't be used as a marker: the localized files keep an English "Skill Group" column,
- * so "sword" is in all of them. English is what we fall back to instead.
+ * The English word can't be used as a marker, because the localized files keep an English "Skill Group" column and
+ * have "sword" in them too. English is what we fall back to instead.
  */
-constexpr EncodingMarker encodingMarkers[] = {
+static constexpr EncodingMarker encodingMarkers[] = {
     {ENCODING_WINDOWS_1251, "\xEC\xE5\xF7"},        // "меч", Russian.
     {ENCODING_WINDOWS_1251, "\xCC\xE5\xF7"},        // "Меч".
     {ENCODING_WINDOWS_1252, "\xE9p\xE9\x65"},       // "épée", French.
@@ -129,8 +126,6 @@ constexpr EncodingMarker encodingMarkers[] = {
     {ENCODING_WINDOWS_1252, "schwert"},             // "schwert", German.
     {ENCODING_WINDOWS_1252, "Schwert"},
 };
-
-} // namespace
 
 ResourceManager::ResourceManager() : _tileGenerator(std::make_unique<TileGenerator>(this)) {}
 ResourceManager::~ResourceManager() = default;

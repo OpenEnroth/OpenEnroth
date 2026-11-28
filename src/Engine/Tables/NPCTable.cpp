@@ -13,6 +13,7 @@
 
 #include "Library/Serialization/Serialization.h"
 
+#include "Utility/String/Encoding.h"
 #include "Utility/Memory/Blob.h"
 #include "Utility/String/Split.h"
 #include "Utility/String/Transformations.h"
@@ -280,23 +281,39 @@ void NPCStats::InitializeAdditionalNPCs(NPCData *pNPCDataBuff, MonsterId npc_uid
     pNPCDataBuff->dialogue_6_evt_id = 0;
 }
 
+/**
+ * @param c                             Character to fold.
+ * @return                              `c` lowercased if it's an ASCII, Latin-1 or Cyrillic capital, `c` otherwise.
+ */
+static char32_t foldCase(char32_t c) {
+    if ((c >= U'A' && c <= U'Z') || (c >= U'À' && c <= U'Þ' && c != U'×') || (c >= U'А' && c <= U'Я'))
+        return c + 0x20;
+    if (c >= U'Ѐ' && c <= U'Џ')
+        return c + 0x50;
+    return c;
+}
+
 //----- (00495366) --------------------------------------------------------
-const std::string &NPCStats::sub_495366_MispronounceName(char firstLetter, Sex gender) {
+const std::string &NPCStats::sub_495366_MispronounceName(std::string_view name, Sex gender) {
+    size_t firstLetterPos = 0;
+    char32_t firstLetter = name.empty() ? 0 : txt::nextRune(name, &firstLetterPos);
     int pickedName;
 
     // TODO(captainurist): Caching in kinda wrong? Revisit when working on #mm6.
     //                     See "O Ho! %13! Er, %13. I think. Whatever..."
 
-    if (firstLetter == dword_AE336C_LastMispronouncedNameFirstLetter) {
+    if (static_cast<int>(firstLetter) == dword_AE336C_LastMispronouncedNameFirstLetter) {
         pickedName = dword_AE3370_LastMispronouncedNameResult;
     } else {
         dword_AE336C_LastMispronouncedNameFirstLetter = firstLetter;
         const std::vector<std::string> &names = this->pNPCNames[gender];
 
         std::vector<int> matches;
-        for (int i = 0; i < static_cast<int>(names.size()); ++i)
-            if (tolower(names[i][0]) == tolower(firstLetter))
+        for (int i = 0; i < static_cast<int>(names.size()); ++i) {
+            size_t pos = 0;
+            if (!names[i].empty() && foldCase(txt::nextRune(names[i], &pos)) == foldCase(firstLetter))
                 matches.push_back(i);
+        }
 
         if (!matches.empty()) {
             pickedName = vrng->randomSample(matches);

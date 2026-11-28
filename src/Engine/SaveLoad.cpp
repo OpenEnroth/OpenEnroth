@@ -40,7 +40,6 @@
 #include "Library/Image/Pcx.h"
 #include "Library/Logger/Logger.h"
 #include "Library/LodFormats/LodFormats.h"
-#include "Resources/ResourceManager.h"
 
 std::unordered_map<std::string, Blob> pMapDeltas;
 TextEncoding currentSaveEncoding = ENCODING_UTF8;

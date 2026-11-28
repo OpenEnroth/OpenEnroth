@@ -86,7 +86,7 @@ void ItemTable::LoadSpecialEnchantments(std::string_view spcitems) {
     }
 }
 
-void ItemTable::LoadItems(std::string_view itemsBlob) {
+void ItemTable::LoadItems(std::string_view itemsText) {
     // items.txt table structure: index | icon | name (localized) | value | type | skill | damage | mod | material | ...
 
     static const std::map<std::string, ItemType, ascii::NoCaseLess> equipStatMap = { // TODO(captainurist): #enum use enum serialization
@@ -137,7 +137,7 @@ void ItemTable::LoadItems(std::string_view itemsBlob) {
         {"special", RARITY_SPECIAL},
     };
 
-    for (std::string_view line : split(itemsBlob).by("\r\n").drop(2).skip("")) {
+    for (std::string_view line : split(itemsText).by("\r\n").drop(2).skip("")) {
         std::array<std::string_view, 17> tokens = split(line).by('\t');
         ItemId item_counter = ItemId(fromString<int>(tokens[0]));
         items[item_counter].iconName = unquote(tokens[1]);

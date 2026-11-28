@@ -122,7 +122,7 @@ Language features:
   * Exception is `namespace detail` that you're encouraged to use to hide implementation details and to prevent cluttering of the global namespace.
   * Use `static` for functions and variables that are private to a `.cpp` file, and not an anonymous namespace. This is the opposite of what the Google style guide advises, but it reads better, and it's what the codebase does.
 * `std::string`s in the code are assumed to be UTF8-encoded as advised by [utf8everywhere](https://utf8everywhere.org/). On Windows this is ensured by the `UnicodeCrt` class that sets up the standard library to use UTF8 encoding. Thus, you don't need to bother with `std::u8string`, and you can safely convert `std::filesystem::path` to string by calling `path.string()`.
-  * This is not yet true for in-game strings. E.g. strings for the Russian localization are in CP1251.
+  * In-game strings are decoded into UTF-8 as they're loaded, from the encoding of the game data or the savegame.
 
 Error handling:
 * Use `assert`s to check for coding errors and conditions that must never be false, no matter how the program is run.

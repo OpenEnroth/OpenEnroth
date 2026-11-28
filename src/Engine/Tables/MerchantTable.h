@@ -1,11 +1,10 @@
 #pragma once
 
 #include <string>
+#include <string_view>
 
 #include "Engine/Objects/NPCEnums.h"
 #include "Utility/IndexedArray.h"
-
-class Blob;
 
 /**
  * @offset 0x476590

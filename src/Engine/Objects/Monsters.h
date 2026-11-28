@@ -4,6 +4,7 @@
 #include <array>
 #include <string>
 #include <vector>
+#include <string_view>
 
 #include "Engine/Spells/SpellEnums.h"
 #include "Engine/Objects/CombinedSkillValue.h"
@@ -19,8 +20,6 @@
 #include "ActorEnums.h"
 #include "ItemEnums.h"
 #include "MonsterEnums.h"
-
-class Blob;
 
 struct MonsterInfo {
     std::string name; // As displayed in the game, e.g. "Archangel".

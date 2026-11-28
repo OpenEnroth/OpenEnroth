@@ -90,6 +90,7 @@
 #include "Library/Logger/Logger.h"
 #include "Library/BuildInfo/BuildInfo.h"
 
+#include "Utility/String/Encoding.h"
 #include "Utility/String/Transformations.h"
 
 /*
@@ -1546,15 +1547,15 @@ Duration timeUntilDawn() {
     return next5am - now;
 }
 
-void initLevelStrings(std::string_view blob) {
+void initLevelStrings(std::string_view strings) {
     engine->_levelStrings.clear();
 
     // TODO(captainurist): use MemoryInputStream here.
     int offs = 0;
-    while (offs < blob.size()) {
-        const char *nextNullTerm = (const char*)memchr(&blob[offs], '\0', blob.size() - offs);
-        size_t stringSize = nextNullTerm ? (nextNullTerm - &blob[offs]) : (blob.size() - offs);
-        engine->_levelStrings.push_back(trimRemoveQuotes(std::string(&blob[offs], stringSize)));
+    while (offs < strings.size()) {
+        const char *nextNullTerm = (const char*)memchr(&strings[offs], '\0', strings.size() - offs);
+        size_t stringSize = nextNullTerm ? (nextNullTerm - &strings[offs]) : (strings.size() - offs);
+        engine->_levelStrings.push_back(trimRemoveQuotes(std::string(&strings[offs], stringSize)));
         offs += stringSize + 1;
     }
 }
@@ -1563,7 +1564,8 @@ void loadMapEventsAndStrings(MapId mapid) {
     std::string mapName = pMapTable->pInfos[mapid].fileName;
     std::string mapNameWithoutExt = mapName.substr(0, mapName.rfind('.'));
 
-    initLevelStrings(engine->resources()->eventsText(fmt::format("{}.str", mapNameWithoutExt)));
+    Blob strings = engine->resources()->eventsData(fmt::format("{}.str", mapNameWithoutExt));
+    initLevelStrings(txt::encodedToUtf8(strings.str(), engine->resources()->encoding())); // 0x1A in a .str is data, unlike in text tables.
 
     engine->_localEventMap = EvtProgram::load(engine->resources()->eventsData(fmt::format("{}.evt", mapNameWithoutExt)));
 }

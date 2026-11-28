@@ -1,10 +1,9 @@
 #pragma once
 
 #include <array>
+#include <string_view>
 
 #include "Engine/Data/HistoryData.h"
-
-class Blob;
 
 struct HistoryTable {
     void Initialize(std::string_view history);

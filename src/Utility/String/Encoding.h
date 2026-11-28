@@ -177,11 +177,6 @@ char32_t encodedToChar32(char c, TextEncoding encoding);
  * Iterating a string rune by rune yields exactly the code points that `encodedToUtf32(s, ENCODING_UTF8)` returns,
  * malformed input included.
  *
- * Hand-rolled rather than implemented via ztd.text: doing it there would either pull `<ztd/text.hpp>` into this
- * widely-included header, polluting every consumer with the ztd namespace and its compile-time cost, or move the
- * function out of line - and this is a per-character call in text rendering loops, where the inline version measures
- * 3-6x faster than an out-of-line ztd.text implementation (~1ns vs ~4-5ns per code point, gcc 15 -O3).
- *
  * @param s                             UTF-8 string.
  * @param[in,out] pos                   Byte offset to decode at, must be less than `s.size()`. Advanced past the
  *                                      decoded code point - always by at least one byte, so a loop that stops at

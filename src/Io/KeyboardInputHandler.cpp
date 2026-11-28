@@ -1,5 +1,6 @@
 #include "KeyboardInputHandler.h"
 
+#include <cstdint>
 #include <memory>
 #include <string>
 
@@ -401,8 +402,12 @@ bool Io::KeyboardInputHandler::ProcessTextInput(PlatformKey key, int c) {
             return false;
 
         if (key == PlatformKey::KEY_BACKSPACE) {
-            if (!pPressedKeysBuffer.empty())
+            while (!pPressedKeysBuffer.empty()) { // Removes a whole UTF-8 character, continuation bytes first.
+                uint8_t last = pPressedKeysBuffer.back();
                 pPressedKeysBuffer.pop_back();
+                if ((last & 0xC0) != 0x80)
+                    break;
+            }
         } else if (key == PlatformKey::KEY_RETURN) {
             SetWindowInputStatus(WINDOW_INPUT_CONFIRMED);
         } else if (key == PlatformKey::KEY_ESCAPE) {

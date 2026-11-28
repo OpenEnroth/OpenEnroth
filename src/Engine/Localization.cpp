@@ -44,10 +44,10 @@ std::string Localization::skillValueShortString(CombinedSkillValue skillValue) c
 
 //----- (00452C49) --------------------------------------------------------
 bool Localization::initialize() {
-    std::string globalBlob = engine->resources()->eventsText("global.txt");
+    std::string global = engine->resources()->eventsText("global.txt");
 
     // global.txt table structure: index | text (localized).
-    for (std::string_view line : split(globalBlob).by("\r\n").drop(2).skip("")) {
+    for (std::string_view line : split(global).by("\r\n").drop(2).skip("")) {
         std::array<std::string_view, 2> tokens = split(line).by('\t');
         LstrId i = static_cast<LstrId>(fromString<int>(tokens[0]));
         _localizationStrings[i] = unquote(tokens[1]);

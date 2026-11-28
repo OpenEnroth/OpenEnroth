@@ -1,5 +1,6 @@
 #pragma once
 
+#include <cstdint>
 #include <cstring>
 #include <algorithm>
 #include <array>
@@ -77,7 +78,14 @@ void snapshot(const std::string &src, std::array<char, N> *dst, EncodingTag enco
         memset(dst->data(), 0, N);
         memcpy(dst->data(), src.data(), std::min(src.size(), N - 1));
     } else {
-        snapshot(txt::utf8ToEncoded(src, *encoding), dst, tags::encoding(ENCODING_BYTES));
+        std::string encoded = txt::utf8ToEncoded(src, *encoding);
+        if (*encoding == ENCODING_UTF8 && encoded.size() > N - 1) {
+            size_t size = N - 1;
+            while (size > 0 && (static_cast<uint8_t>(encoded[size]) & 0xC0) == 0x80)
+                size--; // Cut before a character, not in the middle of one.
+            encoded.resize(size);
+        }
+        snapshot(encoded, dst, tags::encoding(ENCODING_BYTES));
     }
 }
 

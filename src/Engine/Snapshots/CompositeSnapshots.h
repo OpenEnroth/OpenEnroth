@@ -67,7 +67,7 @@ struct IndoorDelta_MM7 {
 };
 
 void snapshot(const IndoorLocation &src, IndoorDelta_MM7 *dst, EncodingTag encoding);
-void reconstruct(const IndoorDelta_MM7 &src, IndoorLocation *dst, EncodingTag encoding);
+void reconstruct(const IndoorDelta_MM7 &src, IndoorLocation *dst);
 void serialize(const IndoorDelta_MM7 &src, OutputStream *dst);
 void deserialize(InputStream &src, IndoorDelta_MM7 *dst, ContextTag<IndoorLocation_MM7> ctx);
 
@@ -126,7 +126,7 @@ struct OutdoorDelta_MM7 {
 };
 
 void snapshot(const OutdoorLocation &src, OutdoorDelta_MM7 *dst, EncodingTag encoding);
-void reconstruct(const OutdoorDelta_MM7 &src, OutdoorLocation *dst, EncodingTag encoding);
+void reconstruct(const OutdoorDelta_MM7 &src, OutdoorLocation *dst);
 void serialize(const OutdoorDelta_MM7 &src, OutputStream *dst);
 void deserialize(InputStream &src, OutdoorDelta_MM7 *dst, ContextTag<OutdoorLocation_MM7> ctx);
 
@@ -153,6 +153,7 @@ void deserialize(const Blob &src, SaveGame_MM7 *dst);
 struct SaveGameLite_MM7 {
     SaveGameHeader_MM7 header;
     Blob thumbnail;
+    Blob extension; // In z.json - OE extension data.
 };
 
 void reconstruct(const SaveGameLite_MM7 &src, SaveGameLite *dst);
