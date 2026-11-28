@@ -171,6 +171,7 @@ class OpenGLRenderer : public BaseRenderer {
     unsigned int bsptexturewidths[16]{};
     unsigned int bsptextureheights[16]{};
     std::map<std::string, int> bsptexmap;
+    std::vector<std::shared_ptr<GraphicsImage>> _bspImages; // Keeps the uploaded textures cached while the map is loaded.
 
     // TODO(captainurist): reserve the buffers here, then adjust the flush checks to use reserved size?
 

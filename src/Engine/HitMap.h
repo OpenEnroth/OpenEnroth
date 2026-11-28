@@ -1,6 +1,7 @@
 #pragma once
 
 #include <cassert>
+#include <memory>
 #include <utility>
 #include <vector>
 #include <algorithm>
@@ -9,8 +10,6 @@
 #include "Library/Geometry/Rect.h"
 
 #include "Engine/Graphics/Image.h"
-
-#include "Utility/Ptr.h"
 
 /**
  * A canvas-like container that allows adding images with associated values, then querying pixels to get the value of
@@ -25,14 +24,14 @@ class HitMap {
      * Add an image with associated value to the canvas.
      *
      * @param position                  Top-left position where the image should be placed.
-     * @param image                     Pointer to the graphics image.
+     * @param image                     Image to place, kept until `clear()`.
      * @param value                     Value to associate with this image.
      */
-    void add(Pointi position, Ptr<GraphicsImage> image, T value) {
+    void add(Pointi position, std::shared_ptr<GraphicsImage> image, T value) {
         assert(image);
 
         Recti imageRect = Recti(position, image->size());
-        _entries.emplace_back(position, image, std::move(value));
+        _entries.emplace_back(position, std::move(image), std::move(value));
 
         if (_entries.size() == 1) {
             _bounds = imageRect;
@@ -79,10 +78,10 @@ class HitMap {
  private:
     struct Entry {
         Pointi position;
-        GraphicsImage *image = nullptr;
+        std::shared_ptr<GraphicsImage> image;
         T value;
 
-        Entry(Pointi pos, Ptr<GraphicsImage> img, T val) : position(pos), image(img), value(val) {}
+        Entry(Pointi pos, std::shared_ptr<GraphicsImage> img, T val) : position(pos), image(std::move(img)), value(std::move(val)) {}
     };
 
     std::vector<Entry> _entries;

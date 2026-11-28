@@ -2884,6 +2884,7 @@ void OpenGLRenderer::DrawIndoorFaces() {
                     if (tunit == unit) {
                         // get texture
                         std::shared_ptr<GraphicsImage> texture = assets->getBitmap(it->first);
+                        _bspImages.push_back(texture);
 
                         glTexSubImage3D(GL_TEXTURE_2D_ARRAY,
                             0,
@@ -3577,6 +3578,7 @@ void OpenGLRenderer::ReleaseBSP() {
     std::map<std::string, int> bsptexmap;*/
 
     bsptexmap.clear();
+    _bspImages.clear();
 
     for (int i = 0; i < 16; i++) {
         glDeleteTextures(1, &bsptextures[i]);

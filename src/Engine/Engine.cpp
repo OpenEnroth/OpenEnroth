@@ -156,6 +156,8 @@ void Engine::drawWorld() {
 
         // if ( !render->pRenderD3D )
         // pMouse->DrawCursorToTarget();
+        // TODO(captainurist): fetch the level's textures even when the world isn't drawn. Otherwise the image sweep at
+        //                     the end of Draw() frees the ones the new map shares with the old one.
         if (!PauseGameDrawing()) {
             if (uCurrentlyLoadedLevelType == LEVEL_INDOOR) {
                 pIndoor->Draw();
@@ -197,8 +199,7 @@ void Engine::Draw() {
 
     if (_releaseUnusedImagesAfterDraw) {
         _releaseUnusedImagesAfterDraw = false;
-        equipmentHitMap.clear(); // Points at item icons that only the cache owns.
-        assets->releaseUnusedImages();
+        assets->releaseUnusedImages(); // The first frame on a new map has fetched the images it shares with the old one.
     }
 }
 
@@ -961,7 +962,7 @@ void Engine::ResetCursor_Palettes_LODs_Level_Audio_SFT_Windows() {
     if (mouse)
         mouse->SetCursorImage("MICON1");
 
-    // Render billboards are used in hit tests, but we're releasing textures, so can't use them anymore.
+    // Render billboards are used in hit tests and point at the old map's objects.
     render->uNumBillboardsToDraw = 0;
 
     if (uCurrentlyLoadedLevelType == LEVEL_INDOOR) {
@@ -980,6 +981,7 @@ void Engine::ResetCursor_Palettes_LODs_Level_Audio_SFT_Windows() {
     pParty->armageddon_timer = 0_ticks;
 
     windowManager.DeleteAllVisibleWindows();
+    equipmentHitMap.clear();
 
     _releaseUnusedImagesAfterDraw = true;
 }

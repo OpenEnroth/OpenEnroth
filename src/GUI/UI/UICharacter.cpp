@@ -42,7 +42,7 @@
 
 void CharacterUI_LoadPaperdollTextures();
 
-static void CharacterUI_DrawItem(int x, int y, Item *item, int id, Ptr<GraphicsImage> item_texture = nullptr, bool doZDraw = false);
+static void CharacterUI_DrawItem(int x, int y, Item *item, int id, std::shared_ptr<GraphicsImage> item_texture = nullptr, bool doZDraw = false);
 
 /**
  * Prepare textures of character doll with wetsuit on.
@@ -1258,7 +1258,7 @@ void CharacterUI_DrawPickedItemUnderlay(Vec2i gridOffset) {
     }
 }
 
-static void CharacterUI_DrawItem(int x, int y, Item *item, int id, Ptr<GraphicsImage> item_texture, bool doZDraw) {
+static void CharacterUI_DrawItem(int x, int y, Item *item, int id, std::shared_ptr<GraphicsImage> item_texture, bool doZDraw) {
     if (!item_texture)
         item_texture = assets->getIcon(item->GetIconName());
 
@@ -1293,7 +1293,7 @@ static void CharacterUI_DrawItem(int x, int y, Item *item, int id, Ptr<GraphicsI
     }
 
     if (doZDraw)
-        equipmentHitMap.add({x, y}, item_texture, id);
+        equipmentHitMap.add({x, y}, std::move(item_texture), id);
 }
 
 //----- (0043E825) --------------------------------------------------------
