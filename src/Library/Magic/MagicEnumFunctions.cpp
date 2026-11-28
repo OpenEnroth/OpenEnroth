@@ -11,18 +11,26 @@ std::string_view formatDescription(MagicFileFormat format) {
         return "raw data";
     case MAGIC_LOD:
         return "LOD archive";
-    case MAGIC_LOD_COMPRESSED_DATA:
-        return "LOD compressed file";
-    case MAGIC_LOD_COMPRESSED_PSEUDO_IMAGE:
-        return "LOD compressed pseudo image";
-    case MAGIC_LOD_IMAGE:
-        return "LOD image";
-    case MAGIC_LOD_PALETTE:
-        return "LOD palette";
-    case MAGIC_LOD_SPRITE:
-        return "LOD sprite";
-    case MAGIC_LOD_FONT:
-        return "LOD font";
+    case MAGIC_LOD_COMPRESSED_DATA_MM6:
+        return "LOD compressed data (MM6 format)";
+    case MAGIC_LOD_COMPRESSED_DATA_MM7:
+        return "LOD compressed data (MM7 format)";
+    case MAGIC_LOD_COMPRESSED_PSEUDO_IMAGE_MM6:
+        return "LOD compressed pseudo image (MM6 format)";
+    case MAGIC_LOD_COMPRESSED_PSEUDO_IMAGE_MM8:
+        return "LOD compressed pseudo image (MM8 format)";
+    case MAGIC_LOD_IMAGE_MM6:
+        return "LOD image (MM6 format)";
+    case MAGIC_LOD_IMAGE_MM8:
+        return "LOD image (MM8 format)";
+    case MAGIC_LOD_PALETTE_MM6:
+        return "LOD palette (MM6 format)";
+    case MAGIC_LOD_SPRITE_MM6:
+        return "LOD sprite (MM6 format)";
+    case MAGIC_LOD_FONT_MM6:
+        return "LOD font (MM6 format)";
+    case MAGIC_LOD_FONT_MMZ:
+        return "LOD font (MMZ format)";
     case MAGIC_VID:
         return "VID archive";
     case MAGIC_SND:

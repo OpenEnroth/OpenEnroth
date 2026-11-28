@@ -241,7 +241,7 @@ Palette ResourceManager::palette(int paletteId) {
     if (!_bitmapsLodReader.exists(name))
         return grayscalePalette();
 
-    Palette result = lod::decodeImage(_bitmapsLodReader.read(name)).palette;
+    Palette result = lod::decodePalette(_bitmapsLodReader.read(name));
     desaturate(result.colors);
     return result;
 }

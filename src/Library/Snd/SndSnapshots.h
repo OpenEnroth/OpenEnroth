@@ -26,6 +26,7 @@ struct SndEntry {
 
 // Note that there is no SndHeader_MM7. Entries are just stored as a serialized vector in the SND file.
 
+// TODO(captainurist): rename to SndEntry_MM6.
 struct SndEntry_MM7 {
     std::array<char, 40> name;
     uint32_t offset;

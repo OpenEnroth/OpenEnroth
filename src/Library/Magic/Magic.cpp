@@ -86,17 +86,28 @@ bool detect(const Blob &data) {
 MagicFileFormat magic(const Blob &data) {
     if (lod::detect(data))
         return MAGIC_LOD;
-    if (lod::detectCompressedData(data))
-        return MAGIC_LOD_COMPRESSED_DATA;
-    if (lod::detectCompressedPseudoImage(data))
-        return MAGIC_LOD_COMPRESSED_PSEUDO_IMAGE;
-    bool isPalette = false;
-    if (lod::detectImage(data, &isPalette))
-        return isPalette ? MAGIC_LOD_PALETTE : MAGIC_LOD_IMAGE;
-    if (lod::detectSprite(data))
-        return MAGIC_LOD_SPRITE;
-    if (lod::detectFont(data))
-        return MAGIC_LOD_FONT;
+    if (lod::detectCompressedDataMm7(data))
+        return MAGIC_LOD_COMPRESSED_DATA_MM7;
+    if (lod::detectCompressedPseudoImageMm6(data))
+        return MAGIC_LOD_COMPRESSED_PSEUDO_IMAGE_MM6;
+    if (lod::detectCompressedPseudoImageMm8(data))
+        return MAGIC_LOD_COMPRESSED_PSEUDO_IMAGE_MM8;
+    if (lod::detectImageMm6(data))
+        return MAGIC_LOD_IMAGE_MM6;
+    if (lod::detectImageMm8(data))
+        return MAGIC_LOD_IMAGE_MM8;
+    if (lod::detectPaletteMm6(data))
+        return MAGIC_LOD_PALETTE_MM6;
+    if (lod::detectSpriteMm6(data))
+        return MAGIC_LOD_SPRITE_MM6;
+    // MMZ goes first, the MM6 check lets trailing data through and can pass an MMZ font.
+    if (lod::detectFontMmz(data))
+        return MAGIC_LOD_FONT_MMZ;
+    if (lod::detectFontMm6(data))
+        return MAGIC_LOD_FONT_MM6;
+    // MM6 compressed data has no signature, so it goes after the LOD formats with stricter checks.
+    if (lod::detectCompressedDataMm6(data))
+        return MAGIC_LOD_COMPRESSED_DATA_MM6;
     if (vid::detect(data))
         return MAGIC_VID;
     if (snd::detect(data))

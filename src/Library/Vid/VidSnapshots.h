@@ -24,6 +24,7 @@ struct VidEntry {
 
 // Note that there is no VidHeader_MM7. Entries are just stored as a serialized vector in the VID file.
 
+// TODO(captainurist): rename to VidEntry_MM6.
 struct VidEntry_MM7 {
     std::array<char, 40> name;
     uint32_t offset;

@@ -12,13 +12,20 @@ struct LodFontAtlas;
 #pragma pack(push, 1)
 
 struct LodCompressionHeader_MM6 {
+    std::uint32_t dataSize;
+    std::uint32_t decompressedSize; // Size of the decompressed data, 0 if data is not compressed.
+};
+static_assert(sizeof(LodCompressionHeader_MM6) == 8);
+MM_DECLARE_MEMCOPY_SERIALIZABLE(LodCompressionHeader_MM6)
+
+struct LodCompressionHeader_MM7 {
     std::uint32_t version; // Always 91969.
     std::array<char, 4> signature; // Always "mvii".
     std::uint32_t dataSize;
     std::uint32_t decompressedSize; // Size of the decompressed data, 0 if data is not compressed.
 };
-static_assert(sizeof(LodCompressionHeader_MM6) == 16);
-MM_DECLARE_MEMCOPY_SERIALIZABLE(LodCompressionHeader_MM6)
+static_assert(sizeof(LodCompressionHeader_MM7) == 16);
+MM_DECLARE_MEMCOPY_SERIALIZABLE(LodCompressionHeader_MM7)
 
 struct LodImageHeader_MM6 {
     std::array<char, 16> name;
@@ -45,6 +52,29 @@ struct LodImageHeader_MM6 {
 };
 static_assert(sizeof(LodImageHeader_MM6) == 48);
 MM_DECLARE_MEMCOPY_SERIALIZABLE(LodImageHeader_MM6)
+
+/**
+ * `LodImageHeader_MM6` with a 64-byte name, as MM8's `MMVIII` LODs store it, `EnglishT.lod` and `EnglishD.lod`.
+ * These hold only images and pseudo images, and MM8's other LODs use the MM6 and MM7 formats, so there are no MM8
+ * palettes or sprites.
+ */
+struct LodImageHeader_MM8 {
+    std::array<char, 64> name;
+    uint32_t size;
+    uint32_t dataSize;
+    uint16_t width;
+    uint16_t height;
+    int16_t widthLn2;
+    int16_t heightLn2;
+    int16_t widthMinus1;
+    int16_t heightMinus1;
+    int16_t paletteId;
+    int16_t anotherPaletteId;
+    uint32_t decompressedSize;
+    uint32_t flags;
+};
+static_assert(sizeof(LodImageHeader_MM8) == 96);
+MM_DECLARE_MEMCOPY_SERIALIZABLE(LodImageHeader_MM8)
 
 /**
  * @see https://github.com/GrayFace/MMExtension/blob/4d6600f164315f38157591d7f0307a86594c22ef/Src/RSPak/Extra/RSLod.pas#L553
@@ -76,7 +106,7 @@ MM_DECLARE_MEMCOPY_SERIALIZABLE(LodSpriteLine_MM6)
  * @see https://github.com/might-and-magic/fnt-generator/blob/master/fntgen.py#L217
  * @see https://github.com/GrayFace/MMExtension/blob/master/Scripts/Structs/01%20common%20structs.lua#L3034
  */
-struct LodFontHeader_MM7 {
+struct LodFontHeader_MM6 {
     uint8_t firstChar; // Always 30 or 31. Internet says can also be 64.
     uint8_t lastChar; // Always 255.
     uint8_t field_3; // Always 8.
@@ -88,41 +118,45 @@ struct LodFontHeader_MM7 {
     uint32_t paletteCount; // Always 0.
     std::array<uint32_t, 5> palettes; // Always 0. Looks like these were pointers originally.
 };
-static_assert(sizeof(LodFontHeader_MM7) == 32);
-MM_DECLARE_MEMCOPY_SERIALIZABLE(LodFontHeader_MM7)
+static_assert(sizeof(LodFontHeader_MM6) == 32);
+MM_DECLARE_MEMCOPY_SERIALIZABLE(LodFontHeader_MM6)
 
-void reconstruct(const LodFontHeader_MM7 &src, LodFontHeader *dst);
+void snapshot(const LodFontHeader &src, LodFontHeader_MM6 *dst);
+void reconstruct(const LodFontHeader_MM6 &src, LodFontHeader *dst);
 
-struct LodFontMetrics_MM7 {
+struct LodFontMetrics_MM6 {
     int32_t leftSpacing;
     int32_t width;
     int32_t rightSpacing;
 };
-static_assert(sizeof(LodFontMetrics_MM7) == 12);
-MM_DECLARE_MEMCOPY_SERIALIZABLE(LodFontMetrics_MM7)
+static_assert(sizeof(LodFontMetrics_MM6) == 12);
+MM_DECLARE_MEMCOPY_SERIALIZABLE(LodFontMetrics_MM6)
 
-void reconstruct(const LodFontMetrics_MM7 &src, LodFontMetrics *dst);
+void snapshot(const LodFontMetrics &src, LodFontMetrics_MM6 *dst);
+void reconstruct(const LodFontMetrics_MM6 &src, LodFontMetrics *dst);
 
-struct LodFontAtlas_MM7 {
-    std::array<LodFontMetrics_MM7, 256> metrics;
+struct LodFontAtlas_MM6 {
+    std::array<LodFontMetrics_MM6, 256> metrics;
     std::array<uint32_t, 256> offsets;
 };
-static_assert(sizeof(LodFontAtlas_MM7) == 4096);
-MM_DECLARE_MEMCOPY_SERIALIZABLE(LodFontAtlas_MM7)
+static_assert(sizeof(LodFontAtlas_MM6) == 4096);
+MM_DECLARE_MEMCOPY_SERIALIZABLE(LodFontAtlas_MM6)
 
-void reconstruct(const LodFontAtlas_MM7 &src, LodFontAtlas *dst);
+void snapshot(const LodFontAtlas &src, LodFontAtlas_MM6 *dst);
+void reconstruct(const LodFontAtlas_MM6 &src, LodFontAtlas *dst);
 
 /**
- * This is used for 'calig.fnt' in MM7 'icons.lod'. This font is not loaded by the engine. Not sure if it's from
- * pre-MM6 days or just a result of some experiments by the dev team.
+ * Atlas of `calig.fnt` in MM6, MM7 and MM8. No other font uses this layout, and the `calig.fnt` in Russian MM8's
+ * `EnglishT.lod` uses `LodFontAtlas_MM6` instead. The engine doesn't load this font.
  */
-struct LodFontAtlas_MMX {
+struct LodFontAtlas_MMZ {
     std::array<uint8_t, 256> widths;
     std::array<uint32_t, 256> offsets;
 };
-static_assert(sizeof(LodFontAtlas_MMX) == 1280);
-MM_DECLARE_MEMCOPY_SERIALIZABLE(LodFontAtlas_MMX)
+static_assert(sizeof(LodFontAtlas_MMZ) == 1280);
+MM_DECLARE_MEMCOPY_SERIALIZABLE(LodFontAtlas_MMZ)
 
-void reconstruct(const LodFontAtlas_MMX &src, LodFontAtlas *dst);
+void snapshot(const LodFontAtlas &src, LodFontAtlas_MMZ *dst);
+void reconstruct(const LodFontAtlas_MMZ &src, LodFontAtlas *dst);
 
 #pragma pack(pop)

@@ -17,8 +17,9 @@ an entry name is a single segment, and there are no archives inside archives.
   case-insensitive, and LodTool prints LOD entry names in lowercase.
 - Entry names can contain spaces, `hit with arrow01l` in MM6's `Audio.snd`. Quote paths, and loop over `ls`
   output with `while IFS= read -r`, never with `for e in $(...)`.
-- Entry names in the English releases' LODs are cut at 16 characters. Only MM8's `EnglishD.lod` has longer names,
-  so `01female_wince.wav` is listed as `01female_wince.w` and must be read under that name.
+- LodTool cuts entry names at 16 characters. Only MM8's `EnglishD.lod` stores longer names, so `01female_wince.wav`
+  is listed as `01female_wince.w` and must be read under that name. Where cut names match, only the first of those
+  entries can be read.
 
 ## Commands
 
@@ -44,25 +45,28 @@ levels. With it, it's drawn in the default palette. For monsters that palette ha
 background and magenta in the recolored parts, so it's not what the game shows. Read the resulting PNG to see the
 image.
 
-`magic` prints one line. For compressed data it names the format inside too, as in
-`LOD compressed file containing raw data` for an MM7 map.
+`magic` prints one line, naming the format inside compressed data too. Formats are named after the game that
+introduced them, so an MM7 map shows up as `LOD compressed data (MM7 format) containing raw data`, an MM7 icon as
+`LOD image (MM6 format)`, and a font as `LOD compressed pseudo image (MM6 format) containing LOD font (MM6 format)`.
+MM6 already has both font layouts, so the one `calig.fnt` uses is named MMZ.
 
 ## What's where
 
-From a full `magic` scan of every archive in all three games. "Compressed" means `magic` prints
-`LOD compressed file` or `LOD compressed pseudo image`, and `cat` decompresses it.
+From a full `magic` scan of every archive in all three games. "Compressed" means the format `magic`
+prints has `LOD compressed` in its name, and `cat` decompresses it.
 
 | Data | MM6 | MM7 | MM8 |
 |---|---|---|---|
-| maps, `.blv` `.dlv` `.odm` `.ddm` | `data/Games.lod` | `DATA/GAMES.LOD`, compressed | `Data/games.lod`, compressed |
-| events, strings, text tables, `.evt` `.str` `.txt` `.bin` | `data/icons.lod`, compressed | `DATA/events.lod`, compressed | `Data/EnglishT.lod` |
-| UI images, PCX screens, fonts | `data/icons.lod` | `DATA/ICONS.LOD` | `Data/icons.lod`, `EnglishT.lod`, `EnglishD.lod` |
+| maps, `.blv` `.dlv` `.odm` `.ddm` | `data/Games.lod`, compressed | `DATA/GAMES.LOD`, compressed | `Data/games.lod`, compressed |
+| events, strings, text tables, `.evt` `.str` `.txt` `.bin` | `data/icons.lod`, compressed | `DATA/events.lod`, compressed | `Data/EnglishT.lod`, compressed |
+| UI images | `data/icons.lod` | `DATA/ICONS.LOD` | `Data/icons.lod`, `EnglishD.lod` |
+| PCX screens, fonts | `data/icons.lod`, compressed | `DATA/ICONS.LOD`, compressed | `Data/icons.lod`, `EnglishT.lod`, `EnglishD.lod`, compressed |
 | textures and palettes `palNNN` | `data/BITMAPS.LOD` | `DATA/BITMAPS.LOD` | `Data/bitmaps.lod` |
 | sprites | `data/SPRITES.LOD` | `DATA/SPRITES.LOD` | `Data/sprites.lod` |
-| sounds | `Sounds/Audio.snd`, WAV | `SOUNDS/Audio.snd`, WAV | `Data/EnglishD.lod` |
+| sounds | `Sounds/Audio.snd`, WAV | `SOUNDS/Audio.snd`, WAV | `Data/EnglishD.lod`, compressed WAV |
 | movies | `Anims/Anims1.vid`, `Anims2.vid`, Smacker | `Anims/Magic7.vid`, `Might7.vid`, Smacker and Bink | `Anims/Magicdod.vid`, `mightdod.vid`, Smacker and Bink |
 
-Entries without an extension in the image archives are LOD images, palettes or sprites.
+Most entries without an extension in the image archives are LOD images, palettes or sprites.
 
 MM7's `ICONS.LOD` and MM8's `icons.lod` also hold stale copies of a few text tables. In MM7, `dsft.bin`,
 `spells.txt`, `mapstats.txt` and five more differ from the copies in `events.lod`. OpenEnroth reads `events.lod`,
