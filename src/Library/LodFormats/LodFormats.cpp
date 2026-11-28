@@ -2,6 +2,7 @@
 
 #include <cassert>
 #include <cstdint>
+#include <optional>
 #include <span>
 #include <vector>
 #include <string>
@@ -56,22 +57,37 @@ static Blob uncompressEntryData(const Blob &blob, const Blob &compressed, size_t
 }
 
 /**
- * Reads and checks the header both LOD font layouts share.
+ * Reads the header and the atlas of a LOD font, and works out the size of the font entry from them.
  *
- * @param stream                        Stream at the start of the font. It's left past the header.
- * @param blobSize                      Size of the whole font entry.
- * @param[out] header                   Font header.
- * @return                              Whether the header is a valid LOD font header.
+ * @tparam Atlas                        Atlas layout of the font, `LodFontAtlas_MM6` or `LodFontAtlas_MMZ`.
+ * @param blob                          Font entry.
+ * @return                              Size of the header, the atlas and the glyph pixels, or `std::nullopt` if the
+ *                                      entry doesn't start with a valid font header and atlas.
  */
-static bool detectFontHeader(MemoryInputStream &stream, size_t blobSize, LodFontHeader_MM6 *header) {
-    if (blobSize < sizeof(LodFontHeader_MM6))
-        return false;
+template<class Atlas>
+static std::optional<size_t> expectedFontSizeAs(const Blob &blob) {
+    if (blob.size() < sizeof(LodFontHeader_MM6) + sizeof(Atlas))
+        return std::nullopt;
 
-    deserialize(stream, header);
-    return header->firstChar < header->lastChar && header->field_3 == 8 && header->field_4 == 0 && header->field_5 == 0 &&
-        header->height >= MIN_GLYPH_HEIGHT && header->height <= MAX_GLYPH_HEIGHT && header->field_7 == 0 &&
-        header->field_8 == 0 && header->paletteCount == 0 &&
-        std::ranges::all_of(header->palettes, _1 == 0);
+    MemoryInputStream stream(blob.data(), blob.size());
+    LodFontHeader_MM6 header;
+    deserialize(stream, &header);
+    bool isValidHeader = header.firstChar < header.lastChar && header.field_3 == 8 && header.field_4 == 0 && header.field_5 == 0 &&
+        header.height >= MIN_GLYPH_HEIGHT && header.height <= MAX_GLYPH_HEIGHT && header.field_7 == 0 &&
+        header.field_8 == 0 && header.paletteCount == 0 &&
+        std::ranges::all_of(header.palettes, _1 == 0);
+    if (!isValidHeader)
+        return std::nullopt;
+
+    LodFontAtlas atlas;
+    deserialize(stream, &atlas, tags::via<Atlas>);
+
+    int64_t pixelsSize = 0;
+    for (int c = header.firstChar; c <= header.lastChar; c++)
+        pixelsSize += static_cast<int64_t>(header.height) * atlas.metrics[c].width;
+    if (pixelsSize < 0)
+        return std::nullopt;
+    return sizeof(LodFontHeader_MM6) + sizeof(Atlas) + pixelsSize;
 }
 
 /**
@@ -216,33 +232,13 @@ bool lod::detectSpriteMm6(const Blob &blob) {
 }
 
 bool lod::detectFontMm6(const Blob &blob) {
-    MemoryInputStream stream(blob.data(), blob.size());
-    LodFontHeader_MM6 header;
-    if (!detectFontHeader(stream, blob.size(), &header) || blob.size() < sizeof(LodFontHeader_MM6) + sizeof(LodFontAtlas_MM6))
-        return false;
-
-    LodFontAtlas_MM6 atlas;
-    deserialize(stream, &atlas);
-
-    int64_t pixelsSize = 0;
-    for (int c = header.firstChar; c <= header.lastChar; c++)
-        pixelsSize += static_cast<int64_t>(header.height) * atlas.metrics[c].width;
-    return pixelsSize >= 0 && blob.size() >= sizeof(LodFontHeader_MM6) + sizeof(LodFontAtlas_MM6) + pixelsSize; // Some Russian MM6 and MM7 fonts have a stray byte after the glyphs.
+    std::optional<size_t> size = expectedFontSizeAs<LodFontAtlas_MM6>(blob);
+    return size && blob.size() >= *size; // Some Russian MM6 and MM7 fonts have a stray byte after the glyphs.
 }
 
 bool lod::detectFontMmz(const Blob &blob) {
-    MemoryInputStream stream(blob.data(), blob.size());
-    LodFontHeader_MM6 header;
-    if (!detectFontHeader(stream, blob.size(), &header) || blob.size() < sizeof(LodFontHeader_MM6) + sizeof(LodFontAtlas_MMZ))
-        return false;
-
-    LodFontAtlas_MMZ atlas;
-    deserialize(stream, &atlas);
-
-    size_t pixelsSize = 0;
-    for (int c = header.firstChar; c <= header.lastChar; c++)
-        pixelsSize += static_cast<size_t>(header.height) * atlas.widths[c];
-    return blob.size() == sizeof(LodFontHeader_MM6) + sizeof(LodFontAtlas_MMZ) + pixelsSize;
+    std::optional<size_t> size = expectedFontSizeAs<LodFontAtlas_MMZ>(blob);
+    return size && blob.size() == *size;
 }
 
 template<class Header>
