@@ -87,19 +87,19 @@ static std::string toLogString(const T &value) {
  */
 static std::string referencedText(const EvtInstruction &ir, EvtSource source) {
     switch (ir.opcode) {
-        case EVENT_SpeakInHouse:
-            return houseTable.indices().contains(ir.data.house_id) ? houseTable[ir.data.house_id].name : std::string();
-        case EVENT_StatusText:
-        case EVENT_ShowMessage:
-            if (source == EVT_SOURCE_GLOBAL) // Then it's a topic text, from 1.
-                return ir.data.text_id >= 1 && ir.data.text_id <= pNPCTopics.size() ? pNPCTopics[ir.data.text_id - 1].pText : std::string();
-            [[fallthrough]];
-        case EVENT_MouseOver:
-        case EVENT_LocationName:
-        case EVENT_InputString:
-            return ir.data.text_id >= 0 && ir.data.text_id < engine->_levelStrings.size() ? engine->_levelStrings[ir.data.text_id] : std::string();
-        default:
-            return {};
+    case EVENT_SpeakInHouse:
+        return houseTable.indices().contains(ir.data.house_id) ? houseTable[ir.data.house_id].name : std::string();
+    case EVENT_StatusText:
+    case EVENT_ShowMessage:
+        if (source == EVT_SOURCE_GLOBAL) // Then it's a topic text, from 1.
+            return ir.data.text_id >= 1 && ir.data.text_id <= pNPCTopics.size() ? pNPCTopics[ir.data.text_id - 1].pText : std::string();
+        [[fallthrough]];
+    case EVENT_MouseOver:
+    case EVENT_LocationName:
+    case EVENT_InputString:
+        return ir.data.text_id >= 0 && ir.data.text_id < engine->_levelStrings.size() ? engine->_levelStrings[ir.data.text_id] : std::string();
+    default:
+        return {};
     }
 }
 
