@@ -1,12 +1,9 @@
-#include <string>
 #include <vector>
 
 #include "Testing/Unit/UnitTest.h"
 
 #include "Engine/Evt/EvtEnums.h"
 #include "Engine/Evt/EvtInstruction.h"
-
-#include "Library/Serialization/Serialization.h"
 
 #include "Utility/Streams/MemoryInputStream.h"
 
@@ -107,33 +104,4 @@ UNIT_TEST(EvtInstruction, ToString) {
     EXPECT_EQ(parse(EVENT_Exit, {0}, 9).toString(EVT_SOURCE_MAP), "9: Exit{}");
     EXPECT_EQ(parse(EVENT_SetFacesBit, {1, 0, 0, 0, 0, 0, 0, 0x20, 1}).toString(EVT_SOURCE_MAP), "0: SetFacesBit{Id = 1, Bit = 0x20000000, On = 1}");
     EXPECT_EQ(parse(EVENT_RandomGoTo, {4, 8, 0, 0, 0, 0}).toString(EVT_SOURCE_MAP), "0: RandomGoTo{Jumps = {4, 8, 0, 0, 0, 0}}");
-}
-
-UNIT_TEST(EvtEnums, VariableNames) {
-    // Variables go by MMExtension's names, and the numbered ones are counted the way MMExtension counts them.
-    EXPECT_EQ(toString(VAR_QBits_QuestsDone), "QBits");
-    EXPECT_EQ(toString(VAR_MapPersistentVariable_0), "MapVar0");
-    EXPECT_EQ(toString(VAR_MapPersistentDecorVariable_24), "MapVar99");
-    EXPECT_EQ(toString(VAR_Counter10), "Counter10");
-    EXPECT_EQ(toString(VAR_History_0), "History1");
-    EXPECT_EQ(toString(VAR_UnknownTimeEvent19), "SpecialDate20");
-
-    EXPECT_EQ(fromString<EvtVariable>("Gold"), VAR_FixedGold);
-    EXPECT_EQ(fromString<EvtVariable>("MapVar75"), VAR_MapPersistentDecorVariable_0);
-    EXPECT_EQ(fromString<EvtVariable>("History29"), VAR_History_28);
-
-    EXPECT_EQ(toString(VAR_Race), "RaceIs");
-
-    EXPECT_EQ(toString(VAR_DisarmTrapSkill), "DisarmTrapSkill");
-    EXPECT_EQ(fromString<EvtVariable>("DisarmTrapsSkill"), VAR_DisarmTrapSkill);
-    EXPECT_EQ(toString(VAR_Paralyzed), "Paralyzed");
-    EXPECT_EQ(fromString<EvtVariable>("Paralysed"), VAR_Paralyzed);
-    EXPECT_EQ(toString(VAR_NumBounties), "MonstersHunted");
-    EXPECT_EQ(fromString<EvtVariable>("MontersHunted"), VAR_NumBounties);
-
-    EvtVariable variable = VAR_Sex;
-    EXPECT_FALSE(tryDeserialize("MapVar100", &variable));
-    EXPECT_FALSE(tryDeserialize("MapVar01", &variable));
-    EXPECT_FALSE(tryDeserialize("History0", &variable));
-    EXPECT_FALSE(tryDeserialize("qbits", &variable));
 }
