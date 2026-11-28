@@ -348,7 +348,7 @@ Font lod::decodeFont(const Blob &blob, TextEncoding encoding) {
                 }
             }
 
-            // Some fonts have blank glyphs that should be treated as unsupported. Spaces are the only legit blank glyphs.
+            // Some fonts have blank glyphs that should be treated as unsupported. Spaces are the only legit ones.
             if (blank && !unicode::isSpace(codePoint))
                 continue;
 

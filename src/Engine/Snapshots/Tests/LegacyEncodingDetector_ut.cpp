@@ -30,7 +30,7 @@ UNIT_TEST(LegacyEncodingDetector, Western) {
     EXPECT_EQ(detect("J\xFCrgen"), ENCODING_WINDOWS_1252);
     EXPECT_EQ(detect("Sch\xE4""fer"), ENCODING_WINDOWS_1252);
 
-    // Worst case for us - a short name that starts with an accented letter.
+    // A short name that starts with an accented letter.
     EXPECT_EQ(detect("\xC9tienne"), ENCODING_WINDOWS_1252);
 }
 
