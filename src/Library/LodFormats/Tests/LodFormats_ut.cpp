@@ -27,10 +27,13 @@ static std::string noise(size_t size) {
 }
 
 static Blob compressedDataMm6(const Blob &compressed, uint32_t dataSize, uint32_t decompressedSize) {
+    LodCompressionHeader_MM6 header;
+    header.dataSize = dataSize;
+    header.decompressedSize = decompressedSize;
+
     Blob result;
     BlobOutputStream stream(&result);
-    serialize(dataSize, &stream);
-    serialize(decompressedSize, &stream);
+    serialize(header, &stream);
     stream.write(compressed);
     stream.close();
     return result;
