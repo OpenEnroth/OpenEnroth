@@ -124,8 +124,11 @@ bool lod::detectCompressedDataMm6(const Blob &blob) {
     LodCompressionHeader_MM6 header;
     deserialize(stream, &header);
 
-    return header.dataSize == blob.size() - sizeof(LodCompressionHeader_MM6) && header.decompressedSize > 0 &&
-        zlib::detect(blob.subBlob(sizeof(LodCompressionHeader_MM6)));
+    if (header.dataSize != blob.size() - sizeof(LodCompressionHeader_MM6))
+        return false;
+    if (header.decompressedSize == 0)
+        return true; // GrayFace's LOD tools store data that doesn't shrink, or is 256 bytes or less, as is.
+    return zlib::detect(blob.subBlob(sizeof(LodCompressionHeader_MM6)));
 }
 
 bool lod::detectCompressedDataMm7(const Blob &blob) {
@@ -243,15 +246,22 @@ bool lod::detectFontMmz(const Blob &blob) {
     return blob.size() == sizeof(LodFontHeader_MM6) + sizeof(LodFontAtlas_MMZ) + pixelsSize;
 }
 
+template<class Header>
+static Blob decodeCompressedAs(const Blob &blob) {
+    BlobInputStream stream(blob);
+    Header header;
+    deserialize(stream, &header);
+
+    Blob result = stream.readAsBlobOrFail(header.dataSize);
+    if (header.decompressedSize)
+        result = uncompressEntryData(blob, result, header.decompressedSize);
+    return result.withDisplayPath(blob.displayPath());
+}
+
 Blob lod::decodeCompressedDataMm6(const Blob &blob) {
     if (!detectCompressedDataMm6(blob))
         throw Exception("Cannot decode LOD entry '{}' as LOD compressed data (MM6 format)", blob.displayPath());
-
-    BlobInputStream stream(blob);
-    LodCompressionHeader_MM6 header;
-    deserialize(stream, &header);
-
-    return uncompressEntryData(blob, stream.readAllAsBlob(), header.decompressedSize);
+    return decodeCompressedAs<LodCompressionHeader_MM6>(blob);
 }
 
 Blob lod::decodeCompressedDataMm7(const Blob &blob) {
@@ -283,28 +293,16 @@ Blob lod::decodeCompressedData(const Blob &blob) {
     throw Exception("Cannot decode LOD entry '{}' as LOD compressed data", blob.displayPath());
 }
 
-template<class Header>
-static Blob decodeCompressedPseudoImageAs(const Blob &blob) {
-    BlobInputStream stream(blob);
-    Header header;
-    deserialize(stream, &header);
-
-    Blob result = stream.readAsBlobOrFail(header.dataSize);
-    if (header.decompressedSize)
-        result = uncompressEntryData(blob, result, header.decompressedSize);
-    return result.withDisplayPath(blob.displayPath());
-}
-
 Blob lod::decodeCompressedPseudoImageMm6(const Blob &blob) {
     if (!detectCompressedPseudoImageMm6(blob))
         throw Exception("Cannot decode LOD entry '{}' as LOD compressed pseudo image (MM6 format)", blob.displayPath());
-    return decodeCompressedPseudoImageAs<LodImageHeader_MM6>(blob);
+    return decodeCompressedAs<LodImageHeader_MM6>(blob);
 }
 
 Blob lod::decodeCompressedPseudoImageMm8(const Blob &blob) {
     if (!detectCompressedPseudoImageMm8(blob))
         throw Exception("Cannot decode LOD entry '{}' as LOD compressed pseudo image (MM8 format)", blob.displayPath());
-    return decodeCompressedPseudoImageAs<LodImageHeader_MM8>(blob);
+    return decodeCompressedAs<LodImageHeader_MM8>(blob);
 }
 
 Blob lod::decodeCompressedPseudoImage(const Blob &blob) {

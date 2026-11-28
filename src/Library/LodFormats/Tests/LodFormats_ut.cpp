@@ -148,6 +148,14 @@ UNIT_TEST(LodFormats, CompressedDataMm6) {
     EXPECT_EQ(lod::decodeMaybeCompressed(entry).str(), testData);
 }
 
+UNIT_TEST(LodFormats, CompressedDataMm6_Stored) {
+    // MM6 compressed data stored without compression came out of decodeMaybeCompressed with its header still on.
+    Blob entry = compressedDataMm6(Blob::fromString(testData), testData.size(), 0);
+
+    EXPECT_TRUE(lod::detectCompressedDataMm6(entry));
+    EXPECT_EQ(lod::decodeMaybeCompressed(entry).str(), testData);
+}
+
 UNIT_TEST(LodFormats, CompressedDataMm6_NearMisses) {
     // Without a signature, the sizes and the zlib header are all that tells MM6 compressed data apart from other data.
     Blob compressed = zlib::compress(Blob::fromString(testData));

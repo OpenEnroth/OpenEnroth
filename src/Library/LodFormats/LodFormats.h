@@ -30,7 +30,8 @@ bool detectFontMm6(const Blob &blob);
 bool detectFontMmz(const Blob &blob);
 
 /**
- * @param blob                          MM6 compressed data, the packed and unpacked sizes followed by zlib data.
+ * @param blob                          MM6 compressed data, the packed and unpacked sizes followed by zlib data,
+ *                                      or by the data as is when the unpacked size is 0.
  * @return                              Uncompressed data.
  * @throw Exception                     If the format is not recognized or the data is corrupt.
  */
