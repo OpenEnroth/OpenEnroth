@@ -18,7 +18,7 @@ FileStat NullFileSystem::_stat(NormalPathView path) const {
 }
 
 void NullFileSystem::_ls(NormalPathView path, std::vector<DirectoryEntry> *entries) const {
-    if (path.isRoot())
+    if (path.isEmpty())
         return;
     FileSystemException::raise(this, FS_LS_FAILED_PATH_DOESNT_EXIST, path);
 }

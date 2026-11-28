@@ -47,7 +47,7 @@ NormalPath &NormalPath::operator/=(NormalPathView tail) {
 
     if (_path.isEmpty()) {
         _path = Path(PathView(tail));
-    } else if (!tail.isRoot()) {
+    } else if (!tail.isEmpty()) {
         _path /= PathView(tail);
     }
     return *this;
@@ -56,9 +56,9 @@ NormalPath &NormalPath::operator/=(NormalPathView tail) {
 NormalPath operator/(NormalPathView head, NormalPathView tail) {
     assert(head.isAccessible() && tail.isAccessible());
 
-    if (head.isRoot() || tail.isRoot()) {
+    if (head.isEmpty() || tail.isEmpty()) {
         NormalPath path;
-        path._path = Path(PathView(head.isRoot() ? tail : head));
+        path._path = Path(PathView(head.isEmpty() ? tail : head));
         return path;
     }
 

@@ -20,12 +20,12 @@ void MemoryFileSystem::clear() {
 }
 
 bool MemoryFileSystem::_exists(NormalPathView path) const {
-    assert(!path.isRoot());
+    assert(!path.isEmpty());
     return _trie.find(path) != nullptr;
 }
 
 FileStat MemoryFileSystem::_stat(NormalPathView path) const {
-    assert(!path.isRoot());
+    assert(!path.isEmpty());
 
     const Node *node = _trie.find(path);
     if (!node)
@@ -70,7 +70,7 @@ std::unique_ptr<OutputStream> MemoryFileSystem::_openForWriting(NormalPathView p
 }
 
 bool MemoryFileSystem::_remove(NormalPathView path) {
-    assert(!path.isRoot());
+    assert(!path.isEmpty());
 
     Node *node = _trie.find(path);
     if (!node)
@@ -84,7 +84,7 @@ std::string MemoryFileSystem::_displayPath(NormalPathView path) const {
 }
 
 const MemoryFileSystem::Node *MemoryFileSystem::nodeForReading(NormalPathView path) const {
-    assert(!path.isRoot());
+    assert(!path.isEmpty());
     const Node *node = _trie.find(path);
     if (!node)
         FileSystemException::raise(this, FS_READ_FAILED_PATH_DOESNT_EXIST, path);
@@ -96,7 +96,7 @@ const MemoryFileSystem::Node *MemoryFileSystem::nodeForReading(NormalPathView pa
 }
 
 MemoryFileSystem::Node *MemoryFileSystem::nodeForWriting(NormalPathView path) {
-    assert(!path.isRoot());
+    assert(!path.isEmpty());
 
     PathView tail;
     Node *node = _trie.walk(path, &tail);

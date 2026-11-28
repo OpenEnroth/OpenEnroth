@@ -25,7 +25,7 @@ class NormalPathView {
         return _path.str();
     }
 
-    [[nodiscard]] bool isRoot() const {
+    [[nodiscard]] bool isEmpty() const {
         return _path.isEmpty();
     }
 

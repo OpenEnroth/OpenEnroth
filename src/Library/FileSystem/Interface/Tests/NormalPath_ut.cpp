@@ -43,16 +43,16 @@ UNIT_TEST(NormalPath, DotDotStopsAtRoot) {
 UNIT_TEST(NormalPath, DefaultIsRoot) {
     // A default-constructed path names the root, and so does its view.
     EXPECT_TRUE(NormalPath().path().isEmpty());
-    EXPECT_TRUE(NormalPathView(NormalPath()).isRoot());
-    EXPECT_TRUE(NormalPathView().isRoot());
+    EXPECT_TRUE(NormalPathView(NormalPath()).isEmpty());
+    EXPECT_TRUE(NormalPathView().isEmpty());
 }
 
-UNIT_TEST(NormalPath, TailOfWholePathIsRoot) {
-    // The tail after the last segment is the root, and the tail at the last segment is that segment.
+UNIT_TEST(NormalPath, TailAfterLastSegmentIsEmpty) {
+    // The tail after the last segment is empty, and the tail at the last segment is that segment.
     NormalPath path("a/b");
     NormalPathView view = path;
     std::string_view last = *std::next(view.split().begin());
-    EXPECT_TRUE(view.tailAfter(last).isRoot());
+    EXPECT_TRUE(view.tailAfter(last).isEmpty());
     EXPECT_EQ(view.tailAt(last).str(), "b");
 }
 

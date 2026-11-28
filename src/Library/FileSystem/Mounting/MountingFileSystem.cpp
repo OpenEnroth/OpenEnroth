@@ -38,14 +38,14 @@ void MountingFileSystem::clearMounts() {
 }
 
 bool MountingFileSystem::_exists(NormalPathView path) const {
-    assert(!path.isRoot());
+    assert(!path.isEmpty());
 
     auto [node, mount, tail] = walk(path);
     return node ? true : mount ? mount->exists(tail) : false;
 }
 
 FileStat MountingFileSystem::_stat(NormalPathView path) const {
-    assert(!path.isRoot());
+    assert(!path.isEmpty());
     auto [node, mount, tail] = walk(path);
     return node ? FileStat(FILE_DIRECTORY, 0) : mount ? mount->stat(tail) : FileStat();
 }
