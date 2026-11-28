@@ -309,6 +309,16 @@ Blob lod::decodeMaybeCompressed(const Blob &blob) {
     return Blob::share(blob); // Not compressed.
 }
 
+Blob lod::encodeCompressedDataMm6(const Blob &blob) {
+    Blob compressed = zlib::compress(blob);
+
+    LodCompressionHeader_MM6 header;
+    header.dataSize = compressed.size();
+    header.decompressedSize = blob.size();
+
+    return Blob::concat(Blob::view(&header, sizeof(header)), compressed);
+}
+
 Blob lod::encodeCompressedDataMm7(const Blob &blob) {
     Blob compressed = zlib::compress(blob);
 

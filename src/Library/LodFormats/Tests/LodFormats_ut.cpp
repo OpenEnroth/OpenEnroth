@@ -26,20 +26,6 @@ static std::string noise(size_t size) {
     return result;
 }
 
-static Blob compressedDataMm6(const Blob &data) {
-    Blob compressed = zlib::compress(data);
-    LodCompressionHeader_MM6 header;
-    header.dataSize = compressed.size();
-    header.decompressedSize = data.size();
-
-    Blob result;
-    BlobOutputStream stream(&result);
-    serialize(header, &stream);
-    stream.write(compressed);
-    stream.close();
-    return result;
-}
-
 template<class Header>
 static Blob compressedPseudoImage(const Blob &data) {
     Blob compressed = zlib::compress(data);
@@ -145,7 +131,7 @@ static Blob fontMmz() {
 
 UNIT_TEST(LodFormats, CompressedDataMm6) {
     // MM6 maps came out of decodeMaybeCompressed still compressed.
-    Blob entry = compressedDataMm6(Blob::fromString(testData));
+    Blob entry = lod::encodeCompressedDataMm6(Blob::fromString(testData));
 
     EXPECT_TRUE(lod::detectCompressedDataMm6(entry));
     EXPECT_EQ(lod::decodeMaybeCompressed(entry).str(), testData);
@@ -196,7 +182,7 @@ UNIT_TEST(LodFormats, CompressedDataMm7) {
 
 UNIT_TEST(LodFormats, CompressedData_BrokenChecksum) {
     // Intact zlib data with a broken adler32 checksum, like English MM6's cd3.blv, failed to decode.
-    Blob mm6 = compressedDataMm6(Blob::fromString(testData));
+    Blob mm6 = lod::encodeCompressedDataMm6(Blob::fromString(testData));
     Blob mm7 = lod::encodeCompressedDataMm7(Blob::fromString(testData));
 
     for (const Blob *entry : {&mm6, &mm7}) {

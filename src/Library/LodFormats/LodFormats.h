@@ -79,6 +79,12 @@ Blob decodeMaybeCompressed(const Blob &blob);
 
 /**
  * @param blob                          `Blob` to compress.
+ * @return                              MM6 compressed data, as `decodeCompressedDataMm6` reads it.
+ */
+Blob encodeCompressedDataMm6(const Blob &blob);
+
+/**
+ * @param blob                          `Blob` to compress.
  * @return                              MM7 compressed data, as `decodeCompressedDataMm7` reads it.
  */
 Blob encodeCompressedDataMm7(const Blob &blob);
