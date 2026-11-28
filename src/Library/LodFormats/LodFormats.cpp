@@ -75,17 +75,25 @@ static bool detectFontHeader(MemoryInputStream &stream, size_t blobSize, LodFont
 }
 
 /**
- * Clears the metrics and offsets of the characters outside `[firstChar, lastChar]`, and checks the rest.
+ * Reads a LOD font, clearing the metrics and offsets of the characters outside `[firstChar, lastChar]` and checking
+ * the rest.
  *
- * @param blob                          Font entry, for error messages.
- * @param header                        Font header.
- * @param[in,out] atlas                 Font atlas.
- * @param pixels                        Glyph pixel data.
+ * @tparam Atlas                        Atlas layout of the font, `LodFontAtlas_MM6` or `LodFontAtlas_MMZ`.
+ * @param blob                          Font entry.
+ * @param[out] header                   Font header.
+ * @param[out] atlas                    Font atlas.
+ * @param[out] pixels                   Glyph pixel data.
  * @throw Exception                     If a glyph's metrics or pixel data are invalid.
  */
-static void fixAndValidateFont(const Blob &blob, const LodFontHeader &header, LodFontAtlas *atlas, const Blob &pixels) {
+template<class Atlas>
+static void decodeFontAs(const Blob &blob, LodFontHeader *header, LodFontAtlas *atlas, Blob *pixels) {
+    BlobInputStream stream(blob);
+    deserialize(stream, header, tags::via<LodFontHeader_MM6>);
+    deserialize(stream, atlas, tags::via<Atlas>);
+    *pixels = stream.readAllAsBlob();
+
     for (int c = 0; c <= 255; c++) {
-        if (c < header.firstChar || c > header.lastChar) {
+        if (c < header->firstChar || c > header->lastChar) {
             atlas->metrics[c].width = 0;
             atlas->metrics[c].leftSpacing = 0;
             atlas->metrics[c].rightSpacing = 0;
@@ -100,8 +108,8 @@ static void fixAndValidateFont(const Blob &blob, const LodFontHeader &header, Lo
         }
 
         int offset = atlas->offsets[c];
-        int size = header.fontHeight * metrics.width;
-        if (offset < 0 || size < 0 || size + offset > pixels.size()) {
+        int size = header->fontHeight * metrics.width;
+        if (offset < 0 || size < 0 || size + offset > pixels->size()) {
             throw Exception("Cannot decode font LOD entry '{}': invalid glyph data encountered for character #{}",
                             blob.displayPath(), c);
         }
@@ -373,7 +381,7 @@ LodImage lod::decodeImage(const Blob &blob) {
 }
 
 template<class Header>
-static Sizei decodeImageSizeAs(const Blob &blob) {
+static Sizei decodeSizeAs(const Blob &blob) {
     BlobInputStream stream(blob);
     Header header;
     deserialize(stream, &header);
@@ -384,13 +392,13 @@ static Sizei decodeImageSizeAs(const Blob &blob) {
 Sizei lod::decodeImageSizeMm6(const Blob &blob) {
     if (!detectImageMm6(blob))
         throw Exception("Cannot decode LOD entry '{}' as LOD image (MM6 format)", blob.displayPath());
-    return decodeImageSizeAs<LodImageHeader_MM6>(blob);
+    return decodeSizeAs<LodImageHeader_MM6>(blob);
 }
 
 Sizei lod::decodeImageSizeMm8(const Blob &blob) {
     if (!detectImageMm8(blob))
         throw Exception("Cannot decode LOD entry '{}' as LOD image (MM8 format)", blob.displayPath());
-    return decodeImageSizeAs<LodImageHeader_MM8>(blob);
+    return decodeSizeAs<LodImageHeader_MM8>(blob);
 }
 
 Sizei lod::decodeImageSize(const Blob &blob) {
@@ -466,12 +474,7 @@ LodSprite lod::decodeSprite(const Blob &blob) {
 Sizei lod::decodeSpriteSizeMm6(const Blob &blob) {
     if (!detectSpriteMm6(blob))
         throw Exception("Cannot decode LOD entry '{}' as LOD sprite (MM6 format)", blob.displayPath());
-
-    BlobInputStream stream(blob);
-    LodSpriteHeader_MM6 header;
-    deserialize(stream, &header);
-
-    return Sizei(header.width, header.height);
+    return decodeSizeAs<LodSpriteHeader_MM6>(blob);
 }
 
 Sizei lod::decodeSpriteSize(const Blob &blob) {
@@ -485,11 +488,7 @@ LodFont lod::decodeFontMm6(const Blob &blob) {
         throw Exception("Cannot decode LOD entry '{}' as LOD font (MM6 format)", blob.displayPath());
 
     LodFont result;
-    BlobInputStream stream(blob);
-    deserialize(stream, &result._header, tags::via<LodFontHeader_MM6>);
-    deserialize(stream, &result._atlas, tags::via<LodFontAtlas_MM6>);
-    result._pixels = stream.readAllAsBlob();
-    fixAndValidateFont(blob, result._header, &result._atlas, result._pixels);
+    decodeFontAs<LodFontAtlas_MM6>(blob, &result._header, &result._atlas, &result._pixels);
     return result;
 }
 
@@ -498,11 +497,7 @@ LodFont lod::decodeFontMmz(const Blob &blob) {
         throw Exception("Cannot decode LOD entry '{}' as LOD font (MMZ format)", blob.displayPath());
 
     LodFont result;
-    BlobInputStream stream(blob);
-    deserialize(stream, &result._header, tags::via<LodFontHeader_MM6>);
-    deserialize(stream, &result._atlas, tags::via<LodFontAtlas_MMZ>);
-    result._pixels = stream.readAllAsBlob();
-    fixAndValidateFont(blob, result._header, &result._atlas, result._pixels);
+    decodeFontAs<LodFontAtlas_MMZ>(blob, &result._header, &result._atlas, &result._pixels);
     return result;
 }
 
