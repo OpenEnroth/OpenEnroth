@@ -105,7 +105,7 @@ MagicFileFormat magic(const Blob &data) {
     if (lod::detectFontMm6(data))
         return MAGIC_LOD_FONT_MM6;
     if (lod::detectFontMmz(data))
-        return MAGIC_LOD_FONT_MMX;
+        return MAGIC_LOD_FONT_MMZ;
     if (vid::detect(data))
         return MAGIC_VID;
     if (snd::detect(data))

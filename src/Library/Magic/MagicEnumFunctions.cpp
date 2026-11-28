@@ -29,7 +29,7 @@ std::string_view formatDescription(MagicFileFormat format) {
         return "LOD sprite (MM6 format)";
     case MAGIC_LOD_FONT_MM6:
         return "LOD font (MM6 format)";
-    case MAGIC_LOD_FONT_MMX:
+    case MAGIC_LOD_FONT_MMZ:
         return "LOD font (MMZ format)";
     case MAGIC_VID:
         return "VID archive";

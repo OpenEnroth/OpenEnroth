@@ -113,7 +113,7 @@ static Blob convertToPng(const Blob &data, PathView palettesLodPath) {
         return png::encode(makeRgbaImage(lodSprite.image, palette));
     }
     case MAGIC_LOD_FONT_MM6:
-    case MAGIC_LOD_FONT_MMX:
+    case MAGIC_LOD_FONT_MMZ:
         return png::encode(renderFont(lod::decodeFont(data)));
     default:
         throw Exception("Can't convert {} '{}' to png", formatDescription(magic(data)), data.displayPath());
