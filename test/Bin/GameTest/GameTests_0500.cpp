@@ -1189,7 +1189,7 @@ GAME_TEST(Issues, Issue906_773) {
     EXPECT_EQ(heroismTape, tape(true, false, true));
 }
 
-GAME_TEST(Issues, Issue920) {
+GAME_TEST(Issues, Issue920a) {
     // Background actors stay in pain after armageddon. The AI loop skipped actors in pain so that they wouldn't get up in
     // mid-air, and as a result they never got up at all.
     test.prepareForNextTest(25, RANDOM_ENGINE_MERSENNE_TWISTER); // Armageddon pushes by a fixed amount per frame, at 100ms frames gravity wins and nobody takes off.
@@ -1220,6 +1220,39 @@ GAME_TEST(Issues, Issue920) {
     EXPECT_FALSE(flightTape.contains([=] (const auto &p) { return p.second > groundZ + 100 && p.first != InPain; })); // ...in pain all the way up and down...
     EXPECT_FALSE(pActors[titanId].isAirborne()); // ...landed...
     EXPECT_NE(stateTape.back(), InPain); // ...and got up.
+}
+
+GAME_TEST(Issues, Issue920b) {
+    // Background actors stay in pain after a hit. The AI loop skipped actors in pain so that they wouldn't get up in
+    // mid-air, and a hit left them in pain for good. A hit should hold a monster in pain for the length of its pain
+    // animation, with nothing else meanwhile, and it should get up right after.
+    test.prepareForNextTest(100, RANDOM_ENGINE_MERSENNE_TWISTER);
+
+    engine->config->debug.NoActors.setValue(true);
+    game.startNewGame();
+    test.startTaping();
+    prepareForBattleTest();
+    engine->config->debug.NoActors.setValue(false);
+
+    // Far enough from the party to stay a background actor.
+    int titanId = game.spawnMonster(pParty->pos + Vec3f(0, 6500, 0), MONSTER_TITAN_A, SPAWN_DUMMY)->id;
+    game.tick(1); // Drops it onto the ground.
+
+    auto stateTape = actorTapes.aiState(titanId);
+    auto painTape = actorTapes.custom(titanId, [] (const Actor &actor) { return std::pair(actor.aiState, gameTimer->time()); });
+    game.tick(1); // A frame on its feet before the hit.
+    Actor::AI_Pain(titanId, Pid::character(0), 0); // What a hit does to a monster that survives it.
+    Duration painLength = pActors[titanId].currentActionLength;
+    game.tick(30); // 3s, the pain animation is well under a second.
+    test.stopTaping();
+
+    EXPECT_EQ(stateTape.front(), Standing);
+    EXPECT_EQ(stateTape.count(InPain), 1); // In pain once, with nothing in between...
+    EXPECT_NE(stateTape.back(), InPain); // ...and up again afterwards.
+    auto inPain = painTape.filter([] (const auto &p) { return p.first == InPain; });
+    Duration held = inPain.back().second - inPain.front().second;
+    EXPECT_GE(held, painLength - Duration::fromRealtimeMilliseconds(200)); // Held for the pain animation, the tape can't see the frame the hit landed on...
+    EXPECT_LE(held, painLength); // ...and not longer.
 }
 
 GAME_TEST(Issues, Issue929) {
