@@ -21,12 +21,19 @@ class EvtInstruction {
     EvtInstruction() = default;
     explicit EvtInstruction(EvtOpcode opcode) : opcode(opcode), data() {}
 
+    // TODO(captainurist): drop the `source` parameter.
     /**
      * @param source                    Evt file the instruction comes from, which picks the table its texts come from.
-     * @return                          The instruction in readable form, for logging.
+     * @return                          The step of the instruction and the call that a script makes for it, for logging.
      */
     std::string toString(EvtSource source) const;
-    static EvtInstruction parse(InputStream &stream, size_t size);
+
+    /**
+     * @param stream                    An evt record, from its step byte to its end.
+     * @return                          The instruction of the record.
+     * @throws Exception                If the record is malformed.
+     */
+    static EvtInstruction parse(InputStream &stream);
 
     EvtOpcode opcode = EVENT_Invalid;
     int step = 0;

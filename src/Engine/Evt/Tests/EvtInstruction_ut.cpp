@@ -1,0 +1,116 @@
+#include <vector>
+
+#include "Testing/Unit/UnitTest.h"
+
+#include "Engine/Evt/EvtEnums.h"
+#include "Engine/Evt/EvtInstruction.h"
+
+#include "Utility/Streams/MemoryInputStream.h"
+
+static EvtInstruction parse(EvtOpcode opcode, std::vector<uint8_t> payload, uint8_t step = 0) {
+    // An evt record without its size and event id, which `EvtProgram::load` reads.
+    payload.insert(payload.begin(), {step, std::to_underlying(opcode)});
+    MemoryInputStream stream(payload.data(), payload.size());
+    return EvtInstruction::parse(stream);
+}
+
+UNIT_TEST(EvtInstruction, ParseFields) {
+    // Numbers are little endian, a string runs up to its zero, and a byte that OpenEnroth doesn't keep is skipped.
+    EvtInstruction sprite = parse(EVENT_SetSprite, {20, 1, 0, 0, 1, 'd', 'e', 'c', '0', '5', 0}, 3);
+    EXPECT_EQ(sprite.opcode, EVENT_SetSprite);
+    EXPECT_EQ(sprite.step, 3);
+    EXPECT_EQ(sprite.data.sprite_texture_descr.cog, 276);
+    EXPECT_EQ(sprite.data.sprite_texture_descr.hide, 1);
+    EXPECT_EQ(sprite.str, "dec05");
+
+    EvtInstruction movie = parse(EVENT_ShowMovie, {1, 1, 'a', 0});
+    EXPECT_EQ(movie.data.movie_unknown_field, 1);
+    EXPECT_EQ(movie.str, "a");
+
+    EvtInstruction compare = parse(EVENT_Compare, {0x10, 0, 240, 0, 0, 0, 7});
+    EXPECT_EQ(compare.data.variable_descr.type, VAR_QBits_QuestsDone);
+    EXPECT_EQ(compare.data.variable_descr.value, 240);
+    EXPECT_EQ(compare.target_step, 7);
+
+    EvtInstruction add = parse(EVENT_Add, {0x15, 0, 0xFF, 0xFF, 0xFF, 0xFF});
+    EXPECT_EQ(add.data.variable_descr.value, -1);
+
+    EvtInstruction damage = parse(EVENT_ReceiveDamage, {5, 2, 50, 0, 0, 0});
+    EXPECT_EQ(damage.who, CHOOSE_PARTY);
+    EXPECT_EQ(damage.data.damage_descr.damage, 50);
+}
+
+UNIT_TEST(EvtInstruction, ParseMasteries) {
+    // A spell's mastery is stored from 0 for novice. A skill check's is stored as 0 for any mastery, then from 1 for
+    // expert.
+    auto spell = [](uint8_t mastery) {
+        std::vector<uint8_t> payload(27);
+        payload[1] = mastery;
+        return parse(EVENT_CastSpell, payload).data.spell_descr.spell_mastery;
+    };
+    EXPECT_EQ(spell(0), MASTERY_NOVICE);
+    EXPECT_EQ(spell(3), MASTERY_GRANDMASTER);
+
+    auto check = [](uint8_t mastery) {
+        return parse(EVENT_CheckSkill, {0, mastery, 4, 0, 0, 0, 9}).data.check_skill_descr.skill_mastery;
+    };
+    EXPECT_EQ(check(0), MASTERY_NONE);
+    EXPECT_EQ(check(1), MASTERY_EXPERT);
+    EXPECT_EQ(check(3), MASTERY_GRANDMASTER);
+}
+
+UNIT_TEST(EvtInstruction, ParseKillCheck) {
+    // Monster ids are stored from 0 and kept from 1. Groups and counts are kept as stored.
+    EvtInstruction byMonster = parse(EVENT_IsActorKilled, {std::to_underlying(KILL_CHECK_MONSTERID), 10, 0, 0, 0, 2, 5});
+    EXPECT_EQ(byMonster.data.actor_descr.param, 11);
+    EXPECT_EQ(byMonster.data.actor_descr.num, 2);
+    EXPECT_EQ(byMonster.target_step, 5);
+
+    EvtInstruction byGroup = parse(EVENT_IsActorKilled, {std::to_underlying(KILL_CHECK_GROUPID), 10, 0, 0, 0, 2, 5});
+    EXPECT_EQ(byGroup.data.actor_descr.param, 10);
+}
+
+UNIT_TEST(EvtInstruction, ParseRandomGoTo) {
+    // A random jump has six slots, and the ones that hold a zero aren't targets.
+    EvtInstruction jump = parse(EVENT_RandomGoTo, {4, 8, 12, 0, 0, 0});
+    EXPECT_EQ(jump.data.random_goto_descr.random_goto_len, 3);
+    EXPECT_EQ(jump.data.random_goto_descr.random_goto[2], 12);
+
+    EXPECT_ANY_THROW((void) parse(EVENT_RandomGoTo, {0, 0, 0, 0, 0, 0}));
+}
+
+UNIT_TEST(EvtInstruction, ParseHints) {
+    // A hint is stored with the step of the command that follows it, and gets a step that no command has.
+    EvtInstruction hint = parse(EVENT_MouseOver, {7}, 0);
+    EXPECT_EQ(hint.step, -1);
+    EXPECT_EQ(hint.data.text_id, 7);
+}
+
+UNIT_TEST(EvtInstruction, ParseErrors) {
+    // A record that is shorter or longer than its fields is malformed, and so is one that nobody knows the fields of.
+    EXPECT_NO_THROW((void) parse(EVENT_OpenChest, {3}));
+    EXPECT_ANY_THROW((void) parse(EVENT_OpenChest, {}));
+    EXPECT_ANY_THROW((void) parse(EVENT_OpenChest, {3, 0}));
+    EXPECT_ANY_THROW((void) parse(EVENT_SetTexture, {1, 0, 0}));
+    EXPECT_ANY_THROW((void) parse(EVENT_CheckItemsCount, {0}));
+    EXPECT_ANY_THROW((void) parse(static_cast<EvtOpcode>(200), {0}));
+}
+
+UNIT_TEST(EvtInstruction, ToString) {
+    // The log shows an instruction as its step and the call that a script makes for it, with MMExtension's names.
+    EXPECT_EQ(parse(EVENT_SetSprite, {20, 0, 0, 0, 1, 'd', 'e', 'c', '0', '5', 0}, 3).toString(EVT_SOURCE_MAP),
+              "3: evt.SetSprite{SpriteId = 20, Visible = 1, Name = \"dec05\"}");
+    EXPECT_EQ(parse(EVENT_Compare, {0x10, 0, 240, 0, 0, 0, 7}).toString(EVT_SOURCE_MAP), "0: evt.Cmp{VarNum = \"QBits\", Value = 240, jump = 7}");
+    EXPECT_EQ(parse(EVENT_Exit, {0}, 9).toString(EVT_SOURCE_MAP), "9: evt.Exit{}");
+    EXPECT_EQ(parse(EVENT_SetTexture, {5, 0, 0, 0, '"', 'a', '"', 0}).toString(EVT_SOURCE_MAP), "0: evt.SetTexture{Facet = 5, Name = \"\\\"a\\\"\"}");
+    EXPECT_EQ(parse(EVENT_SetFacesBit, {1, 0, 0, 0, 0, 0, 0, 0x20, 1}).toString(EVT_SOURCE_MAP), "0: evt.SetFacetBit{Id = 1, Bit = const.FacetBits.Untouchable, On = 1}");
+    EXPECT_EQ(parse(EVENT_SetFacesBit, {1, 0, 0, 0, 0, 0x20, 0, 0x20, 1}).toString(EVT_SOURCE_MAP),
+              "0: evt.SetFacetBit{Id = 1, Bit = const.FacetBits.Untouchable + const.FacetBits.Invisible, On = 1}");
+    EXPECT_EQ(parse(EVENT_SetFacesBit, {1, 0, 0, 0, 0x80, 0, 0, 0, 1}).toString(EVT_SOURCE_MAP), "0: evt.SetFacetBit{Id = 1, Bit = 0x80, On = 1}"); // A bit without a name.
+    EXPECT_EQ(parse(EVENT_ToggleChestFlag, {3, 0, 0, 0, 1, 0, 0, 0, 1}).toString(EVT_SOURCE_MAP), "0: evt.SetChestBit{ChestId = 3, Bit = const.ChestBits.Trapped, On = 1}");
+    EXPECT_EQ(parse(EVENT_ForPartyMember, {5}).toString(EVT_SOURCE_MAP), "0: evt.ForPlayer{Player = \"All\"}");
+    EXPECT_EQ(parse(EVENT_ForPartyMember, {2}).toString(EVT_SOURCE_MAP), "0: evt.ForPlayer{Player = 2}");
+    EXPECT_EQ(parse(EVENT_CheckSkill, {0, 3, 4, 0, 0, 0, 9}).toString(EVT_SOURCE_MAP), "0: evt.CheckSkill{Skill = 0, Mastery = const.GM, Level = 4, jump = 9}");
+    EXPECT_EQ(parse(EVENT_CheckSkill, {0, 0, 4, 0, 0, 0, 9}).toString(EVT_SOURCE_MAP), "0: evt.CheckSkill{Skill = 0, Mastery = const.Novice, Level = 4, jump = 9}");
+    EXPECT_EQ(parse(EVENT_RandomGoTo, {4, 8, 0, 0, 0, 0}).toString(EVT_SOURCE_MAP), "0: evt.RandomGoTo{jumpA = 4, jumpB = 8, jumpC = 0, jumpD = 0, jumpE = 0, jumpF = 0}");
+}

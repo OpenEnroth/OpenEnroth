@@ -32,8 +32,9 @@ EvtProgram EvtProgram::load(const Blob &rawData) {
         if (pos + size > end)
             throw Exception("Encountered corrupted evt binary data");
         MemoryInputStream stream(pos + 1, size - 1); // offset is 1 because we are skipping the `size` byte - it was already read
-        uint16_t eventId = fromStream<uint16_t>(stream);
-        result.add(eventId, EvtInstruction::parse(stream, size));
+        uint16_t eventId = 0;
+        deserialize(stream, &eventId);
+        result.add(eventId, EvtInstruction::parse(stream));
         pos += size;
     }
 

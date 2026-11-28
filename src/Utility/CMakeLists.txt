@@ -37,6 +37,7 @@ set(UTILITY_HEADERS
         Memory/MemoryBuffer.h
         Memory/MemoryScratchpad.h
         Memory/MemSet.h
+        Overload.h
         Preprocessor.h
         View.h
         ScopeGuard.h
