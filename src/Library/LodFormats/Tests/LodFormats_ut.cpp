@@ -210,6 +210,25 @@ UNIT_TEST(LodFormats, CompressedPseudoImageMm8) {
     EXPECT_EQ(lod::decodeMaybeCompressed(mm8).str(), data);
 }
 
+UNIT_TEST(LodFormats, CompressedPseudoImageMm6_ShortName) {
+    // A stored pseudo image whose name, read as a number, is its size minus 8 decodes as a pseudo image, not as MM6
+    // compressed data.
+    std::string data(25145, 'x');
+    LodImageHeader_MM6 header = LodImageHeader_MM6();
+    memcpy(header.name.data(), "ab", 2); // "ab" reads as 25185.
+    header.dataSize = data.size();
+    header.flags = 256;
+
+    Blob entry;
+    BlobOutputStream stream(&entry);
+    serialize(header, &stream);
+    stream.write(data);
+    stream.close();
+
+    ASSERT_EQ(entry.size(), 25185 + 8);
+    EXPECT_EQ(lod::decodeMaybeCompressed(entry).str(), data);
+}
+
 UNIT_TEST(LodFormats, ImageMm8) {
     // LOD images in MM8's EnglishD.lod didn't decode.
     Blob mm6 = image<LodImageHeader_MM6>(4, 2);

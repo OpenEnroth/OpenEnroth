@@ -88,8 +88,6 @@ MagicFileFormat magic(const Blob &data) {
         return MAGIC_LOD;
     if (lod::detectCompressedDataMm7(data))
         return MAGIC_LOD_COMPRESSED_DATA_MM7;
-    if (lod::detectCompressedDataMm6(data))
-        return MAGIC_LOD_COMPRESSED_DATA_MM6;
     if (lod::detectCompressedPseudoImageMm6(data))
         return MAGIC_LOD_COMPRESSED_PSEUDO_IMAGE_MM6;
     if (lod::detectCompressedPseudoImageMm8(data))
@@ -106,6 +104,9 @@ MagicFileFormat magic(const Blob &data) {
         return MAGIC_LOD_FONT_MM6;
     if (lod::detectFontMmz(data))
         return MAGIC_LOD_FONT_MMZ;
+    // MM6 compressed data has no signature, so it goes after the LOD formats with stricter checks.
+    if (lod::detectCompressedDataMm6(data))
+        return MAGIC_LOD_COMPRESSED_DATA_MM6;
     if (vid::detect(data))
         return MAGIC_VID;
     if (snd::detect(data))

@@ -316,12 +316,13 @@ Blob lod::decodeCompressedPseudoImage(const Blob &blob) {
 Blob lod::decodeMaybeCompressed(const Blob &blob) {
     if (detectCompressedDataMm7(blob))
         return decodeCompressedDataMm7(blob);
-    if (detectCompressedDataMm6(blob))
-        return decodeCompressedDataMm6(blob);
     if (detectCompressedPseudoImageMm6(blob))
         return decodeCompressedPseudoImageMm6(blob);
     if (detectCompressedPseudoImageMm8(blob))
         return decodeCompressedPseudoImageMm8(blob);
+    // MM6 compressed data has no signature, so it goes after the formats with stricter checks.
+    if (detectCompressedDataMm6(blob))
+        return decodeCompressedDataMm6(blob);
     return Blob::share(blob); // Not compressed.
 }
 
