@@ -152,6 +152,7 @@ class OpenGLRenderer : public BaseRenderer {
     unsigned int numterraintexloaded[8]{};
     unsigned int terraintexturesizes[8]{};
     std::map<std::string, int> terraintexmap;
+    std::vector<std::shared_ptr<GraphicsImage>> _terrainImages; // Keeps the uploaded tiles cached while the map is loaded.
 
     // outside building shader
     std::array<OpenGLVertexBuffer<ShaderVertex>, 16> _outbuildBuffers;

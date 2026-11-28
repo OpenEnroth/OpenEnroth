@@ -163,6 +163,9 @@ class Engine {
 
  private:
     std::unique_ptr<ResourceManager> _resourceManager;
+    /** Set on map change. The sweep waits until the new map's first frame has built the renderer's texture arrays,
+     * so that the images both maps use stay cached. */
+    bool _releaseUnusedImagesAfterDraw = false;
 };
 
 extern Engine *engine;

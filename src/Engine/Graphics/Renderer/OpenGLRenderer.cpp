@@ -1130,6 +1130,7 @@ void OpenGLRenderer::DrawOutdoorTerrain() {
                 if (tunit == unit) {
                     // get texture
                     std::shared_ptr<GraphicsImage> texture = assets->getBitmap(it->first, it->first.starts_with("generated")); // TODO(captainurist): terrible, terrible hack, redo this.
+                    _terrainImages.push_back(texture);
                     // send texture data to gpu
                     glTexSubImage3D(GL_TEXTURE_2D_ARRAY,
                         0,
@@ -3536,6 +3537,7 @@ void OpenGLRenderer::ReleaseTerrain() {
     std::map<std::string, int> terraintexmap;*/
 
     terraintexmap.clear();
+    _terrainImages.clear();
 
     for (int i = 0; i < 8; i++) {
         glDeleteTextures(1, &terraintextures[i]);

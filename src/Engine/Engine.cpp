@@ -194,6 +194,12 @@ void Engine::Draw() {
     render->flushAndScale();
     drawOverlay();
     render->swapBuffers();
+
+    if (_releaseUnusedImagesAfterDraw) {
+        _releaseUnusedImagesAfterDraw = false;
+        equipmentHitMap.clear(); // Points at item icons that only the cache owns.
+        assets->releaseUnusedImages();
+    }
 }
 
 
@@ -974,9 +980,8 @@ void Engine::ResetCursor_Palettes_LODs_Level_Audio_SFT_Windows() {
     pParty->armageddon_timer = 0_ticks;
 
     windowManager.DeleteAllVisibleWindows();
-    equipmentHitMap.clear();
 
-    assets->releaseUnusedImages(); // Particles, projectiles, the hit map and windows hold images, so this comes last.
+    _releaseUnusedImagesAfterDraw = true;
 }
 
 //----- (00461103) --------------------------------------------------------
