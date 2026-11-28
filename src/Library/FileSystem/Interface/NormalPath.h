@@ -51,8 +51,8 @@ class NormalPathView {
 
     /**
      * @param segment                   Segment of this path, as handed out by `split`, or an empty view.
-     * @return                          The rest of this path after `segment`, empty if there's nothing left, or all
-     *                                  of it for an empty `segment`.
+     * @return                          The rest of this path after `segment`, or all of it after the root for an
+     *                                  empty `segment`.
      */
     [[nodiscard]] NormalPathView tailAfter(std::same_as<std::string_view> auto segment) const {
         return NormalPathView(_path.tailAfter(segment));

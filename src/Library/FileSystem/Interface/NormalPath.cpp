@@ -30,13 +30,13 @@ NormalPath::NormalPath(PathView path) {
 
     std::string_view rest = _path.str();
     while (rest == ".." || rest.starts_with("../"))
-        rest.remove_prefix(rest.size() > 2 ? 3 : 2); // Normal form keeps every ".." at the start, and ".." stops at the root.
+        rest.remove_prefix(rest.size() > 2 ? 3 : 2); // Path::normalized leaves every ".." at the start, and ".." stops at the root.
     if (rest == ".")
         rest = {};
     if (rest.size() != _path.str().size()) {
         _path = Path(std::string(rest));
         if (!_path.isNormalized())
-            _path = _path.normalized(); // On Windows the strip can expose a drive, as in "../C:.".
+            _path = _path.normalized(); // On Windows dropping the ".." can expose a drive, as in "../C:.".
     }
 }
 

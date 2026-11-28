@@ -39,8 +39,8 @@
  * Windows so is one with a segment starting with a drive, like `"a/c:b"`. Passing one will throw, `exists` will return
  * `false`, `stat` will return `FILE_INVALID`, and `displayPath` will show it next to the root.
  *
- * The root folder is `""`, or `"."`, and always exists. Thus, `exists("")` always returns `true`, `stat("")` always
- * returns `FILE_DIRECTORY`, `ls("")` never throws, and `remove("")` always throws.
+ * The root folder is `""`, which `"."` and `".."` also name, and always exists. Thus, `exists("")` always returns
+ * `true`, `stat("")` always returns `FILE_DIRECTORY`, `ls("")` never throws, and `remove("")` always throws.
  *
  * @see ReadOnlyFileSystem
  */
