@@ -102,6 +102,9 @@ UNIT_TEST(EvtInstruction, ToString) {
               "3: SetSprite{SpriteId = 20, Visible = 1, Name = \"dec05\"}");
     EXPECT_EQ(parse(EVENT_Compare, {0x10, 0, 240, 0, 0, 0, 7}).toString(EVT_SOURCE_MAP), "0: Compare{VarNum = \"QBits\", Value = 240, Jump = 7}");
     EXPECT_EQ(parse(EVENT_Exit, {0}, 9).toString(EVT_SOURCE_MAP), "9: Exit{}");
-    EXPECT_EQ(parse(EVENT_SetFacesBit, {1, 0, 0, 0, 0, 0, 0, 0x20, 1}).toString(EVT_SOURCE_MAP), "0: SetFacesBit{Id = 1, Bit = 0x20000000, On = 1}");
+    EXPECT_EQ(parse(EVENT_SetFacesBit, {1, 0, 0, 0, 0, 0, 0, 0x20, 1}).toString(EVT_SOURCE_MAP), "0: SetFacesBit{Id = 1, Bit = Untouchable, On = 1}");
+    EXPECT_EQ(parse(EVENT_SetFacesBit, {1, 0, 0, 0, 0, 0x20, 0, 0x20, 1}).toString(EVT_SOURCE_MAP), "0: SetFacesBit{Id = 1, Bit = Invisible|Untouchable, On = 1}");
+    EXPECT_EQ(parse(EVENT_SetFacesBit, {1, 0, 0, 0, 0x80, 0, 0, 0, 1}).toString(EVT_SOURCE_MAP), "0: SetFacesBit{Id = 1, Bit = 0x80, On = 1}"); // A bit without a name.
+    EXPECT_EQ(parse(EVENT_ToggleChestFlag, {3, 0, 0, 0, 1, 0, 0, 0, 1}).toString(EVT_SOURCE_MAP), "0: ToggleChestFlag{ChestId = 3, Bit = Trapped, On = 1}");
     EXPECT_EQ(parse(EVENT_RandomGoTo, {4, 8, 0, 0, 0, 0}).toString(EVT_SOURCE_MAP), "0: RandomGoTo{Jumps = {4, 8, 0, 0, 0, 0}}");
 }

@@ -16,11 +16,72 @@
 
 #include "Library/Binary/BinaryExceptions.h"
 #include "Library/Binary/BinarySerialization.h"
+#include "Library/Serialization/EnumSerialization.h"
 #include "Library/Serialization/Serialization.h"
 
 #include "Utility/Streams/InputStream.h"
 #include "Utility/Exception.h"
+#include "Utility/Flags.h"
 #include "Utility/Lambda.h"
+
+namespace {
+
+// TODO(captainurist): tag this as MMExtension's names once serialization functions are told apart by tags.
+MM_DEFINE_ENUM_SERIALIZATION_FUNCTIONS(FaceAttribute, CASE_SENSITIVE, {
+    {FACE_IsPortal,         "IsPortal"},
+    {FACE_IsSecret,         "IsSecret"},
+    {FACE_FlowDown,         "ScrollDown"},
+    {FACE_TexAlignDown,     "AlignTop"},
+    {FACE_IsFluid,          "IsWater"},
+    {FACE_FlowUp,           "ScrollUp"},
+    {FACE_FlowLeft,         "ScrollLeft"},
+    {FACE_XY_PLANE,         "ProjectToXY"},
+    {FACE_XZ_PLANE,         "ProjectToXZ"},
+    {FACE_YZ_PLANE,         "ProjectToYZ"},
+    {FACE_FlowRight,        "ScrollRight"},
+    {FACE_TexAlignLeft,     "AlignLeft"},
+    {FACE_IsInvisible,      "Invisible"},
+    {FACE_ANIMATED,         "AnimatedTFT"},
+    {FACE_TexAlignRight,    "AlignRight"},
+    {FACE_TexAlignBottom,   "AlignBottom"},
+    {FACE_TexMoveByDoor,    "MoveByDoor"},
+    {FACE_EVENT_IS_HINT,    "IsEventJustHint"},
+    {FACE_INDOOR_CARPET,    "AlternativeSound"},
+    {FACE_INDOOR_SKY,       "IsSky"},
+    {FACE_FlipNormalU,      "FlipU"},
+    {FACE_FlipNormalV,      "FlipV"},
+    {FACE_CLICKABLE,        "TriggerByClick"},
+    {FACE_PRESSURE_PLATE,   "TriggerByStep"},
+    {FACE_TriggerByMonster, "TriggerByMonster"},
+    {FACE_TriggerByObject,  "TriggerByObject"},
+    {FACE_ETHEREAL,         "Untouchable"},
+    {FACE_IsLava,           "IsLava"},
+    {FACE_IsPicked,         "HasData"}
+})
+MM_DEFINE_FLAGS_SERIALIZATION_FUNCTIONS(FaceAttributes)
+
+// TODO(captainurist): tag this as MMExtension's names once serialization functions are told apart by tags.
+MM_DEFINE_ENUM_SERIALIZATION_FUNCTIONS(ActorAttribute, CASE_SENSITIVE, {
+    {ACTOR_FULL_AI_STATE, "Active"},
+    {ACTOR_NEARBY,        "ShowOnMap"},
+    {ACTOR_UNKNOW11,      "Invisible"},
+    {ACTOR_FLEEING,       "NoFlee"},
+    {ACTOR_AGGRESSOR,     "Hostile"},
+    {ACTOR_UNKNOW7,       "OnAlertMap"},
+    {ACTOR_HAS_ITEM,      "TreasureGenerated"},
+    {ACTOR_HOSTILE,       "ShowAsHostile"}
+})
+MM_DEFINE_FLAGS_SERIALIZATION_FUNCTIONS(ActorAttributes)
+
+// TODO(captainurist): tag this as MMExtension's names once serialization functions are told apart by tags.
+MM_DEFINE_ENUM_SERIALIZATION_FUNCTIONS(ChestFlag, CASE_SENSITIVE, {
+    {CHEST_TRAPPED,      "Trapped"},
+    {CHEST_ITEMS_PLACED, "ItemsPlaced"},
+    {CHEST_OPENED,       "Identified"}
+})
+MM_DEFINE_FLAGS_SERIALIZATION_FUNCTIONS(ChestFlags)
+
+} // namespace
 
 template<class T>
 constexpr bool is_std_array_v = false;
@@ -67,10 +128,13 @@ static std::string toLogString(const T &value) {
     } else if constexpr (std::is_same_v<T, EvtVariable>) {
         std::string name;
         return trySerialize(value, &name) ? fmt::format("\"{}\"", name) : fmt::format("{}", std::to_underlying(value));
-    } else if constexpr (std::is_same_v<T, FaceAttribute> || std::is_same_v<T, ActorAttribute> || std::is_same_v<T, ChestFlag>) {
-        return fmt::format("0x{:X}", std::to_underlying(value));
     } else if constexpr (std::is_enum_v<T>) {
-        return fmt::format("{}", std::to_underlying(value));
+        if constexpr (requires (std::string *dst) { trySerialize(Flags<T>(value), dst); }) {
+            std::string names;
+            return trySerialize(Flags<T>(value), &names) ? names : fmt::format("0x{:X}", std::to_underlying(value)); // Some bits have no name.
+        } else {
+            return fmt::format("{}", std::to_underlying(value));
+        }
     } else if constexpr (std::is_arithmetic_v<T>) {
         return fmt::format("{}", value);
     } else {

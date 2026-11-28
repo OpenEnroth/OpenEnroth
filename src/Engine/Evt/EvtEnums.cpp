@@ -4,6 +4,7 @@
 
 MM_DEFINE_ENUM_MAGIC_SERIALIZATION_FUNCTIONS(EvtOpcode)
 
+// TODO(captainurist): tag this as MMExtension's names once serialization functions are told apart by tags.
 MM_DEFINE_ENUM_SERIALIZATION_FUNCTIONS(EvtVariable, CASE_SENSITIVE, {
     {VAR_Sex,                           "SexIs"},
     {VAR_Class,                         "ClassIs"},
