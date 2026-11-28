@@ -48,7 +48,7 @@ UNIT_TEST(NormalPath, DefaultIsRoot) {
 }
 
 UNIT_TEST(NormalPath, TailOfWholePathIsRoot) {
-    // Nothing left after the last segment is the root.
+    // The tail after the last segment is the root, and the tail at the last segment is that segment.
     NormalPath path("a/b");
     NormalPathView view = path;
     std::string_view last = *std::next(view.split().begin());
