@@ -1,6 +1,5 @@
 #pragma once
 
-#include <cstdio>
 #include <cstdint>
 #include <cassert>
 #include <ostream>
@@ -53,16 +52,6 @@ struct FileSystemDumpEntry {
  * @return                              Dumped entries, with paths relative to the root.
  */
 std::vector<FileSystemDumpEntry> dumpFileSystem(FileSystem *fs, FileSystemDumpFlags flags = 0, int maxEntries = 1024 * 1024);
-
-/**
- * Same walk as above, printing one entry per line.
- *
- * @param stream                        Where to print.
- * @param fs                            File system to dump.
- * @param flags                         What to include.
- * @param maxEntries                    Stop after this many entries, root included.
- */
-void dumpFileSystem(FILE *stream, FileSystem *fs, FileSystemDumpFlags flags = 0, int maxEntries = 1024 * 1024);
 
 // Google Test support.
 void PrintTo(const FileSystemDumpEntry &entry, std::ostream *stream);
