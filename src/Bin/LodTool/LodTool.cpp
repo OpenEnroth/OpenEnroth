@@ -30,12 +30,12 @@
 static RgbaImage renderFont(const LodFont &font) {
     int charHeight = font.height();
     int charWidth = 0;
-    for (int c = 0; c < 255; c++)
+    for (int c = 0; c <= 255; c++)
         charWidth = std::max(charWidth, font.metrics(c).width);
 
     RgbaImage image = RgbaImage::solid(Color(0, 0, 0, 255), charWidth * 16, charHeight * 16);
 
-    for (int c = 0; c < 255; c++) {
+    for (int c = 0; c <= 255; c++) {
         int x0 = (c % 16) * charWidth;
         int y0 = (c / 16) * charHeight;
 
