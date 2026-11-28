@@ -199,7 +199,7 @@ void Engine::Draw() {
 
     if (_releaseUnusedImagesAfterDraw) {
         _releaseUnusedImagesAfterDraw = false;
-        assets->releaseUnusedImages(); // The first frame on a new map has fetched the images it shares with the old one.
+        assets->releaseUnusedImages(); // By now the new map holds what it draws.
     }
 }
 

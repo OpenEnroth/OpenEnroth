@@ -990,7 +990,7 @@ void CharacterUI_DrawPaperdoll(Character *player) {
             if (itemMainHand->itemId == ITEM_BLASTER)
                 texture = assets->getIcon("item64v1");
 
-            CharacterUI_DrawItem(item_X, item_Y, itemMainHand.get(), itemMainHand.index(), texture, !bRingsShownInCharScreen);
+            CharacterUI_DrawItem(item_X, item_Y, itemMainHand.get(), itemMainHand.index(), std::move(texture), !bRingsShownInCharScreen);
         }
     } else {
         // bow
@@ -1009,7 +1009,7 @@ void CharacterUI_DrawPaperdoll(Character *player) {
                 item_Y = pPaperdoll_BodyY + paperdoll_Cloak[bodyType][index][1];
 
                 std::shared_ptr<GraphicsImage> texture = paperdoll_cloak_texture[bodyType][index];
-                CharacterUI_DrawItem(item_X, item_Y, cloak.get(), cloak.index(), texture, !bRingsShownInCharScreen);
+                CharacterUI_DrawItem(item_X, item_Y, cloak.get(), cloak.index(), std::move(texture), !bRingsShownInCharScreen);
             }
         }
 
@@ -1024,7 +1024,7 @@ void CharacterUI_DrawPaperdoll(Character *player) {
                 item_Y = pPaperdoll_BodyY + paperdoll_Armor_Coord[bodyType][index][1];
 
                 std::shared_ptr<GraphicsImage> texture = paperdoll_armor_texture[bodyType][index][0];
-                CharacterUI_DrawItem(item_X, item_Y, armor.get(), armor.index(), texture, !bRingsShownInCharScreen);
+                CharacterUI_DrawItem(item_X, item_Y, armor.get(), armor.index(), std::move(texture), !bRingsShownInCharScreen);
             }
         }
 
@@ -1042,7 +1042,7 @@ void CharacterUI_DrawPaperdoll(Character *player) {
                     texture = paperdoll_boots_texture[bodyType][index];
                 }
 
-                CharacterUI_DrawItem(item_X, item_Y, boots.get(), boots.index(), texture, !bRingsShownInCharScreen);
+                CharacterUI_DrawItem(item_X, item_Y, boots.get(), boots.index(), std::move(texture), !bRingsShownInCharScreen);
             }
         }
 
@@ -1070,7 +1070,7 @@ void CharacterUI_DrawPaperdoll(Character *player) {
                     texture = paperdoll_belt_texture[humanBodyType(bodyType)][index];
                 }
 
-                CharacterUI_DrawItem(item_X, item_Y, belt.get(), belt.index(), texture, !bRingsShownInCharScreen);
+                CharacterUI_DrawItem(item_X, item_Y, belt.get(), belt.index(), std::move(texture), !bRingsShownInCharScreen);
             }
         }
 
@@ -1093,7 +1093,7 @@ void CharacterUI_DrawPaperdoll(Character *player) {
                 }
 
                 if (texture)
-                    CharacterUI_DrawItem(item_X, item_Y, armor.get(), armor.index(), texture, !bRingsShownInCharScreen);
+                    CharacterUI_DrawItem(item_X, item_Y, armor.get(), armor.index(), std::move(texture), !bRingsShownInCharScreen);
             }
         }
 
@@ -1107,7 +1107,7 @@ void CharacterUI_DrawPaperdoll(Character *player) {
                     item_Y = pPaperdoll_BodyY + paperdoll_CloakCollar[bodyType][index][1];
 
                     std::shared_ptr<GraphicsImage> texture = paperdoll_cloak_collar_texture[bodyType][index];
-                    CharacterUI_DrawItem(item_X, item_Y, cloak.get(), cloak.index(), texture, !bRingsShownInCharScreen);
+                    CharacterUI_DrawItem(item_X, item_Y, cloak.get(), cloak.index(), std::move(texture), !bRingsShownInCharScreen);
                 }
             }
         }
@@ -1134,7 +1134,7 @@ void CharacterUI_DrawPaperdoll(Character *player) {
                     texture = paperdoll_dbrds[11];
                 }
 
-                CharacterUI_DrawItem(item_X, item_Y, helm.get(), helm.index(), texture, !bRingsShownInCharScreen);
+                CharacterUI_DrawItem(item_X, item_Y, helm.get(), helm.index(), std::move(texture), !bRingsShownInCharScreen);
             }
         }
 
@@ -1147,7 +1147,7 @@ void CharacterUI_DrawPaperdoll(Character *player) {
             if (itemMainHand->itemId == ITEM_BLASTER)
                 texture = assets->getIcon("item64v1");
 
-            CharacterUI_DrawItem(item_X, item_Y, itemMainHand.get(), itemMainHand.index(), texture, !bRingsShownInCharScreen);
+            CharacterUI_DrawItem(item_X, item_Y, itemMainHand.get(), itemMainHand.index(), std::move(texture), !bRingsShownInCharScreen);
         }
 
         // offhand's item

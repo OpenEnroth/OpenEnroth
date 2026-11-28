@@ -163,7 +163,7 @@ class Engine {
 
  private:
     std::unique_ptr<ResourceManager> _resourceManager;
-    bool _releaseUnusedImagesAfterDraw = false; // Set on map change.
+    bool _releaseUnusedImagesAfterDraw = false;
 };
 
 extern Engine *engine;
