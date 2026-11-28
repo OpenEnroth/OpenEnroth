@@ -8,6 +8,8 @@
 
 #include "Engine/Evt/EvtInstruction.h"
 
+#include "Utility/Overload.h"
+
 /**
  * Walks the fields of an instruction in the order that an evt record stores them, after the step and the opcode, and
  * calls `visitor(type, name, member, convert)` for each field:
@@ -31,12 +33,13 @@ bool visitEvtFields(Instruction &ir, Visitor &&visitor) {
     constexpr std::type_identity<std::array<uint8_t, 6>> u8x6;
     constexpr std::type_identity<std::string> str;
 
-    auto fld = [&](auto type, const char *name, auto *member) {
-        visitor(type, name, member, std::identity());
-    };
-    auto cnv = [&](auto type, const char *name, auto *member, auto &&convert) {
-        visitor(type, name, member, convert);
-    };
+    auto fld = overload(
+        [&](auto type, const char *name, auto *member) {
+            visitor(type, name, member, std::identity());
+        },
+        [&](auto type, const char *name, auto *member, auto &&convert) {
+            visitor(type, name, member, convert);
+        });
     auto pad = [&](auto type) {
         visitor(type, static_cast<const char *>(nullptr), static_cast<void *>(nullptr), std::identity());
     };
@@ -131,7 +134,7 @@ bool visitEvtFields(Instruction &ir, Visitor &&visitor) {
         return true;
     case EVENT_CastSpell:
         fld(u8, "Spell", &data.spell_descr.spell_id);
-        cnv(u8, "Mastery", &data.spell_descr.spell_mastery, [](uint8_t mastery) {
+        fld(u8, "Mastery", &data.spell_descr.spell_mastery, [](uint8_t mastery) {
             return static_cast<Mastery>(mastery + 1); // 0 to 3 are novice to grandmaster.
         });
         fld(u8, "Skill", &data.spell_descr.spell_level);
@@ -220,7 +223,7 @@ bool visitEvtFields(Instruction &ir, Visitor &&visitor) {
         return true;
     case EVENT_CheckSkill:
         fld(u8, "Skill", &data.check_skill_descr.skill_type);
-        cnv(u8, "Mastery", &data.check_skill_descr.skill_mastery, [](uint8_t mastery) {
+        fld(u8, "Mastery", &data.check_skill_descr.skill_mastery, [](uint8_t mastery) {
             return mastery == 0 ? MASTERY_NONE : static_cast<Mastery>(mastery + 1); // 0 is any mastery, 1 to 3 are expert to grandmaster.
         });
         fld(u32, "Level", &data.check_skill_descr.skill_level);
@@ -250,7 +253,7 @@ bool visitEvtFields(Instruction &ir, Visitor &&visitor) {
     case EVENT_IsActorKilled:
     case EVENT_CanShowTopic_IsActorKilled: // TODO(yoctozepto): not present in used MM7 data
         fld(u8, "CheckType", &data.actor_descr.policy);
-        cnv(u32, "Id", &data.actor_descr.param, [&](uint32_t id) -> int {
+        fld(u32, "Id", &data.actor_descr.param, [&](uint32_t id) -> int {
             return data.actor_descr.policy == KILL_CHECK_MONSTERID ? id + 1 : id; // Evt scripts count monster ids from 0.
         });
         fld(u8, "Count", &data.actor_descr.num);
