@@ -100,10 +100,11 @@ MagicFileFormat magic(const Blob &data) {
         return MAGIC_LOD_PALETTE_MM6;
     if (lod::detectSpriteMm6(data))
         return MAGIC_LOD_SPRITE_MM6;
-    if (lod::detectFontMm6(data))
-        return MAGIC_LOD_FONT_MM6;
+    // MMZ goes first, the MM6 check lets trailing data through and can pass an MMZ font.
     if (lod::detectFontMmz(data))
         return MAGIC_LOD_FONT_MMZ;
+    if (lod::detectFontMm6(data))
+        return MAGIC_LOD_FONT_MM6;
     // MM6 compressed data has no signature, so it goes after the LOD formats with stricter checks.
     if (lod::detectCompressedDataMm6(data))
         return MAGIC_LOD_COMPRESSED_DATA_MM6;
