@@ -1,7 +1,6 @@
 #include "EvtInstruction.h"
 
 #include <algorithm>
-#include <array>
 #include <bit>
 #include <functional>
 #include <string>
@@ -78,6 +77,14 @@ MM_DEFINE_ENUM_SERIALIZATION_FUNCTIONS(ChestFlag, CASE_SENSITIVE, {
     {CHEST_OPENED,       "Identified"}
 })
 
+// TODO(captainurist): tag this as MMExtension's names once serialization functions are told apart by tags.
+MM_DEFINE_ENUM_SERIALIZATION_FUNCTIONS(Mastery, CASE_SENSITIVE, {
+    {MASTERY_NOVICE,      "Novice"},
+    {MASTERY_EXPERT,      "Expert"},
+    {MASTERY_MASTER,      "Master"},
+    {MASTERY_GRANDMASTER, "GM"}
+})
+
 /**
  * Name of the table of constants that MMExtension keeps the flags of type `T` in, as in `const.FacetBits.Untouchable`.
  * Null if scripts have no names for `T`.
@@ -96,12 +103,6 @@ constexpr const char *constGroup<ChestFlag> = "ChestBits";
 
 } // namespace
 
-template<class T>
-constexpr bool is_std_array_v = false;
-
-template<class T, size_t N>
-constexpr bool is_std_array_v<std::array<T, N>> = true;
-
 /**
  * @param value                         What an evt record stores for a field, after the field's conversion.
  * @param name                          Name of the field.
@@ -112,11 +113,6 @@ template<class T, class Value>
 static T fromWire(Value value, const char *name) {
     if constexpr (std::is_same_v<T, Value>) {
         return value;
-    } else if constexpr (is_std_array_v<T>) { // Stored as an array of the same size.
-        T result;
-        for (size_t i = 0; i < result.size(); i++)
-            result[i] = fromWire<typename T::value_type>(value[i], name);
-        return result;
     } else if constexpr (std::is_enum_v<T>) {
         if (!std::in_range<std::underlying_type_t<T>>(value))
             throw Exception("Value '{}' is out of range for evt field '{}'", value, name);
@@ -181,18 +177,24 @@ static std::string toLua(const T &value) {
         return luaString(value);
     } else if constexpr (std::is_same_v<T, bool>) {
         return value ? "true" : "false";
-    } else if constexpr (std::is_same_v<T, EvtVariable>) {
+    } else if constexpr (std::is_same_v<T, EvtVariable> || std::is_same_v<T, EvtTargetCharacter>) {
+        // A script passes a variable and a player by name, as a string: `evt.Cmp("QBits", 240)`, `evt.ForPlayer("All")`.
+        // So the name is in quotes. A single player has no name and is a number.
         std::string name;
         return trySerialize(value, &name) ? luaString(name) : fmt::format("{}", std::to_underlying(value));
+    } else if constexpr (std::is_same_v<T, Mastery>) {
+        // A script takes a mastery and a flag from MMExtension's constants: `const.Master`, `const.FacetBits.Untouchable`.
+        // These name Lua values, so they have no quotes.
+        Mastery mastery = value == MASTERY_NONE ? MASTERY_NOVICE : value; // A skill check takes novice for any mastery.
+        std::string name;
+        return trySerialize(mastery, &name) ? "const." + name : fmt::format("{}", std::to_underlying(value));
     } else if constexpr (constGroup<T> != nullptr) {
         return luaFlags(value);
     } else if constexpr (std::is_enum_v<T>) {
         return fmt::format("{}", std::to_underlying(value));
-    } else if constexpr (std::is_arithmetic_v<T>) {
-        return fmt::format("{}", value);
     } else {
-        static_assert(is_std_array_v<T>);
-        return fmt::format("{{{}}}", fmt::join(value, ", "));
+        static_assert(std::is_arithmetic_v<T>);
+        return fmt::format("{}", value);
     }
 }
 
@@ -221,9 +223,9 @@ static std::string referencedText(const EvtInstruction &ir, EvtSource source) {
 }
 
 std::string EvtInstruction::toString(EvtSource source) const {
-    std::string name = ::toString(opcode);
-    if (name.starts_with("EVENT_"))
-        name = name.substr(6);
+    std::string name;
+    if (!trySerialize(opcode, &name))
+        name = fmt::format("Cmd{:02X}", std::to_underlying(opcode)); // What MMExtension calls a command that it has no name for.
 
     std::string fields;
     bool isKnown = visitEvtFields(*this, [&](auto, const char *fieldName, const auto *member, auto &&) {
@@ -233,7 +235,7 @@ std::string EvtInstruction::toString(EvtSource source) const {
     if (!isKnown)
         return fmt::format("{}: UNPROCESSED/{}", step, name);
 
-    std::string result = fmt::format("{}: {}{{{}}}", step, name, fields);
+    std::string result = fmt::format("{}: evt.{}{{{}}}", step, name, fields);
     if (std::string text = referencedText(*this, source); !text.empty())
         result += fmt::format("  -- {}", luaString(text));
     return result;

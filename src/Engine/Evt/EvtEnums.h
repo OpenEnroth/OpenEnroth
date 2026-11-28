@@ -77,7 +77,7 @@ enum class EvtOpcode : uint8_t {
     EVENT_IsNPCInParty = 68, // MM8-only.
 };
 using enum EvtOpcode;
-MM_DECLARE_SERIALIZATION_FUNCTIONS(EvtOpcode)
+MM_DECLARE_SERIALIZATION_FUNCTIONS(EvtOpcode) // MMExtension's names of the commands, e.g. "EnterHouse".
 
 enum class EvtVariable {
     VAR_Sex = 0x1,
@@ -416,6 +416,7 @@ enum class EvtTargetCharacter {
     CHOOSE_RANDOM = 6
 };
 using enum EvtTargetCharacter;
+MM_DECLARE_SERIALIZATION_FUNCTIONS(EvtTargetCharacter) // MMExtension's names. A single player has none, scripts pass a number.
 
 /**
  * Which evt file an event comes from.

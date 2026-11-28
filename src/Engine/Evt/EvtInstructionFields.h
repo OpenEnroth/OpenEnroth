@@ -1,6 +1,5 @@
 #pragma once
 
-#include <array>
 #include <cstdint>
 #include <functional>
 #include <string>
@@ -14,7 +13,7 @@
  * Walks the fields of an instruction in the order that an evt record stores them, after the step and the opcode, and
  * calls `visitor(type, name, member, convert)` for each field:
  * - `type` is a `std::type_identity` of what the record stores. A string ends with a zero there.
- * - `name` is the name of the field as a `const char *`, MMExtension's where a script can call the command.
+ * - `name` is MMExtension's name of the field, as a `const char *`.
  * - `member` is a pointer to the member that holds the field.
  * - `convert` takes what the record stores and returns what goes into the member. It's `std::identity` for most
  *   fields.
@@ -30,7 +29,6 @@ bool visitEvtFields(Instruction &ir, Visitor &&visitor) {
     constexpr std::type_identity<uint8_t> u8;
     constexpr std::type_identity<uint16_t> u16;
     constexpr std::type_identity<uint32_t> u32;
-    constexpr std::type_identity<std::array<uint8_t, 6>> u8x6;
     constexpr std::type_identity<std::string> str;
 
     auto fld = overload(
@@ -111,7 +109,7 @@ bool visitEvtFields(Instruction &ir, Visitor &&visitor) {
     case EVENT_OnCanShowDialogItemCmp:
         fld(u16, "VarNum", &data.variable_descr.type);
         fld(u32, "Value", &data.variable_descr.value);
-        fld(u8, "Jump", &ir.target_step);
+        fld(u8, "jump", &ir.target_step);
         return true;
     case EVENT_ChangeDoorState:
         fld(u8, "Id", &data.door_descr.door_id);
@@ -160,9 +158,16 @@ bool visitEvtFields(Instruction &ir, Visitor &&visitor) {
         fld(u8, "On", &data.actor_flag_descr.is_set);
         return true;
     case EVENT_RandomGoTo:
-        fld(u8x6, "Jumps", &data.random_goto_descr.random_goto);
+        fld(u8, "jumpA", &data.random_goto_descr.random_goto[0]);
+        fld(u8, "jumpB", &data.random_goto_descr.random_goto[1]);
+        fld(u8, "jumpC", &data.random_goto_descr.random_goto[2]);
+        fld(u8, "jumpD", &data.random_goto_descr.random_goto[3]);
+        fld(u8, "jumpE", &data.random_goto_descr.random_goto[4]);
+        fld(u8, "jumpF", &data.random_goto_descr.random_goto[5]);
         return true;
     case EVENT_InputString: // TODO(yoctozepto): not present in used MM7 data, likely present in MM8 (e.g., Escaton's riddles)
+        fld(u32, "Question", &data.text_id);
+        return true;
     case EVENT_StatusText:
     case EVENT_ShowMessage:
         fld(u32, "Str", &data.text_id);
@@ -175,7 +180,7 @@ bool visitEvtFields(Instruction &ir, Visitor &&visitor) {
         fld(u8, "Hour", &data.timer_descr.daily_start_hour);
         fld(u8, "Minute", &data.timer_descr.daily_start_minute);
         fld(u8, "Second", &data.timer_descr.daily_start_second);
-        fld(u16, "HalfMinutes", &data.timer_descr.alt_halfmin_interval);
+        fld(u16, "IntervalInHalfMinutes", &data.timer_descr.alt_halfmin_interval);
         pad(u16); // TODO(yoctozepto): always 0 in MM7 data, check MM6&8
         return true;
     case EVENT_ToggleIndoorLight:
@@ -198,7 +203,7 @@ bool visitEvtFields(Instruction &ir, Visitor &&visitor) {
         fld(u8, "Player", &ir.who);
         return true;
     case EVENT_Jmp:
-        fld(u8, "Jump", &ir.target_step);
+        fld(u8, "jump", &ir.target_step);
         return true;
     case EVENT_OnMapReload:
     case EVENT_OnMapLeave:
@@ -228,7 +233,7 @@ bool visitEvtFields(Instruction &ir, Visitor &&visitor) {
             return mastery == 0 ? MASTERY_NONE : static_cast<Mastery>(mastery + 1); // 0 is any mastery, 1 to 3 are expert to grandmaster.
         });
         fld(u32, "Level", &data.check_skill_descr.skill_level);
-        fld(u8, "Jump", &ir.target_step);
+        fld(u8, "jump", &ir.target_step);
         return true;
     case EVENT_SetCanShowDialogItem:
         fld(u8, "Visible", &data.can_show_npc_dialogue);
@@ -258,11 +263,11 @@ bool visitEvtFields(Instruction &ir, Visitor &&visitor) {
             return data.actor_descr.policy == KILL_CHECK_MONSTERID ? id + 1 : id; // Evt scripts count monster ids from 0.
         });
         fld(u8, "Count", &data.actor_descr.num);
-        fld(u8, "Jump", &ir.target_step);
+        fld(u8, "jump", &ir.target_step);
         return true;
     case EVENT_CheckSeason:
         fld(u8, "Season", &data.season);
-        fld(u8, "Jump", &ir.target_step);
+        fld(u8, "jump", &ir.target_step);
         return true;
     case EVENT_ToggleActorGroupFlag:
         fld(u32, "NPCGroup", &data.actor_flag_descr.id);

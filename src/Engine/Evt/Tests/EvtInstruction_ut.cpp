@@ -97,15 +97,20 @@ UNIT_TEST(EvtInstruction, ParseErrors) {
 }
 
 UNIT_TEST(EvtInstruction, ToString) {
-    // The log shows an instruction as its step, its opcode and its fields by name, with each value as a script writes it.
+    // The log shows an instruction as its step and the call that a script makes for it, with MMExtension's names.
     EXPECT_EQ(parse(EVENT_SetSprite, {20, 0, 0, 0, 1, 'd', 'e', 'c', '0', '5', 0}, 3).toString(EVT_SOURCE_MAP),
-              "3: SetSprite{SpriteId = 20, Visible = 1, Name = \"dec05\"}");
-    EXPECT_EQ(parse(EVENT_Compare, {0x10, 0, 240, 0, 0, 0, 7}).toString(EVT_SOURCE_MAP), "0: Compare{VarNum = \"QBits\", Value = 240, Jump = 7}");
-    EXPECT_EQ(parse(EVENT_Exit, {0}, 9).toString(EVT_SOURCE_MAP), "9: Exit{}");
-    EXPECT_EQ(parse(EVENT_SetTexture, {5, 0, 0, 0, '"', 'a', '"', 0}).toString(EVT_SOURCE_MAP), "0: SetTexture{Facet = 5, Name = \"\\\"a\\\"\"}");
-    EXPECT_EQ(parse(EVENT_SetFacesBit, {1, 0, 0, 0, 0, 0, 0, 0x20, 1}).toString(EVT_SOURCE_MAP), "0: SetFacesBit{Id = 1, Bit = const.FacetBits.Untouchable, On = 1}");
-    EXPECT_EQ(parse(EVENT_SetFacesBit, {1, 0, 0, 0, 0, 0x20, 0, 0x20, 1}).toString(EVT_SOURCE_MAP), "0: SetFacesBit{Id = 1, Bit = const.FacetBits.Untouchable + const.FacetBits.Invisible, On = 1}");
-    EXPECT_EQ(parse(EVENT_SetFacesBit, {1, 0, 0, 0, 0x80, 0, 0, 0, 1}).toString(EVT_SOURCE_MAP), "0: SetFacesBit{Id = 1, Bit = 0x80, On = 1}"); // A bit without a name.
-    EXPECT_EQ(parse(EVENT_ToggleChestFlag, {3, 0, 0, 0, 1, 0, 0, 0, 1}).toString(EVT_SOURCE_MAP), "0: ToggleChestFlag{ChestId = 3, Bit = const.ChestBits.Trapped, On = 1}");
-    EXPECT_EQ(parse(EVENT_RandomGoTo, {4, 8, 0, 0, 0, 0}).toString(EVT_SOURCE_MAP), "0: RandomGoTo{Jumps = {4, 8, 0, 0, 0, 0}}");
+              "3: evt.SetSprite{SpriteId = 20, Visible = 1, Name = \"dec05\"}");
+    EXPECT_EQ(parse(EVENT_Compare, {0x10, 0, 240, 0, 0, 0, 7}).toString(EVT_SOURCE_MAP), "0: evt.Cmp{VarNum = \"QBits\", Value = 240, jump = 7}");
+    EXPECT_EQ(parse(EVENT_Exit, {0}, 9).toString(EVT_SOURCE_MAP), "9: evt.Exit{}");
+    EXPECT_EQ(parse(EVENT_SetTexture, {5, 0, 0, 0, '"', 'a', '"', 0}).toString(EVT_SOURCE_MAP), "0: evt.SetTexture{Facet = 5, Name = \"\\\"a\\\"\"}");
+    EXPECT_EQ(parse(EVENT_SetFacesBit, {1, 0, 0, 0, 0, 0, 0, 0x20, 1}).toString(EVT_SOURCE_MAP), "0: evt.SetFacetBit{Id = 1, Bit = const.FacetBits.Untouchable, On = 1}");
+    EXPECT_EQ(parse(EVENT_SetFacesBit, {1, 0, 0, 0, 0, 0x20, 0, 0x20, 1}).toString(EVT_SOURCE_MAP),
+              "0: evt.SetFacetBit{Id = 1, Bit = const.FacetBits.Untouchable + const.FacetBits.Invisible, On = 1}");
+    EXPECT_EQ(parse(EVENT_SetFacesBit, {1, 0, 0, 0, 0x80, 0, 0, 0, 1}).toString(EVT_SOURCE_MAP), "0: evt.SetFacetBit{Id = 1, Bit = 0x80, On = 1}"); // A bit without a name.
+    EXPECT_EQ(parse(EVENT_ToggleChestFlag, {3, 0, 0, 0, 1, 0, 0, 0, 1}).toString(EVT_SOURCE_MAP), "0: evt.SetChestBit{ChestId = 3, Bit = const.ChestBits.Trapped, On = 1}");
+    EXPECT_EQ(parse(EVENT_ForPartyMember, {5}).toString(EVT_SOURCE_MAP), "0: evt.ForPlayer{Player = \"All\"}");
+    EXPECT_EQ(parse(EVENT_ForPartyMember, {2}).toString(EVT_SOURCE_MAP), "0: evt.ForPlayer{Player = 2}");
+    EXPECT_EQ(parse(EVENT_CheckSkill, {0, 3, 4, 0, 0, 0, 9}).toString(EVT_SOURCE_MAP), "0: evt.CheckSkill{Skill = 0, Mastery = const.GM, Level = 4, jump = 9}");
+    EXPECT_EQ(parse(EVENT_CheckSkill, {0, 0, 4, 0, 0, 0, 9}).toString(EVT_SOURCE_MAP), "0: evt.CheckSkill{Skill = 0, Mastery = const.Novice, Level = 4, jump = 9}");
+    EXPECT_EQ(parse(EVENT_RandomGoTo, {4, 8, 0, 0, 0, 0}).toString(EVT_SOURCE_MAP), "0: evt.RandomGoTo{jumpA = 4, jumpB = 8, jumpC = 0, jumpD = 0, jumpE = 0, jumpF = 0}");
 }

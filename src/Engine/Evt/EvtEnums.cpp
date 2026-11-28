@@ -2,7 +2,74 @@
 
 #include "Library/Serialization/EnumSerialization.h"
 
-MM_DEFINE_ENUM_MAGIC_SERIALIZATION_FUNCTIONS(EvtOpcode)
+// TODO(captainurist): tag this as MMExtension's names once serialization functions are told apart by tags.
+MM_DEFINE_ENUM_SERIALIZATION_FUNCTIONS(EvtOpcode, CASE_SENSITIVE, {
+    {EVENT_Exit,                             "Exit"},
+    {EVENT_SpeakInHouse,                     "EnterHouse"},
+    {EVENT_PlaySound,                        "PlaySound"},
+    {EVENT_MouseOver,                        "Hint"},
+    {EVENT_LocationName,                     "MazeInfo"},
+    {EVENT_MoveToMap,                        "MoveToMap"},
+    {EVENT_OpenChest,                        "OpenChest"},
+    {EVENT_ShowFace,                         "FaceExpression"},
+    {EVENT_ReceiveDamage,                    "DamagePlayer"},
+    {EVENT_SetSnow,                          "SetSnow"},
+    {EVENT_SetTexture,                       "SetTexture"},
+    {EVENT_ShowMovie,                        "ShowMovie"},
+    {EVENT_SetSprite,                        "SetSprite"},
+    {EVENT_Compare,                          "Cmp"},
+    {EVENT_ChangeDoorState,                  "SetDoorState"},
+    {EVENT_Add,                              "Add"},
+    {EVENT_Subtract,                         "Subtract"},
+    {EVENT_Set,                              "Set"},
+    {EVENT_SummonMonsters,                   "SummonMonsters"},
+    {EVENT_CastSpell,                        "CastSpell"},
+    {EVENT_SpeakNPC,                         "SpeakNPC"},
+    {EVENT_SetFacesBit,                      "SetFacetBit"},
+    {EVENT_ToggleActorFlag,                  "SetMonsterBit"},
+    {EVENT_RandomGoTo,                       "RandomGoTo"},
+    {EVENT_InputString,                      "Question"},
+    {EVENT_StatusText,                       "StatusText"},
+    {EVENT_ShowMessage,                      "SetMessage"},
+    {EVENT_OnTimer,                          "OnTimer"},
+    {EVENT_ToggleIndoorLight,                "SetLight"},
+    {EVENT_PressAnyKey,                      "SimpleMessage"},
+    {EVENT_SummonItem,                       "SummonObject"},
+    {EVENT_ForPartyMember,                   "ForPlayer"},
+    {EVENT_Jmp,                              "GoTo"},
+    {EVENT_OnMapReload,                      "OnLoadMap"},
+    {EVENT_OnLongTimer,                      "OnRefillTimer"},
+    {EVENT_SetNPCTopic,                      "SetNPCTopic"},
+    {EVENT_MoveNPC,                          "MoveNPC"},
+    {EVENT_GiveItem,                         "GiveItem"},
+    {EVENT_ChangeEvent,                      "ChangeEvent"},
+    {EVENT_CheckSkill,                       "CheckSkill"},
+    {EVENT_OnCanShowDialogItemCmp,           "CanShowTopic.Cmp"},
+    {EVENT_EndCanShowDialogItem,             "CanShowTopic.Exit"},
+    {EVENT_SetCanShowDialogItem,             "CanShowTopic.Set"},
+    {EVENT_SetNPCGroupNews,                  "SetNPCGroupNews"},
+    {EVENT_SetActorGroup,                    "SetMonsterGroup"},
+    {EVENT_NPCSetItem,                       "SetNPCItem"},
+    {EVENT_SetNPCGreeting,                   "SetNPCGreeting"},
+    {EVENT_IsActorKilled,                    "CheckMonstersKilled"},
+    {EVENT_CanShowTopic_IsActorKilled,       "CanShowTopic.CheckMonstersKilled"},
+    {EVENT_OnMapLeave,                       "OnLeaveMap"},
+    {EVENT_ChangeGroup,                      "ChangeGroupToGroup"},
+    {EVENT_ChangeGroupAlly,                  "ChangeGroupAlly"},
+    {EVENT_CheckSeason,                      "CheckSeason"},
+    {EVENT_ToggleActorGroupFlag,             "SetMonGroupBit"},
+    {EVENT_ToggleChestFlag,                  "SetChestBit"},
+    {EVENT_CharacterAnimation,               "FaceAnimation"},
+    {EVENT_SetActorItem,                     "SetMonsterItem"},
+    {EVENT_OnDateTimer,                      "OnDateTimer"},
+    {EVENT_EnableDateTimer,                  "EnableDateTimer"},
+    {EVENT_StopAnimation,                    "StopDoor"},
+    {EVENT_CheckItemsCount,                  "CheckItemsCount"},
+    {EVENT_RemoveItems,                      "RemoveItems"},
+    {EVENT_SpecialJump,                      "Jump"},
+    {EVENT_IsTotalBountyHuntingAwardInRange, "IsTotalBountyInRange"},
+    {EVENT_IsNPCInParty,                     "CanPlayerAct"}
+})
 
 // TODO(captainurist): tag this as MMExtension's names once serialization functions are told apart by tags.
 MM_DEFINE_ENUM_SERIALIZATION_FUNCTIONS(EvtVariable, CASE_SENSITIVE, {
@@ -318,4 +385,11 @@ MM_DEFINE_ENUM_SERIALIZATION_FUNCTIONS(EvtVariable, CASE_SENSITIVE, {
     {VAR_DisarmTrapSkill,               "DisarmTrapsSkill"}, // MMExtension writes this one, and calls "DisarmTrap" the proper name since 2.3.
     {VAR_Paralyzed,                     "Paralysed"}, // MMExtension writes this one, and takes the American spelling too.
     {VAR_NumBounties,                   "MontersHunted"} // MMExtension's only name for it, a typo.
+})
+
+// TODO(captainurist): tag this as MMExtension's names once serialization functions are told apart by tags.
+MM_DEFINE_ENUM_SERIALIZATION_FUNCTIONS(EvtTargetCharacter, CASE_SENSITIVE, {
+    {CHOOSE_ACTIVE, "Current"},
+    {CHOOSE_PARTY,  "All"},
+    {CHOOSE_RANDOM, "Random"}
 })
