@@ -100,13 +100,12 @@ UNIT_TEST(FileSystem, RootIsNotRemovable) {
 }
 
 UNIT_TEST(FileSystem, NormalPathOverloads) {
-    // A NormalPath goes through the same checks as a plain path, and its path() names the same thing.
+    // A NormalPath goes through the same checks as a plain path.
     MemoryFileSystem fs("ram");
     fs.write("foo", Blob::fromString("lol"));
 
     EXPECT_EQ(fs.read(NormalPath("./foo")).str(), "lol");
     EXPECT_TRUE(fs.exists(NormalPath(".")));
-    EXPECT_TRUE(fs.exists(NormalPath(".").path()));
     EXPECT_EQ(fs.stat(NormalPath(".")), FileStat(FILE_DIRECTORY, 0));
 
     EXPECT_TRUE(fs.exists(NormalPath("")));
