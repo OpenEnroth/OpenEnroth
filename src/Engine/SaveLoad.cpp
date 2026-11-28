@@ -42,6 +42,7 @@
 #include "Library/LodFormats/LodFormats.h"
 
 std::unordered_map<std::string, Blob> pMapDeltas;
+TextEncoding currentSaveEncoding = ENCODING_UTF8;
 
 void loadGame(std::string_view fileName) {
     std::string path = fmt::format("saves/{}", fileName);
@@ -71,6 +72,7 @@ void loadGame(std::string_view fileName) {
     pNPCStats->pNPCData = std::move(state.npcData);
     pNPCStats->pGroups = std::move(state.npcGroups);
     pMapDeltas = std::move(state.mapDeltas);
+    currentSaveEncoding = state.extension.encoding;
 
     // Patch up the game timer.
     gameTimer->setPaused(true); // We're loading the game now => game timer is paused.
@@ -155,6 +157,7 @@ std::pair<SaveGameHeader, Blob> createSaveData(bool resetWorld, std::string_view
     state.overlays = *pActiveOverlayList;
     state.npcData = pNPCStats->pNPCData;
     state.npcGroups = pNPCStats->pGroups;
+    state.extension.encoding = currentSaveEncoding;
 
     // Populate map deltas.
     if (resetWorld) {
@@ -177,10 +180,10 @@ std::pair<SaveGameHeader, Blob> createSaveData(bool resetWorld, std::string_view
 
         Blob uncompressed;
         if (uCurrentlyLoadedLevelType == LEVEL_INDOOR) {
-            serialize(*pIndoor, &uncompressed, tags::via<IndoorDelta_MM7>);
+            serialize(*pIndoor, &uncompressed, tags::via<IndoorDelta_MM7>, tags::encoding(state.extension.encoding));
         } else {
             assert(uCurrentlyLoadedLevelType == LEVEL_OUTDOOR);
-            serialize(*pOutdoor, &uncompressed, tags::via<OutdoorDelta_MM7>);
+            serialize(*pOutdoor, &uncompressed, tags::via<OutdoorDelta_MM7>, tags::encoding(state.extension.encoding));
         }
 
         std::string deltaName = currentMapName;
@@ -249,6 +252,7 @@ void doSavegame(std::string fileName, std::string_view title) {
 }
 
 void saveNewGame() {
+    currentSaveEncoding = ENCODING_UTF8; // Nothing was loaded, so this save is ours & can be in utf8.
     engine->_currentLoadedMapId = MAP_EMERALD_ISLAND;
     engine->_lastLoadedSaveFileName.clear(); // Otherwise the save menu would pre-select a save from a previous playthrough.
     pParty->pos.x = 12552;

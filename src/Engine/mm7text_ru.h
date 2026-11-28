@@ -13,7 +13,7 @@
  * - `^R[m;f;n]` picks an ending by the last `^P` gender: `^Pi[Анна] учитель^R[;ница;]` => `Анна учительница`.
  * Malformed tokens are copied through verbatim.
  *
- * @param str                           Formatted string, Windows-1251 encoded like all Buka in-game strings.
- * @return                              String with all valid `^`-tokens expanded, Windows-1251 encoded.
+ * @param str                           Formatted string, UTF-8.
+ * @return                              String with all valid `^`-tokens expanded, UTF-8.
  */
 [[nodiscard]] std::string sprintfex(std::string_view str);

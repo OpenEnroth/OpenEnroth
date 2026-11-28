@@ -1,4 +1,6 @@
+#include <array>
 #include <cstdint>
+#include <string>
 #include <utility>
 #include <vector>
 
@@ -169,4 +171,12 @@ UNIT_TEST(Snapshots, CastRequiresExplicitTypes) {
     EXPECT_TRUE((snapshotCastCompiles<uint8_t, uint32_t>()));
 }
 
+UNIT_TEST(Snapshots, Utf8StringTruncation) {
+    // A UTF-8 string that doesn't fit is cut before a character, not in the middle of one.
+    std::array<char, 6> dst;
+    snapshot(std::string("ЖЖЖ"), &dst, tags::encoding(ENCODING_UTF8));
 
+    std::string result;
+    reconstruct(dst, &result, tags::encoding(ENCODING_UTF8));
+    EXPECT_EQ(result, "ЖЖ");
+}

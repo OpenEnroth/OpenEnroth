@@ -66,7 +66,7 @@ struct IndoorDelta_MM7 {
     MapWeather_MM7 weather; // Not used, indoor maps have no weather.
 };
 
-void snapshot(const IndoorLocation &src, IndoorDelta_MM7 *dst);
+void snapshot(const IndoorLocation &src, IndoorDelta_MM7 *dst, EncodingTag encoding);
 void reconstruct(const IndoorDelta_MM7 &src, IndoorLocation *dst);
 void serialize(const IndoorDelta_MM7 &src, OutputStream *dst);
 void deserialize(InputStream &src, IndoorDelta_MM7 *dst, ContextTag<IndoorLocation_MM7> ctx);
@@ -125,7 +125,7 @@ struct OutdoorDelta_MM7 {
     MapWeather_MM7 weather;
 };
 
-void snapshot(const OutdoorLocation &src, OutdoorDelta_MM7 *dst);
+void snapshot(const OutdoorLocation &src, OutdoorDelta_MM7 *dst, EncodingTag encoding);
 void reconstruct(const OutdoorDelta_MM7 &src, OutdoorLocation *dst);
 void serialize(const OutdoorDelta_MM7 &src, OutputStream *dst);
 void deserialize(InputStream &src, OutdoorDelta_MM7 *dst, ContextTag<OutdoorLocation_MM7> ctx);
@@ -141,6 +141,7 @@ struct SaveGame_MM7 {
     std::unordered_map<std::string, Blob> mapDeltas; // Map deltas by name (e.g. "out01.ddm", "d29.dlv").
     std::unordered_map<std::pair<int, int>, Blob> lloydImages; // Lloyd's Beacon images as PCX blobs, by {playerIndex, beaconIndex}.
     Blob thumbnail; // In image.pcx - save thumbnail.
+    Blob extension; // In z.json - OE extension data.
 };
 
 void snapshot(const SaveGame &src, SaveGame_MM7 *dst);
@@ -152,6 +153,8 @@ void deserialize(const Blob &src, SaveGame_MM7 *dst);
 struct SaveGameLite_MM7 {
     SaveGameHeader_MM7 header;
     Blob thumbnail;
+    Blob extension; // In z.json - OE extension data.
+    std::string legacyNames; // Names for detecting the encoding of a save without `z.json`, raw bytes.
 };
 
 void reconstruct(const SaveGameLite_MM7 &src, SaveGameLite *dst);

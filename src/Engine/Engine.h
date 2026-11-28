@@ -3,6 +3,7 @@
 #include <memory>
 #include <optional>
 #include <string>
+#include <string_view>
 #include <vector>
 #include <array>
 
@@ -220,7 +221,7 @@ Duration timeUntilDawn();
 /**
  * @offset 0x443E31
  */
-void initLevelStrings(const Blob &blob);
+void initLevelStrings(std::string_view strings);
 void loadMapEventsAndStrings(MapId mapid);
 bool _44100D_should_alter_right_panel();
 

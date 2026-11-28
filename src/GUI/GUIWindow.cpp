@@ -803,7 +803,7 @@ std::string BuildDialogueString(std::string_view str, int uPlayerID, NPCData *np
                 result += GetReputationString(npc->rep);
                 break;
             case 13:
-                result += pNPCStats->sub_495366_MispronounceName(pPlayer->name[0], pPlayer->uSex);
+                result += pNPCStats->sub_495366_MispronounceName(pPlayer->name, pPlayer->uSex);
                 break;
             case 14:
                 if (npc->sex == SEX_FEMALE) {
@@ -987,15 +987,15 @@ void MainMenuUI_LoadFontsAndSomeStuff() {
     //     pSRZBufferLineOffsets[i] = 640 * i;  // must be 640 - needs sorting
     // }
     if (!assets->pFontArrus)
-        assets->pFontArrus = GUIFont::LoadFont("arrus.fnt");
+        assets->pFontArrus = GUIFont::LoadFont("arrus.oef");
     if (!assets->pFontLucida)
-        assets->pFontLucida = GUIFont::LoadFont("lucida.fnt");
+        assets->pFontLucida = GUIFont::LoadFont("lucida.oef");
     if (!assets->pFontCreate)
-        assets->pFontCreate = GUIFont::LoadFont("create.fnt");
+        assets->pFontCreate = GUIFont::LoadFont("create.oef");
     if (!assets->pFontSmallnum)
-        assets->pFontSmallnum = GUIFont::LoadFont("smallnum.fnt");
+        assets->pFontSmallnum = GUIFont::LoadFont("smallnum.oef");
     if (!assets->pFontComic)
-        assets->pFontComic = GUIFont::LoadFont("comic.fnt");
+        assets->pFontComic = GUIFont::LoadFont("comic.oef");
 }
 
 static void LoadPartyBuffIcons() {

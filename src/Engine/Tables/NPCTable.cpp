@@ -13,6 +13,7 @@
 
 #include "Library/Serialization/Serialization.h"
 
+#include "Utility/String/Encoding.h"
 #include "Utility/Memory/Blob.h"
 #include "Utility/String/Split.h"
 #include "Utility/String/Transformations.h"
@@ -24,28 +25,28 @@ int NPCStats::dword_AE336C_LastMispronouncedNameFirstLetter = -1;
 int NPCStats::dword_AE3370_LastMispronouncedNameResult = -1;
 
 //----- (00476977) --------------------------------------------------------
-void NPCStats::InitializeNPCText(const Blob &npcText) {
+void NPCStats::InitializeNPCText(std::string_view npcText) {
     // npctext.txt table structure: index | text (localized) | dev notes | npc name (localized, not used).
-    for (std::string_view line : split(npcText.str()).by("\r\n").drop(1).skip("")) {
+    for (std::string_view line : split(npcText).by("\r\n").drop(1).skip("")) {
         std::array<std::string_view, 2> tokens = split(line).by('\t');
         int i = fromString<int>(tokens[0]) - 1; // File indices are 1-based, array is 0-based.
         pNPCTopics[i].pText = unquote(tokens[1]);
     }
 }
 
-void NPCStats::InitializeNPCTopics(const Blob &npcTopics) {
+void NPCStats::InitializeNPCTopics(std::string_view npcTopics) {
     // npctopic.txt table structure: index | topic (localized) | ??? (not used) | dev notes | text index (not used) |
     //                               npc name (not localized, not used) | npc index (not used).
-    for (std::string_view line : split(npcTopics.str()).by("\r\n").drop(1).skip("")) {
+    for (std::string_view line : split(npcTopics).by("\r\n").drop(1).skip("")) {
         std::array<std::string_view, 2> tokens = split(line).by('\t');
         int i = fromString<int>(tokens[0]);
         pNPCTopics[i].pTopic = unquote(tokens[1]);
     }
 }
 
-void NPCStats::InitializeNPCDist(const Blob &npcDist) {
+void NPCStats::InitializeNPCDist(std::string_view npcDist) {
     // npcdist.txt table structure: profession (localized, not used) | area profession chance values...
-    for (auto [line, prof] : split(npcDist.str()).by("\r\n").drop(2).skip("").zip(allNpcProfessions()))
+    for (auto [line, prof] : split(npcDist).by("\r\n").drop(2).skip("").zip(allNpcProfessions()))
         for (auto [token, map] : split(line).by('\t').drop(1).zip(allMaps()))
             pProfessionChance[map].chanceByProfession[prof] = fromString<int>(token);
 
@@ -55,11 +56,11 @@ void NPCStats::InitializeNPCDist(const Blob &npcDist) {
 }
 
 //----- (00476CB5) --------------------------------------------------------
-void NPCStats::InitializeNPCData(const Blob &npcData) {
+void NPCStats::InitializeNPCData(std::string_view npcData) {
     // npcdata.txt table structure: index | name (localized) | portrait id | groups (not used) | house | profession |
     //                              greeting index | can join (y/n) | event ids 1-6 | dev notes |
     //                              map id (optional, not used).
-    for (std::string_view line : split(npcData.str()).by("\r\n").drop(2).skip("").take(500)) {
+    for (std::string_view line : split(npcData).by("\r\n").drop(2).skip("").take(500)) {
         std::array<std::string_view, 16> tokens = split(line).by('\t');
         int i = fromString<int>(tokens[0]); // File indices are 1-based.
         pNPCUnicNames[i] = unquote(tokens[1]);
@@ -79,10 +80,10 @@ void NPCStats::InitializeNPCData(const Blob &npcData) {
     uNumNewNPCs = 501;
 }
 
-void NPCStats::InitializeNPCGreets(const Blob &npcGreets) {
+void NPCStats::InitializeNPCGreets(std::string_view npcGreets) {
     // npcgreet.txt table structure: index | greeting 1 (localized) | greeting 2 (localized) |
     //                               notes (not localized, not used) | owner (not localized, not used).
-    for (std::string_view line : split(npcGreets.str()).by("\r\n").drop(1).skip("")) {
+    for (std::string_view line : split(npcGreets).by("\r\n").drop(1).skip("")) {
         std::array<std::string_view, 3> tokens = split(line).by('\t');
         if (tokens[0].empty())
             continue; // Trailing orphan row with no index column.
@@ -93,18 +94,18 @@ void NPCStats::InitializeNPCGreets(const Blob &npcGreets) {
     }
 }
 
-void NPCStats::InitializeNPCGroups(const Blob &npcGroups) {
+void NPCStats::InitializeNPCGroups(std::string_view npcGroups) {
     // npcgroup.txt table structure: group index | news index | dev notes.
-    for (std::string_view line : split(npcGroups.str()).by("\r\n").drop(1).skip("")) {
+    for (std::string_view line : split(npcGroups).by("\r\n").drop(1).skip("")) {
         std::array<std::string_view, 2> tokens = split(line).by('\t');
         int i = fromString<int>(tokens[0]); // File indices are 0-based.
         pOriginalGroups[i] = fromString<int>(tokens[1]);
     }
 }
 
-void NPCStats::InitializeNPCNews(const Blob &npcNews) {
+void NPCStats::InitializeNPCNews(std::string_view npcNews) {
     // npcnews.txt table structure: index | text (localized) | dev notes.
-    for (std::string_view line : split(npcNews.str()).by("\r\n").drop(1).skip("")) {
+    for (std::string_view line : split(npcNews).by("\r\n").drop(1).skip("")) {
         std::array<std::string_view, 2> tokens = split(line).by('\t');
         int i = fromString<int>(tokens[0]); // File indices are 0-based.
         pCatchPhrases[i] = unquote(tokens[1]);
@@ -125,12 +126,12 @@ void NPCStats::Initialize(ResourceManager *resourceManager) {
     InitializeNPCProfs(resourceManager->eventsText("npcprof.txt"));
 }
 
-void NPCStats::InitializeNPCNames(const Blob &npcNames) {
+void NPCStats::InitializeNPCNames(std::string_view npcNames) {
     // npcnames.txt table structure: male name (localized) | female name (localized).
     // Female column runs out before the male column.
     uNewlNPCBufPos = 0;
     pNPCNames.fill({});
-    for (std::string_view line : split(npcNames.str()).by("\r\n").drop(1).skip("")) {
+    for (std::string_view line : split(npcNames).by("\r\n").drop(1).skip("")) {
         std::array<std::string_view, 2> tokens = split(line).by('\t');
         if (!tokens[0].empty())
             pNPCNames[SEX_MALE].emplace_back(unquote(tokens[0]));
@@ -139,11 +140,11 @@ void NPCStats::InitializeNPCNames(const Blob &npcNames) {
     }
 }
 
-void NPCStats::InitializeNPCProfs(const Blob &npcProfs) {
+void NPCStats::InitializeNPCProfs(std::string_view npcProfs) {
     // npcprof.txt table structure: profession id | profession name (localized, not used) | hire price |
     //                              action text (localized) | benefit description (localized) |
     //                              join text (localized) | dismiss text (localized).
-    for (std::string_view line : split(npcProfs.str()).by("\r\n").drop(4)) {
+    for (std::string_view line : split(npcProfs).by("\r\n").drop(4)) {
         std::array<std::string_view, 7> tokens = split(line).by('\t');
         if (tokens[0].empty())
             continue; // Trailing pure-tab orphan rows past the last entry.
@@ -280,23 +281,39 @@ void NPCStats::InitializeAdditionalNPCs(NPCData *pNPCDataBuff, MonsterId npc_uid
     pNPCDataBuff->dialogue_6_evt_id = 0;
 }
 
+/**
+ * @param c                             Character to fold.
+ * @return                              `c` lowercased if it's an ASCII, Latin-1 or Cyrillic capital, `c` otherwise.
+ */
+static char32_t foldCase(char32_t c) {
+    if ((c >= U'A' && c <= U'Z') || (c >= U'À' && c <= U'Þ' && c != U'×') || (c >= U'А' && c <= U'Я'))
+        return c + 0x20;
+    if (c >= U'Ѐ' && c <= U'Џ')
+        return c + 0x50;
+    return c;
+}
+
 //----- (00495366) --------------------------------------------------------
-const std::string &NPCStats::sub_495366_MispronounceName(char firstLetter, Sex gender) {
+const std::string &NPCStats::sub_495366_MispronounceName(std::string_view name, Sex gender) {
+    size_t firstLetterPos = 0;
+    char32_t firstLetter = name.empty() ? 0 : txt::nextRune(name, &firstLetterPos);
     int pickedName;
 
     // TODO(captainurist): Caching in kinda wrong? Revisit when working on #mm6.
     //                     See "O Ho! %13! Er, %13. I think. Whatever..."
 
-    if (firstLetter == dword_AE336C_LastMispronouncedNameFirstLetter) {
+    if (static_cast<int>(firstLetter) == dword_AE336C_LastMispronouncedNameFirstLetter) {
         pickedName = dword_AE3370_LastMispronouncedNameResult;
     } else {
         dword_AE336C_LastMispronouncedNameFirstLetter = firstLetter;
         const std::vector<std::string> &names = this->pNPCNames[gender];
 
         std::vector<int> matches;
-        for (int i = 0; i < static_cast<int>(names.size()); ++i)
-            if (tolower(names[i][0]) == tolower(firstLetter))
+        for (int i = 0; i < static_cast<int>(names.size()); ++i) {
+            size_t pos = 0;
+            if (!names[i].empty() && foldCase(txt::nextRune(names[i], &pos)) == foldCase(firstLetter))
                 matches.push_back(i);
+        }
 
         if (!matches.empty()) {
             pickedName = vrng->randomSample(matches);

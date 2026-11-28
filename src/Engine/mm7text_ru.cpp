@@ -568,7 +568,7 @@ static constexpr GenderTableEntry gender_table[] = {
 };
 
 /**
- * An entry of `special_name_table`. UTF-8 in the sources, transcoded into Windows-1251 in `genderTables()`.
+ * An entry of `special_name_table`.
  */
 struct SpecialNameEntry {
     const char *name;
@@ -607,24 +607,20 @@ struct GenderTables {
 
 static const GenderTables &genderTables() {
     static const GenderTables result = [] {
-        auto transcode = [](std::string_view utf8) {
-            return txt::utf8ToEncoded(utf8, ENCODING_WINDOWS_1251);
-        };
-
         GenderTables tables;
         for (const GenderTableEntry &entry : gender_table_caps)
-            tables.caps.emplace_back(transcode(entry.name), entry.gender);
+            tables.caps.emplace_back(entry.name, entry.gender);
         for (const GenderTableEntry &entry : gender_table)
-            tables.lower.emplace_back(transcode(entry.name), entry.gender);
+            tables.lower.emplace_back(entry.name, entry.gender);
         std::ranges::sort(tables.caps);
         std::ranges::sort(tables.lower);
 
         for (const SpecialNameEntry &entry : special_name_table) {
             SpecialName &special = tables.specials.emplace_back();
-            special.name = transcode(entry.name);
+            special.name = entry.name;
             special.gender = entry.gender;
             for (size_t i = 0; i < special.cases.size(); i++)
-                special.cases[i] = entry.cases[i] ? transcode(entry.cases[i]) : special.name;
+                special.cases[i] = entry.cases[i] ? entry.cases[i] : special.name;
         }
         return tables;
     }();
@@ -647,7 +643,7 @@ static bool shouldWarnAbout(std::string_view key) {
 }
 
 /**
- * @param name                          Name to look up, Windows-1251 encoded.
+ * @param name                          Name to look up, UTF-8.
  * @return                              Grammatical gender of `name`, as an index into the `^R` forms: 0 for
  *                                      masculine, 1 for feminine, 2 for neuter. Masculine if not recognized.
  */
@@ -658,22 +654,23 @@ static int genderOf(std::string_view name) {
     const GenderTables &tables = genderTables();
 
     const std::vector<std::pair<std::string, int>> *table = nullptr;
-    unsigned char first = static_cast<unsigned char>(name[0]);
-    if (first >= 0xE0) { // Windows-1251 'а'-'я'.
+    size_t pos = 0;
+    char32_t first = txt::nextRune(name, &pos);
+    if (first >= U'а' && first <= U'я') {
         table = &tables.lower;
-    } else if (first >= 0xC0 && first <= 0xDF) { // Windows-1251 'А'-'Я'.
+    } else if (first >= U'А' && first <= U'Я') {
         table = &tables.caps;
     } else {
         return 0;
     }
 
     // Same semantics as the original mm7text.dll: a table entry matches if it starts with the looked-up name.
-    auto pos = std::ranges::lower_bound(*table, name, std::less<>(), &std::pair<std::string, int>::first);
-    if (pos != table->end() && pos->first.starts_with(name))
-        return pos->second;
+    auto entry = std::ranges::lower_bound(*table, name, std::less<>(), &std::pair<std::string, int>::first);
+    if (entry != table->end() && entry->first.starts_with(name))
+        return entry->second;
 
     if (shouldWarnAbout(name))
-        MM_WARNING("sprintfex: unknown gender: {}", txt::encodedToUtf8(name, ENCODING_WINDOWS_1251));
+        MM_WARNING("sprintfex: unknown gender: {}", name);
     return 0;
 }
 
@@ -846,7 +843,7 @@ std::string sprintfex(std::string_view str) {
             pos += consumed;
         } else {
             if (shouldWarnAbout(str))
-                MM_WARNING("sprintfex: malformed token in \"{}\"", txt::encodedToUtf8(str, ENCODING_WINDOWS_1251));
+                MM_WARNING("sprintfex: malformed token in \"{}\"", str);
             result += '^'; // Malformed tokens are copied through verbatim.
             pos++;
         }

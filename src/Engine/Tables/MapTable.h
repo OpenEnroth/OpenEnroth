@@ -10,7 +10,7 @@
 class Blob;
 
 struct MapTable {
-    void Initialize(const Blob &mapStats);
+    void Initialize(std::string_view mapStats);
     MapId GetMapInfo(std::string_view fileName);
     IndexedArray<MapData, MAP_FIRST, MAP_LAST> pInfos;
 };

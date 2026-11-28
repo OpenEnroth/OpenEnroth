@@ -1,5 +1,6 @@
 #pragma once
 
+#include <cstdint>
 #include <cstring>
 #include <algorithm>
 #include <array>
@@ -10,6 +11,7 @@
 #include <vector>
 
 #include "Library/Binary/BinaryConcepts.h"
+#include "Library/Binary/BinaryTags.h"
 
 #include "Utility/IndexedArray.h"
 #include "Utility/IndexedBitset.h"
@@ -17,6 +19,7 @@
 
 #include "SnapshotConcepts.h"
 #include "SnapshotTags.h"
+
 
 //
 // Identity snapshotting.
@@ -70,16 +73,32 @@ void reconstruct(const T1 &src, T2 *dst, CastTag<T1, T2>) {
 //
 
 template<size_t N>
-void snapshot(const std::string &src, std::array<char, N> *dst) {
-    memset(dst->data(), 0, N);
-    memcpy(dst->data(), src.data(), std::min(src.size(), N - 1));
+void snapshot(const std::string &src, std::array<char, N> *dst, EncodingTag encoding) {
+    if (*encoding == ENCODING_BYTES) {
+        memset(dst->data(), 0, N);
+        memcpy(dst->data(), src.data(), std::min(src.size(), N - 1));
+    } else {
+        std::string encoded = txt::utf8ToEncoded(src, *encoding);
+        if (*encoding == ENCODING_UTF8 && encoded.size() > N - 1) {
+            size_t size = N - 1;
+            while (size > 0 && (static_cast<uint8_t>(encoded[size]) & 0xC0) == 0x80)
+                size--; // Cut before a character, not in the middle of one.
+            encoded.resize(size);
+        }
+        snapshot(encoded, dst, tags::encoding(ENCODING_BYTES));
+    }
 }
 
 template<size_t N>
-void reconstruct(const std::array<char, N> &src, std::string *dst) {
-    const char *end = static_cast<const char *>(memchr(src.data(), 0, N));
-    size_t size = end == nullptr ? N : end - src.data();
-    *dst = std::string(src.data(), size);
+void reconstruct(const std::array<char, N> &src, std::string *dst, EncodingTag encoding) {
+    if (*encoding == ENCODING_BYTES) {
+        const char *end = static_cast<const char *>(memchr(src.data(), 0, N));
+        size_t size = end == nullptr ? N : end - src.data();
+        *dst = std::string(src.data(), size);
+    } else {
+        reconstruct(src, dst, tags::encoding(ENCODING_BYTES));
+        *dst = txt::encodedToUtf8(*dst, *encoding);
+    }
 }
 
 

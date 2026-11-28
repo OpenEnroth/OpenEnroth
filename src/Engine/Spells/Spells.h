@@ -3,6 +3,7 @@
 #include <cstdint>
 #include <array>
 #include <string>
+#include <string_view>
 
 #include "Engine/Objects/ItemEnums.h"
 #include "Engine/Objects/CharacterEnums.h"
@@ -15,8 +16,6 @@
 #include "Utility/IndexedArray.h"
 
 #include "SpellEnums.h"
-
-class Blob;
 
 struct SpellInfo {
     std::string name;
@@ -34,7 +33,7 @@ struct SpellStats {
     /**
      * @offset 0x45384A
      */
-    void Initialize(const Blob &spells);
+    void Initialize(std::string_view spells);
 
     IndexedArray<SpellInfo, SPELL_FIRST_REGULAR, SPELL_LAST_REGULAR> pInfos;
 };

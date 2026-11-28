@@ -4,6 +4,7 @@
 #include <array>
 #include <string>
 #include <vector>
+#include <string_view>
 
 #include "Engine/Spells/SpellEnums.h"
 #include "Engine/Objects/CombinedSkillValue.h"
@@ -19,8 +20,6 @@
 #include "ActorEnums.h"
 #include "ItemEnums.h"
 #include "MonsterEnums.h"
-
-class Blob;
 
 struct MonsterInfo {
     std::string name; // As displayed in the game, e.g. "Archangel".
@@ -82,8 +81,8 @@ struct MonsterInfo {
 };
 
 struct MonsterStats {
-    void Initialize(const Blob &monsters);
-    void InitializePlacements(const Blob &placements);
+    void Initialize(std::string_view monsters);
+    void InitializePlacements(std::string_view placements);
     MonsterId FindMonsterByInternalName(std::string_view internalName);
 
     IndexedArray<MonsterInfo, MONSTER_FIRST, MONSTER_LAST> infos;

@@ -1,14 +1,13 @@
 #pragma once
 
 #include <array>
+#include <string_view>
 
 #include "Engine/Data/AutonoteData.h"
-
-class Blob;
 
 /**
  * @offset 0x476750
  */
-void initializeAutonotes(const Blob &autonotes);
+void initializeAutonotes(std::string_view autonotes);
 
 extern std::array<AutonoteData, 300> pAutonoteTxt;

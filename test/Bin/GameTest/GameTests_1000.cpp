@@ -1052,8 +1052,7 @@ GAME_TEST(Issues, Issue1430) {
     EXPECT_EQ(deathsTape.delta(), 1);
     EXPECT_EQ(hpsTape.back(), tape(1, 1, 1, 1));
 
-    // We check the string below with starts_with b/c it contains Windows-1252-encoded "..." as last char. Doh.
-    EXPECT_CONTAINS(statusTape, [](std::string_view status) { return status.starts_with("Once again you've cheated death!"); });
+    EXPECT_CONTAINS(statusTape, "Once again you've cheated death! …");
 }
 
 GAME_TEST(Prs, Pr1440) {

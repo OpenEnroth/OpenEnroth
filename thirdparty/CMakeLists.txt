@@ -106,3 +106,17 @@ add_subdirectory(lambda2)
 # ztd.text
 set(ZTD_IDK_EXCLUDE_FROM_ALL ON)
 add_subdirectory(ztd_text EXCLUDE_FROM_ALL)
+
+# freetype
+# Used by FontTool to rasterize source typefaces, so it's only built with the tools.
+#
+# zlib and png are left enabled - we already depend on both, and FT_DISABLE_ZLIB doesn't drop gzip support, it
+# makes freetype bundle a second copy of zlib instead of using ours. The rest are formats we have no dependency
+# for: bzip2 costs us `.pcf.bz2` fonts, brotli costs us `.woff2` ones. FontTool doesn't pick up either extension
+# when it walks directories.
+if(OE_BUILD_TOOLS)
+    set(FT_DISABLE_BZIP2 ON CACHE BOOL "" FORCE)
+    set(FT_DISABLE_HARFBUZZ ON CACHE BOOL "" FORCE)
+    set(FT_DISABLE_BROTLI ON CACHE BOOL "" FORCE)
+    add_subdirectory(freetype EXCLUDE_FROM_ALL)
+endif()

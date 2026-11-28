@@ -13,6 +13,8 @@
 
 #include "Core/Time/Time.h"
 
+#include "Utility/String/Encoding.h"
+
 #include "Utility/Memory/Blob.h"
 
 // Autosave file name. Note that it's not localized, unlike the autosave title displayed in-game.
@@ -27,6 +29,10 @@ struct SaveGameHeader {
     Time playingTime; // Game time of the save.
 };
 
+struct SaveGameExtension {
+    TextEncoding encoding = ENCODING_UTF8;
+};
+
 struct SaveGame {
     SaveGameHeader header;
     Party party;
@@ -36,6 +42,7 @@ struct SaveGame {
     std::array<uint16_t, 51> npcGroups;
     std::unordered_map<std::string, Blob> mapDeltas;
     Blob thumbnail;
+    SaveGameExtension extension;
 };
 
 struct SaveGameLite {
@@ -45,6 +52,13 @@ struct SaveGameLite {
 
 /** Runtime storage for map deltas from the currently loaded save. */
 extern std::unordered_map<std::string, Blob> pMapDeltas;
+
+/**
+ * Encoding of the currently loaded save. New games start out in utf8, while saves loaded from disk keep whatever
+ * encoding they were in - a save that came from the original game should still be loadable there after we write it
+ * back, and the original game doesn't understand utf8.
+ */
+extern TextEncoding currentSaveEncoding;
 
 void loadGame(std::string_view fileName);
 std::pair<SaveGameHeader, Blob> createSaveData(bool resetWorld, std::string_view title);

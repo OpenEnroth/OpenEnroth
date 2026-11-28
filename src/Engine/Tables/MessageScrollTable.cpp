@@ -11,9 +11,9 @@
 
 IndexedArray<std::string, ITEM_FIRST_MESSAGE_SCROLL, ITEM_LAST_MESSAGE_SCROLL> pMessageScrolls;
 
-void initializeMessageScrolls(const Blob &scrolls) {
+void initializeMessageScrolls(std::string_view scrolls) {
     // scroll.txt table structure: item index | message text (localized) | scroll title (localized, not used) | (empty).
-    for (std::string_view line : split(scrolls.str()).by("\r\n").drop(1).skip("")) {
+    for (std::string_view line : split(scrolls).by("\r\n").drop(1).skip("")) {
         std::array<std::string_view, 2> tokens = split(line).by('\t');
         if (tokens[0].empty())
             continue; // Skip tab-only trailing lines.
